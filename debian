@@ -1,0 +1,35 @@
+Comment:
+  Information about the various types of Debian environment we can pull
+  source from or build for.
+
+Name: debian-common
+Use: common
+Let: head=sid
+
+Name: debian-build
+Use: build
+Set-Env: DEBIAN_KERNEL_JOBS=5
+Extra-Package: man-db
+Comment: This package takes a long time to install, so install it into
+	 the clean environment once and for all.
+
+Name: debian-sources
+Use: sid-sources
+Use: sid-seereason-sources
+Use: etch-sources
+Use: sarge-sources
+Use: lenny-sources
+Use: lenny-seereason-sources
+Use: debian-experimental-sources
+Release-Alias: etch=bpo40+
+Release-Alias: hardy-seereason=hardy
+Release-Alias: intrepid-seereason=intrepid
+Release-Alias: jaunty-seereason=jaunty
+
+Name: debian-experimental-sources
+Sources: debian-experimental
+ deb http://${debian-mirror-host}/debian experimental main contrib non-free
+ deb-src http://${debian-mirror-host}/debian experimental main contrib non-free
+Comment:
+ Debian experimental repository, where we can pick up cutting edge packages
+ such as upstart, etc.

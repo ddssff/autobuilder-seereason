@@ -1,0 +1,126 @@
+Comment:
+  Some archives where we can pull packages from using the apt target.
+
+Name: extra-sources
+Comment: Use: slimdevices-sources
+Use: debian-multimedia-sources
+Use: kanotix-sources
+Comment: Use: marlin-old-sources
+Use: debian-experimental-sources
+Comment: No release files
+  Use: haskell-unsafe-sources
+
+Name: haskell-unsafe-sources
+Sources: haskell-unsafe
+  deb-src http://haskell-unsafe.alioth.debian.org/archive/amd64 unstable .
+
+Name: slimdevices-sources
+Sources: slimdevices
+  deb http://debian.slimdevices.com stable main
+Comment: This seems to have been removed
+  deb-src http://debian.slimdevices.com stable main
+
+Name: debian-multimedia-sources
+Sources: debian-multimedia
+  deb http://mirror.home-dn.net/debian-multimedia stable main
+  deb-src http://mirror.home-dn.net/debian-multimedia stable main
+
+Name: kanotix-sources
+Sources: kanotix
+  deb http://kanotix.com/files/debian sid main contrib non-free vdr
+  deb-src http://kanotix.com/files/debian sid main contrib non-free vdr
+
+Name: debian-experimental-sources
+Sources: debian-experimental
+ deb http://${debian-mirror-host}/debian experimental main contrib non-free
+ deb-src http://${debian-mirror-host}/debian experimental main contrib non-free
+Comment:
+ Debian experimental repository, where we can pick up cutting edge packages
+ such as upstart, etc.
+
+Name: haskell-unsafe-sources
+Sources: haskell-unsafe
+  deb http://haskell-unsafe.alioth.debian.org/archive/i386 . unstable testing stable
+  deb-src http://haskell-unsafe.alioth.debian.org/archive/i386 . unstable testing stable
+
+Comment:
+ Name: marlin-old-sources
+ Sources: marlin-old
+  deb http://apt.freespire.org marlin/live-freespire apps/live
+  deb http://apt.freespire.org marlin/live-freespire apps/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire apps/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire coreos/live
+  deb http://apt.freespire.org marlin/live-freespire coreos/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire coreos/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire isos/live
+  deb http://apt.freespire.org marlin/live-freespire isos/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire isos/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire kalyxo-main/live
+  deb http://apt.freespire.org marlin/live-freespire kalyxo-main/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire kalyxo-main/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire kde-core/live
+  deb http://apt.freespire.org marlin/live-freespire kde-core/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire kde-core/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire kernel/live
+  deb http://apt.freespire.org marlin/live-freespire kernel/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire kernel/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire los-i18n/live
+  deb http://apt.freespire.org marlin/live-freespire los-i18n/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire los-i18n/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire refinery/live
+  deb http://apt.freespire.org marlin/live-freespire refinery/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire refinery/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire services/live
+  deb http://apt.freespire.org marlin/live-freespire services/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire services/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire sid-contrib-rev2/live
+  deb http://apt.freespire.org marlin/live-freespire sid-contrib-rev2/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire sid-contrib-rev2/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire sid-main-rev2/live
+  deb http://apt.freespire.org marlin/live-freespire sid-main-rev2/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire sid-main-rev2/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire sid-non-free-rev2/live
+  deb http://apt.freespire.org marlin/live-freespire sid-non-free-rev2/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire sid-non-free-rev2/live-unstable
+  deb http://apt.freespire.org marlin/live-freespire test/live
+  deb http://apt.freespire.org marlin/live-freespire test/live-freespire
+  deb http://apt.freespire.org marlin/live-freespire test/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire apps/live
+  deb-src http://apt.freespire.org marlin/live-freespire apps/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire apps/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire coreos/live
+  deb-src http://apt.freespire.org marlin/live-freespire coreos/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire coreos/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire isos/live
+  deb-src http://apt.freespire.org marlin/live-freespire isos/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire isos/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire kalyxo-main/live
+  deb-src http://apt.freespire.org marlin/live-freespire kalyxo-main/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire kalyxo-main/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire kde-core/live
+  deb-src http://apt.freespire.org marlin/live-freespire kde-core/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire kde-core/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire kernel/live
+  deb-src http://apt.freespire.org marlin/live-freespire kernel/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire kernel/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire los-i18n/live
+  deb-src http://apt.freespire.org marlin/live-freespire los-i18n/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire los-i18n/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire refinery/live
+  deb-src http://apt.freespire.org marlin/live-freespire refinery/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire refinery/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire services/live
+  deb-src http://apt.freespire.org marlin/live-freespire services/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire services/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire sid-contrib-rev2/live
+  deb-src http://apt.freespire.org marlin/live-freespire sid-contrib-rev2/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire sid-contrib-rev2/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire sid-main-rev2/live
+  deb-src http://apt.freespire.org marlin/live-freespire sid-main-rev2/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire sid-main-rev2/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire sid-non-free-rev2/live
+  deb-src http://apt.freespire.org marlin/live-freespire sid-non-free-rev2/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire sid-non-free-rev2/live-unstable
+  deb-src http://apt.freespire.org marlin/live-freespire test/live
+  deb-src http://apt.freespire.org marlin/live-freespire test/live-freespire
+  deb-src http://apt.freespire.org marlin/live-freespire test/live-unstable

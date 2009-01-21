@@ -1,0 +1,65 @@
+Comment:
+  This file contains global information, common to every run.  This includes
+  the minimum version of autobuilder to use, the tag to use when constructing
+  version numbers, and all the sources of source code.
+
+Name: common
+Required-Version: 2.26
+Use: all-sources
+Base-Release: ${base}
+Build-Release: ${base}${upload-release-suffix}
+Relax-Depends: autoconf
+Relax-Depends: base-files
+Relax-Depends: base-passwd
+Relax-Depends: bsdutils
+Relax-Depends: debhelper
+Relax-Depends: bash
+Relax-Depends: debianutils
+Relax-Depends: diff
+Relax-Depends: e2fsprogs
+Relax-Depends: findutils
+Relax-Depends: flex
+Relax-Depends: login
+Relax-Depends: coreutils
+Relax-Depends: dpkg
+Relax-Depends: dpkg-dev
+Relax-Depends: gcc
+Relax-Depends: g++
+Relax-Depends: grep
+Relax-Depends: gs
+Relax-Depends: gzip
+Relax-Depends: hostname
+Relax-Depends: intltool
+Relax-Depends: make
+Relax-Depends: mktemp
+Relax-Depends: mount
+Relax-Depends: ncurses-base
+Relax-Depends: ncurses-bin
+Relax-Depends: perl
+Relax-Depends: perl-base
+Relax-Depends: sed
+Relax-Depends: tar
+Relax-Depends: sysvinit
+Relax-Depends: util-linux
+Relax-Depends: libc6-dev
+Relax-Depends: module-init-tools linux-2.6
+Comment: Unlike the autobuilder, it is not Debian policy to rebuild a
+  package every time any of its build dependencies change.  These rules
+  specify a collection of packages which will not trigger a rebuild of
+  (basically) everything.
+
+Name: all-sources
+Use: debian-sources
+Extra-Package: debian-archive-keyring
+Use: ubuntu-sources
+Use: extra-sources
+Comment: The debian-archive-keyring package must be installed to get smooth
+  installations of packages from the debian archive, so we want it installed
+  when creating a build environment.
+
+Name: build
+Strictness: moderate
+Extra-Essential: gnupg dpkg
+Comment:
+  The gnupg package is required for apt-get update to check signatures.  The
+  freespire-archive-keyring package supplies the keys to verify our archives.

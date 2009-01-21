@@ -1,0 +1,24 @@
+Name: ubuntu-common
+Use: common
+Let: ubuntu=ubuntu
+Let: head=jaunty
+Comment:
+  We use a variable for ubuntu so we can set it to point to a dated archive
+  when we need to use an older or newer snapshot.
+Extra-Package: ubuntu-keyring
+Comment: This is useful for downloading Ubuntu source into any build environment,
+	 but it is not installable from a debian build environment, so we just do
+	 without.
+
+Name: ubuntu-build
+Use: build
+
+Name: ubuntu-sources
+Use: feisty-sources
+Use: gutsy-sources
+Use: hardy-sources
+Use: intrepid-sources
+Use: jaunty-sources
+Use: hardy${upload-release-suffix}-sources
+Use: intrepid-seereason-sources
+Use: jaunty-seereason-sources

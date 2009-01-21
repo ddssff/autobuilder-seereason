@@ -1,0 +1,43 @@
+Comment:
+  Definitions for building packages for Ubuntu Intrepid. 
+
+Name: intrepid-common
+Use: ubuntu-common
+
+Name: intrepid-build
+Let: base=intrepid
+Use: ubuntu-build
+Use: intrepid-common
+Use: intrepid-local
+Extra-Essential: belocs-locales-bin upstart-compat-sysv
+
+Name: intrepid-sources
+Sources: intrepid
+  deb http://${ubuntu-mirror-host}/ubuntu/ intrepid main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ intrepid main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ intrepid-updates main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ intrepid-updates main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ intrepid-backports main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ intrepid-backports main restricted universe multiverse
+  deb http://${ubuntu-security-mirror-host}/ubuntu/ intrepid-security main restricted universe multiverse
+  deb-src http://${ubuntu-security-mirror-host}/ubuntu/ intrepid-security main restricted universe multiverse
+
+Name: intrepid-seereason-sources
+Sources: intrepid-seereason
+  deb http://${ubuntu-mirror-host}/ubuntu/ intrepid main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ intrepid main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ intrepid-updates main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ intrepid-updates main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ intrepid-backports main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ intrepid-backports main restricted universe multiverse
+  deb http://${ubuntu-security-mirror-host}/ubuntu/ intrepid-security main restricted universe multiverse
+  deb-src http://${ubuntu-security-mirror-host}/ubuntu/ intrepid-security main restricted universe multiverse
+  deb http://deb.seereason.com/ubuntu intrepid-seereason main
+  deb-src http://deb.seereason.com/ubuntu intrepid-seereason main
+
+Comment: I hope this is obsolete
+  Name: intrepid-autobuilder
+  Use: autobuilder-targets
+  Use: intrepid-build
+  Targets:
+    quilt:(apt:intrepid:rsync):(darcs:http://src.seereason.com/rsync-quilt)

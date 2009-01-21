@@ -1,0 +1,45 @@
+Comment:
+  Definitions for building packages for Ubuntu Feisty Fawn. 
+
+Name: feisty-common
+Use: ubuntu-common
+Let: base=feisty
+
+Name: feisty-build
+Use: ubuntu-build
+Use: feisty-common
+Use: feisty-local
+
+Name: feisty-sources
+Sources: feisty
+  deb http://${ubuntu-mirror-host}/ubuntu/ feisty main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ feisty main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ feisty-updates main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ feisty-updates main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ feisty-backports main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ feisty-backports main restricted universe multiverse
+  deb http://${ubuntu-security-mirror-host}/ubuntu/ feisty-security main restricted universe multiverse
+  deb-src http://${ubuntu-security-mirror-host}/ubuntu/ feisty-security main restricted universe multiverse
+
+Name: feisty-ghc682
+Use: feisty-build
+Use: ghc682
+Relax-Depends: ghc6 haddock
+Targets:
+   apt:sid:haddock
+
+Name: feisty-autobuilder
+Use: autobuilder-targets
+Use: feisty-build
+
+Name: feisty-ghc-base
+Use: ghc-base
+Use: feisty-build
+
+Name: feisty-ghc-libs
+Use: ghc-libs
+Use: feisty-build
+
+Name: feisty-yhc
+Use: yhc-targets
+Use: feisty-build

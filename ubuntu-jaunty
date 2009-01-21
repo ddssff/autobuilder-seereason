@@ -1,0 +1,43 @@
+Comment:
+  Definitions for building packages for Ubuntu Intrepid. 
+
+Name: jaunty-common
+Use: ubuntu-common
+
+Name: jaunty-build
+Let: base=jaunty
+Use: ubuntu-build
+Use: jaunty-common
+Use: jaunty-local
+Extra-Essential: belocs-locales-bin upstart-compat-sysv
+
+Name: jaunty-sources
+Sources: jaunty
+  deb http://${ubuntu-mirror-host}/ubuntu/ jaunty main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ jaunty main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ jaunty-updates main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ jaunty-updates main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ jaunty-backports main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ jaunty-backports main restricted universe multiverse
+  deb http://${ubuntu-security-mirror-host}/ubuntu/ jaunty-security main restricted universe multiverse
+  deb-src http://${ubuntu-security-mirror-host}/ubuntu/ jaunty-security main restricted universe multiverse
+
+Name: jaunty-seereason-sources
+Sources: jaunty-seereason
+  deb http://${ubuntu-mirror-host}/ubuntu/ jaunty main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ jaunty main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ jaunty-updates main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ jaunty-updates main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ jaunty-backports main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ jaunty-backports main restricted universe multiverse
+  deb http://${ubuntu-security-mirror-host}/ubuntu/ jaunty-security main restricted universe multiverse
+  deb-src http://${ubuntu-security-mirror-host}/ubuntu/ jaunty-security main restricted universe multiverse
+  deb http://deb.seereason.com/ubuntu jaunty-seereason main
+  deb-src http://deb.seereason.com/ubuntu jaunty-seereason main
+
+Comment: I hope this is obsolete
+  Name: jaunty-autobuilder
+  Use: autobuilder-targets
+  Use: jaunty-build
+  Targets:
+    quilt:(apt:jaunty:rsync):(darcs:http://src.seereason.com/rsync-quilt)

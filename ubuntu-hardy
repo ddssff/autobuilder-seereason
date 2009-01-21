@@ -1,0 +1,66 @@
+Comment:
+  Definitions for building packages for Ubuntu Hardy. 
+
+Name: hardy-common
+Use: ubuntu-common
+
+Name: hardy-build-common
+Let: base=hardy
+let: upload-release=${base}${upload-release-suffix}
+Use: ubuntu-build
+Use: hardy-common
+Extra-Essential: belocs-locales-bin upstart-compat-sysv
+
+Name: hardy-build
+Use: hardy-build-common
+Use: hardy-local
+
+Name: hardy-build-ghc610
+Use: hardy-build-common
+Use: hardy-local-ghc610
+
+Name: hardy-sources
+Sources: hardy
+  deb http://${ubuntu-mirror-host}/ubuntu/ hardy main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ hardy main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ hardy-updates main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ hardy-updates main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ hardy-backports main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ hardy-backports main restricted universe multiverse
+  deb http://${ubuntu-security-mirror-host}/ubuntu/ hardy-security main restricted universe multiverse
+  deb-src http://${ubuntu-security-mirror-host}/ubuntu/ hardy-security main restricted universe multiverse
+
+Name: hardy${upload-release-suffix}-sources
+Sources: hardy${upload-release-suffix}
+  deb http://${ubuntu-mirror-host}/ubuntu/ hardy main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ hardy main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ hardy-updates main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ hardy-updates main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ hardy-backports main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ hardy-backports main restricted universe multiverse
+  deb http://${ubuntu-security-mirror-host}/ubuntu/ hardy-security main restricted universe multiverse
+  deb-src http://${ubuntu-security-mirror-host}/ubuntu/ hardy-security main restricted universe multiverse
+  deb http://deb.seereason.com/ubuntu hardy${upload-release-suffix} main
+  deb-src http://deb.seereason.com/ubuntu hardy${upload-release-suffix} main
+
+Name: hardy-ghc682
+Use: ghc682
+Use: hardy-build
+
+Name: hardy-autobuilder
+Use: autobuilder-targets
+Use: hardy-build
+Targets:
+  quilt:(apt:hardy:rsync):(darcs:http://src.seereason.com/rsync-quilt)
+
+Name: hardy-ghc-base
+Use: ghc-base
+Use: hardy-build
+
+Name: hardy-ghc-libs
+Use: ghc-libs
+Use: hardy-build
+
+Name: hardy-yhc
+Use: yhc-targets
+Use: hardy-build

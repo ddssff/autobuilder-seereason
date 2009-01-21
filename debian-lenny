@@ -1,0 +1,47 @@
+Name: lenny-common
+Use: debian-common
+
+Name: lenny-build
+Let: base=lenny
+Use: debian-build
+Use: lenny-common
+Use: lenny-local
+Comment: If upstart was available you could uncomment this for an upstart
+	build.  But it isn't, so you can't.  But you should.
+  Extra-Essential: upstart
+  Omit-Essential: initscripts
+
+Name: lenny-ghc68-build
+Use: debian-build
+Use: lenny-common
+Use: lenny-local
+Omit-Essential: initscripts
+
+Name: lenny-sources
+Sources: lenny
+ deb http://${debian-mirror-host}/debian lenny main contrib non-free
+ deb-src http://${debian-mirror-host}/debian lenny main contrib non-free
+
+Name: lenny-seereason-sources
+Sources: lenny-seereason
+ deb http://${debian-mirror-host}/debian lenny main contrib non-free
+ deb-src http://${debian-mirror-host}/debian lenny main contrib non-free
+ deb http://deb.seereason.com/debian lenny-seereason main
+ deb-src http://deb.seereason.com/debian lenny-seereason main
+
+Name: lenny-ghc682
+Use: ghc682
+Use: lenny-build
+
+Name: lenny-extra
+Use: lenny-build
+Use: autobuilder-targets
+Use: yhc-targets
+Comment:
+ Use: kernel-targets
+
+Name: lenny-autobuilder
+Use: autobuilder-targets
+Use: lenny-build
+Targets:
+  apt:feisty:haskell-cabal

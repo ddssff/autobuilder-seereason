@@ -1,0 +1,90 @@
+Comment:  The definitions in local specify particular hostnames to upload to,
+  the vendor name to use when constructing the version numbers, the host names
+  of repository mirrors, and anything else site specific or likely to change.
+
+Name: common-local
+Use: common
+Comment:
+  These Let values above need to be adjusted for the repository you
+  will be uploading to.  If you are only building packages and don't
+  plan to upload them to a repository, you still need to set
+  upload-host and upload-repo.  This is necessary to ensure that
+  packages you build do not conflict with packages already in the
+  repository you are building against.
+Comment: Let: vendor=seereason
+Vendor-Tag: seereason
+Let: upload-host=deb.seereason.com
+Let: upload-user=upload
+Comment:
+  These are some specific host names we use building the sources.list,
+  adjust according to your location.  When setting the same value more
+  than once, the first Let takes precedence over the second.
+Comment: Let: ubuntu-mirror-host=us.archive.ubuntu.com
+Comment: Let: ubuntu-security-mirror-host=security.ubuntu.com
+Let: ubuntu-mirror-host=mirror.anl.gov
+Let: ubuntu-security-mirror-host=mirror.anl.gov
+Let: debian-mirror-host=mirror.anl.gov
+Autobuilder-Email: SeeReason Autobuilder <autobuilder@seereason.org>
+Comment:
+  Extra-Package: seereason-keyring
+Comment: When initializing a new release, this extra package may need to be
+	 commented out until it has been built and uploaded.  At that point
+	 the build environment can be recreated with --flush-root, or it can
+	 be installed by hand using chroot and apt-get.
+
+Name: public-local
+Use: common-local
+Upload-URI: ssh://${upload-user}@${upload-host}/srv/deb/${upload-repo}
+Build-URI: http://${upload-host}/${upload-repo}
+
+Name: public-local-seereason
+Use: public-local
+Let: upload-release-suffix=-seereason
+
+Name: public-local-ghc610
+Use: public-local
+Let: upload-release-suffix=-ghc610
+
+Name: ubuntu-local
+Use: public-local-seereason
+Let: upload-repo=ubuntu
+
+Name: ubuntu-local-ghc610
+Use: public-local-ghc610
+Let: upload-repo=ubuntu
+
+Name: feisty-local
+Use: ubuntu-local
+
+Name: gutsy-local
+Use: ubuntu-local
+
+Name: hardy-local
+Use: ubuntu-local
+
+Name: hardy-local-ghc610
+Use: ubuntu-local-ghc610
+
+Name: intrepid-local
+Use: ubuntu-local
+
+Name: jaunty-local
+Use: ubuntu-local
+Development-Release: yes
+
+Name: debian-local
+Let: upload-repo=debian
+Use: public-local
+
+Name: sarge-local
+Use: debian-local
+
+Name: etch-local
+Use: debian-local
+
+Name: lenny-local
+Use: debian-local
+
+Name: sid-local
+Use: debian-local
+Development-Release: yes

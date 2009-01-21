@@ -1,0 +1,404 @@
+Comment: ========== RELEASE-INDEPENDENT TARGET LISTS ===============
+  .
+  For a given release there may be additional targets which need to be
+  built.  For example Debian Etch has a version of haskell-cabal which
+  is too old to build the autobuilder, so in the 'etch' file we pull
+  in the one from feisty, the next oldest release.
+
+Comment: =========== TIGHT BUILD DEPENDENCIES ================
+  Because of Ian's new code to generate equals dependencies for all
+  the packages used while building, it is necessary to create quilt
+  targets for most new source packages.  These patches do two things:
+  .
+	1. Add a call to update-generated-files following the build-stamp: target
+        2. Change ocurrences of cabal:deps:ghc6:* in the Build-Depends line of
+	   debian/control.in to cabal:bdeps:ghc6:*.
+	3. Change the equals releations in the list of build dependencies to
+	   greater-or-equal relations.  Without doing this it is impossible to
+	   build the package unless you use all the exact versions that Ian used.
+  .
+  The packages currently patched in this way include:
+  .
+	haskell-alut
+	haskell-arrows
+	haskell-cgi
+	haskell-fgl
+	haskell-glut
+	haskell-network
+	haskell-openal
+  .
+  It is also desirable that the build dependencies that are added by
+  running update-generated-files be >= dependencies rather than =
+  dependencies.  There is a patch in haskell-utils-quilt called
+  build-deps.patch which modifies the update-haskell-control.lhs script
+  to make this change.
+
+Comment: ============ HAPPY BOOSTRAPPING ==================
+  .
+  The happy program has a build dependency on itself.  The target
+  below applies a quilt patch which changes this dependency to
+  "happy | ghc6".  This allows you to drop a working /usr/bin/happy
+  and /usr/share/happy-1.17 into the clean build environment of a
+  distribution that doesn't have a working happy package (such as
+  Debian Lenny.)  Once the bootstrap has been done, the dummy target
+  should be used to restore the original dependencies while keeping
+  the modified version number.
+  .
+  quilt:(apt:sid:happy):(darcs:http://src.seereason.com/quilt/happy-quilt)
+
+Name: all-targets
+Use: ghc683
+Use: cabal-debian-targets
+Use: ghc-extra
+Use: seereason-targets
+Use: hsp
+Use: uniplate
+Use: relax
+
+Name: ghc682-bootstrap
+Use: ghc682
+Targets:
+  quilt:(apt:sid:ghc6):(darcs:http://src.seereason.com/quilt/ghc6-quilt)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Cabal/1.4.0.0/Cabal-1.4.0.0.tar.gz:5d8f10b95c42ac7419ac9673bfb6a607):(darcs:http://src.seereason.com/debian/cabal-debianization-bootstrap)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/ghc-paths/0.1.0.4/ghc-paths-0.1.0.4.tar.gz:a8f36dcb5407de9907b7d78b31fc24a1):(darcs:http://src.seereason.com/debian/ghc-paths-debian-bootstrap)
+
+Name: ghc682
+Use: relax
+Use: ghc-core
+Targets:
+  quilt:(apt:sid:ghc6):(darcs:http://src.seereason.com/quilt/ghc6-quilt)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Cabal/1.4.0.0/Cabal-1.4.0.0.tar.gz:5d8f10b95c42ac7419ac9673bfb6a607):(darcs:http://src.seereason.com/debian/cabal-debianization)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/ghc-paths/0.1.0.4/ghc-paths-0.1.0.4.tar.gz:a8f36dcb5407de9907b7d78b31fc24a1):(darcs:http://src.seereason.com/debian/ghc-paths-debian)
+
+Name: ghc683-bootstrap
+Use: ghc-core
+Targets:
+  quilt:(sourcedeb:darcs:http://src.seereason.com/ghc683):(darcs:http://src.seereason.com/quilt/ghc6-quilt-bootstrap)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Cabal/1.4.0.0/Cabal-1.4.0.0.tar.gz:5d8f10b95c42ac7419ac9673bfb6a607):(darcs:http://src.seereason.com/debian/cabal-debianization-bootstrap)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/ghc-paths/0.1.0.4/ghc-paths-0.1.0.4.tar.gz:a8f36dcb5407de9907b7d78b31fc24a1):(darcs:http://src.seereason.com/debian/ghc-paths-debian-bootstrap)
+Use: cabal-debian-bootstrap
+Relax-Depends: haddock haskell-cabal
+Relax-Depends: haddock haskell-ghc-paths
+Relax-Depends: haddock ghc6
+Relax-Depends: hscolour ghc6
+Comment:
+  This bootstrap target builds ghc683 without any documentation, because
+  after it builds, it will eventually build haddock, and when it does
+  any documentation already built becomes essentially poison.  After
+  the new haddock builds, we have to build cabal-debian and all of its
+  build dependencies (I don't yet know what those are) whereupon we can
+  go back and re-build everything using the normal ghc683 target (which
+  at this moment doesn't yet exist.)  Obviously, you shouldn't upload
+  any of this stuff until you've built every last ghc package we know
+  of and maybe even installed and tested some of them.
+  .
+  It may be necessary to force the build of the cabal and ghc-paths
+  targets.  Then after building this and cabal-debian-targets, it will
+  be necessary to force the rebuild of ghc6.
+  .
+  ./autobuilder --use-repo-cache sid-build --use ghc683-bootstrap
+  ./autobuilder --use-repo-cache sid-build --target 'quilt:(sourcedeb:darcs:http://src.seereason.com/ghc683):(darcs:http://src.seereason.com/quilt/ghc683-quilt)' --force-build
+  ./autobuilder --use-repo-cache sid-build --use all-targets --do-upload --do-newdist
+
+Name: ghc683
+Use: relax
+Use: ghc-core
+Relax-Depends: haddock ghc6
+Relax-Depends: hscolour ghc6
+Relax-Depends: libghc6-ghc-paths-prof haskell-haddock
+Relax-Depends: cabal-debian haskell-cabal
+Targets:
+  quilt:(sourcedeb:darcs:http://src.seereason.com/ghc683):(darcs:http://src.seereason.com/quilt/ghc683-quilt)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Cabal/1.4.0.0/Cabal-1.4.0.0.tar.gz:5d8f10b95c42ac7419ac9673bfb6a607):(darcs:http://src.seereason.com/debian/cabal-debianization)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/ghc-paths/0.1.0.4/ghc-paths-0.1.0.4.tar.gz:a8f36dcb5407de9907b7d78b31fc24a1):(darcs:http://src.seereason.com/debian/ghc-paths-debian)
+
+Name: ghc-core
+Comment: ghc6 version 6.8.2-2 will not build on etch due to a dependency on a newer gcc
+	 The version in Ubuntu (6.8.2-1ubuntu1) will.
+Comment: Please keep targets alphabetized by source package name!
+Targets:
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/haddock/2.2.2/haddock-2.2.2.tar.gz:ddc8f3c65d7697934fda8b503e88cb25):(darcs:http://src.seereason.com/debian/haddock-debian)
+  apt:sid:cpphs
+  quilt:(apt:sid:happy):(darcs:http://src.seereason.com/quilt/happy-quilt-dummy)
+  quilt:(apt:sid:haskell-alut):(darcs:http://src.seereason.com/quilt/haskell-alut-quilt)
+  quilt:(apt:sid:haskell-arrows):(darcs:http://src.seereason.com/quilt/haskell-arrows-quilt)
+  quilt:(apt:sid:haskell-cgi):(darcs:http://src.seereason.com/quilt/haskell-cgi-quilt)
+  darcs:http://src.seereason.com/haskell-devscripts-cdbs
+  quilt:(apt:sid:haskell-fgl):(darcs:http://src.seereason.com/quilt/haskell-fgl-quilt)
+  quilt:(apt:sid:haskell-glut):(darcs:http://src.seereason.com/quilt/haskell-glut-quilt)
+  quilt:(apt:sid:haskell-haskell-src):(darcs:http://src.seereason.com/quilt/haskell-src-quilt)
+  quilt:(apt:sid:haskell-hgl):(darcs:http://src.seereason.com/quilt/haskell-hgl-quilt)
+  quilt:(apt:sid:haskell-html):(darcs:http://src.seereason.com/quilt/haskell-html-quilt)
+  quilt:(apt:sid:haskell-hunit):(darcs:http://src.seereason.com/quilt/haskell-hunit-quilt)
+  quilt:(apt:sid:haskell-mtl):(darcs:http://src.seereason.com/quilt/haskell-mtl-quilt)
+  quilt:(apt:sid:haskell-network):(darcs:http://src.seereason.com/quilt/haskell-network-quilt)
+  quilt:(apt:sid:haskell-openal):(darcs:http://src.seereason.com/quilt/haskell-openal-quilt)
+  quilt:(apt:sid:haskell-opengl):(darcs:http://src.seereason.com/quilt/haskell-opengl-quilt)
+  quilt:(apt:sid:haskell-parallel):(darcs:http://src.seereason.com/quilt/haskell-parallel-quilt)
+  quilt:(apt:sid:haskell-parsec):(darcs:http://src.seereason.com/quilt/haskell-parsec-quilt)
+  quilt:(apt:sid:haskell-quickcheck):(darcs:http://src.seereason.com/quilt/haskell-quickcheck-quilt)
+  quilt:(apt:sid:haskell-regex-base):(darcs:http://src.seereason.com/quilt/haskell-regex-base-quilt)
+  quilt:(apt:sid:haskell-regex-compat):(darcs:http://src.seereason.com/quilt/haskell-regex-compat-quilt)
+  quilt:(apt:sid:haskell-regex-posix):(darcs:http://src.seereason.com/quilt/haskell-regex-posix-quilt)
+  quilt:(apt:sid:haskell-stm):(darcs:http://src.seereason.com/quilt/haskell-stm-quilt)
+  quilt:(apt:sid:haskell-stream):(darcs:http://src.seereason.com/quilt/haskell-stream-quilt)
+  quilt:(apt:sid:haskell-time):(darcs:http://src.seereason.com/quilt/haskell-time-quilt)
+  quilt:(apt:sid:haskell-utils):(darcs:http://src.seereason.com/quilt/haskell-utils-quilt)
+  quilt:(apt:sid:haskell-x11):(darcs:http://src.seereason.com/quilt/haskell-x11-quilt)
+  quilt:(apt:sid:haskell-xhtml):(darcs:http://src.seereason.com/quilt/haskell-xhtml-quilt)
+  quilt:(darcs:http://www.cs.york.ac.uk/fp/darcs/hscolour):(darcs:http://src.seereason.com/quilt/hscolour-quilt)
+Comment:
+  sourcedeb:file:///home/david/darcs/haddock-source-deb
+Comment: No longer required, all patches moved to haskell-devscripts-cdbs, 
+	 But it needs to be built in order to build haskell-devscripts-cdbs
+	 until a new version of haskell-devscripts comes out to trump all the
+	 versions we already uploaded.
+  quilt:(svn:svn://svn.debian.org/svn/pkg-haskell/packages/haskell-devscripts/trunk):(darcs:http://src.seereason.com/quilt/haskell-devscripts-quilt)
+
+
+Name: seereason-targets
+Comment: Some targets are duplicates of targets in haskell-extra
+Use: relax
+Use: cabal-debian-targets
+Targets:
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/applicative-extras/0.1.3/applicative-extras-0.1.3.tar.gz:50fa4c61e89654ea9858c304b4682680):(darcs:http://src.seereason.com/debian/applicative-extras-debian)
+  darcs:http://src.seereason.com/formlets
+  darcs:http://src.seereason.com/happs-hsp-formlets
+  darcs:http://src.seereason.com/haskell-ugly
+  darcs:http://src.seereason.com/build-env
+  darcs:http://src.seereason.com/autobuilder
+  darcs:http://src.seereason.com/haskell-mime
+  darcs:http://src.seereason.com/haskell-help
+  darcs:http://src.seereason.com/tree-widget
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac/0.9.1/Shellac-0.9.1.tar.gz:0a563883b3acedb9c0d4308b44772f0f):(darcs:http://src.seereason.com/debian/shellac-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac-readline/0.9/Shellac-readline-0.9.tar.gz:ffea10846cc5f40b84d6a4fe97c35ec9):(darcs:http://src.seereason.com/debian/shellac-readline-debian)
+  darcs:http://src.seereason.com/decimal
+  darcs:http://src.seereason.com/vc-darcs
+  darcs:http://src.seereason.com/mirror
+  darcs:http://src.seereason.com/backups
+Comment: This is not really useful any more
+  apt:sid:hugs98
+Comment: Missing build deps under lenny
+  quilt:(apt:sid:xtla):(darcs:http://src.seereason.com/xtla-quilt)
+Comment: haskell-cgi depends on xhtml
+Comment:
+  We need the latest hugs because haskell-unixutils builds a hugs library.
+  Unfortunately, the lastest version still doesn't include System.Posix.Files,
+  so I am disabling the hugs library in haskell-unixutils.
+Comment: Probably don't need these
+  proc:apt:gutsy:neko
+  proc:apt:gutsy:haxe
+
+Name: seereason-targets-disabled
+Comment: Targets temporarily moved out of seereason-targets because they won't build
+Targets:
+
+Name: cabal-debian-targets
+Comment:
+  We need to build cabal-debian in order to bootstrap a new ghc.
+Relax-Depends: cabal-debian haskell-extra
+Targets:
+  darcs:http://src.seereason.com/cabal-debian
+  darcs:http://src.seereason.com/haskell-debian-3
+  darcs:http://src.seereason.com/haskell-unixutils
+  darcs:http://src.seereason.com/haskell-extra
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.4.0.1/bzlib-0.4.0.1.tar.gz:b6a7612c10f785e2ec615dcc2e87004b):(darcs:http://src.seereason.com/debian/haskell-bzlib-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/zlib/0.4.0.1/zlib-0.4.0.1.tar.gz:2eacb65c040975ab76453bc5e82c6b7c):(darcs:http://src.seereason.com/debian/haskell-zlib-debian)
+  quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/quilt/haxml-quilt)
+Comment:
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/cabal-install/0.5.2/cabal-install-0.5.2.tar.gz:e479dc3add14c8678bb808a8bd5517ae):(darcs:http://src.seereason.com/debian/cabal-install-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/colour/1.0.0/colour-1.0.0.tar.gz:97b0802abbf3a71a3606642850fe46c7):(darcs:http://src.seereason.com/debian/colour-debian)
+
+Name: cabal-debian-bootstrap
+Comment:
+  Build everything required to build cabal-debian package using versions that don't use cabal-debian.
+  sudo autobuilder intrepid-build --use-repo-cache --allow-build-dependency-regressions --relax-depends 'haddock haskell-haddock'
+Use: relax
+Targets:
+  dir:/home/dsf/darcs/haskell-debian-3
+  dir:/home/dsf/darcs/haskell-extra
+  darcs:http://src.seereason.com/haskell-unixutils
+  quilt:(apt:sid:haskell-regex-compat=0.91-1):(darcs:http://src.seereason.com/quilt/haskell-regex-compat-quilt)
+  quilt:(apt:sid:haskell-regex-posix=0.93.1-1):(darcs:http://src.seereason.com/quilt/haskell-regex-posix-quilt)
+  quilt:(apt:sid:haskell-regex-base=0.93.1-3):(darcs:http://src.seereason.com/quilt/haskell-regex-base-quilt)
+  quilt:(apt:sid:haskell-mtl=1.1.0.0-2):(darcs:http://src.seereason.com/quilt/haskell-mtl-quilt)
+  quilt:(apt:sid:haskell-parallel=1.0.0.0-2):(darcs:http://src.seereason.com/quilt/haskell-parallel-quilt)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Cabal/1.4.0.0/Cabal-1.4.0.0.tar.gz:5d8f10b95c42ac7419ac9673bfb6a607):(darcs:http://src.seereason.com/debian/cabal-debianization-bootstrap)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/ghc-paths/0.1.0.4/ghc-paths-0.1.0.4.tar.gz:a8f36dcb5407de9907b7d78b31fc24a1):(darcs:http://src.seereason.com/debian/ghc-paths-debian-bootstrap)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/haddock/2.2.2/haddock-2.2.2.tar.gz:ddc8f3c65d7697934fda8b503e88cb25):(darcs:http://src.seereason.com/debian/haddock-debian)
+  quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/quilt/haxml-quilt)
+  quilt:(apt:sid:haskell-hunit):(darcs:http://src.seereason.com/quilt/haskell-hunit-quilt)
+  quilt:(apt:sid:haskell-network):(darcs:http://src.seereason.com/quilt/haskell-network-quilt)
+  quilt:(apt:sid:haskell-quickcheck):(darcs:http://src.seereason.com/quilt/haskell-quickcheck-quilt)
+  quilt:(apt:sid:haskell-time):(darcs:http://src.seereason.com/quilt/haskell-time-quilt)
+  quilt:(apt:sid:haskell-parsec):(darcs:http://src.seereason.com/quilt/haskell-parsec-quilt)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.4.0.1/bzlib-0.4.0.1.tar.gz:b6a7612c10f785e2ec615dcc2e87004b):(darcs:http://src.seereason.com/debian/haskell-bzlib-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/zlib/0.4.0.1/zlib-0.4.0.1.tar.gz:2eacb65c040975ab76453bc5e82c6b7c):(darcs:http://src.seereason.com/debian/haskell-zlib-debian)
+
+Name: seereason-private-targets
+Comment: These depend on haskell-extra
+Targets:
+  darcs:http://src.seereason.com/haskell-appraisal
+
+Name: hsp
+Use: relax
+Targets:
+  deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/debian/hinotify-debian)
+  quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/quilt/hs-plugins-quilt)
+  quilt:(apt:sid:haskell-hspread):(darcs:http://src.seereason.com/quilt/haskell-hspread-quilt)
+  deb-dir:(darcs:http://src.seereason.com/HSP/happs-hsp-template):(darcs:http://src.seereason.com/debian/happs-hsp-template-debian)
+  deb-dir:(darcs:http://code.haskell.org/HSP/harp):(darcs:http://src.seereason.com/debian/harp-debian)
+  quilt:(darcs:http://src.seereason.com/haskell-src-exts):(darcs:http://src.seereason.com/quilt/haskell-src-exts-quilt)
+  deb-dir:(darcs:http://code.haskell.org/HSP/hjavascript):(darcs:http://src.seereason.com/debian/hjavascript-debian)
+  deb-dir:(darcs:http://code.haskell.org/HSP/hjscript):(darcs:http://src.seereason.com/debian/hjscript-debian)
+  deb-dir:(darcs:http://src.seereason.com/HSP/hsp):(darcs:http://src.seereason.com/debian/hsp-debian)
+  deb-dir:(darcs:http://code.haskell.org/HSP/hsx-xhtml):(darcs:http://src.seereason.com/debian/hsx-xhtml-debian)
+  darcs:http://src.seereason.com/HSP/hsx
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/RJson/0.3.5/RJson-0.3.5.tar.gz:e69c34b295e067c169a15fc5327a9dd9):(darcs:http://src.seereason.com/debian/RJson-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/iconv/0.4/iconv-0.4.tar.gz:aef0c565f20297e29e34a5385f40be95):(darcs:http://src.seereason.com/debian/iconv-debian)
+  darcs:http://src.seereason.com/HAppS/syb-with-class
+  darcs:http://src.seereason.com/HAppS/HAppS-Data
+  darcs:http://src.seereason.com/HAppS/HAppS-IxSet
+  darcs:http://src.seereason.com/HAppS/HAppS-Server
+  darcs:http://src.seereason.com/HAppS/HAppS-State
+  darcs:http://src.seereason.com/HAppS/HAppS-Util
+  darcs:http://src.seereason.com/HAppS/HAppS-Extra
+Comment:
+  Our haskell-src-exts repo is this one up to 11 oct 2008.
+  quilt:(darcs:http://code.haskell.org/HSP/haskell-src-exts):(darcs:http://src.seereason.com/quilt/haskell-src-exts-quilt)
+
+
+Name: ghc-extra
+Comment: Please keep targets alphabetized by source package name!
+Use: relax
+Use: hsp
+Targets:
+  apt:sid:alex
+  apt:sid:bnfc
+  deb-dir:(darcs:http://darcs.haskell.org/crypto):(darcs:http://src.seereason.com/debian/haskell-crypto-debian)
+  apt:sid:darcs
+  apt:sid:darcs-monitor
+  apt:sid:drift
+  darcs:http://src.seereason.com/frisby
+  apt:sid:frown
+  darcs:http://www.n-heptane.com/nhlab/repos/haskell-agi
+  quilt:(apt:hardy:haskell-binary):(darcs:http://src.seereason.com/quilt/haskell-binary-quilt)
+  apt:sid:haskell-doc
+  quilt:(apt:sid:haskell-edison):(darcs:http://src.seereason.com/quilt/edison-quilt)
+  apt:sid:haskell-hlist
+  quilt:(apt:sid:haskell-http):(darcs:http://src.seereason.com/quilt/haskell-http-quilt)
+  quilt:(apt:sid:haskell-utf8-string):(darcs:http://src.seereason.com/quilt/haskell-utf8-string-quilt)
+  apt:sid:haskell-mode
+  apt:sid:haskell-uulib
+  apt:sid:helium
+  apt:hardy:hmake
+  quilt:(apt:sid:hslogger):(darcs:http://src.seereason.com/quilt/hslogger-quilt)
+  quilt:(apt:sid:ldap-haskell):(darcs:http://src.seereason.com/quilt/ldap-haskell-quilt)
+  apt:sid:lhs2tex
+  quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/quilt/magic-haskell-quilt)
+  quilt:(apt:sid:pandoc):(darcs:http://src.seereason.com/quilt/pandoc-quilt)
+  apt:sid:uuagc
+  apt:sid:whitespace
+  sourcedeb:darcs:http://src.seereason.com/haskell-wordnet
+  quilt:(apt:sid:xmonad):(darcs:http://src.seereason.com/quilt/xmonad-quilt)
+Comment: Disabled targets
+  apt:sid:darcs
+    Requires debhelper (>= 7)
+
+Name: ghc-extra-needs-docarch-fix
+Targets:
+  apt:sid:haskelldb
+  apt:hardy:haskell-hsql
+  apt:hardy:haskell-hsql-mysql
+  apt:hardy:haskell-hsql-odbc
+  apt:sid:haskell-hsql-postgresql
+  apt:hardy:haskell-hsql-sqlite3
+  apt:sid:c2hs
+
+Name: ghc-extra-needs-patch
+Targets:
+  apt:sid:washngo
+  apt:sid:ftphs
+  apt:sid:haskell-anydbm
+  apt:sid:haskell-configfile
+  apt:sid:haskell-hsh
+  apt:sid:listlike
+  quilt:(apt:sid:missingh):(darcs:http://src.seereason.com/quilt/missingh-quilt)
+  apt:sid:gtkrsync
+  quilt:(apt:sid:gtk2hs):(darcs:http://src.seereason.com/quilt/gtk2hs-quilt)
+  apt:sid:arch2darcs
+  apt:sid:hg-buildpackage
+  apt:sid:srcinst
+  apt:sid:dfsbuild
+  apt:sid:darcs-buildpackage
+  apt:sid:hat
+Comment:
+  gtkrsync depends on gtk2hs
+  arch2darcs depends on missingh
+  darcs-buildpackage depends on missingh and haskell-configfile
+  dfsbuild depends on missingh, haskell-configfile, haskell-hsh
+  hg-buildpackage depends on 
+  srcinst depends on 
+
+Name: uniplate
+Targets:
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/uniplate/1.2.0.1/uniplate-1.2.0.1.tar.gz:563aea2e596b0a336d401918ba6febea):(darcs:http://src.seereason.com/debian/uniplate-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/i18n/0.3/i18n-0.3.tar.gz:e59445b4ad743ab77c61a281cf942bbf):(darcs:http://src.seereason.com/debian/i18n-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/regex-pcre-builtin/0.94.2.0.7.7/regex-pcre-builtin-0.94.2.0.7.7.tar.gz:1e7f7ca729d344caa20c8f57d18239dd):(darcs:http://src.seereason.com/debian/regex-pcre-builtin-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/stb-image/0.1.1/stb-image-0.1.1.tar.gz:9e8ac1305c60e13d04359744976e402a):(darcs:http://src.seereason.com/debian/stb-image-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/gd/3000.4.0/gd-3000.4.0.tar.gz:7bc5bb68638b807d592aba433beb3fa5):(darcs:http://src.seereason.com/debian/haskell-gd-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/cabal-install/0.5.2/cabal-install-0.5.2.tar.gz:e479dc3add14c8678bb808a8bd5517ae):(darcs:http://src.seereason.com/debian/cabal-install-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/CC-delcont/0.2/CC-delcont-0.2.tar.gz:e52149fca9bf76330a7c159917152790):(darcs:http://src.seereason.com/debian/CC-delcont-debian)
+
+Name: ghc-hackage
+Comment: Not in active use, just exploring.
+Comment: Please keep targets alphabetized by source package name!
+Use: relax
+Targets:
+  deb-dir:(darcs:http://code.haskell.org/checkers):(darcs:http://src.seereason.com/debian/checkers-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/MemoTrie/0.0/MemoTrie-0.0.tar.gz):(darcs:http://src.seereason.com/debian/MemoTrie-debian)
+  deb-dir:(darcs:http://darcs.haskell.org/packages/TypeCompose):(darcs:http://src.seereason.com/debian/TypeCompose-debian)
+
+Name: ghc-broken
+Comment: These targets currently do not build
+Use: relax
+Targets:
+  deb-dir:(darcs:http://code.haskell.org/vector-space):(darcs:http://src.seereason.com/debian/vector-space-debian)
+  apt:sid:ghc-cvs
+  apt:sid:haskell98-report
+  quilt:(apt:sid:hdbc):(darcs:http://src.seereason.com/quilt/hdbc-quilt)
+  apt:sid:hdbc-missingh
+  apt:sid:hdbc-odbc
+  apt:sid:hdbc-postgresql
+  apt:sid:hdbc-sqlite3
+  apt:sid:hpodder
+  quilt:(darcs:http://code.haskell.org/encoding):(darcs:file:///home/david/darcs/haskell-encoding)	- Patches won't apply:
+  apt:sid:hdbc-missingh		- Depends on ghc6 (<< 6.6+) or (<< 6.6-999)
+  apt:sid:helium		- Failed due to failure of uuagc
+  apt:sid:kaya			- Error parsing build depends (unexpected #):
+  apt:sid:missingpy		- Disabled due to flaw in the autobuilder's build dependency parser:
+  apt:sid:uuagc			- missing dependency on uulib
+
+Name: yhc-targets
+Targets:
+  sourcedeb:tla:dsf@foxthompson.net--2004/haskell-binary--dsf--0.3.0
+  tla:dsf@foxthompson.net--2004/hxt--dsf--7.0
+  sourcedeb:tla:dsf@foxthompson.net--2004/cpphs--dsf--1.3
+  quilt:(apt:feisty:haskell-http):(tla:dsf@foxthompson.net--2004/haskell-http-quilt--dsf--0)
+  sourcedeb:tla:dsf@foxthompson.net--2004/yhc--dsf--0.7.0
+
+Name: kernel-targets
+Targets:
+  apt:gutsy:linux-source-2.6.22
+  apt:gutsy:linux-meta
+  quilt:(apt:gutsy:linux-restricted-modules-2.6.22):(tla:tos@linspire.com--skipjack/linux-restricted-modules-quilt--ubuntu--0)
+Comment: Here are some more proposed targets
+  tla:tos@linspire.com--skipjack/forward-oss-kernel-module--cnr--20070605
+  tla:tos@linspire.com--skipjack/forward-oss--build-skipjack--0.3
+  quilt:(apt:${base}:bcm43xx-fwcutter):(tla:tos@linspire.com--skipjack/bcm43xx-fwcutter-quilt--cnr--0)
+
+Name: devel-targets
+Targets:
+  darcs:http://src.seereason.com/tree-widget
+  quilt:(apt:sid:xtla):(darcs:http://src.seereason.com/xtla-quilt)
+  remove this

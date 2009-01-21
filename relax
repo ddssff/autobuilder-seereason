@@ -1,0 +1,89 @@
+Name: relax
+Comment: This file contains hints about where to break build dependency cycles.
+  All such cycles must be broken, or the autobuilder will exit with a message
+  explaining the cycle and suggesting ways to break it.  A line like
+  .
+	Relax-Depends: BINARYPACKAGE SOURCEPACKAGE
+  .
+  means that even if the source package has a build dependency on the binary package,
+  a new version of that binary package will not trigger a rebuild of the source package.
+  If the source package name is omitted it means that binary package will never trigger
+  a rebuild of any package.
+Use: relax-self
+Use: relax-core
+Use: relax-ghc6
+Use: relax-cabal-debian
+Relax-Depends: haskell-devscripts
+
+Name: relax-cabal-debian
+Comment: Avoid rebuilding cabal-debian and the libraries used to build it.
+Relax-Depends: cabal-debian haskell-debian
+Relax-Depends: cabal-debian haskell-extra
+Relax-Depends: cabal-debian haskell-cabal
+Relax-Depends: cabal-debian haskell-ghc-paths
+Relax-Depends: libghc6-debian-dev haskell-cabal-debian
+Relax-Depends: libghc6-debian-prof haskell-cabal-debian
+Relax-Depends: libghc6-debian-doc haskell-cabal-debian
+
+Name: relax-ghc6
+Comment: These lines are used for a normal rebuild of the ghc complex.  They won't work
+  for building a new and incompatible version of haddock.
+Relax-Depends: libghc6-ghc-paths-prof haskell-haddock
+Relax-Depends: haddock haskell-haddock
+Relax-Depends: ghc6 haskell-haddock
+Relax-Depends: ghc6-prof haskell-haddock
+Relax-Depends: ghc6-doc haskell-haddock
+Relax-Depends: haskell-devscripts-cdbs haskell-haddock
+Relax-Depends: ghc6 hscolour
+Relax-Depends: xsltproc ghc6
+
+Name: relax-ghc6-bootstrap
+Comment: achieve this build order:
+	cabal -> ghc-paths -> haddock -> hscolour -> ghc6 -> ...
+    We need all the documentation files to be produced by the same version
+    of haddock, starting with the ones in ghc.  However, in order to build
+    haddock and ghc we currently need to build the cabal and ghc-paths libraries,
+    and we need the cabal-debian tool to build ghc-paths.  There are many cycles
+    in the build dependencies of this package complex, and the following rules
+    are used to achieve the bootstrapping order.  Once we have a working repository
+    we can use relax-ghc682 instead of this.
+Relax-Depends: haddock haskell-cabal
+Relax-Depends: ghc6 haskell-cabal
+Relax-Depends: ghc6-prof haskell-cabal
+Relax-Depends: ghc6-doc haskell-cabal
+Relax-Depends: ghc6 haskell-ghc-paths
+Relax-Depends: ghc6-prof haskell-ghc-paths
+Relax-Depends: ghc6-doc haskell-ghc-paths
+Relax-Depends: ghc6 haskell-haddock
+Relax-Depends: ghc6-prof haskell-haddock
+Relax-Depends: ghc6-doc haskell-haddock
+
+Name: relax-self
+Comment: Self-dependencies must always be ignored.  If they aren't these targets will build
+	 on every run, and there is no question of where the cycle should be broken, as the
+	 cycle has only one arc.  FIXME: The autobuilder should make this happen automatically.
+Relax-Depends: haddock haskell-haddock
+Relax-Depends: happy happy
+Relax-Depends: ghc6 ghc6
+
+Name: relax-core
+Comment: These rules prevent rebuilds due to core packages that are always dependencies of
+	 everything, but rarely actually affect that build.  They can affect the build,
+	 but nobody else recompiles the world when a new bash is released, so neither do we.
+Relax-Depends: base-files
+Relax-Depends: bash
+Relax-Depends: bsdutils
+Relax-Depends: devscripts
+Relax-Depends: dpkg
+Relax-Depends: dpkg-dev
+Relax-Depends: gcc
+Relax-Depends: g++
+Relax-Depends: make
+Relax-Depends: mount
+Relax-Depends: base-passwd
+Relax-Depends: mktemp
+Relax-Depends: sed
+Relax-Depends: util-linux
+Relax-Depends: g++
+Relax-Depends: make
+Relax-Depends: sysvinit-utils

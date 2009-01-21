@@ -1,0 +1,42 @@
+Comment:
+  Definitions for building packages for Debian Sid.
+
+Name: sid-common
+Use: debian-common
+
+Name: sid-build
+Let: base=sid
+Use: debian-build
+Use: sid-common
+Use: sid-local
+Extra-Essential: perl-modules
+
+Name: sid-sources
+Sources: sid
+ deb http://${debian-mirror-host}/debian sid main contrib non-free
+ deb-src http://${debian-mirror-host}/debian sid main contrib non-free
+Comment:
+ This is how we would use the snapshot server:
+ Let: debian-mirror-host=snapshot.debian.net/archive/2006/09/09
+
+Name: sid-seereason-sources
+Sources: sid-seereason
+ deb http://${debian-mirror-host}/debian sid main contrib non-free
+ deb-src http://${debian-mirror-host}/debian sid main contrib non-free
+ deb http://deb.seereason.com/debian sid-seereason main
+ deb-src http://deb.seereason.com/debian sid-seereason main
+
+Name: sid-ghc682
+Use: ghc682
+Use: sid-build
+
+Name: sid-extra
+Use: sid-build
+Use: autobuilder-targets
+Use: yhc-targets
+Comment:
+ Use: kernel-targets
+
+Name: sid-autobuilder
+Use: autobuilder-targets
+Use: sid-build

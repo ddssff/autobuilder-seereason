@@ -1,0 +1,42 @@
+Name: sarge-common
+Let: base=sarge
+Use: debian-common
+
+Name: sarge-ghc68-common
+Use: ubuntu-common
+Let: base=sarge
+
+Name: sarge-build
+Use: debian-build
+Use: sarge-common
+Use: sarge-local
+
+Name: sarge-ghc68-build
+Use: debian-build
+Use: sarge-common
+Use: sarge-local
+
+Name: sarge-sources
+Sources: sarge
+ deb http://${debian-mirror-host}/debian sarge main contrib non-free
+ deb-src http://${debian-mirror-host}/debian sarge main contrib non-free
+
+Comment:
+ It is not possible to build these targets due to circular versioned
+ build dependencies.  Therefore, the autobuilder cannot be self-hosting.
+
+Name: sarge-extra
+Use: sarge-build
+Targets:
+ apt:etch:ghc6
+ apt:etch:haskell-devscripts
+ apt:etch:hugs98
+ apt:etch:haddock
+ apt:etch:dctrl-tools
+ apt:etch:dpkg
+ apt:etch:debhelper
+ apt:etch:make-dfsg
+ apt:etch:po4a
+ apt:etch:libselinux
+ apt:etch:libsepol
+ apt:etch:python-defaults

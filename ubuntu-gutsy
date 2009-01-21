@@ -1,0 +1,43 @@
+Comment:
+  Definitions for building packages for Ubuntu Gutsy. 
+
+Name: gutsy-common
+Use: ubuntu-common
+Let: base=gutsy
+
+Name: gutsy-build
+Use: ubuntu-build
+Use: gutsy-common
+Use: gutsy-local
+Extra-Essential: belocs-locales-bin
+
+Name: gutsy-sources
+Sources: gutsy
+  deb http://${ubuntu-mirror-host}/ubuntu/ gutsy main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ gutsy main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ gutsy-updates main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ gutsy-updates main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ gutsy-backports main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ gutsy-backports main restricted universe multiverse
+  deb http://${ubuntu-security-mirror-host}/ubuntu/ gutsy-security main restricted universe multiverse
+  deb-src http://${ubuntu-security-mirror-host}/ubuntu/ gutsy-security main restricted universe multiverse
+
+Name: gutsy-ghc682
+Use: ghc682
+Use: gutsy-build
+
+Name: gutsy-autobuilder
+Use: autobuilder-targets
+Use: gutsy-build
+
+Name: gutsy-ghc-base
+Use: ghc-base
+Use: gutsy-build
+
+Name: gutsy-ghc-libs
+Use: ghc-libs
+Use: gutsy-build
+
+Name: gutsy-yhc
+Use: yhc-targets
+Use: gutsy-build

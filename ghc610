@@ -1,0 +1,308 @@
+Name: ghc610
+Use: relax
+Relax-Depends: haddock ghc6
+Relax-Depends: hscolour ghc6
+Relax-Depends: libghc6-ghc-paths-prof haskell-haddock
+Relax-Depends: cabal-debian haskell-cabal
+Relax-Depends: haskell-devscripts-cdbs ghc6
+Relax-Depends: happy happy
+Targets:
+  quilt:(apt:sid:haskell-utils):(darcs:http://src.seereason.com/ghc610/quilt/haskell-utils-quilt)
+  quilt:(uri:http://ftp.de.debian.org/debian/pool/main/h/haskell-devscripts/haskell-devscripts_0.6.15.tar.gz:996acac2c6fb2da2be9c5016f93a3c67):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)
+  deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.1/ghc-6.10.1-src.tar.bz2:54c676a632b3d73cf526b06347522c32):(darcs:http://src.seereason.com/ghc610/debian/ghc610-debian)
+  quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/ghc610/quilt/haxml-quilt)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.5.0.0/bzlib-0.5.0.0.tar.gz:ab594aaf9998ed602f8b23dd25199e19):(darcs:http://src.seereason.com/ghc610/debian/haskell-bzlib-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/zlib/0.5.0.0/zlib-0.5.0.0.tar.gz:22fa6d394c42c8584b234799b923f860):(darcs:http://src.seereason.com/ghc610/debian/haskell-zlib-debian)
+  quilt:(apt:sid:haskell-haskell-src):(darcs:http://src.seereason.com/ghc610/quilt/haskell-src-quilt)
+  darcs:http://src.seereason.com/ghc610/haskell-unixutils
+  darcs:http://src.seereason.com/ghc610/haskell-extra
+  darcs:http://src.seereason.com/ghc610/haskell-debian-3
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/applicative-extras/0.1.3/applicative-extras-0.1.3.tar.gz:50fa4c61e89654ea9858c304b4682680):(darcs:http://src.seereason.com/ghc610/debian/applicative-extras-debian)
+  darcs:http://src.seereason.com/ghc610/formlets
+  darcs:http://src.seereason.com/happs-hsp-formlets
+  darcs:http://src.seereason.com/ghc610/build-env
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/cgi/3001.1.7.1/cgi-3001.1.7.1.tar.gz:02b1d2fe6f271a17c1eb8b897fbd1d7f):(darcs:http://src.seereason.com/ghc610/debian/haskell-cgi-debian)
+  darcs:http://src.seereason.com/ghc610/autobuilder
+  quilt:(apt:hardy:haskell-binary):(darcs:http://src.seereason.com/ghc610/quilt/haskell-binary-quilt)
+  darcs:http://src.seereason.com/ghc610/haskell-mime
+  darcs:http://src.seereason.com/haskell-help
+  darcs:http://src.seereason.com/tree-widget
+  quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc610/quilt/magic-haskell-quilt)
+  deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/ghc610/debian/hinotify-debian)
+  quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/quilt/hs-plugins-quilt)
+  quilt:(apt:sid:haskell-hspread):(darcs:http://src.seereason.com/ghc610/quilt/haskell-hspread-quilt)
+  quilt:(apt:sid:haskell-utf8-string):(darcs:http://src.seereason.com/ghc610/quilt/haskell-utf8-string-quilt)
+  deb-dir:(darcs:http://src.seereason.com/HSP/happs-hsp-template):(darcs:http://src.seereason.com/debian/happs-hsp-template-debian)
+  quilt:(apt:sid:happy):(darcs:http://src.seereason.com/ghc610/quilt/happy-quilt)
+  quilt:(darcs:http://src.seereason.com/haskell-src-exts):(darcs:http://src.seereason.com/ghc610/quilt/haskell-src-exts-quilt)
+  deb-dir:(darcs:http://src.seereason.com/HSP/hsp):(darcs:http://src.seereason.com/debian/hsp-debian)
+  darcs:http://src.seereason.com/ghc610/HSP/hsx
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/RJson/0.3.5/RJson-0.3.5.tar.gz:e69c34b295e067c169a15fc5327a9dd9):(darcs:http://src.seereason.com/ghc610/debian/RJson-debian)
+  darcs:http://src.seereason.com/ghc610/iconv
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/hslogger/1.0.7/hslogger-1.0.7.tar.gz:74ff79b2abfec7e24b96925f06112c9f):(darcs:http://src.seereason.com/ghc610/debian/hslogger-debian)
+  darcs:http://src.seereason.com/ghc610/syb-with-class
+  darcs:http://src.seereason.com/ghc610/HAppS-Util
+  darcs:http://src.seereason.com/ghc610/HAppS-Data
+  darcs:http://src.seereason.com/ghc610/HAppS-IxSet
+  darcs:http://src.seereason.com/ghc610/HAppS-Server
+  darcs:http://src.seereason.com/ghc610/HAppS-State
+  darcs:http://src.seereason.com/ghc610/HAppS-Extra
+Comment: 
+  deb-dir:(darcs:http://code.haskell.org/HSP/harp):(darcs:http://src.seereason.com/debian/harp-debian)
+    - server code.haskell.org down
+  deb-dir:(darcs:http://code.haskell.org/HSP/hjavascript):(darcs:http://src.seereason.com/debian/hjavascript-debian)
+    - server code.haskell.org down
+  deb-dir:(darcs:http://code.haskell.org/HSP/hjscript):(darcs:http://src.seereason.com/debian/hjscript-debian)
+    - server code.haskell.org down
+  deb-dir:(darcs:http://code.haskell.org/HSP/hsx-xhtml):(darcs:http://src.seereason.com/debian/hsx-xhtml-debian)
+    - server code.haskell.org down
+
+Name: ghc-core
+Comment: ghc6 version 6.8.2-2 will not build on etch due to a dependency on a newer gcc
+	 The version in Ubuntu (6.8.2-1ubuntu1) will.
+Comment: Please keep targets alphabetized by source package name!
+Targets:
+  apt:sid:cpphs
+  quilt:(apt:sid:haskell-alut):(darcs:http://src.seereason.com/quilt/haskell-alut-quilt)
+  quilt:(apt:sid:haskell-arrows):(darcs:http://src.seereason.com/quilt/haskell-arrows-quilt)
+  quilt:(apt:sid:haskell-cgi):(darcs:http://src.seereason.com/quilt/haskell-cgi-quilt)
+  darcs:http://src.seereason.com/haskell-devscripts-cdbs
+  quilt:(apt:sid:haskell-fgl):(darcs:http://src.seereason.com/quilt/haskell-fgl-quilt)
+  quilt:(apt:sid:haskell-glut):(darcs:http://src.seereason.com/quilt/haskell-glut-quilt)
+  quilt:(apt:sid:haskell-hgl):(darcs:http://src.seereason.com/quilt/haskell-hgl-quilt)
+  quilt:(apt:sid:haskell-html):(darcs:http://src.seereason.com/quilt/haskell-html-quilt)
+  quilt:(apt:sid:haskell-hunit):(darcs:http://src.seereason.com/quilt/haskell-hunit-quilt)
+  quilt:(apt:sid:haskell-mtl):(darcs:http://src.seereason.com/quilt/haskell-mtl-quilt)
+  quilt:(apt:sid:haskell-network):(darcs:http://src.seereason.com/quilt/haskell-network-quilt)
+  quilt:(apt:sid:haskell-openal):(darcs:http://src.seereason.com/quilt/haskell-openal-quilt)
+  quilt:(apt:sid:haskell-opengl):(darcs:http://src.seereason.com/quilt/haskell-opengl-quilt)
+  quilt:(apt:sid:haskell-parallel):(darcs:http://src.seereason.com/quilt/haskell-parallel-quilt)
+  quilt:(apt:sid:haskell-parsec):(darcs:http://src.seereason.com/quilt/haskell-parsec-quilt)
+  quilt:(apt:sid:haskell-quickcheck):(darcs:http://src.seereason.com/quilt/haskell-quickcheck-quilt)
+  quilt:(apt:sid:haskell-regex-base):(darcs:http://src.seereason.com/quilt/haskell-regex-base-quilt)
+  quilt:(apt:sid:haskell-regex-compat):(darcs:http://src.seereason.com/quilt/haskell-regex-compat-quilt)
+  quilt:(apt:sid:haskell-regex-posix):(darcs:http://src.seereason.com/quilt/haskell-regex-posix-quilt)
+  quilt:(apt:sid:haskell-stm):(darcs:http://src.seereason.com/quilt/haskell-stm-quilt)
+  quilt:(apt:sid:haskell-stream):(darcs:http://src.seereason.com/quilt/haskell-stream-quilt)
+  quilt:(apt:sid:haskell-time):(darcs:http://src.seereason.com/quilt/haskell-time-quilt)
+  quilt:(apt:sid:haskell-x11):(darcs:http://src.seereason.com/quilt/haskell-x11-quilt)
+  quilt:(apt:sid:haskell-xhtml):(darcs:http://src.seereason.com/quilt/haskell-xhtml-quilt)
+  quilt:(darcs:http://www.cs.york.ac.uk/fp/darcs/hscolour):(darcs:http://src.seereason.com/quilt/hscolour-quilt)
+Comment:
+  sourcedeb:file:///home/david/darcs/haddock-source-deb
+Comment: No longer required, all patches moved to haskell-devscripts-cdbs, 
+	 But it needs to be built in order to build haskell-devscripts-cdbs
+	 until a new version of haskell-devscripts comes out to trump all the
+	 versions we already uploaded.
+  quilt:(svn:svn://svn.debian.org/svn/pkg-haskell/packages/haskell-devscripts/trunk):(darcs:http://src.seereason.com/quilt/haskell-devscripts-quilt)
+
+Name: seereason-targets
+Comment: Some targets are duplicates of targets in haskell-extra
+Use: relax
+Use: cabal-debian-targets
+Targets:
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/applicative-extras/0.1.3/applicative-extras-0.1.3.tar.gz:50fa4c61e89654ea9858c304b4682680):(darcs:http://src.seereason.com/debian/applicative-extras-debian)
+  darcs:http://src.seereason.com/formlets
+  darcs:http://src.seereason.com/happs-hsp-formlets
+  darcs:http://src.seereason.com/haskell-ugly
+  darcs:http://src.seereason.com/build-env
+  darcs:http://src.seereason.com/autobuilder
+  darcs:http://src.seereason.com/haskell-mime
+  darcs:http://src.seereason.com/haskell-help
+  darcs:http://src.seereason.com/tree-widget
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac/0.9.1/Shellac-0.9.1.tar.gz:0a563883b3acedb9c0d4308b44772f0f):(darcs:http://src.seereason.com/debian/shellac-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac-readline/0.9/Shellac-readline-0.9.tar.gz:ffea10846cc5f40b84d6a4fe97c35ec9):(darcs:http://src.seereason.com/debian/shellac-readline-debian)
+  darcs:http://src.seereason.com/decimal
+  darcs:http://src.seereason.com/vc-darcs
+  darcs:http://src.seereason.com/mirror
+  darcs:http://src.seereason.com/backups
+Comment: This is not really useful any more
+  apt:sid:hugs98
+Comment: Missing build deps under lenny
+  quilt:(apt:sid:xtla):(darcs:http://src.seereason.com/xtla-quilt)
+Comment: haskell-cgi depends on xhtml
+Comment:
+  We need the latest hugs because haskell-unixutils builds a hugs library.
+  Unfortunately, the lastest version still doesn't include System.Posix.Files,
+  so I am disabling the hugs library in haskell-unixutils.
+Comment: Probably don't need these
+  proc:apt:gutsy:neko
+  proc:apt:gutsy:haxe
+
+Name: cabal-debian-targets
+Comment:
+  We need to build cabal-debian in order to bootstrap a new ghc.
+Relax-Depends: cabal-debian haskell-extra
+Targets:
+  darcs:http://src.seereason.com/cabal-debian
+  darcs:http://src.seereason.com/haskell-debian-3
+  darcs:http://src.seereason.com/haskell-unixutils
+  darcs:http://src.seereason.com/haskell-extra
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.4.0.1/bzlib-0.4.0.1.tar.gz:b6a7612c10f785e2ec615dcc2e87004b):(darcs:http://src.seereason.com/debian/haskell-bzlib-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/zlib/0.4.0.1/zlib-0.4.0.1.tar.gz:2eacb65c040975ab76453bc5e82c6b7c):(darcs:http://src.seereason.com/debian/haskell-zlib-debian)
+  quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/quilt/haxml-quilt)
+Comment:
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/cabal-install/0.5.2/cabal-install-0.5.2.tar.gz:e479dc3add14c8678bb808a8bd5517ae):(darcs:http://src.seereason.com/debian/cabal-install-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/colour/1.0.0/colour-1.0.0.tar.gz:97b0802abbf3a71a3606642850fe46c7):(darcs:http://src.seereason.com/debian/colour-debian)
+
+Name: hsp
+Use: relax
+Targets:
+  deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/debian/hinotify-debian)
+  quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/quilt/hs-plugins-quilt)
+  quilt:(apt:sid:haskell-hspread):(darcs:http://src.seereason.com/quilt/haskell-hspread-quilt)
+  deb-dir:(darcs:http://src.seereason.com/HSP/happs-hsp-template):(darcs:http://src.seereason.com/debian/happs-hsp-template-debian)
+  deb-dir:(darcs:http://code.haskell.org/HSP/harp):(darcs:http://src.seereason.com/debian/harp-debian)
+  quilt:(darcs:http://src.seereason.com/haskell-src-exts):(darcs:http://src.seereason.com/quilt/haskell-src-exts-quilt)
+  deb-dir:(darcs:http://code.haskell.org/HSP/hjavascript):(darcs:http://src.seereason.com/debian/hjavascript-debian)
+  deb-dir:(darcs:http://code.haskell.org/HSP/hjscript):(darcs:http://src.seereason.com/debian/hjscript-debian)
+  deb-dir:(darcs:http://src.seereason.com/HSP/hsp):(darcs:http://src.seereason.com/debian/hsp-debian)
+  deb-dir:(darcs:http://code.haskell.org/HSP/hsx-xhtml):(darcs:http://src.seereason.com/debian/hsx-xhtml-debian)
+  darcs:http://src.seereason.com/ghc610/HSP/hsx
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/RJson/0.3.5/RJson-0.3.5.tar.gz:e69c34b295e067c169a15fc5327a9dd9):(darcs:http://src.seereason.com/debian/RJson-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/iconv/0.4/iconv-0.4.tar.gz:aef0c565f20297e29e34a5385f40be95):(darcs:http://src.seereason.com/debian/iconv-debian)
+  darcs:http://src.seereason.com/HAppS/syb-with-class
+  darcs:http://src.seereason.com/HAppS/HAppS-Data
+  darcs:http://src.seereason.com/HAppS/HAppS-IxSet
+  darcs:http://src.seereason.com/HAppS/HAppS-Server
+  darcs:http://src.seereason.com/HAppS/HAppS-State
+  darcs:http://src.seereason.com/HAppS/HAppS-Util
+  darcs:http://src.seereason.com/HAppS/HAppS-Extra
+Comment:
+  Our haskell-src-exts repo is this one up to 11 oct 2008.
+  quilt:(darcs:http://code.haskell.org/HSP/haskell-src-exts):(darcs:http://src.seereason.com/quilt/haskell-src-exts-quilt)
+
+Name: ghc-extra
+Comment: Please keep targets alphabetized by source package name!
+Use: relax
+Use: hsp
+Targets:
+  apt:sid:alex
+  apt:sid:bnfc
+  deb-dir:(darcs:http://darcs.haskell.org/crypto):(darcs:http://src.seereason.com/debian/haskell-crypto-debian)
+  apt:sid:darcs
+  apt:sid:darcs-monitor
+  apt:sid:drift
+  darcs:http://src.seereason.com/frisby
+  apt:sid:frown
+  darcs:http://www.n-heptane.com/nhlab/repos/haskell-agi
+  quilt:(apt:hardy:haskell-binary):(darcs:http://src.seereason.com/quilt/haskell-binary-quilt)
+  apt:sid:haskell-doc
+  quilt:(apt:sid:haskell-edison):(darcs:http://src.seereason.com/quilt/edison-quilt)
+  apt:sid:haskell-hlist
+  quilt:(apt:sid:haskell-http):(darcs:http://src.seereason.com/quilt/haskell-http-quilt)
+  apt:sid:haskell-mode
+  apt:sid:haskell-uulib
+  apt:sid:helium
+  apt:hardy:hmake
+  quilt:(apt:sid:hslogger):(darcs:http://src.seereason.com/quilt/hslogger-quilt)
+  quilt:(apt:sid:ldap-haskell):(darcs:http://src.seereason.com/quilt/ldap-haskell-quilt)
+  apt:sid:lhs2tex
+  quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/quilt/magic-haskell-quilt)
+  quilt:(apt:sid:pandoc):(darcs:http://src.seereason.com/quilt/pandoc-quilt)
+  apt:sid:uuagc
+  apt:sid:whitespace
+  sourcedeb:darcs:http://src.seereason.com/haskell-wordnet
+  quilt:(apt:sid:xmonad):(darcs:http://src.seereason.com/quilt/xmonad-quilt)
+
+Name: uniplate
+Targets:
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/uniplate/1.2.0.1/uniplate-1.2.0.1.tar.gz:563aea2e596b0a336d401918ba6febea):(darcs:http://src.seereason.com/debian/uniplate-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/i18n/0.3/i18n-0.3.tar.gz:e59445b4ad743ab77c61a281cf942bbf):(darcs:http://src.seereason.com/debian/i18n-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/regex-pcre-builtin/0.94.2.0.7.7/regex-pcre-builtin-0.94.2.0.7.7.tar.gz:1e7f7ca729d344caa20c8f57d18239dd):(darcs:http://src.seereason.com/debian/regex-pcre-builtin-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/stb-image/0.1.1/stb-image-0.1.1.tar.gz:9e8ac1305c60e13d04359744976e402a):(darcs:http://src.seereason.com/debian/stb-image-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/gd/3000.4.0/gd-3000.4.0.tar.gz:7bc5bb68638b807d592aba433beb3fa5):(darcs:http://src.seereason.com/debian/haskell-gd-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/cabal-install/0.5.2/cabal-install-0.5.2.tar.gz:e479dc3add14c8678bb808a8bd5517ae):(darcs:http://src.seereason.com/debian/cabal-install-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/CC-delcont/0.2/CC-delcont-0.2.tar.gz:e52149fca9bf76330a7c159917152790):(darcs:http://src.seereason.com/debian/CC-delcont-debian)
+
+Name: ghc-hackage
+Comment: Not in active use, just exploring.
+Comment: Please keep targets alphabetized by source package name!
+Use: relax
+Targets:
+  deb-dir:(darcs:http://code.haskell.org/checkers):(darcs:http://src.seereason.com/debian/checkers-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/MemoTrie/0.0/MemoTrie-0.0.tar.gz):(darcs:http://src.seereason.com/debian/MemoTrie-debian)
+  deb-dir:(darcs:http://darcs.haskell.org/packages/TypeCompose):(darcs:http://src.seereason.com/debian/TypeCompose-debian)
+
+Name: ghc-broken
+Comment:
+  apt:sid:haskelldb
+    - Needs doc architecture fix
+  apt:hardy:haskell-hsql
+    - Needs doc architecture fix
+  apt:hardy:haskell-hsql-mysql
+    - Needs doc architecture fix
+  apt:hardy:haskell-hsql-odbc
+    - Needs doc architecture fix
+  apt:sid:haskell-hsql-postgresql
+    - Needs doc architecture fix
+  apt:hardy:haskell-hsql-sqlite3
+    - Needs doc architecture fix
+  apt:sid:c2hs
+    - Needs doc architecture fix
+  apt:sid:washngo
+    - Needs patch
+  apt:sid:ftphs
+    - Needs patch
+  apt:sid:haskell-anydbm
+    - Needs patch
+  apt:sid:haskell-configfile
+    - Needs patch
+  apt:sid:haskell-hsh
+    - Needs patch
+  apt:sid:listlike
+    - Needs patch
+  quilt:(apt:sid:missingh):(darcs:http://src.seereason.com/quilt/missingh-quilt)
+    - Needs patch
+  apt:sid:gtkrsync
+    - Needs patch
+  quilt:(apt:sid:gtk2hs):(darcs:http://src.seereason.com/quilt/gtk2hs-quilt)
+    - Needs patch
+  apt:sid:arch2darcs
+    - Needs patch
+  apt:sid:hg-buildpackage
+    - Needs patch
+  apt:sid:srcinst
+    - Needs patch
+  apt:sid:dfsbuild
+    - Needs patch
+  apt:sid:darcs-buildpackage
+    - Needs patch
+  apt:sid:hat
+    - Needs patch
+  gtkrsync
+    - depends on gtk2hs
+  arch2darcs
+    - depends on missingh
+  darcs-buildpackage
+    - depends on missingh and haskell-configfile
+  dfsbuild
+    - depends on missingh, haskell-configfile, haskell-hsh
+  hg-buildpackage
+    - depends on ???
+  srcinst
+    - depends on ???
+  deb-dir:(darcs:http://code.haskell.org/vector-space):(darcs:http://src.seereason.com/debian/vector-space-debian)
+    - broken
+  apt:sid:ghc-cvs
+    - broken
+  apt:sid:haskell98-report
+    - broken
+  quilt:(apt:sid:hdbc):(darcs:http://src.seereason.com/quilt/hdbc-quilt)
+    - broken
+  apt:sid:hdbc-odbc
+    - broken
+  apt:sid:hdbc-postgresql
+    - broken
+  apt:sid:hdbc-sqlite3
+    - broken
+  apt:sid:hpodder
+    - broken
+  quilt:(darcs:http://code.haskell.org/encoding):(darcs:file:///home/david/darcs/haskell-encoding)
+    - Patches won't apply:
+  apt:sid:hdbc-missingh
+    - Depends on ghc6 (<< 6.6+) or (<< 6.6-999)
+  apt:sid:kaya
+    - Error parsing build depends (unexpected #):
+  apt:sid:missingpy
+    - Disabled due to flaw in the autobuilder's build dependency parser:
