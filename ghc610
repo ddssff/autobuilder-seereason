@@ -21,7 +21,6 @@ Targets:
   darcs:http://src.seereason.com/ghc610/haskell-debian-3
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/applicative-extras/0.1.3/applicative-extras-0.1.3.tar.gz:50fa4c61e89654ea9858c304b4682680):(darcs:http://src.seereason.com/ghc610/debian/applicative-extras-debian)
   darcs:http://src.seereason.com/ghc610/formlets
-  darcs:http://src.seereason.com/happs-hsp-formlets
   darcs:http://src.seereason.com/ghc610/build-env
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/cgi/3001.1.7.1/cgi-3001.1.7.1.tar.gz:02b1d2fe6f271a17c1eb8b897fbd1d7f):(darcs:http://src.seereason.com/ghc610/debian/haskell-cgi-debian)
   darcs:http://src.seereason.com/ghc610/autobuilder
@@ -35,9 +34,7 @@ Targets:
   quilt:(apt:sid:haskell-utf8-string):(darcs:http://src.seereason.com/ghc610/quilt/haskell-utf8-string-quilt)
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/cpphs/1.6/cpphs-1.6.tar.gz:8a7565ff3b2d7bdb594af4c10c594951):(darcs:http://src.seereason.com/ghc610/debian/cpphs-debian)
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/happy/1.18.2/happy-1.18.2.tar.gz:adb1679a1fa8cec74a6e621a4a277e98):(darcs:http://src.seereason.com/ghc610/debian/happy-debian)
-  quilt:(darcs:http://src.seereason.com/haskell-src-exts):(darcs:http://src.seereason.com/ghc610/quilt/haskell-src-exts-quilt)
-  deb-dir:(darcs:http://src.seereason.com/HSP/hsp):(darcs:http://src.seereason.com/debian/hsp-debian)
-  darcs:http://src.seereason.com/ghc610/HSP/hsx
+  darcs:http://src.seereason.com/ghc610/haskell-src-exts
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/RJson/0.3.5/RJson-0.3.5.tar.gz:e69c34b295e067c169a15fc5327a9dd9):(darcs:http://src.seereason.com/ghc610/debian/RJson-debian)
   darcs:http://src.seereason.com/ghc610/iconv
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/hslogger/1.0.7/hslogger-1.0.7.tar.gz:74ff79b2abfec7e24b96925f06112c9f):(darcs:http://src.seereason.com/ghc610/debian/hslogger-debian)
@@ -48,12 +45,22 @@ Targets:
   darcs:http://src.seereason.com/ghc610/HAppS-IxSet
   darcs:http://src.seereason.com/ghc610/HAppS-State
   darcs:http://src.seereason.com/ghc610/HAppS-Server
-  darcs:http://src.seereason.com/ghc610/HAppS-Extra
-  deb-dir:(darcs:http://code.haskell.org/HSP/harp):(darcs:http://src.seereason.com/debian/harp-debian)
-  deb-dir:(darcs:http://code.haskell.org/HSP/hjavascript):(darcs:http://src.seereason.com/debian/hjavascript-debian)
-  deb-dir:(darcs:http://code.haskell.org/HSP/hjscript):(darcs:http://src.seereason.com/debian/hjscript-debian)
-  deb-dir:(darcs:http://code.haskell.org/HSP/hsx-xhtml):(darcs:http://src.seereason.com/debian/hsx-xhtml-debian)
+  deb-dir:(darcs:http://code.haskell.org/HSP/harp):(darcs:http://src.seereason.com/ghc610/debian/harp-debian)
+  deb-dir:(darcs:http://code.haskell.org/HSP/hjavascript):(darcs:http://src.seereason.com/ghc610/debian/hjavascript-debian)
+  darcs:http://src.seereason.com/ghc610/haskell-cdbs
 Comment: 
+  darcs:http://src.seereason.com/ghc610/HSP/hsx
+    - Illegal type synonym family application in instance: XML m
+  deb-dir:(darcs:http://src.seereason.com/HSP/hsp):(darcs:http://src.seereason.com/debian/hsp-debian)
+    - Depends on hsx
+  darcs:http://src.seereason.com/happs-hsp-formlets
+    - Depends on hsx
+  deb-dir:(darcs:http://code.haskell.org/HSP/hsx-xhtml):(darcs:http://src.seereason.com/ghc610/debian/hsx-xhtml-debian)
+    - Depends on hsx
+  deb-dir:(darcs:http://code.haskell.org/HSP/hjscript):(darcs:http://src.seereason.com/ghc610/debian/hjscript-debian)
+    - Depends on hsx and hjavascript
+  darcs:http://src.seereason.com/ghc610/HAppS-Extra
+    - Depends on hsx, hsp, 
   quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/ghc610/quilt/hs-plugins-quilt)
     - Needs an older cabal
   deb-dir:(darcs:http://src.seereason.com/HSP/happs-hsp-template):(darcs:http://src.seereason.com/debian/happs-hsp-template-debian)
