@@ -73,8 +73,12 @@ Use: ubuntu-local
 Development-Release: yes
 
 Name: debian-local
+Use: public-local-seereason
 Let: upload-repo=debian
-Use: public-local
+
+Name: debian-local-ghc610
+Use: public-local-ghc610
+Let: upload-repo=debian
 
 Name: sarge-local
 Use: debian-local
