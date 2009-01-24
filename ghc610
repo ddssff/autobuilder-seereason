@@ -5,7 +5,7 @@ Relax-Depends: hscolour ghc6
 Relax-Depends: libghc6-ghc-paths-prof haskell-haddock
 Relax-Depends: cabal-debian haskell-cabal
 Relax-Depends: haskell-devscripts-cdbs ghc6
-Relax-Depends: happy happy
+Relax-Depends: happy haskell-happy
 Relax-Depends: cabal-debian haskell-cpphs
 Targets:
   apt:sid:cpphs
