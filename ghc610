@@ -6,7 +6,9 @@ Relax-Depends: libghc6-ghc-paths-prof haskell-haddock
 Relax-Depends: cabal-debian haskell-cabal
 Relax-Depends: haskell-devscripts-cdbs ghc6
 Relax-Depends: happy happy
+Relax-Depends: cabal-debian haskell-cpphs
 Targets:
+  apt:sid:cpphs
   quilt:(apt:sid:haskell-utils):(darcs:http://src.seereason.com/ghc610/quilt/haskell-utils-quilt)
   quilt:(uri:http://ftp.de.debian.org/debian/pool/main/h/haskell-devscripts/haskell-devscripts_0.6.15.tar.gz:996acac2c6fb2da2be9c5016f93a3c67):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)
   deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.1/ghc-6.10.1-src.tar.bz2:54c676a632b3d73cf526b06347522c32):(darcs:http://src.seereason.com/ghc610/debian/ghc610-debian)
@@ -29,33 +31,33 @@ Targets:
   darcs:http://src.seereason.com/tree-widget
   quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc610/quilt/magic-haskell-quilt)
   deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/ghc610/debian/hinotify-debian)
-  quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/quilt/hs-plugins-quilt)
   quilt:(apt:sid:haskell-hspread):(darcs:http://src.seereason.com/ghc610/quilt/haskell-hspread-quilt)
   quilt:(apt:sid:haskell-utf8-string):(darcs:http://src.seereason.com/ghc610/quilt/haskell-utf8-string-quilt)
-  deb-dir:(darcs:http://src.seereason.com/HSP/happs-hsp-template):(darcs:http://src.seereason.com/debian/happs-hsp-template-debian)
-  quilt:(apt:sid:happy):(darcs:http://src.seereason.com/ghc610/quilt/happy-quilt)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/cpphs/1.6/cpphs-1.6.tar.gz:8a7565ff3b2d7bdb594af4c10c594951):(darcs:http://src.seereason.com/ghc610/debian/cpphs-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/happy/1.18.2/happy-1.18.2.tar.gz:adb1679a1fa8cec74a6e621a4a277e98):(darcs:http://src.seereason.com/ghc610/debian/happy-debian)
   quilt:(darcs:http://src.seereason.com/haskell-src-exts):(darcs:http://src.seereason.com/ghc610/quilt/haskell-src-exts-quilt)
   deb-dir:(darcs:http://src.seereason.com/HSP/hsp):(darcs:http://src.seereason.com/debian/hsp-debian)
   darcs:http://src.seereason.com/ghc610/HSP/hsx
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/RJson/0.3.5/RJson-0.3.5.tar.gz:e69c34b295e067c169a15fc5327a9dd9):(darcs:http://src.seereason.com/ghc610/debian/RJson-debian)
   darcs:http://src.seereason.com/ghc610/iconv
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/hslogger/1.0.7/hslogger-1.0.7.tar.gz:74ff79b2abfec7e24b96925f06112c9f):(darcs:http://src.seereason.com/ghc610/debian/hslogger-debian)
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/HTTP/4000.0.4/HTTP-4000.0.4.tar.gz:6526c1ee59cd3aedc7aa380673c80ef1):(darcs:http://src.seereason.com/ghc610/debian/haskell-http-debian)
   darcs:http://src.seereason.com/ghc610/syb-with-class
   darcs:http://src.seereason.com/ghc610/HAppS-Util
   darcs:http://src.seereason.com/ghc610/HAppS-Data
   darcs:http://src.seereason.com/ghc610/HAppS-IxSet
-  darcs:http://src.seereason.com/ghc610/HAppS-Server
   darcs:http://src.seereason.com/ghc610/HAppS-State
+  darcs:http://src.seereason.com/ghc610/HAppS-Server
   darcs:http://src.seereason.com/ghc610/HAppS-Extra
-Comment: 
   deb-dir:(darcs:http://code.haskell.org/HSP/harp):(darcs:http://src.seereason.com/debian/harp-debian)
-    - server code.haskell.org down
   deb-dir:(darcs:http://code.haskell.org/HSP/hjavascript):(darcs:http://src.seereason.com/debian/hjavascript-debian)
-    - server code.haskell.org down
   deb-dir:(darcs:http://code.haskell.org/HSP/hjscript):(darcs:http://src.seereason.com/debian/hjscript-debian)
-    - server code.haskell.org down
   deb-dir:(darcs:http://code.haskell.org/HSP/hsx-xhtml):(darcs:http://src.seereason.com/debian/hsx-xhtml-debian)
-    - server code.haskell.org down
+Comment: 
+  quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/ghc610/quilt/hs-plugins-quilt)
+    - Needs an older cabal
+  deb-dir:(darcs:http://src.seereason.com/HSP/happs-hsp-template):(darcs:http://src.seereason.com/debian/happs-hsp-template-debian)
+    - Depends on hs-plugins
 
 Name: ghc-core
 Comment: ghc6 version 6.8.2-2 will not build on etch due to a dependency on a newer gcc
@@ -204,6 +206,7 @@ Targets:
   apt:sid:whitespace
   sourcedeb:darcs:http://src.seereason.com/haskell-wordnet
   quilt:(apt:sid:xmonad):(darcs:http://src.seereason.com/quilt/xmonad-quilt)
+  darcs:http://src.seereason.com/hlibrary
 
 Name: uniplate
 Targets:
