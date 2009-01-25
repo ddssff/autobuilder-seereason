@@ -49,7 +49,7 @@ Targets:
   darcs:http://src.seereason.com/ghc610/haskell-cdbs
   darcs:http://src.seereason.com/ghc610/hsx
   deb-dir:(darcs:http://src.seereason.com/ghc610/hsp):(darcs:http://src.seereason.com/ghc610/debian/hsp-debian)
-  darcs:http://src.seereason.com/happs-hsp-formlets
+  darcs:http://src.seereason.com/ghc610/happs-hsp-formlets
   deb-dir:(darcs:http://code.haskell.org/HSP/hsx-xhtml):(darcs:http://src.seereason.com/ghc610/debian/hsx-xhtml-debian)
   deb-dir:(darcs:http://code.haskell.org/HSP/hjscript):(darcs:http://src.seereason.com/ghc610/debian/hjscript-debian)
   darcs:http://src.seereason.com/ghc610/HAppS-Extra
