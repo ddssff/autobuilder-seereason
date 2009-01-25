@@ -13,7 +13,6 @@ Use: relax-self
 Use: relax-core
 Use: relax-ghc6
 Use: relax-cabal-debian
-Relax-Depends: haskell-devscripts
 
 Name: relax-cabal-debian
 Comment: Avoid rebuilding cabal-debian and the libraries used to build it.
@@ -63,7 +62,7 @@ Comment: Self-dependencies must always be ignored.  If they aren't these targets
 	 on every run, and there is no question of where the cycle should be broken, as the
 	 cycle has only one arc.  FIXME: The autobuilder should make this happen automatically.
 Relax-Depends: haddock haskell-haddock
-Relax-Depends: happy happy
+Relax-Depends: happy haskell-happy
 Relax-Depends: ghc6 ghc6
 
 Name: relax-core
