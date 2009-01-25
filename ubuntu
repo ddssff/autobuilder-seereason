@@ -20,5 +20,5 @@ Use: hardy-sources
 Use: intrepid-sources
 Use: jaunty-sources
 Use: hardy${upload-release-suffix}-sources
-Use: intrepid-seereason-sources
+Use: intrepid${upload-release-suffix}-sources
 Use: jaunty-seereason-sources

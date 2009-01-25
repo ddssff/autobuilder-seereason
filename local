@@ -68,6 +68,9 @@ Use: ubuntu-local-ghc610
 Name: intrepid-local
 Use: ubuntu-local
 
+Name: intrepid-local-ghc610
+Use: ubuntu-local-ghc610
+
 Name: jaunty-local
 Use: ubuntu-local
 Development-Release: yes

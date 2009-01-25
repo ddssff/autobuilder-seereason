@@ -4,12 +4,20 @@ Comment:
 Name: intrepid-common
 Use: ubuntu-common
 
-Name: intrepid-build
+Name: intrepid-build-common
 Let: base=intrepid
+let: upload-release=${base}${upload-release-suffix}
 Use: ubuntu-build
 Use: intrepid-common
-Use: intrepid-local
 Extra-Essential: belocs-locales-bin upstart-compat-sysv
+
+Name: intrepid-build
+Use: intrepid-build-common
+Use: intrepid-local
+
+Name: intrepid-build-ghc610
+Use: intrepid-build-common
+Use: intrepid-local-ghc610
 
 Name: intrepid-sources
 Sources: intrepid
@@ -22,8 +30,8 @@ Sources: intrepid
   deb http://${ubuntu-security-mirror-host}/ubuntu/ intrepid-security main restricted universe multiverse
   deb-src http://${ubuntu-security-mirror-host}/ubuntu/ intrepid-security main restricted universe multiverse
 
-Name: intrepid-seereason-sources
-Sources: intrepid-seereason
+Name: intrepid${upload-release-suffix}-sources
+Sources: intrepid${upload-release-suffix}
   deb http://${ubuntu-mirror-host}/ubuntu/ intrepid main restricted universe multiverse
   deb-src http://${ubuntu-mirror-host}/ubuntu/ intrepid main restricted universe multiverse
   deb http://${ubuntu-mirror-host}/ubuntu/ intrepid-updates main restricted universe multiverse
@@ -32,8 +40,8 @@ Sources: intrepid-seereason
   deb-src http://${ubuntu-mirror-host}/ubuntu/ intrepid-backports main restricted universe multiverse
   deb http://${ubuntu-security-mirror-host}/ubuntu/ intrepid-security main restricted universe multiverse
   deb-src http://${ubuntu-security-mirror-host}/ubuntu/ intrepid-security main restricted universe multiverse
-  deb http://deb.seereason.com/ubuntu intrepid-seereason main
-  deb-src http://deb.seereason.com/ubuntu intrepid-seereason main
+  deb http://deb.seereason.com/ubuntu intrepid${upload-release-suffix} main
+  deb-src http://deb.seereason.com/ubuntu intrepid${upload-release-suffix} main
 
 Comment: I hope this is obsolete
   Name: intrepid-autobuilder
