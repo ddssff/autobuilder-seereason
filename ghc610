@@ -68,13 +68,22 @@ Targets:
   deb-dir:(darcs:http://code.haskell.org/HSP/hsx-xhtml):(darcs:http://src.seereason.com/ghc610/debian/hsx-xhtml-debian)
   deb-dir:(darcs:http://code.haskell.org/HSP/hjscript):(darcs:http://src.seereason.com/ghc610/debian/hjscript-debian)
   darcs:http://src.seereason.com/ghc610/HAppS-Extra
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac/0.9.1/Shellac-0.9.1.tar.gz:0a563883b3acedb9c0d4308b44772f0f):(darcs:http://src.seereason.com/ghc610/debian/shellac-debian)
+  darcs:http://src.seereason.com/ghc610/frisby
+  darcs:http://src.seereason.com/ghc610/decimal
+  darcs:http://src.seereason.com/vc-darcs
+  deb-dir:(darcs:http://darcs.haskell.org/cabal-install):(darcs:http://src.seereason.com/ghc610/debian/cabal-install-debian)
+Relax-Depends: cabal-debian haskell-cpphs
 Comment: 
   quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/ghc610/quilt/hs-plugins-quilt)
     - Needs an older cabal
   deb-dir:(darcs:http://src.seereason.com/HSP/happs-hsp-template):(darcs:http://src.seereason.com/debian/happs-hsp-template-debian)
     - Depends on hs-plugins
 Relax-Depends: happy haskell-happy
-Relax-Depends: cabal-debian haskell-cpphs
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/readline/1.0.1.0/readline-1.0.1.0.tar.gz:eade9576def53ed293628a2f8580007e):(darcs:http://src.seereason.com/ghc610/debian/readline-debian)
+    - Can't find HsReadline.h
+  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac-readline/0.9/Shellac-readline-0.9.tar.gz:ffea10846cc5f40b84d6a4fe97c35ec9):(darcs:http://src.seereason.com/ghc610/debian/shellac-readline-debian)
+    - Requires readline
 
 Comment: ================ TARGETS BELOW THIS LINE ARE NOT YET IN OUR REPOSITORY ==============
 
@@ -83,16 +92,11 @@ Comment: Packages whose status in ghc 6.10 is unknown (to me)
 Targets:
   quilt:(darcs:http://www.cs.york.ac.uk/fp/darcs/hscolour):(darcs:http://src.seereason.com/quilt/hscolour-quilt)
   darcs:http://src.seereason.com/haskell-ugly
-  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac/0.9.1/Shellac-0.9.1.tar.gz:0a563883b3acedb9c0d4308b44772f0f):(darcs:http://src.seereason.com/debian/shellac-debian)
-  deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac-readline/0.9/Shellac-readline-0.9.tar.gz:ffea10846cc5f40b84d6a4fe97c35ec9):(darcs:http://src.seereason.com/debian/shellac-readline-debian)
-  darcs:http://src.seereason.com/decimal
-  darcs:http://src.seereason.com/vc-darcs
   darcs:http://src.seereason.com/mirror
   darcs:http://src.seereason.com/backups
   quilt:(apt:sid:xtla):(darcs:http://src.seereason.com/xtla-quilt)
   proc:apt:gutsy:neko
   proc:apt:gutsy:haxe
-  deb-dir:(uri:http://hackage.haskell.org/packages/archive/cabal-install/0.5.2/cabal-install-0.5.2.tar.gz:e479dc3add14c8678bb808a8bd5517ae):(darcs:http://src.seereason.com/debian/cabal-install-debian)
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/colour/1.0.0/colour-1.0.0.tar.gz:97b0802abbf3a71a3606642850fe46c7):(darcs:http://src.seereason.com/debian/colour-debian)
 
 Name: ghc-extra
@@ -106,7 +110,6 @@ Targets:
   apt:sid:darcs
   apt:sid:darcs-monitor
   apt:sid:drift
-  darcs:http://src.seereason.com/frisby
   apt:sid:frown
   darcs:http://www.n-heptane.com/nhlab/repos/haskell-agi
   quilt:(apt:hardy:haskell-binary):(darcs:http://src.seereason.com/quilt/haskell-binary-quilt)
