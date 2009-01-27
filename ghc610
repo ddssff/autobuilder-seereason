@@ -75,6 +75,7 @@ Targets:
   darcs:http://src.seereason.com/vc-darcs
   deb-dir:(darcs:http://darcs.haskell.org/cabal-install):(darcs:http://src.seereason.com/ghc610/debian/cabal-install-debian)
 Relax-Depends: cabal-debian haskell-cpphs
+Relax-Depends: happy haskell-happy
 Comment: 
   quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/ghc610/quilt/hs-plugins-quilt)
     - Needs an older cabal
@@ -82,7 +83,6 @@ Comment:
     - Depends on hs-plugins
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/cabal-install/0.6.0/cabal-install-0.6.0.tar.gz:ddce0bda54a99d816091e77ab6e4b39f):(darcs:http://src.seereason.com/ghc610/debian/cabal-install-debian)
     - Requires 3000 < HTTP < 3002
-Relax-Depends: happy haskell-happy
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/readline/1.0.1.0/readline-1.0.1.0.tar.gz:eade9576def53ed293628a2f8580007e):(darcs:http://src.seereason.com/ghc610/debian/readline-debian)
     - Can't find HsReadline.h
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac-readline/0.9/Shellac-readline-0.9.tar.gz:ffea10846cc5f40b84d6a4fe97c35ec9):(darcs:http://src.seereason.com/ghc610/debian/shellac-readline-debian)
