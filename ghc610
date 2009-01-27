@@ -3,6 +3,7 @@ Use: relax
 Use: ghc610-autobuilder
 Use: ghc610-targets
 Use: ghc610-uniplate
+Use: ghc610-nonghc
 Comment: All the targets that we currently upload to our repository
 
 Name: ghc610-autobuilder
@@ -44,7 +45,6 @@ Targets:
   darcs:http://src.seereason.com/ghc610/formlets
   quilt:(apt:hardy:haskell-binary):(darcs:http://src.seereason.com/ghc610/quilt/haskell-binary-quilt)
   darcs:http://src.seereason.com/haskell-help
-  darcs:http://src.seereason.com/tree-widget
   deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/ghc610/debian/hinotify-debian)
   quilt:(apt:sid:haskell-hspread):(darcs:http://src.seereason.com/ghc610/quilt/haskell-hspread-quilt)
   quilt:(apt:sid:haskell-utf8-string):(darcs:http://src.seereason.com/ghc610/quilt/haskell-utf8-string-quilt)
@@ -95,6 +95,12 @@ Targets:
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/gd/3000.4.0/gd-3000.4.0.tar.gz:7bc5bb68638b807d592aba433beb3fa5):(darcs:http://src.seereason.com/ghc610/debian/haskell-gd-debian)
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/CC-delcont/0.2/CC-delcont-0.2.tar.gz:e52149fca9bf76330a7c159917152790):(darcs:http://src.seereason.com/ghc610/debian/CC-delcont-debian)
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/regex-pcre-builtin/0.94.2.0.7.7/regex-pcre-builtin-0.94.2.0.7.7.tar.gz:1e7f7ca729d344caa20c8f57d18239dd):(darcs:http://src.seereason.com/ghc610/debian/regex-pcre-builtin-debian)
+
+Name: ghc610-nonghc
+Comment: Stuff we want in our repository not related to ghc
+Targets:
+  darcs:http://src.seereason.com/tree-widget
+  darcs:http://src.seereason.com/seereason-keyring
 
 Comment: ================ TARGETS BELOW THIS LINE ARE NOT YET IN OUR REPOSITORY ==============
 
