@@ -15,7 +15,6 @@ Targets:
   quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc610/quilt/magic-haskell-quilt)
 
 Name: ghc610-core
-Use: ghc610-prereqs
 Targets:
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.5.0.0/bzlib-0.5.0.0.tar.gz:ab594aaf9998ed602f8b23dd25199e19):(darcs:http://src.seereason.com/ghc610/debian/haskell-bzlib-debian)
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/zlib/0.5.0.0/zlib-0.5.0.0.tar.gz:22fa6d394c42c8584b234799b923f860):(darcs:http://src.seereason.com/ghc610/debian/haskell-zlib-debian)
@@ -26,16 +25,16 @@ Targets:
   darcs:http://src.seereason.com/ghc610/haskell-extra
   darcs:http://src.seereason.com/ghc610/haskell-debian-3
   deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.1/ghc-6.10.1-src.tar.bz2:54c676a632b3d73cf526b06347522c32):(darcs:http://src.seereason.com/ghc610/debian/ghc610-debian)
+  quilt:(uri:http://ftp.de.debian.org/debian/pool/main/h/haskell-devscripts/haskell-devscripts_0.6.15.tar.gz:996acac2c6fb2da2be9c5016f93a3c67):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)
 Comment:
-  This is the compiler and all the packages that are involved in
-  the infrastructure for creating debian packaging.
+  This is the compiler and all the packages that are involved in the
+  infrastructure for creating debian packaging.  Specifically, we are
+  bootstrapping the cabal-debian package, which is used to build most
+  of our other libraries, so it is not used to build these six
+  libraries.
 Relax-Depends: haskell-devscripts ghc6
 Relax-Depends: haddock ghc6
 Relax-Depends: ghc6 ghc6
-
-Name: ghc610-prereqs
-Targets:
-  quilt:(uri:http://ftp.de.debian.org/debian/pool/main/h/haskell-devscripts/haskell-devscripts_0.6.15.tar.gz:996acac2c6fb2da2be9c5016f93a3c67):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)
 
 Name: ghc610-targets
 Targets:
