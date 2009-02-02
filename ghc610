@@ -71,7 +71,6 @@ Targets:
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac/0.9.1/Shellac-0.9.1.tar.gz:0a563883b3acedb9c0d4308b44772f0f):(darcs:http://src.seereason.com/ghc610/debian/shellac-debian)
   darcs:http://src.seereason.com/ghc610/frisby
   darcs:http://src.seereason.com/ghc610/decimal
-  quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/ghc610/quilt/darcs-quilt)
   darcs:http://src.seereason.com/vc-darcs
   deb-dir:(darcs:http://darcs.haskell.org/cabal-install):(darcs:http://src.seereason.com/ghc610/debian/cabal-install-debian)
 Relax-Depends: cabal-debian haskell-cpphs
@@ -87,6 +86,8 @@ Comment:
     - Can't find HsReadline.h
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac-readline/0.9/Shellac-readline-0.9.tar.gz:ffea10846cc5f40b84d6a4fe97c35ec9):(darcs:http://src.seereason.com/ghc610/debian/shellac-readline-debian)
     - Requires readline
+  quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/ghc610/quilt/darcs-quilt)
+    - Version 2.2.0 hangs when compiled with ghc 6.10 
 
 Name: ghc610-uniplate
 Targets:
