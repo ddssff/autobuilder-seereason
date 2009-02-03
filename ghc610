@@ -44,6 +44,12 @@ Targets:
   darcs:http://src.seereason.com/ghc610/formlets
   quilt:(apt:hardy:haskell-binary):(darcs:http://src.seereason.com/ghc610/quilt/haskell-binary-quilt)
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/extensible-exceptions/0.1.1.0/extensible-exceptions-0.1.1.0.tar.gz:7aba82acc64fa2f2dc89d8ac27e24a43):(darcs:http://src.seereason.com/ghc610/debian/extensible-exceptions-debian)
+  cd:HAppS-Util:darcs:http://src.seereason.com/happstack
+  cd:HAppS-Data:darcs:http://src.seereason.com/happstack
+  cd:HAppS-State:darcs:http://src.seereason.com/happstack
+  cd:HAppS-IxSet:darcs:http://src.seereason.com/happstack
+  cd:HAppS-Server:darcs:http://src.seereason.com/happstack
+  cd:HAppS-Contrib:darcs:http://src.seereason.com/happstack
   darcs:http://src.seereason.com/haskell-help
   deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/ghc610/debian/hinotify-debian)
   quilt:(apt:sid:haskell-hspread):(darcs:http://src.seereason.com/ghc610/quilt/haskell-hspread-quilt)
@@ -163,12 +169,6 @@ Targets:
   deb-dir:(darcs:http://code.haskell.org/checkers):(darcs:http://src.seereason.com/debian/checkers-debian)
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/MemoTrie/0.0/MemoTrie-0.0.tar.gz):(darcs:http://src.seereason.com/debian/MemoTrie-debian)
   deb-dir:(darcs:http://darcs.haskell.org/packages/TypeCompose):(darcs:http://src.seereason.com/debian/TypeCompose-debian)
-  cd:HAppS-Util:darcs:http://src.seereason.com/happstack
-  cd:HAppS-Contrib:darcs:http://src.seereason.com/happstack
-  cd:HAppS-Data:darcs:http://src.seereason.com/happstack
-  cd:HAppS-IxSet:darcs:http://src.seereason.com/happstack
-  cd:HAppS-Server:darcs:http://src.seereason.com/happstack
-  cd:HAppS-State:darcs:http://src.seereason.com/happstack
 
 Name: ghc-broken
 Comment:
