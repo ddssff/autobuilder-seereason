@@ -50,6 +50,7 @@ Targets:
   cd:HAppS-IxSet:darcs:http://src.seereason.com/happstack
   cd:HAppS-Server:darcs:http://src.seereason.com/happstack
   cd:HAppS-Contrib:darcs:http://src.seereason.com/happstack
+  darcs:http://src.seereason.com/happstack-extra
   darcs:http://src.seereason.com/haskell-help
   deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/ghc610/debian/hinotify-debian)
   quilt:(apt:sid:haskell-hspread):(darcs:http://src.seereason.com/ghc610/quilt/haskell-hspread-quilt)
