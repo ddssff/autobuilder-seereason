@@ -4,7 +4,9 @@ Comment:
 
 Name: debian-common
 Use: common
+Use: debian-local
 Let: head=sid
+Extra-Package: debian-keyring
 
 Name: debian-build
 Use: build

@@ -1,0 +1,14 @@
+Comment:
+  This directory is an example configuration for the autobuilder, for
+  documentation and testing.  It is also the configuration file used
+  for the seereason.org repository.  To try it, create a link to here
+  from ~/.autobuilder.d.  You will also need to edit "local" to set
+  your own upload host and user.
+  .
+  The program first reads in all the files in this directory.  It then looks
+  at the command line options for an argument which correspond to a section
+  in the configuration with that value in the "Name:" parameter.  This section
+  then becomes the run time configuration after expansions are performed on
+  it: whenever a "Use:" parameter is found, it is replaced by the section with
+  the corresponding "Name:" parameter, and this is repeated recursively until
+  no "Use:" parameters remain.

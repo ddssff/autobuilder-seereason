@@ -30,8 +30,8 @@ Sources: hardy
   deb http://${ubuntu-security-mirror-host}/ubuntu/ hardy-security main restricted universe multiverse
   deb-src http://${ubuntu-security-mirror-host}/ubuntu/ hardy-security main restricted universe multiverse
 
-Name: hardy${upload-release-suffix}-sources
-Sources: hardy${upload-release-suffix}
+Name: hardy-seereason-sources
+Sources: hardy-seereason
   deb http://${ubuntu-mirror-host}/ubuntu/ hardy main restricted universe multiverse
   deb-src http://${ubuntu-mirror-host}/ubuntu/ hardy main restricted universe multiverse
   deb http://${ubuntu-mirror-host}/ubuntu/ hardy-updates main restricted universe multiverse
@@ -40,6 +40,21 @@ Sources: hardy${upload-release-suffix}
   deb-src http://${ubuntu-mirror-host}/ubuntu/ hardy-backports main restricted universe multiverse
   deb http://${ubuntu-security-mirror-host}/ubuntu/ hardy-security main restricted universe multiverse
   deb-src http://${ubuntu-security-mirror-host}/ubuntu/ hardy-security main restricted universe multiverse
+  deb http://deb.seereason.com/ubuntu hardy-seereason main
+  deb-src http://deb.seereason.com/ubuntu hardy-seereason main
+
+Name: hardy-seereason${upload-release-suffix}-sources
+Sources: hardy-seereason${upload-release-suffix}
+  deb http://${ubuntu-mirror-host}/ubuntu/ hardy main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ hardy main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ hardy-updates main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ hardy-updates main restricted universe multiverse
+  deb http://${ubuntu-mirror-host}/ubuntu/ hardy-backports main restricted universe multiverse
+  deb-src http://${ubuntu-mirror-host}/ubuntu/ hardy-backports main restricted universe multiverse
+  deb http://${ubuntu-security-mirror-host}/ubuntu/ hardy-security main restricted universe multiverse
+  deb-src http://${ubuntu-security-mirror-host}/ubuntu/ hardy-security main restricted universe multiverse
+  deb http://deb.seereason.com/ubuntu hardy-seereason main
+  deb-src http://deb.seereason.com/ubuntu hardy-seereason main
   deb http://deb.seereason.com/ubuntu hardy${upload-release-suffix} main
   deb-src http://deb.seereason.com/ubuntu hardy${upload-release-suffix} main
 

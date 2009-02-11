@@ -44,12 +44,12 @@ Targets:
   darcs:http://src.seereason.com/ghc610/formlets
   quilt:(apt:hardy:haskell-binary):(darcs:http://src.seereason.com/ghc610/quilt/haskell-binary-quilt)
   deb-dir:(uri:http://hackage.haskell.org/packages/archive/extensible-exceptions/0.1.1.0/extensible-exceptions-0.1.1.0.tar.gz:7aba82acc64fa2f2dc89d8ac27e24a43):(darcs:http://src.seereason.com/ghc610/debian/extensible-exceptions-debian)
-  cd:HAppS-Util:darcs:http://src.seereason.com/happstack
-  cd:HAppS-Data:darcs:http://src.seereason.com/happstack
-  cd:HAppS-State:darcs:http://src.seereason.com/happstack
-  cd:HAppS-IxSet:darcs:http://src.seereason.com/happstack
-  cd:HAppS-Server:darcs:http://src.seereason.com/happstack
-  cd:HAppS-Contrib:darcs:http://src.seereason.com/happstack
+  cd:happstack-util:darcs:http://src.seereason.com/happstack
+  cd:happstack-data:darcs:http://src.seereason.com/happstack
+  cd:happstack-state:darcs:http://src.seereason.com/happstack
+  cd:happstack-ixset:darcs:http://src.seereason.com/happstack
+  cd:happstack-server:darcs:http://src.seereason.com/happstack
+  cd:happstack-contrib:darcs:http://src.seereason.com/happstack
   darcs:http://src.seereason.com/happstack-extra
   darcs:http://src.seereason.com/haskell-help
   deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/ghc610/debian/hinotify-debian)

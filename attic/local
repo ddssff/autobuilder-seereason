@@ -5,14 +5,13 @@ Comment:  The definitions in local specify particular hostnames to upload to,
 Name: common-local
 Use: common
 Comment:
-  These Let values above need to be adjusted for the repository you
-  will be uploading to.  If you are only building packages and don't
-  plan to upload them to a repository, you still need to set
-  upload-host and upload-repo.  This is necessary to ensure that
-  packages you build do not conflict with packages already in the
-  repository you are building against.
-Comment: Let: vendor=seereason
-Vendor-Tag: seereason
+  The Let values for upload-host and upload-repo need to be set to the
+  repository to which the packages will be uploaded.  Even if you are
+  building packages you don't plan to upload them, the values are still
+  required so the autobuilder canensure that the packages it builds do
+  not conflict with packages already in the repository.
+Let: vendor=seereason
+Vendor-Tag: ${vendor}
 Let: upload-host=deb.seereason.com
 Let: upload-user=upload
 Comment:
@@ -76,11 +75,6 @@ Use: ubuntu-local
 Development-Release: yes
 
 Name: debian-local
-Use: public-local-seereason
-Let: upload-repo=debian
-
-Name: debian-local-ghc610
-Use: public-local-ghc610
 Let: upload-repo=debian
 
 Name: sarge-local

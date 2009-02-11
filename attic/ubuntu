@@ -19,6 +19,7 @@ Use: gutsy-sources
 Use: hardy-sources
 Use: intrepid-sources
 Use: jaunty-sources
-Use: hardy${upload-release-suffix}-sources
+Use: hardy-seereason-sources
+Use: hardy-seereason${upload-release-suffix}-sources
 Use: intrepid${upload-release-suffix}-sources
 Use: jaunty-seereason-sources

@@ -4,12 +4,16 @@ Comment:
 Name: sid-common
 Use: debian-common
 
-Name: sid-build
+Name: sid-build-common
 Let: base=sid
+Let: upload-release=${base}${upload-release-suffix}
 Use: debian-build
 Use: sid-common
-Use: sid-local
 Extra-Essential: perl-modules
+
+Name: sid-build
+Use: sid-build-common
+Use: sid-local
 
 Name: sid-sources
 Sources: sid
