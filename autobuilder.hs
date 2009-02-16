@@ -108,6 +108,7 @@ myDoSSHExport = True
 --
 myReleaseAliases =
     [("etch", "bpo40+"),
+     ("lenny", "bpo50+"),
      ("hardy-seereason", "hardy"),
      ("intrepid-seereason", "intrepid"),
      ("jaunty-seereason", "jaunty")]
