@@ -486,7 +486,7 @@ ghc610Targets =
              , sourceSpec = "darcs:http://src.seereason.com/mirror"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-archive"
-             , sourceSpec = "darcs:http://src.seereason.com/backups"
+             , sourceSpec = "darcs:http://src.seereason.com/archive"
              , relaxInfo = [] }
 
 {-
