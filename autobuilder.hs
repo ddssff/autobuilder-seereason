@@ -104,7 +104,10 @@ myDoSSHExport = True
 
 -- There is a debian standard for constructing the version numbers of
 -- packages backported to older releases.  To follow this standard we
--- use bpo40+ for Debian 4.0, aka etch.
+-- use bpo40+ for Debian 4.0, aka etch.  Don't start building for a new
+-- Debian release without adding a bpo alias, otherwise you won't be able
+-- to build when you add one because the existing packages will look too
+-- new to trump.
 --
 myReleaseAliases =
     [("etch", "bpo40+"),
