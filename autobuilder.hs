@@ -109,6 +109,7 @@ myDoSSHExport = True
 myReleaseAliases =
     [("etch", "bpo40+"),
      ("lenny", "bpo50+"),
+     ("squeeze", "bpo59+"),
      ("hardy-seereason", "hardy"),
      ("intrepid-seereason", "intrepid"),
      ("jaunty-seereason", "jaunty")]
@@ -187,7 +188,7 @@ ubuntuSourceLines ubuntuMirrorHost release =
     , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-security main restricted universe multiverse"
     , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-security main restricted universe multiverse" ]
 
-debianReleases = ["sid", "lenny"]
+debianReleases = ["sid", "squeeze", "lenny"]
 ubuntuReleases = ["jaunty", "intrepid", "hardy"]
 
 dropSuffix suff x = take (length x - length suff) x
