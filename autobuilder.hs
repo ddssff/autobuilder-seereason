@@ -42,6 +42,12 @@ myVendorTag = "seereason"
 --
 myForceBuild = []
 
+-- Clear all the entries in the local pool before starting build.  Use
+-- this when there is stuff already in there that you don't want to
+-- upload to the remote repository.
+--
+myFlushPool = False
+
 -- Make the output more or less chatty.  Zero is normal, -1 is
 -- quieter, and so on.
 --
@@ -703,7 +709,7 @@ params myBuildRelease =
     , targets = myTargets myBuildRelease
     , doUpload = myDoUpload
     , doNewDist = myDoNewDist
-    , flushPool = False
+    , flushPool = myFlushPool
     , useRepoCache = True
     , forceBuild = myForceBuild
     , doSSHExport = myDoSSHExport
