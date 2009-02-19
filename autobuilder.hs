@@ -242,6 +242,7 @@ myGlobalRelaxInfo =
     ["base-files",
      "bash",
      "bsdutils",
+     "cdbs",
      "devscripts",
      "dpkg",
      "dpkg-dev",
