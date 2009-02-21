@@ -98,12 +98,12 @@ myUbuntuMirrorHost = "mirror.anl.gov"
 
 -- If true, upload the packages after a successful build
 --
-myDoUpload = True
+myDoUpload = False
 
 -- If true, run newdist on the upload repository after a successful
 -- build and upload, making them available to apt-get install.
 --
-myDoNewDist = True
+myDoNewDist = False
 
 -- If true, try to set up ssh access to the upload host if necessary.
 --
