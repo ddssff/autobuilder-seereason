@@ -17,9 +17,11 @@ import Debian.URI
 import Debian.Version (parseDebianVersion)
 import System.Console.GetOpt
 import System.Environment (getArgs)
-import System.IO (hPutStrLn, hFlush, stderr)
+import System.Exit
+import System.IO (hPutStr, hPutStrLn, hFlush, stderr)
 
 import Targets
+import Usage
 
 -- The known suffixes for build releases.
 myReleaseSuffixes = ["-seereason", "-private"]
@@ -56,7 +58,8 @@ myFlushPool = False
 --
 myVerbosity = 0
 
--- The list of packages we want to build.  The myBuildRelease argument
+-- The list of all known package targets.  The targets we will
+-- actually build are chosen from these.  The myBuildRelease argument
 -- comes from the autobuilder argument list.
 --
 myTargets myBuildRelease =
@@ -82,12 +85,6 @@ myGoals = []
 -- Helper function to identify private releases.
 --
 isPrivateRelease release = isSuffixOf "-private" release
-
--- Use this to find one or more targets by Debian source package name,
--- for use as the value of myTargets.
---
-findTargets :: [String] -> [Target] -> [Target]
-findTargets names targets = filter (\ target -> elem (sourcePackageName target) names) targets
 
 -- These host names are used to construct the sources.list lines to
 -- access the Debian and Ubuntu repositories.  The anl.gov values here
@@ -163,7 +160,7 @@ myPublicBuildURI release = "http://deb.seereason.com/" ++ releaseRepoName releas
 -- effect.
 --
 myExtraPackages myBuildRelease =
-    ["debian-archive-keyring", "seereason-keyring"] ++
+    ["debian-archive-keyring", "seereason-keyring", "ghc6","ghc6-doc", "ghc6-prof"] ++
     -- Private releases generally have ssh URIs in their sources.list,
     -- I have observed that this solves the "ssh died unexpectedly"
     -- errors.
@@ -314,13 +311,14 @@ params myBuildRelease =
     , buildRelease = ReleaseName {relName = myBuildRelease}
     , uploadURI = myUploadURI myBuildRelease
     , buildURI = myBuildURI myBuildRelease
-    , targets = myTargets myBuildRelease
+    , targets = []
     , doUpload = myDoUpload
     , doNewDist = myDoNewDist
     , flushPool = myFlushPool
     , useRepoCache = True
     , forceBuild = myForceBuild
     , doSSHExport = myDoSSHExport
+    , doHelp = False
     -- Things that are occasionally useful
     , goals = myGoals
     , dryRun = False
@@ -348,7 +346,7 @@ params myBuildRelease =
     , archList = [Binary "i386",Binary "amd64"]
     , newDistProgram = "newdist -v"
     -- Things that are probably obsolete
-    , requiredVersion = [(parseDebianVersion "5.1", Nothing)]
+    , requiredVersion = [(parseDebianVersion "5.2", Nothing)]
     , debug = False
     , omitTargets = []
     , extraReleaseTag = Nothing
@@ -360,22 +358,25 @@ params myBuildRelease =
     }
 
 main =
-    do hPutStrLn stderr "Autobuilder starting..."
-       hFlush stderr
-       args <- getArgs
+    do args <- getArgs
        case getOpt' Permute optSpecs args of
          (fns, dists, [], []) ->
-             do -- hPutStrLn stderr ("args=" ++ show args ++ ", dists=" ++ show dists)
+             do hPutStrLn stderr "Autobuilder starting..."
+                -- hPutStrLn stderr ("args=" ++ show args ++ ", dists=" ++ show dists)
                 -- Apply the command line arguments to each paramter set
-                M.main . map (\ p -> foldr ($) p fns) . map params $ dists
+                maybeDoHelp (map (\ p -> foldr ($) p fns) . map params $ dists) >>= M.main
          (_, _, badopts, errs) ->
-             hPutStrLn stderr ("Bad options: " ++ show badopts ++ ", errors: " ++ show errs)
+             hPutStr stderr (usage ("Bad options: " ++ show badopts ++ ", errors: " ++ show errs) optSpecs)
+
+maybeDoHelp xs@(x : _)
+    | doHelp x = hPutStr stderr (usage "Usage: " optSpecs) >> exitWith ExitSuccess >> return xs
+    | True = return xs
 
 optSpecs :: [OptDescr (ParamRec -> ParamRec)]
 optSpecs =
-    [ Option ['v'] [] (NoArg (\ p -> p {verbosity = verbosity p + 1}))
+    [ Option ['v'] ["verbose"] (NoArg (\ p -> p {verbosity = verbosity p + 1}))
       "Increase progress reporting.  Can be used multiple times."
-    , Option ['q'] [] (NoArg (\ p -> p {verbosity = verbosity p - 1}))
+    , Option ['q'] ["quiet"] (NoArg (\ p -> p {verbosity = verbosity p - 1}))
       "Decrease progress reporting. Can be used multiple times."
     , Option [] ["show-params"] (NoArg (\ p -> p {showParams = True}))
       "Display the parameter set" 
@@ -393,24 +394,27 @@ optSpecs =
       "Run newdist on the remote server after a successful build and upload."
     , Option ['n'] ["dry-run"] (NoArg (\ p -> p {dryRun = True}))
       "Exit as soon as we discover a package that needs to be built."
-    , Option [] ["no-targets"] (NoArg (\ p -> p {targets = []}))
-      "Make the target list empty."
+    , Option [] ["all-targets"] (NoArg (\ p -> p {targets = myTargets (relName (buildRelease p))}))
+      "Add all known targets to the target list."
     , Option [] ["allow-build-dependency-regressions"]
                  (NoArg (\ p -> p {allowBuildDependencyRegressions = True}))
-      ("Normally it is an error if a build dependency has an older version number than during the previous" ++
-       " looks older than it did during the previous build.  This option relaxes that assumption, in case" ++
-       " the newer version of the dependency was withdrawn from the repository, or was flushed from the" ++
-       " local repository without being uploaded.")
+      (unlines [ "Normally it is an error if a build dependency has an older version"
+               , "number than during the previous looks older than it did during the"
+               , "previous build.  This option relaxes that assumption, in case the"
+               , "newer version of the dependency was withdrawn from the repository,"
+               , "or was flushed from the local repository without being uploaded."])
     , Option [] ["target"] (ReqArg (\ s p -> p {targets = targets p ++ [find s p]}) "PACKAGE")
       "Add a target to the target list."
     , Option [] ["goal"] (ReqArg (\ s p -> p {goals = goals p ++ [s]}) "PACKAGE")
-      ("Specify a goal for the build, once all goals are built we exit.  If none " ++
-       "are specified, build everything.")
+      (unlines [ "If one or more goal package names are given the autobuilder"
+               , "will only build these packages and any of their build dependencies"
+               , "which are in the package list.  If no goals are specified, all the"
+               , "targets will be built.  (As of version 5.2 there are known bugs with"
+               , "this this option which may cause the autobuilder to exit before the"
+               , "goal package is built.)"])
     , Option [] ["force"] (ReqArg (\ s p -> p {forceBuild = forceBuild p ++ [s]}) "PACKAGE")
       ("Build the specified source package even if it doesn't seem to need it.")
-    , Option ['V'] ["version"] (NoArg id)
-      "Print version number and exit."
-    , Option ['h'] ["help", "usage"] (NoArg id)
+    , Option ['h'] ["help", "usage"] (NoArg (\ p -> p {doHelp = True}))
       "Print a help message and exit."
     ]
     where
