@@ -1,3 +1,4 @@
-This is a configuration file for the autobuilder.  It requires version
-4.45 or later.  The old style configuration files have moved into the
-attic subdirectory.
+This is a configuration directory for the autobuilder.  Link your
+~/.autobuilder.d to here, and modify it as you wish.  It requires
+version 5.0 or later.  The old style configuration files have moved
+into the attic subdirectory.
