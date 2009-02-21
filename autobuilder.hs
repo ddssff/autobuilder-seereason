@@ -348,7 +348,7 @@ params myBuildRelease =
     , archList = [Binary "i386",Binary "amd64"]
     , newDistProgram = "newdist -v"
     -- Things that are probably obsolete
-    , requiredVersion = [(parseDebianVersion "4.41", Nothing)]
+    , requiredVersion = [(parseDebianVersion "5.1", Nothing)]
     , debug = False
     , omitTargets = []
     , extraReleaseTag = Nothing
