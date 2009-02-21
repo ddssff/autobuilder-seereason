@@ -15,6 +15,7 @@ import Debian.Repo.Cache (SourcesChangedAction(SourcesChangedError))
 import Debian.Repo.Types (ReleaseName(ReleaseName, relName), Arch(Binary))
 import Debian.URI
 import Debian.Version (parseDebianVersion)
+import System.Console.GetOpt
 import System.Environment (getArgs)
 import System.IO (hPutStrLn, hFlush, stderr)
 
@@ -753,6 +754,61 @@ params myBuildRelease =
     }
 
 main =
-    hPutStrLn stderr "Autobuilder starting..." >>
-    hFlush stderr >>
-    getArgs >>= M.main . map params
+    do hPutStrLn stderr "Autobuilder starting..."
+       hFlush stderr
+       args <- getArgs
+       case getOpt' Permute optSpecs args of
+         (fns, dists, [], []) ->
+             do -- hPutStrLn stderr ("args=" ++ show args ++ ", dists=" ++ show dists)
+                -- Apply the command line arguments to each paramter set
+                M.main . map (\ p -> foldr ($) p fns) . map params $ dists
+         (_, _, badopts, errs) ->
+             hPutStrLn stderr ("Bad options: " ++ show badopts ++ ", errors: " ++ show errs)
+
+optSpecs :: [OptDescr (ParamRec -> ParamRec)]
+optSpecs =
+    [ Option ['v'] [] (NoArg (\ p -> p {verbosity = verbosity p + 1}))
+      "Increase progress reporting.  Can be used multiple times."
+    , Option ['q'] [] (NoArg (\ p -> p {verbosity = verbosity p - 1}))
+      "Decrease progress reporting. Can be used multiple times."
+    , Option [] ["show-params"] (NoArg (\ p -> p {showParams = True}))
+      "Display the parameter set" 
+    , Option [] ["flush-pool"] (NoArg (\ p -> p {flushPool = True}))
+      "Flush the local repository before building."
+    , Option [] ["flush-root"] (NoArg (\ p -> p {flushRoot = True}))
+      "Discard and recreate the clean and build environments."
+    , Option [] ["flush-source"] (NoArg (\ p -> p {flushSource = True}))
+      "Discard and re-download all source code."
+    , Option [] ["flush-all"] (NoArg (\ p -> p {flushAll = True}))
+      "Remove and re-create the entire autobuilder working directory."
+    , Option [] ["do-upload"] (NoArg (\ p -> p {doUpload = True}))
+      "Upload the packages to the remote server after a successful build."
+    , Option [] ["do-newdist"] (NoArg (\ p -> p {doNewDist = True}))
+      "Run newdist on the remote server after a successful build and upload."
+    , Option ['n'] ["dry-run"] (NoArg (\ p -> p {dryRun = True}))
+      "Exit as soon as we discover a package that needs to be built."
+    , Option [] ["no-targets"] (NoArg (\ p -> p {targets = []}))
+      "Make the target list empty."
+    , Option [] ["allow-build-dependency-regressions"]
+                 (NoArg (\ p -> p {allowBuildDependencyRegressions = True}))
+      ("Normally it is an error if a build dependency has an older version number than during the previous" ++
+       " looks older than it did during the previous build.  This option relaxes that assumption, in case" ++
+       " the newer version of the dependency was withdrawn from the repository, or was flushed from the" ++
+       " local repository without being uploaded.")
+    , Option [] ["target"] (ReqArg (\ s p -> p {targets = targets p ++ [find s p]}) "PACKAGE")
+      "Add a target to the target list."
+    , Option [] ["goal"] (ReqArg (\ s p -> p {goals = goals p ++ [s]}) "PACKAGE")
+      ("Specify a goal for the build, once all goals are built we exit.  If none " ++
+       "are specified, build everything.")
+    , Option [] ["force"] (ReqArg (\ s p -> p {forceBuild = forceBuild p ++ [s]}) "PACKAGE")
+      ("Build the specified source package even if it doesn't seem to need it.")
+    , Option ['V'] ["version"] (NoArg id)
+      "Print version number and exit."
+    , Option ['h'] ["help", "usage"] (NoArg id)
+      "Print a help message and exit."
+    ]
+    where
+      find s p = case filter (\ t -> sourcePackageName t == s) (myTargets (relName (buildRelease p))) of
+                   [x] -> x
+                   [] -> error $ "Package not found: " ++ s
+                   xs -> error $ "Multiple packages found: " ++ show (map sourcePackageName xs)
