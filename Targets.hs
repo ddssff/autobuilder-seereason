@@ -4,6 +4,8 @@ import Debian.AutoBuilder.ParamClass (Target(..))
 
 ------------------------ TARGETS ---------------------
 
+publicTargets = ghc610CoreTargets ++ autobuilderTargets ++ ghc610Targets ++ otherTargets
+
 -- Information about how to obtain and assemble the source code for
 -- the packages we want to build. | 
 

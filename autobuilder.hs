@@ -23,15 +23,57 @@ import System.IO (hPutStr, hPutStrLn, hFlush, stderr)
 import Targets
 import Usage
 
--- The known suffixes for build releases.
+-- This section has all the definitions relating to the particular
+-- suffixes we will use on our build releases.
+--
 myReleaseSuffixes = ["-seereason", "-private"]
+
+-- Helper function to identify private releases.  This implies a different
+-- upload uri, a different target list, and other as well.
+--
+isPrivateRelease release = isSuffixOf "-private" release
+
+-- Our private releases are always based on our public releases, not
+-- directly on upstream releases.
+--
+derivedReleaseNames myBuildRelease baseRelease =
+    [baseRelease ++ "-seereason"] ++
+    if isPrivateRelease myBuildRelease then [baseRelease ++ "-seereason-private"] else []
+
+-- This URI is the address of the remote repository to which packages
+-- will be uploaded after a run with no failures, when the myDoUpload
+-- flag is true.  Packages are uploaded to the directory created by
+-- appending '/incoming' to this URI.  This is distinct from the
+-- local repository, where each packages is uploaded immediately after
+-- it is built for use as build dependencies of other packages during
+-- the same run.
+--
+myUploadURI myBuildRelease =
+    parseURI (if isPrivateRelease myBuildRelease then myPrivateUploadURI else myPublicUploadURI)
+    where
+      myPrivateUploadURI = "ssh://upload@deb.seereason.com/srv/deb-private/" ++ releaseRepoName myBuildRelease
+      myPublicUploadURI = "ssh://upload@deb.seereason.com/srv/deb/" ++ releaseRepoName myBuildRelease
+
+
+-- An alternate url for the same repository the upload-uri points to,
+-- used for downloading packages that have already been installed
+-- there.
+--
+myBuildURI myBuildRelease =
+    parseURI (if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI)
+    where
+      myPrivateBuildURI = "ssh://upload@deb.seereason.com/srv/deb-private/" ++ releaseRepoName myBuildRelease
+      myPublicBuildURI = "http://deb.seereason.com/" ++ releaseRepoName myBuildRelease
+
+--
+-- End of release suffix section.
 
 -- The current list of development releases.  The version numbers for
 -- these releases do not need to be tagged with the base release name,
 -- only with the vendor tag.  Sid is always a development release,
 -- Ubuntu creates a new one for each cycle.
 --
-myDevelopmentReleaseNames = ["sid", "jaunty"]
+myDevelopmentReleaseNames = ["sid", "jaunty", "karmic"]
 
 -- This tag is used to construct the customized part of the version
 -- number for any package the autobuilder builds.
@@ -63,17 +105,9 @@ myVerbosity = 0
 -- comes from the autobuilder argument list.
 --
 myTargets myBuildRelease =
-    case isPrivateRelease myBuildRelease of
-      False -> myPublicTargets
-      True -> myPrivateTargets
-
--- The list of targets which are uploaded to the public repository
---
-myPublicTargets = ghc610CoreTargets ++ autobuilderTargets ++ ghc610Targets ++ otherTargets
-
--- The list of targets which are uploaded to the private repository
---
-myPrivateTargets = privateTargets
+    if isPrivateRelease myBuildRelease
+    then privateTargets
+    else publicTargets
 
 -- If you are not interested in building everything, put one or more
 -- source package names you want to build in this list.  Only these
@@ -81,10 +115,6 @@ myPrivateTargets = privateTargets
 -- building.
 --
 myGoals = []
-
--- Helper function to identify private releases.
---
-isPrivateRelease release = isSuffixOf "-private" release
 
 -- These host names are used to construct the sources.list lines to
 -- access the Debian and Ubuntu repositories.  The anl.gov values here
@@ -115,41 +145,13 @@ myDoSSHExport = True
 -- to build when you add one because the existing packages will look too
 -- new to trump.
 --
-myReleaseAliases =
+-- (FIXME: This should be changed to a function.)
+-- 
+myReleaseAliases myBuildRelease =
     [("etch", "bpo40+"),
      ("lenny", "bpo50+"),
-     ("squeeze", "bpo59+"),
-     ("hardy-seereason", "hardy"),
-     ("intrepid-seereason", "intrepid"),
-     ("jaunty-seereason", "jaunty")]
-
--- This URI is the address of the remote repository to which packages
--- will be uploaded after a run with no failures, when the myDoUpload
--- flag is true.  Packages are uploaded to the directory created by
--- appending '/incoming' to this URI.  This is distinct from the
--- local repository, where each packages is uploaded immediately after
--- it is built for use as build dependencies of other packages during
--- the same run.
---
-myUploadURI myBuildRelease =
-    case isPrivateRelease myBuildRelease of
-      False -> parseURI $ myPublicUploadURI myBuildRelease
-      True -> parseURI $ myPrivateUploadURI myBuildRelease
-
--- An alternate url for the same repository the upload-uri points to,
--- used for downloading packages that have already been installed
--- there.
---
-myBuildURI myBuildRelease =
-    case isPrivateRelease myBuildRelease of
-      False -> parseURI $ myPublicBuildURI myBuildRelease
-      True -> parseURI $ myPrivateBuildURI myBuildRelease
-
-myPrivateUploadURI release = "ssh://upload@deb.seereason.com/srv/deb-private/" ++ releaseRepoName release
-myPrivateBuildURI release = "ssh://upload@deb.seereason.com/srv/deb-private/" ++ releaseRepoName release
-
-myPublicUploadURI release = "ssh://upload@deb.seereason.com/srv/deb/" ++ releaseRepoName release
-myPublicBuildURI release = "http://deb.seereason.com/" ++ releaseRepoName release
+     ("squeeze", "bpo51+")] ++	-- Hopefully the actual version number when assigned will be greater
+    concatMap (\ rel -> map (\ der -> (der, rel)) (derivedReleaseNames myBuildRelease rel)) ubuntuReleases
 
 -- Additional packages to include in the clean build environment.
 -- Adding packages here can speed things up when you are building many
@@ -183,6 +185,33 @@ myExtraEssential myBuildRelease =
 
 ------------------------- SOURCES --------------------------------
 
+-- Return one of the elements in myReleaseSuffixes, or Nothing.
+--
+releaseSuffix :: String -> Maybe String
+releaseSuffix release =
+    case filter (`isSuffixOf` release) myReleaseSuffixes of
+      [] -> Nothing
+      [suffix] -> Just suffix
+      suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
+
+-- Build a sources.list for one of our build relases.
+--
+releaseSourceLines :: String -> String -> String -> [String]
+releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
+    case releaseSuffix release of
+      Nothing -> baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost
+      Just _ ->
+          [ "deb " ++ uri ++ " " ++ release ++ " main"
+          , "deb-src " ++ uri ++ " " ++ release ++ " main" ]
+    where
+      uri = show (fromJust (myBuildURI release))
+
+baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
+    case releaseRepoName release of
+      "debian" -> debianSourceLines debianMirrorHost release
+      "ubuntu" -> ubuntuSourceLines ubuntuMirrorHost release
+      x -> error $ "Unknown release repository: " ++ show x
+
 debianSourceLines debianMirrorHost release =
     [ "deb http://" ++ debianMirrorHost ++ "/debian " ++ release ++ " main contrib non-free"
     , "deb-src http://" ++ debianMirrorHost ++ "/debian " ++ release ++ " main contrib non-free" ]
@@ -197,16 +226,24 @@ ubuntuSourceLines ubuntuMirrorHost release =
     , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-security main restricted universe multiverse"
     , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-security main restricted universe multiverse" ]
 
+-- The supported release names from Debian and Ubuntu.
+--
 debianReleases = ["sid", "squeeze", "lenny"]
 ubuntuReleases = ["jaunty", "intrepid", "hardy"]
 
+-- A utility function
 dropSuffix suff x = take (length x - length suff) x
 
-allSources debianMirrorHost ubuntuMirrorHost includePrivate =
+-- Build a map assigning names to text for every sources.list we might
+-- use.  These names can be used in Apt targets.  It is also assumed
+-- that we can use any base release or build release name to look up a
+-- sources.list.
+--
+mySources :: String -> String -> String -> [(String, String)]
+mySources myBuildRelease debianMirrorHost ubuntuMirrorHost =
     map releaseSources
             (debianReleases ++ ubuntuReleases ++
-             map (++ "-seereason") (debianReleases ++ ubuntuReleases) ++
-             if includePrivate then map (++ "-seereason-private") (debianReleases ++ ubuntuReleases) else []) ++
+             concatMap (derivedReleaseNames myBuildRelease) (debianReleases ++ ubuntuReleases)) ++
     [("debian-experimental", unlines (debianSourceLines debianMirrorHost "experimental")),
      ("debian-multimedia",
       (unlines ["deb http://mirror.home-dn.net/debian-multimedia stable main",
@@ -215,26 +252,7 @@ allSources debianMirrorHost ubuntuMirrorHost includePrivate =
        (unlines ["deb http://kanotix.com/files/debian sid main contrib non-free vdr",
                  "  deb-src http://kanotix.com/files/debian sid main contrib non-free vdr"]))]
     where
-      releaseSources release = (release, unlines (releaseSourceLines release))
-      releaseSourceLines :: String -> [String]
-      releaseSourceLines release =
-          case () of
-            _ | isSuffixOf "-private" release -> privateSourceLines release
-              | isSuffixOf "-seereason" release -> seereasonSourceLines release
-              | True -> baseReleaseSourceLines release
-      baseReleaseSourceLines release =
-          case releaseRepoName release of
-            "debian" -> debianSourceLines debianMirrorHost release
-            "ubuntu" -> ubuntuSourceLines ubuntuMirrorHost release
-            x -> error $ "Unknown release repository: " ++ show x
-      seereasonSourceLines release =
-          releaseSourceLines (dropSuffix "-seereason" release) ++
-                                 [ "deb " ++ myPublicBuildURI release ++ " " ++ release ++ " main"
-                                 , "deb-src " ++ myPublicBuildURI release ++ " " ++ release ++ " main" ]
-      privateSourceLines release =
-          releaseSourceLines (dropSuffix "-private" release) ++
-                                 [ "deb " ++ myPrivateUploadURI release ++ " " ++ release ++ " main"
-                                 , "deb-src " ++ myPrivateUploadURI release ++ " " ++ release ++ " main" ]
+      releaseSources release = (release, unlines (releaseSourceLines release debianMirrorHost ubuntuMirrorHost))
 
 -- Any package listed here will not trigger rebuilds when updated.
 --
@@ -285,17 +303,16 @@ myGlobalRelaxInfo =
 releaseRepoName name
     | elem name (debianReleases ++ oldDebianReleases) = "debian"
     | elem name (ubuntuReleases ++ oldUbuntuReleases) = "ubuntu"
-    | isSuffixOf "-seereason" name = releaseRepoName (dropSuffix "-seereason" name)
-    | isSuffixOf "-private" name = releaseRepoName (dropSuffix "-private" name)
-    | True = error $ "Unknown release name: " ++ show name
+    | True = case filter (`isSuffixOf` name) myReleaseSuffixes of
+               [suffix] -> releaseRepoName (dropSuffix suffix name)
+               [] -> error $ "Release name has unknown suffix: " ++ show name
+               suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
 
 -- These are releases which are not unsupported for building, but from
 -- which we could, if we had to, pull source from using an Apt target.
 --
 oldDebianReleases = ["etch", "sarge"]
 oldUbuntuReleases = ["gutsy", "feisty"]
-
--- (BinPkgName "module-init-tools",Just (SrcPkgName "linux-2.6"))
 
 -- Nothing below here should need to be modified.
 
@@ -334,7 +351,7 @@ params myBuildRelease =
     , createRelease = []
     , doNotChangeVersion = False
     -- Things that rarely change
-    , sources = allSources myDebianMirrorHost myUbuntuMirrorHost (isPrivateRelease myBuildRelease)
+    , sources = mySources myBuildRelease myDebianMirrorHost myUbuntuMirrorHost
     , globalRelaxInfo = myGlobalRelaxInfo
     , strictness = P.Moderate
     , extraPackages = myExtraPackages myBuildRelease
@@ -342,7 +359,7 @@ params myBuildRelease =
     , omitEssential = []
     , omitBuildEssential = False
     , developmentReleaseNames = myDevelopmentReleaseNames
-    , releaseAliases = myReleaseAliases
+    , releaseAliases = myReleaseAliases myBuildRelease
     , archList = [Binary "i386",Binary "amd64"]
     , newDistProgram = "newdist -v"
     -- Things that are probably obsolete
