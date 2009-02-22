@@ -371,6 +371,7 @@ main =
 maybeDoHelp xs@(x : _)
     | doHelp x = hPutStr stderr (usage "Usage: " optSpecs) >> exitWith ExitSuccess >> return xs
     | True = return xs
+maybeDoHelp [] = return []
 
 optSpecs :: [OptDescr (ParamRec -> ParamRec)]
 optSpecs =
@@ -405,7 +406,8 @@ optSpecs =
                , "or was flushed from the local repository without being uploaded."])
     , Option [] ["target"] (ReqArg (\ s p -> p {targets = targets p ++ [find s p]}) "PACKAGE")
       "Add a target to the target list."
-    , Option [] ["goal"] (ReqArg (\ s p -> p {goals = goals p ++ [s]}) "PACKAGE")
+    , Option [] ["goal"] (ReqArg (\ s p -> p { goals = goals p ++ [s]
+                                             , targets = myTargets (relName (buildRelease p))}) "PACKAGE")
       (unlines [ "If one or more goal package names are given the autobuilder"
                , "will only build these packages and any of their build dependencies"
                , "which are in the package list.  If no goals are specified, all the"
