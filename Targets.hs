@@ -235,15 +235,19 @@ ghc610Targets =
     - Version 2.2.0 hangs when compiled with ghc 6.10 
   "deb-dir:(uri:http://hackage.haskell.org/packages/archive/regex-pcre-builtin/0.94.2.0.7.7/regex-pcre-builtin-0.94.2.0.7.7.tar.gz:1e7f7ca729d344caa20c8f57d18239dd):(darcs:http://src.seereason.com/ghc610/debian/regex-pcre-builtin-debian)"
     - setup-bin: At least the following dependencies are missing: regex-base >=0.93
-  "darcs:http://src.seereason.com/seereason-keyring"
-    - This fails during an arch only build, because it has no architecture dependent files.
 -}
     ]
 
-otherTargets = [Target { sourcePackageName = "tree-widget"
-                       , sourceSpec = "darcs:http://src.seereason.com/tree-widget"
-                       , relaxInfo = [] }
-               ]
+otherTargets =
+    [ Target { sourcePackageName = "tree-widget"
+             , sourceSpec = "darcs:http://src.seereason.com/tree-widget"
+             , relaxInfo = [] }
+    -- This target fails during an arch only build, because it has no architecture dependent files.
+    , Target { sourcePackageName = "seereason-keyring"
+             , sourceSpec = "darcs:http://src.seereason.com/seereason-keyring"
+             , relaxInfo = [] 
+             }
+    ]
 
 privateTargets =
     [ Target { sourcePackageName = "haskell-filecache"

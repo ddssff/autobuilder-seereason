@@ -161,8 +161,14 @@ myReleaseAliases myBuildRelease =
 -- you change this value use the flushRoot option to get it to take
 -- effect.
 --
+-- Note that these packages must exist and be valid at the time the
+-- environment is created.  If there is a package that you want in the
+-- clean environment that isn't available in the base repository (e.g.
+-- seereason-keyring) you currently need to first build it and then
+-- install it manually.
+--
 myExtraPackages myBuildRelease =
-    ["debian-archive-keyring", "seereason-keyring", "ghc6","ghc6-doc", "ghc6-prof"] ++
+    ["debian-archive-keyring", {-"seereason-keyring",-} "ghc6","ghc6-doc", "ghc6-prof"] ++
     -- Private releases generally have ssh URIs in their sources.list,
     -- I have observed that this solves the "ssh died unexpectedly"
     -- errors.
