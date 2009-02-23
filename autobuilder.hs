@@ -206,7 +206,8 @@ releaseSourceLines :: String -> String -> String -> [String]
 releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     case releaseSuffix release of
       Nothing -> baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost
-      Just _ ->
+      Just suff ->
+          releaseSourceLines (dropSuffix suff release) debianMirrorHost ubuntuMirrorHost ++
           [ "deb " ++ uri ++ " " ++ release ++ " main"
           , "deb-src " ++ uri ++ " " ++ release ++ " main" ]
     where
