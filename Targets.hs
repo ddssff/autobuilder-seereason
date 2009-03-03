@@ -219,6 +219,12 @@ ghc610Targets =
     , Target { sourcePackageName = "haskell-archive"
              , sourceSpec = "darcs:http://src.seereason.com/archive"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-orphanage"
+             , sourceSpec = "darcs:http://src.seereason.com/haskell-orphanage"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-hstringtemplate"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HStringTemplate/0.4.3/HStringTemplate-0.4.3.tar.gz:57139f6695f1c268ed38c34336191636):(darcs:http://src.seereason.com/debian/HStringTemplate-debian)"
+             , relaxInfo = [] }
 
 {-
   "quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/ghc610/quilt/hs-plugins-quilt)"
