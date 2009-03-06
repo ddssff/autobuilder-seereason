@@ -256,6 +256,10 @@ otherTargets =
              , sourceSpec = "darcs:http://src.seereason.com/seereason-keyring"
              , relaxInfo = [] 
              }
+    , Target { sourcePackageName = "jquery"
+             , sourceSpec = "apt:sid:jquery"
+             , relaxInfo = [] 
+             }
     ]
 
 privateTargets =
