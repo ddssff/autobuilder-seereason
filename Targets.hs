@@ -68,7 +68,7 @@ ghc610CoreTargets =
 {-
     -- The version of haskell-devscripts in sid is newer, 0.6.15-nmu7
     , Target { sourcePackageName = "haskell-devscripts"
-             , sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc6102/haskell-devscripts-quilt)"
              , relaxInfo = [] }
 -}
 {-
