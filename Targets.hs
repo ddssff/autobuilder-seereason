@@ -16,9 +16,6 @@ ghc610CoreTargets =
     , Target { sourcePackageName = "haskell-zlib"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/zlib/0.5.0.0/zlib-0.5.0.0.tar.gz:22fa6d394c42c8584b234799b923f860):(darcs:http://src.seereason.com/ghc610/debian/haskell-zlib-debian)"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-time"
-             , sourceSpec = "apt:sid:haskell-time"
-             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cdbs"
              , sourceSpec = "darcs:http://src.seereason.com/ghc610/haskell-cdbs"
              , relaxInfo = [] }
@@ -34,21 +31,54 @@ ghc610CoreTargets =
     , Target { sourcePackageName = "haskell-extra"
              , sourceSpec = "darcs:http://src.seereason.com/ghc610/haskell-extra"
              , relaxInfo = ["cabal-debian"] }
+{-
+    , Target { sourcePackageName = "haskell-extra"
+             , sourceSpec = "darcs:http://src.seereason.com/ghc6102/haskell-extra"
+             , relaxInfo = ["cabal-debian"] }
+-}
     , Target { sourcePackageName = "haskell-debian"
              , sourceSpec = "darcs:http://src.seereason.com/ghc610/haskell-debian-3"
              , relaxInfo = ["cabal-debian"] }
     , Target { sourcePackageName = "haskell-debian-repo"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-debian-repo"
              , relaxInfo = [] }
+    -- GHC 6.10.1
     , Target { sourcePackageName = "ghc6"
              , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.1/ghc-6.10.1-src.tar.bz2:54c676a632b3d73cf526b06347522c32):(darcs:http://src.seereason.com/ghc610/debian/ghc610-debian)"
              , relaxInfo = ["ghc6"
                            ,"xsltproc"
                            ,"haskell-devscripts"
                            ,"haddock"] }
+{-
+    -- GHC 6.10.2 release candidate
+    , Target { sourcePackageName = "ghc6"
+             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.2-rc1/ghc-6.10.1.20090314-src.tar.bz2:49d124313a5bb99f0550f59dfcbc2485):(darcs:http://src.seereason.com/debian/ghc6102-debian)"
+             , relaxInfo = ["ghc6"
+                           ,"xsltproc"
+                           ,"haskell-devscripts"
+                           ,"haddock"] }
+    -- This package is no longer included in the 6.10.2 compiler
+    , Target { sourcePackageName = "haskell-time"
+             , sourceSpec = "apt:sid:haskell-time"
+             , relaxInfo = [] }
+-}
     , Target { sourcePackageName = "haskell-devscripts"
              , sourceSpec = "quilt:(uri:http://ftp.de.debian.org/debian/pool/main/h/haskell-devscripts/haskell-devscripts_0.6.15.tar.gz:996acac2c6fb2da2be9c5016f93a3c67):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)"
              , relaxInfo = [] }
+{-
+    -- The version of haskell-devscripts in sid is newer, 0.6.15-nmu7
+    , Target { sourcePackageName = "haskell-devscripts"
+             , sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)"
+             , relaxInfo = [] }
+-}
+{-
+    -- Unpatched haskell-devscripts.  Using this leads to build
+    -- failures because the postinst and postrm scripts don't pass the
+    -- --global-conf argument to ghc-pkg.
+    , Target { sourcePackageName = "haskell-devscripts"
+             , sourceSpec = "apt:sid:haskell-devscripts"
+             , relaxInfo = [] }
+-}
     ]
 
 autobuilderTargets =
