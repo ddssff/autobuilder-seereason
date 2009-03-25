@@ -78,7 +78,9 @@ autobuilderTargets =
              , sourceSpec = "darcs:http://src.seereason.com/ghc610/build-env"
              , relaxInfo = [] }
     , Target { sourcePackageName = "autobuilder"
-             , sourceSpec = "darcs:http://src.seereason.com/ghc610/autobuilder"
+             , sourceSpec = if useGHC6102
+                            then "darcs:http://src.seereason.com/ghc6102/autobuilder"
+                            else "darcs:http://src.seereason.com/ghc610/autobuilder"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cgi"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cgi/3001.1.7.1/cgi-3001.1.7.1.tar.gz:02b1d2fe6f271a17c1eb8b897fbd1d7f):(darcs:http://src.seereason.com/ghc610/debian/haskell-cgi-debian)"
