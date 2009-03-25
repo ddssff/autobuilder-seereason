@@ -253,7 +253,9 @@ ghc610Targets =
                             else "darcs:http://src.seereason.com/mirror"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-archive"
-             , sourceSpec = "darcs:http://src.seereason.com/archive"
+             , sourceSpec = if useGHC6102
+                            then "darcs:http://src.seereason.com/ghc6102/archive"
+                            else "darcs:http://src.seereason.com/archive"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-orphanage"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-orphanage"
