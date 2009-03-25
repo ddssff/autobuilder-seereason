@@ -257,7 +257,9 @@ ghc610Targets =
              , sourceSpec = "darcs:http://src.seereason.com/haskell-orphanage"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hstringtemplate"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HStringTemplate/0.4.3/HStringTemplate-0.4.3.tar.gz:57139f6695f1c268ed38c34336191636):(darcs:http://src.seereason.com/debian/HStringTemplate-debian)"
+             , sourceSpec = if useGHC6102
+                            then "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HStringTemplate/0.4.3/HStringTemplate-0.4.3.tar.gz:57139f6695f1c268ed38c34336191636):(darcs:http://src.seereason.com/ghc6102/debian/HStringTemplate-debian)"
+                            else "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HStringTemplate/0.4.3/HStringTemplate-0.4.3.tar.gz:57139f6695f1c268ed38c34336191636):(darcs:http://src.seereason.com/debian/HStringTemplate-debian)"
              , relaxInfo = [] }
 
 {-
