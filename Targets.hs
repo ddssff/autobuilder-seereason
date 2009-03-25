@@ -6,6 +6,9 @@ import Debian.AutoBuilder.ParamClass (Target(..))
 
 publicTargets = ghc610CoreTargets ++ autobuilderTargets ++ ghc610Targets ++ otherTargets
 
+useGHC6102 = True
+useNewestDevscripts = True
+
 -- Information about how to obtain and assemble the source code for
 -- the packages we want to build. | 
 
@@ -28,13 +31,7 @@ ghc610CoreTargets =
     , Target { sourcePackageName = "haxml"
              , sourceSpec = "quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/ghc610/quilt/haxml-quilt)"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-extra"
-             , sourceSpec = "darcs:http://src.seereason.com/ghc610/haskell-extra"
-             , relaxInfo = ["cabal-debian"] }
 {-
-    , Target { sourcePackageName = "haskell-extra"
-             , sourceSpec = "darcs:http://src.seereason.com/ghc6102/haskell-extra"
-             , relaxInfo = ["cabal-debian"] }
 -}
     , Target { sourcePackageName = "haskell-debian"
              , sourceSpec = "darcs:http://src.seereason.com/ghc610/haskell-debian-3"
@@ -42,35 +39,19 @@ ghc610CoreTargets =
     , Target { sourcePackageName = "haskell-debian-repo"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-debian-repo"
              , relaxInfo = [] }
-    -- GHC 6.10.1
+    , Target { sourcePackageName = "haskell-devscripts"
+             , sourceSpec = if useNewestDevscripts
+                            then "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc6102/haskell-devscripts-quilt)"
+                            else "quilt:(uri:http://ftp.de.debian.org/debian/pool/main/h/haskell-devscripts/haskell-devscripts_0.6.15.tar.gz:996acac2c6fb2da2be9c5016f93a3c67):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "ghc6"
-             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.1/ghc-6.10.1-src.tar.bz2:54c676a632b3d73cf526b06347522c32):(darcs:http://src.seereason.com/ghc610/debian/ghc610-debian)"
+             , sourceSpec = if useGHC6102
+                            then "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.2-rc1/ghc-6.10.1.20090314-src.tar.bz2:49d124313a5bb99f0550f59dfcbc2485):(darcs:http://src.seereason.com/debian/ghc6102-debian)"
+                            else "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.1/ghc-6.10.1-src.tar.bz2:54c676a632b3d73cf526b06347522c32):(darcs:http://src.seereason.com/ghc610/debian/ghc610-debian)"
              , relaxInfo = ["ghc6"
                            ,"xsltproc"
                            ,"haskell-devscripts"
                            ,"haddock"] }
-{-
-    -- GHC 6.10.2 release candidate
-    , Target { sourcePackageName = "ghc6"
-             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.2-rc1/ghc-6.10.1.20090314-src.tar.bz2:49d124313a5bb99f0550f59dfcbc2485):(darcs:http://src.seereason.com/debian/ghc6102-debian)"
-             , relaxInfo = ["ghc6"
-                           ,"xsltproc"
-                           ,"haskell-devscripts"
-                           ,"haddock"] }
-    -- This package is no longer included in the 6.10.2 compiler
-    , Target { sourcePackageName = "haskell-time"
-             , sourceSpec = "apt:sid:haskell-time"
-             , relaxInfo = [] }
--}
-    , Target { sourcePackageName = "haskell-devscripts"
-             , sourceSpec = "quilt:(uri:http://ftp.de.debian.org/debian/pool/main/h/haskell-devscripts/haskell-devscripts_0.6.15.tar.gz:996acac2c6fb2da2be9c5016f93a3c67):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)"
-             , relaxInfo = [] }
-{-
-    -- The version of haskell-devscripts in sid is newer, 0.6.15-nmu7
-    , Target { sourcePackageName = "haskell-devscripts"
-             , sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc6102/haskell-devscripts-quilt)"
-             , relaxInfo = [] }
--}
 {-
     -- Unpatched haskell-devscripts.  Using this leads to build
     -- failures because the postinst and postrm scripts don't pass the
@@ -79,7 +60,18 @@ ghc610CoreTargets =
              , sourceSpec = "apt:sid:haskell-devscripts"
              , relaxInfo = [] }
 -}
-    ]
+    ] ++
+    if useGHC6102
+    then [ -- The haskell-time package is no longer included in the 6.10.2 compiler
+           Target { sourcePackageName = "haskell-time"
+                  , sourceSpec = "apt:sid:haskell-time"
+                  , relaxInfo = [] }
+         , Target { sourcePackageName = "haskell-extra"
+                  , sourceSpec = "darcs:http://src.seereason.com/ghc6102/haskell-extra"
+                  , relaxInfo = ["cabal-debian"] } ]
+    else [ Target { sourcePackageName = "haskell-extra"
+                  , sourceSpec = "darcs:http://src.seereason.com/ghc610/haskell-extra"
+                  , relaxInfo = ["cabal-debian"] } ]
 
 autobuilderTargets =
     [ Target { sourcePackageName = "build-env"
