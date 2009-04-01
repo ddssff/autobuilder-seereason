@@ -46,7 +46,7 @@ ghc610CoreTargets =
              , relaxInfo = [] }
     , Target { sourcePackageName = "ghc6"
              , sourceSpec = if useGHC6102
-                            then "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.2-rc1/ghc-6.10.1.20090314-src.tar.bz2:49d124313a5bb99f0550f59dfcbc2485):(darcs:http://src.seereason.com/debian/ghc6102-debian)"
+                            then "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.2/ghc-6.10.2-src.tar.bz2:9415604386ca69ebe15f1054653aefaf):(darcs:http://src.seereason.com/debian/ghc6102-debian)"
                             else "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.1/ghc-6.10.1-src.tar.bz2:54c676a632b3d73cf526b06347522c32):(darcs:http://src.seereason.com/ghc610/debian/ghc610-debian)"
              , relaxInfo = ["ghc6"
                            ,"xsltproc"
