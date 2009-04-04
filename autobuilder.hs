@@ -168,7 +168,7 @@ myReleaseAliases myBuildRelease =
 -- install it manually.
 --
 myExtraPackages myBuildRelease =
-    ["debian-archive-keyring", {-"seereason-keyring",-} "ghc6","ghc6-doc", "ghc6-prof"] ++
+    ["debian-archive-keyring" {-, "seereason-keyring", "ghc6","ghc6-doc", "ghc6-prof"-}] ++
     -- Private releases generally have ssh URIs in their sources.list,
     -- I have observed that this solves the "ssh died unexpectedly"
     -- errors.
