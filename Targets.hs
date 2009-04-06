@@ -4,15 +4,15 @@ import Debian.AutoBuilder.ParamClass (Target(..))
 
 ------------------------ TARGETS ---------------------
 
-publicTargets = ghc610CoreTargets ++ autobuilderTargets ++ ghc610Targets ++ otherTargets
+publicTargets release = ghc610CoreTargets release ++ autobuilderTargets release ++ ghc610Targets release ++ otherTargets release
 
-useGHC6102 = True
-useNewestDevscripts = True
+useGHC6102 release = elem release ["intrepid-seereason"]
+useNewestDevscripts release = elem release ["intrepid-seereason"]
 
 -- Information about how to obtain and assemble the source code for
 -- the packages we want to build. | 
 
-ghc610CoreTargets =
+ghc610CoreTargets release =
     [ Target { sourcePackageName = "haskell-bzlib"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.5.0.0/bzlib-0.5.0.0.tar.gz:ab594aaf9998ed602f8b23dd25199e19):(darcs:http://src.seereason.com/ghc610/debian/haskell-bzlib-debian)"
              , relaxInfo = [] }
@@ -34,7 +34,7 @@ ghc610CoreTargets =
 {-
 -}
     , Target { sourcePackageName = "haskell-debian"
-             , sourceSpec = if useGHC6102
+             , sourceSpec = if useGHC6102 release
                             then "darcs:http://src.seereason.com/ghc6102/haskell-debian-3"
                             else "darcs:http://src.seereason.com/ghc610/haskell-debian-3"
              , relaxInfo = ["cabal-debian"] }
@@ -42,12 +42,12 @@ ghc610CoreTargets =
              , sourceSpec = "darcs:http://src.seereason.com/haskell-debian-repo"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-devscripts"
-             , sourceSpec = if useNewestDevscripts
+             , sourceSpec = if useNewestDevscripts release
                             then "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc6102/haskell-devscripts-quilt)"
                             else "quilt:(uri:http://ftp.de.debian.org/debian/pool/main/h/haskell-devscripts/haskell-devscripts_0.6.15.tar.gz:996acac2c6fb2da2be9c5016f93a3c67):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "ghc6"
-             , sourceSpec = if useGHC6102
+             , sourceSpec = if useGHC6102 release
                             then "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.2/ghc-6.10.2-src.tar.bz2:243d5857e5aa5f2f86e5e4c4437973fb):(darcs:http://src.seereason.com/debian/ghc6102-debian)"
                             else "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.1/ghc-6.10.1-src.tar.bz2:54c676a632b3d73cf526b06347522c32):(darcs:http://src.seereason.com/ghc610/debian/ghc610-debian)"
              , relaxInfo = ["ghc6"
@@ -63,7 +63,7 @@ ghc610CoreTargets =
              , relaxInfo = [] }
 -}
     ] ++
-    if useGHC6102
+    if useGHC6102 release
     then [ -- The haskell-time package is no longer included in the 6.10.2 compiler
            Target { sourcePackageName = "haskell-time"
                   , sourceSpec = "apt:sid:haskell-time"
@@ -75,12 +75,12 @@ ghc610CoreTargets =
                   , sourceSpec = "darcs:http://src.seereason.com/ghc610/haskell-extra"
                   , relaxInfo = ["cabal-debian"] } ]
 
-autobuilderTargets =
+autobuilderTargets release =
     [ Target { sourcePackageName = "build-env"
              , sourceSpec = "darcs:http://src.seereason.com/ghc610/build-env"
              , relaxInfo = [] }
     , Target { sourcePackageName = "autobuilder"
-             , sourceSpec = if useGHC6102
+             , sourceSpec = if useGHC6102 release
                             then "darcs:http://src.seereason.com/ghc6102/autobuilder"
                             else "darcs:http://src.seereason.com/ghc610/autobuilder"
              , relaxInfo = [] }
@@ -88,7 +88,7 @@ autobuilderTargets =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cgi/3001.1.7.1/cgi-3001.1.7.1.tar.gz:02b1d2fe6f271a17c1eb8b897fbd1d7f):(darcs:http://src.seereason.com/ghc610/debian/haskell-cgi-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mime"
-             , sourceSpec = if useGHC6102
+             , sourceSpec = if useGHC6102 release
                             then  "darcs:http://src.seereason.com/ghc6102/haskell-mime"
                             else "darcs:http://src.seereason.com/ghc610/haskell-mime"
              , relaxInfo = [] }
@@ -97,7 +97,7 @@ autobuilderTargets =
              , relaxInfo = [] }
     ]
 
-ghc610Targets =
+ghc610Targets release =
     [ Target { sourcePackageName = "haskell-utils"
              , sourceSpec = "quilt:(apt:sid:haskell-utils):(darcs:http://src.seereason.com/ghc610/quilt/haskell-utils-quilt)"
              , relaxInfo = [] }
@@ -168,7 +168,7 @@ ghc610Targets =
              , sourceSpec = "darcs:http://src.seereason.com/ghc610/iconv"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hslogger"
-             , sourceSpec = if useGHC6102
+             , sourceSpec = if useGHC6102 release
                             then "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hslogger/1.0.7/hslogger-1.0.7.tar.gz:74ff79b2abfec7e24b96925f06112c9f):(darcs:http://src.seereason.com/ghc6102/debian/hslogger-debian)"
                             else "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hslogger/1.0.7/hslogger-1.0.7.tar.gz:74ff79b2abfec7e24b96925f06112c9f):(darcs:http://src.seereason.com/ghc610/debian/hslogger-debian)"
              , relaxInfo = [] }
@@ -250,12 +250,12 @@ ghc610Targets =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/CC-delcont/0.2/CC-delcont-0.2.tar.gz:e52149fca9bf76330a7c159917152790):(darcs:http://src.seereason.com/ghc610/debian/CC-delcont-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-debian-mirror"
-             , sourceSpec = if useGHC6102
+             , sourceSpec = if useGHC6102 release
                             then "darcs:http://src.seereason.com/ghc6102/mirror"
                             else "darcs:http://src.seereason.com/mirror"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-archive"
-             , sourceSpec = if useGHC6102
+             , sourceSpec = if useGHC6102 release
                             then "darcs:http://src.seereason.com/ghc6102/archive"
                             else "darcs:http://src.seereason.com/archive"
              , relaxInfo = [] }
@@ -263,7 +263,7 @@ ghc610Targets =
              , sourceSpec = "darcs:http://src.seereason.com/haskell-orphanage"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hstringtemplate"
-             , sourceSpec = if useGHC6102
+             , sourceSpec = if useGHC6102 release
                             then "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HStringTemplate/0.4.3/HStringTemplate-0.4.3.tar.gz:57139f6695f1c268ed38c34336191636):(darcs:http://src.seereason.com/ghc6102/debian/HStringTemplate-debian)"
                             else "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HStringTemplate/0.4.3/HStringTemplate-0.4.3.tar.gz:57139f6695f1c268ed38c34336191636):(darcs:http://src.seereason.com/debian/HStringTemplate-debian)"
              , relaxInfo = [] }
@@ -286,7 +286,7 @@ ghc610Targets =
 -}
     ]
 
-otherTargets =
+otherTargets release =
     [ Target { sourcePackageName = "tree-widget"
              , sourceSpec = "darcs:http://src.seereason.com/tree-widget"
              , relaxInfo = [] }
@@ -305,7 +305,7 @@ otherTargets =
              , relaxInfo = [] } -}
     ]
 
-privateTargets =
+privateTargets release =
     [ Target { sourcePackageName = "haskell-filecache"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/haskell-filecache"
              , relaxInfo = [] }

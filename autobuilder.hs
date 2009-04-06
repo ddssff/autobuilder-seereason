@@ -106,8 +106,8 @@ myVerbosity = 0
 --
 myTargets myBuildRelease =
     if isPrivateRelease myBuildRelease
-    then privateTargets
-    else publicTargets
+    then privateTargets myBuildRelease
+    else publicTargets myBuildRelease
 
 -- If you are not interested in building everything, put one or more
 -- source package names you want to build in this list.  Only these
