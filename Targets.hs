@@ -39,7 +39,9 @@ ghc610CoreTargets release =
                             else "darcs:http://src.seereason.com/ghc610/haskell-debian-3"
              , relaxInfo = ["cabal-debian"] }
     , Target { sourcePackageName = "haskell-debian-repo"
-             , sourceSpec = "darcs:http://src.seereason.com/haskell-debian-repo"
+             , sourceSpec = if useGHC6102 release
+                            then "darcs:http://src.seereason.com/ghc6102/haskell-debian-repo"
+                            else "darcs:http://src.seereason.com/haskell-debian-repo"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-devscripts"
              , sourceSpec = if useNewestDevscripts release
