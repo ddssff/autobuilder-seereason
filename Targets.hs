@@ -1,13 +1,14 @@
 module Targets where
 
+import Data.List (isPrefixOf)
 import Debian.AutoBuilder.ParamClass (Target(..))
 
 ------------------------ TARGETS ---------------------
 
 publicTargets release = ghc610CoreTargets release ++ autobuilderTargets release ++ ghc610Targets release ++ otherTargets release
 
-useGHC6102 release = elem release ["intrepid-seereason"]
-useNewestDevscripts release = elem release ["intrepid-seereason"]
+useGHC6102 release = isPrefixOf "intrepid-" release
+useNewestDevscripts release = isPrefixOf "intrepid-" release
 
 -- Information about how to obtain and assemble the source code for
 -- the packages we want to build. | 
@@ -318,13 +319,17 @@ privateTargets release =
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/haskell-appraisal"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-mailinglist"
-             , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/mailingList"
+             , sourceSpec = if useGHC6102 release
+                            then "darcs:" ++ privateDarcsURI ++ "/ghc6102/mailingList"
+                            else "darcs:" ++ privateDarcsURI ++ "/mailingList"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-generic-formlets"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/generic-formlets"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-algebrazam"
-             , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/AlgebraZam"
+             , sourceSpec = if useGHC6102 release
+                            then "darcs:" ++ privateDarcsURI ++ "/ghc6102/AlgebraZam"
+                            else "darcs:" ++ privateDarcsURI ++ "/AlgebraZam"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-algebrazam-quiz"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/algebrazam-quiz"
