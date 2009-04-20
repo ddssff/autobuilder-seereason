@@ -25,7 +25,9 @@ ghc610CoreTargets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/zlib/0.5.0.0/zlib-0.5.0.0.tar.gz:22fa6d394c42c8584b234799b923f860):(darcs:http://src.seereason.com/ghc610/debian/haskell-zlib-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cdbs"
-             , sourceSpec = "darcs:http://src.seereason.com/ghc610/haskell-cdbs"
+             , sourceSpec = if useNewestDevscripts
+                            then "darcs:http://src.seereason.com/ghc6102/haskell-cdbs"
+                            else "darcs:http://src.seereason.com/ghc610/haskell-cdbs"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-unixutils"
              , sourceSpec = "darcs:http://src.seereason.com/ghc610/haskell-unixutils"
