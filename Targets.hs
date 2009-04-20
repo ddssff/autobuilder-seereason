@@ -5,13 +5,17 @@ import Debian.AutoBuilder.ParamClass (Target(..))
 
 ------------------------ TARGETS ---------------------
 
-publicTargets release = ghc610CoreTargets release ++ autobuilderTargets release ++ ghc610Targets release ++ otherTargets release
+publicTargets release =
+    ghc610CoreTargets release ++	-- The compiler and our packaging tools
+    autobuilderTargets release ++	-- The autobuilder and its dependencies
+    ghc610Targets release ++		-- Haskell targets
+    otherTargets release		-- Non-haskell targets
 
-useGHC6102 release = isPrefixOf "intrepid-" release
-useNewestDevscripts release = isPrefixOf "intrepid-" release
+useGHC6102 release = isPrefixOf "intrepid-" release || isPrefixOf "jaunty-" release
+useNewestDevscripts release = isPrefixOf "intrepid-" release || isPrefixOf "jaunty-" release
 
 -- Information about how to obtain and assemble the source code for
--- the packages we want to build. | 
+-- the packages we want to build.
 
 ghc610CoreTargets release =
     [ Target { sourcePackageName = "haskell-bzlib"

@@ -5,7 +5,7 @@
 --   sudo runhaskell -package=base-3.0.3.0 <path to this configuration file> release1 release2 ...
 
 -- Import the symbols we use below.
-import Data.List (isSuffixOf)
+import Data.List (isSuffixOf, isPrefixOf)
 import Data.Maybe
 import qualified Debian.AutoBuilder.Main as M
 import qualified Debian.AutoBuilder.ParamClass as P
@@ -183,10 +183,15 @@ myExtraPackages myBuildRelease =
 -- sysvinit to the build when they ceased to be 'Required' packages.
 --
 myExtraEssential myBuildRelease =
-    ["belocs-locales-bin", "gnupg", "dpkg"] ++
+    ["gnupg", "dpkg"] ++
     case releaseRepoName myBuildRelease of
       "debian" -> []
-      "ubuntu" -> ["upstart-compat-sysv"]
+      "ubuntu" ->
+          case () of
+            _ | isPrefixOf "jaunty-" myBuildRelease -> ["upstart-compat-sysv"]
+              | isPrefixOf "intrepid-" myBuildRelease -> ["upstart-compat-sysv", "belocs-locales-bin"]
+              | isPrefixOf "hardy-" myBuildRelease -> ["upstart-compat-sysv", "belocs-locales-bin"]
+              | True -> ["belocs-locales-bin"]
       _ -> error $ "Unknown build release: " ++ myBuildRelease
 
 ------------------------- SOURCES --------------------------------
