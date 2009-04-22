@@ -283,6 +283,13 @@ ghc610Targets release =
                             else "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HStringTemplate/0.4.3/HStringTemplate-0.4.3.tar.gz:57139f6695f1c268ed38c34336191636):(darcs:http://src.seereason.com/debian/HStringTemplate-debian)"
              , relaxInfo = [] }
 
+    , Target { sourcePackageName = "haskell-consumer"
+             , sourceSpec = "deb-dir:(darcs:http://www.n-heptane.com/nhlab/haskell-consumer,(darcs:http://src.seereason.com/debian/haskell-consumer))"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-urlt"
+             , sourceSpec = "darcs:http://src.seereason.com/urlt"
+             , relaxInfo = [] }
+
 {-
   "quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/ghc610/quilt/hs-plugins-quilt)"
     - Needs an older cabal
