@@ -284,7 +284,7 @@ ghc610Targets release =
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-consumer"
-             , sourceSpec = "deb-dir:(darcs:http://www.n-heptane.com/nhlab/haskell-consumer,darcs:http://src.seereason.com/debian/haskell-consumer)"
+             , sourceSpec = "deb-dir:(darcs:http://www.n-heptane.com/nhlab/haskell-consumer):(darcs:http://src.seereason.com/debian/haskell-consumer)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-urlt"
              , sourceSpec = "darcs:http://src.seereason.com/urlt"
