@@ -11,8 +11,8 @@ publicTargets release =
     ghc610Targets release ++		-- Haskell targets
     otherTargets release		-- Non-haskell targets
 
-useGHC6102 release = isPrefixOf "intrepid-" release || isPrefixOf "jaunty-" release
-useNewestDevscripts release = isPrefixOf "intrepid-" release || isPrefixOf "jaunty-" release
+useGHC6102 release = True
+useNewestDevscripts release = True
 
 -- Information about how to obtain and assemble the source code for
 -- the packages we want to build.
