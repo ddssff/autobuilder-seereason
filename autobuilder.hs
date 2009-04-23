@@ -238,10 +238,16 @@ ubuntuSourceLines ubuntuMirrorHost release =
     , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-security main restricted universe multiverse"
     , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-security main restricted universe multiverse" ]
 
--- The supported release names from Debian and Ubuntu.
+-- The names of the releases that we are able to create build environments for.
 --
 debianReleases = ["sid", "squeeze", "lenny"]
-ubuntuReleases = ["jaunty", "intrepid", "hardy"]
+ubuntuReleases = ["jaunty", "intrepid", "hardy", "dapper"]
+
+-- These are releases which are not supported for building, but from
+-- which we could, if we had to, pull source from using an Apt target.
+--
+oldDebianReleases = ["etch", "sarge"]
+oldUbuntuReleases = []
 
 -- A utility function
 dropSuffix suff x = take (length x - length suff) x
@@ -319,12 +325,6 @@ releaseRepoName name
                [suffix] -> releaseRepoName (dropSuffix suffix name)
                [] -> error $ "Release name has unknown suffix: " ++ show name
                suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
-
--- These are releases which are not unsupported for building, but from
--- which we could, if we had to, pull source from using an Apt target.
---
-oldDebianReleases = ["etch", "sarge"]
-oldUbuntuReleases = ["gutsy", "feisty"]
 
 -- Nothing below here should need to be modified.
 
