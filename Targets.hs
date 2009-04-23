@@ -321,6 +321,11 @@ otherTargets release =
              , sourceSpec = "apt:sid:jquery"
              , relaxInfo = [] 
              }
+    -- Waiting for this one to appear in sid
+    , Target { sourcePackageName = "jqueryui"
+             , sourceSpec = "darcs:http://src.seereason.com/jqueryui"
+             , relaxInfo = [] 
+             }
 {-  We no longer need our own version of this.
     , Target { sourcePackageName = "haskell-tagsoup"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tagsoup/0.6/tagsoup-0.6.tar.gz:4db416463189292609b4cd3d0e867ccd):(darcs:http://src.seereason.com/debian/tagsoup-debian)"
