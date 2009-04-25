@@ -343,17 +343,13 @@ privateTargets release =
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/haskell-appraisal"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-mailinglist"
-             , sourceSpec = if useGHC6102 release
-                            then "darcs:" ++ privateDarcsURI ++ "/ghc6102/mailingList"
-                            else "darcs:" ++ privateDarcsURI ++ "/mailingList"
+             , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/mailingList"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-generic-formlets"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/generic-formlets"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-algebrazam"
-             , sourceSpec = if useGHC6102 release
-                            then "darcs:" ++ privateDarcsURI ++ "/ghc6102/AlgebraZam"
-                            else "darcs:" ++ privateDarcsURI ++ "/AlgebraZam"
+             , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/AlgebraZam"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-algebrazam-quiz"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/algebrazam-quiz"
