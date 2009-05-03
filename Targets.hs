@@ -290,6 +290,14 @@ ghc610Targets release =
              , sourceSpec = "darcs:http://src.seereason.com/urlt"
              , relaxInfo = [] }
 
+    , Target { sourcePackageName = "haskell-xml"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/xml/1.3.4/xml-1.3.4.tar.gz:841c3a36a0bfb2e46f88448ecc227cad):(darcs:http://src.seereason.com/debian/haskell-xml-debian)"
+             , relaxInfo = [] }
+
+    , Target { sourcePackageName = "haskell-feed"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/feed/0.3.6/feed-0.3.6.tar.gz:0abeeaa7870ef241ccdc5785e608a599):(darcs:http://src.seereason.com/debian/haskell-feed-debian)"
+             , relaxInfo = [] }
+
 {-
   "quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/ghc610/quilt/hs-plugins-quilt)"
     - Needs an older cabal
