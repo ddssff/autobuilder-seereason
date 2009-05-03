@@ -12,7 +12,12 @@ publicTargets release =
     otherTargets release		-- Non-haskell targets
 
 useGHC6102 release = True
-useNewestDevscripts release = True
+
+-- If True, use an unmodified version of Debian's current
+-- haskell-devscripts.  In addition, a dummy version of our
+-- haskell-cdbs is built which replaces our hlibrary.mk file with a
+-- link to Debian's.
+useStandardDevscripts release = False
 
 -- Information about how to obtain and assemble the source code for
 -- the packages we want to build.
@@ -25,12 +30,9 @@ ghc610CoreTargets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/zlib/0.5.0.0/zlib-0.5.0.0.tar.gz:22fa6d394c42c8584b234799b923f860):(darcs:http://src.seereason.com/ghc610/debian/haskell-zlib-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cdbs"
-             , sourceSpec = if False {- useNewestDevscripts release -}
-                            {- The changes in this branch replace our hlibrary.mk with includes of
-                               debhelper.mk and debian's hlibrary.mk.  It also adds a dependency on
-                               hscolour.  Unfortunately, most package builds fail using this. -}
-                            then "darcs:http://src.seereason.com/ghc6102/haskell-cdbs"
-                            else "darcs:http://src.seereason.com/ghc610/haskell-cdbs"
+             , sourceSpec = if useStandardDevscripts release
+                            then "darcs:http://src.seereason.com/haskell-cdbs-dummy"
+                            else "darcs:http://src.seereason.com/haskell-cdbs"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-unixutils"
              , sourceSpec = "darcs:http://src.seereason.com/ghc610/haskell-unixutils"
@@ -54,9 +56,10 @@ ghc610CoreTargets release =
                             else "darcs:http://src.seereason.com/haskell-debian-repo"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-devscripts"
-             , sourceSpec = if useNewestDevscripts release
-                            then "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc6102/haskell-devscripts-quilt)"
-                            else "quilt:(uri:http://ftp.de.debian.org/debian/pool/main/h/haskell-devscripts/haskell-devscripts_0.6.15.tar.gz:996acac2c6fb2da2be9c5016f93a3c67):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)"
+             , sourceSpec = if useStandardDevscripts release
+                            then "apt:sid:haskell-devscripts"
+                            else "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc6102/haskell-devscripts-quilt)"
+                            -- "quilt:(uri:http://ftp.de.debian.org/debian/pool/main/h/haskell-devscripts/haskell-devscripts_0.6.15.tar.gz:996acac2c6fb2da2be9c5016f93a3c67):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "ghc6"
              , sourceSpec = if useGHC6102 release
