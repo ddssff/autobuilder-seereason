@@ -300,6 +300,10 @@ ghc610Targets release =
     , Target { sourcePackageName = "haskell-feed"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/feed/0.3.6/feed-0.3.6.tar.gz:0abeeaa7870ef241ccdc5785e608a599):(darcs:http://src.seereason.com/debian/haskell-feed-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-pandoc"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.2/pandoc-1.2.tar.gz:402999cf17dd7072e4c8c7b6b6050ec3):(darcs:http://src.seereason.com/debian/haskell-pandoc-debian)"
+             , relaxInfo = []
+             }
 
 {-
   "quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/ghc610/quilt/hs-plugins-quilt)"
