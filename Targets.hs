@@ -316,6 +316,21 @@ ghc610Targets release =
              , sourceSpec = "apt:sid:haskell-glut"
              , relaxInfo = [] }
 
+    , Target { sourcePackageName = "happstack-blog"
+             , sourceSpec = "darcs:http://src.seereason.com/happstack-blog"
+             , relaxInfo = []
+             }
+
+    , Target { sourcePackageName = "haskell-utility-ht"
+            , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/utility-ht/0.0.5.1/utility-ht-0.0.5.1.tar.gz:98dcb042f404378d9071fc6344703386):(darcs:http://src.seereason.com/ghc610/debian/haskell-utility-ht)"
+            , relaxInfo = []
+            }
+
+    , Target { sourcePackageName = "haskell-gnuplot"
+            , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/gnuplot/0.3/gnuplot-0.3.tar.gz:4432a0e0b44ca7ceae8e6737cf0258fa):(darcs:http://src.seereason.com/ghc610/debian/haskell-gnuplot)"
+            , relaxInfo = []
+            }
+
 {-
   "quilt:(apt:sid:hs-plugins):(darcs:http://src.seereason.com/ghc610/quilt/hs-plugins-quilt)"
     - Needs an older cabal
