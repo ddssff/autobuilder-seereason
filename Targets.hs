@@ -55,12 +55,16 @@ ghc610CoreTargets release =
                             then "darcs:http://src.seereason.com/ghc6102/haskell-debian-repo"
                             else "darcs:http://src.seereason.com/haskell-debian-repo"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "html-xml-utils"
+           , sourceSpec = "apt:sid:html-xml-utils"
+           , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-devscripts"
              , sourceSpec = if useStandardDevscripts release
                             then "apt:sid:haskell-devscripts"
                             else "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc6102/haskell-devscripts-quilt)"
                             -- "quilt:(uri:http://ftp.de.debian.org/debian/pool/main/h/haskell-devscripts/haskell-devscripts_0.6.15.tar.gz:996acac2c6fb2da2be9c5016f93a3c67):(darcs:http://src.seereason.com/ghc610/quilt/haskell-devscripts-quilt)"
              , relaxInfo = [] }
+
     , Target { sourcePackageName = "ghc6"
              , sourceSpec = if useGHC6102 release
                             then "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.10.2/ghc-6.10.2-src.tar.bz2:243d5857e5aa5f2f86e5e4c4437973fb):(darcs:http://src.seereason.com/debian/ghc6102-debian)"
@@ -164,9 +168,11 @@ ghc610Targets release =
     , Target { sourcePackageName = "haskell-hinotify"
              , sourceSpec = "deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/ghc610/debian/hinotify-debian)"
              , relaxInfo = [] }
+{-
     , Target { sourcePackageName = "haskell-hspread"
              , sourceSpec = "quilt:(apt:sid:haskell-hspread):(darcs:http://src.seereason.com/ghc610/quilt/haskell-hspread-quilt)"
              , relaxInfo = [] }
+-}
     , Target { sourcePackageName = "haskell-utf8-string"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/utf8-string/0.3.4/utf8-string-0.3.4.tar.gz:72d13d9453cdf721dd95bc18144a120a):(darcs:http://src.seereason.com/ghc610/debian/utf8-string-debian)"
              , relaxInfo = [] }
