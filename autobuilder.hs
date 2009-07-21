@@ -188,7 +188,8 @@ myExtraEssential myBuildRelease =
       "debian" -> []
       "ubuntu" ->
           case () of
-            _ | isPrefixOf "jaunty-" myBuildRelease -> ["upstart-compat-sysv"]
+            _ | isPrefixOf "karmic-" myBuildRelease -> ["upstart-compat-sysv"]
+              | isPrefixOf "jaunty-" myBuildRelease -> ["upstart-compat-sysv"]
               | isPrefixOf "intrepid-" myBuildRelease -> ["upstart-compat-sysv", "belocs-locales-bin"]
               | isPrefixOf "hardy-" myBuildRelease -> ["upstart-compat-sysv", "belocs-locales-bin"]
               | True -> ["belocs-locales-bin"]
@@ -241,7 +242,7 @@ ubuntuSourceLines ubuntuMirrorHost release =
 -- The names of the releases that we are able to create build environments for.
 --
 debianReleases = ["sid", "squeeze", "lenny"]
-ubuntuReleases = ["jaunty", "intrepid", "hardy", "dapper"]
+ubuntuReleases = ["karmic", "jaunty", "intrepid", "hardy", "dapper"]
 
 -- These are releases which are not supported for building, but from
 -- which we could, if we had to, pull source from using an Apt target.
