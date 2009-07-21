@@ -91,7 +91,8 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
     -- which didn't add a dependency on the dev package.  This quilt
     -- target just changes the version number to trump b3.
     , Target { sourcePackageName = "haskell-hunit"
-             , sourceSpec = "quilt:(apt:sid:haskell-hunit):(darcs:http://src.seereason.com/haskell-hunit-quilt)"
+             -- , sourceSpec = "quilt:(apt:sid:haskell-hunit):(darcs:http://src.seereason.com/haskell-hunit-quilt)"
+             , sourceSpec = "apt:sid:haskell-hunit"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mtl"
              , sourceSpec = "apt:sid:haskell-mtl"
@@ -132,7 +133,8 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
            , sourceSpec = "apt:sid:html-xml-utils"
            , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-devscripts"
-           , sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc6103/haskell-devscripts-quilt)"
+           -- , sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc6103/haskell-devscripts-quilt)"
+             , sourceSpec = "apt:sid:haskell-devscripts"
            , relaxInfo = ["hscolour"] }
     , Target { sourcePackageName = "haskell-debian"
              , sourceSpec = case ghcRelease of
