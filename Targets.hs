@@ -91,8 +91,8 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
     -- which didn't add a dependency on the dev package.  This quilt
     -- target just changes the version number to trump b3.
     , Target { sourcePackageName = "haskell-hunit"
-             -- , sourceSpec = "quilt:(apt:sid:haskell-hunit):(darcs:http://src.seereason.com/haskell-hunit-quilt)"
-             , sourceSpec = "apt:sid:haskell-hunit"
+             , sourceSpec = "quilt:(apt:sid:haskell-hunit):(darcs:http://src.seereason.com/haskell-hunit-quilt)"
+             -- , sourceSpec = "apt:sid:haskell-hunit"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mtl"
              , sourceSpec = "apt:sid:haskell-mtl"
@@ -274,7 +274,7 @@ ghc610Targets release | isPrefixOf "sid-" release =
              , relaxInfo = [] }
     -- Our version of hsx isn't ready for a newer haskell-src-exts.
     , Target { sourcePackageName = "haskell-src-exts"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/haskell-src-exts/0.4.3.1/haskell-src-exts-0.4.3.1.tar.gz:4ff97fdae2bca0da0194fcb80974b188):(darcs:http://src.seereason.com/ghc610/debian/haskell-src-exts-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/haskell-src-exts/0.4.3.1/haskell-src-exts-0.4.3.1.tar.gz:4ff97fdae2bca0da0194fcb80974b188):(darcs:http://src.seereason.com/ghc6103/haskell-src-exts-debian)"
              , relaxInfo = [] }
 {-
     , Target { sourcePackageName = "haskell-src-exts"
@@ -302,14 +302,12 @@ ghc610Targets release | isPrefixOf "sid-" release =
     , Target { sourcePackageName = "haskell-happstack"
              , sourceSpec = "cd:happstack:darcs:http://src.seereason.com/ghc6103/happstack"
              , relaxInfo = [] }
-{-  -- Requires HTTP >= 4000.0.2
     , Target { sourcePackageName = "haskell-happstack-contrib"
              , sourceSpec = "cd:happstack-contrib:darcs:http://src.seereason.com/ghc6103/happstack"
              , relaxInfo = [] }
--}
     -- Depends on pandoc
     , Target { sourcePackageName = "haskell-happstack-extra"
-             , sourceSpec = "darcs:http://src.seereason.com/happstack-extra"
+             , sourceSpec = "darcs:http://src.seereason.com/ghc6103/happstack-extra"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-pandoc"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.2/pandoc-1.2.tar.gz:402999cf17dd7072e4c8c7b6b6050ec3):(darcs:http://src.seereason.com/ghc6103/haskell-pandoc-debian)"
@@ -338,8 +336,7 @@ ghc610Targets release | isPrefixOf "sid-" release =
              , relaxInfo = [] }
 
 --  The Sid package has no profiling libraries, so dependent packages
---  won't build.  Use our version instead, but we need the newest to
---  trump theirs.
+--  won't build.  Use our debianization instead.
 {-
     , Target { sourcePackageName = "hslogger"
              , sourceSpec = "apt:sid:hslogger"
@@ -384,8 +381,8 @@ ghc610Targets release | isPrefixOf "sid-" release =
     , Target { sourcePackageName = "vc-darcs"
              , sourceSpec = "darcs:http://src.seereason.com/vc-darcs"
              , relaxInfo = [] }
+    -- Requires Cabal >= 1.7.3, ghc 6.10.3 comes with Cabal-1.6.0.3
 {-
-    -- Requires HTTP >= 4000.0.2 and Cabal >= 1.7.3, ghc 6.10.3 comes with Cabal-1.6.0.3
     , Target { sourcePackageName = "haskell-cabal-install"
              , sourceSpec = "deb-dir:(darcs:http://darcs.haskell.org/cabal-install):(darcs:http://src.seereason.com/ghc6103/cabal-install-debian)"
              , relaxInfo = [] }
@@ -499,7 +496,9 @@ ghc610Targets release =
              , sourceSpec = "darcs:http://src.seereason.com/happstack-extra"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-facebook"
-             , sourceSpec = "darcs:http://src.seereason.com/happstack-facebook"
+             , sourceSpec = case ghcRelease of
+                              "6.10.2" -> "darcs:http://src.seereason.com/happstack-facebook"
+                              _ -> "darcs:http://src.seereason.com/ghc6103/happstack-facebook"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-help"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-help"
