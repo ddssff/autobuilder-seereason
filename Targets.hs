@@ -57,7 +57,6 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
              , relaxInfo = ["happy"] }
     , Target { sourcePackageName = "hscolour"
              , sourceSpec = "apt:sid:hscolour"
-             -- waiting for version 1.9.1 to enter sid
              , relaxInfo = [] }
 {-
     , Target { sourcePackageName = "happy"
@@ -69,15 +68,20 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
     , Target { sourcePackageName = "haskell-happy"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happy/1.18.2/happy-1.18.2.tar.gz:adb1679a1fa8cec74a6e621a4a277e98):(darcs:http://src.seereason.com/ghc6103/happy-debian)"
              , relaxInfo = ["happy"] }
+    , Target { sourcePackageName = "haskell-utf8-string"
+             , sourceSpec = "apt:sid:haskell-utf8-string"
+             , relaxInfo = [] }
     -- Next job is to get rid of this.
+{-
     , Target { sourcePackageName = "haskell-cdbs"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-cdbs"
              , relaxInfo = [] }
+-}
     , Target { sourcePackageName = "haskell-zlib"
              , sourceSpec = "apt:sid:haskell-zlib"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-bzlib"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.5.0.0/bzlib-0.5.0.0.tar.gz:ab594aaf9998ed602f8b23dd25199e19):(darcs:http://src.seereason.com/ghc610/debian/haskell-bzlib-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.5.0.0/bzlib-0.5.0.0.tar.gz:ab594aaf9998ed602f8b23dd25199e19):(darcs:http://src.seereason.com/ghc6103/haskell-bzlib-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-haskell-src"
              , sourceSpec = "apt:sid:haskell-haskell-src"
@@ -89,10 +93,12 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
     -- 1.2.0.3-3+b3 in sid which prevents this package from being
     -- built, and it was built with a version of haskell-devscripts
     -- which didn't add a dependency on the dev package.  This quilt
-    -- target just changes the version number to trump b3.
+    -- target just changes the version number to trump b3.  (Now I
+    -- have changed our vendor tag from seereason to +seereason to
+    -- temporarily handle this situation.)
     , Target { sourcePackageName = "haskell-hunit"
-             , sourceSpec = "quilt:(apt:sid:haskell-hunit):(darcs:http://src.seereason.com/haskell-hunit-quilt)"
-             -- , sourceSpec = "apt:sid:haskell-hunit"
+             -- , sourceSpec = "quilt:(apt:sid:haskell-hunit):(darcs:http://src.seereason.com/haskell-hunit-quilt)"
+             , sourceSpec = "apt:sid:haskell-hunit"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mtl"
              , sourceSpec = "apt:sid:haskell-mtl"
@@ -114,6 +120,9 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
     , Target { sourcePackageName = "haskell-quickcheck"
              , sourceSpec = "apt:sid:haskell-quickcheck"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-quickcheck1"
+             , sourceSpec = "apt:sid:haskell-quickcheck1"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-regex-base"
              , sourceSpec = "apt:sid:haskell-regex-base"
              , relaxInfo = [] }
@@ -133,9 +142,10 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
            , sourceSpec = "apt:sid:html-xml-utils"
            , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-devscripts"
-           -- , sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc6103/haskell-devscripts-quilt)"
-             , sourceSpec = "apt:sid:haskell-devscripts"
-           , relaxInfo = ["hscolour"] }
+             -- Patch this specific version of haskell-devscripts
+             -- only, next upstream should not need it.
+             , sourceSpec = "quilt:(apt:sid:haskell-devscripts=0.6.15+nmu13):(darcs:http://src.seereason.com/ghc6103/haskell-devscripts-quilt)"
+             , relaxInfo = ["hscolour"] }
     , Target { sourcePackageName = "haskell-debian"
              , sourceSpec = case ghcRelease of
                               "6.10.1" -> "darcs:http://src.seereason.com/ghc610/haskell-debian-3"
@@ -316,10 +326,10 @@ ghc610Targets release | isPrefixOf "sid-" release =
              , sourceSpec = "darcs:http://src.seereason.com/happstack-facebook"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-help"
-             , sourceSpec = "darcs:http://src.seereason.com/haskell-help"
+             , sourceSpec = "darcs:http://src.seereason.com/ghc6103/haskell-help"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hinotify"
-             , sourceSpec = "deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/ghc610/debian/hinotify-debian)"
+             , sourceSpec = "deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/ghc6103/hinotify-debian)"
              , relaxInfo = [] }
     -- Required by happstack-state
     , Target { sourcePackageName = "haskell-hspread"
@@ -332,7 +342,7 @@ ghc610Targets release | isPrefixOf "sid-" release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/json/0.4.3/json-0.4.3.tar.gz:1af33c67594f69048b69d4aeafeea03e):(darcs:http://src.seereason.com/ghc6103/json-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-iconv"
-             , sourceSpec = "darcs:http://src.seereason.com/ghc610/iconv"
+             , sourceSpec = "darcs:http://src.seereason.com/ghc6103/iconv"
              , relaxInfo = [] }
 
 --  The Sid package has no profiling libraries, so dependent packages
@@ -349,10 +359,10 @@ ghc610Targets release | isPrefixOf "sid-" release =
                               _ -> "deb-dir:(uri:http://ftp.de.debian.org/debian/pool/main/h/hslogger/hslogger_1.0.8.orig.tar.gz:5ce575887d2b6076793f8736b077626a):(darcs:http://src.seereason.com/ghc6103/hslogger-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-harp"
-             , sourceSpec = "deb-dir:(darcs:http://code.haskell.org/HSP/harp):(darcs:http://src.seereason.com/ghc610/debian/harp-debian)"
+             , sourceSpec = "deb-dir:(darcs:http://code.haskell.org/HSP/harp):(darcs:http://src.seereason.com/ghc6103/harp-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hjavascript"
-             , sourceSpec = "deb-dir:(darcs:http://code.haskell.org/HSP/hjavascript):(darcs:http://src.seereason.com/ghc610/debian/hjavascript-debian)"
+             , sourceSpec = "deb-dir:(darcs:http://code.haskell.org/HSP/hjavascript):(darcs:http://src.seereason.com/ghc6103/hjavascript-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsx"
              , sourceSpec = "darcs:http://src.seereason.com/ghc6103/hsx"
@@ -394,10 +404,10 @@ ghc610Targets release | isPrefixOf "sid-" release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/i18n/0.3/i18n-0.3.tar.gz:e59445b4ad743ab77c61a281cf942bbf):(darcs:http://src.seereason.com/ghc6103/i18n-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-stb-image"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/stb-image/0.1.1/stb-image-0.1.1.tar.gz:9e8ac1305c60e13d04359744976e402a):(darcs:http://src.seereason.com/ghc610/debian/stb-image-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/stb-image/0.1.1/stb-image-0.1.1.tar.gz:9e8ac1305c60e13d04359744976e402a):(darcs:http://src.seereason.com/ghc6103/stb-image-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-gd"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/gd/3000.4.0/gd-3000.4.0.tar.gz:7bc5bb68638b807d592aba433beb3fa5):(darcs:http://src.seereason.com/ghc610/debian/haskell-gd-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/gd/3000.4.0/gd-3000.4.0.tar.gz:7bc5bb68638b807d592aba433beb3fa5):(darcs:http://src.seereason.com/ghc6103/haskell-gd-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cc-delconto"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/CC-delcont/0.2/CC-delcont-0.2.tar.gz:e52149fca9bf76330a7c159917152790):(darcs:http://src.seereason.com/ghc6103/CC-delcont-debian)"
@@ -409,7 +419,7 @@ ghc610Targets release | isPrefixOf "sid-" release =
              , sourceSpec = "darcs:http://src.seereason.com/ghc6103/archive"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-orphanage"
-             , sourceSpec = "darcs:http://src.seereason.com/haskell-orphanage"
+             , sourceSpec = "darcs:http://src.seereason.com/ghc6103/haskell-orphanage"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hstringtemplate"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HStringTemplate/0.4.3/HStringTemplate-0.4.3.tar.gz:57139f6695f1c268ed38c34336191636):(darcs:http://src.seereason.com/ghc6103/HStringTemplate-debian)"
@@ -711,6 +721,7 @@ otherTargets release =
              , sourceSpec = "darcs:http://src.seereason.com/jqueryui"
              , relaxInfo = [] 
              }
+
 {-  We no longer need our own version of this.
     , Target { sourcePackageName = "haskell-tagsoup"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tagsoup/0.6/tagsoup-0.6.tar.gz:4db416463189292609b4cd3d0e867ccd):(darcs:http://src.seereason.com/debian/tagsoup-debian)"
