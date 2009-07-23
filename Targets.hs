@@ -164,6 +164,14 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
     , Target { sourcePackageName = "haskell-unixutils"
              , sourceSpec = "darcs:http://src.seereason.com/ghc6103/haskell-unixutils"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-cpphs"
+             , sourceSpec = "apt:sid:cpphs"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haxml"
+             , sourceSpec = "quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/ghc6103/haxml-quilt)"
+             , relaxInfo = [] }
+{-
+-}
     ]
 
 ghc610CoreTargets release =
@@ -323,7 +331,7 @@ ghc610Targets release | isPrefixOf "sid-" release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.2/pandoc-1.2.tar.gz:402999cf17dd7072e4c8c7b6b6050ec3):(darcs:http://src.seereason.com/ghc6103/haskell-pandoc-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-facebook"
-             , sourceSpec = "darcs:http://src.seereason.com/happstack-facebook"
+             , sourceSpec = "darcs:http://src.seereason.com/ghc6103/happstack-facebook"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-help"
              , sourceSpec = "darcs:http://src.seereason.com/ghc6103/haskell-help"
