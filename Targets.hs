@@ -12,71 +12,72 @@ publicTargets release =
     otherTargets release		-- Non-haskell targets
 
 -- useGHC6102 release = True
-ghcRelease = "6.10.2"
+ghcRelease = "6.10.3"
 
 useGHC6102 = (/= "6.10.1")		-- Obsolete, do comparisons with ghcRelease instead
 
--- If True, use an unmodified version of Debian's current
--- haskell-devscripts.  In addition, a dummy version of our
--- haskell-cdbs is built which replaces our hlibrary.mk file with a
--- link to Debian's.
-useStandardDevscripts release = False
-
--- Information about how to obtain and assemble the source code for
+-- This module defines how we obtain and assemble the source code for
 -- the packages we want to build.
 
--- I had to withdraw our old version of ghc6 which provided haddock,
--- and also all versions of the obsolete haskell-devscripts-cdbs
--- package, our patched version of happy, our standalone version of
--- haskell-cabal, and extensible-execptions.  Also withdrew all
--- haskell-parsec packages due to the binary package name change.
--- Then a regular build, but allow the haddock regression
--- 6.10.1-0.2seereason1 -> 2.4.2-1.  Also had to force a rebuilds of
--- magic-haskell and hslogger to get rid of old dependencies: ghc6 (<<
--- 6.8.2dfsg1+) etc.
---
---   sudo autobuilder sid-seereason --all-targets --allow-build-dependency-regressions --force magic-haskell --force hslogger --force haskell-parsec --force haskell-parsec2
---
--- Other packages withdrawn:
---   haskell-http - older in sid, but we may need to re-upgrade
---   haskell-extensible-exceptions - now built in to ghc6
---   haskell-utils
---   haskell-cabal - now built in to ghc6
---   happy
-
-ghc610CoreTargets release | isPrefixOf "sid-" release =
-    [ -- Provides: ghc-prof, libghc6-array-prof, libghc6-base-prof, libghc6-bytestring-prof, libghc6-cabal-prof, libghc6-containers-prof, libghc6-directory-prof, libghc6-extensible-exceptions-prof, libghc6-filepath-prof, libghc6-ghc-prim-prof, libghc6-haskell98-prof, libghc6-hpc-prof, libghc6-integer-prof, libghc6-old-locale-prof, libghc6-old-time-prof, libghc6-packedstring-prof, libghc6-pretty-prof, libghc6-process-prof, libghc6-random-prof, libghc6-rts-prof, libghc6-syb-prof, libghc6-template-haskell-prof, libghc6-unix-prof
+ghc610CoreTargets release =
+    [ -- GHC 6.10.4 Provides:
+      --           ghc-prof,
+      --           libghc6-array-prof,
+      --           libghc6-base-prof,
+      --           libghc6-bytestring-prof,
+      --           libghc6-cabal-prof,
+      --           libghc6-containers-prof,
+      --           libghc6-directory-prof,
+      --           libghc6-extensible-exceptions-prof,
+      --           libghc6-filepath-prof,
+      --           libghc6-ghc-prim-prof,
+      --           libghc6-haskell98-prof,
+      --           libghc6-hpc-prof,
+      --           libghc6-integer-prof,
+      --           libghc6-old-locale-prof,
+      --           libghc6-old-time-prof,
+      --           libghc6-packedstring-prof,
+      --           libghc6-pretty-prof,
+      --           libghc6-process-prof,
+      --           libghc6-random-prof,
+      --           libghc6-rts-prof,
+      --           libghc6-syb-prof,
+      --           libghc6-template-haskell-prof,
+      --           libghc6-unix-prof
       Target { sourcePackageName = "ghc6"
+             -- Use this spec to build a bootstrap version of ghc6
+             -- using an older haddock.  You should next build
+             -- haddock, and then comment this quilt target out and
+             -- uncomment the regular ghc6 target, and do a full
+             -- build.  Not sure if its ok to rebuild haddock after
+             -- that.  
+             -- , sourceSpec = "quilt:(apt:sid:ghc6):(darcs:http://src.seereason.com/ghc6103/ghc6-bootstrap-quilt)"
              , sourceSpec = "apt:sid:ghc6"
              , relaxInfo = ["ghc6"
                            ,"xsltproc"
-                           ,"haskell-devscripts"
-                           ,"haddock"] }
+                           ,"haskell-devscripts"] }
     , Target { sourcePackageName = "haddock"
              , sourceSpec = "apt:sid:haddock"
-             , relaxInfo = ["happy"] }
+             , relaxInfo = ["happy", "ghc6"] }
     , Target { sourcePackageName = "hscolour"
              , sourceSpec = "apt:sid:hscolour"
              , relaxInfo = [] }
-{-
-    , Target { sourcePackageName = "happy"
-             , sourceSpec = "apt:sid:happy"
-             , relaxInfo = ["haskell-mtl", "happy"] } -- <- hscolour <- haddock <- happy <- haskell-mtl
--}
-    -- The version of happy currently in sid, 1.17-0.1, fails due to
-    -- use of buildVerbose in Setup.lhs.
     , Target { sourcePackageName = "haskell-happy"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happy/1.18.2/happy-1.18.2.tar.gz:adb1679a1fa8cec74a6e621a4a277e98):(darcs:http://src.seereason.com/ghc6103/happy-debian)"
              , relaxInfo = ["happy"] }
     , Target { sourcePackageName = "haskell-utf8-string"
              , sourceSpec = "apt:sid:haskell-utf8-string"
              , relaxInfo = [] }
-    -- Next job is to get rid of this.
-{-
-    , Target { sourcePackageName = "haskell-cdbs"
-             , sourceSpec = "darcs:http://src.seereason.com/haskell-cdbs"
+    -- The normal haskell-http package requires cdbs >> 0.4.58, which
+    -- is only in sid.  CDBS fails its unit tests when build on older
+    -- dists.  So there's no point in having a target for this, if its
+    -- present we'll use it, if not we can't.
+{-  , Target { sourcePackageName = "cdbs"
+             , sourceSpec = "apt:sid:cdbs"
+             , relaxInfo = [] } -}
+    , Target { sourcePackageName = "haskell-time"
+             , sourceSpec = "apt:sid:haskell-time"
              , relaxInfo = [] }
--}
     , Target { sourcePackageName = "haskell-zlib"
              , sourceSpec = "apt:sid:haskell-zlib"
              , relaxInfo = [] }
@@ -89,15 +90,7 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
     , Target { sourcePackageName = "haskell-html"
              , sourceSpec = "apt:sid:haskell-html"
              , relaxInfo = [] }
-    -- There is a binary package libghc6-hunit-prof version
-    -- 1.2.0.3-3+b3 in sid which prevents this package from being
-    -- built, and it was built with a version of haskell-devscripts
-    -- which didn't add a dependency on the dev package.  This quilt
-    -- target just changes the version number to trump b3.  (Now I
-    -- have changed our vendor tag from seereason to +seereason to
-    -- temporarily handle this situation.)
     , Target { sourcePackageName = "haskell-hunit"
-             -- , sourceSpec = "quilt:(apt:sid:haskell-hunit):(darcs:http://src.seereason.com/haskell-hunit-quilt)"
              , sourceSpec = "apt:sid:haskell-hunit"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mtl"
@@ -109,11 +102,9 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
     , Target { sourcePackageName = "haskell-parallel"
              , sourceSpec = "apt:sid:haskell-parallel"
              , relaxInfo = [] }
-    -- libghc6-parsec3-prof is missing a dependency on libghc6-parsec3-dev.
     , Target { sourcePackageName = "haskell-parsec"
              , sourceSpec = "apt:sid:haskell-parsec"
              , relaxInfo = [] }
-    -- libghc6-parsec2-prof is missing a dependency on libghc6-parsec2-dev.
     , Target { sourcePackageName = "haskell-parsec2"
              , sourceSpec = "apt:sid:haskell-parsec2"
              , relaxInfo = [] }
@@ -135,15 +126,15 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
     , Target { sourcePackageName = "haskell-stm"
              , sourceSpec = "apt:sid:haskell-stm"
              , relaxInfo = [] }
+    -- Patch to add the bareAttr function and remove the custom show instance
     , Target { sourcePackageName = "haskell-xhtml"
-             , sourceSpec = "apt:sid:haskell-xhtml"
+             , sourceSpec = "quilt:(apt:sid:haskell-xhtml=3000.2.0.1-5):(darcs:http://src.seereason.com/ghc6103/haskell-xhtml-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "html-xml-utils"
            , sourceSpec = "apt:sid:html-xml-utils"
            , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-devscripts"
-             -- Patch this specific version of haskell-devscripts
-             -- only, next upstream should not need it.
+             -- Patch to install executables into a similarly named deb.
              , sourceSpec = "quilt:(apt:sid:haskell-devscripts=0.6.15+nmu13):(darcs:http://src.seereason.com/ghc6103/haskell-devscripts-quilt)"
              , relaxInfo = ["hscolour"] }
     , Target { sourcePackageName = "haskell-debian"
@@ -170,10 +161,9 @@ ghc610CoreTargets release | isPrefixOf "sid-" release =
     , Target { sourcePackageName = "haxml"
              , sourceSpec = "quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/ghc6103/haxml-quilt)"
              , relaxInfo = [] }
-{-
--}
     ]
 
+{-
 ghc610CoreTargets release =
     [ Target { sourcePackageName = "haskell-bzlib"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.5.0.0/bzlib-0.5.0.0.tar.gz:ab594aaf9998ed602f8b23dd25199e19):(darcs:http://src.seereason.com/ghc610/debian/haskell-bzlib-debian)"
@@ -245,6 +235,7 @@ ghc610CoreTargets release =
     else [ Target { sourcePackageName = "haskell-extra"
                   , sourceSpec = "darcs:http://src.seereason.com/ghc610/haskell-extra"
                   , relaxInfo = ["cabal-debian"] } ]
+-}
 
 autobuilderTargets release =
     [ Target { sourcePackageName = "build-env"
@@ -274,12 +265,9 @@ autobuilderTargets release =
 
 -- Note that some of the debian source packages have names that don't begin with haskell-:
 --   pandoc, magic-haskell, hslogger
-ghc610Targets release | isPrefixOf "sid-" release =
-    [ Target { sourcePackageName = "haskell-utils"
-             , sourceSpec = "apt:sid:haskell-utils"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-http"
-             , sourceSpec = "apt:sid:haskell-http"
+ghc610Targets release =
+    [ Target { sourcePackageName = "haskell-http"
+             , sourceSpec = "quilt:(apt:sid:haskell-http):(darcs:http://src.seereason.com/ghc6103/haskell-http-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-applicative-extras"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/applicative-extras/0.1.3/applicative-extras-0.1.3.tar.gz:50fa4c61e89654ea9858c304b4682680):(darcs:http://src.seereason.com/ghc6103/applicative-extras-debian)"
@@ -290,15 +278,9 @@ ghc610Targets release | isPrefixOf "sid-" release =
     , Target { sourcePackageName = "haskell-binary"
              , sourceSpec = "apt:sid:haskell-binary"
              , relaxInfo = [] }
-    -- Our version of hsx isn't ready for a newer haskell-src-exts.
-    , Target { sourcePackageName = "haskell-src-exts"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/haskell-src-exts/0.4.3.1/haskell-src-exts-0.4.3.1.tar.gz:4ff97fdae2bca0da0194fcb80974b188):(darcs:http://src.seereason.com/ghc6103/haskell-src-exts-debian)"
-             , relaxInfo = [] }
-{-
     , Target { sourcePackageName = "haskell-src-exts"
              , sourceSpec = "apt:sid:haskell-src-exts"
              , relaxInfo = [] }
--}
     , Target { sourcePackageName = "haskell-maybet"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/MaybeT/0.1.2/MaybeT-0.1.2.tar.gz:9864a3f34151217004f8c968fda5b427):(darcs:http://src.seereason.com/ghc6103/MaybeT-debian)"
              , relaxInfo = [] }               
@@ -355,11 +337,9 @@ ghc610Targets release | isPrefixOf "sid-" release =
 
 --  The Sid package has no profiling libraries, so dependent packages
 --  won't build.  Use our debianization instead.
-{-
-    , Target { sourcePackageName = "hslogger"
+{-  , Target { sourcePackageName = "hslogger"
              , sourceSpec = "apt:sid:hslogger"
-             , relaxInfo = [] }
--}
+             , relaxInfo = [] } -}
     , Target { sourcePackageName = "haskell-hslogger"
              , sourceSpec = case ghcRelease of
                               "6.10.1" -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hslogger/1.0.7/hslogger-1.0.7.tar.gz:74ff79b2abfec7e24b96925f06112c9f):(darcs:http://src.seereason.com/ghc610/debian/hslogger-debian)"
@@ -400,11 +380,9 @@ ghc610Targets release | isPrefixOf "sid-" release =
              , sourceSpec = "darcs:http://src.seereason.com/vc-darcs"
              , relaxInfo = [] }
     -- Requires Cabal >= 1.7.3, ghc 6.10.3 comes with Cabal-1.6.0.3
-{-
-    , Target { sourcePackageName = "haskell-cabal-install"
+{-  , Target { sourcePackageName = "haskell-cabal-install"
              , sourceSpec = "deb-dir:(darcs:http://darcs.haskell.org/cabal-install):(darcs:http://src.seereason.com/ghc6103/cabal-install-debian)"
-             , relaxInfo = [] }
--}
+             , relaxInfo = [] } -}
     , Target { sourcePackageName = "haskell-uniplate"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/uniplate/1.2.0.3/uniplate-1.2.0.3.tar.gz:e0e10700870f5b9756d4097e640164ca):(darcs:http://src.seereason.com/ghc6103/uniplate-debian)"
              , relaxInfo = [] }
@@ -432,18 +410,15 @@ ghc610Targets release | isPrefixOf "sid-" release =
     , Target { sourcePackageName = "haskell-hstringtemplate"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HStringTemplate/0.4.3/HStringTemplate-0.4.3.tar.gz:57139f6695f1c268ed38c34336191636):(darcs:http://src.seereason.com/ghc6103/HStringTemplate-debian)"
              , relaxInfo = [] }
-
     , Target { sourcePackageName = "haskell-consumer"
              , sourceSpec = "deb-dir:(darcs:http://www.n-heptane.com/nhlab/repos/haskell-consumer):(darcs:http://src.seereason.com/ghc6103/haskell-consumer-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-urlt"
              , sourceSpec = "darcs:http://src.seereason.com/ghc6103/urlt"
              , relaxInfo = [] }
-
     , Target { sourcePackageName = "haskell-xml"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/xml/1.3.4/xml-1.3.4.tar.gz:841c3a36a0bfb2e46f88448ecc227cad):(darcs:http://src.seereason.com/debian/haskell-xml-debian)"
              , relaxInfo = [] }
-
     , Target { sourcePackageName = "haskell-feed"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/feed/0.3.6/feed-0.3.6.tar.gz:0abeeaa7870ef241ccdc5785e608a599):(darcs:http://src.seereason.com/debian/haskell-feed-debian)"
              , relaxInfo = [] }
@@ -455,20 +430,19 @@ ghc610Targets release | isPrefixOf "sid-" release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "happstack-blog"
              , sourceSpec = "darcs:http://src.seereason.com/happstack-blog"
-             , relaxInfo = []
-             }
-
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-utility-ht"
             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/utility-ht/0.0.5.1/utility-ht-0.0.5.1.tar.gz:98dcb042f404378d9071fc6344703386):(darcs:http://src.seereason.com/ghc610/debian/haskell-utility-ht)"
-            , relaxInfo = []
-            }
-
+            , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-gnuplot"
             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/gnuplot/0.3/gnuplot-0.3.tar.gz:4432a0e0b44ca7ceae8e6737cf0258fa):(darcs:http://src.seereason.com/ghc610/debian/haskell-gnuplot)"
-            , relaxInfo = []
-             }
+            , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-syb-with-class"
+             , sourceSpec = "apt:sid:haskell-syb-with-class"
+             , relaxInfo = [] }
     ]
 
+{-
 ghc610Targets release =
     [ Target { sourcePackageName = "haskell-utils"
              , sourceSpec = "quilt:(apt:sid:haskell-utils):(darcs:http://src.seereason.com/ghc610/quilt/haskell-utils-quilt)"
@@ -710,6 +684,7 @@ ghc610Targets release =
     - setup-bin: At least the following dependencies are missing: regex-base >=0.93
 -}
     ]
+-}
 
 otherTargets release =
     [ Target { sourcePackageName = "tree-widget"
@@ -729,11 +704,6 @@ otherTargets release =
              , sourceSpec = "darcs:http://src.seereason.com/jqueryui"
              , relaxInfo = [] 
              }
-
-{-  We no longer need our own version of this.
-    , Target { sourcePackageName = "haskell-tagsoup"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tagsoup/0.6/tagsoup-0.6.tar.gz:4db416463189292609b4cd3d0e867ccd):(darcs:http://src.seereason.com/debian/tagsoup-debian)"
-             , relaxInfo = [] } -}
     ]
 
 privateTargets release =
@@ -758,8 +728,7 @@ privateTargets release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-algebrazam-quiz"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/algebrazam-quiz"
-             , relaxInfo = [] }
--}
+             , relaxInfo = [] } -}
     , Target { sourcePackageName = "haskell-senioritymatters"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/SeniorityMatters"
              , relaxInfo = [] }

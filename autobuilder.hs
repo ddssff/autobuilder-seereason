@@ -78,7 +78,7 @@ myDevelopmentReleaseNames = ["sid", "jaunty", "karmic"]
 -- This tag is used to construct the customized part of the version
 -- number for any package the autobuilder builds.
 --
-myVendorTag = "seereason"
+myVendorTag = "+seereason"
 
 -- Put the names of any source packages you wish to rebuild whether or
 -- not they appear to need it.  If you modified the package source but
@@ -336,6 +336,7 @@ releaseRepoName name
 params myBuildRelease =
     ParamRec
     { vendorTag = myVendorTag
+    , oldVendorTags = ["seereason"]
     , autobuilderEmail = "SeeReason Autobuilder <autobuilder@seereason.org>"
     , releaseSuffixes = myReleaseSuffixes
     , buildRelease = ReleaseName {relName = myBuildRelease}
