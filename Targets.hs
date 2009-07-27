@@ -440,6 +440,18 @@ ghc610Targets release =
     , Target { sourcePackageName = "haskell-syb-with-class"
              , sourceSpec = "apt:sid:haskell-syb-with-class"
              , relaxInfo = [] }
+
+    , Target { sourcePackageName = "haskell-hsemail"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsemail/1.3/hsemail-1.3.tar.gz:e1b84af260aa36c017c190ce481e2c1a):(darcs:http://src.seereason.com/debian/haskell-hsemail-debian)"
+             , relaxInfo = [] }
+
+    , Target { sourcePackageName = "haskell-smtpclient"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/SMTPClient/1.0.1/SMTPClient-1.0.1.tar.gz:c6e02189636b608e27942dbb9af9732a):(darcs:http://src.seereason.com/debian/haskell-smtpclient-debian)"
+             , relaxInfo = [] }
+
+    , Target { sourcePackageName = "haskell-strict-concurrency"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/strict-concurrency/0.2.1/strict-concurrency-0.2.1.tar.gz:974cda4fa4d4a2d9082f31160f57f707):(darcs:http://src.seereason.com/debian/haskell-strict-concurrency-debian)"
+             , relaxInfo = [] }
     ]
 
 {-
