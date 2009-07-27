@@ -302,9 +302,6 @@ ghc610Targets release =
     , Target { sourcePackageName = "haskell-happstack"
              , sourceSpec = "cd:happstack:darcs:http://src.seereason.com/ghc6103/happstack"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-happstack-contrib"
-             , sourceSpec = "cd:happstack-contrib:darcs:http://src.seereason.com/ghc6103/happstack"
-             , relaxInfo = [] }
     -- Depends on pandoc
     , Target { sourcePackageName = "haskell-happstack-extra"
              , sourceSpec = "darcs:http://src.seereason.com/ghc6103/happstack-extra"
@@ -451,6 +448,14 @@ ghc610Targets release =
 
     , Target { sourcePackageName = "haskell-strict-concurrency"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/strict-concurrency/0.2.1/strict-concurrency-0.2.1.tar.gz:974cda4fa4d4a2d9082f31160f57f707):(darcs:http://src.seereason.com/debian/haskell-strict-concurrency-debian)"
+             , relaxInfo = [] }
+
+    , Target { sourcePackageName = "haskell-unix-compat"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/unix-compat/0.1.2.1/unix-compat-0.1.2.1.tar.gz:6ecfc3922fce2e96922af3a636b061f9):(darcs:http://src.seereason.com/debian/haskell-unix-compat-debian)"
+             , relaxInfo = [] }
+
+    , Target { sourcePackageName = "haskell-sendfile"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/sendfile/0.4/sendfile-0.4.tar.gz:358ece2e7f031e7f98f3bca5f73d2da9):(darcs:http://src.seereason.com/debian/haskell-sendfile-debian)"
              , relaxInfo = [] }
     ]
 
