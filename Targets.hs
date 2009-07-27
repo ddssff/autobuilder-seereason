@@ -740,6 +740,9 @@ privateTargets release =
     , Target { sourcePackageName = "happstack-blog"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/happstack-cms"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "happstack-imagegallery"
+             , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/imagegallery"
+             , relaxInfo = [] }
 {-  -- Uses newSession, which was removed from happstack
     , Target { sourcePackageName = "haskell-algebrazam"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/AlgebraZam"
