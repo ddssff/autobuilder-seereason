@@ -425,11 +425,7 @@ ghc610Targets release =
     , Target { sourcePackageName = "haskell-zip-archive"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/zip-archive/0.1.1.3/zip-archive-0.1.1.3.tar.gz:edf3924c929b5592b1b9dbf4853b754f):(darcs:http://src.seereason.com/ghc6103/haskell-zip-archive-debian)"
              , relaxInfo = [] }
-{-
-    , Target { sourcePackageName = "happstack-blog"
-             , sourceSpec = "darcs:http://src.seereason.com/happstack-blog"
-             , relaxInfo = [] }
--}
+
     , Target { sourcePackageName = "haskell-utility-ht"
             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/utility-ht/0.0.5.1/utility-ht-0.0.5.1.tar.gz:98dcb042f404378d9071fc6344703386):(darcs:http://src.seereason.com/ghc610/debian/haskell-utility-ht)"
             , relaxInfo = [] }
@@ -740,6 +736,9 @@ privateTargets release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-generic-formlets"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/generic-formlets-2"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "happstack-blog"
+             , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/happstack-cms"
              , relaxInfo = [] }
 {-  -- Uses newSession, which was removed from happstack
     , Target { sourcePackageName = "haskell-algebrazam"
