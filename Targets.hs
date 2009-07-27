@@ -304,7 +304,7 @@ ghc610Targets release =
              , relaxInfo = [] }
     -- Depends on pandoc
     , Target { sourcePackageName = "haskell-happstack-extra"
-             , sourceSpec = "darcs:http://src.seereason.com/ghc6103/happstack-extra"
+             , sourceSpec = "darcs:http://src.seereason.com/happstack-extra"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-pandoc"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.2/pandoc-1.2.tar.gz:402999cf17dd7072e4c8c7b6b6050ec3):(darcs:http://src.seereason.com/ghc6103/haskell-pandoc-debian)"
@@ -425,9 +425,11 @@ ghc610Targets release =
     , Target { sourcePackageName = "haskell-zip-archive"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/zip-archive/0.1.1.3/zip-archive-0.1.1.3.tar.gz:edf3924c929b5592b1b9dbf4853b754f):(darcs:http://src.seereason.com/ghc6103/haskell-zip-archive-debian)"
              , relaxInfo = [] }
+{-
     , Target { sourcePackageName = "happstack-blog"
              , sourceSpec = "darcs:http://src.seereason.com/happstack-blog"
              , relaxInfo = [] }
+-}
     , Target { sourcePackageName = "haskell-utility-ht"
             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/utility-ht/0.0.5.1/utility-ht-0.0.5.1.tar.gz:98dcb042f404378d9071fc6344703386):(darcs:http://src.seereason.com/ghc610/debian/haskell-utility-ht)"
             , relaxInfo = [] }
@@ -455,7 +457,7 @@ ghc610Targets release =
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-sendfile"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/sendfile/0.4/sendfile-0.4.tar.gz:358ece2e7f031e7f98f3bca5f73d2da9):(darcs:http://src.seereason.com/debian/haskell-sendfile-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/sendfile/0.3.1/sendfile-0.3.1.tar.gz:de4aa72263685f01931472c95c47ae90):(darcs:http://src.seereason.com/debian/haskell-sendfile-debian)"
              , relaxInfo = [] }
     ]
 
