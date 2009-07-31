@@ -126,7 +126,10 @@ ghc610CoreTargets release =
     , Target { sourcePackageName = "haskell-stm"
              , sourceSpec = "apt:sid:haskell-stm"
              , relaxInfo = [] }
-    -- Patch to add the bareAttr function and remove the custom show instance
+    -- Patch to add the bareAttr function and remove the custom show
+    -- instance Specify a particular version of xhtml so we can
+    -- perhaps eliminate this the next time the upstream package is
+    -- revved.
     , Target { sourcePackageName = "haskell-xhtml"
              , sourceSpec = "quilt:(apt:sid:haskell-xhtml=3000.2.0.1-5):(darcs:http://src.seereason.com/ghc6103/haskell-xhtml-quilt)"
              , relaxInfo = [] }
@@ -141,13 +144,13 @@ ghc610CoreTargets release =
              , sourceSpec = case ghcRelease of
                               "6.10.1" -> "darcs:http://src.seereason.com/ghc610/haskell-debian-3"
                               "6.10.2" -> "darcs:http://src.seereason.com/ghc6102/haskell-debian-3"
-                              "6.10.3" -> "darcs:http://src.seereason.com/ghc6103/haskell-debian-3"
+                              _ -> "darcs:http://src.seereason.com/ghc6103/haskell-debian-3"
              , relaxInfo = ["cabal-debian"] }
     , Target { sourcePackageName = "haskell-debian-repo"
              , sourceSpec = case ghcRelease of
                               "6.10.1" -> "darcs:http://src.seereason.com/haskell-debian-repo"
                               "6.10.2" -> "darcs:http://src.seereason.com/ghc6102/haskell-debian-repo"
-                              "6.10.3" -> "darcs:http://src.seereason.com/ghc6103/haskell-debian-repo"
+                              _ -> "darcs:http://src.seereason.com/ghc6103/haskell-debian-repo"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-extra"
              , sourceSpec = "darcs:http://src.seereason.com/ghc6103/haskell-extra"
@@ -258,8 +261,9 @@ autobuilderTargets release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "magic-haskell"
              , sourceSpec = case ghcRelease of
-                              "6.10.3" -> "quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc6103/magic-haskell-quilt)"
-                              _ -> "quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc610/quilt/magic-haskell-quilt)"
+                              "6.10.1" -> "quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc610/quilt/magic-haskell-quilt)"
+                              "6.10.2" -> "quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc610/quilt/magic-haskell-quilt)"
+                              _ -> "quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc6103/magic-haskell-quilt)"
              , relaxInfo = [] }
     ]
 
