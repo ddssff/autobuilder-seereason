@@ -721,7 +721,6 @@ otherTargets release =
              , sourceSpec = "apt:sid:jquery"
              , relaxInfo = [] 
              }
-    -- Waiting for this one to appear in sid
     , Target { sourcePackageName = "jqueryui"
              , sourceSpec = "apt:sid:jqueryui"
              , relaxInfo = [] 
