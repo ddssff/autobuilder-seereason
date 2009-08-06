@@ -723,7 +723,7 @@ otherTargets release =
              }
     -- Waiting for this one to appear in sid
     , Target { sourcePackageName = "jqueryui"
-             , sourceSpec = "darcs:http://src.seereason.com/jqueryui"
+             , sourceSpec = "apt:sid:jqueryui"
              , relaxInfo = [] 
              }
     ]
