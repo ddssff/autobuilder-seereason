@@ -412,6 +412,9 @@ optSpecs =
       "Decrease progress reporting. Can be used multiple times."
     , Option [] ["show-params"] (NoArg (\ p -> p {showParams = True}))
       "Display the parameter set" 
+    , Option [] ["flush-repo-cache"] (NoArg (\ p -> p {useRepoCache = False}))
+      (unlines [ "Ignore the existing cached information about the remote repositories,"
+               , "instead rebuild it from scratch and save the new result" ])
     , Option [] ["flush-pool"] (NoArg (\ p -> p {flushPool = True}))
       "Flush the local repository before building."
     , Option [] ["flush-root"] (NoArg (\ p -> p {flushRoot = True}))

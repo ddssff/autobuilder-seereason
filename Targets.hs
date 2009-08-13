@@ -108,9 +108,11 @@ ghc610CoreTargets release =
     , Target { sourcePackageName = "haskell-parsec2"
              , sourceSpec = "apt:sid:haskell-parsec2"
              , relaxInfo = [] }
+    -- Binary packages: libghc6-quickcheck2-dev, libghc6-quickcheck2-prof, libghc6-quickcheck2-doc
     , Target { sourcePackageName = "haskell-quickcheck"
              , sourceSpec = "apt:sid:haskell-quickcheck"
              , relaxInfo = [] }
+    -- Binary packages: libghc6-quickcheck1-dev, libghc6-quickcheck1-prof, libghc6-quickcheck1-doc
     , Target { sourcePackageName = "haskell-quickcheck1"
              , sourceSpec = "apt:sid:haskell-quickcheck1"
              , relaxInfo = [] }
@@ -462,6 +464,11 @@ ghc610Targets release =
     , Target { sourcePackageName = "haskell-text"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/text/0.3/text-0.3.tar.gz:70fa8930d3593fe5d3048ba4e8b892d6):(darcs:http://src.seereason.com/haskell-text-debian)"
              , relaxInfo = [] }
+{-  Don't enable this until version 2.3.0 is in sid.
+    , Target { sourcePackageName = "darcs"
+             , sourceSpec = "apt:sid:darcs"
+             , relaxInfo = [] }
+-}
     ]
 
 {-
