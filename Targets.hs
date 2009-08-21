@@ -462,7 +462,9 @@ ghc610Targets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/sendfile/0.5/sendfile-0.5.tar.gz:649434b84c3c716840861b85c6b0bb05):(darcs:http://src.seereason.com/debian/haskell-sendfile-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-text"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/text/0.3/text-0.3.tar.gz:70fa8930d3593fe5d3048ba4e8b892d6):(darcs:http://src.seereason.com/haskell-text-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/text/0.3/text-0.3.tar.gz:70fa8930d3593fe5d3048ba4e8b892d6):(darcs:http://src.seereason.com/haskell-text-debian)"             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-benchpress"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/benchpress/0.2.2.3/benchpress-0.2.2.3.tar.gz:48cd691ebfd4dc6c5e6f5201ca545fac):(darcs:http://src.seereason.com/haskell-benchpress-debian)"
              , relaxInfo = [] }
 {-  Don't enable this until version 2.3.0 is in sid.
     , Target { sourcePackageName = "darcs"
