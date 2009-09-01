@@ -154,9 +154,15 @@ ghc610CoreTargets release =
                               "6.10.2" -> "darcs:http://src.seereason.com/ghc6102/haskell-debian-repo"
                               _ -> "darcs:http://src.seereason.com/ghc6103/haskell-debian-repo"
              , relaxInfo = [] }
+    -- Known dependants in public:
+    -- [haskell-happstack-extra, haskell-happstack-facebook, autobuilder, haskell-archive, haskell-debian,
+    --  haskell-debian-repo, build-env, haskell-debian-mirror, haskell-help]
     , Target { sourcePackageName = "haskell-extra"
              , sourceSpec = "darcs:http://src.seereason.com/ghc6103/haskell-extra"
              , relaxInfo = ["cabal-debian"] }
+    -- Known dependants in public:
+    -- [haskell-happstack-extra, haskell-happstack-facebook, autobuilder, haskell-archive, haskell-debian,
+    --  haskell-debian-repo, build-env, haskell-debian-mirror, haskell-extra, haskell-help]
     , Target { sourcePackageName = "haskell-unixutils"
              , sourceSpec = "darcs:http://src.seereason.com/ghc6103/haskell-unixutils"
              , relaxInfo = [] }
@@ -265,7 +271,7 @@ autobuilderTargets release =
              , sourceSpec = case ghcRelease of
                               "6.10.1" -> "quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc610/quilt/magic-haskell-quilt)"
                               "6.10.2" -> "quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc610/quilt/magic-haskell-quilt)"
-                              _ -> "quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc6103/magic-haskell-quilt)"
+                              _ -> "apt:sid:magic-haskell"
              , relaxInfo = [] }
     ]
 
@@ -311,6 +317,9 @@ ghc610Targets release =
     -- Depends on pandoc
     , Target { sourcePackageName = "haskell-happstack-extra"
              , sourceSpec = "darcs:http://src.seereason.com/ghc6103/happstack-extra"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-html-entities"
+             , sourceSpec = "darcs:http://src.seereason.com/html-entities"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-pandoc"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.2/pandoc-1.2.tar.gz:402999cf17dd7072e4c8c7b6b6050ec3):(darcs:http://src.seereason.com/ghc6103/haskell-pandoc-debian)"
@@ -439,7 +448,7 @@ ghc610Targets release =
             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/gnuplot/0.3/gnuplot-0.3.tar.gz:4432a0e0b44ca7ceae8e6737cf0258fa):(darcs:http://src.seereason.com/ghc610/debian/haskell-gnuplot)"
             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-syb-with-class"
-             , sourceSpec = "apt:sid:haskell-syb-with-class"
+             , sourceSpec = "quilt:(apt:sid:haskell-syb-with-class):(darcs:http://src.seereason.com/ghc6103/haskell-syb-with-class-quilt)"
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-hsemail"
