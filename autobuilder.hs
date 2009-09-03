@@ -188,7 +188,7 @@ myExtraEssential myBuildRelease =
       "debian" -> []
       "ubuntu" ->
           case () of
-            _ | isPrefixOf "karmic-" myBuildRelease -> ["upstart-compat-sysv"]
+            _ | isPrefixOf "karmic-" myBuildRelease -> ["upstart"]
               | isPrefixOf "jaunty-" myBuildRelease -> ["upstart-compat-sysv"]
               | isPrefixOf "intrepid-" myBuildRelease -> ["upstart-compat-sysv", "belocs-locales-bin"]
               | isPrefixOf "hardy-" myBuildRelease -> ["upstart-compat-sysv", "belocs-locales-bin"]
