@@ -55,7 +55,9 @@ ghc610CoreTargets release =
              , sourceSpec = aptSidOrKarmic "ghc6"
              , relaxInfo = ["ghc6"
                            ,"xsltproc"
-                           ,"haskell-devscripts"] }
+                           ,"haskell-devscripts"
+                           ,"debhelper"
+                           ,"quilt"] }
     , Target { sourcePackageName = "haddock"
              , sourceSpec = "apt:sid:haddock"
              , relaxInfo = ["happy", "ghc6"] }
@@ -292,7 +294,7 @@ ghc610Targets release =
              , sourceSpec = aptSidOrKarmic "haskell-binary"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-src-exts"
-             , sourceSpec = "apt:sid:haskell-src-exts"
+             , sourceSpec = "apt:karmic:haskell-src-exts"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-maybet"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/MaybeT/0.1.2/MaybeT-0.1.2.tar.gz:9864a3f34151217004f8c968fda5b427):(darcs:http://src.seereason.com/ghc6103/MaybeT-debian)"
@@ -476,11 +478,33 @@ ghc610Targets release =
     , Target { sourcePackageName = "haskell-benchpress"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/benchpress/0.2.2.3/benchpress-0.2.2.3.tar.gz:48cd691ebfd4dc6c5e6f5201ca545fac):(darcs:http://src.seereason.com/debian/haskell-benchpress-debian)"
              , relaxInfo = [] }
-{-  Don't enable this until version 2.3.0 is in sid.
     , Target { sourcePackageName = "darcs"
              , sourceSpec = "apt:sid:darcs"
              , relaxInfo = [] }
--}
+    , Target { sourcePackageName = "haskell-haskeline"
+             , sourceSpec = "apt:sid:haskell-haskeline"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-mmap"
+             , sourceSpec = "apt:sid:haskell-mmap"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-hashed-storage"
+             , sourceSpec = "apt:sid:haskell-hashed-storage"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-terminfo"
+             , sourceSpec = "apt:sid:haskell-terminfo"
+             , relaxInfo = [] }
+    -- Required for darcs 2.3.0
+    , Target { sourcePackageName = "curl"
+             , sourceSpec = "apt:sid:curl"
+             , relaxInfo = [] }
+    -- We need debhelper >= 7.0.50 for darcs 2.3.0
+    , Target { sourcePackageName = "debhelper"
+             , sourceSpec = "apt:karmic:debhelper"
+             , relaxInfo = [] }
+    -- dh --with quilt uses Debian/Debhelper/Sequence/quilt.pm
+    , Target { sourcePackageName = "quilt"
+             , sourceSpec = "proc:quilt:(apt:sid:quilt):(darcs:http://src.seereason.com/quilt-quilt)"
+             , relaxInfo = [] }
     ]
         where aptSidOrKarmic name = "apt:" ++ (if isPrefixOf "karmic-" release then "karmic" else "sid") ++ ":" ++ name
 
