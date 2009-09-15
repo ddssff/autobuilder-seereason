@@ -52,7 +52,7 @@ ghc610CoreTargets release =
              -- build.  Not sure if its ok to rebuild haddock after
              -- that.  
              -- , sourceSpec = "quilt:(apt:sid:ghc6):(darcs:http://src.seereason.com/ghc6103/ghc6-bootstrap-quilt)"
-             , sourceSpec = "apt:sid:ghc6"
+             , sourceSpec = aptSidOrKarmic "ghc6"
              , relaxInfo = ["ghc6"
                            ,"xsltproc"
                            ,"haskell-devscripts"] }
@@ -66,7 +66,7 @@ ghc610CoreTargets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happy/1.18.2/happy-1.18.2.tar.gz:adb1679a1fa8cec74a6e621a4a277e98):(darcs:http://src.seereason.com/ghc6103/happy-debian)"
              , relaxInfo = ["happy"] }
     , Target { sourcePackageName = "haskell-utf8-string"
-             , sourceSpec = "apt:sid:haskell-utf8-string"
+             , sourceSpec = aptSidOrKarmic "haskell-utf8-string"
              , relaxInfo = [] }
     -- The normal haskell-http package requires cdbs >> 0.4.58, which
     -- is only in sid.  CDBS fails its unit tests when build on older
@@ -91,10 +91,10 @@ ghc610CoreTargets release =
              , sourceSpec = "apt:sid:haskell-html"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hunit"
-             , sourceSpec = "apt:sid:haskell-hunit"
+             , sourceSpec = aptSidOrKarmic "haskell-hunit"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mtl"
-             , sourceSpec = "apt:sid:haskell-mtl"
+             , sourceSpec = aptSidOrKarmic "haskell-mtl"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-network"
              , sourceSpec = "apt:sid:haskell-network"
@@ -103,7 +103,7 @@ ghc610CoreTargets release =
              , sourceSpec = "apt:sid:haskell-parallel"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-parsec"
-             , sourceSpec = "apt:sid:haskell-parsec"
+             , sourceSpec = aptSidOrKarmic "haskell-parsec"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-parsec2"
              , sourceSpec = "apt:sid:haskell-parsec2"
@@ -117,7 +117,7 @@ ghc610CoreTargets release =
              , sourceSpec = "apt:sid:haskell-quickcheck1"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-regex-base"
-             , sourceSpec = "apt:sid:haskell-regex-base"
+             , sourceSpec = aptSidOrKarmic "haskell-regex-base"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-regex-compat"
              , sourceSpec = "apt:sid:haskell-regex-compat"
@@ -173,6 +173,7 @@ ghc610CoreTargets release =
 --              , sourceSpec = "quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/ghc6103/haxml-quilt)"
 --              , relaxInfo = [] }
     ]
+        where aptSidOrKarmic name = "apt:" ++ (if isPrefixOf "karmic-" release then "karmic" else "sid") ++ ":" ++ name
 
 {-
 ghc610CoreTargets release =
@@ -288,7 +289,7 @@ ghc610Targets release =
              , sourceSpec = "darcs:http://src.seereason.com/ghc6103/formlets"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-binary"
-             , sourceSpec = "apt:sid:haskell-binary"
+             , sourceSpec = aptSidOrKarmic "haskell-binary"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-src-exts"
              , sourceSpec = "apt:sid:haskell-src-exts"
@@ -481,6 +482,7 @@ ghc610Targets release =
              , relaxInfo = [] }
 -}
     ]
+        where aptSidOrKarmic name = "apt:" ++ (if isPrefixOf "karmic-" release then "karmic" else "sid") ++ ":" ++ name
 
 {-
 ghc610Targets release =
