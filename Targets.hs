@@ -505,6 +505,9 @@ ghc610Targets release =
     , Target { sourcePackageName = "quilt"
              , sourceSpec = "proc:quilt:(apt:sid:quilt):(darcs:http://src.seereason.com/quilt-quilt)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-permutation"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/permutation/0.4.1/permutation-0.4.1.tar.gz:a9e0b6231d7a085719188406f59ab1aa):(darcs:http://src.seereason.com/haskell-permutation)"
+             , relaxInfo = [] }
     ]
         where aptSidOrKarmic name = "apt:" ++ (if isPrefixOf "karmic-" release then "karmic" else "sid") ++ ":" ++ name
 
