@@ -60,7 +60,7 @@ ghc610CoreTargets release =
                            ,"quilt"] }
     , Target { sourcePackageName = "haddock"
              , sourceSpec = "apt:sid:haddock"
-             , relaxInfo = ["happy", "ghc6"] }
+             , relaxInfo = ["happy", "ghc6", "debhelper"] }
     , Target { sourcePackageName = "hscolour"
              , sourceSpec = "apt:sid:hscolour"
              , relaxInfo = [] }
@@ -488,7 +488,7 @@ ghc610Targets release =
              , sourceSpec = "apt:sid:haskell-mmap"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hashed-storage"
-             , sourceSpec = "apt:sid:haskell-hashed-storage"
+             , sourceSpec = "quilt:(apt:sid:haskell-hashed-storage):(darcs:http://src.seereason.com/hashed-storage-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-terminfo"
              , sourceSpec = "apt:sid:haskell-terminfo"

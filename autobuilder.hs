@@ -293,7 +293,7 @@ myGlobalRelaxInfo =
      "util-linux",
      "sysvinit-utils",
      "autoconf",
-     -- "debhelper",
+     "debhelper",
      "debianutils",
      "diff",
      "e2fsprogs",
