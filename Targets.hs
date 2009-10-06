@@ -145,7 +145,7 @@ ghc610CoreTargets release =
            , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-devscripts"
              -- Patch to install executables into a similarly named deb.
-             , sourceSpec = "quilt:(apt:sid:haskell-devscripts=0.6.15+nmu13):(darcs:http://src.seereason.com/ghc6103/haskell-devscripts-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/ghc6103/haskell-devscripts-quilt)"
              , relaxInfo = ["hscolour"] }
     , Target { sourcePackageName = "haskell-debian"
              , sourceSpec = case ghcRelease of
