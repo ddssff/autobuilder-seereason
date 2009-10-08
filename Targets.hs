@@ -83,9 +83,11 @@ ghc610CoreTargets release =
     , Target { sourcePackageName = "haskell-zlib"
              , sourceSpec = "apt:sid:haskell-zlib"
              , relaxInfo = [] }
+{- currently fails to build
     , Target { sourcePackageName = "haskell-pcre-light"
              , sourceSpec = "apt:sid:haskell-pcre-light"
              , relaxInfo = [] }
+-}
     , Target { sourcePackageName = "haskell-bzlib"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.5.0.0/bzlib-0.5.0.0.tar.gz:ab594aaf9998ed602f8b23dd25199e19):(darcs:http://src.seereason.com/ghc6103/haskell-bzlib-debian)"
              , relaxInfo = [] }
