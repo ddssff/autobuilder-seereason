@@ -83,11 +83,18 @@ ghc610CoreTargets release =
     , Target { sourcePackageName = "haskell-zlib"
              , sourceSpec = "apt:sid:haskell-zlib"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-hpdf"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HPDF/1.4.2/HPDF-1.4.2.tar.gz:ba364b6e397413931b65a56e63b19bb4):(darcs:http://src.seereason.com/ghc6103/haskell-hpdf-debian)"
+             , relaxInfo = [] }
 {- currently fails to build
     , Target { sourcePackageName = "haskell-pcre-light"
              , sourceSpec = "apt:sid:haskell-pcre-light"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-configfile"
+             , sourceSpec = "apt:sid:haskell-configfile"
+             , relaxInfo = [] }
 -}
+
     , Target { sourcePackageName = "haskell-bzlib"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.5.0.0/bzlib-0.5.0.0.tar.gz:ab594aaf9998ed602f8b23dd25199e19):(darcs:http://src.seereason.com/ghc6103/haskell-bzlib-debian)"
              , relaxInfo = [] }
