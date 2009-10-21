@@ -183,6 +183,10 @@ ghc610CoreTargets release =
     , Target { sourcePackageName = "haskell-cpphs"
              , sourceSpec = "apt:sid:cpphs"
              , relaxInfo = [] }
+    , Target { sourcePageName = "haskell-tagsoup"
+             , sourceSpec = "apt:sid:haskell-tagsoup"
+             , relaxInfo = []
+             }
 --     , Target { sourcePackageName = "haxml"
 --              , sourceSpec = "quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/ghc6103/haxml-quilt)"
 --              , relaxInfo = [] }
