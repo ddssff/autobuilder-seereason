@@ -183,7 +183,7 @@ ghc610CoreTargets release =
     , Target { sourcePackageName = "haskell-cpphs"
              , sourceSpec = "apt:sid:cpphs"
              , relaxInfo = [] }
-    , Target { sourcePageName = "haskell-tagsoup"
+    , Target { sourcePackageName = "haskell-tagsoup"
              , sourceSpec = "apt:sid:haskell-tagsoup"
              , relaxInfo = []
              }
