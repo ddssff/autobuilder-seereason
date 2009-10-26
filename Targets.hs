@@ -58,6 +58,18 @@ ghc610CoreTargets release =
                            ,"haskell-devscripts"
                            ,"debhelper"
                            ,"quilt"] }
+{-
+      -- This ghc6 supplies haddock, so comment out the target below to use it.
+      Target { sourcePackageName = "ghc6"
+             , sourceSpec = "deb-dir:(uri:http://darcs.haskell.org/~ghc/dist/6.12.1rc1/ghc-6.12.0.20091010-src.tar.bz2:5ca685d5fc1c1d6924656a092f4d9b34):(darcs:http://src.seereason.com/ghc612-debian)"
+             , relaxInfo = ["ghc6"
+                           ,"happy"
+                           ,"alex"
+                           ,"xsltproc"
+                           ,"haskell-devscripts"
+                           ,"debhelper"
+                           ,"quilt"] }
+-}
     , Target { sourcePackageName = "haddock"
              , sourceSpec = "apt:sid:haddock"
              , relaxInfo = ["happy", "ghc6", "debhelper"] }
