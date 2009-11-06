@@ -531,9 +531,12 @@ ghc610Targets release =
              , sourceSpec = "apt:karmic:debhelper"
              , relaxInfo = [] }
     -- dh --with quilt uses Debian/Debhelper/Sequence/quilt.pm
+{-
+    -- Problem fixed in 0.48-2?
     , Target { sourcePackageName = "quilt"
              , sourceSpec = "proc:quilt:(apt:sid:quilt):(darcs:http://src.seereason.com/quilt-quilt)"
              , relaxInfo = [] }
+-}
     , Target { sourcePackageName = "haskell-permutation"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/permutation/0.4.1/permutation-0.4.1.tar.gz:a9e0b6231d7a085719188406f59ab1aa):(darcs:http://src.seereason.com/haskell-permutation)"
              , relaxInfo = [] }
