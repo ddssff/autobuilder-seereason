@@ -111,10 +111,10 @@ ghc610CoreTargets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.5.0.0/bzlib-0.5.0.0.tar.gz:ab594aaf9998ed602f8b23dd25199e19):(darcs:http://src.seereason.com/ghc6103/haskell-bzlib-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-haskell-src"
-             , sourceSpec = "apt:sid:haskell-haskell-src"
+             , sourceSpec = aptSidOrKarmic "haskell-haskell-src"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-html"
-             , sourceSpec = "apt:sid:haskell-html"
+             , sourceSpec = aptSidOrKarmic "haskell-html"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hunit"
              , sourceSpec = aptSidOrKarmic "haskell-hunit"
@@ -136,14 +136,14 @@ ghc610CoreTargets release =
              , relaxInfo = [] }
     -- Binary packages: libghc6-quickcheck2-dev, libghc6-quickcheck2-prof, libghc6-quickcheck2-doc
     , Target { sourcePackageName = "haskell-quickcheck"
-             , sourceSpec = "apt:sid:haskell-quickcheck"
+             , sourceSpec = aptSidOrKarmic "haskell-quickcheck"
              , relaxInfo = [] }
     -- Binary packages: libghc6-quickcheck1-dev, libghc6-quickcheck1-prof, libghc6-quickcheck1-doc
     , Target { sourcePackageName = "haskell-quickcheck1"
-             , sourceSpec = "apt:sid:haskell-quickcheck1"
+             , sourceSpec = aptSidOrKarmic "haskell-quickcheck1"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-regex-base"
-             , sourceSpec = aptSidOrKarmic "haskell-regex-base"
+             , sourceSpec = "apt:sid:haskell-regex-base"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-regex-compat"
              , sourceSpec = "apt:sid:haskell-regex-compat"
@@ -152,7 +152,7 @@ ghc610CoreTargets release =
              , sourceSpec = "apt:sid:haskell-regex-posix"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-stm"
-             , sourceSpec = "apt:sid:haskell-stm"
+             , sourceSpec = aptSidOrKarmic "haskell-stm"
              , relaxInfo = [] }
     -- Patch to add the bareAttr function and remove the custom show
     -- instance Specify a particular version of xhtml so we can
@@ -196,7 +196,7 @@ ghc610CoreTargets release =
              , sourceSpec = "apt:sid:cpphs"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-tagsoup"
-             , sourceSpec = "apt:sid:haskell-tagsoup"
+             , sourceSpec = aptSidOrKarmic "haskell-tagsoup"
              , relaxInfo = []
              }
 --     , Target { sourcePackageName = "haxml"
@@ -290,7 +290,7 @@ autobuilderTargets release =
                               _ -> "darcs:http://src.seereason.com/ghc6103/autobuilder"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cgi"
-             , sourceSpec = "apt:sid:haskell-cgi"
+             , sourceSpec = aptSidOrKarmic "haskell-cgi"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mime"
              , sourceSpec = case ghcRelease of
@@ -305,6 +305,7 @@ autobuilderTargets release =
                               _ -> "apt:sid:magic-haskell"
              , relaxInfo = [] }
     ]
+         where aptSidOrKarmic name = "apt:" ++ (if isPrefixOf "karmic-" release then "karmic" else "sid") ++ ":" ++ name
 
 -- Note that some of the debian source packages have names that don't begin with haskell-:
 --   pandoc, magic-haskell, hslogger
@@ -322,7 +323,7 @@ ghc610Targets release =
              , sourceSpec = aptSidOrKarmic "haskell-binary"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-src-exts"
-             , sourceSpec = "apt:karmic:haskell-src-exts"
+             , sourceSpec = aptSidOrKarmic "haskell-src-exts"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-maybet"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/MaybeT/0.1.2/MaybeT-0.1.2.tar.gz:9864a3f34151217004f8c968fda5b427):(darcs:http://src.seereason.com/ghc6103/MaybeT-debian)"
@@ -427,7 +428,8 @@ ghc610Targets release =
              , sourceSpec = "deb-dir:(darcs:http://darcs.haskell.org/cabal-install):(darcs:http://src.seereason.com/ghc6103/cabal-install-debian)"
              , relaxInfo = [] } -}
     , Target { sourcePackageName = "haskell-uniplate"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/uniplate/1.2.0.3/uniplate-1.2.0.3.tar.gz:e0e10700870f5b9756d4097e640164ca):(darcs:http://src.seereason.com/ghc6103/uniplate-debian)"
+             -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/uniplate/1.2.0.3/uniplate-1.2.0.3.tar.gz:e0e10700870f5b9756d4097e640164ca):(darcs:http://src.seereason.com/ghc6103/uniplate-debian)"
+             , sourceSpec = aptSidOrKarmic "haskell-uniplate"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-i18n"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/i18n/0.3/i18n-0.3.tar.gz:e59445b4ad743ab77c61a281cf942bbf):(darcs:http://src.seereason.com/ghc6103/i18n-debian)"
@@ -511,7 +513,7 @@ ghc610Targets release =
              , sourceSpec = "apt:sid:darcs"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-haskeline"
-             , sourceSpec = "apt:sid:haskell-haskeline"
+             , sourceSpec = aptSidOrKarmic "haskell-haskeline"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mmap"
              , sourceSpec = "apt:sid:haskell-mmap"
@@ -520,15 +522,15 @@ ghc610Targets release =
              , sourceSpec = "quilt:(apt:sid:haskell-hashed-storage):(darcs:http://src.seereason.com/hashed-storage-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-terminfo"
-             , sourceSpec = "apt:sid:haskell-terminfo"
+             , sourceSpec = aptSidOrKarmic "haskell-terminfo"
              , relaxInfo = [] }
     -- Required for darcs 2.3.0
     , Target { sourcePackageName = "curl"
-             , sourceSpec = "apt:sid:curl"
+             , sourceSpec = aptSidOrKarmic "curl"
              , relaxInfo = [] }
     -- We need debhelper >= 7.0.50 for darcs 2.3.0
     , Target { sourcePackageName = "debhelper"
-             , sourceSpec = "apt:karmic:debhelper"
+             , sourceSpec = aptSidOrKarmic "debhelper"
              , relaxInfo = [] }
     -- dh --with quilt uses Debian/Debhelper/Sequence/quilt.pm
 {-
