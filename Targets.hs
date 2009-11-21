@@ -510,7 +510,11 @@ ghc610Targets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/benchpress/0.2.2.3/benchpress-0.2.2.3.tar.gz:48cd691ebfd4dc6c5e6f5201ca545fac):(darcs:http://src.seereason.com/debian/haskell-benchpress-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "darcs"
-             , sourceSpec = "apt:sid:darcs"
+             , sourceSpec = aptSidOrKarmic "darcs"
+             , relaxInfo = [] }
+    -- Required by the darcs in sid.
+    , Target { sourcePackageName = "bash-completion"
+             , sourceSpec = aptSidOrKarmic "bash-completion"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-haskeline"
              , sourceSpec = aptSidOrKarmic "haskell-haskeline"
