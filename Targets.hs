@@ -298,11 +298,16 @@ autobuilderTargets release =
                               "6.10.2" -> "darcs:http://src.seereason.com/ghc6102/haskell-mime"
                               _ -> "darcs:http://src.seereason.com/ghc6103/haskell-mime"
              , relaxInfo = [] }
+{-
     , Target { sourcePackageName = "magic-haskell"
              , sourceSpec = case ghcRelease of
                               "6.10.1" -> "quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc610/quilt/magic-haskell-quilt)"
                               "6.10.2" -> "quilt:(apt:sid:magic-haskell):(darcs:http://src.seereason.com/ghc610/quilt/magic-haskell-quilt)"
                               _ -> "apt:sid:magic-haskell"
+             , relaxInfo = [] }
+-}
+    , Target { sourcePackageName = "haskell-magic"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/magic/1.0.8/magic-1.0.8.tar.gz:e81c493fe185431a5b70d4855ed4b87f):(darcs:http://src.seereason.com/magic-debian)"
              , relaxInfo = [] }
     ]
          where aptSidOrKarmic name = "apt:" ++ (if isPrefixOf "karmic-" release then "karmic" else "sid") ++ ":" ++ name
@@ -512,7 +517,7 @@ ghc610Targets release =
     , Target { sourcePackageName = "darcs"
              , sourceSpec = aptSidOrKarmic "darcs"
              , relaxInfo = [] }
-    -- Required by the darcs in sid.
+    -- Required by the darcs 2.3.0-3 in sid.
     , Target { sourcePackageName = "bash-completion"
              , sourceSpec = aptSidOrKarmic "bash-completion"
              , relaxInfo = [] }
@@ -844,6 +849,10 @@ otherTargets release =
              }
     , Target { sourcePackageName = "jqueryui"
              , sourceSpec = "apt:sid:jqueryui"
+             , relaxInfo = [] 
+             }
+    , Target { sourcePackageName = "haskell-restarter"
+             , sourceSpec = "darcs:http://src.seereason.com/Restarter"
              , relaxInfo = [] 
              }
     ]
