@@ -194,9 +194,9 @@ ghc610CoreTargets release =
              , sourceSpec = aptSidOrKarmic release "haskell-tagsoup"
              , relaxInfo = []
              }
---     , Target { sourcePackageName = "haxml"
---              , sourceSpec = "quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/haxml-quilt)"
---              , relaxInfo = [] }
+     , Target { sourcePackageName = "haxml"
+              , sourceSpec = "quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/haxml-quilt)"
+              , relaxInfo = [] }
     ]
 
 autobuilderTargets release =
