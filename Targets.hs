@@ -496,7 +496,7 @@ ghc610Targets release =
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/transformers/0.1.4.0/transformers-0.1.4.0.tar.gz:6edd0f22594c477b05fd059fdac2c5a9):(darcs:http://src.seereason.com/haskell-transformers-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName="haskell-utility-ht"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/utility-ht/0.0.5.1/utility-ht-0.0.5.1.tar.gz:98dcb042f404378d9071fc6344703386):(darcs:http://src.seereason.com/haskell-utility-ht-debian)"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/utility-ht/0.0.5.1/utility-ht-0.0.5.1.tar.gz:98dcb042f404378d9071fc6344703386):(darcs:http://src.seereason.com/debian/haskell-utility-ht-debian)"
              , relaxInfo = [] }
     ]
 
