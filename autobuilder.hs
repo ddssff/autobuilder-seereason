@@ -264,9 +264,9 @@ mySources myBuildRelease debianMirrorHost ubuntuMirrorHost =
             (debianReleases ++ ubuntuReleases ++
              concatMap (derivedReleaseNames myBuildRelease) (debianReleases ++ ubuntuReleases)) ++
     [("debian-experimental", unlines (debianSourceLines debianMirrorHost "experimental")),
-     ("debian-multimedia",
+{-   ("debian-multimedia",
       (unlines ["deb http://mirror.home-dn.net/debian-multimedia stable main",
-                "deb-src http://mirror.home-dn.net/debian-multimedia stable main"])),
+                "deb-src http://mirror.home-dn.net/debian-multimedia stable main"])), -}
       ("kanotix",
        (unlines ["deb http://kanotix.com/files/debian sid main contrib non-free vdr",
                  "  deb-src http://kanotix.com/files/debian sid main contrib non-free vdr"]))]
