@@ -438,6 +438,22 @@ ghc610Targets release =
     , Target { sourcePackageName = "darcs"
              , sourceSpec = aptSidOrKarmic release "darcs"
              , relaxInfo = [] }
+    -- We need debhelper >= 7.0.50 for darcs 2.3.0.
+    -- However, one of its unit tests fails:
+    -- #   Failed test 'unavailable jobserver'
+    -- #   at t/buildsystems/buildsystem_tests line 540.
+{-
+    , Target { sourcePackageName = "debhelper"
+             , sourceSpec = aptSidOrKarmic release "debhelper"
+             , relaxInfo = [] }
+-}
+    -- Required for darcs 2.3.0
+    -- Fails because of missing dependency libssh2-1-dev
+{-
+    , Target { sourcePackageName = "curl"
+             , sourceSpec = aptSidOrKarmic release "curl"
+             , relaxInfo = [] }
+-}
     -- Required by the darcs 2.3.0-3 in sid.
     , Target { sourcePackageName = "bash-completion"
              , sourceSpec = aptSidOrKarmic release "bash-completion"
@@ -453,14 +469,6 @@ ghc610Targets release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-terminfo"
              , sourceSpec = aptSidOrKarmic release "haskell-terminfo"
-             , relaxInfo = [] }
-    -- Required for darcs 2.3.0
-    , Target { sourcePackageName = "curl"
-             , sourceSpec = aptSidOrKarmic release "curl"
-             , relaxInfo = [] }
-    -- We need debhelper >= 7.0.50 for darcs 2.3.0
-    , Target { sourcePackageName = "debhelper"
-             , sourceSpec = aptSidOrKarmic release "debhelper"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-permutation"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/permutation/0.4.1/permutation-0.4.1.tar.gz:a9e0b6231d7a085719188406f59ab1aa):(darcs:http://src.seereason.com/haskell-permutation)"
