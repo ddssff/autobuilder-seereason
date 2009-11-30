@@ -518,14 +518,13 @@ ghc610Targets release =
     ]
 
 otherTargets release =
-    [ Target { sourcePackageName = "tree-widget"
-             , sourceSpec = "darcs:http://src.seereason.com/tree-widget"
-             , relaxInfo = [] }
-    -- This target fails during an arch only build, because it has no architecture dependent files.
-    , Target { sourcePackageName = "seereason-keyring"
+    [ -- This target fails during an arch only build, because it has no architecture dependent files.
+      Target { sourcePackageName = "seereason-keyring"
              , sourceSpec = "darcs:http://src.seereason.com/seereason-keyring"
-             , relaxInfo = [] 
-             }
+             , relaxInfo = [] }
+{-  , Target { sourcePackageName = "tree-widget"
+             , sourceSpec = "darcs:http://src.seereason.com/tree-widget"
+             , relaxInfo = [] } -}
     , Target { sourcePackageName = "jquery"
              , sourceSpec = "apt:sid:jquery"
              , relaxInfo = [] 
@@ -534,10 +533,9 @@ otherTargets release =
              , sourceSpec = "apt:sid:jqueryui"
              , relaxInfo = [] 
              }
-    , Target { sourcePackageName = "haskell-restarter"
+{-  , Target { sourcePackageName = "haskell-restarter"
              , sourceSpec = "darcs:http://src.seereason.com/Restarter"
-             , relaxInfo = [] 
-             }
+             , relaxInfo = [] } -}
     ]
 
 privateTargets release =
