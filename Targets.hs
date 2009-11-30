@@ -509,6 +509,12 @@ ghc610Targets release =
     , Target { sourcePackageName="haskell-utility-ht"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/utility-ht/0.0.5.1/utility-ht-0.0.5.1.tar.gz:98dcb042f404378d9071fc6344703386):(darcs:http://src.seereason.com/debian/haskell-utility-ht-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName="tinymce"
+             , sourceSpec="apt:sid:tinymce"
+             , relaxInfo = [] }
+    , Target { sourcePackageName="wordpress"
+             , sourceSpec="apt:sid:wordpress"
+             , relaxInfo = [] }
     ]
 
 otherTargets release =
