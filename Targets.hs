@@ -576,5 +576,8 @@ privateTargets release =
     , Target { sourcePackageName = "haskell-senioritymatters"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/SeniorityMatters"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-seereason"
+             , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/seereason.com"
+             , relaxInfo = [] }
     ]
     where privateDarcsURI = "ssh://upload@deb.seereason.com/srv/darcs"
