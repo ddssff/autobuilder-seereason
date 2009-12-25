@@ -43,6 +43,7 @@ ghc610CoreTargets release =
       --           libghc6-syb-prof,
       --           libghc6-template-haskell-prof,
       --           libghc6-unix-prof
+{-
       Target { sourcePackageName = "ghc6"
              -- Use this spec to build a bootstrap version of ghc6
              -- using an older haddock.  You should next build
@@ -60,7 +61,7 @@ ghc610CoreTargets release =
     , Target { sourcePackageName = "haddock"
              , sourceSpec = "apt:sid:haddock"
              , relaxInfo = ["happy", "ghc6", "debhelper"] }
-{-
+-}
       -- This ghc6 supplies haddock, so comment out the target above to use it.
       Target { sourcePackageName = "ghc6"
              , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.12.1/ghc-6.12.1-src.tar.bz2:3a2b23f29013605f721ebdfc29de9c92):(darcs:http://src.seereason.com/ghc612-debian)"
@@ -71,9 +72,8 @@ ghc610CoreTargets release =
                            ,"haskell-devscripts"
                            ,"debhelper"
                            ,"quilt"] }
--}
     , Target { sourcePackageName = "hscolour"
-             , sourceSpec = "apt:sid:hscolour"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hscolour/1.15/hscolour-1.15.tar.gz:ae1f3d4b1b9911ca80735548b0a622d5):(darcs:http://src.seereason.com/hscolour-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happy"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happy/1.18.2/happy-1.18.2.tar.gz:adb1679a1fa8cec74a6e621a4a277e98):(darcs:http://src.seereason.com/happy-debian)"
@@ -120,7 +120,7 @@ ghc610CoreTargets release =
              , sourceSpec = aptSidOrKarmic release "haskell-mtl"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-network"
-             , sourceSpec = "apt:sid:haskell-network"
+             , sourceSpec = "quilt:(apt:sid:haskell-network):(darcs:http://src.seereason.com/haskell-network-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-parallel"
              , sourceSpec = "apt:sid:haskell-parallel"
