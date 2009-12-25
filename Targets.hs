@@ -79,7 +79,7 @@ ghc610CoreTargets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happy/1.18.2/happy-1.18.2.tar.gz:adb1679a1fa8cec74a6e621a4a277e98):(darcs:http://src.seereason.com/happy-debian)"
              , relaxInfo = ["happy"] }
     , Target { sourcePackageName = "haskell-utf8-string"
-             , sourceSpec = aptSidOrKarmic release "haskell-utf8-string"
+             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-utf8-string" ++ "):(darcs:http://src.seereason.com/haskell-utf8-string-quilt)"
              , relaxInfo = [] }
     -- The normal haskell-http package requires cdbs >> 0.4.58, which
     -- is only in sid.  CDBS fails its unit tests when build on older
@@ -140,7 +140,7 @@ ghc610CoreTargets release =
              , sourceSpec = aptSidOrKarmic release "haskell-quickcheck1"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-regex-base"
-             , sourceSpec = "apt:sid:haskell-regex-base"
+             , sourceSpec = "quilt:(apt:sid:haskell-regex-base):(darcs:http://src.seereason.com/haskell-regex-base-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-regex-compat"
              , sourceSpec = "apt:sid:haskell-regex-compat"
