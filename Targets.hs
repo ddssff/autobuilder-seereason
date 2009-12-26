@@ -87,10 +87,10 @@ ghc610CoreTargets release =
     -- present we'll use it, if not we can't.
 {-  , Target { sourcePackageName = "cdbs"
              , sourceSpec = "apt:sid:cdbs"
-             , relaxInfo = [] } -}
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-time"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/time/1.1.4/time-1.1.4.tar.gz:b6768582908be4fc31570462dce2eee9):(darcs:http://src.seereason.com/haskell-time-debian)"
-             , relaxInfo = [] }
+             , relaxInfo = [] } -}
     , Target { sourcePackageName = "haskell-zlib"
              , sourceSpec = "apt:sid:haskell-zlib"
              , relaxInfo = [] }
@@ -245,7 +245,7 @@ ghc610Targets release =
              , sourceSpec = "darcs:http://src.seereason.com/formlets"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-binary"
-             , sourceSpec = aptSidOrKarmic release "haskell-binary"
+             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-binary" ++ "):(darcs:http://src.seereason.com/haskell-binary-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-src-exts"
              , sourceSpec = "apt:sid:haskell-src-exts"
@@ -421,7 +421,7 @@ ghc610Targets release =
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-strict-concurrency"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/strict-concurrency/0.2.1/strict-concurrency-0.2.1.tar.gz:974cda4fa4d4a2d9082f31160f57f707):(darcs:http://src.seereason.com/debian/haskell-strict-concurrency-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/strict-concurrency/0.2.2/strict-concurrency-0.2.2.tar.gz:fe09148d0f2da0a343b492253aedea3e):(darcs:http://src.seereason.com/debian/haskell-strict-concurrency-debian)"
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-unix-compat"
