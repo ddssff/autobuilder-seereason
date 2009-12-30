@@ -293,10 +293,12 @@ ghc610Targets release =
     , Target { sourcePackageName = "haskell-hinotify"
              , sourceSpec = "deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/hinotify-debian)"
              , relaxInfo = [] }
-    -- Required by happstack-state
+    -- Required by happstack-state (no longer)
+{-
     , Target { sourcePackageName = "haskell-hspread"
              , sourceSpec = "quilt:(apt:lenny:haskell-hspread):(darcs:http://src.seereason.com/haskell-hspread-quilt)"
              , relaxInfo = [] }
+-}
     , Target { sourcePackageName = "haskell-rjson"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/RJson/0.3.5/RJson-0.3.5.tar.gz:e69c34b295e067c169a15fc5327a9dd9):(darcs:http://src.seereason.com/RJson-debian)"
              , relaxInfo = [] }
