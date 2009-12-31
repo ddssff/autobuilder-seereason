@@ -434,7 +434,8 @@ ghc610Targets release =
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-sendfile"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/sendfile/0.5/sendfile-0.5.tar.gz:649434b84c3c716840861b85c6b0bb05):(darcs:http://src.seereason.com/debian/haskell-sendfile-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/sendfile/0.6.1/sendfile-0.6.1.tar.gz:35516b5bebe0566591dda3f78c5dcd9e):(darcs:http://src.seereason.com/debian/haskell-sendfile-debian)"
+--             , sourceSpec = "deb-dir:(darcs:http://patch-tag.com/r/mae/sendfile/pullrepo):(darcs:http://src.seereason.com/debian/haskell-sendfile-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-text"
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/text/0.5/text-0.5.tar.gz:f506b0866aa9b476a35e0960870cc4d1):(darcs:http://src.seereason.com/haskell-text-debian)"
