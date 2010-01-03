@@ -172,7 +172,7 @@ ghc610CoreTargets release =
              , sourceSpec = case ghcRelease of
                               "6.10.1" -> "darcs:http://src.seereason.com/ghc610/haskell-debian-3"
                               "6.10.2" -> "darcs:http://src.seereason.com/ghc6102/haskell-debian-3"
-                              _ -> "darcs:http://src.seereason.com/haskell-debian-3"
+                              _ -> "darcs:http://src.seereason.com/haskell-debian"
              , relaxInfo = ["cabal-debian"] }
     , Target { sourcePackageName = "haskell-debian-repo"
              , sourceSpec = case ghcRelease of
