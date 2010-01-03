@@ -448,7 +448,7 @@ ghc610Targets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/benchpress/0.2.2.3/benchpress-0.2.2.3.tar.gz:48cd691ebfd4dc6c5e6f5201ca545fac):(darcs:http://src.seereason.com/debian/haskell-benchpress-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "darcs"
-             , sourceSpec = aptSidOrKarmic release "darcs"
+             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "darcs" ++ "):(darcs:http://src.seereason.com/darcs-quilt)"
              , relaxInfo = [] }
     -- We need debhelper >= 7.0.50 for darcs 2.3.0.
     -- However, one of its unit tests fails:
