@@ -64,7 +64,8 @@ ghc610CoreTargets release =
 -}
       -- This ghc6 supplies haddock, so comment out the target above to use it.
       Target { sourcePackageName = "ghc6"
-             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.12.1/ghc-6.12.1-src.tar.bz2:3a2b23f29013605f721ebdfc29de9c92):(darcs:http://src.seereason.com/ghc612-debian)"
+             -- , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/6.12.1/ghc-6.12.1-src.tar.bz2:3a2b23f29013605f721ebdfc29de9c92):(darcs:http://src.seereason.com/ghc612-debian)"
+             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20091231-src.tar.bz2:a5a9a4ac9fd2823ed0a1928a9a89498c):(darcs:http://src.seereason.com/ghc614-debian)"
              , relaxInfo = ["ghc6"
                            ,"happy"
                            ,"alex"
@@ -133,12 +134,13 @@ ghc610CoreTargets release =
              , relaxInfo = [] }
     -- Binary packages: libghc6-quickcheck2-dev, libghc6-quickcheck2-prof, libghc6-quickcheck2-doc
     , Target { sourcePackageName = "haskell-quickcheck"
-             , sourceSpec = aptSidOrKarmic release "haskell-quickcheck"
+             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-quickcheck" ++ "):(darcs:http://src.seereason.com/haskell-quickcheck-quilt)"
              , relaxInfo = [] }
     -- Binary packages: libghc6-quickcheck1-dev, libghc6-quickcheck1-prof, libghc6-quickcheck1-doc
+{-  -- Removed from ghc 6.13
     , Target { sourcePackageName = "haskell-quickcheck1"
              , sourceSpec = aptSidOrKarmic release "haskell-quickcheck1"
-             , relaxInfo = [] }
+             , relaxInfo = [] } -}
     , Target { sourcePackageName = "haskell-regex-base"
              , sourceSpec = "quilt:(apt:sid:haskell-regex-base):(darcs:http://src.seereason.com/haskell-regex-base-quilt)"
              , relaxInfo = [] }
