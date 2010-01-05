@@ -217,7 +217,7 @@ autobuilderTargets release =
                               _ -> "darcs:http://src.seereason.com/autobuilder"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cgi"
-             , sourceSpec = aptSidOrKarmic release "haskell-cgi"
+             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-cgi" ++ "):(darcs:http://src.seereason.com/haskell-cgi-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mime"
              , sourceSpec = case ghcRelease of
