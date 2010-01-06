@@ -73,9 +73,9 @@ ghc610CoreTargets release =
                            ,"haskell-devscripts"
                            ,"debhelper"
                            ,"quilt"] }
-    , Target { sourcePackageName = "hscolour"
+    , Target { sourcePackageName = "haskell-hscolour"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hscolour/1.15/hscolour-1.15.tar.gz:ae1f3d4b1b9911ca80735548b0a622d5):(darcs:http://src.seereason.com/hscolour-debian)"
-             , relaxInfo = [] }
+             , relaxInfo = ["hscolour"] }
     , Target { sourcePackageName = "haskell-happy"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happy/1.18.2/happy-1.18.2.tar.gz:adb1679a1fa8cec74a6e621a4a277e98):(darcs:http://src.seereason.com/happy-debian)"
              , relaxInfo = ["happy"] }
