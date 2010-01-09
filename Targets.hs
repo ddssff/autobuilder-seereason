@@ -129,6 +129,9 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "haxml"
              , sourceSpec = "quilt:(apt:sid:haxml):(darcs:http://src.seereason.com/haxml-quilt)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-happstackdotcom"
+             , sourceSpec = "darcs:http://patch-tag.com/r/stepcut/happstackDotCom"
+             , relaxInfo = [] }
     ]
 
 autobuilderTargets release =
