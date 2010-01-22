@@ -132,6 +132,9 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "haskell-happstackdotcom"
              , sourceSpec = "darcs:http://patch-tag.com/r/stepcut/happstackDotCom"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-irc"
+             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-irc" ++ "):(darcs:http://src.seereason.com/haskell-irc-quilt)"
+             , relaxInfo = [] }
     ]
 
 autobuilderTargets release =
@@ -479,9 +482,9 @@ privateTargets release =
 {-  , Target { sourcePackageName = "haskell-happstack-examples"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/happstack-examples"
              , relaxInfo = [] } -}
-{-  , Target { sourcePackageName = "happstack-blog"
+  , Target { sourcePackageName = "happstack-blog"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/happstack-cms"
-             , relaxInfo = [] } -}
+             , relaxInfo = [] }
     , Target { sourcePackageName = "happstack-imagegallery"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/imagegallery"
              , relaxInfo = [] }
