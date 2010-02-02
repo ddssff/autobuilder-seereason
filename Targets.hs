@@ -436,6 +436,7 @@ failingTargets release =
     , Target { sourcePackageName = "haskell-cabal-install"
              , sourceSpec = "deb-dir:(darcs:http://darcs.haskell.org/cabal-install):(darcs:http://src.seereason.com/cabal-install-debian)"
              , relaxInfo = [] }
+    -- Failing due to confusion between Debian's use of quilt and ours
     , Target { sourcePackageName = "darcs"
              , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "darcs" ++ "):(darcs:http://src.seereason.com/darcs-quilt)"
              , relaxInfo = [] }
