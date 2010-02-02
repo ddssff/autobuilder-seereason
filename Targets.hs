@@ -18,7 +18,10 @@ aptSidOrKarmic release name = "apt:" ++ (if isPrefixOf "karmic-" release then "k
 
 ghc6CoreTargets release =
     [ Target { sourcePackageName = "ghc6"
+             -- Working version
              , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20091231-src.tar.bz2:a5a9a4ac9fd2823ed0a1928a9a89498c):(darcs:http://src.seereason.com/ghc614-debian)"
+             -- Experimental version
+             -- , sourceSpec = "quilt:(apt:experimental:ghc6):(darcs:http://src.seereason.com/ghc614-quilt)"
              , relaxInfo = ["ghc6"
                            ,"happy"
                            ,"alex"
@@ -98,8 +101,10 @@ ghc6CoreTargets release =
            , sourceSpec = "apt:sid:html-xml-utils"
            , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-devscripts"
-             -- Patch to install executables into a similarly named deb.
+             -- Working version
              , sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/haskell-devscripts-quilt)"
+             -- Experimental version
+             -- , sourceSpec = "quilt:(darcs:http://darcs.debian.org/pkg-haskell/haskell-devscripts):(darcs:http://src.seereason.com/haskell-devscripts-quilt)"
              , relaxInfo = ["hscolour"] }
     , Target { sourcePackageName = "haskell-debian"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-debian"
