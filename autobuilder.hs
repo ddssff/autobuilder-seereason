@@ -241,7 +241,7 @@ ubuntuSourceLines ubuntuMirrorHost release =
 
 -- The names of the releases that we are able to create build environments for.
 --
-debianReleases = ["sid", "squeeze", "lenny"]
+debianReleases = ["experimental", "sid", "squeeze", "lenny"]
 ubuntuReleases = ["karmic", "jaunty", "intrepid", "hardy", "dapper"]
 
 -- These are releases which are not supported for building, but from
