@@ -70,7 +70,7 @@ ghc6CoreTargets release =
              , relaxInfo = [] }
     -- Binary packages: libghc6-quickcheck2-dev, libghc6-quickcheck2-prof, libghc6-quickcheck2-doc
     , Target { sourcePackageName = "haskell-quickcheck"
-             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-quickcheck" ++ "):(darcs:http://src.seereason.com/haskell-quickcheck-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-quickcheck" ++ "):(darcs:http://src.seereason.com/haskell-quickcheck-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-regex-base"
              , sourceSpec = "quilt:(apt:sid:haskell-regex-base):(darcs:http://src.seereason.com/haskell-regex-base-quilt)"
