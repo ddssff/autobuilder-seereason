@@ -183,7 +183,7 @@ myExtraPackages myBuildRelease =
 -- sysvinit to the build when they ceased to be 'Required' packages.
 --
 myExtraEssential myBuildRelease =
-    ["gnupg", "dpkg"] ++
+    ["gnupg", "dpkg", "locales", "language-pack-en"] ++
     case releaseRepoName myBuildRelease of
       "debian" -> []
       "ubuntu" ->
