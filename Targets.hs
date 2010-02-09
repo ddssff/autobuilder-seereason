@@ -405,6 +405,9 @@ ghc6Targets release =
     , Target { sourcePackageName="haskell-proplogic"
              , sourceSpec="deb-dir:(uri:http://www.bucephalus.org/PropLogic/PropLogic-0.9.tar.gz:e2fb3445dd16d435e81d7630d7f78c01):(darcs:http://src.seereason.com/haskell-proplogic-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-operational"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/operational/0.1.0.0/operational-0.1.0.0.tar.gz:9244bef3a6ac89a3792c9b8617df3c08):(darcs:http://src.seereason.com/operational-debian)"
+             , relaxInfo = [] }
     ]
 
 otherTargets release =
