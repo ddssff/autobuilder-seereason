@@ -62,6 +62,9 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "haskell-network"
              , sourceSpec = "quilt:(apt:sid:haskell-network):(darcs:http://src.seereason.com/haskell-network-quilt)"
              , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-network-bytestring"
+             , sourceSpec="quilt:(apt:sid:haskell-network-bytestring):(darcs:http://src.seereason.com/haskell-network-bytestring-quilt)"
+             , relaxInfo = [] }      
     , Target { sourcePackageName = "haskell-parallel"
              , sourceSpec = "apt:sid:haskell-parallel"
              , relaxInfo = [] }
@@ -412,9 +415,6 @@ ghc6Targets release =
              , relaxInfo = [] }
     , Target { sourcePackageName="haskell-operational"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/operational/0.1.0.0/operational-0.1.0.0.tar.gz:9244bef3a6ac89a3792c9b8617df3c08):(darcs:http://src.seereason.com/operational-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName="haskell-network-bytestring"
-             , sourceSpec="apt:sid:haskell-network-bytestring"
              , relaxInfo = [] }
     ]
 
