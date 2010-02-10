@@ -137,10 +137,9 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "haskell-happstackdotcom"
              , sourceSpec = "darcs:http://patch-tag.com/r/stepcut/happstackDotCom"
              , relaxInfo = [] }
-    -- Disabled due to failing patch
-{-  , Target { sourcePackageName = "haskell-irc"
-             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-irc" ++ "):(darcs:http://src.seereason.com/haskell-irc-quilt)"
-             , relaxInfo = [] } -}
+    , Target { sourcePackageName = "haskell-irc"
+             , sourceSpec = "apt:sid:haskell-irc"
+             , relaxInfo = [] }
     ]
 
 autobuilderTargets release =
