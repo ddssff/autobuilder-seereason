@@ -169,9 +169,15 @@ ghc6Targets release =
     , Target { sourcePackageName = "haskell-applicative-extras"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/applicative-extras/0.1.5/applicative-extras-0.1.5.tar.gz:b5a6288629133529c0951d5b71a21954):(darcs:http://src.seereason.com/applicative-extras-debian)"
              , relaxInfo = [] }
+{-      
     , Target { sourcePackageName = "haskell-formlets"
              , sourceSpec = "darcs:http://src.seereason.com/formlets"
              , relaxInfo = [] }
+-}
+    , Target { sourcePackageName = "haskell-formlets"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/formlets/0.7.1/formlets-0.7.1.tar.gz:9518af3a2b3e1df5181530db8780e774):(darcs:http://src.seereason.com/formlets-debian)"
+             , relaxInfo = [] }
+      
 {-  , Target { sourcePackageName = "haskell-binary"
              , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-binary" ++ "):(darcs:http://src.seereason.com/haskell-binary-quilt)"
              , relaxInfo = [] } -}
@@ -406,6 +412,9 @@ ghc6Targets release =
              , relaxInfo = [] }
     , Target { sourcePackageName="haskell-operational"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/operational/0.1.0.0/operational-0.1.0.0.tar.gz:9244bef3a6ac89a3792c9b8617df3c08):(darcs:http://src.seereason.com/operational-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-network-bytestring"
+             , sourceSpec="apt:sid:haskell-network-bytestring"
              , relaxInfo = [] }
     ]
 
