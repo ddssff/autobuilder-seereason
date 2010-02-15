@@ -11,7 +11,8 @@ publicTargets release =
     ghc6Targets release ++		-- Haskell targets
     otherTargets release		-- Non-haskell targets
 
-aptSidOrKarmic release name = "apt:" ++ (if isPrefixOf "karmic-" release then "karmic" else "sid") ++ ":" ++ name
+--aptSidOrKarmic release name = "apt:" ++ (if isPrefixOf "karmic-" release then "karmic" else "sid") ++ ":" ++ name
+aptSidOrKarmic release name = "apt:sid:" ++ name
 
 -- This module defines how we obtain and assemble the source code for
 -- the packages we want to build.
