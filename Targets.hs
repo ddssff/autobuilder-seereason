@@ -27,8 +27,10 @@ ghc6CoreTargets release =
                            ,"haskell-devscripts"
                            ,"debhelper"
                            ,"quilt"] }
-    , Target { sourcePackageName = "haskell-hscolour"
-             -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hscolour/1.15/hscolour-1.15.tar.gz:ae1f3d4b1b9911ca80735548b0a622d5):(darcs:http://src.seereason.com/hscolour-debian-nopatch)"
+{-  , Target { sourcePackageName = "haskell-hscolour"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hscolour/1.15/hscolour-1.15.tar.gz:ae1f3d4b1b9911ca80735548b0a622d5):(darcs:http://src.seereason.com/hscolour-debian-nopatch)"
+             , relaxInfo = ["hscolour"] } -}
+    , Target { sourcePackageName = "hscolour"
              , sourceSpec = "apt:sid:hscolour"
              , relaxInfo = ["hscolour"] }
     , Target { sourcePackageName = "haskell-happy"
@@ -38,7 +40,7 @@ ghc6CoreTargets release =
              , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-utf8-string" ++ "):(darcs:http://src.seereason.com/haskell-utf8-string-quilt)"
              , relaxInfo = ["hscolour", "cpphs"] }
     , Target { sourcePackageName = "haskell-zlib"
-             , sourceSpec = "apt:sid:haskell-zlib"
+             , sourceSpec = "quilt:(apt:sid:haskell-zlib):(darcs:http://src.seereason.com/haskell-zlib-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hpdf"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HPDF/1.4.2/HPDF-1.4.2.tar.gz:ba364b6e397413931b65a56e63b19bb4):(darcs:http://src.seereason.com/haskell-hpdf-debian)"
