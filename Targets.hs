@@ -11,8 +11,9 @@ publicTargets release =
     ghc6Targets release ++		-- Haskell targets
     otherTargets release		-- Non-haskell targets
 
---aptSidOrKarmic release name = "apt:" ++ (if isPrefixOf "karmic-" release then "karmic" else "sid") ++ ":" ++ name
-aptSidOrKarmic release name = "apt:sid:" ++ name
+-- Only use this for targets when we know that karmic is trumping sid.
+-- Put an =version on the apt target so we notice when it changes.
+aptSidOrKarmic release name version = "apt:" ++ (if isPrefixOf "karmic-" release then "karmic" else "sid") ++ ":" ++ name ++ "=" ++ version
 
 -- This module defines how we obtain and assemble the source code for
 -- the packages we want to build.
@@ -33,11 +34,14 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "hscolour"
              , sourceSpec = "apt:sid:hscolour"
              , relaxInfo = ["hscolour"] }
-    , Target { sourcePackageName = "haskell-happy"
+{-  , Target { sourcePackageName = "haskell-happy"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happy/1.18.2/happy-1.18.2.tar.gz:adb1679a1fa8cec74a6e621a4a277e98):(darcs:http://src.seereason.com/happy-debian)"
+             , relaxInfo = ["happy"] } -}
+    , Target { sourcePackageName = "happy"
+             , sourceSpec = "apt:sid:happy"
              , relaxInfo = ["happy"] }
     , Target { sourcePackageName = "haskell-utf8-string"
-             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-utf8-string" ++ "):(darcs:http://src.seereason.com/haskell-utf8-string-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-utf8-string):(darcs:http://src.seereason.com/haskell-utf8-string-quilt)"
              , relaxInfo = ["hscolour", "cpphs"] }
     , Target { sourcePackageName = "haskell-zlib"
              , sourceSpec = "quilt:(apt:sid:haskell-zlib):(darcs:http://src.seereason.com/haskell-zlib-quilt)"
@@ -49,16 +53,16 @@ ghc6CoreTargets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bzlib/0.5.0.0/bzlib-0.5.0.0.tar.gz:ab594aaf9998ed602f8b23dd25199e19):(darcs:http://src.seereason.com/haskell-bzlib-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-haskell-src"
-             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-haskell-src" ++ "):(darcs:http://src.seereason.com/haskell-haskell-src-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-haskell-src):(darcs:http://src.seereason.com/haskell-haskell-src-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-html"
-             , sourceSpec = aptSidOrKarmic release "haskell-html"
+             , sourceSpec = "apt:sid:haskell-html"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hunit"
-             , sourceSpec = aptSidOrKarmic release "haskell-hunit"
+             , sourceSpec = "apt:sid:haskell-hunit"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mtl"
-             , sourceSpec = aptSidOrKarmic release "haskell-mtl"
+             , sourceSpec = "apt:sid:haskell-mtl"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-network"
              , sourceSpec = "quilt:(apt:sid:haskell-network):(darcs:http://src.seereason.com/haskell-network-quilt)"
@@ -70,14 +74,14 @@ ghc6CoreTargets release =
              , sourceSpec = "apt:sid:haskell-parallel"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-parsec"
-             , sourceSpec = aptSidOrKarmic release "haskell-parsec"
+             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-parsec" "3.0.0-5build1" ++ "):(darcs:http://src.seereason.com/haskell-parsec-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-parsec2"
              , sourceSpec = "apt:sid:haskell-parsec2"
              , relaxInfo = [] }
     -- Binary packages: libghc6-quickcheck2-dev, libghc6-quickcheck2-prof, libghc6-quickcheck2-doc
     , Target { sourcePackageName = "haskell-quickcheck"
-             , sourceSpec = "quilt:(apt:sid:haskell-quickcheck" ++ "):(darcs:http://src.seereason.com/haskell-quickcheck-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-quickcheck):(darcs:http://src.seereason.com/haskell-quickcheck-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-regex-base"
              , sourceSpec = "quilt:(apt:sid:haskell-regex-base):(darcs:http://src.seereason.com/haskell-regex-base-quilt)"
@@ -92,7 +96,7 @@ ghc6CoreTargets release =
              , sourceSpec = "apt:sid:haskell-regex-tdfa"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-stm"
-             , sourceSpec = aptSidOrKarmic release "haskell-stm"
+             , sourceSpec = "apt:sid:haskell-stm"
              , relaxInfo = [] }
     -- Patch to add the bareAttr function and remove the custom show
     -- instance Specify a particular version of xhtml so we can
@@ -133,7 +137,7 @@ ghc6CoreTargets release =
              , sourceSpec = "apt:sid:cpphs"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-tagsoup"
-             , sourceSpec = aptSidOrKarmic release "haskell-tagsoup"
+             , sourceSpec = "apt:sid:haskell-tagsoup"
              , relaxInfo = []
              }
     , Target { sourcePackageName = "haxml"
@@ -143,7 +147,7 @@ ghc6CoreTargets release =
              , sourceSpec = "darcs:http://patch-tag.com/r/stepcut/happstackDotCom"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-irc"
-             , sourceSpec = "apt:sid:haskell-irc"
+             , sourceSpec = "quilt:(apt:sid:haskell-irc):(darcs:http://src.seereason.com/haskell-irc-quilt)"
              , relaxInfo = [] }
     ]
 
@@ -155,7 +159,7 @@ autobuilderTargets release =
              , sourceSpec = "darcs:http://src.seereason.com/autobuilder"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cgi"
-             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-cgi" ++ "):(darcs:http://src.seereason.com/haskell-cgi-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-cgi):(darcs:http://src.seereason.com/haskell-cgi-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mime"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-mime"
@@ -184,7 +188,7 @@ ghc6Targets release =
              , relaxInfo = [] }
       
 {-  , Target { sourcePackageName = "haskell-binary"
-             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-binary" ++ "):(darcs:http://src.seereason.com/haskell-binary-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-binary):(darcs:http://src.seereason.com/haskell-binary-quilt)"
              , relaxInfo = [] } -}
     , Target { sourcePackageName = "haskell-src-exts"
              , sourceSpec = "apt:sid:haskell-src-exts"
@@ -353,19 +357,19 @@ ghc6Targets release =
              , relaxInfo = [] }
     -- Required by the darcs 2.3.0-3 in sid.
     , Target { sourcePackageName = "bash-completion"
-             , sourceSpec = aptSidOrKarmic release "bash-completion"
+             , sourceSpec = "apt:sid:bash-completion"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-haskeline"
-             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "haskell-haskeline" ++ "):(darcs:http://src.seereason.com/haskell-haskeline-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-haskeline):(darcs:http://src.seereason.com/haskell-haskeline-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mmap"
-             , sourceSpec = "apt:sid:haskell-mmap"
+             , sourceSpec = "quilt:(apt:sid:haskell-mmap):(darcs:http://src.seereason.com/haskell-mmap-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hashed-storage"
              , sourceSpec = "quilt:(apt:sid:haskell-hashed-storage):(darcs:http://src.seereason.com/hashed-storage-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-terminfo"
-             , sourceSpec = aptSidOrKarmic release "haskell-terminfo"
+             , sourceSpec =aptSidOrKarmic release "haskell-terminfo" "0.3.0.2-2build1"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-permutation"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/permutation/0.4.1/permutation-0.4.1.tar.gz:a9e0b6231d7a085719188406f59ab1aa):(darcs:http://src.seereason.com/haskell-permutation)"
@@ -438,7 +442,7 @@ otherTargets release =
 failingTargets release =
     [ Target { sourcePackageName = "haskell-uniplate"
 --           , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/uniplate/1.2.0.3/uniplate-1.2.0.3.tar.gz:e0e10700870f5b9756d4097e640164ca):(darcs:http://src.seereason.com/uniplate-debian)"
-             , sourceSpec = aptSidOrKarmic release "haskell-uniplate"
+             , sourceSpec = "apt:sid:haskell-uniplate"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-benchpress"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/benchpress/0.2.2.3/benchpress-0.2.2.3.tar.gz:48cd691ebfd4dc6c5e6f5201ca545fac):(darcs:http://src.seereason.com/debian/haskell-benchpress-debian)"
@@ -458,19 +462,19 @@ failingTargets release =
              , relaxInfo = [] }
     -- Failing due to confusion between Debian's use of quilt and ours
     , Target { sourcePackageName = "darcs"
-             , sourceSpec = "quilt:(" ++ aptSidOrKarmic release "darcs" ++ "):(darcs:http://src.seereason.com/darcs-quilt)"
+             , sourceSpec = "quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/darcs-quilt)"
              , relaxInfo = [] }
     -- We need debhelper >= 7.0.50 for darcs 2.3.0.
     -- However, one of its unit tests fails:
     -- #   Failed test 'unavailable jobserver'
     -- #   at t/buildsystems/buildsystem_tests line 540.
 {-  , Target { sourcePackageName = "debhelper"
-             , sourceSpec = aptSidOrKarmic release "debhelper"
+             , sourceSpec = "apt:sid:debhelper"
              , relaxInfo = [] } -}
     -- Required for darcs 2.3.0
     -- Fails because of missing dependency libssh2-1-dev
 {-  , Target { sourcePackageName = "curl"
-             , sourceSpec = aptSidOrKarmic release "curl"
+             , sourceSpec = "apt:sid:curl"
              , relaxInfo = [] } -}
 {-  , Target { sourcePackageName = "tree-widget"
              , sourceSpec = "darcs:http://src.seereason.com/tree-widget"
