@@ -103,7 +103,8 @@ ghc6CoreTargets release =
            , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-devscripts"
              -- Working version
-             , sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/haskell-devscripts-quilt)"
+             --, sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/haskell-devscripts-quilt)"
+             , sourceSpec = "apt:sid:haskell-devscripts"
              -- Experimental version
              -- , sourceSpec = "quilt:(darcs:http://darcs.debian.org/pkg-haskell/haskell-devscripts):(darcs:http://src.seereason.com/haskell-devscripts-quilt)"
              , relaxInfo = ["hscolour"] }
