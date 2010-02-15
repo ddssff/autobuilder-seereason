@@ -19,10 +19,7 @@ aptSidOrKarmic release name = "apt:sid:" ++ name
 
 ghc6CoreTargets release =
     [ Target { sourcePackageName = "ghc6"
-             -- Working version
-             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20091231-src.tar.bz2:a5a9a4ac9fd2823ed0a1928a9a89498c):(darcs:http://src.seereason.com/ghc614-debian)"
-             -- Experimental version
-             -- , sourceSpec = "quilt:(apt:experimental:ghc6):(darcs:http://src.seereason.com/ghc614-quilt)"
+             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20091231-src.tar.bz2:a5a9a4ac9fd2823ed0a1928a9a89498c):(darcs:http://src.seereason.com/ghc614-debian-sid)"
              , relaxInfo = ["ghc6"
                            ,"happy"
                            ,"alex"
