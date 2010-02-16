@@ -13,7 +13,9 @@ publicTargets release =
 
 -- Only use this for targets when we know that karmic is trumping sid.
 -- Put an =version on the apt target so we notice when it changes.
-aptSidOrKarmic release name version = "apt:" ++ (if isPrefixOf "karmic-" release then "karmic" else "sid") ++ ":" ++ name ++ "=" ++ version
+aptSidOrKarmic release name version =
+    "apt:" ++ (if karmic then "karmic" else "sid") ++ ":" ++ name ++ (if karmic then "=" ++ version else "")
+    where karmic = isPrefixOf "karmic-" release
 
 -- This module defines how we obtain and assemble the source code for
 -- the packages we want to build.
@@ -35,7 +37,7 @@ ghc6CoreTargets release =
              , sourceSpec = "darcs:http://src.seereason.com/haddock-dummy"
              , relaxInfo = [] }
     , Target { sourcePackageName = "hscolour"
-             , sourceSpec = "quilt:(apt:sid:hscolour):(darcs:http://src.seereason.com/hscolour-quilt)"
+             , sourceSpec = "apt:sid:hscolour"
              , relaxInfo = ["hscolour"] }
 {-  , Target { sourcePackageName = "haskell-happy"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happy/1.18.2/happy-1.18.2.tar.gz:adb1679a1fa8cec74a6e621a4a277e98):(darcs:http://src.seereason.com/happy-debian)"
@@ -47,7 +49,7 @@ ghc6CoreTargets release =
              , sourceSpec = "quilt:(apt:sid:haskell-utf8-string):(darcs:http://src.seereason.com/haskell-utf8-string-quilt)"
              , relaxInfo = ["hscolour", "cpphs"] }
     , Target { sourcePackageName = "haskell-zlib"
-             , sourceSpec = "quilt:(apt:sid:haskell-zlib):(darcs:http://src.seereason.com/haskell-zlib-quilt)"
+             , sourceSpec = "apt:sid:haskell-zlib"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hpdf"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HPDF/1.4.2/HPDF-1.4.2.tar.gz:ba364b6e397413931b65a56e63b19bb4):(darcs:http://src.seereason.com/haskell-hpdf-debian)"
@@ -150,7 +152,7 @@ ghc6CoreTargets release =
              , sourceSpec = "darcs:http://patch-tag.com/r/stepcut/happstackDotCom"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-irc"
-             , sourceSpec = "quilt:(apt:sid:haskell-irc):(darcs:http://src.seereason.com/haskell-irc-quilt)"
+             , sourceSpec = "apt:sid:haskell-irc"
              , relaxInfo = [] }
     ]
 
@@ -366,13 +368,13 @@ ghc6Targets release =
              , sourceSpec = "quilt:(apt:sid:haskell-haskeline):(darcs:http://src.seereason.com/haskell-haskeline-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mmap"
-             , sourceSpec = "quilt:(apt:sid:haskell-mmap):(darcs:http://src.seereason.com/haskell-mmap-quilt)"
+             , sourceSpec = "apt:sid:haskell-mmap"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hashed-storage"
              , sourceSpec = "quilt:(apt:sid:haskell-hashed-storage):(darcs:http://src.seereason.com/hashed-storage-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-terminfo"
-             , sourceSpec ="quilt:(" ++ aptSidOrKarmic release "haskell-terminfo" "0.3.0.2-2build1" ++ "):(darcs:http://src.seereason.com/haskell-terminfo-quilt)"
+             , sourceSpec = aptSidOrKarmic release "haskell-terminfo" "0.3.0.2-2build1"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-permutation"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/permutation/0.4.1/permutation-0.4.1.tar.gz:a9e0b6231d7a085719188406f59ab1aa):(darcs:http://src.seereason.com/haskell-permutation)"
