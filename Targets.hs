@@ -427,6 +427,10 @@ ghc6Targets release =
     , Target { sourcePackageName="haskell-operational"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/operational/0.1.0.0/operational-0.1.0.0.tar.gz:9244bef3a6ac89a3792c9b8617df3c08):(darcs:http://src.seereason.com/operational-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "darcs"
+             -- , sourceSpec = "quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/darcs-quilt)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/darcs/2.4/darcs-2.4.tar.gz:169a6d245a33da97b2daa0eda60b28e5):(darcs:http://src.seereason.com/darcs-debian)"
+             , relaxInfo = [] }
     ]
 
 otherTargets release =
@@ -464,10 +468,6 @@ failingTargets release =
     -- Requires Cabal >= 1.7.3, ghc 6.10.3 comes with Cabal-1.6.0.3
     , Target { sourcePackageName = "haskell-cabal-install"
              , sourceSpec = "deb-dir:(darcs:http://darcs.haskell.org/cabal-install):(darcs:http://src.seereason.com/cabal-install-debian)"
-             , relaxInfo = [] }
-    -- Failing due to confusion between Debian's use of quilt and ours
-    , Target { sourcePackageName = "darcs"
-             , sourceSpec = "quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/darcs-quilt)"
              , relaxInfo = [] }
     -- We need debhelper >= 7.0.50 for darcs 2.3.0.
     -- However, one of its unit tests fails:
