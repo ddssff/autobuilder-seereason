@@ -427,10 +427,11 @@ ghc6Targets release =
     , Target { sourcePackageName="haskell-operational"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/operational/0.1.0.0/operational-0.1.0.0.tar.gz:9244bef3a6ac89a3792c9b8617df3c08):(darcs:http://src.seereason.com/operational-debian)"
              , relaxInfo = [] }
+{-  -- Requires hashed-storage 0.4.7
     , Target { sourcePackageName = "darcs"
              -- , sourceSpec = "quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/darcs-quilt)"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/darcs/2.4/darcs-2.4.tar.gz:169a6d245a33da97b2daa0eda60b28e5):(darcs:http://src.seereason.com/darcs-debian)"
-             , relaxInfo = [] }
+             , relaxInfo = [] } -}
     ]
 
 otherTargets release =
