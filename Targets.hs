@@ -45,9 +45,10 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "happy"
              , sourceSpec = "apt:" ++ (if isPrefixOf "jaunty-" release then "karmic" else "sid") ++ ":happy"
              , relaxInfo = ["happy"] }
+{-  -- Withdrawn from sid
     , Target { sourcePackageName = "haskell-utf8-string"
              , sourceSpec = "quilt:(apt:sid:haskell-utf8-string):(darcs:http://src.seereason.com/haskell-utf8-string-quilt)"
-             , relaxInfo = ["hscolour", "cpphs"] }
+             , relaxInfo = ["hscolour", "cpphs"] } -}
     , Target { sourcePackageName = "haskell-zlib"
              , sourceSpec = "apt:sid:haskell-zlib"
              , relaxInfo = [] }
