@@ -336,7 +336,9 @@ ghc6Targets release =
     , Target { sourcePackageName = "haskell-syb-with-class"
              , sourceSpec = "quilt:(apt:sid:haskell-syb-with-class):(darcs:http://src.seereason.com/haskell-syb-with-class-quilt)"
              , relaxInfo = [] }
-
+    , Target { sourcePackageName = "haskell-fgl"
+             , sourceSpec = "apt:sid:haskell-fgl"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsemail"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsemail/1.3/hsemail-1.3.tar.gz:e1b84af260aa36c017c190ce481e2c1a):(darcs:http://src.seereason.com/debian/haskell-hsemail-debian)"
              , relaxInfo = [] }
