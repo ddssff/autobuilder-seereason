@@ -376,7 +376,7 @@ ghc6Targets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/text/0.7.1.0/text-0.7.1.0.tar.gz:019036c9111b521654eab2b9dee7648d):(darcs:http://src.seereason.com/haskell-text-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-deepseq"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/deepseq/1.1.0.0/deepseq-1.1.0.0.tar.gz:41194f8633be8e30cacad88146dbf7c2):(darcs:http://src.seereason.com/haskell-deepseq-debian)"
+             , sourceSpec = "apt:sid:haskell-deepseq"
              , relaxInfo = [] }
     -- Required by the darcs 2.3.0-3 in sid.
     , Target { sourcePackageName = "bash-completion"
