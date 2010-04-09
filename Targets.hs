@@ -463,10 +463,26 @@ otherTargets release =
       Target { sourcePackageName = "seereason-keyring"
              , sourceSpec = "darcs:http://src.seereason.com/seereason-keyring"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "jquery"
+{-  , Target { sourcePackageName = "jquery"
              , sourceSpec = "apt:sid:jquery"
              , relaxInfo = [] 
              }
+    , Target { sourcePackageName = "yui-compressor"
+             , sourceSpec = "apt:sid:yui-compressor"
+             , relaxInfo = [] 
+             }
+    , Target { sourcePackageName = "rhino"
+             , sourceSpec = "apt:sid:rhino"
+             , relaxInfo = [] 
+             }
+    , Target { sourcePackageName = "maven-repo-helper"
+             , sourceSpec = "apt:sid:maven-repo-helper"
+             , relaxInfo = [] 
+             }
+    , Target { sourcePackageName = "libstax-java"
+             , sourceSpec = "proc:apt:sid:libstax-java"
+             , relaxInfo = [] 
+             } -}
     , Target { sourcePackageName = "jqueryui"
              , sourceSpec = "apt:sid:jqueryui"
              , relaxInfo = [] 
