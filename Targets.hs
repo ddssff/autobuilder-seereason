@@ -572,9 +572,10 @@ privateTargets release =
     , Target { sourcePackageName = "haskell-algebrazam-quiz"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/algebrazam-quiz"
              , relaxInfo = [] } -}
+{-  -- Compile error at the moment, but this package is not a current priority.
     , Target { sourcePackageName = "haskell-senioritymatters"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/SeniorityMatters"
-             , relaxInfo = [] }
+             , relaxInfo = [] } -}
     , Target { sourcePackageName = "haskell-seereason"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/haskell-seereason"
              , relaxInfo = [] }
