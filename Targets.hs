@@ -542,12 +542,13 @@ privateTargets release =
 {-  , Target { sourcePackageName = "haskell-happstack-examples"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/happstack-examples"
              , relaxInfo = [] } -}
-  , Target { sourcePackageName = "happstack-blog"
+{-  -- Disable until imagegallery is updated.
+    , Target { sourcePackageName = "happstack-blog"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/happstack-cms"
              , relaxInfo = [] }
     , Target { sourcePackageName = "happstack-imagegallery"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/imagegallery"
-             , relaxInfo = [] }
+             , relaxInfo = [] } -}
 {-  -- Uses newSession, which was removed from happstack
     , Target { sourcePackageName = "haskell-algebrazam"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/AlgebraZam"
