@@ -454,11 +454,10 @@ ghc6Targets release =
     , Target { sourcePackageName = "haskell-heap"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/heap/1.0.0/heap-1.0.0.tar.gz:7a650f3803da5c0ea5c865d0ef1c0857):(darcs:http://src.seereason.com/heap-debian)"
              , relaxInfo = [] }
-{-  -- Requires hashed-storage 0.4.7
+    -- Patched to version 2.4.1, requires hashed-storage 0.4.11
     , Target { sourcePackageName = "darcs"
-             -- , sourceSpec = "quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/darcs-quilt)"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/darcs/2.4/darcs-2.4.tar.gz:169a6d245a33da97b2daa0eda60b28e5):(darcs:http://src.seereason.com/darcs-debian)"
-             , relaxInfo = [] } -}
+             , relaxInfo = [] }
     ]
 
 otherTargets release =
