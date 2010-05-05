@@ -258,22 +258,22 @@ ghc6Targets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/MaybeT/0.1.2/MaybeT-0.1.2.tar.gz:9864a3f34151217004f8c968fda5b427):(darcs:http://src.seereason.com/MaybeT-debian)"
              , relaxInfo = [] }               
     , Target { sourcePackageName = "haskell-happstack-util"
-             , sourceSpec = "cd:happstack-util:darcs:http://src.seereason.com/happstack"
+             , sourceSpec = "cd:happstack-util:darcs:" ++ happstackRepo
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-data"
-             , sourceSpec = "cd:happstack-data:darcs:http://src.seereason.com/happstack"
+             , sourceSpec = "cd:happstack-data:darcs:" ++ happstackRepo
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-ixset"
-             , sourceSpec = "cd:happstack-ixset:darcs:http://src.seereason.com/happstack"
+             , sourceSpec = "cd:happstack-ixset:darcs:" ++ happstackRepo
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-server"
-             , sourceSpec = "cd:happstack-server:darcs:http://src.seereason.com/happstack"
+             , sourceSpec = "cd:happstack-server:darcs:" ++ happstackRepo
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-state"
-             , sourceSpec = "cd:happstack-state:darcs:http://src.seereason.com/happstack"
+             , sourceSpec = "cd:happstack-state:darcs:" ++ happstackRepo
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack"
-             , sourceSpec = "cd:happstack:darcs:http://src.seereason.com/happstack"
+             , sourceSpec = "cd:happstack:darcs:" ++ happstackRepo
              , relaxInfo = [] }
     -- Depends on pandoc
     , Target { sourcePackageName = "haskell-happstack-extra"
@@ -310,7 +310,11 @@ ghc6Targets release =
 --  The Sid package has no profiling libraries, so dependent packages
 --  won't build.  Use our debianization instead.
     , Target { sourcePackageName = "haskell-hslogger"
-             , sourceSpec = "deb-dir:(uri:http://ftp.de.debian.org/debian/pool/main/h/hslogger/hslogger_1.0.8.orig.tar.gz:5ce575887d2b6076793f8736b077626a):(darcs:http://src.seereason.com/hslogger-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hslogger/1.0.10/hslogger-1.0.10.tar.gz:f65a5326d28f9cdad6887a32525d70dc):(darcs:http://src.seereason.com/hslogger-debian)"
+
+             -- No profiling libraries in sid version
+             -- , sourcePackageName = "hslogger"
+             -- , sourceSpec = "apt:sid:hslogger"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-harp"
              -- , sourceSpec = "deb-dir:(darcs:http://code.haskell.org/HSP/harp):(darcs:http://src.seereason.com/harp-debian)"
@@ -419,7 +423,7 @@ ghc6Targets release =
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-smtpclient"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/SMTPClient/1.0.1/SMTPClient-1.0.1.tar.gz:c6e02189636b608e27942dbb9af9732a):(darcs:http://src.seereason.com/debian/haskell-smtpclient-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/SMTPClient/1.0.2/SMTPClient-1.0.2.tar.gz:59b474179c301a08af45c99f85fca224):(darcs:http://src.seereason.com/debian/haskell-smtpclient-debian)"
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-strict-concurrency"
@@ -525,6 +529,7 @@ ghc6Targets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/darcs/2.4/darcs-2.4.tar.gz:169a6d245a33da97b2daa0eda60b28e5):(darcs:http://src.seereason.com/darcs-debian)"
              , relaxInfo = [] }
     ]
+        where happstackRepo = "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
 
 otherTargets release =
     [ -- This target fails during an arch only build, because it has no architecture dependent files.
