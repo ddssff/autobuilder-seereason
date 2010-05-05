@@ -1,9 +1,66 @@
 module Targets where
 
 import Data.List (isPrefixOf)
+import qualified Data.Set as Set
 import Debian.AutoBuilder.ParamClass (Target(..))
 
 ------------------------ TARGETS ---------------------
+
+lucidTargetNames =
+    Set.fromList 
+           [ "haskell-regex-tdfa"
+           , "haskell-applicative-extras"
+           , "haskell-mime"
+           , "haskell-extra"
+           , "haskell-bzlib"
+           , "haskell-debian"
+           , "haskell-debian-repo"
+           , "autobuilder"
+           , "haskell-happstack"
+           , "haskell-happstack-data"
+           , "haskell-happstack-ixset"
+           , "haskell-happstack-state"
+           , "haskell-happstack-server"
+           , "haskell-happstack-extra"
+           , "haskell-happstack-util"
+           , "haskell-hsp"
+           , "haskell-hsx"
+           , "haskell-web-routes"
+           , "haskell-web-routes-hsp"
+           , "haskell-web-routes-mtl"
+           , "haskell-web-routes-happstack"
+           , "haskell-formlets"
+           , "haskell-formlets-hsp"
+           , "haskell-gd"
+           , "haskell-text"
+           , "haskell-deepseq"
+           , "haskell-revision"
+           , "haskell-syb-with-class"
+           , "haskell-harp"
+           , "haskell-hspread"
+           , "haskell-html-entities"
+           -- In the dist, but not new enough
+           , "haskell-src-exts"
+           , "cpphs"
+           , "hslogger"
+           , "haskell-smtpclient"
+           , "haskell-hsemail"
+           , "haskell-unix-compat"
+           , "haskell-strict-concurrency"
+           ]
+
+releasePred "lucid" target = Set.member (sourcePackageName target) lucidTargetNames
+releasePred "karmic" targets = True
+releasePred "jaunty" targets = True
+releasePred "lenny" targets = True
+releasePred _ targets = False
+
+karmicTargetNames =
+    Set.union lucidTargetNames
+       (Set.fromList [ "ghc6"
+                     , "haskell-devscripts"
+                     , "haddock"            -- We might get rid of this by using ghc6 (>= 6.12) | haddock (>= 2.1.0)
+                     , "hscolour" ])
 
 publicTargets release =
     ghc6CoreTargets release ++	-- The compiler and our packaging tools

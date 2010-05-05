@@ -104,10 +104,11 @@ myVerbosity = 0
 -- actually build are chosen from these.  The myBuildRelease argument
 -- comes from the autobuilder argument list.
 --
-myTargets myBuildRelease =
-    if isPrivateRelease myBuildRelease
-    then privateTargets myBuildRelease
-    else publicTargets myBuildRelease
+myTargets pred myBuildRelease =
+    filter pred $
+           if isPrivateRelease myBuildRelease
+           then privateTargets myBuildRelease
+           else publicTargets myBuildRelease
 
 -- If you are not interested in building everything, put one or more
 -- source package names you want to build in this list.  Only these
@@ -430,7 +431,9 @@ optSpecs =
       "Run newdist on the remote server after a successful build and upload."
     , Option ['n'] ["dry-run"] (NoArg (\ p -> p {dryRun = True}))
       "Exit as soon as we discover a package that needs to be built."
-    , Option [] ["all-targets"] (NoArg (\ p -> p {targets = myTargets (relName (buildRelease p))}))
+    , Option [] ["all-targets"] (NoArg (\ p -> p {targets = myTargets (const True) (relName (buildRelease p))}))
+      "Add all known targets to the target list."
+    , Option [] ["release-targets"] (ReqArg (\ s p -> p {targets = myTargets (releasePred s) (relName (buildRelease p))}) "RELEASE")
       "Add all known targets to the target list."
     , Option [] ["allow-build-dependency-regressions"]
                  (NoArg (\ p -> p {allowBuildDependencyRegressions = True}))
@@ -442,7 +445,7 @@ optSpecs =
     , Option [] ["target"] (ReqArg (\ s p -> p {targets = targets p ++ [find s p]}) "PACKAGE")
       "Add a target to the target list."
     , Option [] ["goal"] (ReqArg (\ s p -> p { goals = goals p ++ [s]
-                                             , targets = myTargets (relName (buildRelease p))}) "PACKAGE")
+                                             , targets = myTargets (const True) (relName (buildRelease p))}) "PACKAGE")
       (unlines [ "If one or more goal package names are given the autobuilder"
                , "will only build these packages and any of their build dependencies"
                , "which are in the package list.  If no goals are specified, all the"
@@ -455,7 +458,7 @@ optSpecs =
       "Print a help message and exit."
     ]
     where
-      find s p = case filter (\ t -> sourcePackageName t == s) (myTargets (relName (buildRelease p))) of
+      find s p = case filter (\ t -> sourcePackageName t == s) (myTargets (const True) (relName (buildRelease p))) of
                    [x] -> x
                    [] -> error $ "Package not found: " ++ s
                    xs -> error $ "Multiple packages found: " ++ show (map sourcePackageName xs)
