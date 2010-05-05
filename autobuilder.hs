@@ -5,8 +5,9 @@
 --   sudo runhaskell -package=base-3.0.3.0 <path to this configuration file> release1 release2 ...
 
 -- Import the symbols we use below.
-import Data.List (isSuffixOf, isPrefixOf)
+import Data.List (isSuffixOf, isPrefixOf, find)
 import Data.Maybe
+import qualified Data.Set as Set
 import qualified Debian.AutoBuilder.Main as M
 import qualified Debian.AutoBuilder.ParamClass as P
 import Debian.AutoBuilder.ParamClass (Target(..))
@@ -107,7 +108,7 @@ myVerbosity = 0
 myTargets pred myBuildRelease =
     filter pred $
            if isPrivateRelease myBuildRelease
-           then privateTargets myBuildRelease
+           then privateTargets
            else publicTargets myBuildRelease
 
 -- If you are not interested in building everything, put one or more
@@ -329,6 +330,26 @@ releaseRepoName name
                [] -> error $ "Release name has unknown suffix: " ++ show name
                suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
 
+releaseTargetNamePred p target =
+    case baseReleaseName p of
+      "lucid" -> Set.member (sourcePackageName target) lucidPublicTargetNames
+      "karmic" -> True 
+      "jaunty" -> True 
+      "lenny" -> True 
+      x -> error ("releaseTargetNamePred: Unexpected release name " ++ show x)
+    where
+      baseReleaseName p =
+          case find (`isSuffixOf` p) myReleaseSuffixes of
+            Just suf -> baseReleaseName (take (length p - length suf) p)
+            Nothing -> p
+
+{-
+releaseTargetNamePred "karmic" targets = True
+releaseTargetNamePred "jaunty" targets = True
+releaseTargetNamePred "lenny" targets = True
+releaseTargetNamePred _ targets = False
+-}
+
 -- Nothing below here should need to be modified.
 
 ---------------------------- THE PARAMETERS RECORD ---------------------------------
@@ -431,10 +452,8 @@ optSpecs =
       "Run newdist on the remote server after a successful build and upload."
     , Option ['n'] ["dry-run"] (NoArg (\ p -> p {dryRun = True}))
       "Exit as soon as we discover a package that needs to be built."
-    , Option [] ["all-targets"] (NoArg (\ p -> p {targets = myTargets (const True) (relName (buildRelease p))}))
-      "Add all known targets to the target list."
-    , Option [] ["release-targets"] (ReqArg (\ s p -> p {targets = myTargets (releasePred s) (relName (buildRelease p))}) "RELEASE")
-      "Add all known targets to the target list."
+    , Option [] ["all-targets"] (NoArg (\ p -> p {targets = let name = (relName (buildRelease p)) in myTargets (releaseTargetNamePred name) name}))
+      "Add all known targets for the release to the target list."
     , Option [] ["allow-build-dependency-regressions"]
                  (NoArg (\ p -> p {allowBuildDependencyRegressions = True}))
       (unlines [ "Normally it is an error if a build dependency has an older version"

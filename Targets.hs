@@ -6,7 +6,10 @@ import Debian.AutoBuilder.ParamClass (Target(..))
 
 ------------------------ TARGETS ---------------------
 
-lucidTargetNames =
+publicTargetNames release = map sourcePackageName (publicTargets release)
+privateTargetNames release = map sourcePackageName privateTargets
+
+lucidPublicTargetNames =
     Set.fromList 
            [ "haskell-regex-tdfa"
            , "haskell-applicative-extras"
@@ -39,24 +42,24 @@ lucidTargetNames =
            , "haskell-harp"
            , "haskell-hspread"
            , "haskell-html-entities"
+           , "haskell-hjscript"
+           , "haskell-hjavascript"
+           , "haskell-syb-with-class-instances-text"
+           -- , "hslogger"  -- Sid version (as of 1.0.9) still has no profiling libraries.
+           , "haskell-hslogger"
            -- In the dist, but not new enough
            , "haskell-src-exts"
            , "haskell-cpphs"
-           , "haskell-hslogger"
            , "haskell-smtpclient"
            , "haskell-hsemail"
            , "haskell-unix-compat"
            , "haskell-strict-concurrency"
            ]
 
-releasePred "lucid" target = Set.member (sourcePackageName target) lucidTargetNames
-releasePred "karmic" targets = True
-releasePred "jaunty" targets = True
-releasePred "lenny" targets = True
-releasePred _ targets = False
+-- map sourcePackageName privateTargets
 
 karmicTargetNames =
-    Set.union lucidTargetNames
+    Set.union lucidPublicTargetNames
        (Set.fromList [ "ghc6"
                      , "haskell-devscripts"
                      , "haddock"            -- We might get rid of this by using ghc6 (>= 6.12) | haddock (>= 2.1.0)
@@ -131,7 +134,7 @@ ghc6CoreTargets release =
              , sourceSpec = "quilt:(apt:sid:haskell-network):(darcs:http://src.seereason.com/haskell-network-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName="haskell-network-bytestring"
-             , sourceSpec="quilt:(apt:sid:haskell-network-bytestring):(darcs:http://src.seereason.com/haskell-network-bytestring-quilt)"
+             , sourceSpec="apt:sid:haskell-network-bytestring"
              , relaxInfo = [] }      
     , Target { sourcePackageName = "haskell-parallel"
              , sourceSpec = "apt:sid:haskell-parallel"
@@ -223,7 +226,7 @@ autobuilderTargets release =
              , sourceSpec = "darcs:http://src.seereason.com/autobuilder"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cgi"
-             , sourceSpec = "quilt:(apt:sid:haskell-cgi):(darcs:http://src.seereason.com/haskell-cgi-quilt)"
+             , sourceSpec = "apt:sid:haskell-cgi"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mime"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-mime"
@@ -237,7 +240,7 @@ autobuilderTargets release =
 --   pandoc, magic-haskell, hslogger
 ghc6Targets release =
     [ Target { sourcePackageName = "haskell-http"
-             , sourceSpec = "quilt:(apt:sid:haskell-http):(darcs:http://src.seereason.com/haskell-http-quilt)"
+             , sourceSpec = "apt:sid:haskell-http"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-applicative-extras"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/applicative-extras/0.1.5/applicative-extras-0.1.5.tar.gz:b5a6288629133529c0951d5b71a21954):(darcs:http://src.seereason.com/applicative-extras-debian)"
@@ -307,8 +310,9 @@ ghc6Targets release =
              , sourceSpec = "darcs:http://src.seereason.com/iconv"
              , relaxInfo = [] }
 
---  The Sid package has no profiling libraries, so dependent packages
---  won't build.  Use our debianization instead.
+-- The Sid package has no profiling libraries, so dependent packages
+-- won't build.  Use our debianization instead.  This means keeping
+-- up with sid's version.
     , Target { sourcePackageName = "haskell-hslogger"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hslogger/1.0.10/hslogger-1.0.10.tar.gz:f65a5326d28f9cdad6887a32525d70dc):(darcs:http://src.seereason.com/hslogger-debian)"
 
@@ -419,7 +423,7 @@ ghc6Targets release =
              , sourceSpec = "apt:sid:haskell-fgl"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsemail"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsemail/1.3/hsemail-1.3.tar.gz:e1b84af260aa36c017c190ce481e2c1a):(darcs:http://src.seereason.com/debian/haskell-hsemail-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsemail/1.6/hsemail-1.6.tar.gz:fa56a870e06435ccea8da0ecebdbf689):(darcs:http://src.seereason.com/debian/haskell-hsemail-debian)"
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-smtpclient"
@@ -612,7 +616,7 @@ failingTargets release =
              , relaxInfo = [] } -}
     ]
 
-privateTargets release =
+privateTargets =
     [ Target { sourcePackageName = "haskell-filecache"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/haskell-filecache"
              , relaxInfo = [] }
