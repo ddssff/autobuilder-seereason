@@ -73,7 +73,7 @@ myBuildURI myBuildRelease =
 -- only with the vendor tag.  Sid is always a development release,
 -- Ubuntu creates a new one for each cycle.
 --
-myDevelopmentReleaseNames = ["sid", "karmic"]
+myDevelopmentReleaseNames = ["sid", "lucid"]
 
 -- This tag is used to construct the customized part of the version
 -- number for any package the autobuilder builds.
@@ -188,7 +188,8 @@ myExtraEssential myBuildRelease =
       "debian" -> []
       "ubuntu" ->
           case () of
-            _ | isPrefixOf "karmic-" myBuildRelease -> ["upstart"]
+            _ | isPrefixOf "lucid-" myBuildRelease -> ["upstart"]
+              | isPrefixOf "karmic-" myBuildRelease -> ["upstart"]
               | isPrefixOf "jaunty-" myBuildRelease -> ["upstart-compat-sysv"]
               | isPrefixOf "intrepid-" myBuildRelease -> ["upstart-compat-sysv", "belocs-locales-bin"]
               | isPrefixOf "hardy-" myBuildRelease -> ["upstart-compat-sysv", "belocs-locales-bin"]
@@ -242,7 +243,7 @@ ubuntuSourceLines ubuntuMirrorHost release =
 -- The names of the releases that we are able to create build environments for.
 --
 debianReleases = ["experimental", "sid", "squeeze", "lenny"]
-ubuntuReleases = ["karmic", "jaunty", "intrepid", "hardy", "dapper"]
+ubuntuReleases = ["lucid", "karmic", "jaunty", "intrepid", "hardy", "dapper"]
 
 -- These are releases which are not supported for building, but from
 -- which we could, if we had to, pull source from using an Apt target.
