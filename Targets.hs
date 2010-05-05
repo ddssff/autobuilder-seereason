@@ -240,7 +240,7 @@ autobuilderTargets release =
 --   pandoc, magic-haskell, hslogger
 ghc6Targets release =
     [ Target { sourcePackageName = "haskell-http"
-             , sourceSpec = "apt:sid:haskell-http"
+             , sourceSpec = "quilt:(apt:sid:haskell-http):(darcs:http://src.seereason.com/haskell-http-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-applicative-extras"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/applicative-extras/0.1.5/applicative-extras-0.1.5.tar.gz:b5a6288629133529c0951d5b71a21954):(darcs:http://src.seereason.com/applicative-extras-debian)"
