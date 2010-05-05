@@ -41,8 +41,8 @@ lucidTargetNames =
            , "haskell-html-entities"
            -- In the dist, but not new enough
            , "haskell-src-exts"
-           , "cpphs"
-           , "hslogger"
+           , "haskell-cpphs"
+           , "haskell-hslogger"
            , "haskell-smtpclient"
            , "haskell-hsemail"
            , "haskell-unix-compat"
