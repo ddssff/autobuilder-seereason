@@ -45,6 +45,8 @@ lucidPublicTargetNames =
            , "haskell-hjscript"
            , "haskell-hjavascript"
            , "haskell-syb-with-class-instances-text"
+           , "haskell-maybet"
+           , "haskell-sendfile"
            -- , "hslogger"  -- Sid version (as of 1.0.9) still has no profiling libraries.
            , "haskell-hslogger"
            -- In the dist, but not new enough
