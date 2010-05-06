@@ -48,6 +48,13 @@ lucidPublicTargetNames =
            , "haskell-maybet"
            , "haskell-sendfile"
            , "haskell-hstringtemplate"
+           , "haskell-rjson"
+           , "haskell-feed"
+           , "haskell-pandoc"
+           , "haskell-iconv"
+           , "haskell-texmath"
+           -- , "haskell-zip-archive"
+           -- , "haskell-digest"
            -- , "hslogger"  -- Sid version (as of 1.0.9) still has no profiling libraries.
            , "haskell-hslogger"
            -- In the dist, but not new enough
@@ -292,7 +299,10 @@ ghc6Targets release =
              , sourceSpec = "darcs:http://src.seereason.com/html-entities"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-pandoc"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.2/pandoc-1.2.tar.gz:402999cf17dd7072e4c8c7b6b6050ec3):(darcs:http://src.seereason.com/haskell-pandoc-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.5.1.1/pandoc-1.5.1.1.tar.gz:bfccc042ae0cf0901bbca1f87748f969):(darcs:http://src.seereason.com/haskell-pandoc-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-texmath"
+             , sourceSpec = "apt:sid:haskell-texmath"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-facebook"
              , sourceSpec = "darcs:http://src.seereason.com/happstack-facebook"
@@ -398,7 +408,8 @@ ghc6Targets release =
              , sourceSpec = "cd:web-routes-happstack:darcs:http://src.seereason.com/web-routes"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-xml"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/xml/1.3.4/xml-1.3.4.tar.gz:841c3a36a0bfb2e46f88448ecc227cad):(darcs:http://src.seereason.com/debian/haskell-xml-debian)"
+             , sourceSpec = "apt:sid:haskell-xml"
+             -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/xml/1.3.4/xml-1.3.4.tar.gz:841c3a36a0bfb2e46f88448ecc227cad):(darcs:http://src.seereason.com/debian/haskell-xml-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-feed"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/feed/0.3.6/feed-0.3.6.tar.gz:0abeeaa7870ef241ccdc5785e608a599):(darcs:http://src.seereason.com/debian/haskell-feed-debian)"
