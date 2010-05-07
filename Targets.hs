@@ -7,7 +7,7 @@ import Debian.AutoBuilder.ParamClass (Target(..))
 ------------------------ TARGETS ---------------------
 
 publicTargetNames release = map sourcePackageName (publicTargets release)
-privateTargetNames release = map sourcePackageName privateTargets
+privateTargetNames = map sourcePackageName privateTargets
 
 lucidPublicTargetNames =
     Set.fromList 
@@ -64,7 +64,7 @@ lucidPublicTargetNames =
            , "haskell-hsemail"
            , "haskell-unix-compat"
            , "haskell-strict-concurrency"
-           ]
+           ] ++ privateTargetNames
 
 -- map sourcePackageName privateTargets
 
