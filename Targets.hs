@@ -193,14 +193,12 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "html-xml-utils"
            , sourceSpec = "apt:sid:html-xml-utils"
            , relaxInfo = [] }
-{-  -- This is changing rapidly in sid, leave it hidden until we really need one.
     , Target { sourcePackageName = "haskell-devscripts"
-             -- Working version
-             --, sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/haskell-devscripts-quilt)"
-             , sourceSpec = "apt:sid:haskell-devscripts"
+             --, sourceSpec = "apt:sid:haskell-devscripts"
+             , sourceSpec = "quilt:(apt:sid:haskell-devscripts):(darcs:http://src.seereason.com/haskell-devscripts-quilt)"
              -- Experimental version
-             -- , sourceSpec = "quilt:(darcs:http://darcs.debian.org/pkg-haskell/haskell-devscripts):(darcs:http://src.seereason.com/haskell-devscripts-quilt)"
-             , relaxInfo = ["hscolour"] } -}
+             --, sourceSpec = "quilt:(darcs:http://darcs.debian.org/pkg-haskell/haskell-devscripts):(darcs:http://src.seereason.com/haskell-devscripts-quilt)"
+             , relaxInfo = ["hscolour"] }
     , Target { sourcePackageName = "haskell-debian"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-debian"
              , relaxInfo = ["cabal-debian"] }
