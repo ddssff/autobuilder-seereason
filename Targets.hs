@@ -9,9 +9,17 @@ import Debian.AutoBuilder.ParamClass (Target(..))
 publicTargetNames release = map sourcePackageName (publicTargets release)
 privateTargetNames = map sourcePackageName privateTargets
 
-lucidPublicTargetNames =
-    Set.fromList 
-           [ "haskell-regex-tdfa"
+{-
+sidPackageNames control =
+    do sid <- parseControlFromFile path >>= (\ (Right x) -> return x) :: IO (Control' ByteString)
+       return $ catMaybes (Prelude.map (\ p -> maybe Nothing (\ (Field (_, v)) -> Just (stripWS v)) (lookupP "Package" p)) (unControl sid))
+    where path = "/home/dsf/.autobuilder/dists/sid/aptEnv/var/lib/apt/lists/mirror.anl.gov_debian_dists_sid_main_source_Sources"
+-}
+
+lucidTargetNames =
+    Set.fromList $
+           [ "haskell-devscripts"
+           , "haskell-regex-tdfa"
            , "haskell-applicative-extras"
            , "haskell-mime"
            , "haskell-extra"
@@ -57,6 +65,7 @@ lucidPublicTargetNames =
            -- , "haskell-digest"
            -- , "hslogger"  -- Sid version (as of 1.0.9) still has no profiling libraries.
            , "haskell-hslogger"
+           , "haskell-web-routes-th"
            -- In the dist, but not new enough
            , "haskell-src-exts"
            , "haskell-cpphs"
@@ -69,7 +78,7 @@ lucidPublicTargetNames =
 -- map sourcePackageName privateTargets
 
 karmicTargetNames =
-    Set.union lucidPublicTargetNames
+    Set.union lucidTargetNames
        (Set.fromList [ "ghc6"
                      , "haskell-devscripts"
                      , "haddock"            -- We might get rid of this by using ghc6 (>= 6.12) | haddock (>= 2.1.0)

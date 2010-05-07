@@ -332,7 +332,7 @@ releaseRepoName name
 
 releaseTargetNamePred p target =
     case baseReleaseName p of
-      "lucid" -> Set.member (sourcePackageName target) lucidPublicTargetNames
+      "lucid" -> Set.member (sourcePackageName target) lucidTargetNames
       "karmic" -> True 
       "jaunty" -> True 
       "lenny" -> True 
