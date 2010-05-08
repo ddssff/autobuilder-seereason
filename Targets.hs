@@ -16,6 +16,7 @@ sidPackageNames control =
     where path = "/home/dsf/.autobuilder/dists/sid/aptEnv/var/lib/apt/lists/mirror.anl.gov_debian_dists_sid_main_source_Sources"
 -}
 
+{-
 lucidTargetNames =
     Set.fromList $
            [ "haskell-devscripts"
@@ -83,6 +84,7 @@ karmicTargetNames =
                      , "haskell-devscripts"
                      , "haddock"            -- We might get rid of this by using ghc6 (>= 6.12) | haddock (>= 2.1.0)
                      , "hscolour" ])
+-}
 
 publicTargets release =
     ghc6CoreTargets release ++	-- The compiler and our packaging tools
