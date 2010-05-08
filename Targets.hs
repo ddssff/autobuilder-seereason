@@ -188,7 +188,7 @@ ghc6CoreTargets release =
     -- perhaps eliminate this the next time the upstream package is
     -- revved.
     , Target { sourcePackageName = "haskell-xhtml"
-             , sourceSpec = "quilt:(apt:sid:haskell-xhtml=3000.2.0.1-5):(darcs:http://src.seereason.com/haskell-xhtml-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-xhtml=3000.2.0.1-6):(darcs:http://src.seereason.com/haskell-xhtml-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "html-xml-utils"
            , sourceSpec = "apt:sid:html-xml-utils"
