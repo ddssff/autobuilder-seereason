@@ -4,6 +4,8 @@ module Config where
 -- Import the symbols we use below.
 import Data.List (isSuffixOf, isPrefixOf, find)
 import Data.Maybe
+import qualified Data.Set as Set
+import Debian.AutoBuilder.ParamClass (Target(..))
 import Debian.URI
 
 import Targets
@@ -83,14 +85,16 @@ myFlushPool = False
 -- Make the output more or less chatty.  Zero is normal, -1 is
 -- quieter, and so on.
 --
-myVerbosity = 0
+myVerbosity = 0 :: Int
 
--- The list of all known package targets.  The targets we will
+-- The set of all known package targets.  The targets we will
 -- actually build are chosen from these.  The myBuildRelease argument
 -- comes from the autobuilder argument list.
 --
-myTargets pred myBuildRelease =
-    filter pred $
+myTargets :: (Target -> Bool) -> String -> Set.Set Target
+myTargets p myBuildRelease =
+    Set.fromList $
+    filter p $
            if isPrivateRelease myBuildRelease
            then privateTargets
            else publicTargets myBuildRelease
@@ -314,7 +318,11 @@ releaseRepoName name
                [] -> error $ "Release name has unknown suffix: " ++ show name
                suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
 
-releaseTargetNamePred p target =
+-- A predicate to decide whether this targets should be built for this
+-- release.  Currently, the answer is always yes, as none of the
+-- releases includes a haskell compiler new enough to build all of our
+-- packages.
+releaseTargetNamePred p _target =
     case baseReleaseName p of
       "lucid" -> True -- Set.member (sourcePackageName target) lucidTargetNames
       "karmic" -> True 
@@ -322,10 +330,10 @@ releaseTargetNamePred p target =
       "lenny" -> True 
       x -> error ("releaseTargetNamePred: Unexpected release name " ++ show x)
     where
-      baseReleaseName p =
-          case find (`isSuffixOf` p) myReleaseSuffixes of
-            Just suf -> baseReleaseName (take (length p - length suf) p)
-            Nothing -> p
+      baseReleaseName name =
+          case find (`isSuffixOf` name) myReleaseSuffixes of
+            Just suf -> baseReleaseName (take (length name - length suf) name)
+            Nothing -> name
 
 {-
 releaseTargetNamePred "karmic" targets = True

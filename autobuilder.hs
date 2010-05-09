@@ -1,3 +1,4 @@
+{-# OPTIONS -Wall -Werror -fno-warn-missing-signatures -fno-warn-unused-imports #-}
 #!/usr/bin/env runhaskell -package=base-3.0.3.0
 -- Currently this will not run as a script even with the line above.
 -- The reason is unclear.  Either use the wrapper script in
@@ -10,7 +11,7 @@ import Data.Maybe
 import qualified Data.Set as Set
 import qualified Debian.AutoBuilder.Main as M
 import qualified Debian.AutoBuilder.ParamClass as P
-import Debian.AutoBuilder.ParamClass (Target(..))
+import Debian.AutoBuilder.ParamClass (ParamClass, Target(..))
 import Debian.AutoBuilder.ParamRec
 import Debian.Repo.Cache (SourcesChangedAction(SourcesChangedError))
 import Debian.Repo.Types (ReleaseName(ReleaseName, relName), Arch(Binary))
@@ -22,9 +23,10 @@ import System.Exit
 import System.IO (hPutStr, hPutStrLn, hFlush, stderr)
 
 import Config
+import Targets
 import Usage
 
--- Assemble all the configuration info.
+-- Assemble all the configuration info above.
 
 -- |See Documentation in "Debian.AutoBuilder.ParamClass".
 params myBuildRelease =
@@ -36,7 +38,8 @@ params myBuildRelease =
     , buildRelease = ReleaseName {relName = myBuildRelease}
     , uploadURI = myUploadURI myBuildRelease
     , buildURI = myBuildURI myBuildRelease
-    , targets = []
+    -- What we plan to build
+    , targets = TargetNames Set.empty
     , doUpload = myDoUpload
     , doNewDist = myDoNewDist
     , flushPool = myFlushPool
@@ -82,22 +85,52 @@ params myBuildRelease =
     , ifSourcesChanged = SourcesChangedError
     }
 
-main =
-    do args <- getArgs
-       case getOpt' Permute optSpecs args of
-         (fns, dists, [], []) ->
-             do hPutStrLn stderr "Autobuilder starting..."
-                -- hPutStrLn stderr ("args=" ++ show args ++ ", dists=" ++ show dists)
-                -- Apply the command line arguments to each paramter set
-                maybeDoHelp (map (\ p -> foldr ($) p fns) . map params $ dists) >>= M.main
-         (_, _, badopts, errs) ->
-             hPutStr stderr (usage ("Bad options: " ++ show badopts ++ ", errors: " ++ show errs) optSpecs)
+main = getArgs >>= getParams >>= M.main
 
-maybeDoHelp xs@(x : _)
-    | doHelp x = hPutStr stderr (usage "Usage: " optSpecs) >> exitWith ExitSuccess >> return xs
-    | True = return xs
-maybeDoHelp [] = return []
+-- |given a list of strings as they would be returned from getArgs,
+-- build the list of ParamRec which defines the build.
+-- 
+-- Example: getParams ["lucid-seereason" "--all-targets"] >>= return . map buildRelease
+--            -> [ReleaseName {relName = "lucid-seereason"}]
+getParams :: [String] -> IO [ParamRec]
+getParams args =
+    hPutStrLn stderr "Autobuilder starting..." >>
+    doParams (getOpt' Permute optSpecs args)
+    where
+      -- Turn the parameter information into a list of parameter records
+      -- containing all the info needed during runtime.
+      doParams ::  ([ParamRec -> ParamRec], [String], [String], [String]) -> IO [ParamRec]
+      doParams (fns, dists, [], []) = 
+          maybeDoHelp . map finalizeTargets . map (\ p -> foldr ($) p fns) . map params $ dists
+      doParams (_, _, badopts, errs) =
+          hPutStr stderr (usage ("Bad options: " ++ show badopts ++
+                           ", errors: " ++ show errs) optSpecs) >> return []
+      -- Finalize the target list in a parameter set, turning the targets field into a value
+      -- with the constructor TargetSet.
+      finalizeTargets :: ParamRec -> ParamRec
+      finalizeTargets p =
+          p { targets =
+                  case targets p of
+                    TargetSet xs -> TargetSet xs
+                    TargetNames xs -> TargetSet (Set.map findSpec xs)
+                    AllTargets -> TargetSet allTargets }
+          where
+            findSpec s = case Set.toList (Set.filter (\ t -> sourcePackageName t == s) allTargets) of
+                           [x] -> x
+                           [] -> error $ "Package name found: " ++ s
+                           xs -> error $ "Multiple packages named " ++ s ++ " found: " ++ show xs
+            -- FIXME - make myTargets a set
+            allTargets = myTargets (const True) (relName (buildRelease p))
+      -- Look for the doHelp flag in the parameter set, if given output
+      -- help message and exit.  If --help was given it will appear in all
+      -- the parameter sets, so we only examine the first.
+      maybeDoHelp xs@(x : _)
+          | doHelp x = hPutStr stderr (usage "Usage: " optSpecs) >>
+                       exitWith ExitSuccess >> return xs
+          | True = return xs
+      maybeDoHelp [] = return []
 
+-- |Each option is defined as a function transforming the parameter record.
 optSpecs :: [OptDescr (ParamRec -> ParamRec)]
 optSpecs =
     [ Option ['v'] ["verbose"] (NoArg (\ p -> p {verbosity = verbosity p + 1}))
@@ -123,7 +156,7 @@ optSpecs =
       "Run newdist on the remote server after a successful build and upload."
     , Option ['n'] ["dry-run"] (NoArg (\ p -> p {dryRun = True}))
       "Exit as soon as we discover a package that needs to be built."
-    , Option [] ["all-targets"] (NoArg (\ p -> p {targets = let name = (relName (buildRelease p)) in myTargets (releaseTargetNamePred name) name}))
+    , Option [] ["all-targets"] (NoArg (\ p ->  p {targets = AllTargets}))
       "Add all known targets for the release to the target list."
     , Option [] ["allow-build-dependency-regressions"]
                  (NoArg (\ p -> p {allowBuildDependencyRegressions = True}))
@@ -132,10 +165,10 @@ optSpecs =
                , "previous build.  This option relaxes that assumption, in case the"
                , "newer version of the dependency was withdrawn from the repository,"
                , "or was flushed from the local repository without being uploaded."])
-    , Option [] ["target"] (ReqArg (\ s p -> p {targets = targets p ++ [find s p]}) "PACKAGE")
+    , Option [] ["target"] (ReqArg (\ s p -> p {targets = addTarget s p}) "PACKAGE")
       "Add a target to the target list."
     , Option [] ["goal"] (ReqArg (\ s p -> p { goals = goals p ++ [s]
-                                             , targets = myTargets (const True) (relName (buildRelease p))}) "PACKAGE")
+                                             , targets = TargetSet (myTargets (const True) (relName (buildRelease p)))}) "PACKAGE")
       (unlines [ "If one or more goal package names are given the autobuilder"
                , "will only build these packages and any of their build dependencies"
                , "which are in the package list.  If no goals are specified, all the"
@@ -148,7 +181,17 @@ optSpecs =
       "Print a help message and exit."
     ]
     where
+      addTarget s p =
+          case targets p of
+            AllTargets -> AllTargets
+            TargetNames xs -> TargetNames (Set.insert s xs)
+            TargetSet _ -> error "optSpecs: unexpected value in target specs"
+{-
+      allTargets p =
+          p {targets = let name = (relName (buildRelease p)) in TargetList (myTargets (releaseTargetNamePred name) name)})
+      ++ [find s p]
       find s p = case filter (\ t -> sourcePackageName t == s) (myTargets (const True) (relName (buildRelease p))) of
                    [x] -> x
                    [] -> error $ "Package not found: " ++ s
                    xs -> error $ "Multiple packages found: " ++ show (map sourcePackageName xs)
+-}
