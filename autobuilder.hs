@@ -2,8 +2,13 @@
 #!/usr/bin/env runhaskell -package=base-3.0.3.0
 -- Currently this will not run as a script even with the line above.
 -- The reason is unclear.  Either use the wrapper script in
--- /usr/bin/autobuilder or run
---   sudo runhaskell -package=base-3.0.3.0 <path to this configuration file> release1 release2 ...
+-- /usr/bin/autobuilder or run in the interpreter:
+--
+--   ghci
+--   > :load autobuilder.hs
+--   > getParams ["lucid-seereason", "--all-targets", "--flush-pool"] >>= Debian.AutoBuilder.Main.main
+--
+-- This may run very slowly.
 
 -- Import the symbols we use below.
 import Data.List (isSuffixOf, isPrefixOf, find)
@@ -73,8 +78,8 @@ params myBuildRelease =
     , releaseAliases = myReleaseAliases myBuildRelease
     , archList = [Binary "i386",Binary "amd64"]
     , newDistProgram = "newdist -v"
+    , requiredVersion = [(parseDebianVersion "5.15", Nothing)]
     -- Things that are probably obsolete
-    , requiredVersion = [(parseDebianVersion "5.2", Nothing)]
     , debug = False
     , omitTargets = []
     , extraReleaseTag = Nothing
