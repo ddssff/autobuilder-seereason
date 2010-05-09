@@ -1,4 +1,7 @@
-module Targets where
+module Targets 
+    ( publicTargets
+    , privateTargets
+    ) where
 
 import Data.List (isPrefixOf)
 import qualified Data.Set as Set
@@ -6,8 +9,8 @@ import Debian.AutoBuilder.ParamClass (Target(..))
 
 ------------------------ TARGETS ---------------------
 
-publicTargetNames release = map sourcePackageName (publicTargets release)
-privateTargetNames = map sourcePackageName privateTargets
+--publicTargetNames release = map sourcePackageName (publicTargets release)
+--privateTargetNames = map sourcePackageName privateTargets
 
 {-
 sidPackageNames control =

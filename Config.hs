@@ -1,5 +1,32 @@
+-- THIS FILE IS WHERE YOU DO ALL THE CUSTOMIZATIONS REQUIRED FOR THE
+-- REPOSTORIES YOU ARE BUILDING.  The Targets.hs file may also be
+-- modified to reflect the sources for the packages you will be
+-- building.  If you find yourself modifying other files I would like
+-- to hear about it.
+
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
-module Config where
+module Config 
+    ( myBuildURI
+    , myDebianMirrorHost
+    , myDevelopmentReleaseNames
+    , myDoNewDist
+    , myDoSSHExport
+    , myDoUpload
+    , myExtraEssential
+    , myExtraPackages
+    , myFlushPool
+    , myForceBuild
+    , myGlobalRelaxInfo
+    , myGoals
+    , myReleaseAliases
+    , myReleaseSuffixes
+    , mySources
+    , myTargets
+    , myUbuntuMirrorHost
+    , myUploadURI
+    , myVendorTag
+    , myVerbosity
+    ) where
 
 -- Import the symbols we use below.
 import Data.List (isSuffixOf, isPrefixOf, find)
@@ -72,13 +99,15 @@ myVendorTag = "+seereason"
 -- did not modify the version number in the changelog this will force
 -- a build.  This can lead to problems if you build the package for
 -- multiple release or multiple architectures - you can end up with
--- different source for seemingly identical uploaded versions.
+-- different source for seemingly identical uploaded versions.  Add
+-- elements from the command line using --force <name>.
 --
 myForceBuild = []
 
 -- Clear all the entries in the local pool before starting build.  Use
 -- this when there is stuff already in there that you don't want to
--- upload to the remote repository.
+-- upload to the remote repository.  Usually set from the command line
+-- using --flush-pool.
 --
 myFlushPool = False
 
