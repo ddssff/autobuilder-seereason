@@ -426,7 +426,8 @@ ghc6Targets release =
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digest/0.0.0.5/digest-0.0.0.5.tar.gz:ba60cc9d1ad6d0795ad84390976699d1):(darcs:http://src.seereason.com/debian/haskell-digest-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-zip-archive"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/zip-archive/0.1.1.5/zip-archive-0.1.1.5.tar.gz:4bedb05a838eac253343df1f882366e3):(darcs:http://src.seereason.com/haskell-zip-archive-debian)"
+             , sourceSpec = "apt:sid:haskell-zip-archive"
+             -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/zip-archive/0.1.1.5/zip-archive-0.1.1.5.tar.gz:4bedb05a838eac253343df1f882366e3):(darcs:http://src.seereason.com/haskell-zip-archive-debian)"
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-utility-ht"
