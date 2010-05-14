@@ -557,9 +557,8 @@ ghc6Targets release =
     , Target { sourcePackageName="haskell-time-extras"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/time-extras/1.1.4/time-extras-1.1.4.tar.gz:2c7cfb8e661c74d9c13e0ca6a425876f):(darcs:http://src.seereason.com/haskell-time-extras-debian)"
              , relaxInfo = [] }
-    -- Patched to version 2.4.1, requires hashed-storage 0.4.11
     , Target { sourcePackageName = "darcs"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/darcs/2.4/darcs-2.4.tar.gz:169a6d245a33da97b2daa0eda60b28e5):(darcs:http://src.seereason.com/darcs-debian)"
+             , sourceSpec = "quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/darcs-quilt)"
              , relaxInfo = [] }
     ]
         where happstackRepo = "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
