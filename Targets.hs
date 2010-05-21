@@ -488,9 +488,10 @@ ghc6Targets release =
     , Target { sourcePackageName = "bash-completion"
              , sourceSpec = "apt:sid:bash-completion"
              , relaxInfo = [] }
+{-  -- Something is broken in the archive maybe
     , Target { sourcePackageName = "haskell-haskeline"
              , sourceSpec = "quilt:(apt:sid:haskell-haskeline):(darcs:http://src.seereason.com/haskell-haskeline-quilt)"
-             , relaxInfo = [] }
+             , relaxInfo = [] } -}
     , Target { sourcePackageName = "haskell-mmap"
              , sourceSpec = "apt:sid:haskell-mmap"
              , relaxInfo = [] }
