@@ -106,7 +106,8 @@ aptSidOrKarmic release name version =
 
 ghc6CoreTargets release =
     [ Target { sourcePackageName = "ghc6"
-             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20091231-src.tar.bz2:a5a9a4ac9fd2823ed0a1928a9a89498c):(darcs:http://src.seereason.com/ghc614-debian-sid)"
+             -- , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20091231-src.tar.bz2:a5a9a4ac9fd2823ed0a1928a9a89498c):(darcs:http://src.seereason.com/ghc614-debian-sid)"
+             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20100519-src.tar.bz2:357b885bfd3c3583dad830c72f0639a5):(darcs:http://src.seereason.com/ghc614-debian-sid)"
              , relaxInfo = ["ghc6"
                            ,"happy"
                            ,"alex"
@@ -129,10 +130,11 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "happy"
              , sourceSpec = "apt:" ++ (if isPrefixOf "jaunty-" release then "karmic" else "sid") ++ ":happy"
              , relaxInfo = ["happy"] }
-{-  -- Withdrawn from sid
+    -- Withdrawn from sid
     , Target { sourcePackageName = "haskell-utf8-string"
-             , sourceSpec = "quilt:(apt:sid:haskell-utf8-string):(darcs:http://src.seereason.com/haskell-utf8-string-quilt)"
-             , relaxInfo = ["hscolour", "cpphs"] } -}
+             -- , sourceSpec = "quilt:(apt:sid:haskell-utf8-string):(darcs:http://src.seereason.com/haskell-utf8-string-quilt)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/utf8-string/0.3.6/utf8-string-0.3.6.tar.gz:be8c5ef52a0824babdc89d60c1e9b600):(darcs:http://src.seereason.com/utf8-string-debian)"
+             , relaxInfo = ["hscolour", "cpphs"] }
     , Target { sourcePackageName = "haskell-zlib"
              , sourceSpec = "apt:sid:haskell-zlib"
              , relaxInfo = [] }
@@ -432,8 +434,8 @@ ghc6Targets release =
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digest/0.0.0.5/digest-0.0.0.5.tar.gz:ba60cc9d1ad6d0795ad84390976699d1):(darcs:http://src.seereason.com/debian/haskell-digest-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-zip-archive"
-             , sourceSpec = "apt:sid:haskell-zip-archive"
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/zip-archive/0.1.1.5/zip-archive-0.1.1.5.tar.gz:4bedb05a838eac253343df1f882366e3):(darcs:http://src.seereason.com/haskell-zip-archive-debian)"
+             , sourceSpec = "quilt:(apt:sid:haskell-zip-archive):(darcs:http://src.seereason.com/haskell-zip-archive-quilt)"
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-utility-ht"
@@ -483,7 +485,7 @@ ghc6Targets release =
              , sourceSpec = "apt:sid:bash-completion"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-haskeline"
-             , sourceSpec = "apt:sid:haskell-haskeline"
+             , sourceSpec = "quilt:(apt:sid:haskell-haskeline):(darcs:http://src.seereason.com/haskell-haskeline-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-mmap"
              , sourceSpec = "apt:sid:haskell-mmap"
