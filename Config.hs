@@ -16,6 +16,7 @@ module Config
     , myExtraPackages
     , myFlushPool
     , myForceBuild
+    , myBuildTrumped
     , myGlobalRelaxInfo
     , myGoals
     , myReleaseAliases
@@ -103,6 +104,11 @@ myVendorTag = "+seereason"
 -- elements from the command line using --force <name>.
 --
 myForceBuild = []
+
+-- Packages we should build and upload even if their source code looks
+-- older than the version already uploaded to the repository.
+
+myBuildTrumped = []
 
 -- Clear all the entries in the local pool before starting build.  Use
 -- this when there is stuff already in there that you don't want to

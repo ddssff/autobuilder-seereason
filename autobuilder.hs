@@ -50,6 +50,7 @@ params myBuildRelease =
     , flushPool = myFlushPool
     , useRepoCache = True
     , forceBuild = myForceBuild
+    , buildTrumped = myBuildTrumped
     , doSSHExport = myDoSSHExport
     , doHelp = False
     -- Things that are occasionally useful
@@ -78,7 +79,7 @@ params myBuildRelease =
     , releaseAliases = myReleaseAliases myBuildRelease
     , archList = [Binary "i386",Binary "amd64"]
     , newDistProgram = "newdist -v"
-    , requiredVersion = [(parseDebianVersion "5.15", Nothing)]
+    , requiredVersion = [(parseDebianVersion "5.17", Nothing)]
     -- Things that are probably obsolete
     , debug = False
     , omitTargets = []
@@ -182,6 +183,8 @@ optSpecs =
                , "goal package is built.)"])
     , Option [] ["force"] (ReqArg (\ s p -> p {forceBuild = forceBuild p ++ [s]}) "PACKAGE")
       ("Build the specified source package even if it doesn't seem to need it.")
+    , Option [] ["build-trumped"] (ReqArg (\ s p -> p {buildTrumped = buildTrumped p ++ [s]}) "PACKAGE")
+      ("Build the specified source package even if it seems older than the uploaded version.")
     , Option ['h'] ["help", "usage"] (NoArg (\ p -> p {doHelp = True}))
       "Print a help message and exit."
     ]
