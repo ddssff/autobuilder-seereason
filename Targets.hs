@@ -567,6 +567,13 @@ ghc6Targets release =
     , Target { sourcePackageName = "darcs"
              , sourceSpec = "quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/darcs-quilt)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-unicode-properties"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/unicode-properties/3.2.0.0/unicode-properties-3.2.0.0.tar.gz:efdb2a0021c328f23cc7026d31b23497):(darcs:http://src.seereason.com/haskell-unicode-properties-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-unicode-names"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/unicode-names/3.2.0.0/unicode-names-3.2.0.0.tar.gz:0441831bb24b7e891668df5db96395c5):(darcs:http://src.seereason.com/haskell-unicode-names-debian)"
+             , relaxInfo = [] }
+
     ]
         where happstackRepo = "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
 
