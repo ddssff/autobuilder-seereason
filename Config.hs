@@ -193,31 +193,33 @@ myReleaseAliases myBuildRelease =
 -- install it manually.
 --
 myExtraPackages myBuildRelease =
-    ["debian-archive-keyring" {-, "seereason-keyring", "ghc6","ghc6-doc", "ghc6-prof"-}] ++
+    ["debian-archive-keyring" {-, "seereason-keyring", "ghc6","ghc6-doc", "ghc6-prof"-}]
+    -- Private releases generally have ssh URIs in their sources.list,
+    -- I have observed that this solves the "ssh died unexpectedly"
+    -- errors.  A better approach would be to examine the sources.list
+    -- to see if there are any ssh urls.
+
+-- Specify extra packages to include as essential in the build
+-- environment.  This option was provided to add either upstart or
+-- sysvinit to the build when they ceased to be 'Required' packages.
+-- (With switchover to debootstrap this list is now packages that are
+-- available in the main release, nothing in restricted, contrib, etc.)
+myExtraEssential myBuildRelease =
+    ["gnupg", "dpkg", "locales", "language-pack-en"] ++
     -- Private releases generally have ssh URIs in their sources.list,
     -- I have observed that this solves the "ssh died unexpectedly"
     -- errors.
     (if isPrivateRelease myBuildRelease then ["ssh"] else []) ++
     case releaseRepoName myBuildRelease of
       "debian" -> []
-      "ubuntu" -> ["ubuntu-keyring"]
-      _ -> error $ "Invalid build release: " ++ myBuildRelease
-
--- Specify extra packages to include as essential in the build
--- environment.  This option was provided to add either upstart or
--- sysvinit to the build when they ceased to be 'Required' packages.
---
-myExtraEssential myBuildRelease =
-    ["gnupg", "dpkg", "locales", "language-pack-en"] ++
-    case releaseRepoName myBuildRelease of
-      "debian" -> []
       "ubuntu" ->
+          ["ubuntu-keyring", "perl-base"] ++
           case () of
-            _ | isPrefixOf "lucid-" myBuildRelease -> ["upstart"]
-              | isPrefixOf "karmic-" myBuildRelease -> ["upstart"]
-              | isPrefixOf "jaunty-" myBuildRelease -> ["upstart-compat-sysv"]
-              | isPrefixOf "intrepid-" myBuildRelease -> ["upstart-compat-sysv", "belocs-locales-bin"]
-              | isPrefixOf "hardy-" myBuildRelease -> ["upstart-compat-sysv", "belocs-locales-bin"]
+            _ | isPrefixOf "lucid-" myBuildRelease -> ["perl-base", "upstart"]
+              | isPrefixOf "karmic-" myBuildRelease -> ["perl-base", "upstart"]
+              | isPrefixOf "jaunty-" myBuildRelease -> ["perl-base", "upstart-compat-sysv"]
+              | isPrefixOf "intrepid-" myBuildRelease -> ["perl-base", "upstart-compat-sysv", "belocs-locales-bin"]
+              | isPrefixOf "hardy-" myBuildRelease -> ["perl-base", "upstart-compat-sysv", "belocs-locales-bin"]
               | True -> ["belocs-locales-bin"]
       _ -> error $ "Unknown build release: " ++ myBuildRelease
 
