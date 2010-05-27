@@ -12,8 +12,9 @@ module Config
     , myDoNewDist
     , myDoSSHExport
     , myDoUpload
-    , myExtraEssential
-    , myExtraPackages
+    , myIncludePackages
+    , myExcludePackages
+    , myComponents
     , myFlushPool
     , myForceBuild
     , myBuildTrumped
@@ -192,20 +193,20 @@ myReleaseAliases myBuildRelease =
 -- seereason-keyring) you currently need to first build it and then
 -- install it manually.
 --
-myExtraPackages myBuildRelease =
-    ["debian-archive-keyring" {-, "seereason-keyring", "ghc6","ghc6-doc", "ghc6-prof"-}]
-    -- Private releases generally have ssh URIs in their sources.list,
-    -- I have observed that this solves the "ssh died unexpectedly"
-    -- errors.  A better approach would be to examine the sources.list
-    -- to see if there are any ssh urls.
-
--- Specify extra packages to include as essential in the build
--- environment.  This option was provided to add either upstart or
--- sysvinit to the build when they ceased to be 'Required' packages.
--- (With switchover to debootstrap this list is now packages that are
--- available in the main release, nothing in restricted, contrib, etc.)
-myExtraEssential myBuildRelease =
-    ["gnupg", "dpkg", "locales", "language-pack-en"] ++
+myIncludePackages myBuildRelease = 
+    [ "debian-archive-keyring"
+    , "build-essential"         -- This is required by autobuilder code that opens the essential-packages list
+    -- , "perl-base"
+    -- , "gnupg"
+    -- , "dpkg"
+    -- , "locales"
+    -- , "language-pack-en"
+    -- , "seereason-keyring"
+    -- , "ghc6"
+    -- , "ghc6-doc"
+    -- , "ghc6-prof"
+    -- , "makedev"
+    ] ++
     -- Private releases generally have ssh URIs in their sources.list,
     -- I have observed that this solves the "ssh died unexpectedly"
     -- errors.
@@ -213,15 +214,23 @@ myExtraEssential myBuildRelease =
     case releaseRepoName myBuildRelease of
       "debian" -> []
       "ubuntu" ->
-          ["ubuntu-keyring", "perl-base"] ++
+          ["ubuntu-keyring"] ++
           case () of
-            _ | isPrefixOf "lucid-" myBuildRelease -> ["perl-base", "upstart"]
-              | isPrefixOf "karmic-" myBuildRelease -> ["perl-base", "upstart"]
-              | isPrefixOf "jaunty-" myBuildRelease -> ["perl-base", "upstart-compat-sysv"]
-              | isPrefixOf "intrepid-" myBuildRelease -> ["perl-base", "upstart-compat-sysv", "belocs-locales-bin"]
-              | isPrefixOf "hardy-" myBuildRelease -> ["perl-base", "upstart-compat-sysv", "belocs-locales-bin"]
-              | True -> ["belocs-locales-bin"]
-      _ -> error $ "Unknown build release: " ++ myBuildRelease
+            _ | isPrefixOf "lucid-" myBuildRelease -> [{-"upstart"-}]
+              | isPrefixOf "karmic-" myBuildRelease -> [{-"upstart"-}]
+              | isPrefixOf "jaunty-" myBuildRelease -> [{-"upstart-compat-sysv"-}]
+              | isPrefixOf "intrepid-" myBuildRelease -> [{-"upstart-compat-sysv", "belocs-locales-bin"-}]
+              | isPrefixOf "hardy-" myBuildRelease -> [{-"upstart-compat-sysv", "belocs-locales-bin"-}]
+              | True -> [{-"belocs-locales-bin"-}]
+      _ -> error $ "Invalid build release: " ++ myBuildRelease
+
+myExcludePackages _ = []
+
+myComponents myBuildRelease =
+    case releaseRepoName myBuildRelease of
+      "debian" -> ["main", "contrib", "non-free"]
+      "ubuntu" -> ["main", "restricted", "universe", "multiverse"]
+      _ -> error $ "Invalid build release: " ++ myBuildRelease
 
 ------------------------- SOURCES --------------------------------
 
@@ -269,13 +278,10 @@ ubuntuSourceLines ubuntuMirrorHost release =
 
 -- The names of the releases that we are able to create build environments for.
 --
-debianReleases = ["experimental", "sid", "squeeze", "lenny"]
-ubuntuReleases = ["lucid", "karmic", "jaunty", "intrepid", "hardy", "dapper"]
+debianReleases = ["experimental", "sid", "squeeze", "lenny", "sarge"]
+ubuntuReleases = ["lucid", "karmic", "jaunty", "intrepid", "hardy", "edgy", "feisty", "dapper"]
 
--- These are releases which are not supported for building, but from
--- which we could, if we had to, pull source from using an Apt target.
---
-oldDebianReleases = ["etch", "sarge"]
+oldDebianReleases = []
 oldUbuntuReleases = []
 
 -- A utility function
@@ -359,7 +365,7 @@ releaseRepoName name
 -- release.  Currently, the answer is always yes, as none of the
 -- releases includes a haskell compiler new enough to build all of our
 -- packages.
-releaseTargetNamePred p _target =
+_releaseTargetNamePred p _target =
     case baseReleaseName p of
       "lucid" -> True -- Set.member (sourcePackageName target) lucidTargetNames
       "karmic" -> True 
