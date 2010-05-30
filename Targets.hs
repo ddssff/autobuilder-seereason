@@ -247,10 +247,7 @@ ghc6CoreTargets release =
     ]
 
 autobuilderTargets release =
-    [ Target { sourcePackageName = "build-env"
-             , sourceSpec = "darcs:http://src.seereason.com/build-env"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "autobuilder"
+    [ Target { sourcePackageName = "autobuilder"
              , sourceSpec = "darcs:http://src.seereason.com/autobuilder"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cgi"
