@@ -561,9 +561,10 @@ ghc6Targets release =
     , Target { sourcePackageName="haskell-time-extras"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/time-extras/1.1.4/time-extras-1.1.4.tar.gz:2c7cfb8e661c74d9c13e0ca6a425876f):(darcs:http://src.seereason.com/haskell-time-extras-debian)"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "darcs"
-             , sourceSpec = "quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/darcs-quilt)"
-             , relaxInfo = [] }
+    -- We can't use quilt here because it is used in the upstream debianization.
+--  , Target { sourcePackageName = "darcs"
+--           , sourceSpec = "quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/darcs-quilt)"
+--           , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-unicode-properties"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/unicode-properties/3.2.0.0/unicode-properties-3.2.0.0.tar.gz:efdb2a0021c328f23cc7026d31b23497):(darcs:http://src.seereason.com/haskell-unicode-properties-debian)"
              , relaxInfo = [] }
