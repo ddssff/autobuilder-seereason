@@ -107,7 +107,8 @@ aptSidOrKarmic release name version =
 ghc6CoreTargets release =
     [ Target { sourcePackageName = "ghc6"
              -- , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20091231-src.tar.bz2:a5a9a4ac9fd2823ed0a1928a9a89498c):(darcs:http://src.seereason.com/ghc614-debian-sid)"
-             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20100519-src.tar.bz2:357b885bfd3c3583dad830c72f0639a5):(darcs:http://src.seereason.com/ghc614-debian-sid)"
+             -- , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20100519-src.tar.bz2:357b885bfd3c3583dad830c72f0639a5):(darcs:http://src.seereason.com/ghc614-debian-sid)"
+             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20100615-src.tar.bz2:a0759eea8475572db96eb4df8e10ab8f):(darcs:http://src.seereason.com/ghc614-debian-sid)"
              -- We needed this to build ghc 6.12 into jaunty and
              -- karmic to bootstrap 6.13-20100519, there are build
              -- problems trying to bootstrap it with 6.13-20091231.  ,
