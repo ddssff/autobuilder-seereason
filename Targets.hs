@@ -193,7 +193,7 @@ ghc6CoreTargets release =
              , sourceSpec = "apt:sid:haskell-regex-tdfa"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-stm"
-             , sourceSpec = "apt:sid:haskell-stm"
+             , sourceSpec = "quilt:(apt:sid:haskell-stm):(darcs:http://src.seereason.com/haskell-stm-quilt)"
              , relaxInfo = [] }
     -- Patch to add the bareAttr function and remove the custom show
     -- instance Specify a particular version of xhtml so we can
