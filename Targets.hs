@@ -180,6 +180,9 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "haskell-quickcheck"
              , sourceSpec = "quilt:(apt:sid:haskell-quickcheck):(darcs:http://src.seereason.com/haskell-quickcheck-quilt)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-quickcheck1"
+             , sourceSpec = "quilt:(apt:sid:haskell-quickcheck1):(darcs:http://src.seereason.com/haskell-quickcheck1-quilt)"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-regex-base"
              , sourceSpec = "apt:sid:haskell-regex-base"
              , relaxInfo = [] }
@@ -244,6 +247,15 @@ ghc6CoreTargets release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-irc"
              , sourceSpec = "apt:sid:haskell-irc"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-bimap"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bimap/0.2.4/bimap-0.2.4.tar.gz:f6b79bff5741e709f1536df411aab53d):(darcs:http://src.seereason.com/haskell-bimap-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-bitset"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bitset/bitset-1.0.tar.gz:466eb0fd8a92b16e705a219f0d01a54c):(darcs:http://src.seereason.com/haskell-bitset-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-funsat"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/funsat/funsat-0.6.1.tar.gz:6ec67ada1b478c85cbcd8e47f11b5643):(darcs:http://src.seereason.com/haskell-funsat-debian)"
              , relaxInfo = [] }
     ]
 
