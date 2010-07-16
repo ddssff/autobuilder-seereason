@@ -257,9 +257,6 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "haskell-funsat"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/funsat/0.6.1/funsat-0.6.1.tar.gz:6ec67ada1b478c85cbcd8e47f11b5643):(darcs:http://src.seereason.com/haskell-funsat-debian)"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-chiouprover"
-             , sourceSpec = "darcs:http://src.seereason.com/chiou-prover"
-             , relaxInfo = [] }
     ]
 
 autobuilderTargets release =
