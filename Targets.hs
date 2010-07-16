@@ -618,8 +618,14 @@ ghc6Targets release =
     , Target { sourcePackageName="haskell-test-framework-hunit"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/test-framework-hunit/0.2.6/test-framework-hunit-0.2.6.tar.gz:7c012ca5426d743b3cf35e231d6f6072):(darcs:http://src.seereason.com/haskell-test-framework-hunit-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-test-framework-quickcheck"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/test-framework-quickcheck/0.2.6/test-framework-quickcheck-0.2.6.tar.gz:80e7855bf93bdcc5cfa6657b5e3edb6a):(darcs:http://src.seereason.com/haskell-test-framework-quickcheck-debian)"
+             , relaxInfo = [] }
     , Target { sourcePackageName="haskell-hostname"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/hostname/1.0/hostname-1.0.tar.gz:9389c8634239e5d6096ef563e59a703f):(darcs:http://src.seereason.com/haskell-hostname-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-split"
+             , sourceSpec="apt:sid:haskell-split"
              , relaxInfo = [] }
     ]
         where happstackRepo = "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
