@@ -255,7 +255,7 @@ ghc6CoreTargets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bitset/1.0/bitset-1.0.tar.gz:466eb0fd8a92b16e705a219f0d01a54c):(darcs:http://src.seereason.com/haskell-bitset-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-funsat"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/funsat/funsat-0.6.1.tar.gz:6ec67ada1b478c85cbcd8e47f11b5643):(darcs:http://src.seereason.com/haskell-funsat-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/funsat/0.6.1/funsat-0.6.1.tar.gz:6ec67ada1b478c85cbcd8e47f11b5643):(darcs:http://src.seereason.com/haskell-funsat-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-chiouprover"
              , sourceSpec = "darcs:http://src.seereason.com/chiou-prover"
@@ -606,7 +606,21 @@ ghc6Targets release =
     , Target { sourcePackageName = "haskell-unicode-names"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/unicode-names/3.2.0.0/unicode-names-3.2.0.0.tar.gz:0441831bb24b7e891668df5db96395c5):(darcs:http://src.seereason.com/haskell-unicode-names-debian)"
              , relaxInfo = [] }
-
+    , Target { sourcePackageName="haskell-uniplate"
+             , sourceSpec="quilt:(apt:sid:haskell-uniplate):(darcs:http://src.seereason.com/haskell-uniplate-quilt)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-derive"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/derive/2.3.0.2/derive-2.3.0.2.tar.gz:7f8ad00e17c1cea5ad103b1481dfc250):(darcs:http://src.seereason.com/haskell-derive-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-test-framework"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/test-framework/0.3.2/test-framework-0.3.2.tar.gz:9db832bd496d3f525e2fdf45b63cb0de):(darcs:http://src.seereason.com/haskell-test-framework-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-test-framework-hunit"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/test-framework-hunit/0.2.6/test-framework-hunit-0.2.6.tar.gz:7c012ca5426d743b3cf35e231d6f6072):(darcs:http://src.seereason.com/haskell-test-framework-hunit-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-hostname"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/hostname/1.0/hostname-1.0.tar.gz:9389c8634239e5d6096ef563e59a703f):(darcs:http://src.seereason.com/haskell-hostname-debian)"
+             , relaxInfo = [] }
     ]
         where happstackRepo = "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
 
@@ -642,11 +656,7 @@ otherTargets release =
     ]
 
 failingTargets release =
-    [ Target { sourcePackageName = "haskell-uniplate"
---           , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/uniplate/1.2.0.3/uniplate-1.2.0.3.tar.gz:e0e10700870f5b9756d4097e640164ca):(darcs:http://src.seereason.com/uniplate-debian)"
-             , sourceSpec = "apt:sid:haskell-uniplate"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-benchpress"
+    [ Target { sourcePackageName = "haskell-benchpress"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/benchpress/0.2.2.3/benchpress-0.2.2.3.tar.gz:48cd691ebfd4dc6c5e6f5201ca545fac):(darcs:http://src.seereason.com/debian/haskell-benchpress-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-shellac"
