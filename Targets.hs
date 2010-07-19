@@ -627,6 +627,9 @@ ghc6Targets release =
     , Target { sourcePackageName="haskell-test-framework-quickcheck"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-html/0.1.2/blaze-html-0.1.2.tar.gz:f812a535c0e7e0cecc22485bcd24a7db):(darcs:http://src.seereason.com/haskell-blaze-html-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-geni"
+             , sourceSpec="deb-dir:(darcs:http://code.haskell.org/GenI):(darcs:http://src.seereason.com/haskell-geni-debian)"
+             , relaxInfo = [] }
     ]
         where happstackRepo = "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
 
