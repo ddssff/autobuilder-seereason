@@ -260,6 +260,9 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "haskell-incremental-sat-solver"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/incremental-sat-solver/0.1.7/incremental-sat-solver-0.1.7.tar.gz:3d5f3d0bff3a92f4207631fbe9b32c36):(darcs:http://src.seereason.com/haskell-incremental-sat-solver-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-sat"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/sat/1.1.1/sat-1.1.1.tar.gz:5a974083ef008b32720b617fe5fb30a2):(darcs:http://src.seereason.com/haskell-sat-debian)"
+             , relaxInfo = [] }
     ]
 
 autobuilderTargets release =
