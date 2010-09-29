@@ -290,6 +290,13 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "haskell-curl"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/curl/1.3.5/curl-1.3.5.tar.gz:0b08065ca25cead1e2b374958dc69818):(darcs:http://src.seereason.com/haskell-curl-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-instant-generics"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/instant-generics/0.2/instant-generics-0.2.tar.gz:831eea99caffb2434488dd4e8d67d4bc):(darcs:http://src.seereason.com/haskell-instant-generics-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-guarded-rewriting"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/guarded-rewriting/0.1/guarded-rewriting-0.1.tar.gz:0d4a284236a8a3241d93e8aec014198a):(darcs:http://src.seereason.com/haskell-guarded-rewriting-debian)"
+             , relaxInfo = [] }
+
     ]
 
 autobuilderTargets release =
