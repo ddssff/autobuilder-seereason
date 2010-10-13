@@ -677,7 +677,7 @@ ghc6Targets release =
              , sourceSpec="apt:sid:haskell-edison-api"
              , relaxInfo = [] }
     , Target { sourcePackageName="haskell-edison-core"
-             , sourceSpec="apt:sid:haskell-edison-core"
+             , sourceSpec="quitl:(apt:sid:haskell-edison-core):(darcs:http://src.seereason.com/edison-core-quilt)"
              , relaxInfo = [] }
     ]
         where happstackRepo = "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
