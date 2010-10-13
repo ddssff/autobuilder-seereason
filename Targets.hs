@@ -673,6 +673,12 @@ ghc6Targets release =
     , Target { sourcePackageName="haskell-geni"
              , sourceSpec="deb-dir:(darcs:http://code.haskell.org/GenI):(darcs:http://src.seereason.com/haskell-geni-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-edison-api"
+             , sourceSpec="apt:sid:haskell-edison-api"
+             , relaxInfo = [] }
+    , Target { sourcePackageName="haskell-edison-core"
+             , sourceSpec="apt:sid:haskell-edison-core"
+             , relaxInfo = [] }
     ]
         where happstackRepo = "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
 
