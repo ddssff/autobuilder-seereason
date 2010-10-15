@@ -677,7 +677,7 @@ ghc6Targets release =
              , sourceSpec="apt:sid:haskell-edison-api"
              , relaxInfo = [] }
     , Target { sourcePackageName="haskell-edison-core"
-             , sourceSpec="quilt:(apt:sid:haskell-edison-core):(darcs:http://src.seereason.com/edison-core-quilt)"
+             , sourceSpec="quitl:(apt:sid:haskell-edison-core):(darcs:http://src.seereason.com/edison-core-quilt)"
              , relaxInfo = [] }
     ]
         where happstackRepo = "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
@@ -725,10 +725,6 @@ failingTargets release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-configfile"
              , sourceSpec = "apt:sid:haskell-configfile"
-             , relaxInfo = [] }
-    -- Requires Cabal >= 1.7.3, ghc 6.10.3 comes with Cabal-1.6.0.3
-    , Target { sourcePackageName = "haskell-cabal-install"
-             , sourceSpec = "deb-dir:(darcs:http://darcs.haskell.org/cabal-install):(darcs:http://src.seereason.com/cabal-install-debian)"
              , relaxInfo = [] }
     -- We need debhelper >= 7.0.50 for darcs 2.3.0.
     -- However, one of its unit tests fails:
