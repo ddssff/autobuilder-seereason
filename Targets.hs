@@ -679,6 +679,13 @@ ghc6Targets release =
     , Target { sourcePackageName="haskell-edison-core"
              , sourceSpec="quilt:(apt:sid:haskell-edison-core):(darcs:http://src.seereason.com/edison-core-quilt)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-psqueue"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/PSQueue/1.1/PSQueue-1.1.tar.gz:43649b94d88fe103233e6897a014a89f):(darcs:http://src.seereason.com/haskell-psqueue-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-dlist"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/dlist/0.5/dlist-0.5.tar.gz:54f6c18ff689b7ef54e3229dc4a94107):(darcs:http://src.seereason.com/haskell-dlist-debian)"
+             , relaxInfo = [] }
+
     ]
         where happstackRepo = "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
 
