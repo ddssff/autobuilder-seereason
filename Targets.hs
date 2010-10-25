@@ -339,22 +339,22 @@ ghc6Targets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/MaybeT/0.1.2/MaybeT-0.1.2.tar.gz:9864a3f34151217004f8c968fda5b427):(darcs:http://src.seereason.com/MaybeT-debian)"
              , relaxInfo = [] }               
     , Target { sourcePackageName = "haskell-happstack-util"
-             , sourceSpec = "cd:happstack-util:darcs:" ++ happstackRepo
+             , sourceSpec = "deb-dir:(cd:happstack-util:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-util-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-data"
-             , sourceSpec = "cd:happstack-data:darcs:" ++ happstackRepo
+             , sourceSpec = "deb-dir:(cd:happstack-data:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-data-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-ixset"
-             , sourceSpec = "cd:happstack-ixset:darcs:" ++ happstackRepo
+             , sourceSpec = "deb-dir:(cd:happstack-ixset:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-ixset-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-server"
-             , sourceSpec = "cd:happstack-server:darcs:" ++ happstackRepo
+             , sourceSpec = "deb-dir:(cd:happstack-server:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-server-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-state"
-             , sourceSpec = "cd:happstack-state:darcs:" ++ happstackRepo
+             , sourceSpec = "deb-dir:(cd:happstack-state:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-state-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack"
-             , sourceSpec = "cd:happstack:darcs:" ++ happstackRepo
+             , sourceSpec = "deb-dir:(cd:happstack:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-debian)"
              , relaxInfo = [] }
     -- Depends on pandoc
     , Target { sourcePackageName = "haskell-happstack-extra"
@@ -524,7 +524,7 @@ ghc6Targets release =
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-sendfile"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/sendfile/0.6.1/sendfile-0.6.1.tar.gz:35516b5bebe0566591dda3f78c5dcd9e):(darcs:http://src.seereason.com/debian/haskell-sendfile-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/sendfile/0.7.2/sendfile-0.7.2.tar.gz:7e59a3c47ead59ad19c72ee1fcef9fa6):(darcs:http://src.seereason.com/haskell-sendfile-debian)"
 --           , sourceSpec = "deb-dir:(darcs:http://patch-tag.com/r/mae/sendfile/pullrepo):(darcs:http://src.seereason.com/debian/haskell-sendfile-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-text"
@@ -687,7 +687,7 @@ ghc6Targets release =
              , relaxInfo = [] }
 
     ]
-        where happstackRepo = "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
+        where happstackRepo = "http://patch-tag.com/r/mae/happstack" -- "file:///home/dsf/darcs/happstack" -- "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
 
 otherTargets release =
     [ -- This target fails during an arch only build, because it has no architecture dependent files.
