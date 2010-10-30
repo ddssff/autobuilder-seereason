@@ -684,7 +684,18 @@ ghc6Targets release =
     , Target { sourcePackageName = "haskell-dlist"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/dlist/0.5/dlist-0.5.tar.gz:54f6c18ff689b7ef54e3229dc4a94107):(darcs:http://src.seereason.com/haskell-dlist-debian)"
              , relaxInfo = [] }
-
+    , Target { sourcePackageName = "haskell-vector"
+             , sourceSpec =
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/vector/0.7/vector-0.7.tar.gz:6c95eeebe4e4c42ac27ce8589e554397):(darcs:http://src.seereason.com/haskell-vector-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-murmur-hash"
+             , sourceSpec =
+                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/murmur-hash/0.1/murmur-hash-0.1.tar.gz:9bab434a87a7d611bc21e484977ce88f):(darcs:http://src.seereason.com/haskell-murmur-hash-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-primitive"
+             , sourceSpec =
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/primitive/0.3.1/primitive-0.3.1.tar.gz:9f3a9ecd184a1e1ec5980c66f63e6187):(darcs:http://src.seereason.com/haskell-primitive-debian)"
+             , relaxInfo = [] }
     ]
         where happstackRepo = "http://patch-tag.com/r/mae/happstack" -- "file:///home/dsf/darcs/happstack" -- "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
 
