@@ -158,9 +158,11 @@ ghc6CoreTargets release =
     , Target { sourcePackageName = "haskell-hunit"
              , sourceSpec = "apt:sid:haskell-hunit"
              , relaxInfo = [] }
+{-
     , Target { sourcePackageName = "haskell-mtl"
              , sourceSpec = "apt:sid:haskell-mtl"
              , relaxInfo = [] }
+-}
     , Target { sourcePackageName = "haskell-network"
              , sourceSpec = "quilt:(apt:sid:haskell-network):(darcs:http://src.seereason.com/haskell-network-quilt)"
              , relaxInfo = [] }
@@ -580,9 +582,6 @@ ghc6Targets release =
     , Target { sourcePackageName="haskell-uvector-algorithms"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/uvector-algorithms/0.2/uvector-algorithms-0.2.tar.gz:5d4088a73dd174fc0ef74b43f91443fa):(darcs:http://src.seereason.com/haskell-uvector-algorithms-debian)"
              , relaxInfo = [] }
-    , Target { sourcePackageName="haskell-transformers"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/transformers/0.1.4.0/transformers-0.1.4.0.tar.gz:6edd0f22594c477b05fd059fdac2c5a9):(darcs:http://src.seereason.com/haskell-transformers-debian)"
-             , relaxInfo = [] }
     , Target { sourcePackageName="haskell-utility-ht"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/utility-ht/0.0.5.1/utility-ht-0.0.5.1.tar.gz:98dcb042f404378d9071fc6344703386):(darcs:http://src.seereason.com/debian/haskell-utility-ht-debian)"
              , relaxInfo = [] }
@@ -688,6 +687,10 @@ ghc6Targets release =
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/vector/0.7/vector-0.7.tar.gz:6c95eeebe4e4c42ac27ce8589e554397):(darcs:http://src.seereason.com/haskell-vector-debian)"
              , relaxInfo = [] }
+    , Target{sourcePackageName = "haskell-vector-algorithms",
+             sourceSpec =
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/vector-algorithms/0.3.4/vector-algorithms-0.3.4.tar.gz:1457802a2e0babf239c31b45d09d6b40):(darcs:http://src.seereason.com/haskell-vector-algorithms-debian)",
+             relaxInfo = []}
     , Target { sourcePackageName = "haskell-murmur-hash"
              , sourceSpec =
                   "deb-dir:(uri:http://hackage.haskell.org/packages/archive/murmur-hash/0.1/murmur-hash-0.1.tar.gz:9bab434a87a7d611bc21e484977ce88f):(darcs:http://src.seereason.com/haskell-murmur-hash-debian)"
@@ -696,6 +699,122 @@ ghc6Targets release =
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/primitive/0.3.1/primitive-0.3.1.tar.gz:9f3a9ecd184a1e1ec5980c66f63e6187):(darcs:http://src.seereason.com/haskell-primitive-debian)"
              , relaxInfo = [] }
+    , Target{sourcePackageName = "haskell-chart",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/Chart/0.14/Chart-0.14.tar.gz:a7189cd1483d50e2de7f2b20bb3f97d8):(darcs:http://src.seereason.com/haskell-chart-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-mwc-random",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/mwc-random/0.8.0.2/mwc-random-0.8.0.2.tar.gz:5d95ec60ac4dd4097a4ce23f0e29254a):(darcs:http://src.seereason.com/haskell-mwc-random-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-transformers",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/transformers/0.2.2.0/transformers-0.2.2.0.tar.gz:3470ac66116900cd1ba84d3744474e49):(darcs:http://src.seereason.com/haskell-transformers-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-mtl",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/mtl/2.0.0.0/mtl-2.0.0.0.tar.gz:068e6714badedd839808ce8d7dd80abe):(darcs:http://src.seereason.com/haskell-mtl-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-tagged",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tagged/0.1.1/tagged-0.1.1.tar.gz:ed9ddfd0d12dfaf136788da8e32c08f8):(darcs:http://src.seereason.com/haskell-tagged-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-data-default",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-default/0.2/data-default-0.2.tar.gz:cfbbaaa4fa49a0c4c1b52c5d51258ae7):(darcs:http://src.seereason.com/haskell-data-default-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-criterion",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/criterion/0.5.0.5/criterion-0.5.0.5.tar.gz:dddc5f8dc9dbabbd36b82a8a531b178c):(darcs:http://src.seereason.com/haskell-criterion-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-cryptohash",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cryptohash/0.6.1/cryptohash-0.6.1.tar.gz:40139c278620007fe7c7840050050fa3):(darcs:http://src.seereason.com/haskell-cryptohash-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-cereal",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cereal/0.3.0.0/cereal-0.3.0.0.tar.gz:872e09f731afa0060ec3ecca1a3319dc):(darcs:http://src.seereason.com/haskell-cereal-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-aes",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/AES/0.2.7/AES-0.2.7.tar.gz:c40edee8615226c78139dd5ca864ad9e):(darcs:http://src.seereason.com/haskell-aes-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-crypto-api",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/crypto-api/0.2/crypto-api-0.2.tar.gz:c7b7aa4459549ebc9d0936a7efdde87f):(darcs:http://src.seereason.com/haskell-crypto-api-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-cryptocipher",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cryptocipher/0.2/cryptocipher-0.2.tar.gz:1b2353ae52c16463d841c8c76fea2b47):(darcs:http://src.seereason.com/haskell-cryptocipher-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-certificate",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/certificate/0.3.2/certificate-0.3.2.tar.gz:17a2c881188033b1f1e57a852e250daf):(darcs:http://src.seereason.com/haskell-certificate-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-special-functors",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/special-functors/1.0/special-functors-1.0.tar.gz:4547f0a1b4146d3621bcc95b11148939):(darcs:http://src.seereason.com/haskell-special-functors-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-failure",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/failure/0.1.0/failure-0.1.0.tar.gz:7c14ad9271ec9f8f87b4fdbf63291c44):(darcs:http://src.seereason.com/haskell-failure-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-enumerator",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/enumerator/0.4.2/enumerator-0.4.2.tar.gz:f50d24a77b57690eab31fa91aa4cd03b):(darcs:http://src.seereason.com/haskell-enumerator-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-attoparsec",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/attoparsec/0.8.1.1/attoparsec-0.8.1.1.tar.gz:8948e39002acb823fae3af9cde6983e8):(darcs:http://src.seereason.com/haskell-attoparsec-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-attoparsec-enumerator",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/attoparsec-enumerator/0.2/attoparsec-enumerator-0.2.tar.gz:ec79f184f49109cc7ec882dfbb9b836e):(darcs:http://src.seereason.com/haskell-attoparsec-enumerator-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-zlib-bindings",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/zlib-bindings/0.0.0/zlib-bindings-0.0.0.tar.gz:ced9be9c31f54ad848f58babf1ca2190):(darcs:http://src.seereason.com/haskell-zlib-bindings-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-hsopenssl",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HsOpenSSL/0.8.0.2/HsOpenSSL-0.8.0.2.tar.gz:5ed5a3b42a73e5cab5ca9c45539d7a7a):(darcs:http://src.seereason.com/haskell-hsopenssl-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-tls",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tls/0.3/tls-0.3.tar.gz:066b7615916243ad4b834e362dce8542):(darcs:http://src.seereason.com/haskell-tls-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-text",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/text/0.10.0.0/text-0.10.0.0.tar.gz:453cf09bae3d6aafdd8a4510ddff1fa5):(darcs:http://src.seereason.com/haskell-text-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-jsonb",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/JSONb/1.0.2/JSONb-1.0.2.tar.gz:b8cd6a453485c9270287fc5396339fab):(darcs:http://src.seereason.com/haskell-jsonb-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-bytestring-trie",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bytestring-trie/0.2.2/bytestring-trie-0.2.2.tar.gz:87055596ec7c40270e3366f4ab5a0e55):(darcs:http://src.seereason.com/haskell-bytestring-trie-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-convertible-text",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/convertible-text/0.3.0.6/convertible-text-0.3.0.6.tar.gz:8335ddd1155bcdb63be82e53c97b342d):(darcs:http://src.seereason.com/haskell-convertible-text-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-data-object",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-object/0.3.1.5/data-object-0.3.1.5.tar.gz:9580477eadd2e2bfdace7228c0a24cda):(darcs:http://src.seereason.com/haskell-data-object-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-data-object-json",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-object-json/0.3.1.4/data-object-json-0.3.1.4.tar.gz:8077d5a05b18e711d5a5bb4f3c2d1881):(darcs:http://src.seereason.com/haskell-data-object-json-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-http-enumerator",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.2.0.3/http-enumerator-0.2.0.3.tar.gz:390e100d837eaccc20a09d523bb64da6):(darcs:http://src.seereason.com/haskell-http-enumerator-debian)",
+           relaxInfo = []}
+    , Target{sourcePackageName = "haskell-authenticate",
+           sourceSpec =
+             "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.7.2.1/authenticate-0.7.2.1.tar.gz:bca5e4d2fdcf1a20df32ebb25a1d5ec3):(darcs:http://src.seereason.com/haskell-authenticate-debian)",
+           relaxInfo = []}
     ]
         where happstackRepo = "http://patch-tag.com/r/mae/happstack" -- "file:///home/dsf/darcs/happstack" -- "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
 
