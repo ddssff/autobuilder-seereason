@@ -257,7 +257,7 @@ ghc6CoreTargets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bitset/1.0/bitset-1.0.tar.gz:466eb0fd8a92b16e705a219f0d01a54c):(darcs:http://src.seereason.com/haskell-bitset-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-funsat"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/funsat/0.6.1/funsat-0.6.1.tar.gz:6ec67ada1b478c85cbcd8e47f11b5643):(darcs:http://src.seereason.com/openidtemp/haskell-funsat-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/funsat/0.6.1/funsat-0.6.1.tar.gz:6ec67ada1b478c85cbcd8e47f11b5643):(darcs:http://src.seereason.com/haskell-funsat-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-incremental-sat-solver"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/incremental-sat-solver/0.1.7/incremental-sat-solver-0.1.7.tar.gz:3d5f3d0bff3a92f4207631fbe9b32c36):(darcs:http://src.seereason.com/haskell-incremental-sat-solver-debian)"
@@ -313,7 +313,7 @@ The target below pulls in a more recent version for mtl-2 support.
 -}
     , Target{sourcePackageName = "haskell-cgi",
              sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz:4092efaf00ac329b9771879f57a95323):(darcs:http://src.seereason.com/openidtemp/haskell-cgi-debian)",
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz:4092efaf00ac329b9771879f57a95323):(darcs:http://src.seereason.com/haskell-cgi-debian)",
              relaxInfo = []}
     , Target { sourcePackageName = "haskell-mime"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-mime"
@@ -331,7 +331,7 @@ ghc6Targets release =
              , relaxInfo = [] }
     , Target{sourcePackageName = "haskell-applicative-extras",
              sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/applicative-extras/0.1.6/applicative-extras-0.1.6.tar.gz:9eee19f8bc916fe7b28345eb599c28fa):(darcs:http://src.seereason.com/openidtemp/applicative-extras-debian)",
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/applicative-extras/0.1.6/applicative-extras-0.1.6.tar.gz:9eee19f8bc916fe7b28345eb599c28fa):(darcs:http://src.seereason.com/applicative-extras-debian)",
              relaxInfo = []}
 {-      
     , Target { sourcePackageName = "haskell-formlets"
@@ -340,7 +340,7 @@ ghc6Targets release =
 -}
     , Target{sourcePackageName = "haskell-formlets",
              sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/formlets/0.7.3/formlets-0.7.3.tar.gz:456acbc7eb4922dd991e50611f917d77):(darcs:http://src.seereason.com/openidtemp/haskell-formlets-debian)",
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/formlets/0.7.3/formlets-0.7.3.tar.gz:456acbc7eb4922dd991e50611f917d77):(darcs:http://src.seereason.com/haskell-formlets-debian)",
              relaxInfo = []}
 {-  , Target { sourcePackageName = "haskell-binary"
              , sourceSpec = "quilt:(apt:sid:haskell-binary):(darcs:http://src.seereason.com/haskell-binary-quilt)"
@@ -349,26 +349,26 @@ ghc6Targets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/MaybeT/0.1.2/MaybeT-0.1.2.tar.gz:9864a3f34151217004f8c968fda5b427):(darcs:http://src.seereason.com/MaybeT-debian)"
              , relaxInfo = [] }               
     , Target { sourcePackageName = "haskell-happstack-util"
-             , sourceSpec = "deb-dir:(cd:happstack-util:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/openidtemp/happstack-util-debian)"
+             , sourceSpec = "deb-dir:(cd:happstack-util:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-util-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-data"
-             , sourceSpec = "deb-dir:(cd:happstack-data:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/openidtemp/happstack-data-debian)"
+             , sourceSpec = "deb-dir:(cd:happstack-data:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-data-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-ixset"
-             , sourceSpec = "deb-dir:(cd:happstack-ixset:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/openidtemp/happstack-ixset-debian)"
+             , sourceSpec = "deb-dir:(cd:happstack-ixset:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-ixset-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-server"
-             , sourceSpec = "deb-dir:(cd:happstack-server:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/openidtemp/happstack-server-debian)"
+             , sourceSpec = "deb-dir:(cd:happstack-server:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-server-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-state"
-             , sourceSpec = "deb-dir:(cd:happstack-state:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/openidtemp/happstack-state-debian)"
+             , sourceSpec = "deb-dir:(cd:happstack-state:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-state-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack"
-             , sourceSpec = "deb-dir:(cd:happstack:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/openidtemp/happstack-debian)"
+             , sourceSpec = "deb-dir:(cd:happstack:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-debian)"
              , relaxInfo = [] }
     -- Depends on pandoc
     , Target { sourcePackageName = "haskell-happstack-extra"
-             , sourceSpec = "darcs:http://src.seereason.com/openidtemp/happstack-extra"
+             , sourceSpec = "darcs:http://src.seereason.com/happstack-extra"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-revision"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-revision"
@@ -383,7 +383,7 @@ ghc6Targets release =
              , sourceSpec = "quilt:(apt:sid:haskell-texmath):(darcs:http://src.seereason.com/haskell-texmath-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-facebook"
-             , sourceSpec = "darcs:http://src.seereason.com/openidtemp/happstack-facebook"
+             , sourceSpec = "darcs:http://src.seereason.com/happstack-facebook"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-help"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-help"
@@ -570,7 +570,7 @@ ghc6Targets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/permutation/0.4.1/permutation-0.4.1.tar.gz:a9e0b6231d7a085719188406f59ab1aa):(darcs:http://src.seereason.com/haskell-permutation)"
              , relaxInfo = [] }
     , Target { sourcePackageName="haskell-data-accessor"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-accessor/0.2.1.2/data-accessor-0.2.1.2.tar.gz:8eabca77e2202dc0735b45ca7dea9175):(darcs:http://src.seereason.com/openidtemp/haskell-data-accessor-debian)"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-accessor/0.2.1.2/data-accessor-0.2.1.2.tar.gz:8eabca77e2202dc0735b45ca7dea9175):(darcs:http://src.seereason.com/haskell-data-accessor-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName="haskell-data-accessor-template"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-accessor-template/0.2.1.2/data-accessor-template-0.2.1.2.tar.gz:0feb98757d889bbc9fbbe0379cdb3c05):(darcs:http://src.seereason.com/haskell-data-accessor-template-debian)"
@@ -656,7 +656,7 @@ ghc6Targets release =
              , sourceSpec="quilt:(apt:sid:haskell-uniplate):(darcs:http://src.seereason.com/haskell-uniplate-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName="haskell-derive"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/derive/2.3.0.2/derive-2.3.0.2.tar.gz:7f8ad00e17c1cea5ad103b1481dfc250):(darcs:http://src.seereason.com/openidtemp/haskell-derive-debian)"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/derive/2.3.0.2/derive-2.3.0.2.tar.gz:7f8ad00e17c1cea5ad103b1481dfc250):(darcs:http://src.seereason.com/haskell-derive-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName="haskell-test-framework"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/test-framework/0.3.2/test-framework-0.3.2.tar.gz:9db832bd496d3f525e2fdf45b63cb0de):(darcs:http://src.seereason.com/haskell-test-framework-debian)"
@@ -851,7 +851,7 @@ ghc6Targets release =
              relaxInfo = []}
     , Target{sourcePackageName = "haskell-monadcatchio-mtl",
              sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/MonadCatchIO-mtl/0.3.0.1/MonadCatchIO-mtl-0.3.0.1.tar.gz:53f56fece758b15eff950f9c9796fbdf):(darcs:http://src.seereason.com/openidtemp/haskell-monadcatchio-mtl-debian)",
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/MonadCatchIO-mtl/0.3.0.1/MonadCatchIO-mtl-0.3.0.1.tar.gz:53f56fece758b15eff950f9c9796fbdf):(darcs:http://src.seereason.com/haskell-monadcatchio-mtl-debian)",
              relaxInfo = []}
     ]
         where happstackRepo = "http://patch-tag.com/r/mae/happstack" -- "file:///home/dsf/darcs/happstack" -- "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
@@ -949,7 +949,7 @@ privateTargets =
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/generic-formlets3"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-ontology"
-             , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/openidtemp/haskell-ontology"
+             , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/haskell-ontology"
              , relaxInfo = [] }
 {-  , Target { sourcePackageName = "haskell-happstack-examples"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/happstack-examples"
@@ -973,8 +973,7 @@ privateTargets =
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/SeniorityMatters"
              , relaxInfo = [] } -}
     , Target { sourcePackageName = "haskell-seereason"
-             , sourceSpec = "darcs:" ++ localDarcsPrivate ++ "/haskell-seereason"
+             , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/haskell-seereason"
              , relaxInfo = [] }
     ]
     where privateDarcsURI = "ssh://upload@deb.seereason.com/srv/darcs"
-          localDarcsPrivate = "ssh://upload@deb.seereason.com/srv/darcs/openidtemp"
