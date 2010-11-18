@@ -973,7 +973,8 @@ privateTargets =
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/SeniorityMatters"
              , relaxInfo = [] } -}
     , Target { sourcePackageName = "haskell-seereason"
-             , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/haskell-seereason"
+             , sourceSpec = "darcs:" ++ localDarcsPrivate ++ "/haskell-seereason"
              , relaxInfo = [] }
     ]
     where privateDarcsURI = "ssh://upload@deb.seereason.com/srv/darcs"
+          localDarcsPrivate = "ssh://upload@deb.seereason.com/srv/darcs/openidtemp"
