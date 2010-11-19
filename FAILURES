@@ -1,0 +1,59 @@
+Some targets failed to build:
+
+jqueryui
+
+    Needs proc mounted during build dependency install
+
+haskell-criterion
+
+    Missing dependencies: libghc6-statistics-doc, libghc6-statistics-prof
+
+haskell-hashed-storage
+
+    Could not deduce (Functor m)
+      from the context (Monad m, MonadError e m)
+      arising from the superclasses of an instance declaration
+                   at Storage/Hashed/Monad.hs:147:10-58
+
+haskell-derive
+
+    Overlapping instances for Applicative
+                                (WriterT
+                                   (S.Set RequiredInstance)
+                                   transformers-0.2.2.0:Data.Functor.Identity.Identity)
+      arising from a use of `<*>'
+                   at Data/Derive/Internal/Traversal.hs:(149,46)-(151,116)
+haskell-chart
+
+    Missing dependencies: libghc6-colour-doc, libghc6-cairo-{prof,doc} libghc6-gtk-{prof,doc}
+
+haskell-guarded-rewriting
+
+    Missing dependencies: libghc6-instant-generics-doc (<< 1.0, >= 0.1)
+
+haskell-help (haskell-archive, haskell-debian-mirror)
+
+    Temporary failure resolving 'deb.seereason.com'
+
+haskell-test-framework (haskell-geni, haskell-test-framework-hunit, haskell-test-framework-quickcheck)
+
+    Temporary failure resolving 'deb.seereason.com'
+
+haskell-imagegallery (haskell-blog)
+
+    Happstack/Gallery/Extra.hs:16:12: Not in scope: `withRequest'
+    Happstack/Gallery/Extra.hs:21:23:
+      Ambiguous occurrence `body'
+      It could refer to either `Happstack.Server.body', imported from Happstack.Server at Happstack/Gallery/Extra.hs:7:1-23
+                          or `Text.XHtml.body', imported from Text.XHtml at Happstack/Gallery/Extra.hs:8:1-17
+
+haskell-appraisal
+    Appraisal/Account/Extra.hs:154:27:
+     Could not deduce (Functor m)
+      from the context (MonadIO m, SessionData sess)
+      arising from a use of `<$>'
+                   at Appraisal/Account/Extra.hs:154:27-107
+    Appraisal/Account/Extra.hs:166:23:
+     Could not deduce (Functor m)
+      from the context (MonadIO m, SessionData sess)
+      arising from a use of `<$>' at Appraisal/Account/Extra.hs:166:23-90
