@@ -823,7 +823,7 @@ ghc6Targets release =
            relaxInfo = []}
     , Target{sourcePackageName = "haskell-http-enumerator",
              sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.2.1/http-enumerator-0.2.1.tar.gz:6d69c45865f474e90d6a7ec633652659):(darcs:http://src.seereason.com/haskell-http-enumerator-debian)",
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.2.1.2/http-enumerator-0.2.1.2.tar.gz:4c625c69884c14a4b3e3a4d35f6fc0ce):(darcs:http://src.seereason.com/haskell-http-enumerator-debian)",
              relaxInfo = []}
     , Target{sourcePackageName = "haskell-authenticate",
            sourceSpec =
