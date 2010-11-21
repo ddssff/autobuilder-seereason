@@ -837,10 +837,6 @@ ghc6Targets release =
              sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/asn1-data/0.2.2/asn1-data-0.2.2.tar.gz:dfc412f4b1cff907e924dd65ce70c399):(darcs:http://src.seereason.com/haskell-asn1-data-debian)",
              relaxInfo = []}
-    , Target{sourcePackageName = "haskell-monads-tf",
-             sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/monads-tf/0.1.0.0/monads-tf-0.1.0.0.tar.gz:43556db072908a812dbe1f1252c46a68):(darcs:http://src.seereason.com/haskell-monads-tf-debian)",
-             relaxInfo = []}
     , Target{sourcePackageName = "haskell-attempt",
              sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/attempt/0.3.0/attempt-0.3.0.tar.gz:051be218858e24ffd53b4e435f024611):(darcs:http://src.seereason.com/haskell-attempt-debian)",
