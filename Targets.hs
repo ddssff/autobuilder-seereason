@@ -603,10 +603,16 @@ commonTargets release =
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tagged/0.1.1/tagged-0.1.1.tar.gz:ed9ddfd0d12dfaf136788da8e32c08f8):(darcs:http://src.seereason.com/haskell-tagged-debian)"
              , relaxInfo = [] }
+    , Target{sourcePackageName = "haskell-tagsoup"
+            , sourceSpec =
+                "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tagsoup/0.11.1/tagsoup-0.11.1.tar.gz:5469453026dff80cd515ba163c41ecfa):(darcs:http://src.seereason.com/haskell-tagsoup-debian)"
+            , relaxInfo = [] }
+{-
     , Target { sourcePackageName = "haskell-tagsoup"
              , sourceSpec = "apt:sid:haskell-tagsoup"
              , relaxInfo = []
              }
+-}
     , Target { sourcePackageName = "haskell-terminfo"
              , sourceSpec = "apt:sid:haskell-terminfo"
              , relaxInfo = [] }
