@@ -278,7 +278,7 @@ commonTargets release =
              , sourceSpec = "darcs:http://src.seereason.com/decimal"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-deepseq"
-             , sourceSpec = "apt:sid:haskell-deepseq"
+             , sourceSpec = "quilt:(apt:sid:haskell-deepseq):(darcs:http://src.seereason.com/haskell-deepseq-quilt)"
              , relaxInfo = [] }
     -- Required by the darcs 2.3.0-3 in sid.
     , Target { sourcePackageName = "haskell-devscripts"
