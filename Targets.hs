@@ -33,7 +33,7 @@ happstackRepo = "http://patch-tag.com/r/mae/happstack"
 -- happstackRepo = "http://src.seereason.com/happstack-upstream"
 -- happstackRepo = "http://src.seereason.com/happstack"
 
--- |The targets which were modified for ghc7.  Once the changes are
+-- |The targets with ghc7 specific fixes.  Once these fixes are
 -- resolved, or the older compiler is retired, move these back into
 -- the common list.
 ghcTargets release version =
@@ -286,6 +286,10 @@ commonTargets release =
     , Target { sourcePackageName = "haskell-digest"
              , sourceSpec = "apt:sid:haskell-digest"
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digest/0.0.0.5/digest-0.0.0.5.tar.gz:ba60cc9d1ad6d0795ad84390976699d1):(darcs:http://src.seereason.com/debian/haskell-digest-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-digestive-functors"
+             , sourceSpec =
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digestive-functors/0.0.1/digestive-functors-0.0.1.tar.gz:3880201b54bfba3d182ca58e364e80d1):(darcs:http://src.seereason.com/haskell-digestive-functors-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-dlist"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/dlist/0.5/dlist-0.5.tar.gz:54f6c18ff689b7ef54e3229dc4a94107):(darcs:http://src.seereason.com/haskell-dlist-debian)"
