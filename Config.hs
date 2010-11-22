@@ -146,10 +146,10 @@ myGoals = []
 -- access the Debian and Ubuntu repositories.  The anl.gov values here
 -- probably won't work outside the United States.
 --
---myDebianMirrorHost = "mirror.anl.gov"
---myUbuntuMirrorHost = "mirror.anl.gov"
-myDebianMirrorHost = "mirrors.usc.edu/pub/linux/distributions"
-myUbuntuMirrorHost = "mirrors.usc.edu/pub/linux/distributions"
+myDebianMirrorHost = "mirror.anl.gov"
+myUbuntuMirrorHost = "mirror.anl.gov"
+--myDebianMirrorHost = "mirrors.usc.edu/pub/linux/distributions"
+--myUbuntuMirrorHost = "mirrors.usc.edu/pub/linux/distributions"
 
 -- If true, upload the packages after a successful build
 --
