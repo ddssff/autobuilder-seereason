@@ -14,7 +14,7 @@ data GHCVersion = GHC6 | GHC7
 -- |If you change this to GHC7 you may want to create a special
 -- @~/.autobuilder@ to receive the results.  Do not upload the build
 -- result to the server yet!
-compiler = GHC7 -- GHC6
+compiler = GHC6
 
 publicTargets release =
     case compiler of
