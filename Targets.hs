@@ -701,6 +701,9 @@ commonTargets release =
              , sourceSpec = "apt:sid:haskell-xml"
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/xml/1.3.4/xml-1.3.4.tar.gz:841c3a36a0bfb2e46f88448ecc227cad):(darcs:http://src.seereason.com/debian/haskell-xml-debian)"
              , relaxInfo = [] }
+    , Target{ sourcePackageName = "haskell-xss-sanitize"
+            , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/xss-sanitize/0.2.3/xss-sanitize-0.2.3.tar.gz:5a78bd1060e378ad003b0835b8de530e):(darcs:http://src.seereason.com/haskell-xss-sanitize-debian)"
+            , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-zlib-bindings"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/zlib-bindings/0.0.0/zlib-bindings-0.0.0.tar.gz:ced9be9c31f54ad848f58babf1ca2190):(darcs:http://src.seereason.com/haskell-zlib-bindings-debian)"
