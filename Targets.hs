@@ -849,6 +849,10 @@ ghc6Targets release =
              sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/MonadCatchIO-mtl/0.3.0.1/MonadCatchIO-mtl-0.3.0.1.tar.gz:53f56fece758b15eff950f9c9796fbdf):(darcs:http://src.seereason.com/haskell-monadcatchio-mtl-debian)",
              relaxInfo = []}
+    , Target{sourcePackageName = "haskell-digestive-functors",
+             sourceSpec =
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digestive-functors/0.0.1/digestive-functors-0.0.1.tar.gz:3880201b54bfba3d182ca58e364e80d1):(darcs:http://src.seereason.com/haskell-digestive-functors-debian)",
+             relaxInfo = []}
     ]
         where happstackRepo = "http://patch-tag.com/r/mae/happstack" -- "file:///home/dsf/darcs/happstack" -- "http://src.seereason.com/happstack-upstream" -- "http://src.seereason.com/happstack"
 
