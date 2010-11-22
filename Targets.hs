@@ -11,12 +11,6 @@ publicTargets release =
     commonTargets release ++	-- The compiler and our packaging tools
     ghc6Targets release		-- Haskell targets
 
--- Only use this for targets when we know that karmic is trumping sid.
--- Put an =version on the apt target so we notice when it changes.
-aptSidOrKarmic release name version =
-    "apt:" ++ (if karmic then "karmic" else "sid") ++ ":" ++ name ++ (if karmic then "=" ++ version else "")
-    where karmic = isPrefixOf "karmic-" release
-
 -- This module defines how we obtain and assemble the source code for
 -- the packages we want to build.
 
@@ -666,7 +660,7 @@ commonTargets release =
              , relaxInfo = []
              }
     , Target { sourcePackageName = "haskell-terminfo"
-             , sourceSpec = aptSidOrKarmic release "haskell-terminfo" "0.3.0.2-2build1"
+             , sourceSpec = "apt:sid:haskell-terminfo"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-test-framework-hunit"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/test-framework-hunit/0.2.6/test-framework-hunit-0.2.6.tar.gz:7c012ca5426d743b3cf35e231d6f6072):(darcs:http://src.seereason.com/haskell-test-framework-hunit-debian)"
