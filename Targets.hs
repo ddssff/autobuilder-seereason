@@ -287,6 +287,9 @@ commonTargets release =
              , sourceSpec = "apt:sid:haskell-digest"
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digest/0.0.0.5/digest-0.0.0.5.tar.gz:ba60cc9d1ad6d0795ad84390976699d1):(darcs:http://src.seereason.com/debian/haskell-digest-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-digestive-functors-hsp"
+             , sourceSpec = "darcs:http://src.seereason.com/digestive-functors-hsp"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-digestive-functors"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digestive-functors/0.0.1/digestive-functors-0.0.1.tar.gz:3880201b54bfba3d182ca58e364e80d1):(darcs:http://src.seereason.com/haskell-digestive-functors-debian)"
