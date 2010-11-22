@@ -111,6 +111,10 @@ ghcTargets release version =
     , Target { sourcePackageName = "haskell-sha"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/SHA/1.4.1.3/SHA-1.4.1.3.tar.gz:6adbe05bfaf4416c1a7e1ac5e999811e):(darcs:" ++ ghcDarcs ++ "/haskell-sha-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-transformers"
+             , sourceSpec =
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/transformers/0.2.2.0/transformers-0.2.2.0.tar.gz:3470ac66116900cd1ba84d3744474e49):(darcs:" ++ ghcDarcs ++ "/haskell-transformers-debian)"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-web-routes-hsp"
              , sourceSpec = "cd:web-routes-hsp:darcs:" ++ ghcDarcs ++ "/web-routes"
              , relaxInfo = [] }
@@ -641,10 +645,6 @@ commonTargets release =
     , Target { sourcePackageName = "haskell-tls"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tls/0.3/tls-0.3.tar.gz:066b7615916243ad4b834e362dce8542):(darcs:http://src.seereason.com/haskell-tls-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-transformers"
-             , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/transformers/0.2.2.0/transformers-0.2.2.0.tar.gz:3470ac66116900cd1ba84d3744474e49):(darcs:http://src.seereason.com/haskell-transformers-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-unicode-names"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/unicode-names/3.2.0.0/unicode-names-3.2.0.0.tar.gz:0441831bb24b7e891668df5db96395c5):(darcs:http://src.seereason.com/haskell-unicode-names-debian)"
