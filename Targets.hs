@@ -1,3 +1,5 @@
+-- |This module defines how we obtain and assemble the source code for
+-- the packages we want to build.
 module Targets 
     ( publicTargets
     , privateTargets
@@ -7,14 +9,22 @@ import Data.List (isPrefixOf)
 import qualified Data.Set as Set
 import Debian.AutoBuilder.ParamClass (Target(..))
 
+data GHCVersion = GHC6 | GHC7
+
+-- |If you change this to GHC7 you may want to create a special
+-- @~/.autobuilder@ to receive the results.  Do not upload the build
+-- result to the server yet!
+compiler = GHC7 -- GHC6
+
 publicTargets release =
-    commonTargets release ++	-- The compiler and our packaging tools
-    ghc6Targets release		-- Haskell targets
+    case compiler of
+      GHC6 -> commonTargets release ++ ghcTargets release GHC6
+      -- For ghc7 we build public and private targets into the same
+      -- repo.  This is because the private targets need the public targets
+      -- as build dependencies, but we are not ready to upload the public
+      -- targets to the repository.
+      GHC7 -> commonTargets release ++ ghcTargets release GHC7 ++ privateTargets
 
--- This module defines how we obtain and assemble the source code for
--- the packages we want to build.
-
-ghc7Darcs = "http://src.seereason.com/ghc7"
 ghc7DarcsPrivate = "upload@src.seereason.com:/srv/darcs/ghc7"
 localDarcs = "file:///home/ghc7/darcs"
 
@@ -23,158 +33,89 @@ happstackRepo = "http://patch-tag.com/r/mae/happstack"
 -- happstackRepo = "http://src.seereason.com/happstack-upstream"
 -- happstackRepo = "http://src.seereason.com/happstack"
 
-ghc7Targets release =
-    [ -- Yes, I still call it ghc6, but it is ghc7.
-      Target { sourcePackageName = "ghc6"
-             , sourceSpec = "proc:deb-dir:(uri:http://new-www.haskell.org/ghc/dist/7.0.1-rc2/ghc-7.0.0.20101028-src.tar.bz2:9fff827fb0f3b203e5e11754483207e7):(darcs:" ++ ghc7Darcs ++ "/ghc7-debian)"
+-- |The targets which were modified for ghc7.  Once the changes are
+-- resolved, or the older compiler is retired, move these back into
+-- the common list.
+ghcTargets release version =
+    let ghcDarcs = case version of
+                     GHC6 -> "http://src.seereason.com"
+                     GHC7 -> "http://src.seereason.com/ghc7" in
+    [ Target { -- Yes, if you build ghc7 the resulting compiler package name is ghc6.
+               -- There are packaging changes required to change it to ghc7 that I'm
+               -- going to leave to the upstream guys.
+               sourcePackageName = "ghc6"
+             , sourceSpec =
+                 case version of
+                   GHC6 -> "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20100615-src.tar.bz2:a0759eea8475572db96eb4df8e10ab8f):(darcs:http://src.seereason.com/ghc614-debian-sid)"
+                   GHC7 -> "proc:deb-dir:(uri:http://new-www.haskell.org/ghc/dist/7.0.1-rc2/ghc-7.0.0.20101028-src.tar.bz2:9fff827fb0f3b203e5e11754483207e7):(darcs:" ++ ghcDarcs ++ "/ghc7-debian)"
              , relaxInfo = ["ghc6"
                            ,"happy"
                            ,"alex"
                            ,"xsltproc"
                            ,"haskell-devscripts"
                            ,"debhelper"
-                           ,"quilt"] }
+                           ,"quilt"]
+             }
     , Target { sourcePackageName = "haskell-cryptocipher"
              , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cryptocipher/0.2/cryptocipher-0.2.tar.gz:1b2353ae52c16463d841c8c76fea2b47):(darcs:" ++ ghc7Darcs ++ "/haskell-cryptocipher-debian)"
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cryptocipher/0.2/cryptocipher-0.2.tar.gz:1b2353ae52c16463d841c8c76fea2b47):(darcs:" ++ ghcDarcs ++ "/haskell-cryptocipher-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-data-accessor"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-accessor/0.2.1.2/data-accessor-0.2.1.2.tar.gz:8eabca77e2202dc0735b45ca7dea9175):(darcs:" ++ ghc7Darcs ++ "/haskell-data-accessor-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-accessor/0.2.1.2/data-accessor-0.2.1.2.tar.gz:8eabca77e2202dc0735b45ca7dea9175):(darcs:" ++ ghcDarcs ++ "/haskell-data-accessor-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-data-accessor-template"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-accessor-template/0.2.1.2/data-accessor-template-0.2.1.2.tar.gz:0feb98757d889bbc9fbbe0379cdb3c05):(darcs:" ++ ghc7Darcs ++ "/haskell-data-accessor-template-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-accessor-template/0.2.1.2/data-accessor-template-0.2.1.2.tar.gz:0feb98757d889bbc9fbbe0379cdb3c05):(darcs:" ++ ghcDarcs ++ "/haskell-data-accessor-template-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-dataenc"
-             , sourceSpec = "quilt:(apt:sid:haskell-dataenc):(darcs:" ++ ghc7Darcs ++ "/haskell-dataenc-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-dataenc):(darcs:" ++ ghcDarcs ++ "/haskell-dataenc-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-derive"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/derive/2.3.0.2/derive-2.3.0.2.tar.gz:7f8ad00e17c1cea5ad103b1481dfc250):(darcs:" ++ ghc7Darcs ++ "/haskell-derive-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/derive/2.3.0.2/derive-2.3.0.2.tar.gz:7f8ad00e17c1cea5ad103b1481dfc250):(darcs:" ++ ghcDarcs ++ "/haskell-derive-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-extra"
-             , sourceSpec = "darcs:" ++ ghc7Darcs ++ "/haskell-extra"
+             , sourceSpec = "darcs:" ++ ghcDarcs ++ "/haskell-extra"
              , relaxInfo = ["cabal-debian"] }
     , Target { sourcePackageName = "haskell-frisby"
-             , sourceSpec = "deb-dir:(cd:frisby:darcs:http://src.seereason.com/frisby):(darcs:" ++ ghc7Darcs ++ "/frisby-debian)"
+             , sourceSpec = "deb-dir:(cd:frisby:darcs:http://src.seereason.com/frisby):(darcs:" ++ ghcDarcs ++ "/frisby-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-funsat"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/funsat/0.6.1/funsat-0.6.1.tar.gz:6ec67ada1b478c85cbcd8e47f11b5643):(darcs:" ++ ghc7Darcs ++ "/haskell-funsat-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/funsat/0.6.1/funsat-0.6.1.tar.gz:6ec67ada1b478c85cbcd8e47f11b5643):(darcs:" ++ ghcDarcs ++ "/haskell-funsat-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-gnuplot"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/gnuplot/0.3/gnuplot-0.3.tar.gz:4432a0e0b44ca7ceae8e6737cf0258fa):(darcs:" ++ ghc7Darcs ++ "/haskell-gnuplot-debian)"
-            , relaxInfo = [] }
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/gnuplot/0.3/gnuplot-0.3.tar.gz:4432a0e0b44ca7ceae8e6737cf0258fa):(darcs:" ++ ghcDarcs ++ "/haskell-gnuplot-debian)"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack"
-             , sourceSpec = "deb-dir:(cd:happstack:darcs:" ++ happstackRepo ++ "):(darcs:" ++ ghc7Darcs ++ "/happstack-debian)"
+             , sourceSpec = "deb-dir:(cd:happstack:darcs:" ++ happstackRepo ++ "):(darcs:" ++ ghcDarcs ++ "/happstack-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hjscript"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HJScript/0.5.0/HJScript-0.5.0.tar.gz:3eb1e67900e41c9e93528ae15ca27028):(darcs:" ++ ghc7Darcs ++ "/hjscript-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HJScript/0.5.0/HJScript-0.5.0.tar.gz:3eb1e67900e41c9e93528ae15ca27028):(darcs:" ++ ghcDarcs ++ "/hjscript-debian)"
              , relaxInfo = [] }      
     , Target { sourcePackageName = "haskell-hpdf"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HPDF/1.4.2/HPDF-1.4.2.tar.gz:ba364b6e397413931b65a56e63b19bb4):(darcs:" ++ ghc7Darcs ++ "/haskell-hpdf-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HPDF/1.4.2/HPDF-1.4.2.tar.gz:ba364b6e397413931b65a56e63b19bb4):(darcs:" ++ ghcDarcs ++ "/haskell-hpdf-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsp"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsp/0.5.2/hsp-0.5.2.tar.gz:180aa5981d831206c5e36ae0b02f241a):(darcs:" ++ ghc7Darcs ++ "/hsp-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsp/0.5.2/hsp-0.5.2.tar.gz:180aa5981d831206c5e36ae0b02f241a):(darcs:" ++ ghcDarcs ++ "/hsp-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsx"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsx/0.6.1/hsx-0.6.1.tar.gz:e31dec6cdc587f6fe0e3f5117b418ac1):(darcs:" ++ ghc7Darcs ++ "/hsx-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsx/0.6.1/hsx-0.6.1.tar.gz:e31dec6cdc587f6fe0e3f5117b418ac1):(darcs:" ++ ghcDarcs ++ "/hsx-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-network"
-             , sourceSpec = "quilt:(apt:sid:haskell-network):(darcs:" ++ ghc7Darcs ++ "/haskell-network-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-network):(darcs:" ++ ghcDarcs ++ "/haskell-network-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-openid"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/openid/0.1.4.6/openid-0.1.4.6.tar.gz:1f121c2d0dc9508203db37e476586de8):(darcs:" ++ ghc7Darcs ++ "/haskell-openid-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/openid/0.1.4.6/openid-0.1.4.6.tar.gz:1f121c2d0dc9508203db37e476586de8):(darcs:" ++ ghcDarcs ++ "/haskell-openid-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-quickcheck"
-             , sourceSpec = "quilt:(apt:sid:haskell-quickcheck):(darcs:" ++ ghc7Darcs ++ "/haskell-quickcheck-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-quickcheck):(darcs:" ++ ghcDarcs ++ "/haskell-quickcheck-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-sha"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/SHA/1.4.1.3/SHA-1.4.1.3.tar.gz:6adbe05bfaf4416c1a7e1ac5e999811e):(darcs:" ++ ghc7Darcs ++ "/haskell-sha-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/SHA/1.4.1.3/SHA-1.4.1.3.tar.gz:6adbe05bfaf4416c1a7e1ac5e999811e):(darcs:" ++ ghcDarcs ++ "/haskell-sha-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-web-routes-hsp"
-             , sourceSpec = "cd:web-routes-hsp:darcs:" ++ ghc7Darcs ++ "/web-routes"
+             , sourceSpec = "cd:web-routes-hsp:darcs:" ++ ghcDarcs ++ "/web-routes"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-zip-archive"
-             , sourceSpec = "quilt:(apt:sid:haskell-zip-archive):(darcs:" ++ ghc7Darcs ++ "/haskell-zip-archive-quilt)"
-             , relaxInfo = [] }
-    ]
-
-ghc6Targets release =
-    [ Target { sourcePackageName = "ghc6"
-             -- , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20091231-src.tar.bz2:a5a9a4ac9fd2823ed0a1928a9a89498c):(darcs:http://src.seereason.com/ghc614-debian-sid)"
-             -- , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20100519-src.tar.bz2:357b885bfd3c3583dad830c72f0639a5):(darcs:http://src.seereason.com/ghc614-debian-sid)"
-             , sourceSpec = "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20100615-src.tar.bz2:a0759eea8475572db96eb4df8e10ab8f):(darcs:http://src.seereason.com/ghc614-debian-sid)"
-             -- We needed this to build ghc 6.12 into jaunty and
-             -- karmic to bootstrap 6.13-20100519, there are build
-             -- problems trying to bootstrap it with 6.13-20091231.  ,
-             -- sourceSpec = "apt:sid:ghc6"
-             , relaxInfo = ["ghc6"
-                           ,"happy"
-                           ,"alex"
-                           ,"xsltproc"
-                           ,"haskell-devscripts"
-                           ,"debhelper"
-                           ,"quilt"] }
-    , Target { sourcePackageName = "haskell-cryptocipher"
-             , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cryptocipher/0.2/cryptocipher-0.2.tar.gz:1b2353ae52c16463d841c8c76fea2b47):(darcs:http://src.seereason.com/haskell-cryptocipher-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName="haskell-data-accessor"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-accessor/0.2.1.2/data-accessor-0.2.1.2.tar.gz:8eabca77e2202dc0735b45ca7dea9175):(darcs:http://src.seereason.com/haskell-data-accessor-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName="haskell-data-accessor-template"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/data-accessor-template/0.2.1.2/data-accessor-template-0.2.1.2.tar.gz:0feb98757d889bbc9fbbe0379cdb3c05):(darcs:http://src.seereason.com/haskell-data-accessor-template-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-dataenc"
-             , sourceSpec = "quilt:(apt:sid:haskell-dataenc):(darcs:http://src.seereason.com/haskell-dataenc-quilt)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName="haskell-derive"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/derive/2.3.0.2/derive-2.3.0.2.tar.gz:7f8ad00e17c1cea5ad103b1481dfc250):(darcs:http://src.seereason.com/haskell-derive-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-extra"
-             , sourceSpec = "darcs:http://src.seereason.com/haskell-extra"
-             , relaxInfo = ["cabal-debian"] }
-    , Target { sourcePackageName = "haskell-frisby"
-             , sourceSpec = "deb-dir:(cd:frisby:darcs:http://repetae.net/repos/frisby):(darcs:http://src.seereason.com/debian/frisby-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-funsat"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/funsat/0.6.1/funsat-0.6.1.tar.gz:6ec67ada1b478c85cbcd8e47f11b5643):(darcs:http://src.seereason.com/haskell-funsat-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-gnuplot"
-            , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/gnuplot/0.3/gnuplot-0.3.tar.gz:4432a0e0b44ca7ceae8e6737cf0258fa):(darcs:http://src.seereason.com/debian/haskell-gnuplot-debian)"
-            , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-happstack"
-             , sourceSpec = "deb-dir:(cd:happstack:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hjscript"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HJScript/0.5.0/HJScript-0.5.0.tar.gz:3eb1e67900e41c9e93528ae15ca27028):(darcs:http://src.seereason.com/hjscript-debian)"
-             , relaxInfo = [] }      
-    , Target { sourcePackageName = "haskell-hpdf"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HPDF/1.4.2/HPDF-1.4.2.tar.gz:ba364b6e397413931b65a56e63b19bb4):(darcs:http://src.seereason.com/haskell-hpdf-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hsp"
-          -- , sourceSpec = "deb-dir:(darcs:http://src.seereason.com/hsp):(darcs:http://src.seereason.com/hsp-debian)"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsp/0.5.2/hsp-0.5.2.tar.gz:180aa5981d831206c5e36ae0b02f241a):(darcs:http://src.seereason.com/hsp-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hsx"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsx/0.6.1/hsx-0.6.1.tar.gz:e31dec6cdc587f6fe0e3f5117b418ac1):(darcs:http://src.seereason.com/hsx-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-network"
-             , sourceSpec = "quilt:(apt:sid:haskell-network):(darcs:http://src.seereason.com/haskell-network-quilt)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-quickcheck"
-             , sourceSpec = "quilt:(apt:sid:haskell-quickcheck):(darcs:http://src.seereason.com/haskell-quickcheck-quilt)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-openid"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/openid/0.1.4.6/openid-0.1.4.6.tar.gz:1f121c2d0dc9508203db37e476586de8):(darcs:http://src.seereason.com/haskell-openid-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-sha"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/SHA/1.4.1.3/SHA-1.4.1.3.tar.gz:6adbe05bfaf4416c1a7e1ac5e999811e):(darcs:http://src.seereason.com/haskell-sha-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-web-routes-hsp"
-             , sourceSpec = "cd:web-routes-hsp:darcs:http://src.seereason.com/web-routes"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-zip-archive"
-             -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/zip-archive/0.1.1.5/zip-archive-0.1.1.5.tar.gz:4bedb05a838eac253343df1f882366e3):(darcs:http://src.seereason.com/haskell-zip-archive-debian)"
-             , sourceSpec = "quilt:(apt:sid:haskell-zip-archive):(darcs:http://src.seereason.com/haskell-zip-archive-quilt)"
+             , sourceSpec = "quilt:(apt:sid:haskell-zip-archive):(darcs:" ++ ghcDarcs ++ "/haskell-zip-archive-quilt)"
              , relaxInfo = [] }
     ]
 
