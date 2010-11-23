@@ -36,8 +36,8 @@ happstackRepo = "http://patch-tag.com/r/mae/happstack"
 -- |The targets with ghc7 specific fixes.  Once these fixes are
 -- resolved, or the older compiler is retired, move these back into
 -- the common list.
-ghcTargets release version =
-    let ghcDarcs = case version of
+ghcTargets release compiler =
+    let ghcDarcs = case compiler of
                      GHC6 -> "http://src.seereason.com"
                      GHC7 -> "http://src.seereason.com/ghc7" in
     [ Target { -- Yes, if you build ghc7 the resulting compiler package name is ghc6.
@@ -45,7 +45,7 @@ ghcTargets release version =
                -- going to leave to the upstream guys.
                sourcePackageName = "ghc6"
              , sourceSpec =
-                 case version of
+                 case compiler of
                    GHC6 -> "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20100615-src.tar.bz2:a0759eea8475572db96eb4df8e10ab8f):(darcs:http://src.seereason.com/ghc614-debian-sid)"
                    GHC7 -> "proc:deb-dir:(uri:http://new-www.haskell.org/ghc/dist/7.0.1-rc2/ghc-7.0.0.20101028-src.tar.bz2:9fff827fb0f3b203e5e11754483207e7):(darcs:" ++ ghcDarcs ++ "/ghc7-debian)"
              , relaxInfo = ["ghc6"
@@ -111,6 +111,9 @@ ghcTargets release version =
     , Target { sourcePackageName = "haskell-sha"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/SHA/1.4.1.3/SHA-1.4.1.3.tar.gz:6adbe05bfaf4416c1a7e1ac5e999811e):(darcs:" ++ ghcDarcs ++ "/haskell-sha-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-syb-with-class"
+             , sourceSpec = "quilt:(apt:sid:haskell-syb-with-class):(darcs:" ++ ghcDarcs ++ "/haskell-syb-with-class-quilt)"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-transformers"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/transformers/0.2.2.0/transformers-0.2.2.0.tar.gz:3470ac66116900cd1ba84d3744474e49):(darcs:" ++ ghcDarcs ++ "/haskell-transformers-debian)"
@@ -121,7 +124,12 @@ ghcTargets release version =
     , Target { sourcePackageName = "haskell-zip-archive"
              , sourceSpec = "quilt:(apt:sid:haskell-zip-archive):(darcs:" ++ ghcDarcs ++ "/haskell-zip-archive-quilt)"
              , relaxInfo = [] }
-    ]
+    ] ++
+    case compiler of
+      GHC6 -> [ Target { sourcePackageName = "haskell-time-extras"
+                       , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/time-extras/1.1.4/time-extras-1.1.4.tar.gz:2c7cfb8e661c74d9c13e0ca6a425876f):(darcs:http://src.seereason.com/haskell-time-extras-debian)"
+                       , relaxInfo = [] } ]
+      GHC7 -> []
 
 commonTargets release =
     [ 
@@ -183,6 +191,9 @@ commonTargets release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-bimap"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bimap/0.2.4/bimap-0.2.4.tar.gz:f6b79bff5741e709f1536df411aab53d):(darcs:http://src.seereason.com/haskell-bimap-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-binary"
+             , sourceSpec = "quilt:(apt:sid:haskell-binary):(darcs:http://src.seereason.com/haskell-binary-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-bitset"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bitset/1.0/bitset-1.0.tar.gz:466eb0fd8a92b16e705a219f0d01a54c):(darcs:http://src.seereason.com/haskell-bitset-debian)"
@@ -513,7 +524,7 @@ commonTargets release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.5.1.1/pandoc-1.5.1.1.tar.gz:bfccc042ae0cf0901bbca1f87748f969):(darcs:http://src.seereason.com/haskell-pandoc-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-parallel"
-             , sourceSpec = "apt:sid:haskell-parallel"
+             , sourceSpec = "quilt:(apt:sid:haskell-parallel):(darcs:http://src.seereason.com/haskell-parallel-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-parsec2"
              , sourceSpec = "apt:sid:haskell-parsec2"
@@ -600,9 +611,6 @@ commonTargets release =
     , Target { sourcePackageName = "haskell-syb-with-class-instances-text"
              , sourceSpec = "deb-dir:(darcs:http://src.seereason.com/syb-with-class-instances-text):(darcs:http://src.seereason.com/syb-with-class-instances-text-debian)"
              , relaxInfo = [] }      
-    , Target { sourcePackageName = "haskell-syb-with-class"
-             , sourceSpec = "quilt:(apt:sid:haskell-syb-with-class):(darcs:http://src.seereason.com/haskell-syb-with-class-quilt)"
-             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-tagged"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tagged/0.1.1/tagged-0.1.1.tar.gz:ed9ddfd0d12dfaf136788da8e32c08f8):(darcs:http://src.seereason.com/haskell-tagged-debian)"
@@ -638,9 +646,6 @@ commonTargets release =
     , Target { sourcePackageName = "haskell-text"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/text/0.10.0.0/text-0.10.0.0.tar.gz:453cf09bae3d6aafdd8a4510ddff1fa5):(darcs:http://src.seereason.com/haskell-text-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-time-extras"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/time-extras/1.1.4/time-extras-1.1.4.tar.gz:2c7cfb8e661c74d9c13e0ca6a425876f):(darcs:http://src.seereason.com/haskell-time-extras-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-tls"
              , sourceSpec =
