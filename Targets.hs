@@ -105,6 +105,12 @@ ghcTargets release compiler =
     , Target { sourcePackageName = "haskell-openid"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/openid/0.1.4.6/openid-0.1.4.6.tar.gz:1f121c2d0dc9508203db37e476586de8):(darcs:" ++ ghcDarcs ++ "/haskell-openid-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-parallel"
+             , sourceSpec = 
+                 case compiler of
+                   GHC6 -> "apt:sid:haskell-parallel"
+                   GHC7 -> "quilt:(apt:sid:haskell-parallel):(darcs:http://src.seereason.com/haskell-parallel-quilt)"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-quickcheck"
              , sourceSpec = "quilt:(apt:sid:haskell-quickcheck):(darcs:" ++ ghcDarcs ++ "/haskell-quickcheck-quilt)"
              , relaxInfo = [] }
@@ -522,9 +528,6 @@ commonTargets release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-pandoc"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.5.1.1/pandoc-1.5.1.1.tar.gz:bfccc042ae0cf0901bbca1f87748f969):(darcs:http://src.seereason.com/haskell-pandoc-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-parallel"
-             , sourceSpec = "quilt:(apt:sid:haskell-parallel):(darcs:http://src.seereason.com/haskell-parallel-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-parsec2"
              , sourceSpec = "apt:sid:haskell-parsec2"
