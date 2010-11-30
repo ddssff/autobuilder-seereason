@@ -28,10 +28,9 @@ publicTargets release =
 ghc7DarcsPrivate = "upload@src.seereason.com:/srv/darcs/ghc7"
 localDarcs = "file:///home/ghc7/darcs"
 
-happstackRepo = "http://patch-tag.com/r/mae/happstack"
--- happstackRepo = "file:///home/dsf/darcs/happstack"
--- happstackRepo = "http://src.seereason.com/happstack-upstream"
--- happstackRepo = "http://src.seereason.com/happstack"
+--happstackRepo = "http://patch-tag.com/r/mae/happstack"
+happstackRepo = "http://src.seereason.com/happstack"
+localHappstackRepo = "file:///home/dsf/darcs/happstack"
 
 -- |The targets with ghc7 specific fixes.  Once these fixes are
 -- resolved, or the older compiler is retired, move these back into
