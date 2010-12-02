@@ -31,7 +31,7 @@ module Config
     ) where
 
 -- Import the symbols we use below.
-import Data.List (isSuffixOf, isPrefixOf, find)
+import Data.List (isSuffixOf, isPrefixOf)
 import Data.Maybe
 import qualified Data.Set as Set
 import Debian.AutoBuilder.ParamClass (Target(..))
@@ -362,27 +362,3 @@ releaseRepoName name
                [suffix] -> releaseRepoName (dropSuffix suffix name)
                [] -> error $ "Release name has unknown suffix: " ++ show name
                suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
-
--- A predicate to decide whether this targets should be built for this
--- release.  Currently, the answer is always yes, as none of the
--- releases includes a haskell compiler new enough to build all of our
--- packages.
-_releaseTargetNamePred p _target =
-    case baseReleaseName p of
-      "lucid" -> True -- Set.member (sourcePackageName target) lucidTargetNames
-      "karmic" -> True 
-      "jaunty" -> True 
-      "lenny" -> True 
-      x -> error ("releaseTargetNamePred: Unexpected release name " ++ show x)
-    where
-      baseReleaseName name =
-          case find (`isSuffixOf` name) myReleaseSuffixes of
-            Just suf -> baseReleaseName (take (length name - length suf) name)
-            Nothing -> name
-
-{-
-releaseTargetNamePred "karmic" targets = True
-releaseTargetNamePred "jaunty" targets = True
-releaseTargetNamePred "lenny" targets = True
-releaseTargetNamePred _ targets = False
--}
