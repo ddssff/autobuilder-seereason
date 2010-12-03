@@ -16,36 +16,37 @@ data GHCVersion = GHC6 | GHC7
 -- result to the server yet!
 compiler = GHC6
 
-publicTargets release =
-    commonTargets release ++
+publicTargets home release =
+    commonTargets home release ++
     case compiler of
       GHC6 -> []
       -- For ghc7 we build public and private targets into the same
       -- repo.  This is because the private targets need the public targets
       -- as build dependencies, but we are not ready to upload the public
       -- targets to the repository.
-      GHC7 -> privateTargets
+      GHC7 -> privateTargets home
 
-localDarcs = "file:///home/ghc7/darcs"
+repo = "http://src.seereason.com"
+privateDarcsURI = "ssh://upload@deb.seereason.com/srv/darcs"
+localRepo home = "file://" ++ home ++ "/darcs"
 
---happstackRepo = "http://patch-tag.com/r/mae/happstack"
-happstackRepo = "http://src.seereason.com/happstack"
-localHappstackRepo = "file:///home/dsf/darcs/happstack"
+happstackRepo = "http://patch-tag.com/r/mae/happstack"
+--happstackRepo = repo ++ "/happstack"
+localHappstackRepo home = localRepo home ++ "/happstack"
 
 -- |The targets with ghc7 specific fixes use this repo.  Once these
 -- fixes are resolved, or the older compiler is retired, move these
 -- back into the common repo.
 ghcDarcs =
     case compiler of
-      GHC6 -> "http://src.seereason.com"
-      GHC7 -> "http://src.seereason.com/ghc7"
-privateDarcsURI = "ssh://upload@deb.seereason.com/srv/darcs"
+      GHC6 -> repo
+      GHC7 -> repo ++ "/ghc7"
 ghcDarcsPrivate =
     case compiler of
       GHC6 -> privateDarcsURI
       GHC7 -> "upload@src.seereason.com:/srv/darcs/ghc7"
 
-commonTargets release =
+commonTargets home release =
     [ Target { sourcePackageName = "autobuilder"
              , sourceSpec = "darcs:http://src.seereason.com/autobuilder"
              , relaxInfo = [] }
@@ -778,7 +779,7 @@ commonTargets release =
 --             , sourceSpec = "deb-dir:(uri:http://www.cs.miami.edu/~tptp/TPTP/Distribution/TPTP-v4.1.0.tgz:3cffa92b1def9b8b9865f65d0b775b86):(darcs:http://src.seereason.com/tptp-debian)"
 --             , relaxInfo = [] }
 
-privateTargets =
+privateTargets home =
     [ Target { sourcePackageName = "haskell-filecache"
              , sourceSpec = "darcs:" ++ privateDarcsURI ++ "/haskell-filecache"
              , relaxInfo = [] }

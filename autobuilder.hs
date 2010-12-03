@@ -99,21 +99,22 @@ main = getArgs >>= getParams >>= M.main
 --            -> [ReleaseName {relName = "lucid-seereason"}]
 getParams :: [String] -> IO [ParamRec]
 getParams args =
+    getEnv "HOME" >>= \ home ->
     hPutStrLn stderr "Autobuilder starting..." >>
-    doParams (getOpt' Permute optSpecs args)
+    doParams home (getOpt' Permute optSpecs args)
     where
       -- Turn the parameter information into a list of parameter records
       -- containing all the info needed during runtime.
-      doParams ::  ([ParamRec -> ParamRec], [String], [String], [String]) -> IO [ParamRec]
-      doParams (fns, dists, [], []) = 
-          maybeDoHelp . map finalizeTargets . map (\ p -> foldr ($) p fns) . map params $ dists
+      doParams ::  FilePath -> ([ParamRec -> ParamRec], [String], [String], [String]) -> IO [ParamRec]
+      doParams home (fns, dists, [], []) = 
+          maybeDoHelp . map (finalizeTargets home) . map (\ p -> foldr ($) p fns) . map params $ dists
       doParams (_, _, badopts, errs) =
           hPutStr stderr (usage ("Bad options: " ++ show badopts ++
                            ", errors: " ++ show errs) optSpecs) >> return []
       -- Finalize the target list in a parameter set, turning the targets field into a value
       -- with the constructor TargetSet.
-      finalizeTargets :: ParamRec -> ParamRec
-      finalizeTargets p =
+      finalizeTargets :: FilePath -> ParamRec -> ParamRec
+      finalizeTargets home p =
           p { targets =
                   case targets p of
                     TargetSet xs -> TargetSet xs
@@ -125,7 +126,7 @@ getParams args =
                            [] -> error $ "Package name found: " ++ s
                            xs -> error $ "Multiple packages named " ++ s ++ " found: " ++ show xs
             -- FIXME - make myTargets a set
-            allTargets = myTargets (const True) (relName (buildRelease p))
+            allTargets = myTargets home (const True) (relName (buildRelease p))
       -- Look for the doHelp flag in the parameter set, if given output
       -- help message and exit.  If --help was given it will appear in all
       -- the parameter sets, so we only examine the first.

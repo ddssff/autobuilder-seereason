@@ -127,13 +127,13 @@ myVerbosity = 0 :: Int
 -- actually build are chosen from these.  The myBuildRelease argument
 -- comes from the autobuilder argument list.
 --
-myTargets :: (Target -> Bool) -> String -> Set.Set Target
-myTargets p myBuildRelease =
+myTargets :: FilePath -> (Target -> Bool) -> String -> Set.Set Target
+myTargets home p myBuildRelease =
     Set.fromList $
     filter p $
            if isPrivateRelease myBuildRelease
-           then privateTargets
-           else publicTargets myBuildRelease
+           then privateTargets home
+           else publicTargets home myBuildRelease
 
 -- If you are not interested in building everything, put one or more
 -- source package names you want to build in this list.  Only these
