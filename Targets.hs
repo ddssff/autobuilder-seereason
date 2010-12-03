@@ -9,30 +9,16 @@ import Data.List (isPrefixOf)
 import qualified Data.Set as Set
 import Debian.AutoBuilder.ParamClass (Target(..))
 
+repo = "http://src.seereason.com"
+privateRepo = "ssh://upload@deb.seereason.com/srv/darcs"
+localRepo home = "file://" ++ home ++ "/darcs"
+
 data GHCVersion = GHC6 | GHC7
 
 -- |If you change this to GHC7 you may want to create a special
 -- @~/.autobuilder@ to receive the results.  Do not upload the build
 -- result to the server yet!
 compiler = GHC6
-
-publicTargets home release =
-    commonTargets home release ++
-    case compiler of
-      GHC6 -> []
-      -- For ghc7 we build public and private targets into the same
-      -- repo.  This is because the private targets need the public targets
-      -- as build dependencies, but we are not ready to upload the public
-      -- targets to the repository.
-      GHC7 -> privateTargets home
-
-repo = "http://src.seereason.com"
-privateRepo = "ssh://upload@deb.seereason.com/srv/darcs"
-localRepo home = "file://" ++ home ++ "/darcs"
-
-happstackRepo = "http://patch-tag.com/r/mae/happstack"
---happstackRepo = repo ++ "/happstack"
-localHappstackRepo home = localRepo home ++ "/happstack"
 
 -- |The targets with ghc7 specific fixes use this repo.  Once these
 -- fixes are resolved, or the older compiler is retired, move these
@@ -45,6 +31,20 @@ ghcPrivateRepo =
     case compiler of
       GHC6 -> privateRepo
       GHC7 -> "upload@src.seereason.com:/srv/darcs/ghc7"
+
+publicTargets home release =
+    commonTargets home release ++
+    case compiler of
+      GHC6 -> []
+      -- Build the private targets with the public ones for TESTING
+      -- ONLY!  This is because the private targets need the public
+      -- targets as build dependencies, but we are not ready to upload
+      -- the public targets to the repository.
+      GHC7 -> privateTargets home
+
+happstackRepo = "http://patch-tag.com/r/mae/happstack"
+--happstackRepo = repo ++ "/happstack"
+localHappstackRepo home = localRepo home ++ "/happstack"
 
 commonTargets home release =
     [ Target { sourcePackageName = "autobuilder"
