@@ -23,7 +23,7 @@ import Debian.Repo.Cache (SourcesChangedAction(SourcesChangedError))
 import Debian.URI
 import Debian.Version (parseDebianVersion)
 import System.Console.GetOpt
-import System.Environment (getArgs)
+import System.Environment (getArgs, getEnv)
 import System.Exit
 import System.IO (hPutStr, hPutStrLn, hFlush, stderr)
 
@@ -101,16 +101,16 @@ getParams :: [String] -> IO [ParamRec]
 getParams args =
     getEnv "HOME" >>= \ home ->
     hPutStrLn stderr "Autobuilder starting..." >>
-    doParams home (getOpt' Permute optSpecs args)
+    doParams home (getOpt' Permute (optSpecs home) args)
     where
       -- Turn the parameter information into a list of parameter records
       -- containing all the info needed during runtime.
       doParams ::  FilePath -> ([ParamRec -> ParamRec], [String], [String], [String]) -> IO [ParamRec]
       doParams home (fns, dists, [], []) = 
-          maybeDoHelp . map (finalizeTargets home) . map (\ p -> foldr ($) p fns) . map params $ dists
-      doParams (_, _, badopts, errs) =
+          maybeDoHelp home . map (finalizeTargets home) . map (\ p -> foldr ($) p fns) . map params $ dists
+      doParams home (_, _, badopts, errs) =
           hPutStr stderr (usage ("Bad options: " ++ show badopts ++
-                           ", errors: " ++ show errs) optSpecs) >> return []
+                           ", errors: " ++ show errs) (optSpecs home)) >> return []
       -- Finalize the target list in a parameter set, turning the targets field into a value
       -- with the constructor TargetSet.
       finalizeTargets :: FilePath -> ParamRec -> ParamRec
@@ -130,15 +130,15 @@ getParams args =
       -- Look for the doHelp flag in the parameter set, if given output
       -- help message and exit.  If --help was given it will appear in all
       -- the parameter sets, so we only examine the first.
-      maybeDoHelp xs@(x : _)
-          | doHelp x = hPutStr stderr (usage "Usage: " optSpecs) >>
+      maybeDoHelp home xs@(x : _)
+          | doHelp x = hPutStr stderr (usage "Usage: " (optSpecs home)) >>
                        exitWith ExitSuccess >> return xs
           | True = return xs
-      maybeDoHelp [] = return []
+      maybeDoHelp _ [] = return []
 
 -- |Each option is defined as a function transforming the parameter record.
-optSpecs :: [OptDescr (ParamRec -> ParamRec)]
-optSpecs =
+optSpecs :: FilePath -> [OptDescr (ParamRec -> ParamRec)]
+optSpecs home =
     [ Option ['v'] ["verbose"] (NoArg (\ p -> p {verbosity = verbosity p + 1}))
       "Increase progress reporting.  Can be used multiple times."
     , Option ['q'] ["quiet"] (NoArg (\ p -> p {verbosity = verbosity p - 1}))
@@ -174,7 +174,7 @@ optSpecs =
     , Option [] ["target"] (ReqArg (\ s p -> p {targets = addTarget s p}) "PACKAGE")
       "Add a target to the target list."
     , Option [] ["goal"] (ReqArg (\ s p -> p { goals = goals p ++ [s]
-                                             , targets = TargetSet (myTargets (const True) (relName (buildRelease p)))}) "PACKAGE")
+                                             , targets = TargetSet (myTargets home (const True) (relName (buildRelease p)))}) "PACKAGE")
       (unlines [ "If one or more goal package names are given the autobuilder"
                , "will only build these packages and any of their build dependencies"
                , "which are in the package list.  If no goals are specified, all the"
