@@ -115,3 +115,4 @@ lastdash s =
         where
           dashes = elemIndices dash s
           dash = '-'
+
