@@ -822,8 +822,8 @@ privateTargets home =
     , Target { sourcePackageName = "haskell-seereason"
              , sourceSpec = "darcs:" ++ ghcPrivateRepo ++ "/haskell-seereason"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-storyprompts"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/storyprompts"
+    , Target { sourcePackageName = "haskell-creativeprompts"
+             , sourceSpec = "darcs:" ++ privateRepo ++ "/creativeprompts"
              , relaxInfo = [] }
     ]
 
