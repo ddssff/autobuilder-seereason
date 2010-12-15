@@ -689,7 +689,7 @@ commonTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-vector"
              , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/vector/0.7/vector-0.7.tar.gz:6c95eeebe4e4c42ac27ce8589e554397):(darcs:http://src.seereason.com/haskell-vector-debian)"
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/vector/0.7.0.1/vector-0.7.0.1.tar.gz:b0cfeab898384d960f0ad7393e5f955c):(darcs:http://src.seereason.com/haskell-vector-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-web-routes-happstack"
              , sourceSpec = "cd:web-routes-happstack:darcs:http://src.seereason.com/web-routes"
