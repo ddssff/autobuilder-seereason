@@ -62,7 +62,7 @@ commonTargets home release =
                    GHC6 -> "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20100615-src.tar.bz2:a0759eea8475572db96eb4df8e10ab8f):(darcs:http://src.seereason.com/ghc614-debian-sid)"
                 -- GHC7 -> "proc:deb-dir:(uri:http://www.haskell.org/ghc/dist/7.0.1-rc2/ghc-7.0.0.20101028-src.tar.bz2:9fff827fb0f3b203e5e11754483207e7):(darcs:" ++ ghcRepo ++ "/ghc7-debian)"
                 -- GHC7 -> "proc:deb-dir:(uri:http://www.haskell.org/ghc/dist/7.0.1/ghc-7.0.1-src.tar.bz2:91814d1de48c661fd79ffa810026ed19):(darcs:" ++ ghcRepo ++ "/ghc7-debian)"
-                   GHC7 -> "proc:deb-dir:(uri:http://www.haskell.org/ghc/dist/stable/dist/ghc-7.0.1.20101209-src.tar.bz2:61b26e5d1db7010e308ff67c182a04a7):(darcs:" ++ localRepo home ++ "/ghc7-debian)"
+                   GHC7 -> "proc:deb-dir:(uri:http://www.haskell.org/ghc/dist/stable/dist/ghc-7.0.1.20101213-src.tar.bz2:ad5418af7b79870716f192ba8589d188):(darcs:" ++ localRepo home ++ "/ghc7-debian)"
              , relaxInfo = ["ghc6"
                            ,"happy"
                            ,"alex"
