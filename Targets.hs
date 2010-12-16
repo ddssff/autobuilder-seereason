@@ -62,7 +62,7 @@ commonTargets home release =
                    GHC6 -> "deb-dir:(uri:http://www.haskell.org/ghc/dist/current/dist/ghc-6.13.20100615-src.tar.bz2:a0759eea8475572db96eb4df8e10ab8f):(darcs:http://src.seereason.com/ghc614-debian-sid)"
                 -- GHC7 -> "proc:deb-dir:(uri:http://www.haskell.org/ghc/dist/7.0.1-rc2/ghc-7.0.0.20101028-src.tar.bz2:9fff827fb0f3b203e5e11754483207e7):(darcs:" ++ ghcRepo ++ "/ghc7-debian)"
                 -- GHC7 -> "proc:deb-dir:(uri:http://www.haskell.org/ghc/dist/7.0.1/ghc-7.0.1-src.tar.bz2:91814d1de48c661fd79ffa810026ed19):(darcs:" ++ ghcRepo ++ "/ghc7-debian)"
-                   GHC7 -> "proc:deb-dir:(uri:http://www.haskell.org/ghc/dist/stable/dist/ghc-7.0.1.20101213-src.tar.bz2:ad5418af7b79870716f192ba8589d188):(darcs:" ++ localRepo home ++ "/ghc7-debian)"
+                   GHC7 -> "proc:deb-dir:(uri:http://www.haskell.org/ghc/dist/stable/dist/ghc-7.0.1.20101213-src.tar.bz2:ad5418af7b79870716f192ba8589d188):(darcs:" ++ repo ++ "/ghc7-debian)"
              , relaxInfo = ["ghc6"
                            ,"happy"
                            ,"alex"
@@ -251,7 +251,7 @@ commonTargets home release =
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digest/0.0.0.5/digest-0.0.0.5.tar.gz:ba60cc9d1ad6d0795ad84390976699d1):(darcs:http://src.seereason.com/debian/haskell-digest-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-digestive-functors-hsp"
-             , sourceSpec = "darcs:http://src.seereason.com/digestive-functors-hsp"
+             , sourceSpec = "darcs:" ++ ghcRepo ++ "/digestive-functors-hsp"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-digestive-functors"
              , sourceSpec =
@@ -402,7 +402,8 @@ commonTargets home release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HStringTemplate/0.4.3/HStringTemplate-0.4.3.tar.gz:57139f6695f1c268ed38c34336191636):(darcs:http://src.seereason.com/HStringTemplate-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsx"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsx/0.6.1/hsx-0.6.1.tar.gz:e31dec6cdc587f6fe0e3f5117b418ac1):(darcs:" ++ ghcRepo ++ "/hsx-debian)"
+             -- , sourceSpec = "deb-dir:(darcs:http://code.haskell.org/HSP/hsx):(darcs:" ++ ghcRepo ++ "/hsx-debian)"
+             , sourceSpec = "deb-dir:(darcs:" ++ ghcRepo ++ "/hsx):(darcs:" ++ ghcRepo ++ "/hsx-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsx-xhtml"
              , sourceSpec = "deb-dir:(darcs:http://src.seereason.com/hsx-xhtml):(darcs:http://src.seereason.com/hsx-xhtml-debian)"
@@ -576,7 +577,9 @@ commonTargets home release =
              , sourceSpec="apt:sid:haskell-split"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-src-exts"
-             , sourceSpec = "apt:sid:haskell-src-exts"
+             , sourceSpec = case compiler of
+                              GHC6 -> "apt:sid:haskell-src-exts"
+                              GHC7 -> "quilt:(apt:sid:haskell-src-exts):(darcs:" ++ ghcRepo ++ "/haskell-src-exts-quilt)"
              , relaxInfo = [] }      
     , Target { sourcePackageName = "haskell-statistics"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/statistics/0.3.5/statistics-0.3.5.tar.gz:b351bee9514e26555f170676b3c66139):(darcs:http://src.seereason.com/haskell-statistics-debian)"
@@ -825,7 +828,7 @@ privateTargets home =
              , sourceSpec = "darcs:" ++ ghcPrivateRepo ++ "/haskell-seereason"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-creativeprompts"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/creativeprompts"
+             , sourceSpec = "darcs:" ++ ghcPrivateRepo ++ "/creativeprompts"
              , relaxInfo = [] }
     ]
 
