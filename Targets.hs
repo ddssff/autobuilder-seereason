@@ -18,7 +18,7 @@ data GHCVersion = GHC6 | GHC7
 -- |If you change this to GHC7 you may want to create a special
 -- @~/.autobuilder@ to receive the results.  Do not upload the build
 -- result to the server yet!
-compiler = GHC6
+compiler = GHC7
 
 -- |The targets with ghc7 specific fixes use this repo.  Once these
 -- fixes are resolved, or the older compiler is retired, move these
