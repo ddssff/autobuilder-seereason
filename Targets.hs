@@ -32,21 +32,11 @@ ghcPrivateRepo =
       GHC6 -> privateRepo
       GHC7 -> "upload@src.seereason.com:/srv/darcs/ghc7"
 
-publicTargets home release =
-    commonTargets home release ++
-    case compiler of
-      GHC6 -> []
-      -- Build the private targets with the public ones for TESTING
-      -- ONLY!  This is because the private targets need the public
-      -- targets as build dependencies, but we are not ready to upload
-      -- the public targets to the repository.
-      GHC7 -> privateTargets home
-
 happstackRepo = "http://patch-tag.com/r/mae/happstack"
 --happstackRepo = repo ++ "/happstack"
 localHappstackRepo home = localRepo home ++ "/happstack"
 
-commonTargets home release =
+publicTargets home release =
     [ Target { sourcePackageName = "autobuilder"
              , sourceSpec = "darcs:http://src.seereason.com/autobuilder"
              , relaxInfo = [] }
