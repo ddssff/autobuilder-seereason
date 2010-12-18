@@ -245,7 +245,7 @@ publicTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-digestive-functors"
              , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digestive-functors/0.0.1/digestive-functors-0.0.1.tar.gz:3880201b54bfba3d182ca58e364e80d1):(darcs:http://src.seereason.com/haskell-digestive-functors-debian)"
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digestive-functors/0.0.2.0/digestive-functors-0.0.2.0.tar.gz:efa37704c6906cf5de0c62af4df6ed91):(darcs:http://src.seereason.com/haskell-digestive-functors-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-dlist"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/dlist/0.5/dlist-0.5.tar.gz:54f6c18ff689b7ef54e3229dc4a94107):(darcs:http://src.seereason.com/haskell-dlist-debian)"
