@@ -154,10 +154,6 @@ publicTargets home release =
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz:4092efaf00ac329b9771879f57a95323):(darcs:http://src.seereason.com/haskell-cgi-debian)"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-chart"
-             , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/Chart/0.14/Chart-0.14.tar.gz:a7189cd1483d50e2de7f2b20bb3f97d8):(darcs:http://src.seereason.com/haskell-chart-debian)"
-             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-colour"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/colour/2.3.1/colour-2.3.1.tar.gz:5edced36d4c27393ae1ce1389eeb25ad):(darcs:http://src.seereason.com/haskell-colour-debian)"
              , relaxInfo = [] }
@@ -170,10 +166,6 @@ publicTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cpphs"
              , sourceSpec = "apt:sid:cpphs"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-criterion"
-             , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/criterion/0.5.0.5/criterion-0.5.0.5.tar.gz:dddc5f8dc9dbabbd36b82a8a531b178c):(darcs:http://src.seereason.com/haskell-criterion-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-crypto-api"
              , sourceSpec =
@@ -225,9 +217,6 @@ publicTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-deepseq"
              , sourceSpec = "quilt:(apt:sid:haskell-deepseq):(darcs:http://src.seereason.com/haskell-deepseq-quilt)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-derive"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/derive/2.3.0.2/derive-2.3.0.2.tar.gz:7f8ad00e17c1cea5ad103b1481dfc250):(darcs:" ++ repo ++ "/haskell-derive-debian)"
              , relaxInfo = [] }
     -- Required by the darcs 2.3.0-3 in sid.
     , Target { sourcePackageName = "haskell-devscripts"
@@ -291,12 +280,6 @@ publicTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-gd"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/gd/3000.4.0/gd-3000.4.0.tar.gz:7bc5bb68638b807d592aba433beb3fa5):(darcs:http://src.seereason.com/haskell-gd-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-geni"
-             , sourceSpec="deb-dir:(darcs:http://code.haskell.org/GenI):(darcs:http://src.seereason.com/haskell-geni-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-guarded-rewriting"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/guarded-rewriting/0.1/guarded-rewriting-0.1.tar.gz:0d4a284236a8a3241d93e8aec014198a):(darcs:http://src.seereason.com/haskell-guarded-rewriting-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-gnuplot"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/gnuplot/0.3/gnuplot-0.3.tar.gz:4432a0e0b44ca7ceae8e6737cf0258fa):(darcs:" ++ repo ++ "/haskell-gnuplot-debian)"
@@ -395,9 +378,6 @@ publicTargets home release =
              -- , sourceSpec = "deb-dir:(darcs:http://code.haskell.org/HSP/hsx):(darcs:" ++ ghcRepo ++ "/hsx-debian)"
              , sourceSpec = "deb-dir:(darcs:" ++ ghcRepo ++ "/hsx):(darcs:" ++ ghcRepo ++ "/hsx-debian)"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hsx-xhtml"
-             , sourceSpec = "deb-dir:(darcs:http://src.seereason.com/hsx-xhtml):(darcs:http://src.seereason.com/hsx-xhtml-debian)"
-             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-html-entities"
              , sourceSpec = "darcs:http://src.seereason.com/html-entities"
              , relaxInfo = [] }
@@ -439,9 +419,6 @@ publicTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-logic"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-logic"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-logic-tptp"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/logic-TPTP/0.2.0.1/logic-TPTP-0.2.0.1.tar.gz:5aae329f353bc3aafe2d47162108a02a):(darcs:http://src.seereason.com/logic-TPTP-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-magic"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/magic/1.0.8/magic-1.0.8.tar.gz:e81c493fe185431a5b70d4855ed4b87f):(darcs:http://src.seereason.com/magic-debian)"
@@ -563,17 +540,11 @@ publicTargets home release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/SMTPClient/1.0.2/SMTPClient-1.0.2.tar.gz:59b474179c301a08af45c99f85fca224):(darcs:http://src.seereason.com/debian/haskell-smtpclient-debian)"
              , relaxInfo = [] }
 
-    , Target { sourcePackageName = "haskell-split"
-             , sourceSpec="apt:sid:haskell-split"
-             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-src-exts"
              , sourceSpec = case compiler of
                               GHC6 -> "apt:sid:haskell-src-exts"
                               GHC7 -> "quilt:(apt:sid:haskell-src-exts):(darcs:" ++ repo ++ "/haskell-src-exts-quilt)"
              , relaxInfo = [] }      
-    , Target { sourcePackageName = "haskell-statistics"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/statistics/0.3.5/statistics-0.3.5.tar.gz:b351bee9514e26555f170676b3c66139):(darcs:http://src.seereason.com/haskell-statistics-debian)"
-             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-stb-image"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/stb-image/0.1.1/stb-image-0.1.1.tar.gz:9e8ac1305c60e13d04359744976e402a):(darcs:http://src.seereason.com/stb-image-debian)"
              , relaxInfo = [] }
@@ -670,16 +641,6 @@ publicTargets home release =
     , Target { sourcePackageName = "haskell-utility-ht"
             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/utility-ht/0.0.5.1/utility-ht-0.0.5.1.tar.gz:98dcb042f404378d9071fc6344703386):(darcs:http://src.seereason.com/debian/haskell-utility-ht-debian)"
             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-uvector-algorithms"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/uvector-algorithms/0.2/uvector-algorithms-0.2.tar.gz:5d4088a73dd174fc0ef74b43f91443fa):(darcs:http://src.seereason.com/haskell-uvector-algorithms-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-uvector"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/uvector/0.1.1.0/uvector-0.1.1.0.tar.gz:423e254dbbef0b57687f8adc737f7901):(darcs:http://src.seereason.com/haskell-uvector-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-vector-algorithms"
-             , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/vector-algorithms/0.3.4/vector-algorithms-0.3.4.tar.gz:1457802a2e0babf239c31b45d09d6b40):(darcs:http://src.seereason.com/haskell-vector-algorithms-debian)"
-             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-vector"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/vector/0.7.0.1/vector-0.7.0.1.tar.gz:b0cfeab898384d960f0ad7393e5f955c):(darcs:http://src.seereason.com/haskell-vector-debian)"
@@ -823,7 +784,46 @@ privateTargets home =
     ]
 
 failingTargets release =
-    [ Target { sourcePackageName = "haskell-benchpress"
+    [ Target { sourcePackageName = "haskell-uvector-algorithms"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/uvector-algorithms/0.2/uvector-algorithms-0.2.tar.gz:5d4088a73dd174fc0ef74b43f91443fa):(darcs:http://src.seereason.com/haskell-uvector-algorithms-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-uvector"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/uvector/0.1.1.0/uvector-0.1.1.0.tar.gz:423e254dbbef0b57687f8adc737f7901):(darcs:http://src.seereason.com/haskell-uvector-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-criterion"
+             , sourceSpec =
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/criterion/0.5.0.5/criterion-0.5.0.5.tar.gz:dddc5f8dc9dbabbd36b82a8a531b178c):(darcs:http://src.seereason.com/haskell-criterion-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-statistics"
+             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/statistics/0.3.5/statistics-0.3.5.tar.gz:b351bee9514e26555f170676b3c66139):(darcs:http://src.seereason.com/haskell-statistics-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-derive"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/derive/2.3.0.2/derive-2.3.0.2.tar.gz:7f8ad00e17c1cea5ad103b1481dfc250):(darcs:" ++ repo ++ "/haskell-derive-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-geni"
+             , sourceSpec="deb-dir:(darcs:http://code.haskell.org/GenI):(darcs:http://src.seereason.com/haskell-geni-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-chart"
+             , sourceSpec =
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/Chart/0.14/Chart-0.14.tar.gz:a7189cd1483d50e2de7f2b20bb3f97d8):(darcs:http://src.seereason.com/haskell-chart-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-guarded-rewriting"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/guarded-rewriting/0.1/guarded-rewriting-0.1.tar.gz:0d4a284236a8a3241d93e8aec014198a):(darcs:http://src.seereason.com/haskell-guarded-rewriting-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-logic-tptp"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/logic-TPTP/0.2.0.1/logic-TPTP-0.2.0.1.tar.gz:5aae329f353bc3aafe2d47162108a02a):(darcs:http://src.seereason.com/logic-TPTP-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-hsx-xhtml"
+             , sourceSpec = "deb-dir:(darcs:http://src.seereason.com/hsx-xhtml):(darcs:http://src.seereason.com/hsx-xhtml-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-vector-algorithms"
+             , sourceSpec =
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/vector-algorithms/0.3.4/vector-algorithms-0.3.4.tar.gz:1457802a2e0babf239c31b45d09d6b40):(darcs:http://src.seereason.com/haskell-vector-algorithms-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-split"
+             , sourceSpec="apt:sid:haskell-split"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-benchpress"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/benchpress/0.2.2.3/benchpress-0.2.2.3.tar.gz:48cd691ebfd4dc6c5e6f5201ca545fac):(darcs:http://src.seereason.com/debian/haskell-benchpress-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-shellac"
