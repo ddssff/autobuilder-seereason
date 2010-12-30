@@ -104,8 +104,7 @@ publicTargets home release =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/attoparsec/0.8.1.1/attoparsec-0.8.1.1.tar.gz:8948e39002acb823fae3af9cde6983e8):(darcs:http://src.seereason.com/haskell-attoparsec-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-authenticate"
-             , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.7.2.1/authenticate-0.7.2.1.tar.gz:bca5e4d2fdcf1a20df32ebb25a1d5ec3):(darcs:http://src.seereason.com/haskell-authenticate-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.7.2.3/authenticate-0.7.2.3.tar.gz:e42ed00777cf0466d9c876f7ecaa6db5):(darcs:http://src.seereason.com/haskell-authenticate-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-base64-bytestring"
              , sourceSpec =
