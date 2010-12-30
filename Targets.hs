@@ -166,6 +166,9 @@ publicTargets home release =
     , Target { sourcePackageName = "haskell-cpphs"
              , sourceSpec = "apt:sid:cpphs"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-crypto"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/Crypto/4.2.3/Crypto-4.2.3.tar.gz:28b8556f1ea5b85e0d2a8d0d030c0f69):(darcs:http://src.seereason.com/crypto-debian)"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-crypto-api"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/crypto-api/0.2/crypto-api-0.2.tar.gz:c7b7aa4459549ebc9d0936a7efdde87f):(darcs:http://src.seereason.com/haskell-crypto-api-debian)"
@@ -487,6 +490,10 @@ publicTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-parse-dimacs"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/parse-dimacs/1.2/parse-dimacs-1.2.tar.gz:2a3bd8f6b0dd638567c172ef16e3e191):(darcs:http://src.seereason.com/parse-dimacs-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-pbkdf2"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/PBKDF2/0.3.1/PBKDF2-0.3.1.tar.gz:46a3109e272d296fefea4c1d2015173a):(darcs:http://src.seereason.com/pbkdf2-debian)"
+
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-permutation"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/permutation/0.4.1/permutation-0.4.1.tar.gz:a9e0b6231d7a085719188406f59ab1aa):(darcs:http://src.seereason.com/haskell-permutation)"
