@@ -43,6 +43,9 @@ publicTargets home release =
     , Target { sourcePackageName = "bash-completion"
              , sourceSpec = "apt:sid:bash-completion"
              , relaxInfo = [] }
+--    , Target { sourcePackageName = "darcs"
+--             , sourceSpec = "quilt:(apt:sid:darcs):(darcs:" ++ repo ++ "/darcs-quilt)"
+--             , relaxInfo = [] }
     , Target { -- Yes, if you build ghc7 the resulting compiler package name is ghc6.
                -- There are packaging changes required to change it to ghc7 that I'm
                -- going to leave to the upstream guys.
@@ -320,6 +323,9 @@ publicTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hashed-storage"
              , sourceSpec = "quilt:(apt:sid:haskell-hashed-storage):(darcs:http://src.seereason.com/hashed-storage-quilt)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-haskeline" -- Required by darcs
+             , sourceSpec = "quilt:(apt:sid:haskell-haskeline):(darcs:" ++ localRepo home ++ "/haskell-haskeline-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-haskell-src"
              , sourceSpec = "quilt:(apt:sid:haskell-haskell-src):(darcs:http://src.seereason.com/haskell-haskell-src-quilt)"
@@ -724,15 +730,9 @@ publicTargets home release =
 --    , Target { sourcePackageName = "haskell-formlets"
 --             , sourceSpec = "darcs:http://src.seereason.com/formlets"
 --             , relaxInfo = [] }
---    , Target { sourcePackageName = "haskell-haskeline"
---             , sourceSpec = "quilt:(apt:sid:haskell-haskeline):(darcs:http://src.seereason.com/haskell-haskeline-quilt)"
---             , relaxInfo = [] } -}
 --    , Target { sourcePackageName="haskell-logict"
 --             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/logict/0.4/logict-0.4.tar.gz:39eeb4aa1d7a67b1c4865f01ca417b7d):(darcs:http://src.seereason.com/debian/haskell-logict-debian)"
 --             , relaxInfo = [] }
---  , Target { sourcePackageName = "darcs"
---           , sourceSpec = "quilt:(apt:sid:darcs):(darcs:http://src.seereason.com/darcs-quilt)"
---           , relaxInfo = [] }
 --    , Target { sourcePackageName = "haskell-special-functors"
 --      , sourceSpec =
 --      "deb-dir:(uri:http://hackage.haskell.org/packages/archive/special-functors/1.0/special-functors-1.0.tar.gz:4547f0a1b4146d3621bcc95b11148939):(darcs:http://src.seereason.com/haskell-special-functors-debian)"
