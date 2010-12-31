@@ -764,12 +764,12 @@ privateTargets home =
              , sourceSpec = "darcs:" ++ privateRepo ++ "/happstack-examples"
              , relaxInfo = [] } -}
 
-    , Target { sourcePackageName = "happstack-blog"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/happstack-cms"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "happstack-imagegallery"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/imagegallery"
-             , relaxInfo = [] }
+--    , Target { sourcePackageName = "happstack-blog"
+--             , sourceSpec = "darcs:" ++ privateRepo ++ "/happstack-cms"
+--             , relaxInfo = [] }
+--    , Target { sourcePackageName = "happstack-imagegallery"
+--             , sourceSpec = "darcs:" ++ privateRepo ++ "/imagegallery"
+--             , relaxInfo = [] }
 {-  -- Uses newSession, which was removed from happstack
     , Target { sourcePackageName = "haskell-algebrazam"
              , sourceSpec = "darcs:" ++ privateRepo ++ "/AlgebraZam"
