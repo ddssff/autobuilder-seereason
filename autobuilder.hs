@@ -123,7 +123,7 @@ getParams args =
           where
             findSpec s = case Set.toList (Set.filter (\ t -> sourcePackageName t == s) allTargets) of
                            [x] -> x
-                           [] -> error $ "Package name found: " ++ s
+                           [] -> error $ "Package name not found: " ++ s
                            xs -> error $ "Multiple packages named " ++ s ++ " found: " ++ show xs
             -- FIXME - make myTargets a set
             allTargets = myTargets home (const True) (relName (buildRelease p))
