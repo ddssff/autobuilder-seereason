@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS -Wall -Werror -fno-warn-missing-signatures -fno-warn-unused-imports #-}
 #!/usr/bin/env runhaskell -package=base-3.0.3.0
 -- Currently this will not run as a script even with the line above.
@@ -11,6 +12,7 @@
 -- This may run very slowly.
 
 -- Import the symbols we use below.
+import Control.Exception (SomeException, try)
 import Data.List (isSuffixOf, isPrefixOf, find)
 import Data.Maybe
 import qualified Data.Set as Set
@@ -90,7 +92,8 @@ params myBuildRelease =
     , ifSourcesChanged = SourcesChangedError
     }
 
-main = getArgs >>= getParams >>= M.main
+main = try (getArgs >>= getParams >>= M.main) >>=
+       either (\ (e :: SomeException) -> hPutStrLn stderr ("Exception: " ++ show e)) return
 
 -- |given a list of strings as they would be returned from getArgs,
 -- build the list of ParamRec which defines the build.
