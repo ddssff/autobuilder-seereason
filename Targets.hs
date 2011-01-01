@@ -31,7 +31,7 @@ ghcPrivateRepo =
     case compiler of
       GHC6 -> privateRepo
       -- GHC7 -> "upload@src.seereason.com:/srv/darcs/ghc7"
-      GHC6 -> privateRepo
+      GHC7 -> privateRepo
 
 happstackRepo = "http://patch-tag.com/r/mae/happstack"
 --happstackRepo = repo ++ "/happstack"
