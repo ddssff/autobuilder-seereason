@@ -786,7 +786,10 @@ privateTargets home =
              , sourceSpec = "darcs:" ++ ghcPrivateRepo ++ "/haskell-seereason"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-creativeprompts"
-             , sourceSpec = "darcs:" ++ ghcPrivateRepo ++ "/creativeprompts"
+             , sourceSpec = "darcs:" ++ privateRepo ++ "/creativeprompts"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-creativepromptslib"
+             , sourceSpec = "darcs:" ++ privateRepo ++ "/creativepromptslib"
              , relaxInfo = [] }
     ]
 
