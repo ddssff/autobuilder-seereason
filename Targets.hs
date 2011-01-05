@@ -378,14 +378,15 @@ publicTargets home release =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HsOpenSSL/0.8.0.2/HsOpenSSL-0.8.0.2.tar.gz:5ed5a3b42a73e5cab5ca9c45539d7a7a):(darcs:http://src.seereason.com/haskell-hsopenssl-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsp"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsp/0.5.2/hsp-0.5.2.tar.gz:180aa5981d831206c5e36ae0b02f241a):(darcs:" ++ ghcRepo ++ "/hsp-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsp/0.6.0/hsp-0.6.0.tar.gz:c80d48e6706a4d1d4608f63549069c36):(darcs:" ++ repo ++ "/hsp-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hstringtemplate"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/HStringTemplate/0.4.3/HStringTemplate-0.4.3.tar.gz:57139f6695f1c268ed38c34336191636):(darcs:http://src.seereason.com/HStringTemplate-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsx"
              -- , sourceSpec = "deb-dir:(darcs:http://code.haskell.org/HSP/hsx):(darcs:" ++ ghcRepo ++ "/hsx-debian)"
-             , sourceSpec = "deb-dir:(darcs:" ++ ghcRepo ++ "/hsx):(darcs:" ++ ghcRepo ++ "/hsx-debian)"
+             -- , sourceSpec = "deb-dir:(darcs:" ++ ghcRepo ++ "/hsx):(darcs:" ++ ghcRepo ++ "/hsx-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsx/0.9.0/hsx-0.9.0.tar.gz:d82f4ae3fcc08b4acdb001f7b189c13a):(darcs:" ++ repo ++ "/hsx-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-html-entities"
              , sourceSpec = "darcs:http://src.seereason.com/html-entities"
