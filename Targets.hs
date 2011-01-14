@@ -792,9 +792,6 @@ privateTargets home =
     , Target { sourcePackageName = "haskell-creativeprompts"
              , sourceSpec = "darcs:" ++ privateRepo ++ "/creativeprompts"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-creativepromptslib"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/creativepromptslib"
-             , relaxInfo = [] }
     ]
 
 failingTargets release =
