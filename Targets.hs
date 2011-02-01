@@ -125,11 +125,11 @@ publicTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-blaze-builder"
              , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-builder/0.2.0.1/blaze-builder-0.2.0.1.tar.gz:feb261877ee94b4bf8e312a098917584):(darcs:http://src.seereason.com/haskell-blaze-builder-debian)"
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-builder/0.2.1.4/blaze-builder-0.2.1.4.tar.gz:fefd5b1a72104c835034287ca4591460):(darcs:http://src.seereason.com/haskell-blaze-builder-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-blaze-html"
              , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-html/0.2.4.0/blaze-html-0.2.4.0.tar.gz:0d430fc4bc16c7a0fe6011c6d0581121):(darcs:http://src.seereason.com/haskell-blaze-html-debian)"
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-html/0.4.0.0/blaze-html-0.4.0.0.tar.gz:b09b4382319a463a22e104fe2ea97788):(darcs:http://src.seereason.com/haskell-blaze-html-debian)"
              , relaxInfo = []}
     , Target { sourcePackageName = "haskell-bytestring-nums"
              , sourceSpec =
