@@ -108,7 +108,7 @@ publicTargets home release =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/attoparsec/0.8.1.1/attoparsec-0.8.1.1.tar.gz:8948e39002acb823fae3af9cde6983e8):(darcs:http://src.seereason.com/haskell-attoparsec-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-authenticate"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.7.2.3/authenticate-0.7.2.3.tar.gz:e42ed00777cf0466d9c876f7ecaa6db5):(darcs:http://src.seereason.com/haskell-authenticate-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.8.0/authenticate-0.8.0.tar.gz:42d0ae309ee3acb86bb4b05d4c34854e):(darcs:http://src.seereason.com/haskell-authenticate-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-base64-bytestring"
              , sourceSpec =
@@ -130,7 +130,10 @@ publicTargets home release =
     , Target { sourcePackageName = "haskell-blaze-html"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-html/0.4.0.0/blaze-html-0.4.0.0.tar.gz:b09b4382319a463a22e104fe2ea97788):(darcs:http://src.seereason.com/haskell-blaze-html-debian)"
-             , relaxInfo = []}
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-blaze-builder-enumerator"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-builder-enumerator/0.2.0.1/blaze-builder-enumerator-0.2.0.1.tar.gz:3d21f0bda0606d7639ade71dc5bcc69c):(darcs:http://src.seereason.com/haskell-blaze-builder-enumerator-debian)"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-bytestring-nums"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bytestring-nums/0.3.2/bytestring-nums-0.3.2.tar.gz:f54377b9915a9074d8dc1a07f4f17298):(darcs:http://src.seereason.com/haskell-bytestring-nums-debian)"
@@ -253,7 +256,7 @@ publicTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-enumerator"
              , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/enumerator/0.4.2/enumerator-0.4.2.tar.gz:f50d24a77b57690eab31fa91aa4cd03b):(darcs:http://src.seereason.com/haskell-enumerator-debian)"
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/enumerator/0.4.6/enumerator-0.4.6.tar.gz:660f11852f47c8a93518c0163a9c6397):(darcs:http://src.seereason.com/haskell-enumerator-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-erf"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/erf/1.0.0.0/erf-1.0.0.0.tar.gz:1bdb56838565abfaa7d7ab6e2870ddaa):(darcs:http://src.seereason.com/haskell-erf-debian)"
@@ -663,6 +666,9 @@ publicTargets home release =
     , Target { sourcePackageName = "haskell-vector"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/vector/0.7.0.1/vector-0.7.0.1.tar.gz:b0cfeab898384d960f0ad7393e5f955c):(darcs:http://src.seereason.com/haskell-vector-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-wai"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/wai/0.3.1/wai-0.3.1.tar.gz:5a777cf08713a55818955ec4d0748622):(darcs:http://src.seereason.com/haskell-wai-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-web-routes-happstack"
              , sourceSpec = "cd:web-routes-happstack:darcs:http://src.seereason.com/web-routes"
