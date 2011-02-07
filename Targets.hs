@@ -401,8 +401,7 @@ publicTargets home release =
              , sourceSpec = "apt:sid:haskell-html"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-http-enumerator"
-             , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.2.1.2/http-enumerator-0.2.1.2.tar.gz:4c625c69884c14a4b3e3a4d35f6fc0ce):(darcs:http://src.seereason.com/haskell-http-enumerator-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.3.1/http-enumerator-0.3.1.tar.gz:bb3f0cb522923965bcc43f0db6c08ae3):(darcs:http://src.seereason.com/haskell-http-enumerator-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-http"
              , sourceSpec = "quilt:(apt:sid:haskell-http):(darcs:http://src.seereason.com/haskell-http-quilt)"
