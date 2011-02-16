@@ -621,11 +621,8 @@ publicTargets home release =
              , sourceSpec = "quilt:(apt:sid:haskell-texmath):(darcs:http://src.seereason.com/haskell-texmath-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-text"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/text/0.10.0.0/text-0.10.0.0.tar.gz:453cf09bae3d6aafdd8a4510ddff1fa5):(darcs:http://src.seereason.com/haskell-text-debian)"
-             , relaxInfo = []}
-    , Target { sourcePackageName = "haskell-text"
              , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/text/0.10.0.0/text-0.10.0.0.tar.gz:453cf09bae3d6aafdd8a4510ddff1fa5):(darcs:http://src.seereason.com/haskell-text-debian)"
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/text/0.11.0.5/text-0.11.0.5.tar.gz:516a6813a6b9061fabdc9f0c3bbb1592):(darcs:http://src.seereason.com/haskell-text-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-tls"
              , sourceSpec =
