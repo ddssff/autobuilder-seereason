@@ -129,13 +129,17 @@ publicTargets home release =
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-builder/0.2.1.4/blaze-builder-0.2.1.4.tar.gz:fefd5b1a72104c835034287ca4591460):(darcs:http://src.seereason.com/haskell-blaze-builder-debian)"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-blaze-html"
-             , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-html/0.4.0.0/blaze-html-0.4.0.0.tar.gz:b09b4382319a463a22e104fe2ea97788):(darcs:http://src.seereason.com/haskell-blaze-html-debian)"
-             , relaxInfo = [] }
+    , Target{ sourcePackageName = "haskell-blaze-html"
+            , sourceSpec =
+                "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-html/0.4.1.0/blaze-html-0.4.1.0.tar.gz:6aa538867ee7ede93f0377259766137e):(darcs:http://src.seereason.com/haskell-blaze-html-debian)"
+            , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-blaze-builder-enumerator"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-builder-enumerator/0.2.0.1/blaze-builder-enumerator-0.2.0.1.tar.gz:3d21f0bda0606d7639ade71dc5bcc69c):(darcs:http://src.seereason.com/haskell-blaze-builder-enumerator-debian)"
              , relaxInfo = [] }
+    , Target{ sourcePackageName = "haskell-blaze-from-html"
+            , sourceSpec =
+                "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-from-html/0.3.1.0/blaze-from-html-0.3.1.0.tar.gz:8a20c2b8ead12ddfe65a8fb3cb2b7236):(darcs:http://src.seereason.com/haskell-blaze-from-html-debian)"
+            , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-bytestring-nums"
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bytestring-nums/0.3.2/bytestring-nums-0.3.2.tar.gz:f54377b9915a9074d8dc1a07f4f17298):(darcs:http://src.seereason.com/haskell-bytestring-nums-debian)"
