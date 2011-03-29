@@ -280,7 +280,7 @@ ubuntuSourceLines ubuntuMirrorHost release =
 
 -- The names of the releases that we are able to create build environments for.
 --
-debianReleases = ["experimental", "sid", "squeeze", "lenny", "sarge"]
+debianReleases = ["experimental", "sid", "wheezy", "squeeze", "lenny", "sarge"]
 ubuntuReleases = ["natty", "maverick", "lucid", "karmic", "jaunty", "intrepid", "hardy", "edgy", "feisty", "dapper"]
 
 oldDebianReleases = []
