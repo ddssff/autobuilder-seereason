@@ -10,7 +10,7 @@ import qualified Data.Set as Set
 import Debian.AutoBuilder.ParamClass (Target(..))
 
 repo = "http://src.seereason.com"
-privateRepo = "ssh://upload@deb.seereason.com/srv/darcs"
+privateRepo = "ssh://upload@src.seereason.com/srv/darcs"
 localRepo home = "file://" ++ home ++ "/darcs"
 
 sid = "wheezy"
