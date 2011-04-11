@@ -285,7 +285,7 @@ publicTargets home release =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/failure/0.1.0/failure-0.1.0.tar.gz:7c14ad9271ec9f8f87b4fdbf63291c44):(darcs:http://src.seereason.com/haskell-failure-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-feed"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/feed/0.3.6/feed-0.3.6.tar.gz:0abeeaa7870ef241ccdc5785e608a599):(darcs:http://src.seereason.com/debian/haskell-feed-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/feed/0.3.8/feed-0.3.8.tar.gz:0df089dfc2e2b0726ee5d66286d98f5f):(darcs:http://src.seereason.com/debian/haskell-feed-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-fgl"
              , sourceSpec = "apt:" ++ sid ++ ":haskell-fgl"
