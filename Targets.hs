@@ -356,6 +356,10 @@ publicTargets home release =
              -- , sourceSpec = "deb-dir:(darcs:http://code.haskell.org/HSP/harp):(darcs:http://src.seereason.com/harp-debian)"
              , sourceSpec = "deb-dir:(darcs:http://src.seereason.com/harp):(darcs:http://src.seereason.com/harp-debian)"
              , relaxInfo = [] }
+    , Target{ sourcePackageName = "haskell-acid-state"
+            , sourceSpec =
+                "deb-dir:(uri:http://hackage.haskell.org/packages/archive/acid-state/0.2/acid-state-0.2.tar.gz:92fc38ef38c863de95a9bcf8b5981fe4):(darcs:http://src.seereason.com/haskell-acid-state-debian)"
+            , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hashed-storage"
              , sourceSpec = "quilt:(apt:" ++ sid ++ ":haskell-hashed-storage):(darcs:http://src.seereason.com/hashed-storage-quilt)"
              , relaxInfo = [] }
