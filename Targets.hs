@@ -161,7 +161,7 @@ publicTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-cereal"
              , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cereal/0.3.0.0/cereal-0.3.0.0.tar.gz:872e09f731afa0060ec3ecca1a3319dc):(darcs:http://src.seereason.com/haskell-cereal-debian)"
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cereal/0.3.3.0/cereal-0.3.3.0.tar.gz:70d24b61194880df3ec798ad89a21a7b):(darcs:http://src.seereason.com/haskell-cereal-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-certificate"
              , sourceSpec =
