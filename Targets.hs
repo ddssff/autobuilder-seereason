@@ -357,7 +357,7 @@ publicTargets home release =
              , sourceSpec = "deb-dir:(darcs:http://src.seereason.com/harp):(darcs:http://src.seereason.com/harp-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-safecopy"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/safecopy/0.4.3/safecopy-0.4.3.tar.gz:41ffd82f5382d8ce4372fcbaae158b84):(darcs:http://src.seereason.com/haskell-safecopy-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/safecopy/0.5.1/safecopy-0.5.1.tar.gz:8ad2cc63e1d2bbda9e3111c359b2ce9f):(darcs:http://src.seereason.com/haskell-safecopy-debian)"
              , relaxInfo = []
              }
     , Target{ sourcePackageName = "haskell-acid-state"
