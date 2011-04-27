@@ -512,9 +512,11 @@ publicTargets home release =
     , Target { sourcePackageName = "haskell-network"
              , sourceSpec = "quilt:(apt:" ++ sid ++ ":haskell-network):(darcs:" ++ repo ++ "/haskell-network-quilt)"
              , relaxInfo = [] }
+{-
     , Target { sourcePackageName = "haskell-network-bytestring"
              , sourceSpec="quilt:(apt:" ++ sid ++ ":haskell-network-bytestring):(darcs:http://src.seereason.com/haskell-network-bytestring-quilt)"
              , relaxInfo = [] }      
+-}
     , Target { sourcePackageName = "haskell-openid"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/openid/0.1.4.6/openid-0.1.4.6.tar.gz:1f121c2d0dc9508203db37e476586de8):(darcs:" ++ repo ++ "/haskell-openid-debian)"
              , relaxInfo = [] }
