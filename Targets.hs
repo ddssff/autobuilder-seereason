@@ -361,13 +361,14 @@ publicTargets home release =
              , relaxInfo = []
              }
     , Target{ sourcePackageName = "haskell-acid-state"
-            , sourceSpec =
-                "deb-dir:(uri:http://hackage.haskell.org/packages/archive/acid-state/0.3.3/acid-state-0.3.3.tar.gz:878f4b8f0a145287658317cd359f419a):(darcs:http://src.seereason.com/haskell-acid-state-debian)"
+            , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/acid-state/0.4.1/acid-state-0.4.1.tar.gz:29609cac51c1c4bf8d5e460afd980e87):(darcs:http://src.seereason.com/haskell-acid-state-debian)"
             , relaxInfo = []
             }
+{-
     , Target { sourcePackageName = "haskell-hashed-storage"
              , sourceSpec = "quilt:(apt:" ++ sid ++ ":haskell-hashed-storage):(darcs:http://src.seereason.com/hashed-storage-quilt)"
              , relaxInfo = [] }
+-}
     , Target { sourcePackageName = "haskell-haskeline" -- Required by darcs
              , sourceSpec = "quilt:(apt:" ++ sid ++ ":haskell-haskeline):(darcs:" ++ repo ++ "/haskell-haskeline-quilt)"
              , relaxInfo = [] }
