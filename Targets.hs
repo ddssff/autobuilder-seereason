@@ -254,11 +254,11 @@ publicTargets home release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-digestive-functors"
              , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digestive-functors/0.0.2.1/digestive-functors-0.0.2.1.tar.gz:076d20773b01e0e2651453665b339df7):(darcs:http://src.seereason.com/haskell-digestive-functors-debian)"
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digestive-functors/0.1.0.0/digestive-functors-0.1.0.0.tar.gz:ca2d55dc58ef8b5a19990f944a0300d4):(darcs:http://src.seereason.com/haskell-digestive-functors-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-digestive-functors-happstack"
              , sourceSpec =
-                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digestive-functors-happstack/0.0.2.1/digestive-functors-happstack-0.0.2.1.tar.gz:cfd8e90074e4a26bb4e31aa732b34fea):(darcs:http://src.seereason.com/haskell-digestive-functors-happstack-debian)"
+                 "deb-dir:(uri:http://hackage.haskell.org/packages/archive/digestive-functors-happstack/0.1.0.0/digestive-functors-happstack-0.1.0.0.tar.gz:791d790db823894b49aa5bf3c1710f0e):(darcs:http://src.seereason.com/haskell-digestive-functors-happstack-debian)"
              , relaxInfo = [] }
 
     , Target { sourcePackageName = "haskell-dlist"
