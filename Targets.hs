@@ -717,6 +717,14 @@ publicTargets home release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/parseargs/0.1.3.2/parseargs-0.1.3.2.tar.gz:0b2693002b4dcc45b90005927818b0a5):(darcs:http://src.seereason.com/haskell-parseargs-debian)"
              , relaxInfo = []
              }
+    , Target { sourcePackageName = "haskell-th-lift"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/th-lift/0.5.3/th-lift-0.5.3.tar.gz:eaf567442887bd93c374e78fede6bf50):(darcs:http://src.seereason.com/haskell-th-lift-debian)"
+             , relaxInfo = []
+             }
+    , Target { sourcePackageName = "haskell-haskell-src-meta"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/haskell-src-meta/0.4/haskell-src-meta-0.4.tar.gz:d4ea030e9d95ffb672737024b5df8e02):(darcs:http://src.seereason.com/haskell-haskel-src-meta-debian)"
+             , relaxInfo = []
+             }
     , Target { sourcePackageName = "haskell-web-routes-happstack"
              , sourceSpec = "cd:web-routes-happstack:darcs:http://src.seereason.com/web-routes"
              , relaxInfo = [] }
