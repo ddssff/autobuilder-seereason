@@ -722,7 +722,7 @@ publicTargets home release =
              , relaxInfo = []
              }
     , Target { sourcePackageName = "haskell-haskell-src-meta"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/haskell-src-meta/0.4/haskell-src-meta-0.4.tar.gz:d4ea030e9d95ffb672737024b5df8e02):(darcs:http://src.seereason.com/haskell-haskel-src-meta-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/haskell-src-meta/0.4/haskell-src-meta-0.4.tar.gz:d4ea030e9d95ffb672737024b5df8e02):(darcs:http://src.seereason.com/haskell-haskell-src-meta-debian)"
              , relaxInfo = []
              }
     , Target { sourcePackageName = "haskell-web-routes-happstack"
