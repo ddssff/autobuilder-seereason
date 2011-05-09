@@ -704,6 +704,10 @@ publicTargets home release =
     , Target { sourcePackageName = "haskell-wai"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/wai/0.3.1/wai-0.3.1.tar.gz:5a777cf08713a55818955ec4d0748622):(darcs:http://src.seereason.com/haskell-wai-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-web-encodings"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/web-encodings/0.3.0.6/web-encodings-0.3.0.6.tar.gz:fa8dcbc24b4c4aa8e481107017609d04):(darcs:http://src.seereason.com/haskell-web-encodings-debian)"
+             , relaxInfo = [] }
+
     , Target { sourcePackageName = "haskell-web-routes-happstack"
              , sourceSpec = "cd:web-routes-happstack:darcs:http://src.seereason.com/web-routes"
              , relaxInfo = [] }
