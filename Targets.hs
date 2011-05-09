@@ -726,7 +726,7 @@ publicTargets home release =
              , relaxInfo = []
              }
     , Target { sourcePackageName = "haskell-jmacro"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/jmacro/0.4.6/jmacro-0.4.tar.gz:1c6b3aac6c603d59354b3cd6872a5d81):(darcs:http://src.seereason.com/haskell-jmacro-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/jmacro/0.4.6/jmacro-0.4.6.tar.gz:1c6b3aac6c603d59354b3cd6872a5d81):(darcs:http://src.seereason.com/haskell-jmacro-debian)"
              , relaxInfo = []
              }
     , Target { sourcePackageName = "haskell-web-routes-happstack"
