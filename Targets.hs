@@ -467,7 +467,7 @@ publicTargets home release =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/JSONb/1.0.2/JSONb-1.0.2.tar.gz:b8cd6a453485c9270287fc5396339fab):(darcs:http://src.seereason.com/haskell-jsonb-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-json"
-             , sourceSpec = "apt:" ++ sid ++ ":haskell-json"
+             , sourceSpec = "quilt:(apt:" ++ sid ++ ":haskell-json=0.4.4-1):(darcs:" ++ repo ++ "/haskell-json-quilt)"
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/json/0.4.3/json-0.4.3.tar.gz:1af33c67594f69048b69d4aeafeea03e):(darcs:http://src.seereason.com/json-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-logic"
@@ -592,7 +592,7 @@ publicTargets home release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/RJson/0.3.5/RJson-0.3.5.tar.gz:e69c34b295e067c169a15fc5327a9dd9):(darcs:http://src.seereason.com/RJson-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-safe"
-             , sourceSpec = "quilt:(apt:" ++ sid ++ ":haskell-safe):(darcs:" ++ repo ++ "/haskell-safe-quilt)"
+             , sourceSpec = "quilt:(apt:" ++ sid ++ ":haskell-safe=0.2-2):(darcs:" ++ repo ++ "/haskell-safe-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-sat"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/sat/1.1.1/sat-1.1.1.tar.gz:5a974083ef008b32720b617fe5fb30a2):(darcs:http://src.seereason.com/haskell-sat-debian)"
