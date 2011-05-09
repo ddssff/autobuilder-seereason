@@ -713,7 +713,10 @@ publicTargets home release =
     , Target { sourcePackageName = "haskell-web-encodings"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/web-encodings/0.3.0.6/web-encodings-0.3.0.6.tar.gz:fa8dcbc24b4c4aa8e481107017609d04):(darcs:http://src.seereason.com/haskell-web-encodings-debian)"
              , relaxInfo = [] }
-
+    , Target { sourcePackageName = "haskell-parseargs"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/parseargs/0.1.3.2/parseargs-0.1.3.2.tar.gz:0b2693002b4dcc45b90005927818b0a5):(darcs:http://src.seereason.com/haskell-parseargs-debian)"
+             , relaxInfo = []
+             }
     , Target { sourcePackageName = "haskell-web-routes-happstack"
              , sourceSpec = "cd:web-routes-happstack:darcs:http://src.seereason.com/web-routes"
              , relaxInfo = [] }
