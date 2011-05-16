@@ -49,9 +49,9 @@ publicTargets home release =
     , Target { sourcePackageName = "geneweb"
              , sourceSpec = "apt:sid:geneweb"
              , relaxInfo = [] }
---    , Target { sourcePackageName = "darcs"
---             , sourceSpec = "quilt:(apt:" ++ sid ++ ":darcs):(darcs:" ++ repo ++ "/darcs-quilt)"
---             , relaxInfo = [] }
+    , Target { sourcePackageName = "darcs"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/darcs/2.5.2/darcs-2.5.2.tar.gz:491b6ca01dec245a16112ad2c7e07dc1):(darcs:" ++ localRepo home ++ "/darcs-debian)"
+             , relaxInfo = [] }
     , Target { -- Yes, if you build ghc7 the resulting compiler package name is ghc6.
                -- There are packaging changes required to change it to ghc7 that I'm
                -- going to leave to the upstream guys.
@@ -651,6 +651,9 @@ publicTargets home release =
              , relaxInfo = []
              }
 -}
+    , Target { sourcePackageName = "haskell-tar"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tar/0.3.1.0/tar-0.3.1.0.tar.gz:10b54856495f9ef0a42aa270085c7d5e):(darcs:http://src.seereason.com/haskell-tar-debian)"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-terminfo"
              , sourceSpec = "apt:" ++ sid ++ ":haskell-terminfo"
              , relaxInfo = [] }
