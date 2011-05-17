@@ -50,7 +50,7 @@ publicTargets home release =
              , sourceSpec = "apt:sid:geneweb"
              , relaxInfo = [] }
     , Target { sourcePackageName = "darcs"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/darcs/2.5.2/darcs-2.5.2.tar.gz:491b6ca01dec245a16112ad2c7e07dc1):(darcs:" ++ localRepo home ++ "/darcs-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/darcs/2.5.2/darcs-2.5.2.tar.gz:491b6ca01dec245a16112ad2c7e07dc1):(darcs:" ++ repo ++ "/darcs-debian)"
              , relaxInfo = [] }
     , Target { -- Yes, if you build ghc7 the resulting compiler package name is ghc6.
                -- There are packaging changes required to change it to ghc7 that I'm
