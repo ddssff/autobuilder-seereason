@@ -771,6 +771,10 @@ publicTargets home release =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/jmacro/0.5/jmacro-0.5.tar.gz:103fb0eb730622e6e4d7e611734966a1):(darcs:http://src.seereason.com/haskell-jmacro-debian)"
              , relaxInfo = []
              }
+    , Target { sourcePackageName = "haskell-hsx-jmacro"
+             , sourceSpec = "deb-dir:(cd:hsx-jmacro:darcs:" ++ happstackRepo ++ "):(darcs:" ++ repo ++ "/haskell-hsx-jmacro-debian)"
+             , relaxInfo = []
+             }
     , Target { sourcePackageName = "haskell-web-routes-happstack"
              , sourceSpec = "cd:web-routes-happstack:darcs:" ++ repo ++ "/web-routes"
              , relaxInfo = [] }
