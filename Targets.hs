@@ -467,7 +467,7 @@ publicTargets home release =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/JSONb/1.0.2/JSONb-1.0.2.tar.gz:b8cd6a453485c9270287fc5396339fab):(darcs:http://src.seereason.com/haskell-jsonb-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-json"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/json/0.4.4/json-0.4.4.tar.gz:a29a1b52c66971aca87ed54ad1e7de64):(darcs:http://src.seereason.com/haskell-json-debian)",
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/json/0.4.4/json-0.4.4.tar.gz:a29a1b52c66971aca87ed54ad1e7de64):(darcs:http://src.seereason.com/haskell-json-debian)"
              -- , sourceSpec = "quilt:(apt:" ++ sid ++ ":haskell-json=0.4.4-1):(darcs:" ++ repo ++ "/haskell-json-quilt)"
 
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/json/0.4.3/json-0.4.3.tar.gz:1af33c67594f69048b69d4aeafeea03e):(darcs:http://src.seereason.com/json-debian)"
