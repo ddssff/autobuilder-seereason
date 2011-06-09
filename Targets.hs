@@ -13,7 +13,7 @@ repo = "http://src.seereason.com"
 privateRepo = "ssh://upload@src.seereason.com/srv/darcs"
 localRepo home = "file://" ++ home ++ "/darcs"
 
-sid = "wheezy"
+sid = "sid"
 
 data GHCVersion = GHC6 | GHC7
 
