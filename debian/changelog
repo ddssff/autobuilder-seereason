@@ -1,0 +1,7 @@
+seereason-darcs-backups (0.9) unstable; urgency=low
+
+  * New package to pull backups of our darcs repositories from our server,
+    and eventually anything else which is precious and not otherwise
+    backed up.
+
+ -- David Fox <dsf@seereason.com>  Fri, 10 Jun 2011 09:21:36 -0700

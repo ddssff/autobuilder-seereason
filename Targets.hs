@@ -891,6 +891,12 @@ privateTargets home =
     , Target { sourcePackageName = "prefeteria"
              , sourceSpec = "darcs:" ++ privateRepo ++ "/prefeteria"
              , relaxInfo = [] }
+    -- There is a debianization in the repo that contains this file
+    -- (Targets.hs), and it creates a package named seereason-darcs-backups,
+    -- which performs backups on the darcs repo.
+    , Target { sourcePackageName = "seereason-darcs-backups"
+             , sourceSpec = "darcs:http://src.seereason.com/autobuilder-config"
+             , relaxInfo = [] }
     ]
 
 failingTargets release =
