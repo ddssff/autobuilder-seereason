@@ -62,6 +62,9 @@ publicTargets home release =
                            ,"debhelper"
                            ,"quilt"]
              }
+    , Target { sourcePackageName = "haskell-dummy"
+             , sourceSpec = "apt:sid:haskell-dummy"
+             , relaxInfo = [] }
 {-    , Target { sourcePackageName = "gmp"
              , sourceSpec = "quilt:(apt:sid:gmp):(darcs:" ++ repo ++ "/gmp-quilt)"
              , relaxInfo = [] } -}
