@@ -75,6 +75,15 @@ publicTargets home release =
              , sourceSpec =
                  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/AES/0.2.7/AES-0.2.7.tar.gz:c40edee8615226c78139dd5ca864ad9e):(darcs:http://src.seereason.com/haskell-aes-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "agda"
+             , sourceSpec = "apt:sid:agda"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "agda-bin"
+             , sourceSpec = "apt:sid:agda-bin"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "agda-stdlib"
+             , sourceSpec = "apt:sid:agda-stdlib"
+             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-agi"
              , sourceSpec="darcs:http://src.seereason.com/haskell-agi"
              , relaxInfo = [] }
