@@ -832,6 +832,12 @@ publicTargets home release =
     , Target { sourcePackageName = "wordpress"
              , sourceSpec="apt:" ++ sid ++ ":wordpress"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-opengl"
+             , sourceSpec="apt:" ++ sid ++ ":haskell-opengl"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-glut"
+             , sourceSpec="apt:" ++ sid ++ ":haskell-glut"
+             , relaxInfo = [] }
     ] ++
     case compiler of
       GHC6 -> [ Target { sourcePackageName = "haskell-time-extras"
