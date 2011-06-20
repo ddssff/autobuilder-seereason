@@ -2,10 +2,9 @@
 module Targets.Private (privateTargets) where
 
 import Debian.AutoBuilder.ParamClass (Target(..))
+import Targets.Common
 
-privateRepo = "ssh://upload@src.seereason.com/srv/darcs"
-
-privateTargets home =
+privateTargets _home =
     [ Target { sourcePackageName = "haskell-filecache"
              , sourceSpec = "darcs:" ++ privateRepo ++ "/haskell-filecache"
              , relaxInfo = [] }

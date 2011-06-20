@@ -2,11 +2,9 @@
 module Targets.Sid ( sidRing0, sidRing1, sidWaiting, nonHaskell ) where
 
 import Debian.AutoBuilder.ParamClass (Target(..))
+import Targets.Common
 
-repo = "http://src.seereason.com"
-localRepo home = "file://" ++ home ++ "/darcs"
-
-sidRing0 home =
+sidRing0 _home =
     [ Target { sourcePackageName = "ghc"
              , sourceSpec = "apt:sid:ghc"
              , relaxInfo = ["ghc"
@@ -28,7 +26,7 @@ sidRing0 home =
              , relaxInfo = ["hscolour"] }
     ]
 
-sidRing1 home =
+sidRing1 _home =
     [ Target { sourcePackageName = "haskell-cpphs"
              , sourceSpec = "apt:sid:cpphs"
              , relaxInfo = [] }
@@ -396,7 +394,7 @@ sidRing1 home =
     ]
 
 -- |Waiting to be upgraded to sid version, or waiting until a newer sid version becomes available.
-sidWaiting home =
+sidWaiting _home =
     [ Target { sourcePackageName = "haskell-binary"
              -- Try removing the quilt when a new revision appears in sid
              , sourceSpec = "quilt:(apt:sid:haskell-binary=0.5.0.2-2):(darcs:http://src.seereason.com/haskell-binary-quilt)"
@@ -404,35 +402,37 @@ sidWaiting home =
              , relaxInfo = [] }
     -- Version 1.11 of haskell-src-exts now sid requires changes to haskell-authenticate
     , Target { sourcePackageName = "haskell-src-exts"
-             -- , sourceSpec = "apt:sid:haskell-src-exts"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/haskell-src-exts/1.10.2/haskell-src-exts-1.10.2.tar.gz:f810d859a7afe2cdc7f7174d0abe84fe):(darcs:http://src.seereason.com/haskell-src-exts-debian)"
+             , sourceSpec = case build of
+                              Production -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/haskell-src-exts/1.10.2/haskell-src-exts-1.10.2.tar.gz:f810d859a7afe2cdc7f7174d0abe84fe):(darcs:http://src.seereason.com/haskell-src-exts-debian)"
+                              Testing -> "apt:sid:haskell-src-exts"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsx"
-             -- , sourceSpec = "apt:sid:haskell-hsx"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsx/0.9.0/hsx-0.9.0.tar.gz:d82f4ae3fcc08b4acdb001f7b189c13a):(darcs:http://src.seereason.com/hsx-debian)"
+             , sourceSpec = case build of
+                              Production -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsx/0.9.0/hsx-0.9.0.tar.gz:d82f4ae3fcc08b4acdb001f7b189c13a):(darcs:http://src.seereason.com/hsx-debian)"
+                              Testing -> "apt:sid:haskell-hsx"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsp"
-             -- , sourceSpec = "apt:sid:haskell-hsp"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsp/0.6.0/hsp-0.6.0.tar.gz:c80d48e6706a4d1d4608f63549069c36):(darcs:http://src.seereason.com/hsp-debian)"
+             , sourceSpec = case build of
+                              Production -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsp/0.6.0/hsp-0.6.0.tar.gz:c80d48e6706a4d1d4608f63549069c36):(darcs:http://src.seereason.com/hsp-debian)"
+                              Testing -> "apt:sid:haskell-hsp"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-tls"
              -- http-enumerator 0.3.1 needs older tls, when we can upgrade to 0.6.5.4 we can use the tls in sid.
-             -- , sourceSpec = "apt:sid:haskell-tls"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tls/0.3/tls-0.3.tar.gz:066b7615916243ad4b834e362dce8542):(darcs:http://src.seereason.com/haskell-tls-debian)"
+             , sourceSpec = case build of
+                              Production -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/tls/0.3/tls-0.3.tar.gz:066b7615916243ad4b834e362dce8542):(darcs:http://src.seereason.com/haskell-tls-debian)"
+                              Testing -> "apt:sid:haskell-tls"
              , relaxInfo = [] }
-    -- We'll need this when we can build tls 0.7
---    , Target { sourcePackageName = "haskell-tls-extra"
---             , sourceSpec = "apt:sid:haskell-tls-extra"
---             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-certificate"
              -- Sid version is too new for haskell-tls 0.3
-             -- , sourceSpec = "apt:sid:haskell-certificate"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/certificate/0.3.2/certificate-0.3.2.tar.gz:17a2c881188033b1f1e57a852e250daf):(darcs:http://src.seereason.com/haskell-certificate-debian)"
+             , sourceSpec = case build of
+                              Production -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/certificate/0.3.2/certificate-0.3.2.tar.gz:17a2c881188033b1f1e57a852e250daf):(darcs:http://src.seereason.com/haskell-certificate-debian)"
+                              Testing -> "apt:sid:haskell-certificate"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-asn1-data"
              -- Sid version is too new for haskell-certificate 0.3.2
-             -- , sourceSpec = "quilt:(apt:sid:haskell-asn1-data):(darcs:" ++ localRepo home ++ "/haskell-asn1-data-quilt)"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/asn1-data/0.2.2/asn1-data-0.2.2.tar.gz:dfc412f4b1cff907e924dd65ce70c399):(darcs:http://src.seereason.com/haskell-asn1-data-debian)"
+             , sourceSpec = case build of
+                              Production -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/asn1-data/0.2.2/asn1-data-0.2.2.tar.gz:dfc412f4b1cff907e924dd65ce70c399):(darcs:http://src.seereason.com/haskell-asn1-data-debian)"
+                              Testing -> "quilt:(apt:sid:haskell-asn1-data):(darcs:" ++ repo ++ "/haskell-asn1-data-quilt)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-wai"
              -- , sourceSpec = "apt:sid:haskell-wai" - sid version is 0.2.2.1-1, too old
@@ -452,9 +452,16 @@ sidWaiting home =
              -- , sourceSpec = "apt:sid:pandoc"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.5.1.1/pandoc-1.5.1.1.tar.gz:bfccc042ae0cf0901bbca1f87748f969):(darcs:http://src.seereason.com/haskell-pandoc-debian)"
              , relaxInfo = [] }
-    ]
+    ] ++
+    case build of
+      Production -> []
+      -- We'll need this when we can build tls 0.7
+      Testing -> [ Target { sourcePackageName = "haskell-tls-extra"
+                          , sourceSpec = "apt:sid:haskell-tls-extra"
+                          , relaxInfo = [] } ]
 
-nonHaskell home =
+
+nonHaskell _home =
     [ Target { sourcePackageName = "bash-completion"
              , sourceSpec = "apt:sid:bash-completion"
              , relaxInfo = [] }

@@ -2,13 +2,9 @@
 module Targets.Hackage ( hackageTargets, hackageWaiting ) where
 
 import Debian.AutoBuilder.ParamClass (Target(..))
+import Targets.Common
 
-localRepo home = "file://" ++ home ++ "/darcs"
-
-happstackRepo = "http://patch-tag.com/r/mae/happstack"
---happstackRepo = repo ++ "/happstack"
-
-hackageTargets home =
+hackageTargets _home =
     [ Target { sourcePackageName = "haskell-aes"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/AES/0.2.7/AES-0.2.7.tar.gz:c40edee8615226c78139dd5ca864ad9e):(darcs:http://src.seereason.com/haskell-aes-debian)"
              , relaxInfo = [] }
@@ -25,7 +21,7 @@ hackageTargets home =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/attempt/0.3.0/attempt-0.3.0.tar.gz:051be218858e24ffd53b4e435f024611):(darcs:http://src.seereason.com/haskell-attempt-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-authenticate"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.8.0/authenticate-0.8.0.tar.gz:42d0ae309ee3acb86bb4b05d4c34854e):(darcs:" ++ localRepo home ++ "/haskell-authenticate-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.8.0/authenticate-0.8.0.tar.gz:42d0ae309ee3acb86bb4b05d4c34854e):(darcs:" ++ repo ++ "/haskell-authenticate-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-bimap"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bimap/0.2.4/bimap-0.2.4.tar.gz:f6b79bff5741e709f1536df411aab53d):(darcs:http://src.seereason.com/haskell-bimap-debian)"
@@ -221,10 +217,10 @@ hackageTargets home =
     ]
 
 -- |Packages waiting for an upgrade.
-hackageWaiting home =
+hackageWaiting _home =
     [ Target { sourcePackageName = "haskell-http-enumerator"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.3.1/http-enumerator-0.3.1.tar.gz:bb3f0cb522923965bcc43f0db6c08ae3):(darcs:http://src.seereason.com/haskell-http-enumerator-debian)"
-             -- Use this once haskell-authenticate is updated.
-             -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.6.5.4/http-enumerator-0.6.5.4.tar.gz:3f91c23021f4e22c1f8c0883c71bba64):(darcs:" ++ localRepo home ++ "/haskell-http-enumerator-debian)"
+             , sourceSpec = case build of
+                              Production -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.3.1/http-enumerator-0.3.1.tar.gz:bb3f0cb522923965bcc43f0db6c08ae3):(darcs:http://src.seereason.com/haskell-http-enumerator-debian)"
+                              Testing ->  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.6.5.4/http-enumerator-0.6.5.4.tar.gz:3f91c23021f4e22c1f8c0883c71bba64):(darcs:" ++ repo ++ "/testing/haskell-http-enumerator-debian)"
              , relaxInfo = [] }
     ]

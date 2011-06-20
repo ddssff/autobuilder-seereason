@@ -23,7 +23,6 @@ publicTargets home release =
     , sidRing0 home
     , sidRing1 home
     , nonHaskell home
-    , sidRing2 home
     , sidWaiting home
     , hackageTargets home
     , hackageWaiting home

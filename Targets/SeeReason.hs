@@ -2,14 +2,9 @@
 module Targets.SeeReason (seeReasonTargets) where
 
 import Debian.AutoBuilder.ParamClass (Target(..))
+import Targets.Common
 
-repo = "http://src.seereason.com"
-localRepo home = "file://" ++ home ++ "/darcs"
-
-happstackRepo = "http://patch-tag.com/r/mae/happstack"
---happstackRepo = repo ++ "/happstack"
-
-seeReasonTargets home =
+seeReasonTargets _home =
     [ Target { sourcePackageName = "autobuilder"
              , sourceSpec = "darcs:http://src.seereason.com/autobuilder"
              , relaxInfo = [] }
