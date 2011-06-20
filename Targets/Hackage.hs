@@ -21,7 +21,9 @@ hackageTargets _home =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/attempt/0.3.0/attempt-0.3.0.tar.gz:051be218858e24ffd53b4e435f024611):(darcs:http://src.seereason.com/haskell-attempt-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-authenticate"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.8.0/authenticate-0.8.0.tar.gz:42d0ae309ee3acb86bb4b05d4c34854e):(darcs:" ++ repo ++ "/haskell-authenticate-debian)"
+             , sourceSpec = case build of
+                              Production -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.8.0/authenticate-0.8.0.tar.gz:42d0ae309ee3acb86bb4b05d4c34854e):(darcs:" ++ repo ++ "/haskell-authenticate-debian)"
+                              Testing -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.9.1.4/authenticate-0.9.1.4.tar.gz:9ffdf0f3f7c40c507abef8ab2d6df347):(darcs:" ++ localRepo _home ++ "/haskell-authenticate-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-bimap"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bimap/0.2.4/bimap-0.2.4.tar.gz:f6b79bff5741e709f1536df411aab53d):(darcs:http://src.seereason.com/haskell-bimap-debian)"
@@ -214,6 +216,22 @@ hackageTargets _home =
     , Target { sourcePackageName = "haskell-vacuum-opengl"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/vacuum-opengl/0.0.3/vacuum-opengl-0.0.3.tar.gz:c92b412c56a1bd4b29c33525dd2425fe):(darcs:http://src.seereason.com/haskell-vacuum-opengl-debian)"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-rsa"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/RSA/1.0.6.1/RSA-1.0.6.1.tar.gz:c240f2a7d0dcd0d29622cbf803783564):(darcs:" ++ repo ++ "/haskell-rsa-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-aeson"
+
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/aeson/0.3.2.7/aeson-0.3.2.7.tar.gz:7567d0bf65908b81606b131160a42b1d):(darcs:" ++ repo ++ "/haskell-aeson-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-hashable"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hashable/1.1.2.0/hashable-1.1.2.0.tar.gz:87f2d33bba7cbe1541daa4ff87d15c04):(darcs:" ++ repo ++ "/haskell-hashable-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-unordered-containers"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/unordered-containers/0.1.3.0/unordered-containers-0.1.3.0.tar.gz:4a8505db2d504d7471f8e5cf7ebb9655):(darcs:" ++ repo ++ "/haskell-unordered-containers-debian)"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-blaze-textual"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-textual/0.1.0.0/blaze-textual-0.1.0.0.tar.gz:6d0461e201b243d5a613f90f3a203dd3):(darcs:" ++ repo ++ "/haskell-blaze-textual-debian)"
+             , relaxInfo = [] }
     ]
 
 -- |Packages waiting for an upgrade.
@@ -221,6 +239,6 @@ hackageWaiting _home =
     [ Target { sourcePackageName = "haskell-http-enumerator"
              , sourceSpec = case build of
                               Production -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.3.1/http-enumerator-0.3.1.tar.gz:bb3f0cb522923965bcc43f0db6c08ae3):(darcs:http://src.seereason.com/haskell-http-enumerator-debian)"
-                              Testing ->  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.6.5.4/http-enumerator-0.6.5.4.tar.gz:3f91c23021f4e22c1f8c0883c71bba64):(darcs:" ++ repo ++ "/testing/haskell-http-enumerator-debian)"
+                              Testing ->  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.6.5.4/http-enumerator-0.6.5.4.tar.gz:3f91c23021f4e22c1f8c0883c71bba64):(darcs:" ++ localRepo _home ++ "/haskell-http-enumerator-debian)"
              , relaxInfo = [] }
     ]

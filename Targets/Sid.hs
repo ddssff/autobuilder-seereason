@@ -391,6 +391,9 @@ sidRing1 _home =
     , Target { sourcePackageName = "haskell-glut"
              , sourceSpec="apt:sid:haskell-glut"
              , relaxInfo = [] }
+    , Target { sourcePackageName = "haskell-puremd5"
+             , sourceSpec="apt:sid:haskell-puremd5"
+             , relaxInfo = [] }
     ]
 
 -- |Waiting to be upgraded to sid version, or waiting until a newer sid version becomes available.
