@@ -29,7 +29,7 @@ seeReasonTargets _home =
     , Target { sourcePackageName = "haskell-digestive-functors-hsp"
              , sourceSpec = case build of
                               Production -> "darcs:http://src.seereason.com/digestive-functors-hsp"
-                              Testing -> "darcs:" ++ localRepo _home ++ "/digestive-functors-hsp"
+                              Testing -> "darcs:" ++ repo ++ "/digestive-functors-hsp"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-extra"
              , sourceSpec = "darcs:http://src.seereason.com/haskell-extra"
@@ -37,17 +37,15 @@ seeReasonTargets _home =
     , Target { sourcePackageName = "haskell-formlets-hsp"
              , sourceSpec = case build of
                               Production -> "darcs:http://src.seereason.com/formlets-hsp"
-                              Testing -> "darcs:" ++ localRepo _home ++ "/formlets-hsp"
+                              Testing -> "darcs:" ++ repo ++ "/formlets-hsp"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-authenticate"
              , sourceSpec = case build of
                               Production -> "darcs:" ++ repo ++ "/happstack-authenticate"
-                              Testing -> "darcs:" ++ localRepo _home ++ "/happstack-authenticate"
+                              Testing -> "darcs:" ++ repo ++ "/happstack-authenticate"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstackdotcom"
-             , sourceSpec = case build of
-                              Production -> "darcs:http://patch-tag.com/r/stepcut/happstackDotCom"
-                              Testing -> "darcs:" ++ localRepo _home ++ "/happstackDotCom"
+             , sourceSpec = "darcs:http://patch-tag.com/r/stepcut/happstackDotCom"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstackdotcom-doc"
              , sourceSpec = "darcs:http://src.seereason.com/happstackDotCom-doc"
@@ -55,17 +53,17 @@ seeReasonTargets _home =
     , Target { sourcePackageName = "haskell-happstack-extra"
              , sourceSpec = case build of
                               Production -> "darcs:http://src.seereason.com/happstack-extra"
-                              Testing -> "darcs:" ++ localRepo _home ++ "/happstack-extra"
+                              Testing -> "darcs:" ++ repo ++ "/happstack-extra"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-facebook"
              , sourceSpec = case build of
                               Production -> "darcs:http://src.seereason.com/happstack-facebook"
-                              Testing -> "darcs:" ++ localRepo _home ++ "/happstack-facebook"
+                              Testing -> "darcs:" ++ repo ++ "/happstack-facebook"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-happstack-hsp"
              , sourceSpec = case build of
                               Production -> "deb-dir:(cd:happstack-hsp:darcs:" ++ happstackRepo ++ "):(darcs:http://src.seereason.com/happstack-hsp-debian)"
-                              Testing -> "deb-dir:(cd:happstack-hsp:darcs:" ++ happstackRepo ++ "):(darcs:" ++ localRepo _home ++ "/happstack-hsp-debian)"
+                              Testing -> "deb-dir:(cd:happstack-hsp:darcs:" ++ happstackRepo ++ "):(darcs:" ++ repo ++ "/happstack-hsp-debian)"
              , relaxInfo = [] }
     , Target{ sourcePackageName = "haskell-acid-state"
             , sourceSpec = "deb-dir:(darcs:http://src.seereason.com/acid-state):(darcs:http://src.seereason.com/haskell-acid-state-debian)"
