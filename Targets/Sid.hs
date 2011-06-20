@@ -1,5 +1,5 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
-module Targets.Sid ( sidRing0, sidRing1, sidWaiting, nonHaskell ) where
+module Targets.Sid ( sidRing0, sidRing1, sidRing2, sidWaiting, nonHaskell ) where
 
 import Debian.AutoBuilder.ParamClass (Target(..))
 
@@ -17,16 +17,6 @@ sidRing0 home =
                            ,"debhelper"
                            ,"quilt"]
              }
-    , Target { sourcePackageName = "hscolour"
-             -- , sourceSpec = "quilt:(apt:sid:hscolour):(darcs:http://src.seereason.com/hscolour-quilt)"
-             , sourceSpec = "apt:sid:hscolour"
-             , relaxInfo = ["hscolour"] }
-{-    , Target { sourcePackageName = "gmp"
-             , sourceSpec = "quilt:(apt:sid:gmp):(darcs:" ++ repo ++ "/gmp-quilt)"
-             , relaxInfo = [] } -}
-    , Target { sourcePackageName = "haskell-dummy"
-             , sourceSpec = "apt:sid:haskell-dummy"
-             , relaxInfo = [] }
     -- Required by the darcs 2.3.0-3 in sid.
     , Target { sourcePackageName = "haskell-devscripts"
              , sourceSpec = "apt:sid:haskell-devscripts"
@@ -34,7 +24,17 @@ sidRing0 home =
              -- Experimental version
              --, sourceSpec = "quilt:(darcs:http://darcs.debian.org/pkg-haskell/haskell-devscripts):(darcs:http://src.seereason.com/haskell-devscripts-quilt)"
              , relaxInfo = ["hscolour"] }
-    , Target { sourcePackageName = "haskell-cpphs"
+    , Target { sourcePackageName = "haskell-dummy"
+             , sourceSpec = "apt:sid:haskell-dummy"
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "hscolour"
+             -- , sourceSpec = "quilt:(apt:sid:hscolour):(darcs:http://src.seereason.com/hscolour-quilt)"
+             , sourceSpec = "apt:sid:hscolour"
+             , relaxInfo = ["hscolour"] }
+    ]
+
+sidRing1 home =
+    [ Target { sourcePackageName = "haskell-cpphs"
              , sourceSpec = "apt:sid:cpphs"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-transformers"
@@ -50,13 +50,12 @@ sidRing0 home =
              , relaxInfo = ["happy"] }
     -- Version 1.11 of haskell-src-exts now sid requires changes to haskell-authenticate
     , Target { sourcePackageName = "haskell-src-exts"
-             , sourceSpec = "apt:sid:haskell-src-exts"
+             -- , sourceSpec = "apt:sid:haskell-src-exts"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/haskell-src-exts/1.10.2/haskell-src-exts-1.10.2.tar.gz:f810d859a7afe2cdc7f7174d0abe84fe):(darcs:http://src.seereason.com/haskell-src-exts-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsx"
-             , sourceSpec = "apt:sid:haskell-hsx"
-             -- , sourceSpec = "deb-dir:(darcs:http://code.haskell.org/HSP/hsx):(darcs:" ++ ghcRepo ++ "/hsx-debian)"
-             -- , sourceSpec = "deb-dir:(darcs:" ++ ghcRepo ++ "/hsx):(darcs:" ++ ghcRepo ++ "/hsx-debian)"
-             -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsx/0.9.0/hsx-0.9.0.tar.gz:d82f4ae3fcc08b4acdb001f7b189c13a):(darcs:http://src.seereason.com/hsx-debian)"
+             -- , sourceSpec = "apt:sid:haskell-hsx"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsx/0.9.0/hsx-0.9.0.tar.gz:d82f4ae3fcc08b4acdb001f7b189c13a):(darcs:http://src.seereason.com/hsx-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-utf8-string"
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/utf8-string/0.3.6/utf8-string-0.3.6.tar.gz:be8c5ef52a0824babdc89d60c1e9b600):(darcs:http://src.seereason.com/utf8-string-debian)"
@@ -82,12 +81,12 @@ sidRing0 home =
              , sourceSpec = "apt:sid:haskell-harp"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsp"
-             , sourceSpec = "apt:sid:haskell-hsp"
-             -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsp/0.6.0/hsp-0.6.0.tar.gz:c80d48e6706a4d1d4608f63549069c36):(darcs:http://src.seereason.com/hsp-debian)"
+             -- , sourceSpec = "apt:sid:haskell-hsp"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsp/0.6.0/hsp-0.6.0.tar.gz:c80d48e6706a4d1d4608f63549069c36):(darcs:http://src.seereason.com/hsp-debian)"
              , relaxInfo = [] }
     ]
 
-sidRing1 home =
+sidRing2 home =
     [ Target { sourcePackageName = "darcs"
              , sourceSpec = "apt:sid:darcs"
              -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/darcs/2.5.2/darcs-2.5.2.tar.gz:491b6ca01dec245a16112ad2c7e07dc1):(darcs:http://src.seereason.com/darcs-debian)"

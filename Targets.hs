@@ -15,18 +15,20 @@ import Targets.Sid
 
 publicTargets home release =
     concat
-    [ -- Each of theses lists can be built on their own as a group,
+    [ []
+      -- Each of theses lists can be built on their own as a group,
       -- and any sequence of groups can be built together as long as
       -- no intermediate group is omitted.  Comment out the ones you
       -- don't wish to build.
-
-      -- sidRing0 home,  -- Unbuildable, waiting for compatibility with haskell-src-exts-1.11 now in sid
-      nonHaskell home,
-      sidRing1 home,
-      sidWaiting home,
-      hackageTargets home,
-      hackageWaiting home,
-      seeReasonTargets home ]
+    , sidRing0 home
+    , sidRing1 home
+    , nonHaskell home
+    , sidRing2 home
+    , sidWaiting home
+    , hackageTargets home
+    , hackageWaiting home
+    , seeReasonTargets home
+    ]
 
 --    , Target { sourcePackageName = "eclipse-clp"
 --             , sourceSpec = "deb-dir:(uri:http://eclipseclp.org/Distribution/6.0_160/src/eclipse_src.tgz:75d074bf0ee66948e6afd3b69e51e81e):(darcs:http://src.seereason.com/eclipse-clp-debian)"
