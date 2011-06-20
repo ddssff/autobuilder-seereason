@@ -37,7 +37,7 @@ import qualified Data.Set as Set
 import Debian.AutoBuilder.ParamClass (Target(..))
 import Debian.URI
 
-import Targets
+import qualified Targets
 
 -- This section has all the definitions relating to the particular
 -- suffixes we will use on our build releases.
@@ -132,8 +132,8 @@ myTargets home p myBuildRelease =
     Set.fromList $
     filter p $
            if isPrivateRelease myBuildRelease
-           then privateTargets home
-           else publicTargets home myBuildRelease
+           then Targets.private home
+           else Targets.public home myBuildRelease
 
 -- If you are not interested in building everything, put one or more
 -- source package names you want to build in this list.  Only these

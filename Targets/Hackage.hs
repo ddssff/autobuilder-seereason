@@ -1,10 +1,10 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
-module Targets.Hackage ( hackageTargets, hackageWaiting ) where
+module Targets.Hackage ( targets ) where
 
 import Debian.AutoBuilder.ParamClass (Target(..))
 import Targets.Common
 
-hackageTargets _home =
+targets _home =
     [ Target { sourcePackageName = "haskell-aes"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/AES/0.2.7/AES-0.2.7.tar.gz:c40edee8615226c78139dd5ca864ad9e):(darcs:http://src.seereason.com/haskell-aes-debian)"
              , relaxInfo = [] }
@@ -21,9 +21,7 @@ hackageTargets _home =
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/attempt/0.3.0/attempt-0.3.0.tar.gz:051be218858e24ffd53b4e435f024611):(darcs:http://src.seereason.com/haskell-attempt-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-authenticate"
-             , sourceSpec = case build of
-                              Production -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.8.0/authenticate-0.8.0.tar.gz:42d0ae309ee3acb86bb4b05d4c34854e):(darcs:" ++ repo ++ "/haskell-authenticate-debian)"
-                              Testing -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.9.1.4/authenticate-0.9.1.4.tar.gz:9ffdf0f3f7c40c507abef8ab2d6df347):(darcs:" ++ repo ++ "/haskell-authenticate-debian)"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/authenticate/0.9.1.4/authenticate-0.9.1.4.tar.gz:9ffdf0f3f7c40c507abef8ab2d6df347):(darcs:" ++ repo ++ "/haskell-authenticate-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-bimap"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/bimap/0.2.4/bimap-0.2.4.tar.gz:f6b79bff5741e709f1536df411aab53d):(darcs:http://src.seereason.com/haskell-bimap-debian)"
@@ -232,13 +230,7 @@ hackageTargets _home =
     , Target { sourcePackageName = "haskell-blaze-textual"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/blaze-textual/0.1.0.0/blaze-textual-0.1.0.0.tar.gz:6d0461e201b243d5a613f90f3a203dd3):(darcs:" ++ repo ++ "/haskell-blaze-textual-debian)"
              , relaxInfo = [] }
-    ]
-
--- |Packages waiting for an upgrade.
-hackageWaiting _home =
-    [ Target { sourcePackageName = "haskell-http-enumerator"
-             , sourceSpec = case build of
-                              Production -> "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.3.1/http-enumerator-0.3.1.tar.gz:bb3f0cb522923965bcc43f0db6c08ae3):(darcs:http://src.seereason.com/haskell-http-enumerator-debian)"
-                              Testing ->  "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.6.5.4/http-enumerator-0.6.5.4.tar.gz:3f91c23021f4e22c1f8c0883c71bba64):(darcs:" ++ repo ++ "/haskell-http-enumerator-debian)"
+    , Target { sourcePackageName = "haskell-http-enumerator"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/http-enumerator/0.6.5.4/http-enumerator-0.6.5.4.tar.gz:3f91c23021f4e22c1f8c0883c71bba64):(darcs:" ++ repo ++ "/haskell-http-enumerator-debian)"
              , relaxInfo = [] }
     ]

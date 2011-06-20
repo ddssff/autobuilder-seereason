@@ -1,33 +1,29 @@
 -- |This module defines how we obtain and assemble the source code for
 -- the packages we want to build.
 module Targets 
-    ( publicTargets
-    , privateTargets
+    ( public
+    , private
     ) where
 
 import Data.List (isPrefixOf)
 import qualified Data.Set as Set
 import Debian.AutoBuilder.ParamClass (Target(..))
-import Targets.Hackage
-import Targets.Private
-import Targets.SeeReason
-import Targets.Sid
+import qualified Targets.Hackage as Hackage
+import qualified Targets.Private as Private
+import qualified Targets.SeeReason as SeeReason
+import qualified Targets.Sid as Sid
 
-publicTargets home release =
-    concat
-    [ []
-      -- Each of theses lists can be built on their own as a group,
-      -- and any sequence of groups can be built together as long as
-      -- no intermediate group is omitted.  Comment out the ones you
-      -- don't wish to build.
-    , sidRing0 home
-    , sidRing1 home
-    , nonHaskell home
-    , sidWaiting home
-    , hackageTargets home
-    , hackageWaiting home
-    , seeReasonTargets home
-    ]
+public home release =
+    -- Each of theses lists can be built on their own as a group,
+    -- and any sequence of groups can be built together as long as
+    -- no intermediate group is omitted.  Comment out the ones you
+    -- don't wish to build.
+    -- Sid.ring0 home ++
+    Sid.ring1 home ++
+    Hackage.targets home ++
+    SeeReason.targets home
+
+private home = Private.libraries home ++ Private.applications home
 
 --    , Target { sourcePackageName = "eclipse-clp"
 --             , sourceSpec = "deb-dir:(uri:http://eclipseclp.org/Distribution/6.0_160/src/eclipse_src.tgz:75d074bf0ee66948e6afd3b69e51e81e):(darcs:http://src.seereason.com/eclipse-clp-debian)"

@@ -4,7 +4,7 @@ import Debian.AutoBuilder.ParamClass (Target(..))
 
 data Build = Production | Testing
 build = Production
---build = Testing
+-- build = Testing
 
 repo = "http://src.seereason.com"
 localRepo home = "file://" ++ home ++ "/darcs"
