@@ -1,465 +1,216 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Targets.Sid ( ring0, ring1 ) where
 
+import qualified Data.Set as Set
 import Debian.AutoBuilder.ParamClass (Target(..))
 import Targets.Common
 
+sid name = Target { sourcePackageName = name
+                  , sourceSpec = getSourceSpec name
+                  , relaxInfo = getRelaxInfo name }
+    where
+      -- Special cases of non-empty relaxInfo lists
+      getRelaxInfo "ghc" = ["ghc","happy","alex","xsltproc","haskell-devscripts","debhelper","quilt"]
+      getRelaxInfo "haskell-devscripts" = ["hscolour"]
+      getRelaxInfo "hscolour" = ["hscolour"]
+      getRelaxInfo "happy" = ["happy"]
+      getRelaxInfo "haskell-utf8-string" = ["hscolour", "cpphs"]
+      getRelaxInfo "haskell-debian" = ["cabal-debian"]
+      getRelaxInfo _ = []
+
+      -- Special case sourceSpecs
+      getSourceSpec "haskell-bzlib" = "quilt:(apt:sid:haskell-bzlib):(darcs:http://src.seereason.com/haskell-bzlib-quilt)"
+      getSourceSpec "haskell-json" = "quilt:(apt:sid:haskell-json=0.4.4-2):(darcs:" ++ repo ++ "/haskell-json-quilt)"
+      getSourceSpec "haskell-uniplate" = "quilt:(apt:sid:haskell-uniplate):(darcs:http://src.seereason.com/haskell-uniplate-quilt)"
+      -- Try removing the quilt when a new revision appears in sid
+      getSourceSpec "haskell-binary" = "quilt:(apt:sid:haskell-binary=0.5.0.2-2):(darcs:http://src.seereason.com/haskell-binary-quilt)"
+      -- Sid version is too new for haskell-certificate 0.3.2
+      getSourceSpec "haskell-asn1-data" = "quilt:(apt:sid:haskell-asn1-data):(darcs:" ++ repo ++ "/haskell-asn1-data-quilt)"
+      -- sid version is 0.2.2.1-1, too old
+      getSourceSpec "haskell-wai" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/wai/0.3.1/wai-0.3.1.tar.gz:5a777cf08713a55818955ec4d0748622):(darcs:http://src.seereason.com/haskell-wai-debian)"
+      -- Version in sid is 3001.1.7.4-1, our version is 3001.1.8.2
+      getSourceSpec "haskell-cgi" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz:4092efaf00ac329b9771879f57a95323):(darcs:http://src.seereason.com/haskell-cgi-debian)"
+      -- Sid version needs cdbs >= 0.4.70~, which I can't seem to build.
+      -- , sourceSpec = "apt:sid:pandoc"
+      getSourceSpec "haskell-pandoc" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.5.1.1/pandoc-1.5.1.1.tar.gz:bfccc042ae0cf0901bbca1f87748f969):(darcs:http://src.seereason.com/haskell-pandoc-debian)"
+      -- I should add a dependency on libmagic-dev to libghc-magic-dev
+      -- getSourceSpec "magic-haskell" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/magic/1.0.8/magic-1.0.8.tar.gz:e81c493fe185431a5b70d4855ed4b87f):(darcs:http://src.seereason.com/magic-debian)"
+      -- The normal case
+      getSourceSpec name = "apt:sid:" ++ name
+
+{-
+instance Eq Target where
+    t1 == t2 = sourcePackageName t1 == sourcePackageName t2 &&
+               sourceSpec t1 == sourceSpec t2 &&
+               Set.fromList (relaxInfo t1) == Set.fromList (relaxInfo t2)
+-}
+
+sid' t =
+    if t /= sid (sourcePackageName t) then error ("sid mismatch: " ++ sourcePackageName t) else t
+
 ring0 _home =
-    [ Target { sourcePackageName = "ghc"
-             , sourceSpec = "apt:sid:ghc"
-             , relaxInfo = ["ghc"
-                           ,"happy"
-                           ,"alex"
-                           ,"xsltproc"
-                           ,"haskell-devscripts"
-                           ,"debhelper"
-                           ,"quilt"]
-             }
-    , Target { sourcePackageName = "haskell-devscripts"
-             , sourceSpec = "apt:sid:haskell-devscripts"
-             , relaxInfo = ["hscolour"] }
-    , Target { sourcePackageName = "haskell-dummy"
-             , sourceSpec = "apt:sid:haskell-dummy"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "hscolour"
-             , sourceSpec = "apt:sid:hscolour"
-             , relaxInfo = ["hscolour"] }
-    ]
+    map sid [ "ghc"
+            , "haskell-devscripts"
+            , "haskell-dummy"
+            , "hscolour" ]
 
 ring1 _home =
-    [ Target { sourcePackageName = "haskell-cpphs"
-             , sourceSpec = "apt:sid:cpphs"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-transformers"
-             , sourceSpec = "apt:sid:haskell-transformers"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-mtl"
-             , sourceSpec = "apt:sid:haskell-mtl"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "happy"
-             , sourceSpec = "apt:sid:happy"
-             , relaxInfo = ["happy"] }
-    , Target { sourcePackageName = "haskell-utf8-string"
-             , sourceSpec = "apt:sid:haskell-utf8-string"
-             , relaxInfo = ["hscolour", "cpphs"] }
-    , Target { sourcePackageName = "haskell-deepseq"
-             , sourceSpec = "apt:sid:haskell-deepseq"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-text"
-             , sourceSpec = "apt:sid:haskell-text"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hjavascript"
-             , sourceSpec = "apt:sid:haskell-hjavascript"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hjscript"
-             , sourceSpec = "apt:sid:haskell-hjscript"
-             , relaxInfo = [] }      
-    , Target { sourcePackageName = "haskell-harp"
-             , sourceSpec = "apt:sid:haskell-harp"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "darcs"
-             , sourceSpec = "apt:sid:darcs"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "agda"
-             , sourceSpec = "apt:sid:agda"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "agda-bin"
-             , sourceSpec = "apt:sid:agda-bin"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "agda-stdlib"
-             , sourceSpec = "apt:sid:agda-stdlib"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-attoparsec-enumerator"
-             , sourceSpec = "apt:sid:haskell-attoparsec-enumerator"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-attoparsec"
-             , sourceSpec = "apt:sid:haskell-attoparsec"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-base64-bytestring"
-             , sourceSpec = "apt:sid:haskell-base64-bytestring"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-blaze-builder"
-             , sourceSpec = "apt:sid:haskell-blaze-builder"
-             , relaxInfo = [] }
-    , Target{ sourcePackageName = "haskell-blaze-html"
-            , sourceSpec = "apt:sid:haskell-blaze-html"
-            , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-blaze-builder-enumerator"
-             , sourceSpec = "apt:sid:haskell-blaze-builder-enumerator"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-bytestring-nums"
-             , sourceSpec = "apt:sid:haskell-bytestring-nums"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-bzlib"
-             , sourceSpec = "quilt:(apt:sid:haskell-bzlib):(darcs:http://src.seereason.com/haskell-bzlib-quilt)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-cereal"
-             , sourceSpec = "apt:sid:haskell-cereal"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-citeproc-hs"
-             , sourceSpec = "apt:sid:haskell-citeproc-hs"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-colour"
-             , sourceSpec="apt:sid:haskell-colour"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-criterion"
-             , sourceSpec = "apt:sid:haskell-criterion"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-crypto"
-             , sourceSpec = "apt:sid:haskell-crypto"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-crypto-api"
-             , sourceSpec = "apt:sid:haskell-crypto-api"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-cryptocipher"
-             , sourceSpec = "apt:sid:haskell-cryptocipher"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-cryptohash"
-             , sourceSpec = "apt:sid:haskell-cryptohash"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-curl"
-             , sourceSpec = "apt:sid:haskell-curl"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-data-accessor"
-             , sourceSpec = "apt:sid:haskell-data-accessor"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-data-accessor-template"
-             , sourceSpec = "apt:sid:haskell-data-accessor-template"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-data-default"
-             , sourceSpec = "apt:sid:haskell-data-default"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-dataenc"
-             , sourceSpec = "apt:sid:haskell-dataenc"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-debian"
-             , sourceSpec = "apt:sid:haskell-debian"
-             , relaxInfo = ["cabal-debian"] }
-    , Target { sourcePackageName = "haskell-digest"
-             , sourceSpec = "apt:sid:haskell-digest"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-diff"
-             , sourceSpec = "apt:sid:haskell-diff"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-dlist"
-             , sourceSpec = "apt:sid:haskell-dlist"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-edison-api"
-             , sourceSpec="apt:sid:haskell-edison-api"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-edison-core"
-             , sourceSpec="apt:sid:haskell-edison-core"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-enumerator"
-             , sourceSpec = "apt:sid:haskell-enumerator"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-erf"
-             , sourceSpec = "apt:sid:haskell-erf"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-failure"
-             , sourceSpec = "apt:sid:haskell-failure"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-feed"
-             , sourceSpec = "apt:sid:haskell-feed"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-fgl"
-             , sourceSpec = "apt:sid:haskell-fgl"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hashed-storage"
-             , sourceSpec = "apt:sid:haskell-hashed-storage"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-haskeline" -- Required by darcs
-             , sourceSpec = "apt:sid:haskell-haskeline"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-haskell-src"
-             , sourceSpec = "apt:sid:haskell-haskell-src"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "highlighting-kate"
-             , sourceSpec = "apt:sid:highlighting-kate"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hsemail"
-             , sourceSpec = "apt:sid:haskell-hsemail"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "hslogger"
-             , sourceSpec = "apt:sid:hslogger"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hstringtemplate"
-             , sourceSpec = "apt:sid:haskell-hstringtemplate"
-             , relaxInfo = [] }
---    , Target { sourcePackageName = "haskell-hsx-jmacro"
---             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/hsx-jmacro/6.0.2/hsx-jmacro-6.0.2.tar.gz:1f0e318b0f74bad0b3191e3acf10e89c):(darcs:http://src.seereason.com/haskell-hsx-jmacro-debian)"
---             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-html"
-             , sourceSpec = "apt:sid:haskell-html"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-case-insensitive"
-             , sourceSpec = "apt:sid:haskell-case-insensitive"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-cprng-aes"
-             , sourceSpec = "apt:sid:haskell-cprng-aes"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-http-types"
-             , sourceSpec = "apt:sid:haskell-http-types"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-monad-control"
-             , sourceSpec = "apt:sid:haskell-monad-control"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-base-unicode-symbols"
-             , sourceSpec = "apt:sid:haskell-base-unicode-symbols"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-zlib-enum"
-             , sourceSpec = "apt:sid:haskell-zlib-enum"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-http"
-             , sourceSpec = "apt:sid:haskell-http"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hunit"
-             , sourceSpec = "apt:sid:haskell-hunit"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-irc"
-             , sourceSpec = "apt:sid:haskell-irc"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-json"
-             , sourceSpec = "quilt:(apt:sid:haskell-json=0.4.4-2):(darcs:" ++ repo ++ "/haskell-json-quilt)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-largeword"
-             , sourceSpec = "apt:sid:haskell-largeword"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "magic-haskell"
-             , sourceSpec = "apt:sid:magic-haskell"
-             -- , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/magic/1.0.8/magic-1.0.8.tar.gz:e81c493fe185431a5b70d4855ed4b87f):(darcs:http://src.seereason.com/magic-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-maybet"
-             , sourceSpec = "apt:sid:haskell-maybet"
-             , relaxInfo = [] }               
-    , Target { sourcePackageName = "haskell-mmap"
-             , sourceSpec = "apt:sid:haskell-mmap"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-monadcatchio-mtl"
-             , sourceSpec = "apt:sid:haskell-monadcatchio-mtl"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-mwc-random"
-             , sourceSpec = "apt:sid:haskell-mwc-random"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-network"
-             , sourceSpec = "apt:sid:haskell-network"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-pandoc-types"
-             , sourceSpec = "apt:sid:haskell-pandoc-types"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-parallel"
-             , sourceSpec = "apt:sid:haskell-parallel"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-parsec2"
-             , sourceSpec = "apt:sid:haskell-parsec2"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-parsec"
-             , sourceSpec = "apt:sid:haskell-parsec"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-pcre-light"
-             , sourceSpec = "apt:sid:haskell-pcre-light"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-polyparse"
-             , sourceSpec = "apt:sid:haskell-polyparse"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-primitive"
-             , sourceSpec = "apt:sid:haskell-primitive"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-quickcheck"
-             , sourceSpec = "apt:sid:haskell-quickcheck"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-quickcheck1"
-             , sourceSpec = "apt:sid:haskell-quickcheck1"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-regex-base"
-             , sourceSpec = "apt:sid:haskell-regex-base"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-regex-compat"
-             , sourceSpec = "apt:sid:haskell-regex-compat"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-regex-posix"
-             , sourceSpec = "apt:sid:haskell-regex-posix"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-regex-tdfa"
-             , sourceSpec = "apt:sid:haskell-regex-tdfa"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-safe"
-             , sourceSpec = "apt:sid:haskell-safe"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-semigroups"
-             , sourceSpec = "apt:sid:haskell-semigroups"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-sendfile"
-             , sourceSpec = "apt:sid:haskell-sendfile"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-sha"
-             , sourceSpec = "apt:sid:haskell-sha"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-smtpclient"
-             , sourceSpec = "apt:sid:haskell-smtpclient"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-split"
-             , sourceSpec="apt:sid:haskell-split"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-stm"
-             , sourceSpec = "apt:sid:haskell-stm"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-strict-concurrency"
-             , sourceSpec = "apt:sid:haskell-strict-concurrency"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-syb"
-             , sourceSpec="apt:sid:haskell-syb"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-syb-with-class"
-             , sourceSpec = "apt:sid:haskell-syb-with-class"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-syb-with-class-instances-text"
-             , sourceSpec = "apt:sid:haskell-syb-with-class-instances-text"
-             , relaxInfo = [] }      
-    , Target { sourcePackageName = "haskell-tagged"
-             , sourceSpec = "apt:sid:haskell-tagged"
-             , relaxInfo = [] }
-    , Target{ sourcePackageName = "haskell-tagsoup"
-            , sourceSpec = "apt:sid:haskell-tagsoup"
-            , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-tar"
-             , sourceSpec = "apt:sid:haskell-tar"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-terminfo"
-             , sourceSpec = "apt:sid:haskell-terminfo"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-testpack"
-             , sourceSpec = "apt:sid:haskell-testpack"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-texmath"
-             , sourceSpec = "apt:sid:haskell-texmath"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-uniplate"
-             , sourceSpec="quilt:(apt:sid:haskell-uniplate):(darcs:http://src.seereason.com/haskell-uniplate-quilt)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-unix-compat"
-             , sourceSpec = "apt:sid:haskell-unix-compat"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-utility-ht"
-             , sourceSpec = "apt:sid:haskell-utility-ht"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-vector"
-             , sourceSpec = "apt:sid:haskell-vector"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-xhtml"
-             , sourceSpec = "apt:sid:haskell-xhtml"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-xml"
-             , sourceSpec = "apt:sid:haskell-xml"
-             , relaxInfo = [] }
-    , Target{ sourcePackageName = "haskell-xss-sanitize"
-            , sourceSpec = "apt:sid:haskell-xss-sanitize"
-            , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-zip-archive"
-             , sourceSpec = "apt:sid:haskell-zip-archive"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-zlib-bindings"
-             , sourceSpec = "apt:sid:haskell-zlib-bindings"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-zlib"
-             , sourceSpec = "apt:sid:haskell-zlib"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haxml"
-             , sourceSpec = "apt:sid:haxml"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "missingh"
-             , sourceSpec = "apt:sid:missingh"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-pcre-light"
-             , sourceSpec = "apt:sid:haskell-pcre-light"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-configfile"
-             , sourceSpec = "apt:sid:haskell-configfile"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-statistics"
-             , sourceSpec = "apt:sid:haskell-statistics"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-vector"
-             , sourceSpec = "apt:sid:haskell-vector"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-vector-algorithms"
-             , sourceSpec = "apt:sid:haskell-vector-algorithms"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-opengl"
-             , sourceSpec="apt:sid:haskell-opengl"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-glut"
-             , sourceSpec="apt:sid:haskell-glut"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-puremd5"
-             , sourceSpec="apt:sid:haskell-puremd5"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-binary"
-             -- Try removing the quilt when a new revision appears in sid
-             , sourceSpec = "quilt:(apt:sid:haskell-binary=0.5.0.2-2):(darcs:http://src.seereason.com/haskell-binary-quilt)"
-             -- , sourceSpec = "apt:sid:haskell-binary"
-             , relaxInfo = [] }
-    -- Version 1.11 of haskell-src-exts now sid requires changes to haskell-authenticate
-    , Target { sourcePackageName = "haskell-src-exts"
-             , sourceSpec = "apt:sid:haskell-src-exts"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hsx"
-             , sourceSpec = "apt:sid:haskell-hsx"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-hsp"
-             , sourceSpec = "apt:sid:haskell-hsp"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-tls"
-             -- http-enumerator 0.3.1 needs older tls, when we can upgrade to 0.6.5.4 we can use the tls in sid.
-             , sourceSpec = "apt:sid:haskell-tls"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-certificate"
-             -- Sid version is too new for haskell-tls 0.3
-             , sourceSpec = "apt:sid:haskell-certificate"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-asn1-data"
-             -- Sid version is too new for haskell-certificate 0.3.2
-             , sourceSpec = "quilt:(apt:sid:haskell-asn1-data):(darcs:" ++ repo ++ "/haskell-asn1-data-quilt)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-wai"
-             -- , sourceSpec = "apt:sid:haskell-wai" - sid version is 0.2.2.1-1, too old
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/wai/0.3.1/wai-0.3.1.tar.gz:5a777cf08713a55818955ec4d0748622):(darcs:http://src.seereason.com/haskell-wai-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-cgi"
-             -- Version in sid is 3001.1.7.4-1, our version is 3001.1.8.2
-             -- , sourceSpec = "apt:sid:haskell-cgi"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz:4092efaf00ac329b9771879f57a95323):(darcs:http://src.seereason.com/haskell-cgi-debian)"
-             , relaxInfo = [] }
---  Fails
---    , Target { sourcePackageName = "cdbs"
---             , sourceSpec = "apt:sid:cdbs"
---             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-pandoc"
-             -- Sid version needs cdbs >= 0.4.70~, which I can't seem to build.
-             -- , sourceSpec = "apt:sid:pandoc"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.5.1.1/pandoc-1.5.1.1.tar.gz:bfccc042ae0cf0901bbca1f87748f969):(darcs:http://src.seereason.com/haskell-pandoc-debian)"
-             , relaxInfo = [] }
-    -- Build dependency of darcs
-    , Target { sourcePackageName = "bash-completion"
-             , sourceSpec = "apt:sid:bash-completion"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "geneweb"
-             , sourceSpec = "apt:sid:geneweb"
-             , relaxInfo = [] }
-    -- Dependency of haskell-devscripts
-    , Target { sourcePackageName = "html-xml-utils"
-           , sourceSpec = "apt:sid:html-xml-utils"
-           , relaxInfo = [] }
-    -- Dependency of wordpress.  This target fails during an arch only
-    -- build, because it has no architecture dependent files.
-    , Target { sourcePackageName = "tinymce"
-             , sourceSpec="apt:sid:tinymce"
-             , relaxInfo = [] }
-    -- We don't currently use this.
-    , Target { sourcePackageName = "wordpress"
-             , sourceSpec="apt:sid:wordpress"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-tls-extra"
-             , sourceSpec = "apt:sid:haskell-tls-extra"
-             , relaxInfo = [] }
-    ]
+    map sid [ "cpphs"
+            , "haskell-transformers"
+            , "haskell-mtl"
+            , "happy"
+            , "haskell-utf8-string"
+            , "haskell-deepseq"
+            , "haskell-text"
+            , "haskell-hjavascript"
+            , "haskell-hjscript"
+            , "haskell-harp"
+            , "darcs"
+            , "agda"
+            , "agda-bin"
+            , "agda-stdlib"
+            , "haskell-attoparsec-enumerator"
+            , "haskell-attoparsec"
+            , "haskell-base64-bytestring"
+            , "haskell-blaze-builder"
+            , "haskell-blaze-html"
+            , "haskell-blaze-builder-enumerator"
+            , "haskell-bytestring-nums"
+            , "haskell-bzlib"
+            , "haskell-cereal"
+            , "haskell-citeproc-hs"
+            , "haskell-colour"
+            , "haskell-criterion"
+            , "haskell-crypto"
+            , "haskell-crypto-api"
+            , "haskell-cryptocipher"
+            , "haskell-cryptohash"
+            , "haskell-curl"
+            , "haskell-data-accessor"
+            , "haskell-data-accessor-template"
+            , "haskell-data-default"
+            , "haskell-dataenc"
+            , "haskell-debian"
+            , "haskell-digest"
+            , "haskell-diff"
+            , "haskell-dlist"
+            , "haskell-edison-api"
+            , "haskell-edison-core"
+            , "haskell-enumerator"
+            , "haskell-erf"
+            , "haskell-failure"
+            , "haskell-feed"
+            , "haskell-fgl"
+            , "haskell-hashed-storage"
+            , "haskell-haskeline"
+            , "haskell-haskell-src"
+            , "highlighting-kate"
+            , "haskell-hsemail"
+            , "hslogger"
+            , "haskell-hstringtemplate"
+            , "haskell-html"
+            , "haskell-case-insensitive"
+            , "haskell-cprng-aes"
+            , "haskell-http-types"
+            , "haskell-monad-control"
+            , "haskell-base-unicode-symbols"
+            , "haskell-zlib-enum"
+            , "haskell-http"
+            , "haskell-hunit"
+            , "haskell-irc"
+            , "haskell-json"
+            , "haskell-largeword"
+            , "magic-haskell"
+            , "haskell-maybet"
+            , "haskell-mmap"
+            , "haskell-monadcatchio-mtl"
+            , "haskell-mwc-random"
+            , "haskell-network"
+            , "haskell-pandoc-types"
+            , "haskell-parallel"
+            , "haskell-parsec2"
+            , "haskell-parsec"
+            , "haskell-pcre-light"
+            , "haskell-polyparse"
+            , "haskell-primitive"
+            , "haskell-quickcheck"
+            , "haskell-quickcheck1"
+            , "haskell-regex-base"
+            , "haskell-regex-compat"
+            , "haskell-regex-posix"
+            , "haskell-regex-tdfa"
+            , "haskell-safe"
+            , "haskell-semigroups"
+            , "haskell-sendfile"
+            , "haskell-sha"
+            , "haskell-smtpclient"
+            , "haskell-split"
+            , "haskell-stm"
+            , "haskell-strict-concurrency"
+            , "haskell-syb"
+            , "haskell-syb-with-class"
+            , "haskell-syb-with-class-instances-text"
+            , "haskell-tagged"
+            , "haskell-tagsoup"
+            , "haskell-tar"
+            , "haskell-terminfo"
+            , "haskell-testpack"
+            , "haskell-texmath"
+            , "haskell-uniplate"
+            , "haskell-unix-compat"
+            , "haskell-utility-ht"
+            , "haskell-vector"
+            , "haskell-xhtml"
+            , "haskell-xml"
+            , "haskell-xss-sanitize"
+            , "haskell-zip-archive"
+            , "haskell-zlib-bindings"
+            , "haskell-zlib"
+            , "haxml"
+            , "missingh"
+            , "haskell-pcre-light"
+            , "haskell-configfile"
+            , "haskell-statistics"
+            , "haskell-vector"
+            , "haskell-vector-algorithms"
+            , "haskell-opengl"
+            , "haskell-glut"
+            , "haskell-puremd5"
+            , "haskell-binary"
+            , "haskell-src-exts"
+            , "haskell-hsx"
+            , "haskell-hsp"
+            , "haskell-tls"
+            , "haskell-certificate"
+            , "haskell-asn1-data"
+            , "haskell-wai"
+            , "haskell-cgi"
+            -- , "cdbs"
+            , "bash-completion"
+            , "geneweb"
+            , "html-xml-utils"
+            , "tinymce"
+            , "wordpress"
+            -- , "haskell-hsx-jmacro"
+            ]
+
+{-
+-- |Here is a program to generate a list of all the packages in sid that have ghc for a build dependency.
+
+#!/usr/bin/env runghc
+
+import Data.Maybe (catMaybes)
+import Debian.Control (Control'(unControl), parseControlFromFile, fieldValue)
+import Debian.Relation (Relation(Rel), parseRelations)
+
+main =
+    parseControlFromFile "/home/dsf/.autobuilder/dists/sid/aptEnv/var/lib/apt/lists/mirrors.usc.edu_pub_linux_distributions_debian_dists_sid_main_source_Sources" >>=
+    either (error "parse") (mapM_ putStrLn . catMaybes . map checkPackage . unControl)
+    where
+      checkPackage p =
+          if any (\ (Rel name _ _) -> name == "ghc") rels then fieldValue "Package" p else Nothing
+          where
+            rels = either (const []) concat $
+                       maybe (Left undefined) parseRelations $
+                           fieldValue "Build-Depends" p
+-}

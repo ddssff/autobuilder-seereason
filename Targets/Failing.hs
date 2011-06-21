@@ -6,9 +6,6 @@ failingTargets release =
     , Target { sourcePackageName = "haskell-uvector"
              , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/uvector/0.1.1.0/uvector-0.1.1.0.tar.gz:423e254dbbef0b57687f8adc737f7901):(darcs:http://src.seereason.com/haskell-uvector-debian)"
              , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-statistics"
-             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/statistics/0.3.5/statistics-0.3.5.tar.gz:b351bee9514e26555f170676b3c66139):(darcs:http://src.seereason.com/haskell-statistics-debian)"
-             , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-derive"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/derive/2.3.0.2/derive-2.3.0.2.tar.gz:7f8ad00e17c1cea5ad103b1481dfc250):(darcs:" ++ repo ++ "/haskell-derive-debian)"
              , relaxInfo = [] }
@@ -26,9 +23,6 @@ failingTargets release =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hsx-xhtml"
              , sourceSpec = "deb-dir:(darcs:http://src.seereason.com/hsx-xhtml):(darcs:http://src.seereason.com/hsx-xhtml-debian)"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-vector-algorithms"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/vector-algorithms/0.3.4/vector-algorithms-0.3.4.tar.gz:1457802a2e0babf239c31b45d09d6b40):(darcs:http://src.seereason.com/haskell-vector-algorithms-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-benchpress"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/benchpress/0.2.2.3/benchpress-0.2.2.3.tar.gz:48cd691ebfd4dc6c5e6f5201ca545fac):(darcs:http://src.seereason.com/debian/haskell-benchpress-debian)"
@@ -88,3 +82,23 @@ failingTargets release =
 --             , relaxInfo = [] 
 --             }
     ]
+
+--    , Target { sourcePackageName = "eclipse-clp"
+--             , sourceSpec = "deb-dir:(uri:http://eclipseclp.org/Distribution/6.0_160/src/eclipse_src.tgz:75d074bf0ee66948e6afd3b69e51e81e):(darcs:http://src.seereason.com/eclipse-clp-debian)"
+--             , relaxInfo = [] }
+--  , Target { sourcePackageName = "haskell-binary"
+--             , sourceSpec = "quilt:(apt:sid:haskell-binary):(darcs:http://src.seereason.com/haskell-binary-quilt)"
+--             , relaxInfo = [] } -}
+--    , Target { sourcePackageName = "haskell-formlets"
+--             , sourceSpec = "darcs:http://src.seereason.com/formlets"
+--             , relaxInfo = [] }
+--    , Target { sourcePackageName="haskell-logict"
+--             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/logict/0.4/logict-0.4.tar.gz:39eeb4aa1d7a67b1c4865f01ca417b7d):(darcs:http://src.seereason.com/debian/haskell-logict-debian)"
+--             , relaxInfo = [] }
+--    , Target { sourcePackageName = "haskell-special-functors"
+--      , sourceSpec =
+--      "deb-dir:(uri:http://hackage.haskell.org/packages/archive/special-functors/1.0/special-functors-1.0.tar.gz:4547f0a1b4146d3621bcc95b11148939):(darcs:http://src.seereason.com/haskell-special-functors-debian)"
+--      , relaxInfo = [] }
+--    , Target { sourcePackageName = "tptp"
+--             , sourceSpec = "deb-dir:(uri:http://www.cs.miami.edu/~tptp/TPTP/Distribution/TPTP-v4.1.0.tgz:3cffa92b1def9b8b9865f65d0b775b86):(darcs:http://src.seereason.com/tptp-debian)"
+--             , relaxInfo = [] }
