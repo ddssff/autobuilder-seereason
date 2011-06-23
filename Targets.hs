@@ -13,16 +13,10 @@ import qualified Targets.Private as Private
 import qualified Targets.SeeReason as SeeReason
 import qualified Targets.Sid as Sid
 
-public home release =
-
-    -- Each of theses lists can be built on their own as a group,
-    -- and any sequence of groups can be built together as long as
-    -- no intermediate group is omitted.  Comment out the ones you
-    -- don't wish to build.
-
-    -- Sid.ring0 home ++
-    -- Sid.ring1 home ++
-    Hackage.targets home ++
-    SeeReason.targets home
+-- |Each of theses lists can be built on their own as a group,
+-- and any sequence of groups can be built together as long as
+-- no intermediate group is omitted.  Comment out the ones you
+-- don't wish to build.
+public home release = Sid.ring0 home ++ Sid.ring1 home ++ Hackage.targets home ++ SeeReason.targets home
 
 private home = Private.libraries home ++ Private.applications home

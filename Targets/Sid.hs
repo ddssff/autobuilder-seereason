@@ -1,13 +1,13 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Targets.Sid ( ring0, ring1 ) where
 
-import qualified Data.Set as Set
 import Debian.AutoBuilder.ParamClass (Target(..))
 import Targets.Common
 
-sid name = Target { sourcePackageName = name
-                  , sourceSpec = getSourceSpec name
-                  , relaxInfo = getRelaxInfo name }
+sid _home name =
+    Target { sourcePackageName = name
+           , sourceSpec = getSourceSpec name
+           , relaxInfo = getRelaxInfo name }
     where
       -- Special cases of non-empty relaxInfo lists
       getRelaxInfo "ghc" = ["ghc","happy","alex","xsltproc","haskell-devscripts","debhelper","quilt"]
@@ -22,10 +22,8 @@ sid name = Target { sourcePackageName = name
       getSourceSpec "haskell-bzlib" = "quilt:(apt:sid:haskell-bzlib):(darcs:http://src.seereason.com/haskell-bzlib-quilt)"
       getSourceSpec "haskell-json" = "quilt:(apt:sid:haskell-json=0.4.4-2):(darcs:" ++ repo ++ "/haskell-json-quilt)"
       getSourceSpec "haskell-uniplate" = "quilt:(apt:sid:haskell-uniplate):(darcs:http://src.seereason.com/haskell-uniplate-quilt)"
-      -- Try removing the quilt when a new revision appears in sid
+      -- Try removing the quilt when a revision newer than 0.5.0.2-2 appears in sid
       getSourceSpec "haskell-binary" = "quilt:(apt:sid:haskell-binary=0.5.0.2-2):(darcs:http://src.seereason.com/haskell-binary-quilt)"
-      -- Sid version is too new for haskell-certificate 0.3.2
-      getSourceSpec "haskell-asn1-data" = "quilt:(apt:sid:haskell-asn1-data):(darcs:" ++ repo ++ "/haskell-asn1-data-quilt)"
       -- sid version is 0.2.2.1-1, too old
       getSourceSpec "haskell-wai" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/wai/0.3.1/wai-0.3.1.tar.gz:5a777cf08713a55818955ec4d0748622):(darcs:http://src.seereason.com/haskell-wai-debian)"
       -- Version in sid is 3001.1.7.4-1, our version is 3001.1.8.2
@@ -33,8 +31,8 @@ sid name = Target { sourcePackageName = name
       -- Sid version needs cdbs >= 0.4.70~, which I can't seem to build.
       -- , sourceSpec = "apt:sid:pandoc"
       getSourceSpec "haskell-pandoc" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.5.1.1/pandoc-1.5.1.1.tar.gz:bfccc042ae0cf0901bbca1f87748f969):(darcs:http://src.seereason.com/haskell-pandoc-debian)"
-      -- I should add a dependency on libmagic-dev to libghc-magic-dev
-      -- getSourceSpec "magic-haskell" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/magic/1.0.8/magic-1.0.8.tar.gz:e81c493fe185431a5b70d4855ed4b87f):(darcs:http://src.seereason.com/magic-debian)"
+      -- Add a dependency on libmagic-dev to libghc-magic-dev.  Next upstream release should have this fix.
+      getSourceSpec "magic-haskell" = "quilt:(apt:sid:magic-haskell=1.0.8-7):(darcs:" ++ repo ++ "/magic-quilt)"
       -- The normal case
       getSourceSpec name = "apt:sid:" ++ name
 
@@ -45,17 +43,16 @@ instance Eq Target where
                Set.fromList (relaxInfo t1) == Set.fromList (relaxInfo t2)
 -}
 
-sid' t =
-    if t /= sid (sourcePackageName t) then error ("sid mismatch: " ++ sourcePackageName t) else t
-
 ring0 _home =
-    map sid [ "ghc"
+    map (sid _home)
+            [ "ghc"
             , "haskell-devscripts"
             , "haskell-dummy"
             , "hscolour" ]
 
 ring1 _home =
-    map sid [ "cpphs"
+    map (sid _home)
+            [ "cpphs"
             , "haskell-transformers"
             , "haskell-mtl"
             , "happy"
@@ -181,6 +178,7 @@ ring1 _home =
             , "haskell-hsx"
             , "haskell-hsp"
             , "haskell-tls"
+            , "haskell-tls-extra"
             , "haskell-certificate"
             , "haskell-asn1-data"
             , "haskell-wai"
