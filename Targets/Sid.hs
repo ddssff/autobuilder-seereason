@@ -10,8 +10,7 @@ sid _home name =
            , relaxInfo = getRelaxInfo name }
     where
       -- Special cases of non-empty relaxInfo lists
-      getRelaxInfo "ghc" = ["ghc","happy","alex","xsltproc","haskell-devscripts","debhelper","quilt"]
-      getRelaxInfo "haskell-devscripts" = ["hscolour"]
+      getRelaxInfo "ghc" = ["ghc","happy","alex","xsltproc","debhelper","quilt"]
       getRelaxInfo "hscolour" = ["hscolour"]
       getRelaxInfo "happy" = ["happy"]
       getRelaxInfo "haskell-utf8-string" = ["hscolour", "cpphs"]
@@ -34,7 +33,7 @@ sid _home name =
       -- Add a dependency on libmagic-dev to libghc-magic-dev.  Next upstream release should have this fix.
       getSourceSpec "magic-haskell" = "quilt:(apt:sid:magic-haskell=1.0.8-7):(darcs:" ++ repo ++ "/magic-quilt)"
       -- The normal case
-      getSourceSpec name = "apt:sid:" ++ name
+      getSourceSpec n = "apt:sid:" ++ n
 
 {-
 instance Eq Target where
