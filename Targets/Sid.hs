@@ -120,6 +120,7 @@ ring1 _home =
             , "haskell-maybet"
             , "haskell-mmap"
             , "haskell-monadcatchio-mtl"
+            , "haskell-monoid-transformer"
             , "haskell-mwc-random"
             , "haskell-network"
             , "haskell-pandoc-types"
