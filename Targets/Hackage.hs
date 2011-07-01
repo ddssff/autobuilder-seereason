@@ -48,7 +48,7 @@ targets _home =
              , sourceSpec = "deb-dir:(hackage:data-object):(darcs:http://src.seereason.com/haskell-data-object-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-digestive-functors"
-             , sourceSpec = "deb-dir:(hackage:digestive-functors):(darcs:http://src.seereason.com/haskell-digestive-functors-debian)"
+             , sourceSpec = "deb-dir:(hackage:digestive-functors=0.1.0.0):(darcs:http://src.seereason.com/haskell-digestive-functors-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-digestive-functors-happstack"
              , sourceSpec = "deb-dir:(hackage:digestive-functors-happstack):(darcs:http://src.seereason.com/haskell-digestive-functors-happstack-debian)"
@@ -192,7 +192,7 @@ targets _home =
              , sourceSpec = "deb-dir:(hackage:th-lift):(darcs:http://src.seereason.com/haskell-th-lift-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-haskell-src-meta"
-             , sourceSpec = "deb-dir:(hackage:haskell-src-meta):(darcs:http://src.seereason.com/haskell-haskell-src-meta-debian)"
+             , sourceSpec = "deb-dir:(hackage:haskell-src-meta=0.4):(darcs:http://src.seereason.com/haskell-haskell-src-meta-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-jmacro"
              , sourceSpec = "deb-dir:(hackage:jmacro):(darcs:http://src.seereason.com/haskell-jmacro-debian)"
@@ -217,7 +217,7 @@ targets _home =
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-aeson"
 
-             , sourceSpec = "deb-dir:(hackage:aeson):(darcs:" ++ repo ++ "/haskell-aeson-debian)"
+             , sourceSpec = "deb-dir:(hackage:aeson=0.3.2.8):(darcs:" ++ repo ++ "/haskell-aeson-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-hashable"
              , sourceSpec = "deb-dir:(hackage:hashable):(darcs:" ++ repo ++ "/haskell-hashable-debian)"
@@ -226,9 +226,9 @@ targets _home =
              , sourceSpec = "deb-dir:(hackage:unordered-containers):(darcs:" ++ repo ++ "/haskell-unordered-containers-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-blaze-textual"
-             , sourceSpec = "deb-dir:(hackage:blaze-textual):(darcs:" ++ repo ++ "/haskell-blaze-textual-debian)"
+             , sourceSpec = "deb-dir:(hackage:blaze-textual=0.1.0.0):(darcs:" ++ repo ++ "/haskell-blaze-textual-debian)"
              , relaxInfo = [] }
     , Target { sourcePackageName = "haskell-http-enumerator"
-             , sourceSpec = "deb-dir:(hackage:http-enumerator):(darcs:" ++ repo ++ "/haskell-http-enumerator-debian)"
+             , sourceSpec = "deb-dir:(hackage:http-enumerator=0.6.5.4):(darcs:" ++ repo ++ "/haskell-http-enumerator-debian)"
              , relaxInfo = [] }
     ]
