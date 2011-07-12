@@ -29,7 +29,7 @@ sid _home name =
       getSourceSpec "haskell-cgi" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz:4092efaf00ac329b9771879f57a95323):(darcs:http://src.seereason.com/haskell-cgi-debian)"
       -- Sid version needs cdbs >= 0.4.70~, which I can't seem to build.
       -- , sourceSpec = "apt:sid:pandoc"
-      getSourceSpec "haskell-pandoc" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.5.1.1/pandoc-1.5.1.1.tar.gz:bfccc042ae0cf0901bbca1f87748f969):(darcs:http://src.seereason.com/haskell-pandoc-debian)"
+      getSourceSpec "pandoc" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.5.1.1/pandoc-1.5.1.1.tar.gz:bfccc042ae0cf0901bbca1f87748f969):(darcs:http://src.seereason.com/haskell-pandoc-debian)"
       -- Add a dependency on libmagic-dev to libghc-magic-dev.  Next upstream release should have this fix.
       getSourceSpec "magic-haskell" = "quilt:(apt:sid:magic-haskell=1.0.8-7):(darcs:" ++ repo ++ "/magic-quilt)"
       -- The normal case
@@ -187,6 +187,7 @@ ring1 _home =
             , "bash-completion"
             , "geneweb"
             , "html-xml-utils"
+            , "pandoc"
             , "tinymce"
             , "wordpress"
             -- , "haskell-hsx-jmacro"
