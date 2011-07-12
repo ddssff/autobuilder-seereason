@@ -89,7 +89,7 @@ myBuildURI myBuildRelease =
 -- only with the vendor tag.  Sid is always a development release,
 -- Ubuntu creates a new one for each cycle.
 --
-myDevelopmentReleaseNames = ["sid", "natty"]
+myDevelopmentReleaseNames = ["sid", "oneiric"]
 
 -- This tag is used to construct the customized part of the version
 -- number for any package the autobuilder builds.
@@ -216,7 +216,8 @@ myIncludePackages myBuildRelease =
       "ubuntu" ->
           ["ubuntu-keyring"] ++
           case () of
-            _ | isPrefixOf "natty-" myBuildRelease -> []
+            _ | isPrefixOf "oneiric-" myBuildRelease -> []
+              | isPrefixOf "natty-" myBuildRelease -> []
               | isPrefixOf "maverick-" myBuildRelease -> []
               | isPrefixOf "lucid-" myBuildRelease -> []
               | isPrefixOf "karmic-" myBuildRelease -> [{-"upstart"-}]
@@ -281,7 +282,7 @@ ubuntuSourceLines ubuntuMirrorHost release =
 -- The names of the releases that we are able to create build environments for.
 --
 debianReleases = ["experimental", "sid", "wheezy", "squeeze", "lenny", "sarge"]
-ubuntuReleases = ["natty", "maverick", "lucid", "karmic", "jaunty", "intrepid", "hardy", "edgy", "feisty", "dapper"]
+ubuntuReleases = ["oneiric", "natty", "maverick", "lucid", "karmic", "jaunty", "intrepid", "hardy", "edgy", "feisty", "dapper"]
 
 oldDebianReleases = []
 oldUbuntuReleases = []
