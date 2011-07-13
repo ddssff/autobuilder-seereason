@@ -30,37 +30,15 @@ failingTargets release =
     , Target { sourcePackageName = "haskell-shellac"
              , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/Shellac/0.9.1/Shellac-0.9.1.tar.gz:0a563883b3acedb9c0d4308b44772f0f):(darcs:http://src.seereason.com/shellac-debian)"
              , relaxInfo = [] }
-    -- We need debhelper >= 7.0.50 for darcs 2.3.0.
-    -- However, one of its unit tests fails:
-    -- #   Failed test 'unavailable jobserver'
-    -- #   at t/buildsystems/buildsystem_tests line 540.
---  , Target { sourcePackageName = "debhelper"
---           , sourceSpec = "apt:" ++ sid ++ ":debhelper"
---           , relaxInfo = [] } -}
---  -- Required for darcs 2.3.0
---  -- Fails because of missing dependency libssh2-1-dev
---  , Target { sourcePackageName = "curl"
---           , sourceSpec = "apt:" ++ sid ++ ":curl"
---           , relaxInfo = [] } -}
 --  , Target { sourcePackageName = "tree-widget"
 --           , sourceSpec = "darcs:http://src.seereason.com/tree-widget"
 --           , relaxInfo = [] } -}
 --  , Target { sourcePackageName = "gtk2hs"
 --           , sourceSpec = "apt:" ++ sid ++ ":gtk2hs"
 --           , relaxInfo = [] }
---  , Target { sourcePackageName="haskell-chart"
---           , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/Chart/0.11/Chart-0.11.tar.gz:b7f67defe06694eef580542947106fc0):(darcs:http://src.seereason.com/haskell-chart-debian)"
---           , relaxInfo = [] }
---  , Target { sourcePackageName="haskell-criterion"
---           , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/criterion/0.1.2/criterion-0.1.2.tar.gz:0e4d1c2f546ab650e03c610034c20226):(darcs:http://src.seereason.com/haskell-criterion-debian)"
---           , relaxInfo = [] } -}
 --  , Target { sourcePackageName = "haskell-restarter"
 --           , sourceSpec = "darcs:http://src.seereason.com/Restarter"
 --           , relaxInfo = [] } -}
---    , Target { sourcePackageName = "jquery"
---             , sourceSpec = "apt:" ++ sid ++ ":jquery"
---             , relaxInfo = [] 
---             }
 --    , Target { sourcePackageName = "yui-compressor"
 --             , sourceSpec = "apt:" ++ sid ++ ":yui-compressor"
 --             , relaxInfo = [] 
@@ -77,20 +55,10 @@ failingTargets release =
 --             , sourceSpec = "proc:apt:" ++ sid ++ ":libstax-java"
 --             , relaxInfo = [] 
 --             }
---    , Target { sourcePackageName = "jqueryui"
---             , sourceSpec = "apt:" ++ sid ++ ":jqueryui"
---             , relaxInfo = [] 
---             }
     ]
 
 --    , Target { sourcePackageName = "eclipse-clp"
 --             , sourceSpec = "deb-dir:(uri:http://eclipseclp.org/Distribution/6.0_160/src/eclipse_src.tgz:75d074bf0ee66948e6afd3b69e51e81e):(darcs:http://src.seereason.com/eclipse-clp-debian)"
---             , relaxInfo = [] }
---  , Target { sourcePackageName = "haskell-binary"
---             , sourceSpec = "quilt:(apt:sid:haskell-binary):(darcs:http://src.seereason.com/haskell-binary-quilt)"
---             , relaxInfo = [] } -}
---    , Target { sourcePackageName = "haskell-formlets"
---             , sourceSpec = "darcs:http://src.seereason.com/formlets"
 --             , relaxInfo = [] }
 --    , Target { sourcePackageName="haskell-logict"
 --             , sourceSpec="deb-dir:(uri:http://hackage.haskell.org/packages/archive/logict/0.4/logict-0.4.tar.gz:39eeb4aa1d7a67b1c4865f01ca417b7d):(darcs:http://src.seereason.com/debian/haskell-logict-debian)"
