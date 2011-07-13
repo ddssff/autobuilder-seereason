@@ -8,18 +8,19 @@ import Debian.AutoBuilder.ParamClass (Target(..))
 import Targets.Common
 
 data Flag
-    = Pin String -- ^ Pin version number
-    | UC -- ^ Use hackage name as debian repo name without converting to lower case
-    | NP -- ^ Do not put haskell- prefix on debian repo name
-    | NS -- ^ Do not put suffix -debian on debian repo name
-    | P -- ^ Make it a proc: target
+    = Pin String   -- ^ Pin version number
+    | UC           -- ^ Use hackage name as debian repo name without converting to lower case
+    | NP           -- ^ Do not put haskell- prefix on debian repo name
+    | NS           -- ^ Do not put suffix -debian on debian repo name
+    | P            -- ^ Make it a proc: target
+    | Local String -- ^ Use a local repo, Argument is _home
     deriving Eq
 
 hackage :: String -> [Flag] -> Target
 hackage name flags =
     let debName = map toLower name in
     Target { sourcePackageName = "haskell-" ++ debName
-           , sourceSpec = proc ++ "deb-dir:(hackage:" ++ name ++ v ++ "):(darcs:" ++ repo ++ "/" ++ pre ++ name' ++ suff ++ ")"
+           , sourceSpec = proc ++ "deb-dir:(hackage:" ++ name ++ v ++ "):(darcs:" ++ r ++ "/" ++ pre ++ name' ++ suff ++ ")"
            , relaxInfo = [] }
     where
       pre = if elem NP flags then "" else "haskell-"
@@ -27,7 +28,10 @@ hackage name flags =
       name' = if elem UC flags then name else map toLower name
       proc = if elem P flags then "proc:" else ""
       v = foldl f "" flags
-          where f s (Pin ver) = "=" ++ ver
+          where f _ (Pin ver) = "=" ++ ver
+                f s _ = s
+      r = foldl f repo flags
+          where f _ (Local home) = localRepo home
                 f s _ = s
 
 targets _home =
