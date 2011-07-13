@@ -5,6 +5,9 @@ import Debian.AutoBuilder.ParamClass (Target(..))
 import Targets.Common
 import Targets.Hackage (hackage, Flag(..))
 
+-- |The _home parameter has an underscore because it is normally
+-- unused, but can be used temporarily to generate a path using the
+-- localRepo function.
 sid _home name =
     Target { sourcePackageName = name
            , sourceSpec = getSourceSpec name
