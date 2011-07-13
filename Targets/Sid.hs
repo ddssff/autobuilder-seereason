@@ -18,7 +18,7 @@ sid _home name =
       getRelaxInfo _ = []
 
       -- Special case sourceSpecs
-      getSourceSpec "ghc" = "quilt:(apt:sid:ghc):(darcs:" ++ localRepo _home ++ "/ghc7-quilt)"
+      getSourceSpec "ghc" = "quilt:(apt:sid:ghc):(darcs:" ++ repo ++ "/ghc7-quilt)"
       getSourceSpec "haskell-bzlib" = "quilt:(apt:sid:haskell-bzlib):(darcs:http://src.seereason.com/haskell-bzlib-quilt)"
       getSourceSpec "haskell-json" = "quilt:(apt:sid:haskell-json=0.4.4-2):(darcs:" ++ repo ++ "/haskell-json-quilt)"
       getSourceSpec "haskell-uniplate" = "quilt:(apt:sid:haskell-uniplate):(darcs:http://src.seereason.com/haskell-uniplate-quilt)"
