@@ -3,6 +3,7 @@ module Targets.Sid ( ring0, ring1 ) where
 
 import Debian.AutoBuilder.ParamClass (Target(..))
 import Targets.Common
+import Targets.Hackage (hackage, Flag(..))
 
 sid _home name =
     Target { sourcePackageName = name
@@ -32,7 +33,9 @@ sid _home name =
       -- , sourceSpec = "apt:sid:pandoc"
       getSourceSpec "jquery" = "proc:apt:sid:jquery"
       getSourceSpec "jqueryui" = "proc:apt:sid:jqueryui"
-      getSourceSpec "pandoc" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/pandoc/1.5.1.1/pandoc-1.5.1.1.tar.gz:bfccc042ae0cf0901bbca1f87748f969):(darcs:http://src.seereason.com/haskell-pandoc-debian)"
+      -- We have to build pandoc from hackage because the sid version depends on a version of cdbs that
+      -- can't be built for lucid.
+      getSourceSpec "pandoc" = sourceSpec (hackage "pandoc" [Pin "1.5.1.1"])
       -- Add a dependency on libmagic-dev to libghc-magic-dev.  Next upstream release should have this fix.
       getSourceSpec "magic-haskell" = "quilt:(apt:sid:magic-haskell=1.0.8-7):(darcs:" ++ repo ++ "/magic-quilt)"
       -- The normal case
