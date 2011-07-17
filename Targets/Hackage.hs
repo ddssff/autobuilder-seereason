@@ -7,15 +7,9 @@ import Data.List (intercalate)
 import Debian.AutoBuilder.ParamClass (Target(..))
 import Targets.Common
 
-data Flag
-    = Pin String   -- ^ Pin version number
-    | UC           -- ^ Use hackage name as debian repo name without converting to lower case
-    | NP           -- ^ Do not put haskell- prefix on debian repo name
-    | NS           -- ^ Do not put suffix -debian on debian repo name
-    | P            -- ^ Make it a proc: target
-    | Local String -- ^ Use a local repo, Argument is _home
-    deriving Eq
-
+-- |Build a hackage Target (a target that pulls the source code from
+-- hackage.haskell.org) from a the cabal package and some flags
+-- describing common variations on the mapping from one to another.
 hackage :: String -> [Flag] -> Target
 hackage name flags =
     let debName = map toLower name in
@@ -33,6 +27,16 @@ hackage name flags =
       r = foldl f repo flags
           where f _ (Local home) = localRepo home
                 f s _ = s
+
+data Flag
+    = Pin String   -- ^ Pin version number instead of using the most recent.  These arise when
+                   -- a new hackage version appears but we aren't ready to migrate.
+    | UC           -- ^ Use hackage name as debian repo name without converting to lower case
+    | NP           -- ^ Do not put haskell- prefix on debian repo name
+    | NS           -- ^ Do not put suffix -debian on debian repo name
+    | P            -- ^ Make it a proc: target
+    | Local String -- ^ Use a local repo, Argument is generally the _home parameter to targets.
+    deriving Eq
 
 targets _home =
     [ hackage "AES" []
