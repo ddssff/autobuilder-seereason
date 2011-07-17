@@ -44,7 +44,7 @@ targets _home =
     , hackage "ansi-wl-pprint" [NP]
     , hackage "applicative-extras" [NP]
     , hackage "attempt" [Pin "0.3.0"]
-    , hackage "authenticate" []
+    , hackage "authenticate" [Pin "0.9.1.6"]
     , hackage "bimap" []
     , hackage "bitset" []
     , hackage "blaze-from-html" []
