@@ -58,6 +58,7 @@ targets _home =
     , hackage "happstack" [NP, Pin "6.0.0"]
     , hackage "happstack-data" [NP]
     , hackage "happstack-ixset" [NP]
+    , hackage "ixset" [NP]
     , hackage "happstack-server" [NP, Pin "6.1.5"]
     , hackage "happstack-state" [NP]
     , hackage "happstack-util" [NP]
