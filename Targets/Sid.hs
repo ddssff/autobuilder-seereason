@@ -125,6 +125,20 @@ ring1 _home =
             , "haskell-irc"
             , "haskell-json"
             , "haskell-largeword"
+            , "haskell-leksah"
+            , "haskell-leksah-server" -- for leksah
+            , "haskell-strict" -- for leksah
+            , "haskell-binary-shared" -- for leksah
+            , "haskell-glib" -- for leksah
+            , "haskell-gtk" -- for leksah
+            , "haskell-gtksourceview2" -- for leksah
+            , "haskell-ltk" -- for leksah
+            , "gtk2hs-buildtools" -- for leksah
+            , "haskell-cairo" -- for leksah
+            , "haskell-pango" -- for leksah
+            , "haskell-gio" -- for leksah
+            , "haskell-haddock" -- for leksah
+            , "haskell-ghc-paths" -- for leksah
             , "magic-haskell"
             , "haskell-maybet"
             , "haskell-mmap"
