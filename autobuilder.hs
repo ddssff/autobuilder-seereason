@@ -32,65 +32,6 @@ import System.IO (hPutStr, hPutStrLn, hFlush, stderr)
 import Config
 import Usage
 
--- Assemble all the configuration info above.
-
--- |See Documentation in "Debian.AutoBuilder.ParamClass".
-params myBuildRelease =
-    ParamRec
-    { vendorTag = myVendorTag
-    , oldVendorTags = ["seereason"]
-    , autobuilderEmail = "SeeReason Autobuilder <autobuilder@seereason.org>"
-    , releaseSuffixes = myReleaseSuffixes
-    , buildRelease = ReleaseName {relName = myBuildRelease}
-    , uploadURI = myUploadURI myBuildRelease
-    , buildURI = myBuildURI myBuildRelease
-    -- What we plan to build
-    , targets = TargetNames Set.empty
-    , doUpload = myDoUpload
-    , doNewDist = myDoNewDist
-    , flushPool = myFlushPool
-    , useRepoCache = True
-    , forceBuild = myForceBuild
-    , buildTrumped = myBuildTrumped
-    , doSSHExport = myDoSSHExport
-    , doHelp = False
-    -- Things that are occasionally useful
-    , goals = myGoals
-    , dryRun = False
-    , allowBuildDependencyRegressions = False
-    , setEnv = []
-    , showSources = False
-    , showParams = False
-    , flushAll = False
-    , flushSource = False
-    , flushRoot = False
-    , verbosity = myVerbosity
-    , topDirParam = Nothing
-    , createRelease = []
-    , doNotChangeVersion = False
-    -- Things that rarely change
-    , sources = mySources myBuildRelease myDebianMirrorHost myUbuntuMirrorHost
-    , globalRelaxInfo = myGlobalRelaxInfo
-    , strictness = P.Moderate
-    , includePackages = myIncludePackages myBuildRelease
-    , excludePackages = myExcludePackages myBuildRelease
-    , components = myComponents myBuildRelease
-    , developmentReleaseNames = myDevelopmentReleaseNames
-    , releaseAliases = myReleaseAliases myBuildRelease
-    , archList = [Binary "i386",Binary "amd64"]
-    , newDistProgram = "newdist -v"
-    , requiredVersion = [(parseDebianVersion "5.17", Nothing)]
-    -- Things that are probably obsolete
-    , debug = False
-    , omitTargets = []
-    , extraReleaseTag = Nothing
-    , preferred = []
-    , buildDepends = []
-    , noClean = False
-    , cleanUp = False
-    , ifSourcesChanged = SourcesChangedError
-    }
-
 main = try (getArgs >>= getParams >>= M.main) >>=
        either (\ (e :: SomeException) -> hPutStrLn stderr ("Exception: " ++ show e)) return
 
@@ -205,3 +146,62 @@ optSpecs home =
                    [] -> error $ "Package not found: " ++ s
                    xs -> error $ "Multiple packages found: " ++ show (map sourcePackageName xs)
 -}
+
+-- Assemble all the configuration info above.
+
+-- |See Documentation in "Debian.AutoBuilder.ParamClass".
+params myBuildRelease =
+    ParamRec
+    { vendorTag = myVendorTag
+    , oldVendorTags = ["seereason"]
+    , autobuilderEmail = "SeeReason Autobuilder <autobuilder@seereason.org>"
+    , releaseSuffixes = myReleaseSuffixes
+    , buildRelease = ReleaseName {relName = myBuildRelease}
+    , uploadURI = myUploadURI myBuildRelease
+    , buildURI = myBuildURI myBuildRelease
+    -- What we plan to build
+    , targets = TargetNames Set.empty
+    , doUpload = myDoUpload
+    , doNewDist = myDoNewDist
+    , flushPool = myFlushPool
+    , useRepoCache = True
+    , forceBuild = myForceBuild
+    , buildTrumped = myBuildTrumped
+    , doSSHExport = myDoSSHExport
+    , doHelp = False
+    -- Things that are occasionally useful
+    , goals = myGoals
+    , dryRun = False
+    , allowBuildDependencyRegressions = False
+    , setEnv = []
+    , showSources = False
+    , showParams = False
+    , flushAll = False
+    , flushSource = False
+    , flushRoot = False
+    , verbosity = myVerbosity
+    , topDirParam = Nothing
+    , createRelease = []
+    , doNotChangeVersion = False
+    -- Things that rarely change
+    , sources = mySources myBuildRelease myDebianMirrorHost myUbuntuMirrorHost
+    , globalRelaxInfo = myGlobalRelaxInfo
+    , strictness = P.Moderate
+    , includePackages = myIncludePackages myBuildRelease
+    , excludePackages = myExcludePackages myBuildRelease
+    , components = myComponents myBuildRelease
+    , developmentReleaseNames = myDevelopmentReleaseNames
+    , releaseAliases = myReleaseAliases myBuildRelease
+    , archList = [Binary "i386",Binary "amd64"]
+    , newDistProgram = "newdist -v"
+    , requiredVersion = [(parseDebianVersion "5.17", Nothing)]
+    -- Things that are probably obsolete
+    , debug = False
+    , omitTargets = []
+    , extraReleaseTag = Nothing
+    , preferred = []
+    , buildDepends = []
+    , noClean = False
+    , cleanUp = False
+    , ifSourcesChanged = SourcesChangedError
+    }
