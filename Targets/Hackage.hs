@@ -113,7 +113,7 @@ targets _home =
     , hackage "RSA" []
     , hackage "aeson" []
     , hackage "hashable" []
-    , hackage "unordered-containers" []
+    , hackage "unordered-containers" [Pin "0.1.4.0"]
     , hackage "blaze-textual" [Pin "0.1.0.0"] -- Couldn't upgrade this one last time, I forget why
     , hackage "http-enumerator" [Pin "0.6.5.5"]
     -- This hackage target for pandoc is in the Sid module because
