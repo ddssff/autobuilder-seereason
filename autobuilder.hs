@@ -30,7 +30,6 @@ import System.Exit
 import System.IO (hPutStr, hPutStrLn, hFlush, stderr)
 
 import Config
-import Targets
 import Usage
 
 -- Assemble all the configuration info above.

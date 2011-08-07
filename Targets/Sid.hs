@@ -51,10 +51,15 @@ instance Eq Target where
                Set.fromList (relaxInfo t1) == Set.fromList (relaxInfo t2)
 -}
 
-ring0 _home =
+ring0 _home release =
+    [ case release of
+        "natty-seereason" -> Target { sourcePackageName = "ghc"
+                                    , sourceSpec = "quilt:(apt:experimental:ghc):(darcs:http://src.seereason.com/ghc7-quilt)"
+                                    , relaxInfo = ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
+        "lucid-seereason" -> sid _home "ghc"
+        _ -> error ("Unexpected release for ghc: " ++ show release) ] ++
     map (sid _home)
-            [ "ghc"
-            , "haskell-devscripts"
+            [ "haskell-devscripts"
             , "haskell-dummy"
             , "hscolour" ]
 
