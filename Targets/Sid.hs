@@ -52,21 +52,21 @@ instance Eq Target where
 -}
 
 ring0 _home release =
-    [ case release of
-        "natty-seereason" -> Target { sourcePackageName = "ghc"
-                                    , sourceSpec = "quilt:(apt:experimental:ghc):(darcs:http://src.seereason.com/ghc7-quilt)"
-                                    , relaxInfo = ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
-        "lucid-seereason" -> sid _home "ghc"
-        _ -> error ("Unexpected release for ghc: " ++ show release) ] ++
-    map (sid _home)
-            [ "haskell-devscripts"
-            , "haskell-dummy"
-            , "hscolour" ]
+    [ ghc ] ++ map (sid _home)  ["haskell-devscripts", "haskell-dummy", "hscolour"]
+    where
+      ghc =
+          case release of
+            "natty-seereason" ->
+                Target { sourcePackageName = "ghc"
+                       , sourceSpec = "quilt:(apt:experimental:ghc):(darcs:http://src.seereason.com/ghc7-quilt)"
+                       , relaxInfo = ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
+            "lucid-seereason" -> sid _home "ghc"
+            _ -> error ("Unexpected release: " ++ show release)
 
-ring1 _home =
+ring1 _home release =
+    [ cpphs ] ++
     map (sid _home)
-            [ "cpphs"
-            , "haskell-transformers"
+            [ "haskell-transformers"
             , "haskell-mtl"
             , "happy"
             , "haskell-utf8-string"
@@ -222,6 +222,15 @@ ring1 _home =
             , "wordpress"
             -- , "haskell-hsx-jmacro"
             ]
+    where
+      cpphs =
+          case release of
+            "natty-seereason" ->
+                Target { sourcePackageName = "cpphs"
+                       , sourceSpec = "quilt:(apt:sid:cpphs):(darcs:http://src.seereason.com/cpphs-quilt)"
+                       , relaxInfo = [] }
+            "lucid-seereason" -> sid _home "cpphs"
+            _ -> error ("Unexpected release: " ++ show release)
 
 {-
 -- |Here is a program to generate a list of all the packages in sid that have ghc for a build dependency.
