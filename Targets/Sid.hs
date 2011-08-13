@@ -81,6 +81,7 @@ ring1 _home release =
             , "agda-stdlib"
             , "haskell-attoparsec-enumerator"
             , "haskell-attoparsec"
+            , "haskell-attoparsec-text"
             , "haskell-base64-bytestring"
             , "haskell-blaze-builder"
             , "haskell-blaze-html"
@@ -176,7 +177,7 @@ ring1 _home release =
             , "haskell-syb-with-class"
             , "haskell-syb-with-class-instances-text"
             , "haskell-tagged"
-            , "haskell-tagsoup"
+            -- , "haskell-tagsoup" -- Moved to Hackage
             , "haskell-tar"
             , "haskell-terminfo"
             , "haskell-testpack"

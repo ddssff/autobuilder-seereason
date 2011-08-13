@@ -38,13 +38,20 @@ data Flag
     | Local String -- ^ Use a local repo, Argument is generally the _home parameter to targets.
     deriving Eq
 
+-- | By default, these targets expect to find a debianization package
+-- named "haskell-<packagename>-debian" in the repo exported from
+-- Targets.Common.  To pull the debianization from a local repo add
+-- the flag Local _home.
+-- 
+-- We usually create the debianization using this command:
+--     cabal-debian --debianize --maintainer '...'
 targets _home =
     [ hackage "AES" []
     , hackage "ansi-terminal" [NP]
     , hackage "ansi-wl-pprint" [NP]
     , hackage "applicative-extras" [NP]
     , hackage "attempt" []
-    , hackage "authenticate" [Pin "0.9.1.7"]
+    , hackage "authenticate" []
     , hackage "bimap" []
     , hackage "bitset" []
     , hackage "blaze-from-html" []
@@ -114,8 +121,12 @@ targets _home =
     , hackage "aeson" []
     , hackage "hashable" []
     , hackage "unordered-containers" [Pin "0.1.4.0"]
-    , hackage "blaze-textual" [Pin "0.1.0.0"] -- Couldn't upgrade this one last time, I forget why
+    , hackage "blaze-textual" []
     , hackage "http-enumerator" [Pin "0.6.5.5"]
+    , hackage "xml-enumerator" []
+    , hackage "xml-types" []
+    , hackage "attoparsec-text-enumerator" []
+    , hackage "tagsoup" []
     -- This hackage target for pandoc is in the Sid module because
     -- some pandoc dependencies are there.  We would like to build the
     -- sid version of pandoc, but it requires a version of cdbs that
