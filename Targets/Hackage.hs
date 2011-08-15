@@ -82,7 +82,11 @@ targets _home release =
     , hackage "gd" []
     , hackage "gnuplot" []
     , hackage "happstack" [NP]
-    , hackage "happstack-data" [NP]
+    -- Switch to the hackage target for happstack-data once a new upstream appears in hackage.
+    , Target { sourcePackageName = "haskell-happstack-data"
+             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz:be72c4c11d1317bf52c80782eac28a2d):(darcs:http://src.seereason.com/happstack-data-debian)"
+             , relaxInfo = [] }
+    -- , hackage "happstack-data" [NP]
     , hackage "happstack-ixset" [NP]
     , hackage "ixset" [NP]
     , hackage "happstack-server" [NP]
