@@ -17,6 +17,6 @@ import qualified Targets.Sid as Sid
 -- and any sequence of groups can be built together as long as
 -- no intermediate group is omitted.  Comment out the ones you
 -- don't wish to build.
-public home release = Sid.ring0 home release ++ Sid.ring1 home release ++ Hackage.targets home ++ SeeReason.targets home
+public home release = Sid.ring0 home release ++ Sid.ring1 home release ++ Hackage.targets home release ++ SeeReason.targets home
 
 private home = Private.libraries home ++ Private.applications home

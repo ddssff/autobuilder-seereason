@@ -38,6 +38,18 @@ data Flag
     | Local String -- ^ Use a local repo, Argument is generally the _home parameter to targets.
     deriving Eq
 
+-- |If these work in natty they would almost certainly work in lucid.
+releaseTargets _home "natty-seereason" =
+    [ hackage "text" []
+    -- , hackage "mtl" []
+    -- , hackage "deepseq" []
+    -- , hackage "transformers" []
+    ]
+releaseTargets _home "lucid-seereason" =
+    []
+releaseTargets _home release =
+    error $ "Unexpected release: " ++ release
+
 -- | By default, these targets expect to find a debianization package
 -- named "haskell-<packagename>-debian" in the repo exported from
 -- Targets.Common.  To pull the debianization from a local repo add
@@ -45,7 +57,8 @@ data Flag
 -- 
 -- We usually create the debianization using this command:
 --     cabal-debian --debianize --maintainer '...'
-targets _home =
+targets _home release =
+    releaseTargets _home release ++
     [ hackage "AES" []
     , hackage "ansi-terminal" [NP]
     , hackage "ansi-wl-pprint" [NP]
