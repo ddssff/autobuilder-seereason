@@ -26,6 +26,8 @@ sid _home name =
       getSourceSpec "haskell-bzlib" = "quilt:(apt:sid:haskell-bzlib):(darcs:http://src.seereason.com/haskell-bzlib-quilt)"
       getSourceSpec "haskell-json" = "quilt:(apt:sid:haskell-json=0.4.4-2):(darcs:" ++ repo ++ "/haskell-json-quilt)"
       getSourceSpec "haskell-uniplate" = "quilt:(apt:sid:haskell-uniplate):(darcs:http://src.seereason.com/haskell-uniplate-quilt)"
+      -- Apply a patch I sent to marco
+      getSourceSpec "haskell-debian" = "quilt:(apt:sid:haskell-debian):(darcs:" ++ repo ++ "/haskell-debian-quilt)"
       -- Try removing the quilt when a revision newer than 0.5.0.2-2 appears in sid
       getSourceSpec "haskell-binary" = "quilt:(apt:sid:haskell-binary=0.5.0.2-2):(darcs:http://src.seereason.com/haskell-binary-quilt)"
       -- sid version is 0.2.2.1-1, too old
