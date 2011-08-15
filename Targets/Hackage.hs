@@ -14,19 +14,19 @@ hackage :: String -> [Flag] -> Target
 hackage name flags =
     let debName = map toLower name in
     Target { sourcePackageName = "haskell-" ++ debName
-           , sourceSpec = proc ++ "deb-dir:(hackage:" ++ name ++ v ++ "):(darcs:" ++ r ++ "/" ++ pre ++ name' ++ suff ++ ")"
+           , sourceSpec = proc ++ "hackage:" ++ name ++ v
            , relaxInfo = [] }
     where
-      pre = if elem NP flags then "" else "haskell-"
-      suff = if elem NS flags then "" else "-debian"
-      name' = if elem UC flags then name else map toLower name
+      -- pre = if elem NP flags then "" else "haskell-"
+      -- suff = if elem NS flags then "" else "-debian"
+      -- name' = if elem UC flags then name else map toLower name
       proc = if elem P flags then "proc:" else ""
       v = foldl f "" flags
           where f _ (Pin ver) = "=" ++ ver
                 f s _ = s
-      r = foldl f repo flags
-          where f _ (Local home) = localRepo home
-                f s _ = s
+      -- r = foldl f repo flags
+      --     where f _ (Local home) = localRepo home
+      --           f s _ = s
 
 data Flag
     = Pin String   -- ^ Pin version number instead of using the most recent.  These arise when
