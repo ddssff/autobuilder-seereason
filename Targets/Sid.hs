@@ -43,6 +43,10 @@ sid _home name =
       getSourceSpec "pandoc" = sourceSpec (hackage "pandoc" [Pin "1.5.1.1"])
       -- Add a dependency on libmagic-dev to libghc-magic-dev.  Next upstream release should have this fix.
       getSourceSpec "magic-haskell" = "quilt:(apt:sid:magic-haskell=1.0.8-7):(darcs:" ++ repo ++ "/magic-quilt)"
+      -- Pinned version numbers, when these are bumped we want to move to hackage targets.
+      getSourceSpec "haskell-deepseq" = "apt:sid:haskell-deepseq=1.1.0.2-2"
+      getSourceSpec "haskell-transformers" = "apt:sid:haskell-transformers=0.2.2.0-3"
+      getSourceSpec "haskell-mtl" = "apt:sid:haskell-mtl=2.0.1.0-2"
       -- The normal case
       getSourceSpec n = "apt:sid:" ++ n
 
@@ -65,15 +69,13 @@ ring0 _home release =
             "lucid-seereason" -> sid _home "ghc"
             _ -> error ("Unexpected release: " ++ show release)
 
-ring1 _home release =
-    [ cpphs ] ++
+commonSidPackages _home =
     map (sid _home)
-            [ "haskell-transformers"
-            , "haskell-mtl"
-            , "happy"
-            , "haskell-utf8-string"
+            [ "happy"
             , "haskell-deepseq"
-            , "haskell-text"
+            , "haskell-transformers"
+            , "haskell-mtl"
+            , "haskell-utf8-string"
             , "haskell-hjavascript"
             , "haskell-hjscript"
             , "haskell-harp"
@@ -225,15 +227,20 @@ ring1 _home release =
             , "wordpress"
             -- , "haskell-hsx-jmacro"
             ]
-    where
-      cpphs =
-          case release of
-            "natty-seereason" ->
-                Target { sourcePackageName = "cpphs"
-                       , sourceSpec = "quilt:(apt:sid:cpphs):(darcs:http://src.seereason.com/cpphs-quilt)"
-                       , relaxInfo = [] }
-            "lucid-seereason" -> sid _home "cpphs"
-            _ -> error ("Unexpected release: " ++ show release)
+
+releaseSidPackages _home "natty-seereason" =
+    [ Target { sourcePackageName = "cpphs"
+             , sourceSpec = "quilt:(apt:sid:cpphs):(darcs:http://src.seereason.com/cpphs-quilt)"
+             , relaxInfo = [] } ]
+
+releaseSidPackages _home "lucid-seereason" =
+    map (sid _home)
+        [ "cpphs"
+        , "haskell-text" ]
+
+releaseSidPackages _ release = error ("Unexpected release: " ++ show release)
+
+ring1 _home release = commonSidPackages _home ++ releaseSidPackages _home release
 
 {-
 -- |Here is a program to generate a list of all the packages in sid that have ghc for a build dependency.
