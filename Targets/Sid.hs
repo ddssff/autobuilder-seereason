@@ -8,7 +8,7 @@ import Targets.Hackage (hackage, Flag(..))
 -- |The _home parameter has an underscore because it is normally
 -- unused, but can be used temporarily to generate a path using the
 -- localRepo function.
-sid _home name =
+sid _home release name =
     Target { sourcePackageName = name
            , sourceSpec = getSourceSpec name
            , relaxInfo = getRelaxInfo name }
@@ -27,7 +27,8 @@ sid _home name =
       getSourceSpec "haskell-json" = "quilt:(apt:sid:haskell-json=0.4.4-2):(darcs:" ++ repo ++ "/haskell-json-quilt)"
       getSourceSpec "haskell-uniplate" = "quilt:(apt:sid:haskell-uniplate):(darcs:http://src.seereason.com/haskell-uniplate-quilt)"
       -- Apply a patch I sent to marco
-      getSourceSpec "haskell-debian" = "quilt:(apt:sid:haskell-debian):(darcs:" ++ repo ++ "/haskell-debian-quilt)"
+      -- getSourceSpec "haskell-debian" = "quilt:(apt:sid:haskell-debian):(darcs:" ++ localRepo _home ++ "/haskell-debian-quilt)"
+      getSourceSpec "haskell-debian" = "darcs:" ++ repo ++ "/haskell-debian-new"
       -- Try removing the quilt when a revision newer than 0.5.0.2-2 appears in sid
       getSourceSpec "haskell-binary" = "quilt:(apt:sid:haskell-binary=0.5.0.2-2):(darcs:http://src.seereason.com/haskell-binary-quilt)"
       -- sid version is 0.2.2.1-1, too old
@@ -40,7 +41,7 @@ sid _home name =
       getSourceSpec "jqueryui" = "proc:apt:sid:jqueryui"
       -- We have to build pandoc from hackage because the sid version depends on a version of cdbs that
       -- can't be built for lucid.
-      getSourceSpec "pandoc" = sourceSpec (hackage "pandoc" [Pin "1.5.1.1"])
+      getSourceSpec "pandoc" = sourceSpec (hackage release "pandoc" [Pin "1.5.1.1"])
       -- Add a dependency on libmagic-dev to libghc-magic-dev.  Next upstream release should have this fix.
       getSourceSpec "magic-haskell" = "quilt:(apt:sid:magic-haskell=1.0.8-7):(darcs:" ++ repo ++ "/magic-quilt)"
       -- Pinned version numbers, when these are bumped we want to move to hackage targets.
@@ -58,7 +59,7 @@ instance Eq Target where
 -}
 
 ring0 _home release =
-    [ ghc ] ++ map (sid _home)  ["haskell-devscripts", "haskell-dummy", "hscolour"]
+    [ ghc ] ++ map (sid _home release)  ["haskell-devscripts", "haskell-dummy", "hscolour"]
     where
       ghc =
           case release of
@@ -66,13 +67,12 @@ ring0 _home release =
                 Target { sourcePackageName = "ghc"
                        , sourceSpec = "quilt:(apt:experimental:ghc):(darcs:http://src.seereason.com/ghc7-quilt)"
                        , relaxInfo = ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
-            "lucid-seereason" -> sid _home "ghc"
+            "lucid-seereason" -> sid _home release "ghc"
             _ -> error ("Unexpected release: " ++ show release)
 
-commonSidPackages _home =
-    map (sid _home)
-            [ "happy"
-            , "haskell-deepseq"
+commonSidPackages _home release =
+    map (sid _home release)
+            [ "haskell-deepseq"
             , "haskell-transformers"
             , "haskell-mtl"
             , "haskell-utf8-string"
@@ -130,7 +130,6 @@ commonSidPackages _home =
             , "haskell-monad-control"
             , "haskell-base-unicode-symbols"
             , "haskell-zlib-enum"
-            , "haskell-http"
             , "haskell-hunit"
             , "haskell-irc"
             , "haskell-json"
@@ -143,7 +142,6 @@ commonSidPackages _home =
             , "haskell-gtk" -- for leksah
             , "haskell-gtksourceview2" -- for leksah
             , "haskell-ltk" -- for leksah
-            , "gtk2hs-buildtools" -- for leksah
             , "haskell-cairo" -- for leksah
             , "haskell-pango" -- for leksah
             , "haskell-gio" -- for leksah
@@ -155,7 +153,6 @@ commonSidPackages _home =
             , "haskell-monadcatchio-mtl"
             , "haskell-monoid-transformer"
             , "haskell-mwc-random"
-            , "haskell-network"
             , "haskell-pandoc-types"
             , "haskell-parallel"
             , "haskell-parsec2"
@@ -163,22 +160,18 @@ commonSidPackages _home =
             , "haskell-pcre-light"
             , "haskell-polyparse"
             , "haskell-primitive"
-            , "haskell-quickcheck"
             , "haskell-quickcheck1"
             , "haskell-regex-base"
             , "haskell-regex-compat"
             , "haskell-regex-posix"
             , "haskell-regex-tdfa"
             , "haskell-safe"
-            , "haskell-semigroups"
             , "haskell-sendfile"
             , "haskell-sha"
             , "haskell-smtpclient"
             , "haskell-split"
             , "haskell-stm"
             , "haskell-strict-concurrency"
-            , "haskell-syb"
-            , "haskell-syb-with-class"
             , "haskell-syb-with-class-instances-text"
             , "haskell-tagged"
             -- , "haskell-tagsoup" -- Moved to Hackage
@@ -207,7 +200,6 @@ commonSidPackages _home =
             , "haskell-glut"
             , "haskell-puremd5"
             , "haskell-binary"
-            , "haskell-src-exts"
             , "haskell-hsx"
             , "haskell-hsp"
             , "haskell-tls"
@@ -233,14 +225,23 @@ releaseSidPackages _home "natty-seereason" =
              , sourceSpec = "quilt:(apt:sid:cpphs):(darcs:http://src.seereason.com/cpphs-quilt)"
              , relaxInfo = [] } ]
 
-releaseSidPackages _home "lucid-seereason" =
-    map (sid _home)
+releaseSidPackages _home release@"lucid-seereason" =
+    map (sid _home release)
         [ "cpphs"
-        , "haskell-text" ]
+        , "happy"
+        , "haskell-text"
+        , "haskell-http"
+        , "gtk2hs-buildtools" -- for leksah
+        , "haskell-network"
+        , "haskell-quickcheck"
+        , "haskell-semigroups"
+        , "haskell-syb"
+        , "haskell-syb-with-class"
+        , "haskell-src-exts" ]
 
 releaseSidPackages _ release = error ("Unexpected release: " ++ show release)
 
-ring1 _home release = commonSidPackages _home ++ releaseSidPackages _home release
+ring1 _home release = commonSidPackages _home release ++ releaseSidPackages _home release
 
 {-
 -- |Here is a program to generate a list of all the packages in sid that have ghc for a build dependency.
