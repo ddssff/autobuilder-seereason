@@ -190,6 +190,7 @@ params myBuildRelease =
     , includePackages = myIncludePackages myBuildRelease
     , excludePackages = myExcludePackages myBuildRelease
     , components = myComponents myBuildRelease
+    , ghcVersion = myCompilerVersion myBuildRelease
     , developmentReleaseNames = myDevelopmentReleaseNames
     , releaseAliases = myReleaseAliases myBuildRelease
     , archList = [Binary "i386",Binary "amd64"]

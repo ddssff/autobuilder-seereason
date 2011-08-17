@@ -15,6 +15,7 @@ module Config
     , myIncludePackages
     , myExcludePackages
     , myComponents
+    , myCompilerVersion
     , myFlushPool
     , myForceBuild
     , myBuildTrumped
@@ -234,6 +235,10 @@ myComponents myBuildRelease =
       "debian" -> ["main", "contrib", "non-free"]
       "ubuntu" -> ["main", "restricted", "universe", "multiverse"]
       _ -> error $ "Invalid build release: " ++ myBuildRelease
+
+myCompilerVersion "natty-seereason" = Just "7.2.1"
+myCompilerVersion "lucid-seereason" = Just "7.0.3"
+myCompilerVersion myBuildRelease = Nothing
 
 ------------------------- SOURCES --------------------------------
 
