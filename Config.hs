@@ -238,7 +238,7 @@ myComponents myBuildRelease =
 
 myCompilerVersion "natty-seereason" = Just "7.2.1"
 myCompilerVersion "lucid-seereason" = Just "7.0.3"
-myCompilerVersion myBuildRelease = Nothing
+myCompilerVersion _myBuildRelease = Nothing
 
 ------------------------- SOURCES --------------------------------
 
