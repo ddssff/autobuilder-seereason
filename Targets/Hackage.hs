@@ -102,7 +102,7 @@ targets _home release =
     , debianize "ansi-wl-pprint"
     , hackage release "applicative-extras" [NP]
     , hackage release "attempt" []
-    , hackage release "authenticate" []
+    , debianize "authenticate"
     , hackage release "bimap" []
     , hackage release "bitset" []
     , hackage release "blaze-from-html" []
