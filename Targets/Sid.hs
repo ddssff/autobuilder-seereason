@@ -117,7 +117,6 @@ commonSidPackages _home release =
             , "haskell-feed"
             , "haskell-fgl"
             , "haskell-hashed-storage"
-            , "haskell-haskeline"
             , "haskell-haskell-src"
             , "highlighting-kate"
             , "haskell-hsemail"
@@ -138,7 +137,6 @@ commonSidPackages _home release =
             , "haskell-leksah-server" -- for leksah
             , "haskell-strict" -- for leksah
             , "haskell-binary-shared" -- for leksah
-            , "haskell-glib" -- for leksah
             , "haskell-gtk" -- for leksah
             , "haskell-gtksourceview2" -- for leksah
             , "haskell-ltk" -- for leksah
@@ -158,7 +156,6 @@ commonSidPackages _home release =
             , "haskell-parsec2"
             , "haskell-parsec"
             , "haskell-pcre-light"
-            , "haskell-polyparse"
             , "haskell-primitive"
             , "haskell-quickcheck1"
             , "haskell-regex-base"
@@ -173,7 +170,7 @@ commonSidPackages _home release =
             , "haskell-stm"
             , "haskell-strict-concurrency"
             , "haskell-syb-with-class-instances-text"
-            , "haskell-tagged"
+            -- , "haskell-tagged"
             -- , "haskell-tagsoup" -- Moved to Hackage
             , "haskell-tar"
             , "haskell-terminfo"
@@ -189,7 +186,6 @@ commonSidPackages _home release =
             , "haskell-zip-archive"
             , "haskell-zlib-bindings"
             , "haskell-zlib"
-            , "haxml"
             , "missingh"
             , "haskell-pcre-light"
             , "haskell-configfile"
@@ -200,7 +196,6 @@ commonSidPackages _home release =
             , "haskell-glut"
             , "haskell-puremd5"
             , "haskell-binary"
-            , "haskell-hsx"
             , "haskell-hsp"
             , "haskell-tls"
             , "haskell-tls-extra"
@@ -234,10 +229,17 @@ releaseSidPackages _home release@"lucid-seereason" =
         , "gtk2hs-buildtools" -- for leksah
         , "haskell-network"
         , "haskell-quickcheck"
-        , "haskell-semigroups"
         , "haskell-syb"
         , "haskell-syb-with-class"
-        , "haskell-src-exts" ]
+        , "haskell-src-exts"
+        , "haskell-tagged"
+        , "haskell-semigroups"
+        , "haskell-polyparse"
+        , "haxml"
+        , "haskell-haskeline"
+        , "haskell-hsx"
+        , "haskell-glib" -- for leksah
+        ]
 
 releaseSidPackages _ release = error ("Unexpected release: " ++ show release)
 

@@ -67,10 +67,17 @@ releaseTargets _home release@"natty-seereason" =
     , hackage release "QuickCheck" []
     , hackage release "syb" []
     , hackage release "syb-with-class" []
-    , hackage release "semigroups" []
     , hackage release "gtk2hs-buildtools" []
     , hackage release "HTTP" []
     , hackage release "haskell-src-exts" []
+    , debianize "random"
+    , debianize "semigroups"
+    , debianize "tagged"
+    , debianize "polyparse"
+    , debianize "HaXml"
+    , debianize "haskeline"
+    , debianize "hsx"
+    , debianize "glib"
     -- , hackage release "mtl" []
     -- , hackage release "deepseq" []
     -- , hackage release "transformers" []
@@ -92,7 +99,7 @@ targets _home release =
     [ hackage release "AES" []
     , hackage release "monads-tf" []
     , debianize "ansi-terminal"
-    , hackage release "ansi-wl-pprint" [NP]
+    , debianize "ansi-wl-pprint"
     , hackage release "applicative-extras" [NP]
     , hackage release "attempt" []
     , hackage release "authenticate" []
