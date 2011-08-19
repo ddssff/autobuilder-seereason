@@ -215,7 +215,7 @@ commonSidPackages _home release =
             -- , "haskell-hsx-jmacro"
             ]
 
-releaseSidPackages _home "natty-seereason" =
+releaseSidPackages _home _release@"natty-seereason" =
     [ Target { sourcePackageName = "cpphs"
              , sourceSpec = "quilt:(apt:sid:cpphs):(darcs:http://src.seereason.com/cpphs-quilt)"
              , relaxInfo = [] }
@@ -223,8 +223,8 @@ releaseSidPackages _home "natty-seereason" =
              , sourceSpec = "quilt:(apt:sid:happy):(darcs:" ++ repo ++ "/happy-quilt)"
              , relaxInfo = [ "happy" ] } ]
 
-releaseSidPackages _home release@"lucid-seereason" =
-    map (sid _home release)
+releaseSidPackages _home _release@"lucid-seereason" =
+    map (sid _home _release)
         [ "cpphs"
         , "haskell-text"
         , "haskell-http"
