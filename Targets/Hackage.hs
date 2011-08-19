@@ -62,7 +62,9 @@ data Flag
 releaseTargets _home release@"natty-seereason" =
     [ -- Targets that are taken from Sid in lucid
       hackage release "text" []
-    , hackage release "happy" []
+    -- Doesn't build with our debianization due to funky bootstrapping
+    -- files in dist/build/happy/happy-tmp.
+    -- , hackage release "happy" []
     , hackage release "network" []
     , hackage release "QuickCheck" []
     , hackage release "syb" []

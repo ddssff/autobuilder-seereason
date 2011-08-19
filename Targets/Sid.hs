@@ -218,12 +218,14 @@ commonSidPackages _home release =
 releaseSidPackages _home "natty-seereason" =
     [ Target { sourcePackageName = "cpphs"
              , sourceSpec = "quilt:(apt:sid:cpphs):(darcs:http://src.seereason.com/cpphs-quilt)"
-             , relaxInfo = [] } ]
+             , relaxInfo = [] }
+    , Target { sourcePackageName = "happy"
+             , sourceSpec = "quilt:(apt:sid:happy):(darcs:" ++ repo ++ "/happy-quilt)"
+             , relaxInfo = [ "happy" ] } ]
 
 releaseSidPackages _home release@"lucid-seereason" =
     map (sid _home release)
         [ "cpphs"
-        , "happy"
         , "haskell-text"
         , "haskell-http"
         , "gtk2hs-buildtools" -- for leksah
@@ -239,7 +241,10 @@ releaseSidPackages _home release@"lucid-seereason" =
         , "haskell-haskeline"
         , "haskell-hsx"
         , "haskell-glib" -- for leksah
-        ]
+        ] ++
+    [ Target { sourcePackageName = "happy"
+             , sourceSpec = "apt:sid:happy"
+             , relaxInfo = [ "happy" ] } ]
 
 releaseSidPackages _ release = error ("Unexpected release: " ++ show release)
 
