@@ -197,6 +197,7 @@ myReleaseAliases myBuildRelease =
 myIncludePackages myBuildRelease = 
     [ "debian-archive-keyring"
     , "build-essential"         -- This is required by autobuilder code that opens the essential-packages list
+    , "pkg-config"              -- Some packages now depend on this package via new cabal options.
     -- , "perl-base"
     -- , "gnupg"
     -- , "dpkg"
