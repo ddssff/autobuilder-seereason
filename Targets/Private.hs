@@ -1,44 +1,44 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Targets.Private (libraries, applications) where
 
-import Debian.AutoBuilder.ParamClass (Target(..))
+import qualified Debian.AutoBuilder.Params as P
 import Targets.Common
 
 libraries _home =
-    [ Target { sourcePackageName = "haskell-filecache"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/haskell-filecache"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-document"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/haskell-document"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-generic-formlets3"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/generic-formlets3"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-ontology"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/haskell-ontology"
-             , relaxInfo = [] }
+    [ P.Package { P.name = "haskell-filecache"
+                , P.spec = "darcs:" ++ privateRepo ++ "/haskell-filecache"
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-document"
+                , P.spec = "darcs:" ++ privateRepo ++ "/haskell-document"
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-generic-formlets3"
+                , P.spec = "darcs:" ++ privateRepo ++ "/generic-formlets3"
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-ontology"
+                , P.spec = "darcs:" ++ privateRepo ++ "/haskell-ontology"
+                , P.flags = [] }
     ]
 
 applications _home =
-    [ Target { sourcePackageName = "haskell-appraisal"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/artvaluereport"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-happstack-mailinglist"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/mailingList"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-seereason"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/seereason"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "haskell-creativeprompts"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/creativeprompts"
-             , relaxInfo = [] }
-    , Target { sourcePackageName = "prefeteria"
-             , sourceSpec = "darcs:" ++ privateRepo ++ "/prefeteria"
-             , relaxInfo = [] }
+    [ P.Package { P.name = "haskell-appraisal"
+                , P.spec = "darcs:" ++ privateRepo ++ "/artvaluereport"
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-happstack-mailinglist"
+                , P.spec = "darcs:" ++ privateRepo ++ "/mailingList"
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-seereason"
+                , P.spec = "darcs:" ++ privateRepo ++ "/seereason"
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-creativeprompts"
+                , P.spec = "darcs:" ++ privateRepo ++ "/creativeprompts"
+                , P.flags = [] }
+    , P.Package { P.name = "prefeteria"
+                , P.spec = "darcs:" ++ privateRepo ++ "/prefeteria"
+                , P.flags = [] }
     -- There is a debianization in the repo that contains this file
     -- (Targets.hs), and it creates a package named seereason-darcs-backups,
     -- which performs backups on the darcs repo.
-    , Target { sourcePackageName = "seereason-darcs-backups"
-             , sourceSpec = "darcs:http://src.seereason.com/autobuilder-config"
-             , relaxInfo = [] }
+    , P.Package { P.name = "seereason-darcs-backups"
+                , P.spec = "darcs:http://src.seereason.com/autobuilder-config"
+                , P.flags = [] }
     ]

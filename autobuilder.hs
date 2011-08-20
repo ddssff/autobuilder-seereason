@@ -17,9 +17,7 @@ import Data.List (isSuffixOf, isPrefixOf, find)
 import Data.Maybe
 import qualified Data.Set as Set
 import qualified Debian.AutoBuilder.Main as M
-import qualified Debian.AutoBuilder.ParamClass as P
-import Debian.AutoBuilder.ParamClass (ParamClass, Target(..))
-import Debian.AutoBuilder.ParamRec
+import Debian.AutoBuilder.Params
 import Debian.Release (ReleaseName(ReleaseName, relName), Arch(Binary))
 import Debian.Repo.Cache (SourcesChangedAction(SourcesChangedError))
 import Debian.URI
@@ -50,7 +48,7 @@ getParams args =
       -- containing all the info needed during runtime.
       doParams ::  FilePath -> ([ParamRec -> ParamRec], [String], [String], [String]) -> IO [ParamRec]
       doParams home (fns, dists, [], []) = 
-          maybeDoHelp home . map (finalizeTargets home) . map (\ p -> foldr ($) p fns) . map params $ dists
+          maybeDoHelp home . map (finalizeTargets home) . map (\ p -> foldr ($) p fns) . map defParams $ dists
       doParams home (_, _, badopts, errs) =
           hPutStr stderr (usage ("Bad options: " ++ show badopts ++
                            ", errors: " ++ show errs) (optSpecs home)) >> return []
@@ -64,9 +62,9 @@ getParams args =
                     TargetNames xs -> TargetSet (Set.map findSpec xs)
                     AllTargets -> TargetSet allTargets }
           where
-            findSpec s = case Set.toList (Set.filter (\ t -> sourcePackageName t == s) allTargets) of
+            findSpec s = case Set.toList (Set.filter (\ t -> name t == s) allTargets) of
                            [x] -> x
-                           [] -> error $ "Package name not found: " ++ s ++ "\navailable: " ++ show (Set.toList (Set.map sourcePackageName allTargets))
+                           [] -> error $ "Package name not found: " ++ s ++ "\navailable: " ++ show (Set.toList (Set.map name allTargets))
                            xs -> error $ "Multiple packages named " ++ s ++ " found: " ++ show xs
             -- FIXME - make myTargets a set
             allTargets = myTargets home (const True) (relName (buildRelease p))
@@ -150,7 +148,7 @@ optSpecs home =
 -- Assemble all the configuration info above.
 
 -- |See Documentation in "Debian.AutoBuilder.ParamClass".
-params myBuildRelease =
+defParams myBuildRelease =
     ParamRec
     { vendorTag = myVendorTag
     , oldVendorTags = ["seereason"]
@@ -186,7 +184,7 @@ params myBuildRelease =
     -- Things that rarely change
     , sources = mySources myBuildRelease myDebianMirrorHost myUbuntuMirrorHost
     , globalRelaxInfo = myGlobalRelaxInfo
-    , strictness = P.Moderate
+    , strictness = Moderate
     , includePackages = myIncludePackages myBuildRelease
     , excludePackages = myExcludePackages myBuildRelease
     , components = myComponents myBuildRelease

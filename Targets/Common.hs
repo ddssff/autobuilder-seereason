@@ -1,6 +1,6 @@
 module Targets.Common where
 
-import Debian.AutoBuilder.ParamClass (Target(..))
+import qualified Debian.AutoBuilder.Params as P
 
 data Build = Production | Testing
 build = Production

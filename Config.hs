@@ -35,7 +35,7 @@ module Config
 import Data.List (isSuffixOf, isPrefixOf)
 import Data.Maybe
 import qualified Data.Set as Set
-import Debian.AutoBuilder.ParamClass (Target(..))
+import qualified Debian.AutoBuilder.Params as P
 import Debian.URI
 
 import qualified Targets
@@ -128,7 +128,7 @@ myVerbosity = 0 :: Int
 -- actually build are chosen from these.  The myBuildRelease argument
 -- comes from the autobuilder argument list.
 --
-myTargets :: FilePath -> (Target -> Bool) -> String -> Set.Set Target
+myTargets :: FilePath -> (P.Package -> Bool) -> String -> Set.Set P.Package
 myTargets home p myBuildRelease =
     Set.fromList $
     filter p $

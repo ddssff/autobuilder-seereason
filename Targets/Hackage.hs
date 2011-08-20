@@ -4,31 +4,31 @@ module Targets.Hackage ( hackage, Flag(..), targets ) where
 import Data.Char (toLower)
 import Data.Either (partitionEithers)
 import Data.List (intercalate)
-import Debian.AutoBuilder.ParamClass (Target(..))
+import qualified Debian.AutoBuilder.Params as P
 import Targets.Common
 
-debianize :: String -> Target
-debianize name =
-    let debName = map toLower name in
-    Target { sourcePackageName = "haskell-" ++ debName
-           , sourceSpec = "debianize:" ++ name
-           , relaxInfo = [] }
+debianize :: String -> P.Package
+debianize s =
+    let debName = map toLower s in
+    P.Package { P.name = "haskell-" ++ debName
+              , P.spec = "debianize:" ++ s
+              , P.flags = [] }
 
-hackage :: String -> String -> [Flag] -> Target
-hackage "lucid-seereason" name flags =
+hackage :: String -> String -> [Flag] -> P.Package
+hackage "lucid-seereason" name fs =
      let debName = map toLower name in
-     Target { sourcePackageName = "haskell-" ++ debName
-            , sourceSpec = proc ++ "deb-dir:(hackage:" ++ name ++ v ++ "):(darcs:" ++ r ++ "/" ++ pre ++ name' ++ suff ++ ")"
-            , relaxInfo = [] }
+     P.Package { P.name = "haskell-" ++ debName
+               , P.spec = proc ++ "deb-dir:(hackage:" ++ name ++ v ++ "):(darcs:" ++ r ++ "/" ++ pre ++ name' ++ suff ++ ")"
+               , P.flags = [] }
      where
-       pre = if elem NP flags then "" else "haskell-"
-       suff = if elem NS flags then "" else "-debian"
-       name' = if elem UC flags then name else map toLower name
-       proc = if elem P flags then "proc:" else ""
-       v = foldl f "" flags
+       pre = if elem NP fs then "" else "haskell-"
+       suff = if elem NS fs then "" else "-debian"
+       name' = if elem UC fs then name else map toLower name
+       proc = if elem P fs then "proc:" else ""
+       v = foldl f "" fs
            where f _ (Pin ver) = "=" ++ ver
                  f s _ = s
-       r = foldl f repo flags
+       r = foldl f repo fs
            where f _ (Local home) = localRepo home
                  f s _ = s
 
@@ -37,9 +37,9 @@ hackage "lucid-seereason" name flags =
 -- describing common variations on the mapping from one to another.
 hackage "natty-seereason" name flags =
     let debName = map toLower name in
-    Target { sourcePackageName = "haskell-" ++ debName
-           , sourceSpec = proc ++ "debianize:" ++ name ++ v
-           , relaxInfo = [] }
+    P.Package { P.name = "haskell-" ++ debName
+              , P.spec = proc ++ "debianize:" ++ name ++ v
+              , P.flags = [] }
     where
       proc = if elem P flags then "proc:" else ""
       v = foldl f "" flags
@@ -123,9 +123,9 @@ targets _home release =
     , hackage release "gnuplot" []
     , hackage release "happstack" [NP]
     -- Switch to the hackage target for happstack-data once a new upstream appears in hackage.
-    , Target { sourcePackageName = "haskell-happstack-data"
-             , sourceSpec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz:be72c4c11d1317bf52c80782eac28a2d):(darcs:http://src.seereason.com/happstack-data-debian)"
-             , relaxInfo = [] }
+    , P.Package { P.name = "haskell-happstack-data"
+                , P.spec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz:be72c4c11d1317bf52c80782eac28a2d):(darcs:http://src.seereason.com/happstack-data-debian)"
+                , P.flags = [] }
     -- , hackage release "happstack-data" [NP]
     , hackage release "happstack-ixset" [NP]
     , hackage release "ixset" [NP]
