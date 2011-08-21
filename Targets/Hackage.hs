@@ -5,28 +5,29 @@ import Data.Char (toLower)
 import Data.Either (partitionEithers)
 import Data.List (intercalate)
 import qualified Debian.AutoBuilder.Params as P
+import Debian.AutoBuilder.Spec
 import Targets.Common
 
-debianize :: String -> P.Package
-debianize s =
+debianize :: String -> [P.PackageFlag] -> P.Package
+debianize s flags =
     let debName = map toLower s in
     P.Package { P.name = "haskell-" ++ debName
-              , P.spec = "debianize:" ++ s
-              , P.flags = [] }
+              , P.spec = Debianize s Nothing
+              , P.flags = flags}
 
 hackage :: String -> String -> [Flag] -> P.Package
 hackage "lucid-seereason" name fs =
      let debName = map toLower name in
      P.Package { P.name = "haskell-" ++ debName
-               , P.spec = proc ++ "deb-dir:(hackage:" ++ name ++ v ++ "):(darcs:" ++ r ++ "/" ++ pre ++ name' ++ suff ++ ")"
+               , P.spec = proc $ DebDir (Hackage name v) (Darcs (r ++ "/" ++ pre ++ name' ++ suff) Nothing)
                , P.flags = [] }
      where
        pre = if elem NP fs then "" else "haskell-"
        suff = if elem NS fs then "" else "-debian"
        name' = if elem UC fs then name else map toLower name
-       proc = if elem P fs then "proc:" else ""
-       v = foldl f "" fs
-           where f _ (Pin ver) = "=" ++ ver
+       proc x = if elem P fs then Proc x else x
+       v = foldl f Nothing fs
+           where f Nothing (Pin ver) = Just ver
                  f s _ = s
        r = foldl f repo fs
            where f _ (Local home) = localRepo home
@@ -38,12 +39,12 @@ hackage "lucid-seereason" name fs =
 hackage "natty-seereason" name flags =
     let debName = map toLower name in
     P.Package { P.name = "haskell-" ++ debName
-              , P.spec = proc ++ "debianize:" ++ name ++ v
+              , P.spec = proc $ Debianize name v
               , P.flags = [] }
     where
-      proc = if elem P flags then "proc:" else ""
-      v = foldl f "" flags
-          where f _ (Pin ver) = "=" ++ ver
+      proc spec = if elem P flags then Proc spec else spec
+      v = foldl f Nothing flags
+          where f Nothing (Pin ver) = Just ver
                 f s _ = s
 
 hackage release _ _ = error $ "Target.Hackage.hackage - unexpected release: " ++ release
@@ -72,14 +73,19 @@ releaseTargets _home release@"natty-seereason" =
     , hackage release "gtk2hs-buildtools" []
     , hackage release "HTTP" []
     , hackage release "haskell-src-exts" []
-    , debianize "random"
-    , debianize "semigroups"
-    , debianize "tagged"
-    , debianize "polyparse"
-    , debianize "HaXml"
-    , debianize "haskeline"
-    , debianize "hsx"
-    , debianize "glib"
+    , debianize "random" []
+    , debianize "semigroups" []
+    , debianize "tagged" []
+    , debianize "polyparse" []
+    , debianize "HaXml" []
+    , debianize "haskeline" []
+    , debianize "hsx" []
+    -- This target tells cabal-debian to add the dependency on the C
+    -- package, but we need a version after 0.12.0, which doesn't have
+    -- the "Ambiguous module name `Prelude'" error.  until then stick
+    -- with Sid version.
+    -- , debianize "glib" [P.ExtraDep "libglib2.0-dev"]
+    , sid _home _release "haskell-glib" -- for leksah
     -- , hackage release "mtl" []
     -- , hackage release "deepseq" []
     -- , hackage release "transformers" []
@@ -100,11 +106,11 @@ targets _home release =
     releaseTargets _home release ++
     [ hackage release "AES" []
     , hackage release "monads-tf" []
-    , debianize "ansi-terminal"
-    , debianize "ansi-wl-pprint"
+    , debianize "ansi-terminal" []
+    , debianize "ansi-wl-pprint" []
     , hackage release "applicative-extras" [NP]
     , hackage release "attempt" []
-    , debianize "authenticate"
+    , debianize "authenticate" []
     , hackage release "bimap" []
     , hackage release "bitset" []
     , hackage release "blaze-from-html" []
@@ -124,7 +130,7 @@ targets _home release =
     , hackage release "happstack" [NP]
     -- Switch to the hackage target for happstack-data once a new upstream appears in hackage.
     , P.Package { P.name = "haskell-happstack-data"
-                , P.spec = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz:be72c4c11d1317bf52c80782eac28a2d):(darcs:http://src.seereason.com/happstack-data-debian)"
+                , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz" "be72c4c11d1317bf52c80782eac28a2d") (Darcs "http://src.seereason.com/happstack-data-debian" Nothing)
                 , P.flags = [] }
     -- , hackage release "happstack-data" [NP]
     , hackage release "happstack-ixset" [NP]
@@ -139,7 +145,7 @@ targets _home release =
     -- The Sid package has no profiling libraries, so dependent packages
     -- won't build.  Use our debianization instead.  This means keeping
     -- up with sid's version.
-    , debianize "hostname"
+    , debianize "hostname" []
     , hackage release "HPDF" []
     , hackage release "HsOpenSSL" []
     , hackage release "i18n" [NP]
@@ -176,8 +182,8 @@ targets _home release =
     , hackage release "vacuum-opengl" []
     , hackage release "RSA" []
     , hackage release "aeson" []
-    , debianize "hashable"
-    , debianize "unordered-containers"
+    , debianize "hashable" []
+    , debianize "unordered-containers" []
     , hackage release "blaze-textual" []
     , hackage release "http-enumerator" [Pin "0.6.5.5"]
     , hackage release "xml-enumerator" []

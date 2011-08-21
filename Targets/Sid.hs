@@ -2,6 +2,7 @@
 module Targets.Sid ( ring0, ring1 ) where
 
 import qualified Debian.AutoBuilder.Params as P
+import Debian.AutoBuilder.Spec
 import Targets.Common
 import Targets.Hackage (hackage, Flag(..))
 
@@ -23,34 +24,35 @@ sid _home release name =
       getRelaxInfo _ = []
 
       -- Special case specs
-      getSourceSpec "ghc" = "quilt:(apt:sid:ghc):(darcs:" ++ repo ++ "/ghc7-quilt)"
-      getSourceSpec "haskell-bzlib" = "quilt:(apt:sid:haskell-bzlib):(darcs:http://src.seereason.com/haskell-bzlib-quilt)"
-      getSourceSpec "haskell-json" = "quilt:(apt:sid:haskell-json=0.4.4-2):(darcs:" ++ repo ++ "/haskell-json-quilt)"
-      getSourceSpec "haskell-uniplate" = "quilt:(apt:sid:haskell-uniplate):(darcs:http://src.seereason.com/haskell-uniplate-quilt)"
+      getSourceSpec "ghc" = Quilt (Apt "sid" "ghc" Nothing) (Darcs (repo ++ "/ghc7-quilt") Nothing)
+      getSourceSpec "haskell-bzlib" = Quilt (Apt "sid" "haskell-bzlib" Nothing) (Darcs "http://src.seereason.com/haskell-bzlib-quilt" Nothing)
+      getSourceSpec "haskell-json" = Quilt (Apt "sid" "haskell-json" (Just "0.4.4-2")) (Darcs (repo ++ "/haskell-json-quilt") Nothing)
+      getSourceSpec "haskell-uniplate" = Quilt (Apt "sid" "haskell-uniplate" Nothing) (Darcs "http://src.seereason.com/haskell-uniplate-quilt" Nothing)
       -- Apply a patch I sent to marco
-      -- getSourceSpec "haskell-debian" = "quilt:(apt:sid:haskell-debian):(darcs:" ++ localRepo _home ++ "/haskell-debian-quilt)"
-      getSourceSpec "haskell-debian" = "darcs:" ++ repo ++ "/haskell-debian-new"
+      -- getSourceSpec "haskell-debian" = Quilt "(apt:sid:haskell-debian)" "(darcs:" ++ localRepo _home ++ "/haskell-debian-quilt)"
+      getSourceSpec "haskell-debian" = Darcs (repo ++ "/haskell-debian-new") Nothing
+      -- getSourceSpec "haskell-debian" = Apt "sid" "haskell-debian" Nothing
       -- Try removing the quilt when a revision newer than 0.5.0.2-2 appears in sid
-      getSourceSpec "haskell-binary" = "quilt:(apt:sid:haskell-binary=0.5.0.2-2):(darcs:http://src.seereason.com/haskell-binary-quilt)"
+      getSourceSpec "haskell-binary" = Quilt (Apt "sid" "haskell-binary" (Just "0.5.0.2-2")) (Darcs "http://src.seereason.com/haskell-binary-quilt" Nothing)
       -- sid version is 0.2.2.1-1, too old
-      getSourceSpec "haskell-wai" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/wai/0.3.1/wai-0.3.1.tar.gz:5a777cf08713a55818955ec4d0748622):(darcs:http://src.seereason.com/haskell-wai-debian)"
+      getSourceSpec "haskell-wai" = DebDir (Uri "http://hackage.haskell.org/packages/archive/wai/0.3.1/wai-0.3.1.tar.gz" "5a777cf08713a55818955ec4d0748622") (Darcs "http://src.seereason.com/haskell-wai-debian" Nothing)
       -- Version in sid is 3001.1.7.4-1, our version is 3001.1.8.2
-      getSourceSpec "haskell-cgi" = "deb-dir:(uri:http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz:4092efaf00ac329b9771879f57a95323):(darcs:http://src.seereason.com/haskell-cgi-debian)"
+      getSourceSpec "haskell-cgi" = DebDir (Uri "http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz" "4092efaf00ac329b9771879f57a95323") (Darcs "http://src.seereason.com/haskell-cgi-debian" Nothing)
       -- Sid version needs cdbs >= 0.4.70~, which I can't seem to build.
       -- , spec = "apt:sid:pandoc"
-      getSourceSpec "jquery" = "proc:apt:sid:jquery"
-      getSourceSpec "jqueryui" = "proc:apt:sid:jqueryui"
+      getSourceSpec "jquery" = Proc (Apt "sid" "jquery" Nothing)
+      getSourceSpec "jqueryui" = Proc (Apt "sid" "jqueryui" Nothing)
       -- We have to build pandoc from hackage because the sid version depends on a version of cdbs that
       -- can't be built for lucid.
       getSourceSpec "pandoc" = P.spec (hackage release "pandoc" [Pin "1.5.1.1"])
       -- Add a dependency on libmagic-dev to libghc-magic-dev.  Next upstream release should have this fix.
-      getSourceSpec "magic-haskell" = "quilt:(apt:sid:magic-haskell=1.0.8-7):(darcs:" ++ repo ++ "/magic-quilt)"
+      getSourceSpec "magic-haskell" = Quilt (Apt "sid" "magic-haskell" (Just "1.0.8-7")) (Darcs (repo ++ "/magic-quilt") Nothing)
       -- Pinned version numbers, when these are bumped we want to move to hackage targets.
-      getSourceSpec "haskell-deepseq" = "apt:sid:haskell-deepseq=1.1.0.2-2"
-      getSourceSpec "haskell-transformers" = "apt:sid:haskell-transformers=0.2.2.0-3"
-      getSourceSpec "haskell-mtl" = "apt:sid:haskell-mtl=2.0.1.0-2"
+      getSourceSpec "haskell-deepseq" = Apt "sid" "haskell-deepseq" (Just "1.1.0.2-2")
+      getSourceSpec "haskell-transformers" = Apt "sid" "haskell-transformers" (Just "0.2.2.0-3")
+      getSourceSpec "haskell-mtl" = Apt "sid" "haskell-mtl" (Just "2.0.1.0-2")
       -- The normal case
-      getSourceSpec n = "apt:sid:" ++ n
+      getSourceSpec n = Apt "sid" n Nothing
 
 ring0 _home release =
     [ ghc ] ++ map (sid _home release)  ["haskell-devscripts", "haskell-dummy", "hscolour"]
@@ -59,7 +61,7 @@ ring0 _home release =
           case release of
             "natty-seereason" ->
                 P.Package { P.name = "ghc"
-                          , P.spec = "quilt:(apt:experimental:ghc):(darcs:http://src.seereason.com/ghc7-quilt)"
+                          , P.spec = Quilt (Apt "experimental" "ghc" Nothing) (Darcs "http://src.seereason.com/ghc7-quilt" Nothing)
                           , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
             "lucid-seereason" -> sid _home release "ghc"
             _ -> error ("Unexpected release: " ++ show release)
@@ -211,10 +213,10 @@ commonSidPackages _home release =
 
 releaseSidPackages _home _release@"natty-seereason" =
     [ P.Package { P.name = "cpphs"
-                , P.spec = "quilt:(apt:sid:cpphs):(darcs:http://src.seereason.com/cpphs-quilt)"
+                , P.spec = Quilt (Apt "sid" "cpphs" Nothing) (Darcs "http://src.seereason.com/cpphs-quilt" Nothing)
                 , P.flags = [] }
     , P.Package { P.name = "happy"
-                , P.spec = "quilt:(apt:sid:happy):(darcs:" ++ repo ++ "/happy-quilt)"
+                , P.spec = Quilt (Apt "sid" "happy" Nothing) (Darcs (repo ++ "/happy-quilt") Nothing)
                 , P.flags = [ P.RelaxDep "happy" ] } ] ++
     -- has a build dependency on a C package, so cabal-debian doesn't work
     [ sid _home _release "haskell-glib" ] -- for leksah
@@ -239,7 +241,7 @@ releaseSidPackages _home _release@"lucid-seereason" =
         , "haskell-glib" -- for leksah
         ] ++
     [ P.Package { P.name = "happy"
-                , P.spec = "apt:sid:happy"
+                , P.spec = Apt "sid" "happy" Nothing
                 , P.flags = [ P.RelaxDep "happy" ] } ]
 
 releaseSidPackages _ release = error ("Unexpected release: " ++ show release)
