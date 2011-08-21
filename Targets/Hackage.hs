@@ -105,6 +105,7 @@ releaseTargets _home release =
 targets _home release =
     releaseTargets _home release ++
     [ hackage release "AES" []
+    , debianize "acid-state" []
     , hackage release "monads-tf" []
     , debianize "ansi-terminal" []
     , debianize "ansi-wl-pprint" []
@@ -118,7 +119,7 @@ targets _home release =
     , hackage release "CC-delcont" [NP, UC]
     , hackage release "convertible-text" []
     , hackage release "data-object-json" []
-    , hackage release "data-object" []
+    , debianize "data-object" []
     , hackage release "digestive-functors" []
     , hackage release "digestive-functors-happstack" []
     -- Need this when we upgrade blaze-textual to 0.2.0.0

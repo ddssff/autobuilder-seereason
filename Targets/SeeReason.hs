@@ -60,10 +60,10 @@ targets _home =
     , P.Package { P.name = "haskell-happstack-hsp"
                 , P.spec = DebDir (Cd "happstack-hsp" (Darcs happstackRepo Nothing)) (Darcs (repo ++ "/happstack-hsp-debian") Nothing)
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-acid-state"
+{-  , P.Package { P.name = "haskell-acid-state"
                 , P.spec = DebDir (Darcs "http://src.seereason.com/acid-state" Nothing) (Darcs "http://src.seereason.com/haskell-acid-state-debian" Nothing)
                 , P.flags = []
-                }
+                } -}
     , P.Package { P.name = "haskell-help"
                 , P.spec = Darcs "http://src.seereason.com/haskell-help" Nothing
                 , P.flags = [] }
