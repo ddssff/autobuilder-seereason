@@ -218,7 +218,8 @@ releaseSidPackages _home _release@"natty-seereason" =
     , P.Package { P.name = "happy"
                 , P.spec = Quilt (Apt "sid" "happy" Nothing) (Darcs (repo ++ "/happy-quilt") Nothing)
                 , P.flags = [ P.RelaxDep "happy" ] } ] ++
-    -- has a build dependency on a C package, so cabal-debian doesn't work
+    -- When a version newer than 0.12.0 comes out this should be
+    -- switched to a debianize target.
     [ sid _home _release "haskell-glib" ] -- for leksah
 
 releaseSidPackages _home _release@"lucid-seereason" =

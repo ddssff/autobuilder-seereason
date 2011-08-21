@@ -85,7 +85,7 @@ releaseTargets _home release@"natty-seereason" =
     -- the "Ambiguous module name `Prelude'" error.  until then stick
     -- with Sid version.
     -- , debianize "glib" [P.ExtraDep "libglib2.0-dev"]
-    , sid _home _release "haskell-glib" -- for leksah
+
     -- , hackage release "mtl" []
     -- , hackage release "deepseq" []
     -- , hackage release "transformers" []
