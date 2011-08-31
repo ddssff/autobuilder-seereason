@@ -10,15 +10,19 @@ import Targets.Common
 
 debianize :: String -> [P.PackageFlag] -> P.Package
 debianize s flags =
-    let debName = map toLower s in
-    P.Package { P.name = "haskell-" ++ debName
+    P.Package { P.name = "haskell-" ++ debianName s
               , P.spec = Debianize s Nothing
               , P.flags = flags}
+    where
+      -- This is a quick hack, but what we should do is have
+      -- cabal-debian compute and return the source package name.
+      debianName "QuickCheck" = "quickcheck2"
+      debianName "parsec" = "parsec3"
+      debianName _ = map toLower s
 
 hackage :: String -> String -> [Flag] -> P.Package
 hackage "lucid-seereason" name fs =
-     let debName = map toLower name in
-     P.Package { P.name = "haskell-" ++ debName
+     P.Package { P.name = "haskell-" ++ map toLower name
                , P.spec = proc $ DebDir (Hackage name v) (Darcs (r ++ "/" ++ pre ++ name' ++ suff) Nothing)
                , P.flags = [] }
      where
@@ -67,19 +71,41 @@ releaseTargets _home release@"natty-seereason" =
     -- files in dist/build/happy/happy-tmp.
     -- , hackage release "happy" []
     , hackage release "network" []
-    , hackage release "QuickCheck" []
+    , debianize "QuickCheck" [{-P.DebName "quickcheck2"-}]
     , hackage release "syb" []
     , hackage release "syb-with-class" []
     , hackage release "gtk2hs-buildtools" []
-    , hackage release "HTTP" []
+    , debianize "HTTP" [P.Epoch 1]
     , hackage release "haskell-src-exts" []
     , debianize "random" []
     , debianize "semigroups" []
     , debianize "tagged" []
     , debianize "polyparse" []
-    , debianize "HaXml" []
+    , debianize "HaXml" [P.Epoch 1]
     , debianize "haskeline" []
     , debianize "hsx" []
+    , debianize "uniplate" []
+    , debianize "HsOpenSSL" [P.ExtraDep "libcrypto++-dev"]
+    , debianize "nano-hmac" [P.ExtraDep "libcrypto++-dev"]
+
+{-
+    , P.Package { P.name = "haskell-json"
+                , P.spec = Quilt (Debianize "json" Nothing) (Darcs "http://src.seereason.com/haskell-json-quilt" Nothing)
+                , P.flags = [P.DebVersion "0.4.4-1.1"] }
+-}
+    , debianize "blaze-html" []
+    , debianize "Crypto" []
+    , debianize "double-conversion" []
+    , debianize "MissingH" []
+    , debianize "attoparsec" []
+    , debianize "dataenc" []
+    , debianize "fgl" []
+    , debianize "case-insensitive" []
+    , debianize "haskell-src" [P.ExtraDep "happy"]
+    , debianize "hsp" [P.ExtraDep "trhsx"]
+    , debianize "base-unicode-symbols" []
+    , debianize "cprng-aes" []
+    , debianize "SMTPClient" []
     -- This target tells cabal-debian to add the dependency on the C
     -- package, but we need a version after 0.12.0, which doesn't have
     -- the "Ambiguous module name `Prelude'" error.  until then stick
@@ -90,8 +116,9 @@ releaseTargets _home release@"natty-seereason" =
     -- , hackage release "deepseq" []
     -- , hackage release "transformers" []
     ]
-releaseTargets _home "lucid-seereason" =
-    []
+releaseTargets _home release@"lucid-seereason" =
+    [ hackage release "HsOpenSSL" []
+    , hackage release "nano-hmac" [] ]
 releaseTargets _home release =
     error $ "Unexpected release: " ++ release
 
@@ -129,6 +156,10 @@ targets _home release =
     , hackage release "gd" []
     , hackage release "gnuplot" []
     , hackage release "happstack" [NP]
+    , debianize "happstack-plugins" []
+    , debianize "plugins" []
+    , debianize "hinotify" []
+    , debianize "http-types" []
     -- Switch to the hackage target for happstack-data once a new upstream appears in hackage.
     , P.Package { P.name = "haskell-happstack-data"
                 , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz" "be72c4c11d1317bf52c80782eac28a2d") (Darcs "http://src.seereason.com/happstack-data-debian" Nothing)
@@ -148,14 +179,12 @@ targets _home release =
     -- up with sid's version.
     , debianize "hostname" []
     , hackage release "HPDF" []
-    , hackage release "HsOpenSSL" []
     , hackage release "i18n" [NP]
     , hackage release "incremental-sat-solver" []
-    , hackage release "instant-generics" [P, Pin "0.3.2"]
+    , debianize "instant-generics" []
     , hackage release "JSONb" []
     , hackage release "monadLib" []
     , hackage release "murmur-hash" [Pin "0.1.0.2"]
-    , hackage release "nano-hmac" []
     , hackage release "openid" []
     , hackage release "operational" [NP]
     , hackage release "parse-dimacs" [NP]
@@ -186,11 +215,21 @@ targets _home release =
     , debianize "hashable" []
     , debianize "unordered-containers" []
     , hackage release "blaze-textual" []
-    , hackage release "http-enumerator" [Pin "0.6.5.5"]
+    -- , hackage release "http-enumerator" [Pin "0.6.5.5"]
+    , debianize "http-enumerator" []
+    , debianize "aeson-native" []
+    , debianize "blaze-textual-native" []
     , hackage release "xml-enumerator" []
     , hackage release "xml-types" []
     , hackage release "attoparsec-text-enumerator" []
     , hackage release "tagsoup" []
+    , debianize "logic-TPTP" [P.ExtraDep "alex", P.ExtraDep "happy"]
+    , debianize "monad-control" []
+    -- Version 2.9.2 specifies ghc < 7.2 and base == 4.3.*
+    -- , debianize "haddock" []
+    , debianize "data-accessor-template" []
+    , debianize "process" []
+    , debianize "split" []
     -- This hackage target for pandoc is in the Sid module because
     -- some pandoc dependencies are there.  We would like to build the
     -- sid version of pandoc, but it requires a version of cdbs that

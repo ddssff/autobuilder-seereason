@@ -36,6 +36,9 @@ targets _home =
     , P.Package { P.name = "haskell-extra"
                 , P.spec = Darcs "http://src.seereason.com/haskell-extra" Nothing
                 , P.flags = [P.RelaxDep "cabal-debian"] }
+    , P.Package { P.name = "haskell-set-extra"
+                , P.spec = Darcs "http://src.seereason.com/set-extra" Nothing
+                , P.flags = [] }
     , P.Package { P.name = "haskell-formlets-hsp"
                 , P.spec = Darcs (repo ++ "/formlets-hsp") Nothing
                 , P.flags = [] }
@@ -67,10 +70,12 @@ targets _home =
     , P.Package { P.name = "haskell-help"
                 , P.spec = Darcs "http://src.seereason.com/haskell-help" Nothing
                 , P.flags = [] }
+{-
     , P.Package { P.name = "haskell-hinotify"
              -- , P.spec = "deb-dir:(darcs:http://haskell.org/~kolmodin/code/hinotify):(darcs:http://src.seereason.com/hinotify-debian)"
                 , P.spec = DebDir (Darcs "http://src.seereason.com/hinotify" Nothing) (Darcs "http://src.seereason.com/hinotify-debian" Nothing)
                 , P.flags = [] }
+-}
     , P.Package { P.name = "haskell-hsx-jmacro"
                 , P.spec = DebDir (Cd "hsx-jmacro" (Darcs happstackRepo Nothing)) (Darcs (repo ++ "/haskell-hsx-jmacro-debian") Nothing)
                 , P.flags = []
@@ -117,4 +122,8 @@ targets _home =
     , P.Package { P.name = "vc-darcs"
                 , P.spec = Darcs "http://src.seereason.com/vc-darcs" Nothing
                 , P.flags = [] }
+    -- All the packages come out empty
+    -- , P.Package { P.name = "haskell-logic-tptp"
+    --             , P.spec = DebDir (Uri "http://www.cs.miami.edu/~tptp/TPTP/Distribution/TPTP-v5.2.0.tgz" "56370c0928dbdaf48cf0528c96331b32") (Darcs ("" ++ localRepo _home ++ "/logic-TPTP-debian") Nothing)
+    --             , P.flags = [] }
     ]

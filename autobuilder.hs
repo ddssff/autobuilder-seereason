@@ -114,6 +114,8 @@ optSpecs home =
                , "or was flushed from the local repository without being uploaded."])
     , Option [] ["target"] (ReqArg (\ s p -> p {targets = addTarget s p}) "PACKAGE")
       "Add a target to the target list."
+    , Option [] ["discard"] (ReqArg (\ s p -> p {discard = Set.insert s (discard p)}) "PACKAGE")
+      "Add a target to the discard list."
     , Option [] ["goal"] (ReqArg (\ s p -> p { goals = goals p ++ [s]
                                              , targets = TargetSet (myTargets home (const True) (relName (buildRelease p)))}) "PACKAGE")
       (unlines [ "If one or more goal package names are given the autobuilder"
@@ -196,7 +198,7 @@ defParams myBuildRelease =
     , requiredVersion = [(parseDebianVersion "5.17", Nothing)]
     -- Things that are probably obsolete
     , debug = False
-    , omitTargets = []
+    , discard = Set.empty
     , extraReleaseTag = Nothing
     , preferred = []
     , buildDepends = []

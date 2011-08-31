@@ -34,6 +34,7 @@ sid _home release name =
       -- getSourceSpec "haskell-debian" = Apt "sid" "haskell-debian" Nothing
       -- Try removing the quilt when a revision newer than 0.5.0.2-2 appears in sid
       getSourceSpec "haskell-binary" = Quilt (Apt "sid" "haskell-binary" (Just "0.5.0.2-2")) (Darcs "http://src.seereason.com/haskell-binary-quilt" Nothing)
+      getSourceSpec "haskell-hjavascript" = Quilt (Apt "sid" "haskell-hjavascript" Nothing) (Darcs (repo ++ "/hjavascript-quilt") Nothing)
       -- sid version is 0.2.2.1-1, too old
       getSourceSpec "haskell-wai" = DebDir (Uri "http://hackage.haskell.org/packages/archive/wai/0.3.1/wai-0.3.1.tar.gz" "5a777cf08713a55818955ec4d0748622") (Darcs "http://src.seereason.com/haskell-wai-debian" Nothing)
       -- Version in sid is 3001.1.7.4-1, our version is 3001.1.8.2
@@ -80,11 +81,9 @@ commonSidPackages _home release =
             , "agda-bin"
             , "agda-stdlib"
             , "haskell-attoparsec-enumerator"
-            , "haskell-attoparsec"
             , "haskell-attoparsec-text"
             , "haskell-base64-bytestring"
             , "haskell-blaze-builder"
-            , "haskell-blaze-html"
             , "haskell-blaze-builder-enumerator"
             , "haskell-bytestring-nums"
             , "haskell-bzlib"
@@ -92,15 +91,12 @@ commonSidPackages _home release =
             , "haskell-citeproc-hs"
             , "haskell-colour"
             , "haskell-criterion"
-            , "haskell-crypto"
             , "haskell-crypto-api"
             , "haskell-cryptocipher"
             , "haskell-cryptohash"
             , "haskell-curl"
             , "haskell-data-accessor"
-            , "haskell-data-accessor-template"
             , "haskell-data-default"
-            , "haskell-dataenc"
             , "haskell-debian"
             , "haskell-digest"
             , "haskell-diff"
@@ -111,23 +107,15 @@ commonSidPackages _home release =
             , "haskell-erf"
             , "haskell-failure"
             , "haskell-feed"
-            , "haskell-fgl"
             , "haskell-hashed-storage"
-            , "haskell-haskell-src"
             , "highlighting-kate"
             , "haskell-hsemail"
             , "hslogger"
             , "haskell-hstringtemplate"
             , "haskell-html"
-            , "haskell-case-insensitive"
-            , "haskell-cprng-aes"
-            , "haskell-http-types"
-            , "haskell-monad-control"
-            , "haskell-base-unicode-symbols"
             , "haskell-zlib-enum"
             , "haskell-hunit"
             , "haskell-irc"
-            , "haskell-json"
             , "haskell-largeword"
             , "haskell-leksah"
             , "haskell-leksah-server" -- for leksah
@@ -139,7 +127,6 @@ commonSidPackages _home release =
             , "haskell-cairo" -- for leksah
             , "haskell-pango" -- for leksah
             , "haskell-gio" -- for leksah
-            , "haskell-haddock" -- for leksah
             , "haskell-ghc-paths" -- for leksah
             , "magic-haskell"
             , "haskell-maybet"
@@ -161,8 +148,6 @@ commonSidPackages _home release =
             , "haskell-safe"
             , "haskell-sendfile"
             , "haskell-sha"
-            , "haskell-smtpclient"
-            , "haskell-split"
             , "haskell-stm"
             , "haskell-strict-concurrency"
             , "haskell-syb-with-class-instances-text"
@@ -172,7 +157,6 @@ commonSidPackages _home release =
             , "haskell-terminfo"
             , "haskell-testpack"
             , "haskell-texmath"
-            , "haskell-uniplate"
             , "haskell-unix-compat"
             , "haskell-utility-ht"
             , "haskell-vector"
@@ -182,7 +166,6 @@ commonSidPackages _home release =
             , "haskell-zip-archive"
             , "haskell-zlib-bindings"
             , "haskell-zlib"
-            , "missingh"
             , "haskell-pcre-light"
             , "haskell-configfile"
             , "haskell-statistics"
@@ -192,7 +175,6 @@ commonSidPackages _home release =
             , "haskell-glut"
             , "haskell-puremd5"
             , "haskell-binary"
-            , "haskell-hsp"
             , "haskell-tls"
             , "haskell-tls-extra"
             , "haskell-certificate"
@@ -209,6 +191,7 @@ commonSidPackages _home release =
             , "tinymce"
             , "wordpress"
             -- , "haskell-hsx-jmacro"
+            , "haskell-json"
             ]
 
 releaseSidPackages _home _release@"natty-seereason" =
@@ -240,6 +223,23 @@ releaseSidPackages _home _release@"lucid-seereason" =
         , "haskell-haskeline"
         , "haskell-hsx"
         , "haskell-glib" -- for leksah
+        , "haskell-uniplate"
+        , "haskell-blaze-html"
+        , "haskell-crypto"
+        , "missingh"
+        , "haskell-attoparsec"
+        , "haskell-dataenc"
+        , "haskell-fgl"
+        , "haskell-case-insensitive"
+        , "haskell-haskell-src"
+        , "haskell-hsp"
+        , "haskell-base-unicode-symbols"
+        , "haskell-haddock" -- for leksah
+        , "haskell-data-accessor-template"
+        , "haskell-cprng-aes"
+        -- , "haskell-split"
+        -- , "haskell-http-types"
+        , "haskell-smtpclient"
         ] ++
     [ P.Package { P.name = "happy"
                 , P.spec = Apt "sid" "happy" Nothing
