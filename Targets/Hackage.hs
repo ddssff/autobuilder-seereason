@@ -154,6 +154,7 @@ targets _home release =
     , hackage release "formlets" []
     , hackage release "funsat" []
     , hackage release "gd" []
+    -- , debianize "gd" [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
     , hackage release "gnuplot" []
     , hackage release "happstack" [NP]
     , debianize "happstack-plugins" []
