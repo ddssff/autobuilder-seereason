@@ -113,6 +113,7 @@ releaseTargets _home release@"natty-seereason" =
     , debianize "cprng-aes" []
     , debianize "SMTPClient" []
     , debianize "data-accessor-template" []
+    , debianize "hashed-storage" []
     -- This target tells cabal-debian to add the dependency on the C
     -- package, but we need a version after 0.12.0, which doesn't have
     -- the "Ambiguous module name `Prelude'" error.  until then stick
@@ -129,7 +130,7 @@ releaseTargets _home release@"natty-seereason" =
     , debianize "haskell-src-meta" []
     , debianize "jmacro" []
     -- , debianize "http-enumerator" []
-    , hackage release "happstack-state" [NP, Local _home]
+    , hackage release "happstack-state" [NP]
     ]
 
 releaseTargets _home release@"lucid-seereason" =
@@ -141,7 +142,7 @@ releaseTargets _home release@"lucid-seereason" =
     , hackage release "haskell-src-meta" [Pin "0.4.0.1"]
     , hackage release "jmacro" [Pin "0.5.1"]
     -- , hackage release "http-enumerator" [Pin "0.6.5.5"]
-    , hackage release "happstack-state" [NP, Local _home]
+    , hackage release "happstack-state" [NP]
     ]
 releaseTargets _home release =
     error $ "Unexpected release: " ++ release
@@ -177,7 +178,8 @@ targets _home release =
     , debianize "monad-control" []
     -- Version 2.9.2 specifies ghc < 7.2 and base == 4.3.*
     -- , debianize "haddock" []
-    , debianize "process" []
+    -- This is bundled with the compiler
+    -- , debianize "process" []
     , debianize "split" []
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
@@ -186,6 +188,7 @@ targets _home release =
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
     , debianize "random" []
+    , let t = debianize "RSA" [] in t {P.spec = Quilt (P.spec t) (Darcs (localRepo _home ++ "/haskell-rsa-quilt") Nothing)}
 
     , hackdeb release "AES" []
     , hackdeb release "monads-tf" []
@@ -202,7 +205,6 @@ targets _home release =
     , hackdeb release "digestive-functors-happstack" []
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , hackdeb release "double-conversion" []
-    , hackdeb release "formlets" []
     , hackdeb release "funsat" []
     , hackdeb release "gd" []
     -- , debianize "gd" [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
@@ -250,7 +252,6 @@ targets _home release =
     , hackdeb release "stb-image" []
     , hackdeb release "vacuum" []
     , hackdeb release "vacuum-opengl" []
-    , hackdeb release "RSA" []
     , hackdeb release "aeson" []
     , hackdeb release "blaze-textual" []
     , hackdeb release "xml-enumerator" []
@@ -263,11 +264,10 @@ targets _home release =
     -- packages (such as haskell-hsx) which reference it get the name wrong
     -- when we generate the debianization.
     , hackdeb release "haskell-src-exts" []
-    -- This hackage target for pandoc is in the Sid module because
-    -- some pandoc dependencies are there.  We would like to build the
-    -- sid version of pandoc, but it requires a version of cdbs that
-    -- probably can't be built under lucid.
-    -- , hackdeb release "pandoc" [Pin "1.5.1.1"]
+    -- This pandoc target has a dependency on an older version of HTTP
+    -- , debianize "pandoc" []
+    , hackage release "pandoc" [Local _home]
+    , hackage release "formlets" []
 
 {-  -- Algebra cohort
     , debianize "adjunctions" []

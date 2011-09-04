@@ -43,9 +43,8 @@ sid _home release name =
       -- , spec = "apt:sid:pandoc"
       getSourceSpec "jquery" = Proc (Apt "sid" "jquery" Nothing)
       getSourceSpec "jqueryui" = Proc (Apt "sid" "jqueryui" Nothing)
-      -- We have to build pandoc from hackage because the sid version depends on a version of cdbs that
-      -- can't be built for lucid.
-      getSourceSpec "pandoc" = P.spec (hackage release "pandoc" [Pin "1.5.1.1"])
+      -- The sid version has dependencies on the old libghc6 packages.
+      -- getSourceSpec "pandoc" = P.spec (hackage release "pandoc" [Pin "1.5.1.1", Local _home])
       -- Add a dependency on libmagic-dev to libghc-magic-dev.  Next upstream release should have this fix.
       getSourceSpec "magic-haskell" = Quilt (Apt "sid" "magic-haskell" (Just "1.0.8-7")) (Darcs (repo ++ "/magic-quilt") Nothing)
       -- Pinned version numbers, when these are bumped we want to move to hackage targets.
@@ -108,7 +107,6 @@ commonSidPackages _home release =
             , "haskell-erf"
             , "haskell-failure"
             , "haskell-feed"
-            , "haskell-hashed-storage"
             , "highlighting-kate"
             , "haskell-hsemail"
             , "hslogger"
@@ -242,6 +240,8 @@ releaseSidPackages _home _release@"lucid-seereason" =
         -- , "haskell-http-types"
         , "haskell-smtpclient"
         , "haskell-data-accessor-template"
+        -- Current version needs a BangPatterns options
+        , "haskell-hashed-storage"
         ] ++
     [ P.Package { P.name = "happy"
                 , P.spec = Apt "sid" "happy" Nothing
