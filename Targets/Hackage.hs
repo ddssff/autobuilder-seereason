@@ -8,6 +8,8 @@ import qualified Debian.AutoBuilder.Params as P
 import Debian.AutoBuilder.Spec
 import Targets.Common
 
+-- | Build a target that pulls the source from hackage and then
+-- generates a debianization using cabal-debian.
 debianize :: String -> [P.PackageFlag] -> P.Package
 debianize s flags =
     P.Package { P.name = "haskell-" ++ debianName s
@@ -21,7 +23,7 @@ debianize s flags =
       debianName _ = map toLower s
 
 hackage :: String -> String -> [Flag] -> P.Package
-hackage "lucid-seereason" name fs =
+hackage _ name fs =
      P.Package { P.name = "haskell-" ++ map toLower name
                , P.spec = proc $ DebDir (Hackage name v) (Darcs (r ++ "/" ++ pre ++ name' ++ suff) Nothing)
                , P.flags = [] }
@@ -40,6 +42,7 @@ hackage "lucid-seereason" name fs =
 -- |Build a hackage Target (a target that pulls the source code from
 -- hackage.haskell.org) from a the cabal package and some flags
 -- describing common variations on the mapping from one to another.
+{-
 hackage "natty-seereason" name flags =
     let debName = map toLower name in
     P.Package { P.name = "haskell-" ++ debName
@@ -50,8 +53,13 @@ hackage "natty-seereason" name flags =
       v = foldl f Nothing flags
           where f Nothing (Pin ver) = Just ver
                 f s _ = s
+-}
 
 hackage release _ _ = error $ "Target.Hackage.hackage - unexpected release: " ++ release
+
+-- |Transitional - hackage for lucid, debianize for natty
+hackdeb "natty-seereason" name flags = debianize name []
+hackdeb release@"lucid-seereason" name flags = hackage release name flags
 
 data Flag
     = Pin String   -- ^ Pin version number instead of using the most recent.  These arise when
@@ -66,24 +74,22 @@ data Flag
 -- |If these work in natty they would almost certainly work in lucid.
 releaseTargets _home release@"natty-seereason" =
     [ -- Targets that are taken from Sid in lucid
-      hackage release "text" []
+      debianize "text" []
     -- Doesn't build with our debianization due to funky bootstrapping
     -- files in dist/build/happy/happy-tmp.
     -- , hackage release "happy" []
-    , hackage release "network" []
+    , debianize "network" []
     , debianize "QuickCheck" [{-P.DebName "quickcheck2"-}]
-    , hackage release "syb" []
-    , hackage release "syb-with-class" []
-    , hackage release "gtk2hs-buildtools" []
+    , debianize "syb" []
+    , debianize "syb-with-class" []
+    , debianize "gtk2hs-buildtools" []
     , debianize "HTTP" [P.Epoch 1]
-    , hackage release "haskell-src-exts" []
     , debianize "random" []
     , debianize "semigroups" []
     , debianize "tagged" []
     , debianize "polyparse" []
     , debianize "HaXml" [P.Epoch 1]
     , debianize "haskeline" []
-    , debianize "hsx" []
     , debianize "uniplate" []
     , debianize "HsOpenSSL" [P.ExtraDep "libcrypto++-dev"]
     , debianize "nano-hmac" [P.ExtraDep "libcrypto++-dev"]
@@ -106,6 +112,7 @@ releaseTargets _home release@"natty-seereason" =
     , debianize "base-unicode-symbols" []
     , debianize "cprng-aes" []
     , debianize "SMTPClient" []
+    , debianize "data-accessor-template" []
     -- This target tells cabal-debian to add the dependency on the C
     -- package, but we need a version after 0.12.0, which doesn't have
     -- the "Ambiguous module name `Prelude'" error.  until then stick
@@ -115,10 +122,27 @@ releaseTargets _home release@"natty-seereason" =
     -- , hackage release "mtl" []
     -- , hackage release "deepseq" []
     -- , hackage release "transformers" []
+
+    , debianize "murmur-hash" []
+    , debianize "test-framework" []
+    , debianize "th-lift" []
+    , debianize "haskell-src-meta" []
+    , debianize "jmacro" []
+    -- , debianize "http-enumerator" []
+    , hackage release "happstack-state" [NP, Local _home]
     ]
+
 releaseTargets _home release@"lucid-seereason" =
     [ hackage release "HsOpenSSL" []
-    , hackage release "nano-hmac" [] ]
+    , hackage release "nano-hmac" []
+    , hackage release "murmur-hash" [Pin "0.1.0.2"]
+    , hackage release "test-framework" [Pin "0.4.0"]
+    , hackage release "th-lift" [Pin "0.5.3"]
+    , hackage release "haskell-src-meta" [Pin "0.4.0.1"]
+    , hackage release "jmacro" [Pin "0.5.1"]
+    -- , hackage release "http-enumerator" [Pin "0.6.5.5"]
+    , hackage release "happstack-state" [NP, Local _home]
+    ]
 releaseTargets _home release =
     error $ "Unexpected release: " ++ release
 
@@ -131,111 +155,138 @@ releaseTargets _home release =
 --     cabal-debian --debianize --maintainer '...'
 targets _home release =
     releaseTargets _home release ++
-    [ hackage release "AES" []
-    , debianize "acid-state" []
-    , hackage release "monads-tf" []
+    [ debianize "acid-state" []
     , debianize "ansi-terminal" []
     , debianize "ansi-wl-pprint" []
-    , hackage release "applicative-extras" [NP]
-    , hackage release "attempt" []
     , debianize "authenticate" []
-    , hackage release "bimap" []
-    , hackage release "bitset" []
-    , hackage release "blaze-from-html" []
-    , hackage release "bytestring-trie" []
-    , hackage release "CC-delcont" [NP, UC]
-    , hackage release "convertible-text" []
-    , hackage release "data-object-json" []
     , debianize "data-object" []
-    , hackage release "digestive-functors" []
-    , hackage release "digestive-functors-happstack" []
-    -- Need this when we upgrade blaze-textual to 0.2.0.0
-    -- , hackage release "double-conversion" []
-    , hackage release "formlets" []
-    , hackage release "funsat" []
-    , hackage release "gd" []
-    -- , debianize "gd" [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
-    , hackage release "gnuplot" []
-    , hackage release "happstack" [NP]
     , debianize "happstack-plugins" []
     , debianize "plugins" []
     , debianize "hinotify" []
     , debianize "http-types" []
-    -- Switch to the hackage target for happstack-data once a new upstream appears in hackage.
-    , P.Package { P.name = "haskell-happstack-data"
-                , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz" "be72c4c11d1317bf52c80782eac28a2d") (Darcs "http://src.seereason.com/happstack-data-debian" Nothing)
-                , P.flags = [] }
-    -- , hackage release "happstack-data" [NP]
-    , hackage release "happstack-ixset" [NP]
-    , hackage release "ixset" [NP]
-    , hackage release "happstack-server" [NP]
-    , hackage release "happstack-state" [NP]
-    , hackage release "happstack-util" [NP]
-    -- Depends on pandoc
-    , hackage release "safecopy" []
-    , hackage release "heap" [NP]
-    , hackage release "hoauth" []
-    -- The Sid package has no profiling libraries, so dependent packages
-    -- won't build.  Use our debianization instead.  This means keeping
-    -- up with sid's version.
     , debianize "hostname" []
-    , hackage release "HPDF" []
-    , hackage release "i18n" [NP]
-    , hackage release "incremental-sat-solver" []
     , debianize "instant-generics" []
-    , hackage release "JSONb" []
-    , hackage release "monadLib" []
-    , hackage release "murmur-hash" [Pin "0.1.0.2"]
-    , hackage release "openid" []
-    , hackage release "operational" [NP]
-    , hackage release "parse-dimacs" [NP]
-    , hackage release "PBKDF2" [NP]
-    , hackage release "permutation" [NS]
-    , hackage release "PSQueue" []
-    , hackage release "pwstore-purehaskell" []
-    , hackage release "RJson" [NP, UC]
-    , hackage release "sat" []
-    , hackage release "test-framework-hunit" []
-    , hackage release "test-framework-quickcheck" []
-    , hackage release "test-framework" [Pin "0.4.0"]
-    , hackage release "unicode-names" []
-    , hackage release "unicode-properties" []
-    , hackage release "utf8-prelude" [NP]
-    , hackage release "web-encodings" []
-    , hackage release "parseargs" []
-    , hackage release "th-lift" [Pin "0.5.3"]
-    , hackage release "haskell-src-meta" [Pin "0.4.0.1"]
-    , hackage release "jmacro" [Pin "0.5.1"]
-    , hackage release "bitmap" []
-    , hackage release "bitmap-opengl" []
-    , hackage release "stb-image" []
-    , hackage release "vacuum" []
-    , hackage release "vacuum-opengl" []
-    , hackage release "RSA" []
-    , hackage release "aeson" []
+    , debianize "monad-par" []
+    , debianize "operational" []
     , debianize "hashable" []
     , debianize "unordered-containers" []
-    , hackage release "blaze-textual" []
-    -- , hackage release "http-enumerator" [Pin "0.6.5.5"]
     , debianize "http-enumerator" []
     , debianize "aeson-native" []
     , debianize "blaze-textual-native" []
-    , hackage release "xml-enumerator" []
-    , hackage release "xml-types" []
-    , hackage release "attoparsec-text-enumerator" []
-    , hackage release "tagsoup" []
     , debianize "logic-TPTP" [P.ExtraDep "alex", P.ExtraDep "happy"]
     , debianize "monad-control" []
     -- Version 2.9.2 specifies ghc < 7.2 and base == 4.3.*
     -- , debianize "haddock" []
-    , debianize "data-accessor-template" []
     , debianize "process" []
     , debianize "split" []
+    -- This target puts the trhsx binary in its own package, while the
+    -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
+    -- use debianize for natty and apt:sid for lucid.
+    , debianize "hsx" []
+    -- Random is built into 7.0, but not into 7.2, and the version
+    -- in hackage is incompatible with the version shipped with 7.0.
+    , debianize "random" []
+
+    , hackdeb release "AES" []
+    , hackdeb release "monads-tf" []
+    , hackdeb release "applicative-extras" [NP]
+    , hackdeb release "attempt" []
+    , hackdeb release "bimap" []
+    , hackdeb release "bitset" []
+    , hackdeb release "blaze-from-html" []
+    , hackdeb release "bytestring-trie" []
+    , hackdeb release "CC-delcont" [NP, UC]
+    , hackdeb release "convertible-text" []
+    , hackdeb release "data-object-json" []
+    , hackdeb release "digestive-functors" []
+    , hackdeb release "digestive-functors-happstack" []
+    -- Need this when we upgrade blaze-textual to 0.2.0.0
+    -- , hackdeb release "double-conversion" []
+    , hackdeb release "formlets" []
+    , hackdeb release "funsat" []
+    , hackdeb release "gd" []
+    -- , debianize "gd" [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
+    , hackdeb release "gnuplot" []
+    , hackdeb release "happstack" [NP]
+    -- Switch to the hackage target for happstack-data once a new upstream appears in hackage.
+    , P.Package { P.name = "haskell-happstack-data"
+                , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz" "be72c4c11d1317bf52c80782eac28a2d") (Darcs "http://src.seereason.com/happstack-data-debian" Nothing)
+                , P.flags = [] }
+    -- , hackdeb release "happstack-data" [NP]
+    , hackdeb release "happstack-ixset" [NP]
+    , hackdeb release "ixset" [NP]
+    , hackdeb release "happstack-server" [NP]
+    , hackdeb release "happstack-util" [NP]
+    -- Depends on pandoc
+    , hackdeb release "safecopy" []
+    , hackdeb release "heap" [NP]
+    , hackdeb release "hoauth" []
+    -- The Sid package has no profiling libraries, so dependent packages
+    -- won't build.  Use our debianization instead.  This means keeping
+    -- up with sid's version.
+    , hackdeb release "HPDF" []
+    , hackdeb release "i18n" [NP]
+    , hackdeb release "incremental-sat-solver" []
+    , hackdeb release "JSONb" []
+    , hackdeb release "monadLib" []
+    , hackdeb release "openid" []
+    -- , hackdeb release "operational" [NP]
+    , hackdeb release "parse-dimacs" [NP]
+    , hackdeb release "PBKDF2" [NP]
+    , hackdeb release "permutation" [NS]
+    , hackdeb release "PSQueue" []
+    , hackdeb release "pwstore-purehaskell" []
+    , hackdeb release "RJson" [NP, UC]
+    , hackdeb release "sat" []
+    , hackdeb release "test-framework-hunit" []
+    , hackdeb release "test-framework-quickcheck" []
+    , hackdeb release "unicode-names" []
+    , hackdeb release "unicode-properties" []
+    , hackdeb release "utf8-prelude" [NP]
+    , hackdeb release "web-encodings" []
+    , hackdeb release "parseargs" []
+    , hackdeb release "bitmap" []
+    , hackdeb release "bitmap-opengl" []
+    , hackdeb release "stb-image" []
+    , hackdeb release "vacuum" []
+    , hackdeb release "vacuum-opengl" []
+    , hackdeb release "RSA" []
+    , hackdeb release "aeson" []
+    , hackdeb release "blaze-textual" []
+    , hackdeb release "xml-enumerator" []
+    , hackdeb release "xml-types" []
+    , hackdeb release "attoparsec-text-enumerator" []
+    , hackdeb release "tagsoup" []
+    -- This package becomes the debian package "haskell-haskell-src-exts".
+    -- Unfortunately, debian gave it the name "haskell-src-exts" dropping
+    -- the extra haskell from source and binary names.  This means other
+    -- packages (such as haskell-hsx) which reference it get the name wrong
+    -- when we generate the debianization.
+    , hackdeb release "haskell-src-exts" []
     -- This hackage target for pandoc is in the Sid module because
     -- some pandoc dependencies are there.  We would like to build the
     -- sid version of pandoc, but it requires a version of cdbs that
     -- probably can't be built under lucid.
-    -- , hackage release "pandoc" [Pin "1.5.1.1"]
+    -- , hackdeb release "pandoc" [Pin "1.5.1.1"]
+
+{-  -- Algebra cohort
+    , debianize "adjunctions" []
+    , debianize "algebra" []
+    , debianize "bifunctors" []
+    , debianize "categories" []
+    , debianize "comonad" []
+    , debianize "comonads-fd" []
+    , debianize "comonad-transformers" []
+    , debianize "contravariant" []
+    , debianize "data-lens" []
+    , debianize "distributive" []
+    , debianize "free" []
+    , debianize "keys" []
+    , debianize "representable-functors" []
+    , debianize "representable-tries" []
+    , debianize "semigroupoids" []
+    , debianize "void" []
+-}
     ]
 {-
   -- Testing generated targets against originals:

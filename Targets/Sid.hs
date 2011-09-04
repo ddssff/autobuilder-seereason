@@ -92,6 +92,7 @@ commonSidPackages _home release =
             , "haskell-colour"
             , "haskell-criterion"
             , "haskell-crypto-api"
+            , "haskell-entropy"
             , "haskell-cryptocipher"
             , "haskell-cryptohash"
             , "haskell-curl"
@@ -203,7 +204,8 @@ releaseSidPackages _home _release@"natty-seereason" =
                 , P.flags = [ P.RelaxDep "happy" ] } ] ++
     -- When a version newer than 0.12.0 comes out this should be
     -- switched to a debianize target.
-    [ sid _home _release "haskell-glib" ] -- for leksah
+     map (sid _home _release)
+         [ "haskell-glib" ]-- for leksah
 
 releaseSidPackages _home _release@"lucid-seereason" =
     map (sid _home _release)
@@ -221,7 +223,6 @@ releaseSidPackages _home _release@"lucid-seereason" =
         , "haskell-polyparse"
         , "haxml"
         , "haskell-haskeline"
-        , "haskell-hsx"
         , "haskell-glib" -- for leksah
         , "haskell-uniplate"
         , "haskell-blaze-html"
@@ -240,6 +241,7 @@ releaseSidPackages _home _release@"lucid-seereason" =
         -- , "haskell-split"
         -- , "haskell-http-types"
         , "haskell-smtpclient"
+        , "haskell-data-accessor-template"
         ] ++
     [ P.Package { P.name = "happy"
                 , P.spec = Apt "sid" "happy" Nothing
