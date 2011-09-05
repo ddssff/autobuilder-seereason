@@ -257,7 +257,7 @@ targets _home release =
     , hackdeb release "vacuum-opengl" []
     , hackdeb release "aeson" []
     , hackdeb release "blaze-textual" []
-    , hackdeb release "xml-enumerator" []
+    , debianize "xml-enumerator" []
     , hackdeb release "xml-types" []
     , hackdeb release "attoparsec-text-enumerator" []
     , hackdeb release "tagsoup" []
