@@ -158,7 +158,8 @@ commonSidPackages _home release =
             , "haskell-texmath"
             , "haskell-unix-compat"
             , "haskell-utility-ht"
-            , "haskell-vector"
+            -- Requires devscripts 0.8.9, restore when that gets built
+            -- , "haskell-vector"
             , "haskell-xhtml"
             , "haskell-xml"
             , "haskell-xss-sanitize"
@@ -168,7 +169,6 @@ commonSidPackages _home release =
             , "haskell-pcre-light"
             , "haskell-configfile"
             , "haskell-statistics"
-            , "haskell-vector"
             , "haskell-vector-algorithms"
             , "haskell-opengl"
             , "haskell-glut"

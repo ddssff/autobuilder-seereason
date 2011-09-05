@@ -192,7 +192,7 @@ targets _home release =
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
     , debianize "random" []
-    , let t = debianize "RSA" [] in t {P.spec = Quilt (P.spec t) (Darcs (localRepo _home ++ "/haskell-rsa-quilt") Nothing)}
+    , let t = debianize "RSA" [] in t {P.spec = Quilt (P.spec t) (Darcs (repo ++ "/haskell-rsa-quilt") Nothing)}
 
     , hackdeb release "AES" []
     , hackdeb release "monads-tf" []
@@ -270,6 +270,9 @@ targets _home release =
     , debianize "haskell-src-exts" []
     , hackage release "formlets" []
     , hackage release "incremental-sat-solver" []
+    -- Version 0.9-1+seereason1~lucid1 is uploaded to lucid already,
+    -- remove this pin when a new hackage version comes out to trump it.
+    , debianize "vector" [P.DebVersion "0.9-2~hackage1"]
 
 {-  -- Algebra cohort
     , debianize "adjunctions" []
