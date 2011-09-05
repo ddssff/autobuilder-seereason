@@ -86,8 +86,6 @@ releaseTargets _home release@"natty-seereason" =
     , debianize "random" []
     , debianize "semigroups" []
     , debianize "tagged" []
-    , debianize "polyparse" []
-    , debianize "HaXml" [P.Epoch 1]
     , debianize "haskeline" []
     , debianize "uniplate" []
     , debianize "HsOpenSSL" [P.ExtraDep "libcrypto++-dev"]
@@ -191,8 +189,12 @@ targets _home release =
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
     , debianize "random" []
-    , let t = debianize "RSA" [] in t {P.spec = Quilt (P.spec t) (Darcs (repo ++ "/haskell-rsa-quilt") Nothing)}
-
+    , debianize "HaXml" [P.Epoch 1]
+    , debianize "polyparse" []
+    , let t = debianize "RSA" [] in
+      case release of
+        "natty-seereason" -> t {P.spec = Quilt (P.spec t) (Darcs (repo ++ "/haskell-rsa-quilt") Nothing)}
+        "lucid-seereason" -> t
     , hackdeb release "AES" []
     , hackdeb release "monads-tf" []
     , hackdeb release "applicative-extras" [NP]
