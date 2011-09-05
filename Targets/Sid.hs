@@ -216,7 +216,6 @@ releaseSidPackages _home _release@"lucid-seereason" =
         , "haskell-src-exts"
         , "haskell-tagged"
         , "haskell-semigroups"
-        , "haskell-polyparse"
         , "haskell-haskeline"
         , "haskell-glib" -- for leksah
         , "haskell-uniplate"
