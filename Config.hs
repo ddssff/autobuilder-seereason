@@ -9,6 +9,7 @@ module Config
     ( myBuildURI
     , myDebianMirrorHost
     , myDevelopmentReleaseNames
+    , myDiscards
     , myDoNewDist
     , myDoSSHExport
     , myDoUpload
@@ -25,6 +26,7 @@ module Config
     , myReleaseSuffixes
     , mySources
     , myTargets
+    , myTestWithPrivate
     , myUbuntuMirrorHost
     , myUploadURI
     , myVendorTag
@@ -124,6 +126,15 @@ myFlushPool = False
 --
 myVerbosity = 0 :: Int
 
+-- This flags asks the autobuilder to build the private targets into the
+-- public repository, but it also adds them all to the discard list so
+-- none of the private targets actually get build.  This ensures you
+-- have built all the dependencies of the private packages.
+myTestWithPrivate = False
+
+myDiscards :: FilePath -> Set.Set String
+myDiscards home = if myTestWithPrivate then Set.fromList (map P.name (Targets.private home)) else Set.empty
+
 -- The set of all known package targets.  The targets we will
 -- actually build are chosen from these.  The myBuildRelease argument
 -- comes from the autobuilder argument list.
@@ -134,7 +145,7 @@ myTargets home p myBuildRelease =
     filter p $
            if isPrivateRelease myBuildRelease
            then Targets.private home
-           else Targets.public home myBuildRelease {- ++ Targets.private home -} -- For testing only, don't upload!
+           else (Targets.public home myBuildRelease ++ if myTestWithPrivate then Targets.private home else [])
 
 -- If you are not interested in building everything, put one or more
 -- source package names you want to build in this list.  Only these

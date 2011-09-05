@@ -48,7 +48,7 @@ getParams args =
       -- containing all the info needed during runtime.
       doParams ::  FilePath -> ([ParamRec -> ParamRec], [String], [String], [String]) -> IO [ParamRec]
       doParams home (fns, dists, [], []) = 
-          maybeDoHelp home . map (finalizeTargets home) . map (\ p -> foldr ($) p fns) . map defParams $ dists
+          maybeDoHelp home . map (finalizeTargets home) . map (\ p -> foldr ($) p fns) . map (defParams home) $ dists
       doParams home (_, _, badopts, errs) =
           hPutStr stderr (usage ("Bad options: " ++ show badopts ++
                            ", errors: " ++ show errs) (optSpecs home)) >> return []
@@ -150,7 +150,7 @@ optSpecs home =
 -- Assemble all the configuration info above.
 
 -- |See Documentation in "Debian.AutoBuilder.ParamClass".
-defParams myBuildRelease =
+defParams home myBuildRelease =
     ParamRec
     { vendorTag = myVendorTag
     , oldVendorTags = ["seereason"]
@@ -198,7 +198,7 @@ defParams myBuildRelease =
     , requiredVersion = [(parseDebianVersion "5.17", Nothing)]
     -- Things that are probably obsolete
     , debug = False
-    , discard = Set.empty
+    , discard = myDiscards home
     , extraReleaseTag = Nothing
     , preferred = []
     , buildDepends = []
