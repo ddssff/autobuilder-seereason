@@ -60,7 +60,7 @@ ring0 _home release =
           case release of
             "natty-seereason" ->
                 P.Package { P.name = "ghc"
-                          , P.spec = Quilt (Apt "experimental" "ghc" Nothing) (Darcs "http://src.seereason.com/ghc7-quilt" Nothing)
+                          , P.spec = Apt "experimental" "ghc" Nothing
                           , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
             "lucid-seereason" -> sid _home release "ghc"
             _ -> error ("Unexpected release: " ++ show release)
