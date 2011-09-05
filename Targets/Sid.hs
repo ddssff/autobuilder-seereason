@@ -96,7 +96,6 @@ commonSidPackages _home release =
             , "haskell-cryptohash"
             , "haskell-curl"
             , "haskell-data-accessor"
-            , "haskell-data-default"
             , "haskell-debian"
             , "haskell-digest"
             , "haskell-diff"

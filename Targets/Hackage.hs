@@ -273,6 +273,7 @@ targets _home release =
     -- Version 0.9-1+seereason1~lucid1 is uploaded to lucid already,
     -- remove this pin when a new hackage version comes out to trump it.
     , debianize "vector" [P.DebVersion "0.9-2~hackage1"]
+    , debianize "data-default" []
 
 {-  -- Algebra cohort
     , debianize "adjunctions" []
