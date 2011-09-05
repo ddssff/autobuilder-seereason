@@ -134,7 +134,7 @@ myTargets home p myBuildRelease =
     filter p $
            if isPrivateRelease myBuildRelease
            then Targets.private home
-           else Targets.public home myBuildRelease
+           else Targets.public home myBuildRelease {- ++ Targets.private home -} -- For testing only, don't upload!
 
 -- If you are not interested in building everything, put one or more
 -- source package names you want to build in this list.  Only these

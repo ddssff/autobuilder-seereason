@@ -108,7 +108,6 @@ releaseTargets _home release@"natty-seereason" =
     , debianize "fgl" []
     , debianize "case-insensitive" []
     , debianize "haskell-src" [P.ExtraDep "happy"]
-    , debianize "hsp" [P.ExtraDep "trhsx"]
     , debianize "base-unicode-symbols" []
     , debianize "cprng-aes" []
     , debianize "SMTPClient" []
@@ -131,6 +130,7 @@ releaseTargets _home release@"natty-seereason" =
     , debianize "jmacro" []
     -- , debianize "http-enumerator" []
     , hackage release "happstack-state" [NP]
+    , debianize "hsp" [P.ExtraDep "trhsx"]
     ]
 
 releaseTargets _home release@"lucid-seereason" =
@@ -143,6 +143,10 @@ releaseTargets _home release@"lucid-seereason" =
     , hackage release "jmacro" [Pin "0.5.1"]
     -- , hackage release "http-enumerator" [Pin "0.6.5.5"]
     , hackage release "happstack-state" [NP]
+    -- This pandoc debianize target has a dependency on an older version of HTTP
+    -- , debianize "pandoc" []
+    , hackage release "pandoc" [Local _home]
+    , hackage release "hsp" [NP, Local _home]
     ]
 releaseTargets _home release =
     error $ "Unexpected release: " ++ release
@@ -184,7 +188,7 @@ targets _home release =
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
-    , debianize "hsx" []
+    , hackdeb release "hsx" [NP, Local _home]
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
     , debianize "random" []
@@ -228,7 +232,6 @@ targets _home release =
     -- up with sid's version.
     , hackdeb release "HPDF" []
     , hackdeb release "i18n" [NP]
-    , hackdeb release "incremental-sat-solver" []
     , hackdeb release "JSONb" []
     , hackdeb release "monadLib" []
     , hackdeb release "openid" []
@@ -263,11 +266,10 @@ targets _home release =
     -- the extra haskell from source and binary names.  This means other
     -- packages (such as haskell-hsx) which reference it get the name wrong
     -- when we generate the debianization.
-    , hackdeb release "haskell-src-exts" []
-    -- This pandoc target has a dependency on an older version of HTTP
-    -- , debianize "pandoc" []
-    , hackage release "pandoc" [Local _home]
+    -- , hackdeb release "haskell-src-exts" [NP]
+    , debianize "haskell-src-exts" []
     , hackage release "formlets" []
+    , hackage release "incremental-sat-solver" []
 
 {-  -- Algebra cohort
     , debianize "adjunctions" []

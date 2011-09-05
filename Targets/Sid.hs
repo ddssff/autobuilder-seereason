@@ -24,7 +24,7 @@ sid _home release name =
       getRelaxInfo _ = []
 
       -- Special case specs
-      getSourceSpec "ghc" = Quilt (Apt "sid" "ghc" Nothing) (Darcs (repo ++ "/ghc7-quilt") Nothing)
+      -- getSourceSpec "ghc" = Quilt (Apt "sid" "ghc" Nothing) (Darcs (repo ++ "/ghc7-quilt") Nothing)
       getSourceSpec "haskell-bzlib" = Quilt (Apt "sid" "haskell-bzlib" Nothing) (Darcs "http://src.seereason.com/haskell-bzlib-quilt" Nothing)
       getSourceSpec "haskell-json" = Quilt (Apt "sid" "haskell-json" (Just "0.4.4-2")) (Darcs (repo ++ "/haskell-json-quilt") Nothing)
       getSourceSpec "haskell-uniplate" = Quilt (Apt "sid" "haskell-uniplate" Nothing) (Darcs "http://src.seereason.com/haskell-uniplate-quilt" Nothing)
@@ -45,7 +45,7 @@ sid _home release name =
       getSourceSpec "jqueryui" = Proc (Apt "sid" "jqueryui" Nothing)
       -- The sid version has dependencies on the old libghc6 packages.
       -- getSourceSpec "pandoc" = P.spec (hackage release "pandoc" [Pin "1.5.1.1", Local _home])
-      -- Add a dependency on libmagic-dev to libghc-magic-dev.  Next upstream release should have this fix.
+      -- Quit adds a dependency on libmagic-dev to libghc-magic-dev.  Next upstream release should have this fix.
       getSourceSpec "magic-haskell" = Quilt (Apt "sid" "magic-haskell" (Just "1.0.8-7")) (Darcs (repo ++ "/magic-quilt") Nothing)
       -- Pinned version numbers, when these are bumped we want to move to hackage targets.
       getSourceSpec "haskell-deepseq" = Apt "sid" "haskell-deepseq" (Just "1.1.0.2-2")
@@ -186,7 +186,6 @@ commonSidPackages _home release =
             , "html-xml-utils"
             , "jquery"
             , "jqueryui"
-            , "pandoc"
             , "tinymce"
             , "wordpress"
             -- , "haskell-hsx-jmacro"
@@ -203,7 +202,8 @@ releaseSidPackages _home _release@"natty-seereason" =
     -- When a version newer than 0.12.0 comes out this should be
     -- switched to a debianize target.
      map (sid _home _release)
-         [ "haskell-glib" ]-- for leksah
+         [ "haskell-glib"
+         , "pandoc" ]-- for leksah
 
 releaseSidPackages _home _release@"lucid-seereason" =
     map (sid _home _release)
@@ -231,7 +231,6 @@ releaseSidPackages _home _release@"lucid-seereason" =
         , "haskell-fgl"
         , "haskell-case-insensitive"
         , "haskell-haskell-src"
-        , "haskell-hsp"
         , "haskell-base-unicode-symbols"
         , "haskell-haddock" -- for leksah
         , "haskell-data-accessor-template"
