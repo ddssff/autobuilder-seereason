@@ -145,8 +145,8 @@ releaseTargets _home release@"lucid-seereason" =
     , hackage release "happstack-state" [NP]
     -- This pandoc debianize target has a dependency on an older version of HTTP
     -- , debianize "pandoc" []
-    , hackage release "pandoc" [Local _home]
-    , hackage release "hsp" [NP, Local _home]
+    , hackage release "pandoc" []
+    , hackage release "hsp" [NP]
     ]
 releaseTargets _home release =
     error $ "Unexpected release: " ++ release
@@ -188,7 +188,7 @@ targets _home release =
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
-    , hackdeb release "hsx" [NP, Local _home]
+    , hackdeb release "hsx" [NP]
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
     , debianize "random" []
