@@ -55,11 +55,10 @@ hackage "natty-seereason" name flags =
                 f s _ = s
 -}
 
-hackage release _ _ = error $ "Target.Hackage.hackage - unexpected release: " ++ release
-
 -- |Transitional - hackage for lucid, debianize for natty
-hackdeb "natty-seereason" name flags = debianize name []
+hackdeb "natty-seereason" name _ = debianize name []
 hackdeb release@"lucid-seereason" name flags = hackage release name flags
+hackdeb release _ _ = error $ "Unexpected release: " ++ release
 
 data Flag
     = Pin String   -- ^ Pin version number instead of using the most recent.  These arise when

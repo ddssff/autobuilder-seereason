@@ -4,12 +4,11 @@ module Targets.Sid ( ring0, ring1 ) where
 import qualified Debian.AutoBuilder.Params as P
 import Debian.AutoBuilder.Spec
 import Targets.Common
-import Targets.Hackage (hackage, Flag(..))
 
 -- |The _home parameter has an underscore because it is normally
 -- unused, but can be used temporarily to generate a path using the
 -- localRepo function.
-sid _home release name =
+sid _home _release name =
     P.Package { P.name = name
               , P.spec = getSourceSpec name
               , P.flags = getFlags name }
