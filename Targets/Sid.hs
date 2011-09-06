@@ -137,7 +137,6 @@ commonSidPackages _home release =
             , "haskell-parsec"
             , "haskell-pcre-light"
             , "haskell-primitive"
-            , "haskell-quickcheck1"
             , "haskell-regex-base"
             , "haskell-regex-compat"
             , "haskell-regex-posix"
@@ -188,7 +187,11 @@ commonSidPackages _home release =
             , "wordpress"
             -- , "haskell-hsx-jmacro"
             , "haskell-json"
-            ]
+            ] ++
+    [ P.Package { P.name = "haskell-quickcheck1"
+                , P.spec = Quilt (Apt "sid" "haskell-quickcheck1" Nothing) (Darcs (repo ++ "/haskell-quickcheck-quilt") Nothing)
+                , P.flags = [] } ]
+
 
 releaseSidPackages _home _release@"natty-seereason" =
     [ P.Package { P.name = "cpphs"
