@@ -28,6 +28,7 @@ import System.Exit
 import System.IO (hPutStr, hPutStrLn, hFlush, stderr)
 
 import Config
+import Targets (private)
 import Usage
 
 main = try (getArgs >>= getParams >>= M.main) >>=
@@ -60,14 +61,18 @@ getParams args =
                   case targets p of
                     TargetSet xs -> TargetSet xs
                     TargetNames xs -> TargetSet (Set.map findSpec xs)
-                    AllTargets -> TargetSet allTargets }
+                    AllTargets -> TargetSet allTargets
+            , discard =
+                Set.union (discard p) (Set.fromList $ if testWithPrivate p then map name (private home) else [])
+            }
           where
             findSpec s = case Set.toList (Set.filter (\ t -> name t == s) allTargets) of
                            [x] -> x
                            [] -> error $ "Package name not found: " ++ s ++ "\navailable: " ++ show (Set.toList (Set.map name allTargets))
                            xs -> error $ "Multiple packages named " ++ s ++ " found: " ++ show xs
             -- FIXME - make myTargets a set
-            allTargets = myTargets home (const True) (relName (buildRelease p))
+            allTargets = Set.union (myTargets home (const True) (relName (buildRelease p)))
+                                   (Set.fromList (if testWithPrivate p then private home else []))
       -- Look for the doHelp flag in the parameter set, if given output
       -- help message and exit.  If --help was given it will appear in all
       -- the parameter sets, so we only examine the first.
@@ -115,7 +120,12 @@ optSpecs home =
     , Option [] ["target"] (ReqArg (\ s p -> p {targets = addTarget s p}) "PACKAGE")
       "Add a target to the target list."
     , Option [] ["discard"] (ReqArg (\ s p -> p {discard = Set.insert s (discard p)}) "PACKAGE")
-      "Add a target to the discard list."
+      (unlines [ "Add a target to the discard list, packages which we discard as soon"
+               , "as they are ready to build, along with any packages that depend on them." ])
+    , Option [] ["test-with-private"] (NoArg (\ p -> p {testWithPrivate = True}))
+      (unlines [ "Build everything required to build the private targets, but don't"
+               , "actually build the private targets.  This is to avoid the risk of"
+               , "uploading private targets to the public repository" ])
     , Option [] ["goal"] (ReqArg (\ s p -> p { goals = goals p ++ [s]
                                              , targets = TargetSet (myTargets home (const True) (relName (buildRelease p)))}) "PACKAGE")
       (unlines [ "If one or more goal package names are given the autobuilder"
@@ -150,7 +160,7 @@ optSpecs home =
 -- Assemble all the configuration info above.
 
 -- |See Documentation in "Debian.AutoBuilder.ParamClass".
-defParams home myBuildRelease =
+defParams _home myBuildRelease =
     ParamRec
     { vendorTag = myVendorTag
     , oldVendorTags = ["seereason"]
@@ -195,10 +205,11 @@ defParams home myBuildRelease =
     , releaseAliases = myReleaseAliases myBuildRelease
     , archList = [Binary "i386",Binary "amd64"]
     , newDistProgram = "newdist -v"
-    , requiredVersion = [(parseDebianVersion "5.17", Nothing)]
+    , requiredVersion = [(parseDebianVersion "6.6", Nothing)]
     -- Things that are probably obsolete
     , debug = False
-    , discard = myDiscards home
+    , discard = myDiscards
+    , testWithPrivate = False
     , extraReleaseTag = Nothing
     , preferred = []
     , buildDepends = []
