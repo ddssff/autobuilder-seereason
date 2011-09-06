@@ -194,7 +194,7 @@ targets _home release =
     , let t = debianize "RSA" [] in
       case release of
         "natty-seereason" -> t {P.spec = Quilt (P.spec t) (Darcs (repo ++ "/haskell-rsa-quilt") Nothing)}
-        "lucid-seereason" -> t
+        _  -> t
     , hackdeb release "AES" []
     , hackdeb release "monads-tf" []
     , hackdeb release "applicative-extras" [NP]

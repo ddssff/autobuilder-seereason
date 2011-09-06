@@ -7,7 +7,7 @@ import Targets.Common
 
 targets _home =
     [ P.Package { P.name = "autobuilder"
-                , P.spec = Darcs "http://src.seereason.com/autobuilder" Nothing
+                , P.spec = Darcs (repo ++ "/autobuilder") Nothing
                 , P.flags = [] }
     , P.Package { P.name = "happstack-debianization"
                 , P.spec = Darcs "http://src.seereason.com/happstack-debianization" Nothing
