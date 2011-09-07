@@ -182,6 +182,7 @@ commonSidPackages _home release =
             , "html-xml-utils"
             , "jquery"
             , "jqueryui"
+            , "jquery-goodies"
             , "tinymce"
             , "wordpress"
             -- , "haskell-hsx-jmacro"
