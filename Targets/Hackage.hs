@@ -197,7 +197,8 @@ targets _home release =
         _  -> t
     , hackdeb release "AES" []
     , hackdeb release "monads-tf" []
-    , hackdeb release "applicative-extras" [NP]
+    -- Our debianization has several important patches.
+    , hackage release "applicative-extras" [NP]
     , hackdeb release "attempt" []
     , hackdeb release "bimap" []
     , hackdeb release "bitset" []
