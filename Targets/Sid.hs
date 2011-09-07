@@ -99,7 +99,6 @@ commonSidPackages _home release =
             , "haskell-digest"
             , "haskell-diff"
             , "haskell-dlist"
-            , "haskell-edison-api"
             , "haskell-edison-core"
             , "haskell-enumerator"
             , "haskell-erf"
@@ -190,7 +189,11 @@ commonSidPackages _home release =
             ] ++
     [ P.Package { P.name = "haskell-quickcheck1"
                 , P.spec = Quilt (Apt "sid" "haskell-quickcheck1" Nothing) (Darcs (repo ++ "/haskell-quickcheck-quilt") Nothing)
-                , P.flags = [] } ]
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-edison-api"
+                , P.spec = Quilt (Apt "sid" "haskell-edison-api" Nothing) (Darcs (localRepo _home ++ "/haskell-edison-api-quilt") Nothing)
+                , P.flags = [] }
+    ]
 
 
 releaseSidPackages _home _release@"natty-seereason" =
