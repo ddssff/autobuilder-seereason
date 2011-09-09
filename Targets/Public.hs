@@ -222,7 +222,10 @@ targets _home release =
     , sid "haskell-parsec2"
     , sid "haskell-parsec"
     , hackdeb release "parse-dimacs" [NP]
-    , hackdeb release "PBKDF2" [NP]
+    , case release of
+        "lucid-seereason" -> hackage release "PBKDF2" [NP]
+        _ -> let t = debianize "PBKDF2" [] in
+             t {P.spec = Quilt (P.spec t) (Darcs (repo ++ "/pbkdf2-quilt") Nothing)}
     , sid "haskell-pcre-light"
     , hackdeb release "permutation" [NS]
     , debianize "plugins" []
