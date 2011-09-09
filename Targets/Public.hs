@@ -23,131 +23,114 @@ targets _home release =
           , sid "haskell-dummy"
           , sid "hscolour" ]
      else []) ++
-    [ sid "haskell-deepseq"
-    , sid "haskell-transformers"
-    , sid "haskell-mtl"
-    , sid "haskell-utf8-string"
-    , sid "haskell-hjavascript"
-    , sid "haskell-hjscript"
-    , sid "haskell-harp"
-    , sid "darcs"
+    -- Alphabetized
+    [ debianize "acid-state" []
+    , hackdeb release "AES" []
+    , hackdeb release "aeson" []
+    , debianize "aeson-native" []
     , sid "agda"
     , sid "agda-bin"
     , sid "agda-stdlib"
+    , debianize "ansi-terminal" []
+    , debianize "ansi-wl-pprint" []
+    -- Our debianization has several important patches.
+    , hackage release "applicative-extras" [NP]
+    , sid "haskell-asn1-data"
+    , hackdeb release "attempt" []
+    , lucidNatty (sid "haskell-attoparsec") (debianize "attoparsec" [])
     , sid "haskell-attoparsec-enumerator"
     , sid "haskell-attoparsec-text"
+    , hackdeb release "attoparsec-text-enumerator" []
+    , debianize "authenticate" []
+    , lucidNatty (sid "haskell-base-unicode-symbols") (debianize "base-unicode-symbols" [])
     , sid "haskell-base64-bytestring"
+    , sid "bash-completion"
+    , hackdeb release "bimap" []
+    , sid "haskell-binary"
+    , sid "haskell-binary-shared" -- for leksah
+    , hackdeb release "bitmap" []
+    , hackdeb release "bitmap-opengl" []
+    , hackdeb release "bitset" []
     , sid "haskell-blaze-builder"
     , sid "haskell-blaze-builder-enumerator"
+    , hackdeb release "blaze-from-html" []
+    , lucidNatty (sid "haskell-blaze-html") (debianize "blaze-html" [])
+    , hackdeb release "blaze-textual" []
+    , debianize "blaze-textual-native" []
     , sid "haskell-bytestring-nums"
+    , hackdeb release "bytestring-trie" []
     , sid "haskell-bzlib"
-    , sid "haskell-cereal"
-    , sid "haskell-citeproc-hs"
-    , sid "haskell-colour"
-    , sid "haskell-criterion"
-    , sid "haskell-crypto-api"
-    , sid "haskell-entropy"
-    , sid "haskell-cryptocipher"
-    , sid "haskell-cryptohash"
-    , sid "haskell-curl"
-    , sid "haskell-data-accessor"
-    , sid "haskell-debian"
-    , sid "haskell-digest"
-    , sid "haskell-diff"
-    , sid "haskell-dlist"
-    , sid "haskell-edison-core"
-    , sid "haskell-enumerator"
-    , sid "haskell-erf"
-    , sid "haskell-failure"
-    , sid "haskell-feed"
-    , sid "highlighting-kate"
-    , sid "haskell-hsemail"
-    , sid "hslogger"
-    , sid "haskell-hstringtemplate"
-    , sid "haskell-html"
-    , sid "haskell-zlib-enum"
-    , sid "haskell-hunit"
-    , sid "haskell-irc"
-    , sid "haskell-largeword"
-    , sid "haskell-leksah"
-    , sid "haskell-leksah-server" -- for leksah
-    , sid "haskell-strict" -- for leksah
-    , sid "haskell-binary-shared" -- for leksah
-    , sid "haskell-gtk" -- for leksah
-    , sid "haskell-gtksourceview2" -- for leksah
-    , sid "haskell-ltk" -- for leksah
     , sid "haskell-cairo" -- for leksah
-    , sid "haskell-pango" -- for leksah
-    , sid "haskell-gio" -- for leksah
-    , sid "haskell-ghc-paths" -- for leksah
-    , sid "magic-haskell"
-    , sid "haskell-maybet"
-    , sid "haskell-mmap"
-    , sid "haskell-monadcatchio-mtl"
-    , sid "haskell-monoid-transformer"
-    , sid "haskell-mwc-random"
-    , sid "haskell-pandoc-types"
-    , sid "haskell-parallel"
-    , sid "haskell-parsec2"
-    , sid "haskell-parsec"
-    , sid "haskell-pcre-light"
-    , sid "haskell-primitive"
-    , sid "haskell-regex-base"
-    , sid "haskell-regex-compat"
-    , sid "haskell-regex-posix"
-    , sid "haskell-regex-tdfa"
-    , sid "haskell-safe"
-    , sid "haskell-sendfile"
-    , sid "haskell-sha"
-    , sid "haskell-stm"
-    , sid "haskell-strict-concurrency"
-    , sid "haskell-syb-with-class-instances-text"
-            -- , "haskell-tagged"
-            -- , "haskell-tagsoup" -- Moved to Hackage
-    , sid "haskell-tar"
-    , sid "haskell-terminfo"
-    -- , sid "haskell-testpack"
-    , debianize "testpack" []
-    , sid "haskell-texmath"
-    , sid "haskell-unix-compat"
-    , sid "haskell-utility-ht"
-            -- Requires devscripts 0.8.9, restore when that gets built
-            -- , "haskell-vector"
-    , sid "haskell-xhtml"
-    , sid "haskell-xml"
-    , sid "haskell-xss-sanitize"
-    , sid "haskell-zip-archive"
-    , sid "haskell-zlib-bindings"
-    , sid "haskell-zlib"
-    , sid "haskell-pcre-light"
-    , sid "haskell-configfile"
-    , sid "haskell-statistics"
-    , sid "haskell-vector-algorithms"
-    , sid "haskell-opengl"
-    , sid "haskell-glut"
-    , sid "haskell-puremd5"
-    , sid "haskell-binary"
-    , sid "haskell-tls"
-    , sid "haskell-tls-extra"
+    , lucidNatty (sid "haskell-case-insensitive") (debianize "case-insensitive" [])
+    , hackdeb release "CC-delcont" [NP, UC]
+    , sid "haskell-cereal"
     , sid "haskell-certificate"
-    , sid "haskell-asn1-data"
-    , sid "haskell-wai"
     , sid "haskell-cgi"
-            -- , "cdbs"
-    , sid "bash-completion"
-    , sid "geneweb"
-    , sid "html-xml-utils"
-    , sid "jquery"
-    , sid "jqueryui"
-    , sid "jquery-goodies"
-    , sid "tinymce"
-    , sid "wordpress"
-            -- , "haskell-hsx-jmacro"
-    , sid "haskell-json"
+    , sid "haskell-citeproc-hs"
     , lucidNatty (sid "cpphs")
                  (P.Package { P.name = "cpphs"
                             , P.spec = Quilt (Apt "sid" "cpphs" Nothing) (Darcs "http://src.seereason.com/cpphs-quilt" Nothing)
                             , P.flags = [] })
+    , lucidNatty (sid "haskell-cprng-aes") (debianize "cprng-aes" [])
+    , sid "haskell-colour"
+    , sid "haskell-configfile"
+    , hackdeb release "convertible-text" []
+    , sid "haskell-criterion"
+    , lucidNatty (sid "haskell-crypto") (debianize "Crypto" [])
+    , sid "haskell-crypto-api"
+    , sid "haskell-cryptocipher"
+    , sid "haskell-cryptohash"
+    , sid "haskell-curl"
+    , sid "darcs"
+    , sid "haskell-data-accessor"
+    , lucidNatty (sid "haskell-data-accessor-template") (debianize "data-accessor-template" [])
+    , debianize "data-default" []
+    , debianize "data-object" []
+    , hackdeb release "data-object-json" []
+    , lucidNatty (sid "haskell-dataenc") (debianize "dataenc" [])
+    , sid "haskell-debian"
+    , sid "haskell-deepseq"
+    , sid "haskell-digest"
+    , hackdeb release "digestive-functors" []
+    , hackdeb release "digestive-functors-happstack" []
+    , sid "haskell-diff"
+    , sid "haskell-dlist"
+    -- Need this when we upgrade blaze-textual to 0.2.0.0
+    -- , hackdeb release "double-conversion" []
+    , P.Package { P.name = "haskell-edison-api"
+                , P.spec = Quilt (Apt "sid" "haskell-edison-api" Nothing) (Darcs (repo ++ "/haskell-edison-api-quilt") Nothing)
+                , P.flags = [] }
+    , sid "haskell-edison-core"
+    , sid "haskell-entropy"
+    , sid "haskell-enumerator"
+    , sid "haskell-erf"
+    , sid "haskell-failure"
+    , sid "haskell-feed"
+    , lucidNatty (sid "haskell-fgl") (debianize "fgl" [])
+    , hackage release "formlets" []
+    , hackdeb release "funsat" []
+    , hackdeb release "gd" []
+    -- , debianize "gd" [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
+    , sid "geneweb"
+    , sid "haskell-ghc-paths" -- for leksah
+    , sid "haskell-gio" -- for leksah
+    , sid "haskell-glib"
+    , sid "haskell-glut"
+    , hackdeb release "gnuplot" []
+    , sid "haskell-gtk" -- for leksah
+    , lucidNatty (sid "gtk2hs-buildtools") (debianize "gtk2hs-buildtools" [])
+    , sid "haskell-gtksourceview2" -- for leksah
+    , hackdeb release "happstack" [NP]
+    -- Switch to the hackage target for happstack-data once a new upstream appears in hackage.
+    , P.Package { P.name = "haskell-happstack-data"
+                , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz" "be72c4c11d1317bf52c80782eac28a2d") (Darcs "http://src.seereason.com/happstack-data-debian" Nothing)
+                , P.flags = [] }
+    -- , hackdeb release "happstack-data" [NP]
+    , hackdeb release "happstack-ixset" [NP]
+    , debianize "happstack-plugins" []
+    , debianize "happstack-server" []
+    , lucidNatty (hackage release "happstack-state" [NP]) (hackage release "happstack-state" [NP])
+    , hackdeb release "happstack-util" [NP]
     , lucidNatty (P.Package { P.name = "happy"
                             , P.spec = Apt "sid" "happy" Nothing
                             , P.flags = [ P.RelaxDep "happy" ] })
@@ -158,27 +141,123 @@ targets _home release =
                  (P.Package { P.name = "happy"
                             , P.spec = Quilt (Apt "sid" "happy" Nothing) (Darcs (repo ++ "/happy-quilt") Nothing)
                             , P.flags = [ P.RelaxDep "happy" ] })
-    , sid "haskell-glib"
+    , sid "haskell-harp"
+    , debianize "hashable" []
+    , lucidNatty -- Current version needs a BangPatterns options
+                 (sid "haskell-hashed-storage")
+                 (debianize "hashed-storage" [])
+    , lucidNatty (sid "haskell-haskeline") (debianize "haskeline" [])
+    , lucidNatty (sid "haskell-haskell-src") (debianize "haskell-src" [P.ExtraDep "happy"])
+    , hackdeb release "heap" [NP]
+    , sid "highlighting-kate"
+    , debianize "hinotify" []
+    , sid "haskell-hjavascript"
+    , sid "haskell-hjscript"
+    , debianize "HaXml" [P.Epoch 1]
+    , hackdeb release "hoauth" []
+    , debianize "hostname" []
+    -- The Sid package has no profiling libraries, so dependent packages
+    -- won't build.  Use our debianization instead.  This means keeping
+    -- up with sid's version.
+    , hackdeb release "HPDF" []
+    , sid "haskell-hsemail"
+    , sid "hslogger"
+    , lucidNatty (hackage release "HsOpenSSL" []) (debianize "HsOpenSSL" [P.ExtraDep "libcrypto++-dev"])
+    , lucidNatty (hackage release "hsp" [NP]) (debianize "hsp" [P.ExtraDep "trhsx"])
+    , sid "haskell-hstringtemplate"
+    -- This target puts the trhsx binary in its own package, while the
+    -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
+    -- use debianize for natty and apt:sid for lucid.
+    , hackdeb release "hsx" [NP]
+    , sid "haskell-html"
+    , sid "html-xml-utils"
+    , lucidNatty (sid "haskell-http") (debianize "HTTP" [P.Epoch 1])
+    , debianize "http-enumerator" []
+    , debianize "http-types" []
+    , sid "haskell-hunit"
+    , hackdeb release "i18n" [NP]
+    , hackage release "incremental-sat-solver" []
+    , debianize "instant-generics" []
+    , sid "haskell-irc"
+    , debianize "ixset" []
+    , lucidNatty (hackage release "jmacro" [Pin "0.5.1"]) (debianize "jmacro" [])
+    , sid "jquery"
+    , sid "jqueryui"
+    , sid "jquery-goodies"
+    , hackdeb release "JSONb" []
+    , sid "haskell-json"
+    , sid "haskell-largeword"
+    , sid "haskell-leksah"
+    , sid "haskell-leksah-server" -- for leksah
+    , sid "haskell-ltk" -- for leksah
+    , debianize "logic-TPTP" [P.ExtraDep "alex", P.ExtraDep "happy"]
+    , sid "magic-haskell"
+    , sid "haskell-maybet"
+    , lucidNatty (sid "missingh") (debianize "MissingH" [])
+    , sid "haskell-mmap"
+    , sid "haskell-monadcatchio-mtl"
+    , debianize "monad-control" []
+    , hackdeb release "monadLib" []
+    , debianize "monad-par" []
+    , hackdeb release "monads-tf" []
+    , sid "haskell-monoid-transformer"
+    , sid "haskell-mtl"
+    , lucidNatty (hackage release "murmur-hash" [Pin "0.1.0.2"]) (debianize "murmur-hash" [])
+    , sid "haskell-mwc-random"
+    , lucidNatty (hackage release "nano-hmac" []) (debianize "nano-hmac" [P.ExtraDep "libcrypto++-dev"])
+    , lucidNatty (sid "haskell-network") (debianize "network" [])
+    , hackdeb release "openid" []
+    , sid "haskell-opengl"
+    , debianize "operational" []
     , lucidNatty -- This pandoc debianize target has a dependency on an older version of HTTP
                  -- , debianize "pandoc" []
                  (hackage release "pandoc" [])
                  -- When a version newer than 0.12.0 comes out this should be
                  -- switched to a debianize target.
                  (sid "pandoc")
+    , sid "haskell-pandoc-types"
+    , sid "haskell-pango" -- for leksah
+    , sid "haskell-parallel"
+    , hackdeb release "parseargs" []
+    , sid "haskell-parsec2"
+    , sid "haskell-parsec"
+    , hackdeb release "parse-dimacs" [NP]
+    , hackdeb release "PBKDF2" [NP]
+    , sid "haskell-pcre-light"
+    , hackdeb release "permutation" [NS]
+    , debianize "plugins" []
+    , debianize "polyparse" []
+    , sid "haskell-primitive"
+    -- This is bundled with the compiler
+    -- , debianize "process" []
+    , hackdeb release "PSQueue" []
+    , sid "haskell-puremd5"
+    , hackdeb release "pwstore-purehaskell" []
+    , lucidNatty (sid "haskell-quickcheck") (debianize "QuickCheck" [{-P.DebName "quickcheck2"-}])
     , P.Package { P.name = "haskell-quickcheck1"
                 , P.spec = Quilt (Apt "sid" "haskell-quickcheck1" Nothing) (Darcs (repo ++ "/haskell-quickcheck-quilt") Nothing)
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-edison-api"
-                , P.spec = Quilt (Apt "sid" "haskell-edison-api" Nothing) (Darcs (repo ++ "/haskell-edison-api-quilt") Nothing)
-                , P.flags = [] }
-    , lucidNatty (sid "haskell-text") (debianize "text" [])
-    , lucidNatty (sid "haskell-network") (debianize "network" [])
-    , lucidNatty (sid "haskell-http") (debianize "HTTP" [P.Epoch 1])
-    -- for leksah
-    , lucidNatty (sid "gtk2hs-buildtools") (debianize "gtk2hs-buildtools" [])
-    , lucidNatty (sid "haskell-quickcheck") (debianize "QuickCheck" [{-P.DebName "quickcheck2"-}])
-    , lucidNatty (sid "haskell-syb") (debianize "syb" [])
-    , lucidNatty (sid "haskell-syb-with-class") (debianize "syb-with-class" [])
+    -- Random is built into 7.0, but not into 7.2, and the version
+    -- in hackage is incompatible with the version shipped with 7.0.
+    , debianize "random" []
+    , sid "haskell-regex-base"
+    , sid "haskell-regex-compat"
+    , sid "haskell-regex-posix"
+    , sid "haskell-regex-tdfa"
+    , hackdeb release "RJson" [NP, UC]
+    , let t = debianize "RSA" [] in
+      case release of
+        "natty-seereason" -> t {P.spec = Quilt (P.spec t) (Darcs (repo ++ "/haskell-rsa-quilt") Nothing)}
+        _  -> t
+    , sid "haskell-safe"
+    -- Depends on pandoc
+    , hackdeb release "safecopy" []
+    , hackdeb release "sat" []
+    , lucidNatty (sid "haskell-semigroups") (debianize "semigroups" [])
+    , sid "haskell-sendfile"
+    , sid "haskell-sha"
+    , lucidNatty (sid "haskell-smtpclient") (debianize "SMTPClient" [])
+    , debianize "split" []
     -- This package becomes the debian package "haskell-haskell-src-exts".
     -- Unfortunately, debian gave it the name "haskell-src-exts" dropping
     -- the extra haskell from source and binary names.  This means other
@@ -186,151 +265,58 @@ targets _home release =
     -- when we generate the debianization.
     -- , hackdeb release "haskell-src-exts" [NP]
     , lucidNatty (sid "haskell-src-exts") (debianize "haskell-src-exts" [])
-    , lucidNatty (sid "haskell-tagged") (debianize "tagged" [])
-    , lucidNatty (sid "haskell-semigroups") (debianize "semigroups" [])
-    , lucidNatty (sid "haskell-haskeline") (debianize "haskeline" [])
-    , lucidNatty (sid "haskell-uniplate") (debianize "uniplate" [])
-    , lucidNatty (sid "haskell-blaze-html") (debianize "blaze-html" [])
-    , lucidNatty (sid "haskell-crypto") (debianize "Crypto" [])
-    , lucidNatty (sid "missingh") (debianize "MissingH" [])
-    , lucidNatty (sid "haskell-attoparsec") (debianize "attoparsec" [])
-    , lucidNatty (sid "haskell-dataenc") (debianize "dataenc" [])
-    , lucidNatty (sid "haskell-fgl") (debianize "fgl" [])
-    , lucidNatty (sid "haskell-case-insensitive") (debianize "case-insensitive" [])
-    , lucidNatty (sid "haskell-haskell-src") (debianize "haskell-src" [P.ExtraDep "happy"])
-    , lucidNatty (sid "haskell-base-unicode-symbols") (debianize "base-unicode-symbols" [])
-    , lucidNatty (sid "haskell-data-accessor-template") (debianize "data-accessor-template" [])
-    , lucidNatty (sid "haskell-cprng-aes") (debianize "cprng-aes" [])
-    , lucidNatty (sid "haskell-smtpclient") (debianize "SMTPClient" [])
-    , lucidNatty -- Current version needs a BangPatterns options
-                 (sid "haskell-hashed-storage")
-                 (debianize "hashed-storage" [])
-    , lucidNatty (hackage release "HsOpenSSL" []) (debianize "HsOpenSSL" [P.ExtraDep "libcrypto++-dev"])
-    , lucidNatty (hackage release "nano-hmac" []) (debianize "nano-hmac" [P.ExtraDep "libcrypto++-dev"])
-    , lucidNatty (hackage release "murmur-hash" [Pin "0.1.0.2"]) (debianize "murmur-hash" [])
-    , lucidNatty (hackage release "test-framework" [Pin "0.4.0"]) (debianize "test-framework" [])
-    , lucidNatty (hackage release "th-lift" [Pin "0.5.3"]) (debianize "th-lift" [])
     , lucidNatty (hackage release "haskell-src-meta" [Pin "0.4.0.1"]) (debianize "haskell-src-meta" [])
-    , lucidNatty (hackage release "jmacro" [Pin "0.5.1"]) (debianize "jmacro" [])
-    , lucidNatty (hackage release "happstack-state" [NP]) (hackage release "happstack-state" [NP])
-    , lucidNatty (hackage release "hsp" [NP]) (debianize "hsp" [P.ExtraDep "trhsx"])
-    ] ++
-    lucidNatty [] [debianize "double-conversion" []] ++
-    lucidNatty [] [debianize "random" []] ++
-    -- for leksah
-    lucidNatty [sid "haskell-haddock"] [] ++
-    [ debianize "acid-state" []
-    , debianize "ansi-terminal" []
-    , debianize "ansi-wl-pprint" []
-    , debianize "authenticate" []
-    , debianize "data-object" []
-    , debianize "happstack-plugins" []
-    , debianize "plugins" []
-    , debianize "hinotify" []
-    , debianize "http-types" []
-    , debianize "hostname" []
-    , debianize "instant-generics" []
-    , debianize "monad-par" []
-    , debianize "operational" []
-    , debianize "hashable" []
-    , debianize "unordered-containers" []
-    , debianize "http-enumerator" []
-    , debianize "aeson-native" []
-    , debianize "blaze-textual-native" []
-    , debianize "logic-TPTP" [P.ExtraDep "alex", P.ExtraDep "happy"]
-    , debianize "monad-control" []
-    -- Version 2.9.2 specifies ghc < 7.2 and base == 4.3.*
-    -- , debianize "haddock" []
-    -- This is bundled with the compiler
-    -- , debianize "process" []
-    , debianize "split" []
-    -- This target puts the trhsx binary in its own package, while the
-    -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
-    -- use debianize for natty and apt:sid for lucid.
-    , hackdeb release "hsx" [NP]
-    -- Random is built into 7.0, but not into 7.2, and the version
-    -- in hackage is incompatible with the version shipped with 7.0.
-    , debianize "random" []
-    , debianize "HaXml" [P.Epoch 1]
-    , debianize "polyparse" []
-    , let t = debianize "RSA" [] in
-      case release of
-        "natty-seereason" -> t {P.spec = Quilt (P.spec t) (Darcs (repo ++ "/haskell-rsa-quilt") Nothing)}
-        _  -> t
-    , hackdeb release "AES" []
-    , hackdeb release "monads-tf" []
-    -- Our debianization has several important patches.
-    , hackage release "applicative-extras" [NP]
-    , hackdeb release "attempt" []
-    , hackdeb release "bimap" []
-    , hackdeb release "bitset" []
-    , hackdeb release "blaze-from-html" []
-    , hackdeb release "bytestring-trie" []
-    , hackdeb release "CC-delcont" [NP, UC]
-    , hackdeb release "convertible-text" []
-    , hackdeb release "data-object-json" []
-    , hackdeb release "digestive-functors" []
-    , hackdeb release "digestive-functors-happstack" []
-    -- Need this when we upgrade blaze-textual to 0.2.0.0
-    -- , hackdeb release "double-conversion" []
-    , hackdeb release "funsat" []
-    , hackdeb release "gd" []
-    -- , debianize "gd" [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
-    , hackdeb release "gnuplot" []
-    , hackdeb release "happstack" [NP]
-    -- Switch to the hackage target for happstack-data once a new upstream appears in hackage.
-    , P.Package { P.name = "haskell-happstack-data"
-                , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz" "be72c4c11d1317bf52c80782eac28a2d") (Darcs "http://src.seereason.com/happstack-data-debian" Nothing)
-                , P.flags = [] }
-    -- , hackdeb release "happstack-data" [NP]
-    , hackdeb release "happstack-ixset" [NP]
-    , debianize "ixset" []
-    , debianize "happstack-server" []
-    , hackdeb release "happstack-util" [NP]
-    -- Depends on pandoc
-    , hackdeb release "safecopy" []
-    , hackdeb release "heap" [NP]
-    , hackdeb release "hoauth" []
-    -- The Sid package has no profiling libraries, so dependent packages
-    -- won't build.  Use our debianization instead.  This means keeping
-    -- up with sid's version.
-    , hackdeb release "HPDF" []
-    , hackdeb release "i18n" [NP]
-    , hackdeb release "JSONb" []
-    , hackdeb release "monadLib" []
-    , hackdeb release "openid" []
-    -- , hackdeb release "operational" [NP]
-    , hackdeb release "parse-dimacs" [NP]
-    , hackdeb release "PBKDF2" [NP]
-    , hackdeb release "permutation" [NS]
-    , hackdeb release "PSQueue" []
-    , hackdeb release "pwstore-purehaskell" []
-    , hackdeb release "RJson" [NP, UC]
-    , hackdeb release "sat" []
+    , sid "haskell-statistics"
+    , hackdeb release "stb-image" []
+    , sid "haskell-stm"
+    , sid "haskell-strict" -- for leksah
+    , sid "haskell-strict-concurrency"
+    , lucidNatty (sid "haskell-syb") (debianize "syb" [])
+    , lucidNatty (sid "haskell-syb-with-class") (debianize "syb-with-class" [])
+    , sid "haskell-syb-with-class-instances-text"
+    , lucidNatty (sid "haskell-tagged") (debianize "tagged" [])
+    , hackdeb release "tagsoup" []
+    , sid "haskell-tar"
+    , sid "haskell-terminfo"
+    , lucidNatty (hackage release "test-framework" [Pin "0.4.0"]) (debianize "test-framework" [])
     , hackdeb release "test-framework-hunit" []
     , hackdeb release "test-framework-quickcheck" []
+    , lucidNatty (sid "haskell-text") (debianize "text" [])
+    , lucidNatty (hackage release "th-lift" [Pin "0.5.3"]) (debianize "th-lift" [])
+    , sid "haskell-tls"
+    , sid "haskell-tls-extra"
+    , sid "haskell-transformers"
+    , debianize "testpack" []
+    , sid "haskell-texmath"
+    , sid "tinymce"
     , hackdeb release "unicode-names" []
     , hackdeb release "unicode-properties" []
+    , lucidNatty (sid "haskell-uniplate") (debianize "uniplate" [])
+    , sid "haskell-unix-compat"
+    , debianize "unordered-containers" []
     , hackdeb release "utf8-prelude" [NP]
-    , hackdeb release "web-encodings" []
-    , hackdeb release "parseargs" []
-    , hackdeb release "bitmap" []
-    , hackdeb release "bitmap-opengl" []
-    , hackdeb release "stb-image" []
+    , sid "haskell-utf8-string"
+    , sid "haskell-utility-ht"
     , hackdeb release "vacuum" []
     , hackdeb release "vacuum-opengl" []
-    , hackdeb release "aeson" []
-    , hackdeb release "blaze-textual" []
-    , debianize "xml-enumerator" []
-    , hackdeb release "xml-types" []
-    , hackdeb release "attoparsec-text-enumerator" []
-    , hackdeb release "tagsoup" []
-    , hackage release "formlets" []
-    , hackage release "incremental-sat-solver" []
+    -- Requires devscripts 0.8.9, restore when that gets built
+    -- sid "haskell-vector"
     -- Version 0.9-1+seereason1~lucid1 is uploaded to lucid already,
     -- remove this pin when a new hackage version comes out to trump it.
     , debianize "vector" [P.DebVersion "0.9-2~hackage1"]
-    , debianize "data-default" []
+    , sid "haskell-vector-algorithms"
+    , sid "haskell-wai"
+    , hackdeb release "web-encodings" []
+    , sid "wordpress"
+    , sid "haskell-xhtml"
+    , sid "haskell-xml"
+    , debianize "xml-enumerator" []
+    , hackdeb release "xml-types" []
+    , sid "haskell-xss-sanitize"
+    , sid "haskell-zip-archive"
+    , sid "haskell-zlib"
+    , sid "haskell-zlib-bindings"
+    , sid "haskell-zlib-enum"
 
 {-  -- Algebra cohort
     , debianize "adjunctions" []
@@ -350,7 +336,15 @@ targets _home release =
     , debianize "semigroupoids" []
     , debianize "void" []
 -}
-    ] 
+    ] ++
+    -- Natty only
+    lucidNatty [] [ debianize "random" [] ] ++
+    -- Natty only(?)
+    lucidNatty [] [ debianize "double-conversion" []
+                  -- Version 2.9.2 specifies ghc < 7.2 and base == 4.3.*
+                  -- , debianize "haddock" []
+                  , sid "haskell-haddock" ] -- for leksah
+
     where
       lucidNatty x _ | release == "lucid-seereason" = x
       lucidNatty _ x | release == "natty-seereason" = x
