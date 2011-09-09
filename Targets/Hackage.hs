@@ -222,8 +222,8 @@ targets _home release =
                 , P.flags = [] }
     -- , hackdeb release "happstack-data" [NP]
     , hackdeb release "happstack-ixset" [NP]
-    , hackdeb release "ixset" [NP]
-    , hackdeb release "happstack-server" [NP]
+    , debianize "ixset" []
+    , debianize "happstack-server" []
     , hackdeb release "happstack-util" [NP]
     -- Depends on pandoc
     , hackdeb release "safecopy" []
