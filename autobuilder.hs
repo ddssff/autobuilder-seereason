@@ -205,7 +205,7 @@ defParams _home myBuildRelease =
     , releaseAliases = myReleaseAliases myBuildRelease
     , archList = [Binary "i386",Binary "amd64"]
     , newDistProgram = "newdist -v"
-    , requiredVersion = [(parseDebianVersion "6.6", Nothing)]
+    , requiredVersion = [(parseDebianVersion "6.7", Nothing)]
     -- Things that are probably obsolete
     , debug = False
     , discard = myDiscards
