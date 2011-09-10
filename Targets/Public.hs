@@ -435,7 +435,7 @@ debianize :: String -> [P.PackageFlag] -> P.Package
 debianize s flags =
     P.Package { P.name = "haskell-" ++ debianName s
               , P.spec = Debianize s Nothing
-              , P.flags = flags}
+              , P.flags = P.Maintainer "SeeReason Autobuilder <partners@seereason.com>" : flags}
     where
       -- This is a quick hack, but what we should do is have
       -- cabal-debian compute and return the source package name.
@@ -447,7 +447,7 @@ hackage :: String -> String -> [Flag] -> P.Package
 hackage _ name fs =
      P.Package { P.name = "haskell-" ++ map toLower name
                , P.spec = proc $ DebDir (Hackage name v) (Darcs (r ++ "/" ++ pre ++ name' ++ suff) Nothing)
-               , P.flags = [] }
+               , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
      where
        pre = if elem NP fs then "" else "haskell-"
        suff = if elem NS fs then "" else "-debian"
