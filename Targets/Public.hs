@@ -110,7 +110,18 @@ targets _home release =
     , lucidNatty (sid "haskell-fgl") (debianize "fgl" [])
     , hackage release "formlets" []
     , lucidNatty (hackage release "funsat" []) (debianize "funsat" [])
-    , lucidNatty (hackage release "gd" []) (debianize "gd" [])
+    , lucidNatty (hackage release "gd" []) (debianize "gd" [P.Patch . B.pack . unlines $
+                                                            [ "--- gd/gd.cabal.orig\t2011-06-25 12:27:26.000000000 -0700"
+                                                            , "+++ gd/gd.cabal\t2011-09-10 14:29:48.514415016 -0700"
+                                                            , "@@ -21,7 +21,7 @@"
+                                                            , "   Extensions: ForeignFunctionInterface"
+                                                            , "   Exposed-Modules: Graphics.GD, Graphics.GD.ByteString, Graphics.GD.ByteString.Lazy"
+                                                            , "   Ghc-options: -Wall"
+                                                            , "-  Extra-libraries: gd, png, z, jpeg, m, fontconfig, freetype, expat"
+                                                            , "+  Extra-libraries: gd, png, z, jpeg, fontconfig, freetype6, expat"
+                                                            , "   Includes: gd.h"
+                                                            , "   Include-dirs:        cbits"
+                                                            , "   Install-includes: gd-extras.h" ]])
     -- , debianize "gd" [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
     , sid "geneweb"
     , sid "haskell-ghc-paths" -- for leksah
@@ -205,7 +216,16 @@ targets _home release =
     , sid "haskell-mtl"
     , lucidNatty (hackage release "murmur-hash" [Pin "0.1.0.2"]) (debianize "murmur-hash" [])
     , sid "haskell-mwc-random"
-    , lucidNatty (hackage release "nano-hmac" []) (debianize "nano-hmac" [P.ExtraDep "libcrypto++-dev"])
+    , lucidNatty (hackage release "nano-hmac" []) (debianize "nano-hmac" [P.Patch . B.pack . unlines $
+                                                                          [ "--- nano-hmac/nano-hmac.cabal.orig\t2011-08-14 09:25:43.000000000 -0700"
+                                                                          , "+++ nano-hmac/nano-hmac.cabal\t2011-09-10 14:24:25.234226579 -0700"
+                                                                          , "@@ -23,5 +23,5 @@"
+                                                                          , "   ghc-options:         -Wall -Werror -O2"
+                                                                          , "   extensions:          ForeignFunctionInterface, BangPatterns, CPP"
+                                                                          , "   includes:            openssl/hmac.h"
+                                                                          , "-  extra-libraries:     crypto ssl"
+                                                                          , "+  extra-libraries:     crypto++ ssl"
+                                                                          , " " ]])
     , lucidNatty (sid "haskell-network") (debianize "network" [])
     , lucidNatty (hackage release "openid" []) (debianize "openid" [])
     , sid "haskell-opengl"
@@ -213,9 +233,41 @@ targets _home release =
     , lucidNatty -- This pandoc debianize target has a dependency on an older version of HTTP
                  -- , debianize "pandoc" []
                  (hackage release "pandoc" [])
-                 -- When a version newer than 0.12.0 comes out this should be
-                 -- switched to a debianize target.
-                 (sid "pandoc")
+                 (debianize "pandoc" [P.Patch . B.pack . unlines $
+                                      [ "--- pandoc/pandoc.cabal.orig\t2011-09-10 14:35:25.000000000 -0700"
+                                      , "+++ pandoc/pandoc.cabal\t2011-09-10 14:49:24.274009463 -0700"
+                                      , "@@ -195,13 +195,13 @@"
+                                      , "                  mtl >= 1.1 && < 2.1,"
+                                      , "                  network >= 2 && < 2.4,"
+                                      , "                  filepath >= 1.1 && < 1.3,"
+                                      , "-                 process >= 1 && < 1.1,"
+                                      , "+                 process >= 1,"
+                                      , "                  directory >= 1 && < 1.2,"
+                                      , "                  bytestring >= 0.9 && < 1.0,"
+                                      , "                  zip-archive >= 0.1.1.7 && < 0.2,"
+                                      , "                  utf8-string >= 0.3 && < 0.4,"
+                                      , "                  old-time >= 1 && < 1.1,"
+                                      , "-                 HTTP >= 4000.0.5 && < 4000.2,"
+                                      , "+                 HTTP >= 4000.0.5,"
+                                      , "                  texmath >= 0.5 && < 0.6,"
+                                      , "                  xml >= 1.3.5 && < 1.4,"
+                                      , "                  random >= 1 && < 1.1,"
+                                      , "@@ -281,13 +281,13 @@"
+                                      , "                  mtl >= 1.1 && < 2.1,"
+                                      , "                  network >= 2 && < 2.4,"
+                                      , "                  filepath >= 1.1 && < 1.3,"
+                                      , "-                 process >= 1 && < 1.1,"
+                                      , "+                 process >= 1,"
+                                      , "                  directory >= 1 && < 1.2,"
+                                      , "                  bytestring >= 0.9 && < 1.0,"
+                                      , "                  zip-archive >= 0.1.1.7 && < 0.2,"
+                                      , "                  utf8-string >= 0.3 && < 0.4,"
+                                      , "                  old-time >= 1 && < 1.1,"
+                                      , "-                 HTTP >= 4000.0.5 && < 4000.2,"
+                                      , "+                 HTTP >= 4000.0.5,"
+                                      , "                  texmath >= 0.5 && < 0.6,"
+                                      , "                  xml >= 1.3.5 && < 1.4,"
+                                      , "                  random >= 1 && < 1.1," ]])
     , sid "haskell-pandoc-types"
     , sid "haskell-pango" -- for leksah
     , sid "haskell-parallel"
@@ -253,7 +305,18 @@ targets _home release =
     , sid "haskell-safe"
     -- Depends on pandoc
     , lucidNatty (hackage release "safecopy" []) (debianize "safecopy" [])
-    , lucidNatty (hackage release "sat" []) (debianize "sat" [])
+    , lucidNatty (hackage release "sat" []) (debianize "sat" [P.Patch . B.pack . unlines $
+                                                                [ "--- sat/sat.cabal.orig\t2011-09-10 10:16:05.000000000 -0700"
+                                                                , "+++ sat/sat.cabal\t2011-09-10 14:14:46.784184607 -0700"
+                                                                , "@@ -13,7 +13,7 @@"
+                                                                , " description: CNF(Clausal Normal Form) SATisfiability Solver and Generator"
+                                                                , " category: algorithms"
+                                                                , " -- tested-with: ghc-6.4.2"
+                                                                , "-build-depends: base"
+                                                                , "+build-depends: base, random"
+                                                                , " "
+                                                                , " executable: SATSolve"
+                                                                , " main-is: \"SATSolver.hs\"" ]])
     , lucidNatty (sid "haskell-semigroups") (debianize "semigroups" [])
     , sid "haskell-sendfile"
     , sid "haskell-sha"
@@ -313,18 +376,18 @@ targets _home release =
     , sid "haskell-utility-ht"
     , lucidNatty (hackage release "vacuum" [])
                  (debianize "vacuum"
-                  [Patch (unlines
-                          [ "--- haskell-vacuum-1.0.0/src/GHC/Vacuum.hs.orig\t2011-09-10 10:16:35.000000000 -0700"
-                          , "+++ haskell-vacuum-1.0.0/src/GHC/Vacuum.hs\t2011-09-10 14:04:24.614335577 -0700"
-                          , "@@ -98,7 +98,7 @@"
-                          , " import Prelude hiding(catch)"
-                          , " import Control.Concurrent"
-                          , " "
-                          , "-import Foreign"
-                          , "+import Foreign hiding (unsafePerformIO)"
-                          , " import GHC.Arr(Array(..))"
-                          , " import GHC.Exts"
-                          , " " ])])
+                  [P.Patch . B.pack . unlines $
+                   [ "--- haskell-vacuum-1.0.0/src/GHC/Vacuum.hs.orig\t2011-09-10 10:16:35.000000000 -0700"
+                   , "+++ haskell-vacuum-1.0.0/src/GHC/Vacuum.hs\t2011-09-10 14:04:24.614335577 -0700"
+                   , "@@ -98,7 +98,7 @@"
+                   , " import Prelude hiding(catch)"
+                   , " import Control.Concurrent"
+                   , " "
+                   , "-import Foreign"
+                   , "+import Foreign hiding (unsafePerformIO)"
+                   , " import GHC.Arr(Array(..))"
+                   , " import GHC.Exts"
+                   , " " ]])
     , lucidNatty (hackage release "vacuum-opengl" []) (debianize "vacuum-opengl" [])
     -- Requires devscripts 0.8.9, restore when that gets built
     -- sid "haskell-vector"
