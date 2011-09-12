@@ -174,7 +174,20 @@ targets _home release =
     , lucidNatty (hackage release "HPDF" []) (debianize "HPDF" [])
     , sid "haskell-hsemail"
     , sid "hslogger"
-    , lucidNatty (hackage release "HsOpenSSL" []) (debianize "HsOpenSSL" [P.ExtraDep "libcrypto++-dev"])
+    , lucidNatty (hackage release "HsOpenSSL" []) 
+                 (debianize "HsOpenSSL"
+                  [P.Patch . B.pack . unlines $
+                   [ "--- HsOpenSSL.orig/HsOpenSSL.cabal\t2011-09-10 15:02:20.000000000 -0700"
+                   , "+++ HsOpenSSL/HsOpenSSL.cabal\t2011-09-10 15:24:16.735325250 -0700"
+                   , "@@ -50,7 +50,7 @@"
+                   , "       CC-Options:         -D MINGW32"
+                   , "       CPP-Options:        -DCALLCONV=stdcall"
+                   , "   else"
+                   , "-      Extra-Libraries: crypto ssl"
+                   , "+      Extra-Libraries: crypto++ ssl"
+                   , "       C-Sources:          cbits/mutex-pthread.c"
+                   , "       CC-Options:         -D PTHREAD"
+                   , "       CPP-Options:        -DCALLCONV=ccall" ]])
     , lucidNatty (hackage release "hsp" [NP]) (debianize "hsp" [P.ExtraDep "trhsx"])
     , sid "haskell-hstringtemplate"
     -- This target puts the trhsx binary in its own package, while the
