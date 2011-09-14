@@ -214,7 +214,7 @@ targets _home release =
     , sid "jquery"
     , sid "jqueryui"
     , sid "jquery-goodies"
-    , lucidNatty (hackage release "JSONb" []) (debianize "JSONb" [])
+    , debianize "JSONb" []
     , sid "haskell-json"
     , sid "haskell-largeword"
     , sid "haskell-leksah"
