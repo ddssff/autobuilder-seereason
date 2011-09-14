@@ -137,7 +137,7 @@ targets _home release =
     , sid "haskell-gio" -- for leksah
     , sid "haskell-glib"
     , sid "haskell-glut"
-    , lucidNatty (hackage release "gnuplot" []) (debianize "gnuplot" [])
+    , debianize "gnuplot" []
     , sid "haskell-gtk" -- for leksah
     , lucidNatty (sid "gtk2hs-buildtools") (debianize "gtk2hs-buildtools" [])
     , sid "haskell-gtksourceview2" -- for leksah
@@ -365,9 +365,9 @@ targets _home release =
     , lucidNatty (hackage release "tagsoup" []) (debianize "tagsoup" [])
     , sid "haskell-tar"
     , sid "haskell-terminfo"
-    , lucidNatty (hackage release "test-framework" [Pin "0.4.0"]) (debianize "test-framework" [])
-    , lucidNatty (hackage release "test-framework-hunit" []) (debianize "test-framework-hunit" [])
-    , lucidNatty (hackage release "test-framework-quickcheck" []) (debianize "test-framework-quickcheck" [])
+    , debianize "test-framework" []
+    , debianize "test-framework-hunit" []
+    , debianize "test-framework-quickcheck" []
     , lucidNatty (sid "haskell-text") (debianize "text" [])
     , lucidNatty (hackage release "th-lift" [Pin "0.5.3"]) (debianize "th-lift" [])
     , sid "haskell-tls"
