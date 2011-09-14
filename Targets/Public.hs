@@ -86,6 +86,10 @@ targets _home release =
     , debianize "simple-css" []
     , debianize "shakespeare-css" []
     , debianize "shakespeare" []
+    , debianize "TrieMap" []
+    , debianize "HiggsSet" []
+    , debianize "th-expand-syns" []
+    , debianize "unpack-funcs" []
     , sid "haskell-curl"
     , sid "darcs"
     , sid "haskell-data-accessor"
