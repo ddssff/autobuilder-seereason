@@ -82,6 +82,10 @@ targets _home release =
     , sid "haskell-cryptocipher"
     , sid "haskell-cryptohash"
     , lucidNatty (hackage release "css" []) (debianize "css" [])
+    , debianize "language-css" []
+    , debianize "simple-css" []
+    , debianize "shakespeare-css" []
+    , debianize "shakespeare" []
     , sid "haskell-curl"
     , sid "darcs"
     , sid "haskell-data-accessor"
