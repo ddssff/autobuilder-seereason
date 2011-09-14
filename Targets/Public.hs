@@ -150,6 +150,7 @@ targets _home release =
     , lucidNatty (hackage release "happstack-ixset" [NP]) (debianize "happstack-ixset" [])
     , debianize "happstack-plugins" []
     , debianize "happstack-server" []
+    , debianize "happstack-jmacro" []
     , lucidNatty (hackage release "happstack-state" [NP]) (hackage release "happstack-state" [NP])
     , lucidNatty (hackage release "happstack-util" [NP]) (debianize "happstack-util" [])
     , lucidNatty (P.Package { P.name = "happy"
