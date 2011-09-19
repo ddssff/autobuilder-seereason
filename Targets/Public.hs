@@ -4,7 +4,8 @@ module Targets.Public ( targets, hackage, Flag(..) ) where
 import qualified Data.ByteString.Lazy.Char8 as B
 import Data.Char (toLower)
 --import Data.Either (partitionEithers)
---import Data.List (intercalate)
+import Data.List (isPrefixOf)
+import Data.Maybe (fromMaybe)
 import qualified Debian.AutoBuilder.Params as P
 import Debian.AutoBuilder.Spec
 import Targets.Common
@@ -49,7 +50,19 @@ targets _home release =
     , lucidNatty (hackage release "bimap" []) (debianize "bimap" [])
     , sid "haskell-binary"
     , sid "haskell-binary-shared" -- for leksah
-    , lucidNatty (hackage release "bitmap" []) (debianize "bitmap" [])
+    , lucidNatty (hackage release "bitmap" []) (debianize "bitmap" [P.Patch . B.pack . unlines $
+                                                                    [ "--- tmp/Data/Bitmap/Pure.hs\t2011-09-15 06:47:30.638423438 -0700"
+                                                                    , "+++ tmp/Data/Bitmap/Pure.hs.orig\t2011-09-15 06:47:18.188439156 -0700"
+                                                                    , "@@ -47,7 +47,7 @@"
+                                                                    , " "
+                                                                    , " import Data.Word"
+                                                                    , " "
+                                                                    , "-import Foreign"
+                                                                    , "+import Foreign hiding (unsafePerformIO)"
+                                                                    , " "
+                                                                    , " import Data.ByteString (ByteString)"
+                                                                    , " import qualified Data.ByteString as B" ]
+                                                                   ])
     , lucidNatty (hackage release "bitmap-opengl" []) (debianize "bitmap-opengl" [])
     , lucidNatty (hackage release "bitset" []) (debianize "bitset" [])
     , sid "haskell-blaze-builder"
@@ -61,35 +74,32 @@ targets _home release =
     , sid "haskell-bytestring-nums"
     , lucidNatty (hackage release "bytestring-trie" []) (debianize "bytestring-trie" [])
     , sid "haskell-bzlib"
+    , P.Package { P.name = "cabal-debian"
+                , P.spec = Darcs "http://src.seereason.com/cabal-debian" Nothing
+                , P.flags = [] }
     , sid "haskell-cairo" -- for leksah
     , lucidNatty (sid "haskell-case-insensitive") (debianize "case-insensitive" [])
     , lucidNatty (hackage release "CC-delcont" [NP, UC]) (debianize "CC-delcont" [])
     , sid "haskell-cereal"
     , sid "haskell-certificate"
     , sid "haskell-cgi"
+    , sid "haskell-chart"
     , sid "haskell-citeproc-hs"
+    , sid "haskell-colour"
+    , sid "haskell-configfile"
+    , lucidNatty (hackage release "convertible-text" []) (debianize "convertible-text" [])
     , lucidNatty (sid "cpphs")
                  (P.Package { P.name = "cpphs"
                             , P.spec = Quilt (Apt "sid" "cpphs" Nothing) (Darcs "http://src.seereason.com/cpphs-quilt" Nothing)
                             , P.flags = [] })
     , lucidNatty (sid "haskell-cprng-aes") (debianize "cprng-aes" [])
-    , sid "haskell-colour"
-    , sid "haskell-configfile"
-    , lucidNatty (hackage release "convertible-text" []) (debianize "convertible-text" [])
     , sid "haskell-criterion"
     , lucidNatty (sid "haskell-crypto") (debianize "Crypto" [])
     , sid "haskell-crypto-api"
     , sid "haskell-cryptocipher"
     , sid "haskell-cryptohash"
     , lucidNatty (hackage release "css" []) (debianize "css" [])
-    , debianize "language-css" []
-    , debianize "simple-css" []
-    , debianize "shakespeare-css" []
-    , debianize "shakespeare" []
-    , debianize "TrieMap" []
-    , debianize "HiggsSet" []
-    , debianize "th-expand-syns" []
-    , debianize "unpack-funcs" []
+    , sid "haskell-css-text"
     , sid "haskell-curl"
     , sid "darcs"
     , sid "haskell-data-accessor"
@@ -100,10 +110,10 @@ targets _home release =
     , lucidNatty (sid "haskell-dataenc") (debianize "dataenc" [])
     , sid "haskell-debian"
     , sid "haskell-deepseq"
+    , sid "haskell-diff"
     , sid "haskell-digest"
     , lucidNatty (hackage release "digestive-functors" []) (debianize "digestive-functors" [])
     , lucidNatty (hackage release "digestive-functors-happstack" []) (debianize "digestive-functors-happstack" [])
-    , sid "haskell-diff"
     , sid "haskell-dlist"
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
@@ -135,12 +145,36 @@ targets _home release =
     , sid "geneweb"
     , sid "haskell-ghc-paths" -- for leksah
     , sid "haskell-gio" -- for leksah
-    , sid "haskell-glib"
+    , lucidNatty (sid "haskell-glib") (debianize "glib" [P.ExtraDep "haskell-gtk2hs-buildtools-utils"])
     , sid "haskell-glut"
     , debianize "gnuplot" []
     , sid "haskell-gtk" -- for leksah
-    , lucidNatty (sid "gtk2hs-buildtools") (debianize "gtk2hs-buildtools" [])
-    , sid "haskell-gtksourceview2" -- for leksah
+    , lucidNatty (sid "gtk2hs-buildtools")
+                 (debianize "gtk2hs-buildtools" [P.Patch . B.pack . unlines $
+                                                 [ "--- tmp/gtk2hs-buildtools.cabal.orig\t2011-09-15 16:29:46.000000000 -0700"
+                                                 , "+++ tmp/gtk2hs-buildtools.cabal\t2011-09-15 17:15:50.008424830 -0700"
+                                                 , "@@ -41,6 +41,7 @@"
+                                                 , "         hs-source-dirs: hierarchyGen"
+                                                 , "         other-modules:  Paths_gtk2hs_buildtools"
+                                                 , "         build-depends:  base"
+                                                 , "+        GHC-options:    -XBangPatterns"
+                                                 , " "
+                                                 , " Executable gtk2hsHookGenerator"
+                                                 , "         main-is:        HookGenerator.hs"
+                                                 , "@@ -49,6 +50,7 @@"
+                                                 , "           cpp-options:  -DUSE_GCLOSURE_SIGNALS_IMPL"
+                                                 , "         other-modules:  Paths_gtk2hs_buildtools"
+                                                 , "         build-depends:  base"
+                                                 , "+        GHC-options:    -XBangPatterns"
+                                                 , " "
+                                                 , " Executable gtk2hsC2hs"
+                                                 , "         main-is:        Main.hs"
+                                                 , "@@ -114,3 +116,4 @@"
+                                                 , "         else"
+                                                 , "           cpp-options:  -D_C2HS_CPP_LANG_SINGLE"
+                                                 , "         extensions:     ForeignFunctionInterface"
+                                                 , "+        GHC-options:    -XBangPatterns" ]])
+    , sid "haskell-gtksourceview2" -- for leksahw
     , lucidNatty (hackage release "happstack" [NP]) (debianize "happstack" [])
     -- Switch to the hackage target for happstack-data once a new upstream appears in hackage.
     , P.Package { P.name = "haskell-happstack-data"
@@ -148,9 +182,9 @@ targets _home release =
                 , P.flags = [] }
     -- , lucidNatty (hackage release "happstack-data" [NP]) (debianize "happstack-data" [])
     , lucidNatty (hackage release "happstack-ixset" [NP]) (debianize "happstack-ixset" [])
+    , debianize "happstack-jmacro" []
     , debianize "happstack-plugins" []
     , debianize "happstack-server" []
-    , debianize "happstack-jmacro" []
     , lucidNatty (hackage release "happstack-state" [NP]) (hackage release "happstack-state" [NP])
     , lucidNatty (hackage release "happstack-util" [NP]) (debianize "happstack-util" [])
     , lucidNatty (P.Package { P.name = "happy"
@@ -169,13 +203,35 @@ targets _home release =
                  (sid "haskell-hashed-storage")
                  (debianize "hashed-storage" [])
     , lucidNatty (sid "haskell-haskeline") (debianize "haskeline" [])
-    , lucidNatty (sid "haskell-haskell-src") (debianize "haskell-src" [P.ExtraDep "happy"])
+    , lucidNatty (sid "haskell-haskell-src") (debianize "haskell-src" [ P.ExtraDep "happy"
+                                                                      , P.Patch . B.pack . unlines $
+                                                                        [ "--- tmp/haskell-src.cabal.orig\t2010-11-07 07:15:37.000000000 -0800"
+                                                                        , "+++ tmp/haskell-src.cabal\t2011-09-15 06:43:40.528490762 -0700"
+                                                                        , "@@ -33,8 +33,5 @@"
+                                                                        , "     build-depends:      base >= 4 && < 5, syb, pretty, array"
+                                                                        , "   else"
+                                                                        , "     build-depends:      base < 3"
+                                                                        , "-  build-depends: haskell98"
+                                                                        , "-  -- The dependency on Haskell 98 is only because"
+                                                                        , "-  -- Happy generates a parser that imports Array"
+                                                                        , "   extensions:   CPP"
+                                                                        , "   nhc98-options:        -K11M" ]
+                                                                      ])
+    -- This package becomes the debian package "haskell-haskell-src-exts".
+    -- Unfortunately, debian gave it the name "haskell-src-exts" dropping
+    -- the extra haskell from source and binary names.  This means other
+    -- packages (such as haskell-hsx) which reference it get the name wrong
+    -- when we generate the debianization.
+    -- , lucidNatty (hackage release "haskell-src-exts" [NP]) (debianize "haskell-src-exts" [])
+    , lucidNatty (sid "haskell-src-exts") (debianize "haskell-src-exts" [])
+    , lucidNatty (hackage release "haskell-src-meta" [Pin "0.4.0.1"]) (debianize "haskell-src-meta" [])
+    , debianize "HaXml" [P.Epoch 1]
     , lucidNatty (hackage release "heap" [NP]) (debianize "heap" [])
+    , debianize "HiggsSet" []
     , sid "highlighting-kate"
     , debianize "hinotify" []
     , sid "haskell-hjavascript"
     , sid "haskell-hjscript"
-    , debianize "HaXml" [P.Epoch 1]
     , lucidNatty (hackage release "hoauth" []) (debianize "hoauth" [])
     , debianize "hostname" []
     -- The Sid package has no profiling libraries, so dependent packages
@@ -215,43 +271,110 @@ targets _home release =
     , debianize "instant-generics" []
     , sid "haskell-irc"
     , debianize "ixset" []
-    , lucidNatty (hackage release "jmacro" [Pin "0.5.1"]) (debianize "jmacro" [])
+    , debianize "jmacro" []
     , sid "jquery"
-    , sid "jqueryui"
     , sid "jquery-goodies"
-    , debianize "JSONb" []
+    , sid "jqueryui"
     , sid "haskell-json"
+    , debianize "JSONb" []
+    , debianize "language-css" []
     , sid "haskell-largeword"
     , sid "haskell-leksah"
     , sid "haskell-leksah-server" -- for leksah
+    , debianize "logic-TPTP" [ P.ExtraDep "alex", P.ExtraDep "happy"
+                             , P.Patch . B.pack . unlines $
+                               [ "--- old/logic-TPTP.cabal\t2011-09-15 16:31:03.000000000 -0700"
+                               , "+++ new/logic-TPTP.cabal\t2011-09-16 13:40:26.458725487 -0700"
+                               , "@@ -51,7 +51,7 @@"
+                               , "  "
+                               , " "
+                               , " Library"
+                               , "- ghc-options: -Wall -O2"
+                               , "+ ghc-options: -Wall -O2 -XBangPatterns"
+                               , "  "
+                               , "  build-depends:      base >=4 && < 5"
+                               , "                    , array" ] ]
     , sid "haskell-ltk" -- for leksah
-    , debianize "logic-TPTP" [P.ExtraDep "alex", P.ExtraDep "happy"]
     , sid "magic-haskell"
     , sid "haskell-maybet"
     , lucidNatty (sid "missingh") (debianize "MissingH" [])
     , sid "haskell-mmap"
-    , sid "haskell-monadcatchio-mtl"
     , debianize "monad-control" []
-    , lucidNatty (hackage release "monadLib" []) (debianize "monadLib" [])
     , debianize "monad-par" []
+    , sid "haskell-monadcatchio-mtl"
+    , lucidNatty (hackage release "monadLib" []) (debianize "monadLib" [])
     , lucidNatty (hackage release "monads-tf" []) (debianize "monads-tf" [])
     , sid "haskell-monoid-transformer"
     , sid "haskell-mtl"
     , lucidNatty (hackage release "murmur-hash" [Pin "0.1.0.2"]) (debianize "murmur-hash" [])
     , sid "haskell-mwc-random"
-    , lucidNatty (hackage release "nano-hmac" []) (debianize "nano-hmac" [P.Patch . B.pack . unlines $
-                                                                          [ "--- nano-hmac/nano-hmac.cabal.orig\t2011-08-14 09:25:43.000000000 -0700"
-                                                                          , "+++ nano-hmac/nano-hmac.cabal\t2011-09-10 14:24:25.234226579 -0700"
-                                                                          , "@@ -23,5 +23,5 @@"
-                                                                          , "   ghc-options:         -Wall -Werror -O2"
-                                                                          , "   extensions:          ForeignFunctionInterface, BangPatterns, CPP"
-                                                                          , "   includes:            openssl/hmac.h"
-                                                                          , "-  extra-libraries:     crypto ssl"
-                                                                          , "+  extra-libraries:     crypto++ ssl"
-                                                                          , " " ]])
+    , lucidNatty (hackage release "nano-hmac" [])
+                 (debianize "nano-hmac" [ P.DebVersion "0.2.0ubuntu1"
+                                        , P.Patch . B.pack . unlines $
+                                          [ "--- nano-hmac/nano-hmac.cabal.orig\t2011-08-14 09:25:43.000000000 -0700"
+                                          , "+++ nano-hmac/nano-hmac.cabal\t2011-09-10 14:24:25.234226579 -0700"
+                                          , "@@ -20,8 +20,8 @@"
+                                          , "   else"
+                                          , "     build-depends:     base < 3"
+                                          , "   exposed-modules:     Data.Digest.OpenSSL.HMAC"
+                                          , "-  ghc-options:         -Wall -Werror -O2 -fvia-C"
+                                          , "+  ghc-options:         -Wall -Werror -O2"
+                                          , "   extensions:          ForeignFunctionInterface, BangPatterns, CPP"
+                                          , "   includes:            openssl/hmac.h"
+                                          , "-  extra-libraries:     crypto ssl"
+                                          , "+  extra-libraries:     crypto++ ssl"
+                                          , " " ]
+                                        , P.Patch . B.pack . unlines $
+                                          [ "--- nano-hmac/Data/Digest/OpenSSL/HMAC.hsc\t2011-09-16 16:39:39.603631778 -0700"
+                                          , "+++ nano-hmac/Data/Digest/OpenSSL/HMAC.hsc.orig\t2011-09-16 13:57:55.000000000 -0700"
+                                          , "@@ -35,8 +35,11 @@"
+                                          , " "
+                                          , " import qualified Data.ByteString as B"
+                                          , " import qualified Data.ByteString.Unsafe as BU"
+                                          , "-import Foreign"
+                                          , "+import System.IO.Unsafe"
+                                          , " import Foreign.C.Types"
+                                          , "+import Foreign.Ptr"
+                                          , "+import Foreign.Storable"
+                                          , "+import Data.Word"
+                                          , " import Numeric (showHex)"
+                                          , " "
+                                          , " #include \"openssl/hmac.h\"" ]])
     , lucidNatty (sid "haskell-network") (debianize "network" [])
-    , lucidNatty (hackage release "openid" []) (debianize "openid" [])
     , sid "haskell-opengl"
+    , lucidNatty (hackage release "openid" [])
+                 (debianize "openid" [ P.Patch . B.pack . unlines $
+                                       [ "--- openid/openid.cabal\t2011-09-16 16:59:05.108423569 -0700"
+                                       , "+++ openid/openid.cabal\t2011-09-16 16:53:43.000000000 -0700"
+                                       , "@@ -20,19 +20,17 @@"
+                                       , "   description: Use the new split base package."
+                                       , " "
+                                       , " library"
+                                       , "-  if flag(split-base)"
+                                       , "-    build-depends: base       >= 3 && < 10,"
+                                       , "-                   bytestring == 0.9.1.*,"
+                                       , "-                   containers >= 0.2 && < 0.4"
+                                       , "-  else"
+                                       , "-    build-depends: base < 3"
+                                       , "-  build-depends:   HTTP      >= 4000.0.5 && < 4000.1,"
+                                       , "+  build-depends:   base       >= 3 && < 10,"
+                                       , "+                   bytestring >= 0.9.1,"
+                                       , "+                   containers >= 0.2,"
+                                       , "+                   HTTP      >= 4000.0.5,"
+                                       , "                    monadLib  == 3.6.*,"
+                                       , "                    nano-hmac == 0.2.*,"
+                                       , "-                   network   == 2.2.*,"
+                                       , "-                   time      == 1.1.*,"
+                                       , "+                   network   >= 2.2,"
+                                       , "+                   time      >= 1.1,"
+                                       , "                    xml       == 1.3.*,"
+                                       , "-                   HsOpenSSL == 0.8.*"
+                                       , "+                   HsOpenSSL >= 0.8"
+                                       , "+  extra-libraries: crypto++ ssl"
+                                       , "   hs-source-dirs:  src"
+                                       , "   exposed-modules: Codec.Binary.Base64,"
+                                       , "                    Codec.Encryption.DH,"
+                                       ]])
     , debianize "operational" []
     , lucidNatty -- This pandoc debianize target has a dependency on an older version of HTTP
                  -- , debianize "pandoc" []
@@ -294,10 +417,10 @@ targets _home release =
     , sid "haskell-pandoc-types"
     , sid "haskell-pango" -- for leksah
     , sid "haskell-parallel"
-    , lucidNatty (hackage release "parseargs" []) (debianize "parseargs" [])
-    , sid "haskell-parsec2"
-    , sid "haskell-parsec"
     , lucidNatty (hackage release "parse-dimacs" [NP]) (debianize "parse-dimacs" [])
+    , lucidNatty (hackage release "parseargs" []) (debianize "parseargs" [])
+    , sid "haskell-parsec"
+    , sid "haskell-parsec2"
     , hackage release "PBKDF2" [NP]
     , sid "haskell-pcre-light"
     , lucidNatty (hackage release "permutation" [NS]) (debianize "permutation" [])
@@ -343,16 +466,11 @@ targets _home release =
     , lucidNatty (sid "haskell-semigroups") (debianize "semigroups" [])
     , sid "haskell-sendfile"
     , sid "haskell-sha"
+    , debianize "shakespeare" []
+    , debianize "shakespeare-css" []
+    , debianize "simple-css" []
     , lucidNatty (sid "haskell-smtpclient") (debianize "SMTPClient" [])
     , debianize "split" []
-    -- This package becomes the debian package "haskell-haskell-src-exts".
-    -- Unfortunately, debian gave it the name "haskell-src-exts" dropping
-    -- the extra haskell from source and binary names.  This means other
-    -- packages (such as haskell-hsx) which reference it get the name wrong
-    -- when we generate the debianization.
-    -- , lucidNatty (hackage release "haskell-src-exts" [NP]) (debianize "haskell-src-exts" [])
-    , lucidNatty (sid "haskell-src-exts") (debianize "haskell-src-exts" [])
-    , lucidNatty (hackage release "haskell-src-meta" [Pin "0.4.0.1"]) (debianize "haskell-src-meta" [])
     , sid "haskell-statistics"
     , lucidNatty (hackage release "stb-image" []) (debianize "stb-image" [])
     , sid "haskell-stm"
@@ -365,14 +483,9 @@ targets _home release =
     , lucidNatty (hackage release "tagsoup" []) (debianize "tagsoup" [])
     , sid "haskell-tar"
     , sid "haskell-terminfo"
-    , debianize "test-framework" []
+    , debianize "test-framework" [P.ExtraDep "libghc-random-prof"]
     , debianize "test-framework-hunit" []
     , debianize "test-framework-quickcheck" []
-    , lucidNatty (sid "haskell-text") (debianize "text" [])
-    , lucidNatty (hackage release "th-lift" [Pin "0.5.3"]) (debianize "th-lift" [])
-    , sid "haskell-tls"
-    , sid "haskell-tls-extra"
-    , sid "haskell-transformers"
     , debianize "testpack" [P.Patch (B.pack
                                      (unlines
                                       [ "--- testpack-2.1.1/src/Test/QuickCheck/Instances.hs.orig\t2011-09-09 18:47:51.256206942 -0700"
@@ -388,12 +501,20 @@ targets _home release =
                                       , "-    random g = randomR (minBound, maxBound) g"
                                       , "-" ]))]
     , sid "haskell-texmath"
+    , lucidNatty (sid "haskell-text") (debianize "text" [])
+    , debianize "th-expand-syns" []
+    , lucidNatty (hackage release "th-lift" [Pin "0.5.3"]) (debianize "th-lift" [])
     , sid "tinymce"
+    , sid "haskell-tls"
+    , sid "haskell-tls-extra"
+    , sid "haskell-transformers"
+    , debianize "TrieMap" []
     , lucidNatty (hackage release "unicode-names" []) (debianize "unicode-names" [])
     , lucidNatty (hackage release "unicode-properties" []) (debianize "unicode-properties" [])
     , lucidNatty (sid "haskell-uniplate") (debianize "uniplate" [])
     , sid "haskell-unix-compat"
     , debianize "unordered-containers" []
+    , debianize "unpack-funcs" []
     , lucidNatty (hackage release "utf8-prelude" [NP]) (debianize "utf8-prelude" [])
     , sid "haskell-utf8-string"
     , sid "haskell-utility-ht"
@@ -462,7 +583,8 @@ targets _home release =
       lucidNatty x _ | release == "lucid-seereason" = x
       lucidNatty _ x | release == "natty-seereason" = x
       lucidNatty _ _ = error $ "lucidNatty: Unexpected release: " ++ release
-      sid name =
+      sid name = apt "sid" name
+      apt dist name = 
           P.Package { P.name = name
                     , P.spec = getSourceSpec name
                     , P.flags = getFlags name }
@@ -477,35 +599,35 @@ targets _home release =
             getRelaxInfo _ = []
 
             -- Special case specs
-            -- getSourceSpec "ghc" = Quilt (Apt "sid" "ghc" Nothing) (Darcs (repo ++ "/ghc7-quilt") Nothing)
-            getSourceSpec "haskell-bzlib" = Quilt (Apt "sid" "haskell-bzlib" Nothing) (Darcs "http://src.seereason.com/haskell-bzlib-quilt" Nothing)
-            getSourceSpec "haskell-json" = Quilt (Apt "sid" "haskell-json" (Just "0.4.4-2")) (Darcs (repo ++ "/haskell-json-quilt") Nothing)
-            getSourceSpec "haskell-uniplate" = Quilt (Apt "sid" "haskell-uniplate" Nothing) (Darcs "http://src.seereason.com/haskell-uniplate-quilt" Nothing)
+            -- getSourceSpec "ghc" = Quilt (Apt dist "ghc" Nothing) (Darcs (repo ++ "/ghc7-quilt") Nothing)
+            getSourceSpec "haskell-bzlib" = Quilt (Apt dist "haskell-bzlib" Nothing) (Darcs "http://src.seereason.com/haskell-bzlib-quilt" Nothing)
+            getSourceSpec "haskell-json" = Quilt (Apt dist "haskell-json" (Just "0.4.4-2")) (Darcs (repo ++ "/haskell-json-quilt") Nothing)
+            getSourceSpec "haskell-uniplate" = Quilt (Apt dist "haskell-uniplate" Nothing) (Darcs "http://src.seereason.com/haskell-uniplate-quilt" Nothing)
             -- Apply a patch I sent to marco
             -- getSourceSpec "haskell-debian" = Quilt "(apt:sid:haskell-debian)" "(darcs:" ++ localRepo _home ++ "/haskell-debian-quilt)"
             getSourceSpec "haskell-debian" = Darcs (repo ++ "/haskell-debian-new") Nothing
-            -- getSourceSpec "haskell-debian" = Apt "sid" "haskell-debian" Nothing
+            -- getSourceSpec "haskell-debian" = Apt dist "haskell-debian" Nothing
             -- Try removing the quilt when a revision newer than 0.5.0.2-2 appears in sid
-            getSourceSpec "haskell-binary" = Quilt (Apt "sid" "haskell-binary" (Just "0.5.0.2-2")) (Darcs "http://src.seereason.com/haskell-binary-quilt" Nothing)
-            getSourceSpec "haskell-hjavascript" = Quilt (Apt "sid" "haskell-hjavascript" Nothing) (Darcs (repo ++ "/hjavascript-quilt") Nothing)
+            getSourceSpec "haskell-binary" = Quilt (Apt dist "haskell-binary" (Just "0.5.0.2-2")) (Darcs "http://src.seereason.com/haskell-binary-quilt" Nothing)
+            getSourceSpec "haskell-hjavascript" = Quilt (Apt dist "haskell-hjavascript" Nothing) (Darcs (repo ++ "/hjavascript-quilt") Nothing)
             -- sid version is 0.2.2.1-1, too old
             getSourceSpec "haskell-wai" = DebDir (Uri "http://hackage.haskell.org/packages/archive/wai/0.3.1/wai-0.3.1.tar.gz" "5a777cf08713a55818955ec4d0748622") (Darcs "http://src.seereason.com/haskell-wai-debian" Nothing)
             -- Version in sid is 3001.1.7.4-1, our version is 3001.1.8.2
             getSourceSpec "haskell-cgi" = DebDir (Uri "http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz" "4092efaf00ac329b9771879f57a95323") (Darcs "http://src.seereason.com/haskell-cgi-debian" Nothing)
             -- Sid version needs cdbs >= 0.4.70~, which I can't seem to build.
             -- , spec = "apt:sid:pandoc"
-            getSourceSpec "jquery" = Proc (Apt "sid" "jquery" Nothing)
-            getSourceSpec "jqueryui" = Proc (Apt "sid" "jqueryui" Nothing)
+            getSourceSpec "jquery" = Proc (Apt dist "jquery" Nothing)
+            getSourceSpec "jqueryui" = Proc (Apt dist "jqueryui" Nothing)
             -- The sid version has dependencies on the old libghc6 packages.
             -- getSourceSpec "pandoc" = P.spec (hackage release "pandoc" [Pin "1.5.1.1", Local _home])
             -- Quit adds a dependency on libmagic-dev to libghc-magic-dev.  Next upstream release should have this fix.
-            getSourceSpec "magic-haskell" = Quilt (Apt "sid" "magic-haskell" (Just "1.0.8-7")) (Darcs (repo ++ "/magic-quilt") Nothing)
+            getSourceSpec "magic-haskell" = Quilt (Apt dist "magic-haskell" (Just "1.0.8-7")) (Darcs (repo ++ "/magic-quilt") Nothing)
             -- Pinned version numbers, when these are bumped we want to move to hackage targets.
-            getSourceSpec "haskell-deepseq" = Apt "sid" "haskell-deepseq" (Just "1.1.0.2-2")
-            getSourceSpec "haskell-transformers" = Apt "sid" "haskell-transformers" (Just "0.2.2.0-3")
-            getSourceSpec "haskell-mtl" = Apt "sid" "haskell-mtl" (Just "2.0.1.0-2")
+            getSourceSpec "haskell-deepseq" = Apt dist "haskell-deepseq" (Just "1.1.0.2-2")
+            getSourceSpec "haskell-transformers" = Apt dist "haskell-transformers" (Just "0.2.2.0-3")
+            getSourceSpec "haskell-mtl" = Apt dist "haskell-mtl" (Just "2.0.1.0-2")
             -- The normal case
-            getSourceSpec n = Apt "sid" n Nothing
+            getSourceSpec n = Apt dist n Nothing
 
 {-
 -- |Here is a program to generate a list of all the packages in sid that have ghc for a build dependency.
