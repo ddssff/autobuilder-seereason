@@ -389,10 +389,10 @@ checkOrder ts =
       cabalName' (Hackage name _) = Just name
       cabalName' (Debianize name _) = Just name
       cabalName' (DebDir x _) = cabalName' x
-      cabalName' (Quilt x y) = cabalName' x
+      cabalName' (Quilt x _) = cabalName' x
       cabalName' (Apt _ x _) = Just $ maybeDropPrefix "haskell-" x
-      cabalName' (Darcs url _) = Nothing
-      cabalName' (Uri url sum) = Nothing
+      cabalName' (Darcs _ _) = Nothing
+      cabalName' (Uri _ _) = Nothing
       cabalName' (Proc x) = cabalName' x
       cabalName' x = error $ "cabalName' " ++ show x
 

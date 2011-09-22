@@ -3,9 +3,6 @@ module Targets.Public ( targets, hackage, Flag(..) ) where
 
 import qualified Data.ByteString.Lazy.Char8 as B
 import Data.Char (toLower)
---import Data.Either (partitionEithers)
-import Data.List (isPrefixOf)
-import Data.Maybe (fromMaybe)
 import qualified Debian.AutoBuilder.Params as P
 import Debian.AutoBuilder.Spec
 import Targets.Common
