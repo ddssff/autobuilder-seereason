@@ -71,7 +71,7 @@ targets _home release =
     , sid "haskell-bytestring-nums"
     , lucidNatty (hackage release "bytestring-trie" []) (debianize "bytestring-trie" [])
     , sid "haskell-bzlib"
-    , P.Package { P.name = "cabal-debian"
+    , P.Package { P.name = "haskell-cabal-debian"
                 , P.spec = Darcs "http://src.seereason.com/cabal-debian" Nothing
                 , P.flags = [] }
     , sid "haskell-cairo" -- for leksah
@@ -109,8 +109,8 @@ targets _home release =
     , sid "haskell-deepseq"
     , sid "haskell-diff"
     , sid "haskell-digest"
-    , lucidNatty (hackage release "digestive-functors" []) (debianize "digestive-functors" [])
-    , lucidNatty (hackage release "digestive-functors-happstack" []) (debianize "digestive-functors-happstack" [])
+    , debianize "digestive-functors" []
+    , debianize "digestive-functors-happstack" []
     , sid "haskell-dlist"
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
@@ -172,18 +172,21 @@ targets _home release =
                                                  , "         extensions:     ForeignFunctionInterface"
                                                  , "+        GHC-options:    -XBangPatterns" ]])
     , sid "haskell-gtksourceview2" -- for leksahw
-    , lucidNatty (hackage release "happstack" [NP]) (debianize "happstack" [])
+    , debianize "happstack" [] -- lucidNatty (hackage release "happstack" [NP]) (debianize "happstack" [])
     -- Switch to the hackage target for happstack-data once a new upstream appears in hackage.
+{-
     , P.Package { P.name = "haskell-happstack-data"
                 , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz" "be72c4c11d1317bf52c80782eac28a2d") (Darcs "http://src.seereason.com/happstack-data-debian" Nothing)
                 , P.flags = [] }
+-}
     -- , lucidNatty (hackage release "happstack-data" [NP]) (debianize "happstack-data" [])
-    , lucidNatty (hackage release "happstack-ixset" [NP]) (debianize "happstack-ixset" [])
+    , debianize "happstack-data" []
+    , debianize "happstack-ixset" [] -- lucidNatty (hackage release "happstack-ixset" [NP]) (debianize "happstack-ixset" [])
     , debianize "happstack-jmacro" []
     , debianize "happstack-plugins" []
     , debianize "happstack-server" []
-    , lucidNatty (hackage release "happstack-state" [NP]) (hackage release "happstack-state" [NP])
-    , lucidNatty (hackage release "happstack-util" [NP]) (debianize "happstack-util" [])
+    , debianize "happstack-state" []  -- hackage release "happstack-state" [NP]
+    , debianize "happstack-util" [] -- lucidNatty (hackage release "happstack-util" [NP]) (debianize "happstack-util" [])
     , lucidNatty (P.Package { P.name = "happy"
                             , P.spec = Apt "sid" "happy" Nothing
                             , P.flags = [ P.RelaxDep "happy" ] })
@@ -339,8 +342,7 @@ targets _home release =
                                           , " #include \"openssl/hmac.h\"" ]])
     , lucidNatty (sid "haskell-network") (debianize "network" [])
     , sid "haskell-opengl"
-    , lucidNatty (hackage release "openid" [])
-                 (debianize "openid" [ P.Patch . B.pack . unlines $
+    , (debianize "openid" [ P.Patch . B.pack . unlines $
                                        [ "--- openid/openid.cabal\t2011-09-16 16:59:05.108423569 -0700"
                                        , "+++ openid/openid.cabal\t2011-09-16 16:53:43.000000000 -0700"
                                        , "@@ -20,19 +20,17 @@"
@@ -424,6 +426,9 @@ targets _home release =
     , debianize "plugins" []
     , debianize "polyparse" []
     , sid "haskell-primitive"
+    , P.Package { P.name = "haskell-propositional-classes"
+                , P.spec = Darcs (repo ++ "/propositional-classes") Nothing
+                , P.flags = [] }
     -- This is bundled with the compiler
     -- , debianize "process" []
     , lucidNatty (hackage release "PSQueue" []) (debianize "PSQueue" [])
@@ -441,10 +446,7 @@ targets _home release =
     , sid "haskell-regex-posix"
     , sid "haskell-regex-tdfa"
     , lucidNatty (hackage release "RJson" [NP, UC]) (debianize "RJson" [])
-    , let t = debianize "RSA" [] in
-      case release of
-        "natty-seereason" -> t {P.spec = Quilt (P.spec t) (Darcs (repo ++ "/haskell-rsa-quilt") Nothing)}
-        _  -> t
+    , debianize "RSA" []
     , sid "haskell-safe"
     -- Depends on pandoc
     , lucidNatty (hackage release "safecopy" []) (debianize "safecopy" [])
