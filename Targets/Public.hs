@@ -172,21 +172,14 @@ targets _home release =
                                                  , "         extensions:     ForeignFunctionInterface"
                                                  , "+        GHC-options:    -XBangPatterns" ]])
     , sid "haskell-gtksourceview2" -- for leksahw
-    , debianize "happstack" [] -- lucidNatty (hackage release "happstack" [NP]) (debianize "happstack" [])
-    -- Switch to the hackage target for happstack-data once a new upstream appears in hackage.
-{-
-    , P.Package { P.name = "haskell-happstack-data"
-                , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/happstack-data/6.0.0/happstack-data-6.0.0.tar.gz" "be72c4c11d1317bf52c80782eac28a2d") (Darcs "http://src.seereason.com/happstack-data-debian" Nothing)
-                , P.flags = [] }
--}
-    -- , lucidNatty (hackage release "happstack-data" [NP]) (debianize "happstack-data" [])
+    , debianize "happstack" []
     , debianize "happstack-data" []
-    , debianize "happstack-ixset" [] -- lucidNatty (hackage release "happstack-ixset" [NP]) (debianize "happstack-ixset" [])
+    , debianize "happstack-ixset" []
     , debianize "happstack-jmacro" []
     , debianize "happstack-plugins" []
     , debianize "happstack-server" []
-    , debianize "happstack-state" []  -- hackage release "happstack-state" [NP]
-    , debianize "happstack-util" [] -- lucidNatty (hackage release "happstack-util" [NP]) (debianize "happstack-util" [])
+    , debianize "happstack-state" []
+    , debianize "happstack-util" []
     , lucidNatty (P.Package { P.name = "happy"
                             , P.spec = Apt "sid" "happy" Nothing
                             , P.flags = [ P.RelaxDep "happy" ] })
