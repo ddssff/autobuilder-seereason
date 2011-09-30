@@ -81,7 +81,7 @@ targets _home release =
     , sid "haskell-certificate"
     , sid "haskell-cgi"
     , sid "haskell-chart"
-    , sid "haskell-citeproc-hs"
+    , debianize "citeproc-hs" []
     , sid "haskell-colour"
     , sid "haskell-configfile"
     , lucidNatty (hackage release "convertible-text" []) (debianize "convertible-text" [])
@@ -110,6 +110,7 @@ targets _home release =
     , sid "haskell-diff"
     , sid "haskell-digest"
     , debianize "digestive-functors" []
+    , debianize "digestive-functors-blaze" []
     , debianize "digestive-functors-happstack" []
     , sid "haskell-dlist"
     -- Need this when we upgrade blaze-textual to 0.2.0.0
@@ -231,6 +232,7 @@ targets _home release =
     -- won't build.  Use our debianization instead.  This means keeping
     -- up with sid's version.
     , lucidNatty (hackage release "HPDF" []) (debianize "HPDF" [])
+    , debianize "hs-bibutils" []
     , sid "haskell-hsemail"
     , sid "hslogger"
     , lucidNatty (hackage release "HsOpenSSL" []) 
@@ -367,7 +369,7 @@ targets _home release =
                                        , "   exposed-modules: Codec.Binary.Base64,"
                                        , "                    Codec.Encryption.DH,"
                                        ]])
-    , debianize "operational" []
+    , debianize "operational" [P.OmitLTDeps]
     , lucidNatty -- This pandoc debianize target has a dependency on an older version of HTTP
                  -- , debianize "pandoc" []
                  (hackage release "pandoc" [])
