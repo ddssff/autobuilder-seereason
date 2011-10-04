@@ -23,7 +23,8 @@ targets _home release =
           , sid "hscolour" ]
      else []) ++
     -- Alphabetized by fromMaybe (debian name) (cabal name).
-    [ debianize "acid-state" []
+    [ sid "debootstrap"
+    , debianize "acid-state" []
     , lucidNatty (hackage release "AES" []) (debianize "AES" [])
     , lucidNatty (hackage release "aeson" []) (debianize "aeson" [])
     , debianize "aeson-native" []
