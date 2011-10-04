@@ -7,13 +7,14 @@ import qualified Debian.AutoBuilder.Params as P
 import Debian.AutoBuilder.Spec
 import Targets.Common
 
-ring0 = False
+ring0 "wheezy-seereason" = True
+ring0 _ = False
 
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
 targets _home release =
-    (if ring0
+    (if ring0 release
      then [ lucidNatty (sid "ghc")
                        (P.Package { P.name = "ghc"
                                   , P.spec = Apt "experimental" "ghc" Nothing
@@ -748,6 +749,7 @@ targets _home release =
     where
       lucidNatty x _ | release == "lucid-seereason" = x
       lucidNatty _ x | release == "natty-seereason" = x
+      lucidNatty _ x | release == "wheezy-seereason" = x
       lucidNatty _ _ = error $ "lucidNatty: Unexpected release: " ++ release
       sid name = apt "sid" name
       apt dist name = 
