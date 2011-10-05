@@ -498,7 +498,7 @@ targets _home release =
                                       , "-    random g = randomR (minBound, maxBound) g"
                                       , "-" ]))]
     , sid "haskell-texmath"
-    , lucidNatty (sid "haskell-text") (debianize "text" [])
+    , lucidNatty (sid "haskell-text") (debianize "text" [P.DebVersion "0.11.1.5-1"])
     , debianize "th-expand-syns" []
     , lucidNatty (hackage release "th-lift" [Pin "0.5.3"]) (debianize "th-lift" [])
     , sid "tinymce"
