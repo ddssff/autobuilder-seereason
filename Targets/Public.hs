@@ -74,9 +74,6 @@ targets _home release =
     , sid "haskell-bytestring-nums"
     , lucidNatty (hackage release "bytestring-trie" []) (debianize "bytestring-trie" [])
     , sid "haskell-bzlib"
-    , P.Package { P.name = "haskell-cabal-debian"
-                , P.spec = Darcs "http://src.seereason.com/cabal-debian" Nothing
-                , P.flags = [] }
     , sid "haskell-cairo" -- for leksah
     , lucidNatty (sid "haskell-case-insensitive") (debianize "case-insensitive" [])
     , lucidNatty (hackage release "CC-delcont" [NP, UC]) (debianize "CC-delcont" [])
