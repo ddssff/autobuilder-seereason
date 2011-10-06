@@ -42,8 +42,9 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , lucidNatty (P.Package { P.name = "ghc"
                             , P.spec = Apt "sid" "ghc" Nothing
                             , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] })
+                 -- This patch makes libgmp3-dev (for ubuntu) an alternative dependency to libgmp-dev
                  (P.Package { P.name = "ghc"
-                            , P.spec = Apt "experimental" "ghc" Nothing
+                            , P.spec = Quilt (Apt "experimental" "ghc" Nothing) (Darcs (repo ++ "/ghc7-quilt") Nothing)
                             , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] })
     , lucidNatty (apt "sid" "gtk2hs-buildtools")
                  (debianize "gtk2hs-buildtools" [P.Patch . B.pack . unlines $
