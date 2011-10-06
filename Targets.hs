@@ -9,7 +9,6 @@ import Data.List (isPrefixOf)
 import qualified Data.Set as Set
 import qualified Targets.Public as Public
 import qualified Targets.Private as Private
-import qualified Targets.SeeReason as SeeReason
 
 {-
 data OSVendor
@@ -68,6 +67,6 @@ ubuntuReleases = [Oneiric, Natty, Maverick, Lucid, Karmic, Jaunty, Intrepid, Har
 -- and any sequence of groups can be built together as long as
 -- no intermediate group is omitted.  Comment out the ones you
 -- don't wish to build.
-public home release = Public.targets home release ++ SeeReason.targets home
+public home release = Public.targets home release
 
 private home = Private.libraries home ++ Private.applications home

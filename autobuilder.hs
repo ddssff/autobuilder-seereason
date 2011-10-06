@@ -196,7 +196,7 @@ defParams _home myBuildRelease =
     -- Things that rarely change
     , sources = mySources myBuildRelease myDebianMirrorHost myUbuntuMirrorHost
     , globalRelaxInfo = myGlobalRelaxInfo
-    , strictness = Moderate
+    , strictness = Moderate -- Lax
     , includePackages = myIncludePackages myBuildRelease
     , excludePackages = myExcludePackages myBuildRelease
     , components = myComponents myBuildRelease

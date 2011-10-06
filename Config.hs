@@ -33,12 +33,10 @@ module Config
     ) where
 
 -- Import the symbols we use below.
-import Data.Char (toLower)
 import Data.List (isSuffixOf, isPrefixOf)
 import Data.Maybe
 import qualified Data.Set as Set
 import qualified Debian.AutoBuilder.Params as P
-import Debian.AutoBuilder.Spec
 import Debian.URI
 
 import qualified Targets
@@ -137,7 +135,7 @@ myDiscards = Set.empty
 myTargets :: FilePath -> (P.Package -> Bool) -> String -> Set.Set P.Package
 myTargets home p myBuildRelease =
     Set.fromList $
-    filter p {- . checkOrder -} $
+    filter p $
            if isPrivateRelease myBuildRelease
            then Targets.private home
            else Targets.public home myBuildRelease
@@ -375,32 +373,3 @@ releaseRepoName name
                [suffix] -> releaseRepoName (dropSuffix suffix name)
                [] -> error $ "Release name has unknown suffix: " ++ show name
                suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
-
--- |Make sure the targets are in alphabetical order
-checkOrder ts =
-    check ts
-    where
-      check (a : b : more) =
-          case compare (cabalName a) (cabalName b) of
-            GT -> error $ "Misordered targets: " ++ P.name a ++ " (" ++ cabalName a ++ ") precedes " ++ P.name b ++ " (" ++ cabalName b ++ ")"
-            _ -> check (b : more)
-      check _ = ts
-      cabalName x = map toLower $ fromMaybe (maybeDropPrefix "haskell-" (P.name x)) (cabalName' (P.spec x))
-      cabalName' (Hackage name _) = Just name
-      cabalName' (Debianize name _) = Just name
-      cabalName' (DebDir x _) = cabalName' x
-      cabalName' (Quilt x _) = cabalName' x
-      cabalName' (Apt _ x _) = Just $ maybeDropPrefix "haskell-" x
-      cabalName' (Darcs _ _) = Nothing
-      cabalName' (Uri _ _) = Nothing
-      cabalName' (Proc x) = cabalName' x
-      cabalName' x = error $ "cabalName' " ++ show x
-
-maybeDropPrefix :: String -> String -> String
-maybeDropPrefix p s = 
-    fromMaybe s (dropPrefix p s) 
-    where
-      dropPrefix :: String -> String -> Maybe String
-      dropPrefix pref str = case isPrefixOf pref str of
-                              True -> Just (drop (length pref) str)
-                              False -> Nothing
