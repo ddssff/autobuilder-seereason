@@ -238,8 +238,11 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , apt "sid" "haskell-glut"
     , debianize "gnuplot" []
     , apt "sid" "haskell-gtk" -- for leksah
-    , apt "sid" "haskell-gtksourceview2" -- for leksahw
-    , debianize "happstack" []
+    , apt "sid" "haskell-gtksourceview2" ] ++ -- for leksah
+    -- For leksah.  Version 2.9.2 specifies ghc < 7.2 and base == 4.3.*
+    -- so we can't use "debianize "haddock" []".
+    lucidNatty [] [ apt "sid" "haskell-haddock" ] ++
+    [ debianize "happstack" []
     , P.Package { P.name = "haskell-happstack-authenticate"
                 , P.spec = Darcs (repo ++ "/happstack-authenticate") Nothing
                 , P.flags = [] }
@@ -264,12 +267,9 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstackdotcom-doc"
                 , P.spec = Darcs "http://src.seereason.com/happstackDotCom-doc" Nothing
-                , P.flags = [] } ] ++
-    -- For leksah.  Version 2.9.2 specifies ghc < 7.2 and base == 4.3.*
-    -- so we can't use "debianize "haddock" []".
-    lucidNatty [] [ apt "sid" "haskell-haddock" ] ++
-    [ apt "sid" "haskell-harp"
-    , debianize "hashable" []
+                , P.flags = [] }
+    , apt "sid" "haskell-harp"
+    , debianize "hashable" (sidVersion "1.1.2.1-1")
     , lucidNatty -- Current version needs a BangPatterns options
                  (apt "sid" "haskell-hashed-storage")
                  (debianize "hashed-storage" [])
@@ -519,10 +519,10 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , lucidNatty (hackage release "PSQueue" []) (debianize "PSQueue" [])
     , apt "sid" "haskell-puremd5"
     , lucidNatty (hackage release "pwstore-purehaskell" []) (debianize "pwstore-purehaskell" [])
-    , lucidNatty (apt "sid" "haskell-quickcheck") (debianize "QuickCheck" [{-P.DebName "quickcheck2"-}])
     , P.Package { P.name = "haskell-quickcheck1"
                 , P.spec = Quilt (Apt "sid" "haskell-quickcheck1" Nothing) (Darcs (repo ++ "/haskell-quickcheck-quilt") Nothing)
                 , P.flags = [] }
+    , lucidNatty (apt "sid" "haskell-quickcheck") (debianize "QuickCheck" [{-P.DebName "quickcheck2"-}])
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
     , debianize "random" []
@@ -567,7 +567,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     -- packages (such as haskell-hsx) which reference it get the name wrong
     -- when we generate the debianization.
     -- , lucidNatty (hackage release "haskell-src-exts" [NP]) (debianize "haskell-src-exts" [])
-    , lucidNatty (apt "sid" "haskell-src-exts") (debianize "haskell-src-exts" [])
+    , lucidNatty (apt "sid" "haskell-src-exts") (debianize "haskell-src-exts" [P.ExtraDep "happy"])
     , apt "sid" "haskell-statistics"
     , lucidNatty (hackage release "stb-image" []) (debianize "stb-image" [])
     , apt "sid" "haskell-stm"
@@ -906,6 +906,13 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     ]
 
     where
+      -- If the version in sid matches the version in hackage, the version
+      -- number we compute (1.2.3-1~hackage1) will look older than the sid
+      -- version, so the autobuilder won't build it.
+      sidVersion s = 
+        case release of 
+          "sid-seereason" -> [P.DebVersion s]
+          _ -> []
       lucidNatty x _ | release == "lucid-seereason" = x
       lucidNatty _ x | release == "natty-seereason" = x
       lucidNatty _ x | release == "wheezy-seereason" = x
@@ -941,15 +948,20 @@ main =
 -- generates a debianization using cabal-debian.
 debianize :: String -> [P.PackageFlag] -> P.Package
 debianize s flags =
-    P.Package { P.name = "haskell-" ++ debianName s
+    P.Package { P.name = debianName s
               , P.spec = Debianize s Nothing
               , P.flags = P.Maintainer "SeeReason Autobuilder <partners@seereason.com>" : flags}
     where
       -- This is a quick hack, but what we should do is have
       -- cabal-debian compute and return the source package name.
-      debianName "QuickCheck" = "quickcheck2"
-      debianName "parsec" = "parsec3"
-      debianName _ = map toLower s
+      debianName "QuickCheck" = "haskell-quickcheck2"
+      debianName "parsec" = "haskell-parsec3"
+      debianName "gtk2hs-buildtools" = "gtk2hs-buildtools"
+      -- The correct name would be haskell-haskell-src-exts, but the package
+      -- in sid has the name "haskell-src-exts".
+      debianName "haskell-src-exts" = "haskell-src-exts"
+      debianName "MissingH" = "missingh"
+      debianName _ = "haskell-" ++ map toLower s
 
 hackage :: String -> String -> [Flag] -> P.Package
 hackage _ name fs =
