@@ -518,14 +518,18 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     -- , debianize "process" []
     , lucidNatty (hackage release "PSQueue" []) (debianize "PSQueue" [])
     , apt "sid" "haskell-puremd5"
-    , lucidNatty (hackage release "pwstore-purehaskell" []) (debianize "pwstore-purehaskell" [])
-    , P.Package { P.name = "haskell-quickcheck1"
+    , lucidNatty (hackage release "pwstore-purehaskell" []) (debianize "pwstore-purehaskell" []) ] ++
+    -- In Sid, source package haskell-quickcheck generates libghc-quickcheck2-*,
+    -- but our debianize target becomes haskell-quickcheck2.  So we need to fiddle
+    -- with the order here relative to haskell-quickcheck1. 
+    lucidNatty [apt "sid" "haskell-quickcheck"] [] ++
+    [ P.Package { P.name = "haskell-quickcheck1"
                 , P.spec = Quilt (Apt "sid" "haskell-quickcheck1" Nothing) (Darcs (repo ++ "/haskell-quickcheck-quilt") Nothing)
-                , P.flags = [] }
-    , lucidNatty (apt "sid" "haskell-quickcheck") (debianize "QuickCheck" [{-P.DebName "quickcheck2"-}])
+                , P.flags = [] } ] ++
+    lucidNatty [] [debianize "QuickCheck" [] ] ++
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
-    , debianize "random" []
+    [ debianize "random" []
     , apt "sid" "haskell-regex-base"
     , apt "sid" "haskell-regex-compat"
     , apt "sid" "haskell-regex-posix"
