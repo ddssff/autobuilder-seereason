@@ -136,6 +136,8 @@ optSpecs home =
                , "goal package is built.)"])
     , Option [] ["force"] (ReqArg (\ s p -> p {forceBuild = forceBuild p ++ [s]}) "PACKAGE")
       ("Build the specified source package even if it doesn't seem to need it.")
+    , Option [] ["lax"] (NoArg (\ p -> p {strictness = Lax}))
+      "Use the lax build environment, where dependencies are not removed between package builds."
     , Option [] ["build-trumped"] (ReqArg (\ s p -> p {buildTrumped = buildTrumped p ++ [s]}) "PACKAGE")
       ("Build the specified source package even if it seems older than the uploaded version.")
     , Option ['h'] ["help", "usage"] (NoArg (\ p -> p {doHelp = True}))
@@ -196,7 +198,7 @@ defParams _home myBuildRelease =
     -- Things that rarely change
     , sources = mySources myBuildRelease myDebianMirrorHost myUbuntuMirrorHost
     , globalRelaxInfo = myGlobalRelaxInfo
-    , strictness = Moderate -- Lax
+    , strictness = Moderate
     , includePackages = myIncludePackages myBuildRelease
     , excludePackages = myExcludePackages myBuildRelease
     , components = myComponents myBuildRelease
