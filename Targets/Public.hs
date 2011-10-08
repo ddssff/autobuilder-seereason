@@ -257,7 +257,13 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-happstack-hsp"
                 , P.spec = DebDir (Cd "happstack-hsp" (Darcs happstackRepo Nothing)) (Darcs (repo ++ "/happstack-hsp-debian") Nothing)
                 , P.flags = [] }
-    , debianize "happstack-ixset" []
+    -- Version 6.1.0, which is just a wrapper around the non-happstack
+    -- ixset package, has not yet been uploaded to hackage.
+    -- , debianize "happstack-ixset" []
+    , P.Package { P.name = "haskell-happstack-ixset"
+                , P.spec = DebDir (Cd "happstack-ixset" (Darcs happstackRepo Nothing)) (Darcs (localRepo _home ++ "/happstack-ixset-debian") Nothing)
+                , P.flags = [] }
+
     , debianize "happstack-jmacro" []
     , debianize "happstack-plugins" []
     , debianize "happstack-server" []
