@@ -533,11 +533,12 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     -- In Sid, source package haskell-quickcheck generates libghc-quickcheck2-*,
     -- but our debianize target becomes haskell-quickcheck2.  So we need to fiddle
     -- with the order here relative to haskell-quickcheck1. 
-    lucidNatty [apt "sid" "haskell-quickcheck"] [] ++
+    -- lucidNatty [apt "sid" "haskell-quickcheck"] [] ++
     [ P.Package { P.name = "haskell-quickcheck1"
                 , P.spec = Quilt (Apt "sid" "haskell-quickcheck1" Nothing) (Darcs (repo ++ "/haskell-quickcheck-quilt") Nothing)
                 , P.flags = [] } ] ++
-    lucidNatty [] [debianize "QuickCheck" [] ] ++
+    [ debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"] ] ++
+    -- lucidNatty [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"]] [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"] ] ++
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
     [ debianize "random" []
