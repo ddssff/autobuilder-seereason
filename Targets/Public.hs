@@ -348,6 +348,10 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , hackage release "incremental-sat-solver" []
     , debianize "instant-generics" []
     , apt "sid" "haskell-irc"
+    , P.Package { P.name = "haskell-ircbot"
+                , P.spec = Darcs "http://patch-tag.com/r/stepcut/ircbot" Nothing
+                , P.flags = []
+                }
     , debianize "ixset" []
     , debianize "jmacro" []
     , P.Package { P.name = "haskell-json"
