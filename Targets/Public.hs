@@ -537,7 +537,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     [ P.Package { P.name = "haskell-quickcheck1"
                 , P.spec = Quilt (Apt "sid" "haskell-quickcheck1" Nothing) (Darcs (repo ++ "/haskell-quickcheck-quilt") Nothing)
                 , P.flags = [] } ] ++
-    [ debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"] ] ++
+    [ debianize "QuickCheck" [P.ExtraDep "libghc-random-prof", P.DebVersion "2.4.1.1-1.1"] ] ++
     -- lucidNatty [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"]] [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"] ] ++
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
