@@ -675,9 +675,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     -- remove this pin when a new hackage version comes out to trump it.
     , debianize "vector" [P.DebVersion "0.9-2~hackage1"]
     , apt "sid" "haskell-vector-algorithms"
-    , P.Package { P.name = "haskell-wai"
-                , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/wai/0.3.1/wai-0.3.1.tar.gz" "5a777cf08713a55818955ec4d0748622") (Darcs "http://src.seereason.com/haskell-wai-debian" Nothing)
-                , P.flags = [] }
+    , debianize "wai" []
     , lucidNatty (hackage release "web-encodings" []) (debianize "web-encodings" [])
     , P.Package { P.name = "haskell-web-routes"
                 , P.spec = Cd "web-routes" (Darcs (repo ++ "/web-routes") Nothing)
