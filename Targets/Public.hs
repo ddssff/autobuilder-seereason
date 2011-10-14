@@ -623,8 +623,8 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                 , P.spec = Apt "sid" "haskell-transformers" (Just "0.2.2.0-3")
                 , P.flags = [] }
     , debianize "TrieMap" []
-    , lucidNatty (hackage release "unicode-names" []) (debianize "unicode-names" [])
-    , lucidNatty (hackage release "unicode-properties" []) (debianize "unicode-properties" [])
+    , debianize "unicode-names" []
+    , debianize "unicode-properties" []
     , lucidNatty (P.Package { P.name = "haskell-uniplate"
                             , P.spec = Quilt (Apt "sid" "haskell-uniplate" Nothing) (Darcs "http://src.seereason.com/haskell-uniplate-quilt" Nothing)
                             , P.flags = [] })
