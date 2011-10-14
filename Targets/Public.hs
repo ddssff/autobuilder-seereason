@@ -368,7 +368,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , apt "sid" "haskell-largeword"
     , apt "sid" "haskell-leksah"
     , apt "sid" "haskell-leksah-server" -- for leksah
-    , P.Package { P.name = "haskell-logic"
+    , P.Package { P.name = "haskell-logic-classes"
                 , P.spec = Darcs "http://src.seereason.com/haskell-logic" Nothing
                 , P.flags = [] }
     , debianize "logic-TPTP" [ P.ExtraDep "alex", P.ExtraDep "happy"
