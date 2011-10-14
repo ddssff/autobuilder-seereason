@@ -617,8 +617,8 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , lucidNatty (apt "sid" "haskell-text") (debianize "text" [P.DebVersion "0.11.1.5-1"])
     , debianize "th-expand-syns" []
     , lucidNatty (hackage release "th-lift" [Pin "0.5.3"]) (debianize "th-lift" [])
-    , apt "sid" "haskell-tls"
-    , apt "sid" "haskell-tls-extra"
+    , debianize "tls" []
+    , debianize "tls-extra" []
     , P.Package { P.name = "haskell-transformers"
                 , P.spec = Apt "sid" "haskell-transformers" (Just "0.2.2.0-3")
                 , P.flags = [] }
@@ -654,20 +654,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                 , P.spec = Apt "sid" "haskell-utf8-string" Nothing
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , apt "sid" "haskell-utility-ht"
-    , lucidNatty (hackage release "vacuum" [])
-                 (debianize "vacuum"
-                  [P.Patch . B.pack . unlines $
-                   [ "--- haskell-vacuum-1.0.0/src/GHC/Vacuum.hs.orig\t2011-09-10 10:16:35.000000000 -0700"
-                   , "+++ haskell-vacuum-1.0.0/src/GHC/Vacuum.hs\t2011-09-10 14:04:24.614335577 -0700"
-                   , "@@ -98,7 +98,7 @@"
-                   , " import Prelude hiding(catch)"
-                   , " import Control.Concurrent"
-                   , " "
-                   , "-import Foreign"
-                   , "+import Foreign hiding (unsafePerformIO)"
-                   , " import GHC.Arr(Array(..))"
-                   , " import GHC.Exts"
-                   , " " ]])
+    , debianize "vacuum" []
     , lucidNatty (hackage release "vacuum-opengl" []) (debianize "vacuum-opengl" [])
     -- Requires devscripts 0.8.9, restore when that gets built
     -- apt "sid" "haskell-vector"
