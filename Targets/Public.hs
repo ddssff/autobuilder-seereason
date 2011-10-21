@@ -266,6 +266,9 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
 
     , debianize "happstack-jmacro" []
     , debianize "happstack-plugins" []
+    , P.Package { P.name = "haskell-happstack-search"
+                , P.spec = Darcs (repo ++ "/happstack-search") Nothing
+                , P.flags = [] }
     , debianize "happstack-server" []
     , debianize "happstack-state" []
     , debianize "happstack-util" []
