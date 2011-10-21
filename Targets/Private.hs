@@ -33,9 +33,11 @@ applications _home =
     , P.Package { P.name = "haskell-creativeprompts"
                 , P.spec = Darcs (privateRepo ++ "/creativeprompts") Nothing
                 , P.flags = [] }
+{-
     , P.Package { P.name = "prefeteria"
                 , P.spec = Darcs (privateRepo ++ "/prefeteria") Nothing
                 , P.flags = [] }
+-}
     -- There is a debianization in the repo that contains this file
     -- (Targets.hs), and it creates a package named seereason-darcs-backups,
     -- which performs backups on the darcs repo.
