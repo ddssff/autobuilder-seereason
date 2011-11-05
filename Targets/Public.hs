@@ -160,7 +160,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , debianize "crypto-api" []
     , debianize "crypto-pubkey-types" []
     , debianize "cryptocipher" []
-    , apt "sid" "haskell-cryptohash"
+    , debianize "cryptohash" []
     , lucidNatty (hackage release "css" []) (debianize "css" [])
     , apt "sid" "haskell-css-text"
     , apt "sid" "haskell-curl"
@@ -440,37 +440,24 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , lucidNatty (apt "sid" "haskell-network") (debianize "network" [])
     , apt "sid" "haskell-opengl"
     , (debianize "openid" [ P.Patch . B.pack . unlines $
-                                       [ "--- openid/openid.cabal\t2011-09-16 16:59:05.108423569 -0700"
-                                       , "+++ openid/openid.cabal\t2011-09-16 16:53:43.000000000 -0700"
-                                       , "@@ -20,19 +20,17 @@"
-                                       , "   description: Use the new split base package."
-                                       , " "
-                                       , " library"
-                                       , "-  if flag(split-base)"
-                                       , "-    build-depends: base       >= 3 && < 10,"
-                                       , "-                   bytestring == 0.9.1.*,"
-                                       , "-                   containers >= 0.2 && < 0.4"
-                                       , "-  else"
-                                       , "-    build-depends: base < 3"
-                                       , "-  build-depends:   HTTP      >= 4000.0.5 && < 4000.1,"
-                                       , "+  build-depends:   base       >= 3 && < 10,"
-                                       , "+                   bytestring >= 0.9.1,"
-                                       , "+                   containers >= 0.2,"
-                                       , "+                   HTTP      >= 4000.0.5,"
-                                       , "                    monadLib  == 3.6.*,"
-                                       , "                    nano-hmac == 0.2.*,"
-                                       , "-                   network   == 2.2.*,"
-                                       , "-                   time      == 1.1.*,"
-                                       , "+                   network   >= 2.2,"
-                                       , "+                   time      >= 1.1,"
-                                       , "                    xml       == 1.3.*,"
-                                       , "-                   HsOpenSSL == 0.8.*"
-                                       , "+                   HsOpenSSL >= 0.8"
-                                       , "+  extra-libraries: crypto++ ssl"
-                                       , "   hs-source-dirs:  src"
-                                       , "   exposed-modules: Codec.Binary.Base64,"
-                                       , "                    Codec.Encryption.DH,"
-                                       ]])
+                                        [ "--- openid.orig/openid.cabal\t2011-11-05 05:04:06.000000000 -0700"
+                                        , "+++ openid/openid.cabal\t2011-11-05 06:02:40.368409637 -0700"
+                                        , "@@ -29,12 +29,13 @@"
+                                        , "   build-depends:   base       >= 4.0.0.0  && < 5.0.0.0,"
+                                        , "                    bytestring >= 0.9.1.0  && < 0.10.0.0,"
+                                        , "                    containers >= 0.2.0.0  && < 0.4.1.0,"
+                                        , "-                   HTTP       >= 4000.0.9 && < 4000.2,"
+                                        , "+                   HTTP       >= 4000.0.9,"
+                                        , "                    monadLib   >= 3.6.0.0  && < 3.7.0.0,"
+                                        , "-                   network    >= 2.2.0.0  && < 2.3.0.0,"
+                                        , "+                   network    >= 2.2.0.0,"
+                                        , "                    time       >= 1.1.0.0  && < 1.3.0.0,"
+                                        , "                    xml        >= 1.3.0.0  && < 1.4.0.0,"
+                                        , "                    HsOpenSSL  >= 0.9.0.0  && < 0.11.0.0"
+                                        , "+  extra-libraries: ssl"
+                                        , "   hs-source-dirs:  src"
+                                        , "   exposed-modules: Codec.Binary.Base64,"
+                                        , "                    Codec.Encryption.DH," ]])
     , debianize "operational" [P.OmitLTDeps]
     , lucidNatty -- This pandoc debianize target has a dependency on an older version of HTTP
                  -- , debianize "pandoc" []
