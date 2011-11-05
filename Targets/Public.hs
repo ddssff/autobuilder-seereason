@@ -142,7 +142,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , lucidNatty (apt "sid" "haskell-case-insensitive") (debianize "case-insensitive" [])
     , lucidNatty (hackage release "CC-delcont" [NP, UC]) (debianize "CC-delcont" [])
     , apt "sid" "haskell-cereal"
-    , apt "sid" "haskell-certificate"
+    , debianize "certificate" []
     , P.Package { P.name = "haskell-cgi"
                 , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz" "4092efaf00ac329b9771879f57a95323") (Darcs "http://src.seereason.com/haskell-cgi-debian" Nothing)
                 , P.flags = [] }
@@ -154,11 +154,12 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                 , P.spec = Darcs "http://src.seereason.com/haskell-consumer" Nothing
                 , P.flags = [] }
     , lucidNatty (hackage release "convertible-text" []) (debianize "convertible-text" [])
-    , lucidNatty (apt "sid" "haskell-cprng-aes") (debianize "cprng-aes" [])
+    , debianize "cprng-aes" []
     , apt "sid" "haskell-criterion"
     , lucidNatty (apt "sid" "haskell-crypto") (debianize "Crypto" [])
-    , apt "sid" "haskell-crypto-api"
-    , apt "sid" "haskell-cryptocipher"
+    , debianize "crypto-api" []
+    , debianize "crypto-pubkey-types" []
+    , debianize "cryptocipher" []
     , apt "sid" "haskell-cryptohash"
     , lucidNatty (hackage release "css" []) (debianize "css" [])
     , apt "sid" "haskell-css-text"
