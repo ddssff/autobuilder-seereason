@@ -4,22 +4,19 @@ module Targets.Public ( targets, hackage, Flag(..) ) where
 import qualified Data.ByteString.Lazy.Char8 as B
 import Data.Char (toLower)
 import qualified Debian.AutoBuilder.Params as P
-import Debian.AutoBuilder.Spec
-import Targets.Common
+import Debian.AutoBuilder.Spec (Spec(..))
+import Targets.Common (repo, localRepo, checkOrder, happstackRepo)
 
 -- |Sometimes we don't want to build the core packages even if newer
 -- versions are available, because it takes so long.
-{-
-ring0 "lucid-seereason" "ghc" = True
-ring0 "lucid-seereason" "haskell-devscripts" = True
-ring0 "lucid-seereason" "haskell-dummy" = True
-ring0 "lucid-seereason" "hscolour" = True
--}
+ring0 "lucid-seereason" p =
+    any (== (P.name p)) ["ghc", "haskell-devscripts", "haskell-dummy", "hscolour"]
 ring0 _ _ = False
 
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
+targets :: String -> String -> [P.Package]
 targets _home release = checkOrder $ filter (not . ring0 release) $
     -- Alphabetized by name
     [ apt "sid" "agda"
@@ -896,7 +893,6 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , debianize "void" []
 -}
     ]
-
     where
       -- If the version in sid matches the version in hackage, the version
       -- number we compute (1.2.3-1~hackage1) will look older than the sid
@@ -910,6 +906,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
       lucidNatty _ x | release == "wheezy-seereason" = x
       lucidNatty _ x | release == "sid-seereason" = x
       lucidNatty _ _ = error $ "lucidNatty: Unexpected release: " ++ release
+      apt :: String -> String -> P.Package
       apt dist name = P.Package
                       { P.name = name
                                 , P.spec = Apt dist name Nothing
