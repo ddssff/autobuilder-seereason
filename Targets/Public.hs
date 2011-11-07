@@ -399,8 +399,8 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , debianize "JSONb" []
     , debianize "language-css" []
     , apt "sid" "haskell-largeword"
-    , apt "sid" "haskell-leksah"
-    , apt "sid" "haskell-leksah-server" -- for leksah
+{-  , apt "sid" "haskell-leksah"
+    , apt "sid" "haskell-leksah-server" -- for leksah -}
     , P.Package { P.name = "haskell-logic-classes"
                 , P.spec = Darcs "http://src.seereason.com/haskell-logic" Nothing
                 , P.flags = [] }
@@ -542,9 +542,9 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-proplogic"
                 , P.spec = DebDir (Uri "http://www.bucephalus.org/PropLogic/PropLogic-0.9.tar.gz" "e2fb3445dd16d435e81d7630d7f78c01") (Darcs (repo ++ "/haskell-proplogic-debian") Nothing)
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-propositional-classes"
+    {- , P.Package { P.name = "haskell-propositional-classes"
                 , P.spec = Darcs (repo ++ "/propositional-classes") Nothing
-                , P.flags = [] }
+                , P.flags = [] } -}
     -- This is bundled with the compiler
     -- , debianize "process" []
     , lucidNatty (hackage release "PSQueue" []) (debianize "PSQueue" [])
@@ -904,7 +904,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , P.Package { P.name = "vc-darcs"
                 , P.spec = Darcs "http://src.seereason.com/vc-darcs" Nothing
                 , P.flags = [] }
-    , apt "sid" "wordpress"
+    -- , apt "sid" "wordpress"
 
 {-  -- Algebra cohort
     , debianize "adjunctions" []
