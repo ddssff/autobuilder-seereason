@@ -101,7 +101,18 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , apt "sid" "haskell-attoparsec-enumerator"
     , apt "sid" "haskell-attoparsec-text"
     , lucidNatty (hackage release "attoparsec-text-enumerator" []) (debianize "attoparsec-text-enumerator" [])
-    , debianize "authenticate" []
+    , debianize "authenticate" [P.Patch . B.pack . unlines $
+                                     [ "--- authenticate.orig/authenticate.cabal\t2011-08-19 08:29:31.000000000 -0700"
+                                     , "+++ authenticate/authenticate.cabal\t2011-11-06 21:37:12.958410119 -0800"
+                                     , "@@ -22,7 +22,7 @@"
+                                     , "                      transformers >= 0.1 && < 0.3,"
+                                     , "                      bytestring >= 0.9 && < 0.10,"
+                                     , "                      network >= 2.2.1 && < 2.4,"
+                                     , "-                     case-insensitive >= 0.2 && < 0.4,"
+                                     , "+                     case-insensitive >= 0.2,"
+                                     , "                      RSA >= 1.0 && < 1.1,"
+                                     , "                      time >= 1.1 && < 1.4,"
+                                     , "                      base64-bytestring >= 0.1 && < 0.2," ]]
     , lucidNatty (apt "sid" "haskell-base-unicode-symbols") (debianize "base-unicode-symbols" [])
     , apt "sid" "haskell-base64-bytestring"
     , lucidNatty (hackage release "bimap" []) (debianize "bimap" [])
@@ -345,8 +356,29 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                 , P.spec = Darcs "http://src.seereason.com/html-entities" Nothing
                 , P.flags = [] }
     , lucidNatty (apt "sid" "haskell-http") (debianize "HTTP" [P.Epoch 1])
-    , debianize "http-enumerator" []
-    , debianize "http-types" []
+    , debianize "http-enumerator" [P.Patch . B.pack . unlines $
+                                   [ "--- http-enumerator.orig/http-enumerator.cabal\t2011-11-06 21:23:33.000000000 -0800"
+                                   , "+++ http-enumerator/http-enumerator.cabal\t2011-11-06 21:25:02.198410969 -0800"
+                                   , "@@ -38,7 +38,7 @@"
+                                   , "                  , monad-control         >= 0.2     && < 0.3\r"
+                                   , "                  , containers            >= 0.2     && < 0.5\r"
+                                   , "                  , certificate           >= 0.7     && < 1.1\r"
+                                   , "-                 , case-insensitive      >= 0.2     && < 0.4\r"
+                                   , "+                 , case-insensitive      >= 0.2\r"
+                                   , "                  , base64-bytestring     >= 0.1     && < 0.2\r"
+                                   , "                  , asn1-data             >= 0.5.1   && < 0.7\r"
+                                   , "                  , data-default          >= 0.3     && < 0.4\r"]]
+    , debianize "http-types" [P.Patch . B.pack . unlines $
+                              [ "--- http-types/http-types.cabal.orig\t2011-11-06 15:54:06.000000000 -0800"
+                              , "+++ http-types/http-types.cabal\t2011-11-06 16:50:41.097355344 -0800"
+                              , "@@ -60,7 +60,7 @@"
+                              , "   Build-depends:       base >= 4 && < 5,"
+                              , "                        bytestring >=0.9.1.5 && <0.10,"
+                              , "                        array >=0.2 && <0.4,"
+                              , "-                       case-insensitive >=0.2 && <0.4,"
+                              , "+                       case-insensitive >=0.2,"
+                              , "                        blaze-builder >= 0.2.1.4 && < 0.4,"
+                              , "                        text >= 0.11.0.2 && < 0.12" ]]
     , apt "sid" "haskell-hunit"
     , lucidNatty (hackage release "i18n" [NP]) (debianize "i18n" [])
     , P.Package { P.name = "haskell-iconv"
