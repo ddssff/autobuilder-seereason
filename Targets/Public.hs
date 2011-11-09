@@ -81,7 +81,18 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                  (P.Package { P.name = "happy"
                             , P.spec = Quilt (Apt "sid" "happy" Nothing) (Darcs (repo ++ "/happy-quilt") Nothing)
                             , P.flags = [ P.RelaxDep "happy" ] })
-    , debianize "acid-state" []
+    , debianize "acid-state" [P.Patch . B.pack . unlines $
+                              [ "--- orig/acid-state.cabal\t2011-11-08 21:34:21.667521813 -0800"
+                              , "+++ new/acid-state.cabal\t2011-11-08 21:34:29.718410123 -0800"
+                              , "@@ -57,7 +57,7 @@"
+                              , "                        Data.Acid.Abstract, Data.Acid.Core"
+                              , "   "
+                              , "   -- Packages needed in order to build this package."
+                              , "-  Build-depends:       base >= 4 && < 5, cereal >= 0.3.2.0, safecopy >= 0.6, bytestring, stm,"
+                              , "+  Build-depends:       base >= 4 && < 5, cereal >= 0.3.2.0, safecopy, bytestring, stm,"
+                              , "                        filepath, directory, mtl, array, containers, template-haskell, network"
+                              , " "
+                              , "   if os(windows)" ]]
     , lucidNatty (hackage release "AES" []) (debianize "AES" [])
     , lucidNatty (hackage release "aeson" []) (debianize "aeson" [])
     , debianize "aeson-native" []
@@ -573,7 +584,10 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , debianize "RSA" []
     , apt "sid" "haskell-safe"
     -- Depends on pandoc
-    , lucidNatty (hackage release "safecopy" []) (debianize "safecopy" [])
+    , hackage release "safecopy" [Pin "0.5.1"]
+    , P.Package { P.name = "haskell-safecopy05"
+                , P.spec = Quilt (Hackage "safecopy" (Just "0.5.1")) (Darcs (repo ++ "/safecopy05-quilt") Nothing)
+                , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     , lucidNatty (hackage release "sat" []) (debianize "sat" [P.Patch . B.pack . unlines $
                                                                 [ "--- sat/sat.cabal.orig\t2011-09-10 10:16:05.000000000 -0700"
                                                                 , "+++ sat/sat.cabal\t2011-09-10 14:14:46.784184607 -0700"
