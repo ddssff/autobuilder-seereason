@@ -627,7 +627,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , lucidNatty (apt "sid" "haskell-syb-with-class") (debianize "syb-with-class" [])
     , apt "sid" "haskell-syb-with-class-instances-text"
     , lucidNatty (apt "sid" "haskell-tagged") (debianize "tagged" [])
-    , lucidNatty (hackage release "tagsoup" []) (debianize "tagsoup" [])
+    , debianize "tagsoup" []
     , apt "sid" "haskell-tar"
     , apt "sid" "haskell-terminfo"
     , debianize "test-framework" [P.ExtraDep "libghc-random-prof"]
@@ -659,10 +659,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , debianize "TrieMap" []
     , debianize "unicode-names" []
     , debianize "unicode-properties" []
-    , lucidNatty (P.Package { P.name = "haskell-uniplate"
-                            , P.spec = Quilt (Apt "sid" "haskell-uniplate" Nothing) (Darcs "http://src.seereason.com/haskell-uniplate-quilt" Nothing)
-                            , P.flags = [] })
-                 (debianize "uniplate" [])
+    , debianize "uniplate" []
     , apt "sid" "haskell-unix-compat"
 {-
     , debianize "Unixutils" [ P.Patch . B.pack . unlines $
