@@ -43,13 +43,25 @@ getParams :: [String] -> IO [ParamRec]
 getParams args =
     getEnv "HOME" >>= \ home ->
     hPutStrLn stderr "Autobuilder starting..." >>
-    doParams home (getOpt' Permute (optSpecs home) args)
+    doParams home (getOpt' (ReturnInOrder Left) (optSpecs home) args)
     where
       -- Turn the parameter information into a list of parameter records
-      -- containing all the info needed during runtime.
-      doParams ::  FilePath -> ([ParamRec -> ParamRec], [String], [String], [String]) -> IO [ParamRec]
-      doParams home (fns, dists, [], []) = 
-          maybeDoHelp home . map (finalizeTargets home) . map (\ p -> foldr ($) p fns) . map (defParams home) $ dists
+      -- containing all the info needed during runtime.  Each return record
+      -- represents a separate autobuilder run.
+      doParams :: FilePath
+               -> ([Either String (ParamRec -> ParamRec)], -- The list of functions to apply to the default record
+                   [String],               -- non-options
+                   [String],               -- unrecognized options
+                   [String])               -- error messages
+               -> IO [ParamRec]
+      doParams home (fns, [], [], []) =
+          maybeDoHelp home . map (finalizeTargets home) . reverse $ f [] fns
+          where
+            f recs [] = recs
+            f recs (Left rel : xs) = f (defParams home rel : recs) xs
+            f (rec : more) (Right fn : xs) = f (fn rec : more) xs
+            f _ _ = error "First argument must be a release name"
+          -- maybeDoHelp home . map (finalizeTargets home) . map (\ p -> foldr ($) p fns) . map (defParams home) $ dists
       doParams home (_, _, badopts, errs) =
           hPutStr stderr (usage ("Bad options: " ++ show badopts ++
                            ", errors: " ++ show errs) (optSpecs home)) >> return []
@@ -83,64 +95,64 @@ getParams args =
       maybeDoHelp _ [] = return []
 
 -- |Each option is defined as a function transforming the parameter record.
-optSpecs :: FilePath -> [OptDescr (ParamRec -> ParamRec)]
+optSpecs :: FilePath -> [OptDescr (Either String (ParamRec -> ParamRec))]
 optSpecs home =
-    [ Option ['v'] ["verbose"] (NoArg (\ p -> p {verbosity = verbosity p + 1}))
+    [ Option ['v'] ["verbose"] (NoArg (Right (\ p -> p {verbosity = verbosity p + 1})))
       "Increase progress reporting.  Can be used multiple times."
-    , Option ['q'] ["quiet"] (NoArg (\ p -> p {verbosity = verbosity p - 1}))
+    , Option ['q'] ["quiet"] (NoArg (Right (\ p -> p {verbosity = verbosity p - 1})))
       "Decrease progress reporting. Can be used multiple times."
-    , Option [] ["show-params"] (NoArg (\ p -> p {showParams = True}))
+    , Option [] ["show-params"] (NoArg (Right (\ p -> p {showParams = True})))
       "Display the parameter set" 
-    , Option [] ["flush-repo-cache"] (NoArg (\ p -> p {useRepoCache = False}))
+    , Option [] ["flush-repo-cache"] (NoArg (Right (\ p -> p {useRepoCache = False})))
       (unlines [ "Ignore the existing cached information about the remote repositories,"
                , "instead rebuild it from scratch and save the new result" ])
-    , Option [] ["flush-pool"] (NoArg (\ p -> p {flushPool = True}))
+    , Option [] ["flush-pool"] (NoArg (Right (\ p -> p {flushPool = True})))
       "Flush the local repository before building."
-    , Option [] ["flush-root"] (NoArg (\ p -> p {flushRoot = True}))
+    , Option [] ["flush-root"] (NoArg (Right (\ p -> p {flushRoot = True})))
       "Discard and recreate the clean and build environments."
-    , Option [] ["flush-source"] (NoArg (\ p -> p {flushSource = True}))
+    , Option [] ["flush-source"] (NoArg (Right (\ p -> p {flushSource = True})))
       "Discard and re-download all source code."
-    , Option [] ["flush-all"] (NoArg (\ p -> p {flushAll = True}))
+    , Option [] ["flush-all"] (NoArg (Right (\ p -> p {flushAll = True})))
       "Remove and re-create the entire autobuilder working directory."
-    , Option [] ["do-upload"] (NoArg (\ p -> p {doUpload = True}))
+    , Option [] ["do-upload"] (NoArg (Right (\ p -> p {doUpload = True})))
       "Upload the packages to the remote server after a successful build."
-    , Option [] ["do-newdist"] (NoArg (\ p -> p {doNewDist = True}))
+    , Option [] ["do-newdist"] (NoArg (Right (\ p -> p {doNewDist = True})))
       "Run newdist on the remote server after a successful build and upload."
-    , Option ['n'] ["dry-run"] (NoArg (\ p -> p {dryRun = True}))
+    , Option ['n'] ["dry-run"] (NoArg (Right (\ p -> p {dryRun = True})))
       "Exit as soon as we discover a package that needs to be built."
-    , Option [] ["all-targets"] (NoArg (\ p ->  p {targets = AllTargets}))
+    , Option [] ["all-targets"] (NoArg (Right (\ p ->  p {targets = AllTargets})))
       "Add all known targets for the release to the target list."
     , Option [] ["allow-build-dependency-regressions"]
-                 (NoArg (\ p -> p {allowBuildDependencyRegressions = True}))
+                 (NoArg (Right (\ p -> p {allowBuildDependencyRegressions = True})))
       (unlines [ "Normally it is an error if a build dependency has an older version"
                , "number than during the previous looks older than it did during the"
                , "previous build.  This option relaxes that assumption, in case the"
                , "newer version of the dependency was withdrawn from the repository,"
                , "or was flushed from the local repository without being uploaded."])
-    , Option [] ["target"] (ReqArg (\ s p -> p {targets = addTarget s p}) "PACKAGE")
+    , Option [] ["target"] (ReqArg (\ s -> (Right (\ p -> p {targets = addTarget s p}))) "PACKAGE")
       "Add a target to the target list."
-    , Option [] ["discard"] (ReqArg (\ s p -> p {discard = Set.insert s (discard p)}) "PACKAGE")
+    , Option [] ["discard"] (ReqArg (\ s -> (Right (\ p -> p {discard = Set.insert s (discard p)}))) "PACKAGE")
       (unlines [ "Add a target to the discard list, packages which we discard as soon"
                , "as they are ready to build, along with any packages that depend on them." ])
-    , Option [] ["test-with-private"] (NoArg (\ p -> p {testWithPrivate = True}))
+    , Option [] ["test-with-private"] (NoArg (Right (\ p -> p {testWithPrivate = True})))
       (unlines [ "Build everything required to build the private targets, but don't"
                , "actually build the private targets.  This is to avoid the risk of"
                , "uploading private targets to the public repository" ])
-    , Option [] ["goal"] (ReqArg (\ s p -> p { goals = goals p ++ [s]
-                                             , targets = TargetSet (myTargets home (const True) (relName (buildRelease p)))}) "PACKAGE")
+    , Option [] ["goal"] (ReqArg (\ s -> (Right (\ p -> p { goals = goals p ++ [s]
+                                                                 , targets = TargetSet (myTargets home (const True) (relName (buildRelease p)))}))) "PACKAGE")
       (unlines [ "If one or more goal package names are given the autobuilder"
                , "will only build these packages and any of their build dependencies"
                , "which are in the package list.  If no goals are specified, all the"
                , "targets will be built.  (As of version 5.2 there are known bugs with"
                , "this this option which may cause the autobuilder to exit before the"
                , "goal package is built.)"])
-    , Option [] ["force"] (ReqArg (\ s p -> p {forceBuild = forceBuild p ++ [s]}) "PACKAGE")
+    , Option [] ["force"] (ReqArg (\ s -> (Right (\ p -> p {forceBuild = forceBuild p ++ [s]}))) "PACKAGE")
       ("Build the specified source package even if it doesn't seem to need it.")
-    , Option [] ["lax"] (NoArg (\ p -> p {strictness = Lax}))
+    , Option [] ["lax"] (NoArg (Right (\ p -> p {strictness = Lax})))
       "Use the lax build environment, where dependencies are not removed between package builds."
-    , Option [] ["build-trumped"] (ReqArg (\ s p -> p {buildTrumped = buildTrumped p ++ [s]}) "PACKAGE")
+    , Option [] ["build-trumped"] (ReqArg (\ s -> (Right (\ p -> p {buildTrumped = buildTrumped p ++ [s]}))) "PACKAGE")
       ("Build the specified source package even if it seems older than the uploaded version.")
-    , Option ['h'] ["help", "usage"] (NoArg (\ p -> p {doHelp = True}))
+    , Option ['h'] ["help", "usage"] (NoArg (Right (\ p -> p {doHelp = True})))
       "Print a help message and exit."
     ]
     where
