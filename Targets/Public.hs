@@ -94,7 +94,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                               , " "
                               , "   if os(windows)" ]]
     , lucidNatty (hackage release "AES" []) (debianize "AES" [])
-    , lucidNatty (hackage release "aeson" []) (debianize "aeson" [])
+    , debianize "aeson" []
     , debianize "aeson-native" []
     , P.Package { P.name = "haskell-agi"
                 , P.spec=Darcs "http://src.seereason.com/haskell-agi" Nothing
@@ -232,6 +232,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , apt "sid" "haskell-failure"
     , apt "sid" "haskell-feed"
     , lucidNatty (apt "sid" "haskell-fgl") (debianize "fgl" [])
+    , debianize "file-embed" []
     , hackage release "formlets" []
     , P.Package { P.name = "haskell-formlets-hsp"
                 , P.spec = Darcs (repo ++ "/formlets-hsp") Nothing
@@ -292,7 +293,6 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , debianize "happstack-server" []
     , debianize "happstack-state" []
     , debianize "happstack-util" []
-    , debianize "file-embed" []
     , P.Package { P.name = "haskell-happstackdotcom"
                 , P.spec = Darcs "http://patch-tag.com/r/stepcut/happstackDotCom" Nothing
                 , P.flags = [] }
@@ -694,7 +694,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     -- remove this pin when a new hackage version comes out to trump it.
     , debianize "vector" [P.DebVersion "0.9-2~hackage1"]
     , apt "sid" "haskell-vector-algorithms"
-    , debianize "haskell-virthualenv" []
+    , debianize "virthualenv" []
     , debianize "wai" []
     , lucidNatty (hackage release "web-encodings" []) (debianize "web-encodings" [])
     , P.Package { P.name = "haskell-web-routes"
