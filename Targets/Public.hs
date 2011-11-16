@@ -81,18 +81,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                  (P.Package { P.name = "happy"
                             , P.spec = Quilt (Apt "sid" "happy" Nothing) (Darcs (repo ++ "/happy-quilt") Nothing)
                             , P.flags = [ P.RelaxDep "happy" ] })
-    , debianize "acid-state" [P.Patch . B.pack . unlines $
-                              [ "--- orig/acid-state.cabal\t2011-11-08 21:34:21.667521813 -0800"
-                              , "+++ new/acid-state.cabal\t2011-11-08 21:34:29.718410123 -0800"
-                              , "@@ -57,7 +57,7 @@"
-                              , "                        Data.Acid.Abstract, Data.Acid.Core"
-                              , "   "
-                              , "   -- Packages needed in order to build this package."
-                              , "-  Build-depends:       base >= 4 && < 5, cereal >= 0.3.2.0, safecopy >= 0.6, bytestring, stm,"
-                              , "+  Build-depends:       base >= 4 && < 5, cereal >= 0.3.2.0, safecopy, bytestring, stm,"
-                              , "                        filepath, directory, mtl, array, containers, template-haskell, network"
-                              , " "
-                              , "   if os(windows)" ]]
+    , debianize "acid-state" []
     , lucidNatty (hackage release "AES" []) (debianize "AES" [])
     , debianize "aeson" []
     , debianize "aeson-native" []
@@ -305,20 +294,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                  (apt "sid" "haskell-hashed-storage")
                  (debianize "hashed-storage" [])
     , lucidNatty (apt "sid" "haskell-haskeline") (debianize "haskeline" [])
-    , lucidNatty (apt "sid" "haskell-haskell-src") (debianize "haskell-src" [ P.ExtraDep "happy"
-                                                                      , P.Patch . B.pack . unlines $
-                                                                        [ "--- tmp/haskell-src.cabal.orig\t2010-11-07 07:15:37.000000000 -0800"
-                                                                        , "+++ tmp/haskell-src.cabal\t2011-09-15 06:43:40.528490762 -0700"
-                                                                        , "@@ -33,8 +33,5 @@"
-                                                                        , "     build-depends:      base >= 4 && < 5, syb, pretty, array"
-                                                                        , "   else"
-                                                                        , "     build-depends:      base < 3"
-                                                                        , "-  build-depends: haskell98"
-                                                                        , "-  -- The dependency on Haskell 98 is only because"
-                                                                        , "-  -- Happy generates a parser that imports Array"
-                                                                        , "   extensions:   CPP"
-                                                                        , "   nhc98-options:        -K11M" ]
-                                                                      ])
+    , lucidNatty (apt "sid" "haskell-haskell-src") (debianize "haskell-src" [ P.ExtraDep "happy" ])
     , lucidNatty (hackage release "haskell-src-meta" [Pin "0.4.0.1"]) (debianize "haskell-src-meta" [])
     , debianize "HaXml" [P.Epoch 1]
     , lucidNatty (hackage release "heap" [NP]) (debianize "heap" [])
@@ -585,7 +561,8 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , debianize "RSA" []
     , apt "sid" "haskell-safe"
     -- Depends on pandoc
-    , hackage release "safecopy" [Pin "0.5.1"]
+    --, hackage release "safecopy" [Pin "0.5.1"]
+    , debianize "safecopy" []
     , P.Package { P.name = "haskell-safecopy05"
                 , P.spec = Quilt (Hackage "safecopy" (Just "0.5.1")) (Darcs (repo ++ "/safecopy05-quilt") Nothing)
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
