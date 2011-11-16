@@ -456,25 +456,27 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                                           , " #include \"openssl/hmac.h\"" ]])
     , lucidNatty (apt "sid" "haskell-network") (debianize "network" [])
     , apt "sid" "haskell-opengl"
-    , (debianize "openid" [ P.Patch . B.pack . unlines $
-                                        [ "--- openid.orig/openid.cabal\t2011-11-05 05:04:06.000000000 -0700"
-                                        , "+++ openid/openid.cabal\t2011-11-05 06:02:40.368409637 -0700"
-                                        , "@@ -29,12 +29,13 @@"
-                                        , "   build-depends:   base       >= 4.0.0.0  && < 5.0.0.0,"
-                                        , "                    bytestring >= 0.9.1.0  && < 0.10.0.0,"
-                                        , "                    containers >= 0.2.0.0  && < 0.4.1.0,"
-                                        , "-                   HTTP       >= 4000.0.9 && < 4000.2,"
-                                        , "+                   HTTP       >= 4000.0.9,"
-                                        , "                    monadLib   >= 3.6.0.0  && < 3.7.0.0,"
-                                        , "-                   network    >= 2.2.0.0  && < 2.3.0.0,"
-                                        , "+                   network    >= 2.2.0.0,"
-                                        , "                    time       >= 1.1.0.0  && < 1.3.0.0,"
-                                        , "                    xml        >= 1.3.0.0  && < 1.4.0.0,"
-                                        , "                    HsOpenSSL  >= 0.9.0.0  && < 0.11.0.0"
-                                        , "+  extra-libraries: ssl"
-                                        , "   hs-source-dirs:  src"
-                                        , "   exposed-modules: Codec.Binary.Base64,"
-                                        , "                    Codec.Encryption.DH," ]])
+    , debianize "openid"
+       [ P.Patch . B.pack . unlines $
+         [ "--- openid.orig/openid.cabal\t2011-11-05 05:04:06.000000000 -0700"
+         , "+++ openid/openid.cabal\t2011-11-05 06:02:40.368409637 -0700"
+         , "@@ -29,12 +29,13 @@"
+         , "   build-depends:   base       >= 4.0.0.0  && < 5.0.0.0,"
+         , "                    bytestring >= 0.9.1.0  && < 0.10.0.0,"
+         , "-                   containers >= 0.2.0.0  && < 0.4.1.0,"
+         , "-                   HTTP       >= 4000.0.9 && < 4000.2,"
+         , "+                   containers >= 0.2.0.0  && < 0.4.2.0,"
+         , "+                   HTTP       >= 4000.0.9,"
+         , "                    monadLib   >= 3.6.0.0  && < 3.7.0.0,"
+         , "-                   network    >= 2.2.0.0  && < 2.3.0.0,"
+         , "+                   network    >= 2.2.0.0,"
+         , "                    time       >= 1.1.0.0  && < 1.3.0.0,"
+         , "                    xml        >= 1.3.0.0  && < 1.4.0.0,"
+         , "                    HsOpenSSL  >= 0.9.0.0  && < 0.11.0.0"
+         , "+  extra-libraries: ssl, crypto++"
+         , "   hs-source-dirs:  src"
+         , "   exposed-modules: Codec.Binary.Base64,"
+         , "                    Codec.Encryption.DH," ]]
     , debianize "operational" [P.OmitLTDeps]
     , lucidNatty -- This pandoc debianize target has a dependency on an older version of HTTP
                  -- , debianize "pandoc" []
