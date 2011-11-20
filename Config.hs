@@ -242,8 +242,13 @@ myComponents myBuildRelease =
       "ubuntu" -> ["main", "restricted", "universe", "multiverse"]
       _ -> error $ "Invalid build release: " ++ myBuildRelease
 
-myCompilerVersion "natty-seereason" = Just "7.2.1"
-myCompilerVersion "lucid-seereason" = Just "7.0.3"
+-- | Unfortunately, we need to tell the autobuilder what version of ghc
+-- is going to be in our release so that cabal-debian knows what packages
+-- are bundled with the compiler.  We could perhaps do some chroot thing
+-- to compute this.
+--myCompilerVersion "natty-seereason" = Just "7.2.1"
+myCompilerVersion "natty-seereason" = Just "7.0.4"
+myCompilerVersion "lucid-seereason" = Just "7.0.4"
 myCompilerVersion _myBuildRelease = Nothing
 
 ------------------------- SOURCES --------------------------------

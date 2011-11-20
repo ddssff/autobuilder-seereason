@@ -36,13 +36,14 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , apt "sid" "darcs"
     , apt "sid" "debootstrap"
     , apt "sid" "geneweb"
-    , lucidNatty (P.Package { P.name = "ghc"
-                            , P.spec = Apt "sid" "ghc" Nothing
-                            , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] })
-                 -- This patch makes libgmp3-dev (for ubuntu) an alternative dependency to libgmp-dev
-                 (P.Package { P.name = "ghc"
-                            , P.spec = Quilt (Apt "experimental" "ghc" Nothing) (Darcs (repo ++ "/ghc7-quilt") Nothing)
-                            , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] })
+    , -- lucidNatty
+        (P.Package { P.name = "ghc"
+                   , P.spec = Apt "sid" "ghc" Nothing
+                   , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] })
+        -- This patch makes libgmp3-dev (for ubuntu) an alternative dependency to libgmp-dev
+    --     (P.Package { P.name = "ghc"
+    --                , P.spec = Quilt (Apt "experimental" "ghc" Nothing) (Darcs (repo ++ "/ghc7-quilt") Nothing)
+    --                , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] })
     , lucidNatty (apt "sid" "gtk2hs-buildtools")
                  (debianize "gtk2hs-buildtools" [P.Patch . B.pack . unlines $
                                                  [ "--- tmp/gtk2hs-buildtools.cabal.orig\t2011-09-15 16:29:46.000000000 -0700"
