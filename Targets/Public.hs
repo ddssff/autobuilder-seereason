@@ -931,7 +931,8 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
 -}
     ]
     where
-      lucidNatty x _ | release == "lucid-seereason" = x
+      -- lucidNatty x _ | release == "lucid-seereason" = x
+      lucidNatty _ x | release == "lucid-seereason" = x
       lucidNatty _ x | release == "natty-seereason" = x
       lucidNatty _ x | release == "wheezy-seereason" = x
       lucidNatty _ x | release == "sid-seereason" = x
