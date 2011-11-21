@@ -201,7 +201,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , apt "sid" "haskell-devscripts"
     , apt "sid" "haskell-diff"
     , apt "sid" "haskell-digest"
-    , debianize "digestive-functors" [P.DebVersion "0.2.0.0-1~hackage1"]
+    , debianize "digestive-functors" []
     , debianize "digestive-functors-blaze" [P.DebVersion "0.2.1.0-1~hackage1"]
     , debianize "digestive-functors-happstack" [P.DebVersion "0.1.1.1-1~hackage1"]
     , P.Package { P.name = "haskell-digestive-functors-hsp"
@@ -276,7 +276,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     -- ixset package, has not yet been uploaded to hackage.
     -- , debianize "happstack-ixset" []
     , P.Package { P.name = "haskell-happstack-ixset"
-                , P.spec = DebDir (Cd "happstack-ixset" (Darcs happstackRepo Nothing)) (Darcs (localRepo _home ++ "/happstack-ixset-debian") Nothing)
+                , P.spec = DebDir (Cd "happstack-ixset" (Darcs happstackRepo Nothing)) (Darcs (repo ++ "/happstack-ixset-debian") Nothing)
                 , P.flags = [] }
 
     , debianize "happstack-jmacro" [P.DebVersion "6.0.0-1~hackage1"]
