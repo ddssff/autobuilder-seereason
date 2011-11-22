@@ -104,7 +104,8 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , apt "sid" "haskell-attoparsec-enumerator"
     , apt "sid" "haskell-attoparsec-text"
     , lucidNatty (hackage release "attoparsec-text-enumerator" []) (debianize "attoparsec-text-enumerator" [P.DebVersion "0.2.0.0-1~hackage1"])
-    , debianize "authenticate" [P.Patch . B.pack . unlines $
+    , debianize "authenticate" [P.DebVersion "0.10.2.2-1~hackage1",
+                                P.Patch . B.pack . unlines $
                                      [ "--- authenticate.orig/authenticate.cabal\t2011-08-19 08:29:31.000000000 -0700"
                                      , "+++ authenticate/authenticate.cabal\t2011-11-06 21:37:12.958410119 -0800"
                                      , "@@ -22,7 +22,7 @@"
@@ -167,7 +168,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                 , P.spec = Darcs "http://src.seereason.com/haskell-consumer" Nothing
                 , P.flags = [] }
     , lucidNatty (hackage release "convertible-text" []) (debianize "convertible-text" [P.DebVersion "0.3.0.10-1~hackage1"])
-    , debianize "cprng-aes" []
+    , debianize "cprng-aes" [P.DebVersion "0.2.3-1~hackage1"]
     , apt "sid" "haskell-criterion"
     , lucidNatty (apt "sid" "haskell-crypto") (debianize "Crypto" [P.DebVersion "4.2.4-1~hackage1"])
     , debianize "crypto-api" [P.DebVersion "0.8-1~hackage1"]
@@ -349,7 +350,8 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                 , P.spec = Darcs "http://src.seereason.com/html-entities" Nothing
                 , P.flags = [] }
     , lucidNatty (apt "sid" "haskell-http") (debianize "HTTP" [P.Epoch 1, P.DebVersion "1:4000.1.2-1"])
-    , debianize "http-enumerator" [P.Patch . B.pack . unlines $
+    , debianize "http-enumerator" [P.DebVersion "0.7.1.4-1~hackage1",
+                                   P.Patch . B.pack . unlines $
                                    [ "--- http-enumerator.orig/http-enumerator.cabal\t2011-11-06 21:23:33.000000000 -0800"
                                    , "+++ http-enumerator/http-enumerator.cabal\t2011-11-06 21:25:02.198410969 -0800"
                                    , "@@ -38,7 +38,7 @@"
@@ -643,13 +645,13 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , lucidNatty (apt "sid" "haskell-text") (debianize "text" [])
     , debianize "th-expand-syns" [P.DebVersion "0.3.0.0-1~hackage1"]
     , lucidNatty (hackage release "th-lift" [Pin "0.5.3"]) (debianize "th-lift" [P.DebVersion "0.5.4-1~hackage1"])
-    , debianize "tls" []
-    , debianize "tls-extra" []
+    , debianize "tls" [P.DebVersion "0.8.2-1~hackage1"]
+    , debianize "tls-extra" [P.DebVersion "0.4.1-1~hackage1"]
     , P.Package { P.name = "haskell-transformers"
                 , P.spec = Apt "sid" "haskell-transformers" (Just "0.2.2.0-3")
                 , P.flags = [] }
     , debianize "TrieMap" [P.DebVersion "4.0.1-1~hackage1"]
-    , debianize "unicode-names" []
+    , debianize "unicode-names" [P.DebVersion "3.2.0.0-1~hackage1"]
     , debianize "unicode-properties" [P.DebVersion "3.2.0.0-1~hackage1"]
     , debianize "uniplate" [P.DebVersion "1.6.5-1~hackage1"]
     , apt "sid" "haskell-unix-compat"
