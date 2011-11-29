@@ -92,11 +92,36 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-archive"
                 , P.spec = Darcs "http://src.seereason.com/archive" Nothing
                 , P.flags = [] }
-    , debianize "asn1-data" []
+    , debianize "asn1-data" [P.DebVersion "0.6.1-1",
+                             P.Patch . B.pack . unlines $
+                                  [ "--- x/asn1-data.cabal.orig\t2011-11-28 21:32:54.000000000 -0800"
+                                  , "+++ x/asn1-data.cabal\t2011-11-28 21:38:15.232311432 -0800"
+                                  , "@@ -27,8 +27,8 @@"
+                                  , "                    , bytestring"
+                                  , "                    , text >= 0.11"
+                                  , "                    , enumerator >= 0.4.5 && < 0.5"
+                                  , "-                   , attoparsec >= 0.8 && < 0.10"
+                                  , "-                   , attoparsec-enumerator >= 0.2 && < 0.3"
+                                  , "+                   , attoparsec >= 0.8"
+                                  , "+                   , attoparsec-enumerator >= 0.2"
+                                  , "                    , mtl"
+                                  , "   Exposed-modules:   Data.ASN1.BER"
+                                  , "                      Data.ASN1.CER" ]]
     , debianize "attempt" [P.DebVersion "0.3.1.1-1~hackage1"]
     , debianize "attoparsec" []
     , debianize "attoparsec-enumerator" []
-    , debianize "attoparsec-text" []
+    , debianize "attoparsec-text" [P.Patch . B.pack . unlines $
+                                   [ "--- x/attoparsec-text.cabal.orig\t2011-11-28 20:42:48.000000000 -0800"
+                                   , "+++ x/attoparsec-text.cabal\t2011-11-28 21:55:25.742078566 -0800"
+                                   , "@@ -59,7 +59,7 @@"
+                                   , " "
+                                   , " library"
+                                   , "   build-depends: base       >= 3       && < 5,"
+                                   , "-                 attoparsec >= 0.7     && < 0.10,"
+                                   , "+                 attoparsec >= 0.7,"
+                                   , "                  text       >= 0.10    && < 0.12,"
+                                   , "                  containers >= 0.1.0.1 && < 0.5,"
+                                   , "                  array      >= 0.1     && < 0.4" ]]
     , debianize "attoparsec-text-enumerator" [P.DebVersion "0.2.0.0-1~hackage1"]
     , debianize "authenticate" []
     , debianize "base-unicode-symbols" []
@@ -159,7 +184,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , debianize "cryptocipher" [P.DebVersion "0.3.0-1~hackage1"]
     , debianize "cryptohash" [P.DebVersion "0.7.4-1~hackage1"]
     , debianize "css" [P.DebVersion "0.1-1~hackage1"]
-    , apt "sid" "haskell-css-text"
+    , debianize "css-text" []
     , apt "sid" "haskell-curl"
     , apt "sid" "haskell-data-accessor"
     , debianize "data-accessor-template" [P.DebVersion "0.2.1.8-1"]
@@ -831,9 +856,9 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
 
                    , " -- |" ]]
     , apt "sid" "haskell-xml"
-    , debianize "xml-enumerator" [P.DebVersion "0.4.3.2-1~hackage1"]
+    , debianize "xml-enumerator" []
     , debianize "xml-types" [P.DebVersion "0.3-1~hackage1"]
-    , apt "sid" "haskell-xss-sanitize"
+    , debianize "xss-sanitize" [P.DebVersion "0.3.0.1-1"]
     , apt "sid" "haskell-zip-archive"
     , apt "sid" "haskell-zlib"
     , apt "sid" "haskell-zlib-bindings"
