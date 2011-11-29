@@ -100,7 +100,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                 , P.flags = [] }
     , apt "sid" "haskell-asn1-data"
     , lucidNatty (hackage release "attempt" []) (debianize "attempt" [P.DebVersion "0.3.1.1-1~hackage1"])
-    , lucidNatty (apt "sid" "haskell-attoparsec") (debianize "attoparsec" [P.DebVersion "0.9.1.2-1"])
+    , lucidNatty (apt "sid" "haskell-attoparsec") (debianize "attoparsec" [])
     , apt "sid" "haskell-attoparsec-enumerator"
     , apt "sid" "haskell-attoparsec-text"
     , lucidNatty (hackage release "attoparsec-text-enumerator" []) (debianize "attoparsec-text-enumerator" [P.DebVersion "0.2.0.0-1~hackage1"])
