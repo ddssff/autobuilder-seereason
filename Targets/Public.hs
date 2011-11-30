@@ -258,6 +258,49 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                            , "   Include-dirs:        cbits"
                            , "   Install-includes: gd-extras.h" ]]
     -- , debianize "gd" [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
+    , P.Package { P.name = "haskell-geni"
+                , P.spec = DebDir (Darcs "http://code.haskell.org/GenI" Nothing) (Darcs (repo ++ "/haskell-geni-debian") Nothing)
+                , P.flags = [] }
+{-  , debianize "GenI" [P.Patch . B.pack . unlines $
+                             [ "--- x/GenI.cabal.orig\t2011-11-30 13:33:40.842068238 -0800"
+                             , "+++ x/GenI.cabal\t2011-11-30 13:47:45.882378423 -0800"
+                             , "@@ -72,21 +72,22 @@"
+                             , " "
+                             , " Library"
+                             , "   Build-depends: parsec >= 2 && < 3,"
+                             , "-                 base >= 3 && < 4,"
+                             , "+                 base >= 3,"
+                             , "                  containers >= 0.1,"
+                             , "                  process > 1,"
+                             , "                  QuickCheck >= 1.2 && < 2,"
+                             , "                  json >= 0.4.3 && < 0.5,"
+                             , "                  HUnit > 1 && < 1.3,"
+                             , "-                 mtl > 1.0 && < 1.2,"
+                             , "-                 parallel >= 1.1 && < 1.2,"
+                             , "+                 mtl > 1.0,"
+                             , "+                 parallel >= 1.1,"
+                             , "                  binary >= 0.5.0.2 && < 0.6,"
+                             , "                  split >= 0.1.1 && < 0.2,"
+                             , "+                 syb,"
+                             , "                  test-framework-hunit >= 0.2.4 && < 0.3,"
+                             , "                  test-framework-quickcheck >= 0.2.4 && < 0.3,"
+                             , "-                 test-framework >= 0.2.4 && < 0.3,"
+                             , "+                 test-framework >= 0.2.4,"
+                             , "                  utf8-string >= 0.3.5 && < 0.4,"
+                             , "-                 uniplate >= 1.2.0 && < 1.3"
+                             , "+                 uniplate >= 1.2.0"
+                             , " "
+                             , "   if !flag(gui)"
+                             , "     cpp-options:      -DDISABLE_GUI"
+                             , "@@ -126,7 +127,7 @@"
+                             , "  Ghc-options:    -Wall -O2"
+                             , "  Ghc-prof-options: -auto-all"
+                             , "  Build-Depends: directory > 1,"
+                             , "-                filepath >= 1.1.0 && < 1.2"
+                             , "+                filepath >= 1.1.0"
+                             , "  if flag(gui)"
+                             , "     Build-Depends: wx >= 0.10.3 && < 0.13"
+                             , "  else" ]] -}
     , apt "sid" "haskell-ghc-paths" -- for leksah
     , apt "sid" "haskell-gio" -- for leksah
     , debianize "glib" [P.ExtraDep "haskell-gtk2hs-buildtools-utils", P.ExtraDep "libglib"]
@@ -342,6 +385,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                           , "       CC-Options:         -D PTHREAD"
                           , "       CPP-Options:        -DCALLCONV=ccall" ]]
     , debianize "hsp" [P.ExtraDep "trhsx", P.DebVersion "0.6.1-1"]
+    , debianize "HsSyck" []
     , apt "sid" "haskell-hstringtemplate"
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
@@ -468,6 +512,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
          , "   exposed-modules: Codec.Binary.Base64,"
          , "                    Codec.Encryption.DH," ]]
     , debianize "operational" [P.OmitLTDeps, P.DebVersion "0.2.0.3-1~hackage1"]
+    , debianize "ordered" []
     , debianize "pandoc" [ P.DebVersion "1.8.2.1-1~hackage1"
                          , P.Patch . B.pack . unlines $
                                        [ "--- pandoc/pandoc.cabal.orig\t2011-09-10 14:35:25.000000000 -0700"
@@ -592,6 +637,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , apt "sid" "haskell-stm"
     , apt "sid" "haskell-strict" -- for leksah
     , apt "sid" "haskell-strict-concurrency"
+    , debianize "strict-io" [] -- for GenI
     -- Because 0.3.3-1 is both in sid and hackage, we need to keep the debianize
     -- code from using version 0.3.3-1~hackage1 which looks older.
     , debianize "syb" [P.DebVersion "0.3.3-1"]
@@ -859,6 +905,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , debianize "xml-enumerator" []
     , debianize "xml-types" [P.DebVersion "0.3-1~hackage1"]
     , debianize "xss-sanitize" [P.DebVersion "0.3.0.1-1"]
+    , debianize "yaml-light" []
     , apt "sid" "haskell-zip-archive"
     , apt "sid" "haskell-zlib"
     , apt "sid" "haskell-zlib-bindings"
