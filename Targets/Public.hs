@@ -80,7 +80,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                 , P.flags = [ P.RelaxDep "happy" ] }
     , debianize "acid-state" []
     , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
-    , debianize "aeson" [P.DebVersion "0.3.2.12-1~hackage1"]
+    , debianize "aeson" []
     , debianize "aeson-native" [P.DebVersion "0.3.3.1-1~hackage1"]
     , P.Package { P.name = "haskell-agi"
                 , P.spec=Darcs "http://src.seereason.com/haskell-agi" Nothing
@@ -92,21 +92,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-archive"
                 , P.spec = Darcs "http://src.seereason.com/archive" Nothing
                 , P.flags = [] }
-    , debianize "asn1-data" [P.DebVersion "0.6.1-1",
-                             P.Patch . B.pack . unlines $
-                                  [ "--- x/asn1-data.cabal.orig\t2011-11-28 21:32:54.000000000 -0800"
-                                  , "+++ x/asn1-data.cabal\t2011-11-28 21:38:15.232311432 -0800"
-                                  , "@@ -27,8 +27,8 @@"
-                                  , "                    , bytestring"
-                                  , "                    , text >= 0.11"
-                                  , "                    , enumerator >= 0.4.5 && < 0.5"
-                                  , "-                   , attoparsec >= 0.8 && < 0.10"
-                                  , "-                   , attoparsec-enumerator >= 0.2 && < 0.3"
-                                  , "+                   , attoparsec >= 0.8"
-                                  , "+                   , attoparsec-enumerator >= 0.2"
-                                  , "                    , mtl"
-                                  , "   Exposed-modules:   Data.ASN1.BER"
-                                  , "                      Data.ASN1.CER" ]]
+    , debianize "asn1-data" []
     , debianize "attempt" [P.DebVersion "0.3.1.1-1~hackage1"]
     , debianize "attoparsec" []
     , debianize "attoparsec-enumerator" []
@@ -904,7 +890,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , apt "sid" "haskell-xml"
     , debianize "xml-enumerator" []
     , debianize "xml-types" [P.DebVersion "0.3-1~hackage1"]
-    , debianize "xss-sanitize" [P.DebVersion "0.3.0.1-1"]
+    , debianize "xss-sanitize" []
     , debianize "yaml-light" []
     , apt "sid" "haskell-zip-archive"
     , apt "sid" "haskell-zlib"
