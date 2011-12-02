@@ -81,10 +81,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                 , P.flags = [ P.RelaxDep "happy" ] }
     , debianize "acid-state" Nothing []
     , debianize "AES" Nothing [P.DebVersion "0.2.8-1~hackage1"]
-    , P.Package { P.name = "haskell-aeson"
-                , P.spec = Debianize "aeson" (Just "0.3.2.14")
-                , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
-    -- , debianize "aeson" Nothing [Pin "0.3.2.14"]
+    , debianize "aeson" Nothing []
     , debianize "aeson-native" Nothing [P.DebVersion "0.3.3.1-1~hackage1"]
     , P.Package { P.name = "haskell-agi"
                 , P.spec=Darcs "http://src.seereason.com/haskell-agi" Nothing
@@ -446,7 +443,11 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                 , P.spec = Darcs "http://src.seereason.com/haskell-mime" Nothing
                 , P.flags = [] }
     , apt "haskell-mmap"
-    , debianize "monad-control" (Just "0.2.0.3") []
+    -- "0.2.0.3" is the version to get from hackage,
+    -- "0.2.0.3-1~hackage1" is the version to base our debian version
+    -- on.  Both flags should be removed when we move to 0.3, but we
+    -- need base 4.4 for that.
+    , debianize "monad-control" (Just "0.2.0.3") [P.DebVersion "0.2.0.3-1~hackage1"]
     , debianize "monad-par" Nothing [P.DebVersion "0.1.0.1-1~hackage1"]
     , apt "haskell-monadcatchio-mtl"
     , debianize "monadLib" Nothing [P.DebVersion "3.6.2-1~hackage1"]
@@ -556,7 +557,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     , debianize "parse-dimacs" Nothing [P.DebVersion "1.2-1~hackage1"]
     , debianize "parseargs" Nothing [P.DebVersion "0.1.3.2-1~hackage1"]
     , apt "haskell-parsec"
-    , apt "haskell-aparsec2"
+    , apt "haskell-parsec2"
     , P.Package { P.name = "haskell-pbkdf2",
                   P.spec = DebDir (Hackage "PBKDF2" Nothing) (Darcs "http://src.seereason.com/pbkdf2-debian" Nothing),
                   P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"]}
