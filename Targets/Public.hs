@@ -618,6 +618,9 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
                             , " "
                             , " executable: SATSolve"
                             , " main-is: \"SATSolver.hs\"" ]]
+    , P.Package { P.name = "haskell-seereason-base"
+                , P.spec = Darcs "http://src.seereason.com/seereason-base" Nothing
+                , P.flags = [] }
     , debianize "semigroups" Nothing [P.DebVersion "0.8-1"]
     , apt "haskell-sendfile"
     , P.Package { P.name = "haskell-set-extra"
