@@ -447,7 +447,7 @@ targets _home release = checkOrder $ filter (not . ring0 release) $
     -- "0.2.0.3-1~hackage1" is the version to base our debian version
     -- on.  Both flags should be removed when we move to 0.3, but we
     -- need base 4.4 for that.
-    , debianize "monad-control" Newest []
+    , debianize "monad-control" (Pin "0.2.0.3") [P.DebVersion "0.2.0.3-1~hackage1"]
     , debianize "monad-par" Newest [P.DebVersion "0.1.0.1-1~hackage1"]
     , apt "haskell-monadcatchio-mtl"
     , debianize "monadLib" Newest [P.DebVersion "3.6.2-1~hackage1"]
