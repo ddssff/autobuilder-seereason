@@ -643,7 +643,23 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "transformers-base" Newest []
     , debianize "TrieMap" Newest [P.DebVersion "4.0.1-1~hackage1"]
     , debianize "unicode-names" Newest [P.DebVersion "3.2.0.0-1~hackage1"]
-    , debianize "unicode-properties" Newest [P.DebVersion "3.2.0.0-1~hackage1"]
+    , debianize "unicode-properties" Newest
+                    [P.DebVersion "3.2.0.0-1~hackage1",
+                     P.Patch . B.pack . unlines $
+                          [ "--- haskell-unicode-properties-3.2.0.0/Data/Char/Properties/MiscData.hs~\t2011-12-04 10:25:17.000000000 -0800"
+                          , "+++ haskell-unicode-properties-3.2.0.0/Data/Char/Properties/MiscData.hs\t2011-12-04 11:25:53.000000000 -0800"
+                          , "@@ -1,4 +1,3 @@"
+                          , "-{-# OPTIONS -fvia-C #-}"
+                          , " module Data.Char.Properties.MiscData where"
+                          , " {"
+                          , " \timport Data.Char.Properties.PrivateData;"
+                          , "--- haskell-unicode-properties-3.2.0.0/Data/Char/Properties/CaseData.hs~\t2011-12-04 10:25:17.000000000 -0800"
+                          , "+++ haskell-unicode-properties-3.2.0.0/Data/Char/Properties/CaseData.hs\t2011-12-04 11:24:00.000000000 -0800"
+                          , "@@ -1,4 +1,3 @@"
+                          , "-{-# OPTIONS -fvia-C #-}"
+                          , " module Data.Char.Properties.CaseData where"
+                          , " {"
+                          , " \timport Data.Map;" ] ]
     , debianize "uniplate" Newest [P.DebVersion "1.6.5-1~hackage1"]
     , apt "haskell-unix-compat"
 {-
@@ -664,7 +680,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.spec = Darcs (repo ++ "/haskell-unixutils") Nothing
                 , P.flags = [] }
     , debianize "unordered-containers" Newest [P.DebVersion "0.1.4.3-1~hackage1"]
-    , debianize "unpack-funcs" Newest [P.DebVersion "0.2.0-1~hackage1"]
+    , debianize "unpack-funcs" Newest []
     , debianize "utf8-prelude" Newest [P.DebVersion "0.1.6-1~hackage1"]
     , P.Package { P.name = "haskell-utf8-string"
                 , P.spec = Apt "sid" "haskell-utf8-string" Nothing
