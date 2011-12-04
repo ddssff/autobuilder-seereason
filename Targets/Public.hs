@@ -5,7 +5,7 @@ import qualified Data.ByteString.Lazy.Char8 as B
 import Data.Char (toLower)
 import qualified Debian.AutoBuilder.Params as P
 import Debian.AutoBuilder.Spec (Spec(..))
-import Targets.Common (repo, localRepo, checkOrder, happstackRepo)
+import Targets.Common (repo, localRepo, checkUnique, happstackRepo)
 
 -- |Sometimes we don't want to build the core packages even if newer
 -- versions are available, because it takes so long.
@@ -17,7 +17,7 @@ ring0 _ _ = False
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
 targets :: String -> String -> [P.Package]
-targets _home release = checkOrder $ filter (not . ring0 release) $
+targets _home release = checkUnique $ filter (not . ring0 release) $
     -- Alphabetized by name
     [ apt "agda"
     , apt "agda-bin"
