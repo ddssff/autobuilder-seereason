@@ -26,7 +26,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.spec = Darcs (repo ++ "/autobuilder") Nothing
                 , P.flags = [] }
     , apt "bash-completion"
-    , P.Package { P.name = "cabal-debian"
+    , P.Package { P.name = "haskell-cabal-debian"
                 , P.spec = Darcs (repo ++ "/cabal-debian") Nothing
                 , P.flags = [] }
     , P.Package { P.name = "cpphs"
