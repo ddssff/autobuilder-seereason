@@ -36,12 +36,12 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , apt "debootstrap"
     , apt "geneweb"
     , P.Package { P.name = "ghc"
-                , P.spec = Apt "sid" "ghc" Nothing
+                , P.spec = case release of
+                             -- The server still hangs with experimental compiler version 7.2.2.
+                             -- The patch in ghc7-quilt makes libgmp3-dev (for ubuntu) an alternative dependency to libgmp-dev
+                             -- "natty-seereason" -> Quilt (Apt "experimental" "ghc" Nothing) (Darcs (repo ++ "/ghc7-quilt") Nothing)
+                             _ -> Apt "sid" "ghc" Nothing
                 , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
-        -- This patch makes libgmp3-dev (for ubuntu) an alternative dependency to libgmp-dev
-    --     (P.Package { P.name = "ghc"
-    --                , P.spec = Quilt (Apt "experimental" "ghc" Nothing) (Darcs (repo ++ "/ghc7-quilt") Nothing)
-    --                , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] })
     , debianize "gtk2hs-buildtools" Newest
                                     [P.ExtraDep "alex",
                                      P.ExtraDep "happy",
