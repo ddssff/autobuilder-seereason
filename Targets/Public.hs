@@ -9,8 +9,7 @@ import Targets.Common (repo, localRepo, checkUnique, happstackRepo)
 
 -- |Sometimes we don't want to build the core packages even if newer
 -- versions are available, because it takes so long.
-ring0 "lucid-seereason" p =
-    any (== (P.name p)) ["ghc", "haskell-devscripts", "haskell-dummy", "hscolour"]
+-- ring0 "lucid-seereason" p = any (== (P.name p)) ["ghc", "haskell-devscripts", "haskell-dummy", "hscolour"]
 ring0 _ _ = False
 
 -- |the _home parameter has an underscore because normally it is unused, but when
