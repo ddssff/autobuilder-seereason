@@ -560,7 +560,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     -- lucidNatty [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"]] [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"] ] ++
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
-    [ debianize "random" Newest [P.DebVersion "1.0.1.0-1"]
+    [ debianize "random" Newest []
     , apt "haskell-regex-base"
     , apt "haskell-regex-compat"
     , apt "haskell-regex-posix"
