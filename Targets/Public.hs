@@ -164,7 +164,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-consumer"
                 , P.spec = Darcs "http://src.seereason.com/haskell-consumer" Nothing
                 , P.flags = [] }
-    , debianize "convertible-text" Newest [P.DebVersion "0.3.0.10-1~hackage1"]
+    , debianize "convertible-text" Newest []
     , debianize "cprng-aes" Newest [P.DebVersion "0.2.3-1~hackage1"]
     , apt "haskell-criterion"
     , debianize "Crypto" Newest [P.DebVersion "4.2.4-1~hackage1"]
@@ -263,7 +263,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     -- For leksah.  Version 2.9.2 specifies ghc < 7.2 and base == 4.3.*
     -- so we can't use "debianize "haddock" []".
     , apt "haskell-haddock"
-    , debianize "happstack" Newest [P.DebVersion "6.0.4-1~hackage1"]
+    , debianize "happstack" Newest []
     , P.Package { P.name = "haskell-happstack-authenticate"
                 , P.spec = Darcs (repo ++ "/happstack-authenticate") Nothing
                 , P.flags = [] }
@@ -285,14 +285,14 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.flags = [] }
 
     , debianize "happstack-jmacro" Newest [P.DebVersion "6.0.0-1~hackage1"]
-    , debianize "happstack-plugins" Newest [P.DebVersion "6.1.1-1~hackage1"]
+    , debianize "happstack-plugins" Newest []
     , P.Package { P.name = "haskell-happstack-scaffolding"
                 , P.spec = Darcs (repo ++ "/happstack-scaffolding") Nothing
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-search"
                 , P.spec = Darcs (repo ++ "/happstack-search") Nothing
                 , P.flags = [] }
-    , debianize "happstack-server" Newest [P.DebVersion "6.3.1-1~hackage1"]
+    , debianize "happstack-server" Newest []
     , debianize "happstack-state" Newest [P.DebVersion "6.1.2-1~hackage1"]
     , debianize "happstack-util" Newest [P.DebVersion "6.0.2-1~hackage1"]
     , P.Package { P.name = "haskell-happstackdotcom"
@@ -523,6 +523,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , apt "haskell-pcre-light"
     , debianize "permutation" Newest [P.DebVersion "0.4.1-1~hackage1"]
     , debianize "plugins" Newest [P.DebVersion "1.5.1.4-1~hackage1"]
+    , debianize "plugins-auto" Newest []
     , debianize "polyparse" Newest [P.DebVersion "1.7-1~hackage1"]
     , apt "haskell-primitive"
     , P.Package { P.name = "haskell-proplogic"
@@ -685,6 +686,8 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-utf8-string"
                 , P.spec = Apt "sid" "haskell-utf8-string" Nothing
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
+    , debianize "unification-fd" Newest []
+    , debianize "logict" Newest []
     , apt "haskell-utility-ht"
     , debianize "vacuum" Newest [P.DebVersion "1.0.0.2-1~hackage1"]
     , debianize "vacuum-opengl" Newest [P.DebVersion "0.0.3-1~hackage2"]
