@@ -202,7 +202,19 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , apt "haskell-digest"
     , debianize "digestive-functors" Newest []
     , debianize "digestive-functors-blaze" Newest [P.DebVersion "0.2.1.0-1~hackage1"]
-    , debianize "digestive-functors-happstack" Newest [P.DebVersion "0.1.1.1-1~hackage1"]
+    , debianize "digestive-functors-happstack" Newest
+                    [ P.DebVersion "0.1.1.1-1~hackage1"
+                    , P.Patch . B.pack . unlines $
+                      [ "--- x/digestive-functors-happstack.cabal.orig\t2011-12-06 14:08:47.000000000 -0800"
+                      , "+++ x/digestive-functors-happstack.cabal\t2011-12-06 14:23:45.196483490 -0800"
+                      , "@@ -22,6 +22,6 @@"
+                      , "     base               >= 4    && < 5,"
+                      , "     bytestring         >= 0.9  && < 0.10,"
+                      , "     digestive-functors >= 0.1  && < 0.3,"
+                      , "-    happstack-server   >= 6.0  && < 6.4,"
+                      , "+    happstack-server   >= 6.0  && < 6.5,"
+                      , "     text               >= 0.11 && < 1.0,"
+                      , "     utf8-string        >= 0.3  && < 0.4" ] ]
     , P.Package { P.name = "haskell-digestive-functors-hsp"
                 , P.spec = Darcs (repo ++ "/digestive-functors-hsp") Nothing
                 , P.flags = [] }
