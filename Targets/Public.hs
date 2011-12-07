@@ -267,7 +267,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.flags = [] }
     , apt "haskell-ghc-paths" -- for leksah
     , apt "haskell-gio" -- for leksah
-    , debianize "glib" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils", P.ExtraDep "libglib"]
+    , debianize "glib" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils", P.ExtraDep "libglib2.0-dev"]
     , apt "haskell-glut"
     , debianize "gnuplot" Newest [P.DebVersion "0.4.2-1~hackage1"]
     , apt "haskell-gtk" -- for leksah
