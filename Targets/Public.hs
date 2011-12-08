@@ -255,6 +255,13 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.flags = [] }
     , apt "haskell-ghc-paths" -- for leksah
     , apt "haskell-gio" -- for leksah
+    -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
+    -- dpkg: error processing /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb (--unpack):
+    --  trying to overwrite '/usr/bin/gtk2hsTypeGen', which is also in package gtk2hs-buildtools 0:0.12.0-3+seereason1~lucid3
+    -- dpkg-deb: subprocess paste killed by signal (Broken pipe)
+    -- Errors were encountered while processing:
+    --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
+    -- E: Sub-process /usr/bin/dpkg returned an error code (1)
     , debianize "glib" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils", P.ExtraDep "libglib2.0-dev"]
     , apt "haskell-glut"
     , debianize "gnuplot" Newest [P.DebVersion "0.4.2-1~hackage1"]
