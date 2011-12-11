@@ -618,10 +618,10 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "syb-with-class" Newest [P.DebVersion "0.6.1.2-1"]
     , apt "haskell-syb-with-class-instances-text"
     , debianize "tagged" Newest [P.DebVersion "0.2.3.1-1"]
-    , debianize "tagsoup" Newest [P.DebVersion "0.12.5-1~hackage1"]
+    , debianize "tagsoup" Newest []
     , apt "haskell-tar"
     , apt "haskell-terminfo"
-    , debianize "test-framework" Newest [P.ExtraDep "libghc-random-prof", P.DebVersion "0.4.1.1-1~hackage1"]
+    , debianize "test-framework" Newest [P.ExtraDep "libghc-random-prof"]
     , debianize "test-framework-hunit" Newest [P.DebVersion "0.2.6-1~hackage1"]
     , debianize "test-framework-quickcheck" Newest [P.DebVersion "0.2.7-1~hackage1"]
     , debianize "testpack" Newest [P.DebVersion "2.1.1-1~hackage1",
