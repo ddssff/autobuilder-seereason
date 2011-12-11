@@ -283,7 +283,18 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-hsp"
                 , P.spec = DebDir (Cd "happstack-hsp" (Darcs happstackRepo Nothing)) (Darcs (repo ++ "/happstack-hsp-debian") Nothing)
-                , P.flags = [] }
+                , P.flags = [P.Patch . B.pack . unlines $
+                             [ "--- happstack-hsp.cabal.orig\t2011-12-11 09:57:02.966483442 -0800"
+                             , "+++ happstack-hsp.cabal\t2011-12-11 09:57:08.126482127 -0800"
+                             , "@@ -28,7 +28,7 @@"
+                             , "                        HSP.Google.Analytics"
+                             , "   Build-depends:       base >= 3.0 && < 5.0,"
+                             , "                        bytestring,"
+                             , "-                       happstack-server >= 6.0 && < 6.4,"
+                             , "+                       happstack-server >= 6.0 && < 6.5,"
+                             , "                        harp             >= 0.4 && < 0.5,"
+                             , "                        hsx >= 0.7 && < 0.10,"
+                             , "                        hsp >= 0.5.2 && < 0.7," ] ] }
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
     -- , debianize "happstack-ixset" Newest []
