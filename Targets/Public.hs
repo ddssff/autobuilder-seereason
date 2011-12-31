@@ -140,7 +140,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , apt "haskell-blaze-builder-enumerator"
     , debianize "blaze-from-html" Newest [P.DebVersion "0.3.1.0-1~hackage1"]
     , debianize "blaze-html" Newest []
-    , debianize "blaze-textual" Newest [P.DebVersion "0.2.0.5-1~hackage1"]
+    , debianize "blaze-textual" Newest []
     , debianize "blaze-textual-native" Newest [P.DebVersion "0.2.1-1~hackage1"]
     , apt "haskell-bytestring-nums"
     , debianize "bytestring-trie" Newest []
@@ -150,7 +150,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     -- The cairo in sid imports haskell98, that fails under 7.2.1
     , debianize "cairo" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils"] -- for leksah
     -- , debianize "cairo-pdf" Newest []
-    , debianize "case-insensitive" Newest [P.DebVersion "0.4-1~hackage1"]
+    , debianize "case-insensitive" Newest []
     , debianize "CC-delcont" Newest [P.DebVersion "0.2-1~hackage1"]
     , apt "haskell-cereal"
     , debianize "certificate" Newest [P.DebVersion "1.0.1-1~hackage1"]
@@ -180,7 +180,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "data-default" Newest [P.DebVersion "0.3.0-1~hackage1"]
     , debianize "data-object" Newest []
     , debianize "data-object-json" Newest []
-    , debianize "dataenc" Newest [P.DebVersion "0.14.0.2-1"]
+    , debianize "dataenc" Newest []
     , P.Package { P.name = "haskell-debian"
                 , P.spec = Darcs (repo ++ "/haskell-debian-new") Nothing
                 , P.flags = [P.RelaxDep "cabal-debian"] }
@@ -208,7 +208,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.flags = [] }
     , apt "haskell-dlist"
     -- Natty only(?)
-    , debianize "double-conversion" Newest [P.DebVersion "0.2.0.3-1~hackage1"]
+    , debianize "double-conversion" Newest []
     , apt "haskell-dummy"
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
@@ -425,7 +425,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     -- on.  Both flags should be removed when we move to 0.3, but we
     -- need base 4.4 for that.
     , debianize "monad-control" (Pin "0.2.0.3") [P.DebVersion "0.2.0.3-1~hackage1"]
-    , debianize "monad-par" Newest [P.DebVersion "0.1.0.1-1~hackage1"]
+    , debianize "monad-par" Newest []
     , apt "haskell-monadcatchio-mtl"
     , debianize "monadLib" Newest [P.DebVersion "3.6.2-1~hackage1"]
     , debianize "monads-tf" Newest [P.DebVersion "0.1.0.0-1~hackage1"]
@@ -433,7 +433,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-mtl"
                 , P.spec = Apt "sid" "haskell-mtl" (Just "2.0.1.0-2")
                 , P.flags = [] }
-    , debianize "murmur-hash" Newest [P.DebVersion "0.1.0.4-1~hackage1"]
+    , debianize "murmur-hash" Newest []
     , apt "haskell-mwc-random"
     , debianize "nano-hmac" Newest [ P.DebVersion "0.2.0ubuntu1"
                             , P.Patch . B.pack . unlines $
@@ -466,7 +466,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                                           , " import Numeric (showHex)"
                                           , " "
                                           , " #include \"openssl/hmac.h\"" ]]
-    , debianize "network" Newest [P.DebVersion "2.3.0.7-1"]
+    , debianize "network" Newest []
     , apt "haskell-opengl"
     , debianize "openid" Newest
        [ P.DebVersion "0.2.0.0-1~hackage1"
@@ -562,7 +562,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     [ P.Package { P.name = "haskell-quickcheck1"
                 , P.spec = Quilt (Apt "sid" "haskell-quickcheck1" Nothing) (Darcs (repo ++ "/haskell-quickcheck-quilt") Nothing)
                 , P.flags = [] } ] ++
-    [ debianize "QuickCheck" Newest [P.ExtraDep "libghc-random-prof", P.DebVersion "2.4.1.1-1.1"] ] ++
+    [ debianize "QuickCheck" Newest [P.ExtraDep "libghc-random-prof"] ] ++
     -- lucidNatty [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"]] [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"] ] ++
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
@@ -579,7 +579,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , apt "haskell-safe"
     -- Depends on pandoc
     --, P.Package {P.name = "haskell-safecopy", P.spec = DebDir (Hackage "safecopy" (Just "0.5.1")) (Darcs "http://src.seereason.com/haskell-safecopy-debian" Nothing), P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"]}
-    , debianize "safecopy" Newest [P.DebVersion "0.6.0-1~hackage1"]
+    , debianize "safecopy" Newest []
 {-  , P.Package { P.name = "haskell-safecopy05"
                 , P.spec = Quilt (Hackage "safecopy" (Just "0.5.1")) (Darcs (repo ++ "/safecopy05-quilt") Nothing)
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] } -}
@@ -609,7 +609,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "shakespeare-css" Newest []
     , debianize "simple-css" Newest [P.DebVersion "0.0.4-1~hackage1"]
     , debianize "SMTPClient" Newest [P.DebVersion "1.0.4-2"]
-    , debianize "split" Newest [P.DebVersion "0.1.4.1-1~hackage1"]
+    , debianize "split" Newest []
     -- This package becomes the debian package "haskell-haskell-src-exts".
     -- Unfortunately, debian gave it the name "haskell-src-exts" dropping
     -- the extra haskell from source and binary names.  This means other
@@ -626,7 +626,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     -- Because 0.3.3-1 is both in sid and hackage, we need to keep the debianize
     -- code from using version 0.3.3-1~hackage1 which looks older.
     , debianize "syb" Newest []
-    , debianize "syb-with-class" Newest [P.DebVersion "0.6.1.2-1"]
+    , debianize "syb-with-class" Newest []
     , apt "haskell-syb-with-class-instances-text"
     , debianize "tagged" Newest [P.DebVersion "0.2.3.1-1"]
     , debianize "tagsoup" Newest []
@@ -655,7 +655,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "th-expand-syns" Newest [P.DebVersion "0.3.0.0-1~hackage1"]
     , debianize "th-lift" Newest [P.DebVersion "0.5.4-1~hackage1"]
     , debianize "tls" Newest []
-    , debianize "tls-extra" Newest [P.DebVersion "0.4.1-1~hackage1"]
+    , debianize "tls-extra" Newest []
     , P.Package { P.name = "haskell-transformers"
                 , P.spec = Apt "sid" "haskell-transformers" (Just "0.2.2.0-3")
                 , P.flags = [] }
@@ -698,7 +698,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-unixutils"
                 , P.spec = Darcs (repo ++ "/haskell-unixutils") Nothing
                 , P.flags = [] }
-    , debianize "unordered-containers" Newest [P.DebVersion "0.1.4.3-1~hackage1"]
+    , debianize "unordered-containers" Newest []
     , debianize "unpack-funcs" Newest []
     , debianize "utf8-prelude" Newest [P.DebVersion "0.1.6-1~hackage1"]
     , P.Package { P.name = "haskell-utf8-string"
@@ -713,7 +713,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     -- apt "haskell-vector"
     -- Version 0.9-1+seereason1~lucid1 is uploaded to lucid already,
     -- remove this pin when a new hackage version comes out to trump it.
-    , debianize "vector" Newest [P.DebVersion "0.9-2~hackage1"]
+    , debianize "vector" Newest []
     , apt "haskell-vector-algorithms"
     , debianize "virthualenv" Newest [P.DebVersion "0.2-1~hackage1"]
     , debianize "wai" Newest []
