@@ -36,48 +36,51 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , apt "geneweb"
     , P.Package { P.name = "ghc"
                 , P.spec = case release of
-                             -- The server still hangs with experimental compiler version 7.2.2.
-                             -- The patch in ghc7-quilt makes libgmp3-dev (for ubuntu) an alternative dependency to libgmp-dev
-                             -- "natty-seereason" -> Quilt (Apt "experimental" "ghc" Nothing) (Darcs (repo ++ "/ghc7-quilt") Nothing)
+                             -- The seereason server still hangs with experimental compiler version 7.2.2.  Will 7.4.1 work?
+                             "natty-seereason" -> Apt "experimental" "ghc" Nothing
                              _ -> Apt "sid" "ghc" Nothing
                 , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
     , debianize "gtk2hs-buildtools" Newest
-                                    [P.ExtraDep "alex",
-                                     P.ExtraDep "happy",
-                                     P.Patch . B.pack . unlines $
-                                          [ "--- tmp/gtk2hs-buildtools.cabal.orig\t2011-09-15 16:29:46.000000000 -0700"
-                                          , "+++ tmp/gtk2hs-buildtools.cabal\t2011-09-15 17:15:50.008424830 -0700"
-                                          , "@@ -41,6 +41,7 @@"
-                                          , "         hs-source-dirs: hierarchyGen"
-                                          , "         other-modules:  Paths_gtk2hs_buildtools"
-                                          , "         build-depends:  base"
-                                          , "+        GHC-options:    -XBangPatterns"
-                                          , " "
-                                          , " Executable gtk2hsHookGenerator"
-                                          , "         main-is:        HookGenerator.hs"
-                                          , "@@ -49,6 +50,7 @@"
-                                          , "           cpp-options:  -DUSE_GCLOSURE_SIGNALS_IMPL"
-                                          , "         other-modules:  Paths_gtk2hs_buildtools"
-                                          , "         build-depends:  base"
-                                          , "+        GHC-options:    -XBangPatterns"
-                                          , " "
-                                          , " Executable gtk2hsC2hs"
-                                          , "         main-is:        Main.hs"
-                                          , "@@ -114,3 +116,4 @@"
-                                          , "         else"
-                                          , "           cpp-options:  -D_C2HS_CPP_LANG_SINGLE"
-                                          , "         extensions:     ForeignFunctionInterface"
-                                          , "+        GHC-options:    -XBangPatterns" ]]
+                                    [ P.ExtraDep "alex"
+                                    , P.ExtraDep "happy"
+                                    , P.Patch . B.pack . unlines $
+                                      [ "--- tmp/gtk2hs-buildtools.cabal.orig\t2011-09-15 16:29:46.000000000 -0700"
+                                      , "+++ tmp/gtk2hs-buildtools.cabal\t2011-09-15 17:15:50.008424830 -0700"
+                                      , "@@ -41,6 +41,7 @@"
+                                      , "         hs-source-dirs: hierarchyGen"
+                                      , "         other-modules:  Paths_gtk2hs_buildtools"
+                                      , "         build-depends:  base"
+                                      , "+        GHC-options:    -XBangPatterns"
+                                      , " "
+                                      , " Executable gtk2hsHookGenerator"
+                                      , "         main-is:        HookGenerator.hs"
+                                      , "@@ -49,6 +50,7 @@"
+                                      , "           cpp-options:  -DUSE_GCLOSURE_SIGNALS_IMPL"
+                                      , "         other-modules:  Paths_gtk2hs_buildtools"
+                                      , "         build-depends:  base"
+                                      , "+        GHC-options:    -XBangPatterns"
+                                      , " "
+                                      , " Executable gtk2hsC2hs"
+                                      , "         main-is:        Main.hs"
+                                      , "@@ -114,3 +116,4 @@"
+                                      , "         else"
+                                      , "           cpp-options:  -D_C2HS_CPP_LANG_SINGLE"
+                                      , "         extensions:     ForeignFunctionInterface"
+                                      , "+        GHC-options:    -XBangPatterns" ] ]
     , P.Package { P.name = "happstack-debianization"
                 , P.spec = Darcs "http://src.seereason.com/happstack-debianization" Nothing
                 , P.flags = [] }
-    , -- Hackage target doesn't build with our
-      -- debianization due to funky bootstrapping files in
-      -- dist/build/happy/happy-tmp.
-      -- (hackage release "happy" [])
-      P.Package { P.name = "happy"
-                , P.spec = Quilt (Apt "sid" "happy" Nothing) (Darcs (repo ++ "/happy-quilt") Nothing)
-                , P.flags = [ P.RelaxDep "happy" ] }
+    -- Our automatic debianization code produces a package which is
+    -- missing the template files required for happy to work properly,
+    -- so I have imported debian's debianization and patched it to
+    -- work with ghc 7.4.1.  Note that this is also the first target
+    -- to require the new "install orig.tar.gz file" code in the
+    -- autobuilder.
+    , P.Package { P.name = "haskell-happy",
+                  P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/happy/1.18.8/happy-1.18.8.tar.gz" "907d79425351e826fb0bb8b677620418")
+                                  (Darcs "http://src.seereason.com/happy-debian" Nothing),
+                  P.flags = [P.RelaxDep "happy", P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
+    {- , debianize "happy" Newest [] -}
     , debianize "acid-state" Newest []
     , debianize "AES" Newest [P.DebVersion "0.2.8-1~hackage1"]
     , debianize "aeson" Newest []
@@ -87,7 +90,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.flags = [] }
     , debianize "ansi-terminal" Newest [P.DebVersion "0.5.5-1"]
     , debianize "ansi-wl-pprint" Newest [P.DebVersion "0.6.3-1~hackage1"]
-    -- Our debianization has several important patches.
+    -- Our applicative-extras repository has several important patches.
     , P.Package { P.name = "haskell-applicative-extras",
                   P.spec = DebDir (Hackage "applicative-extras" Nothing)
                                   (Darcs "http://src.seereason.com/applicative-extras-debian" Nothing),
@@ -99,18 +102,23 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "attempt" Newest [P.DebVersion "0.3.1.1-1~hackage1"]
     , debianize "attoparsec" Newest []
     , debianize "attoparsec-enumerator" Newest []
-    , debianize "attoparsec-text" Newest [P.Patch . B.pack . unlines $
-                                   [ "--- x/attoparsec-text.cabal.orig\t2011-11-28 20:42:48.000000000 -0800"
-                                   , "+++ x/attoparsec-text.cabal\t2011-11-28 21:55:25.742078566 -0800"
-                                   , "@@ -59,7 +59,7 @@"
-                                   , " "
-                                   , " library"
-                                   , "   build-depends: base       >= 3       && < 5,"
-                                   , "-                 attoparsec >= 0.7     && < 0.10,"
-                                   , "+                 attoparsec >= 0.7,"
-                                   , "                  text       >= 0.10    && < 0.12,"
-                                   , "                  containers >= 0.1.0.1 && < 0.5,"
-                                   , "                  array      >= 0.1     && < 0.4" ]]
+    , debianize "attoparsec-text" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- x/attoparsec-text.cabal.orig\t2012-01-01 12:43:48.746481982 -0800"
+                      , "+++ x/attoparsec-text.cabal\t2012-01-01 12:20:22.226482130 -0800"
+                      , "@@ -59,10 +59,10 @@"
+                      , " "
+                      , " library"
+                      , "   build-depends: base       >= 3       && < 5,"
+                      , "-                 attoparsec >= 0.7     && < 0.10,"
+                      , "+                 attoparsec >= 0.7,"
+                      , "                  text       >= 0.10    && < 0.12,"
+                      , "                  containers >= 0.1.0.1 && < 0.5,"
+                      , "-                 array      >= 0.1     && < 0.4"
+                      , "+                 array      >= 0.1     && < 0.5"
+                      , "   extensions:      CPP"
+                      , "   exposed-modules: Data.Attoparsec.Text"
+                      , "                    Data.Attoparsec.Text.FastSet" ] ]
     , debianize "attoparsec-text-enumerator" Newest [P.DebVersion "0.2.0.0-1~hackage1"]
     , debianize "authenticate" Newest []
     , debianize "base-unicode-symbols" Newest []
@@ -120,20 +128,20 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.spec = Quilt (Apt "sid" "haskell-binary" (Just "0.5.0.2-2")) (Darcs "http://src.seereason.com/haskell-binary-quilt" Nothing)
                 , P.flags = [] }
     , apt "haskell-binary-shared" -- for leksah
-    , debianize "bitmap" Newest [P.DebVersion "0.0.1-1~hackage1",
-                          P.Patch . B.pack . unlines $
-                               [ "--- tmp/Data/Bitmap/Pure.hs\t2011-09-15 06:47:30.638423438 -0700"
-                               , "+++ tmp/Data/Bitmap/Pure.hs.orig\t2011-09-15 06:47:18.188439156 -0700"
-                               , "@@ -47,7 +47,7 @@"
-                               , " "
-                               , " import Data.Word"
-                               , " "
-                               , "-import Foreign"
-                               , "+import Foreign hiding (unsafePerformIO)"
-                               , " "
-                               , " import Data.ByteString (ByteString)"
-                               , " import qualified Data.ByteString as B" ]
-                                                                   ]
+    , debianize "bitmap" Newest
+                    [ P.DebVersion "0.0.1-1~hackage1"
+                    , P.Patch . B.pack . unlines $
+                      [ "--- tmp/Data/Bitmap/Pure.hs\t2011-09-15 06:47:30.638423438 -0700"
+                      , "+++ tmp/Data/Bitmap/Pure.hs.orig\t2011-09-15 06:47:18.188439156 -0700"
+                      , "@@ -47,7 +47,7 @@"
+                      , " "
+                      , " import Data.Word"
+                      , " "
+                      , "-import Foreign"
+                      , "+import Foreign hiding (unsafePerformIO)"
+                      , " "
+                      , " import Data.ByteString (ByteString)"
+                      , " import qualified Data.ByteString as B" ] ]
     , debianize "bitmap-opengl" Newest [P.DebVersion "0.0.0-1~hackage1"]
     , debianize "bitset" Newest [P.DebVersion "1.1-1~hackage1"]
     , apt "haskell-blaze-builder"
@@ -141,7 +149,31 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "blaze-from-html" Newest [P.DebVersion "0.3.1.0-1~hackage1"]
     , debianize "blaze-html" Newest []
     , debianize "blaze-textual" Newest []
-    , debianize "blaze-textual-native" Newest [P.DebVersion "0.2.1-1~hackage1"]
+    , debianize "blaze-textual-native" Newest
+                    [ P.DebVersion "0.2.1-1~hackage1"
+                    , P.Patch . B.pack . unlines $
+                      [ "--- x/blaze-textual-native.cabal.orig\t2012-01-01 12:22:11.676481147 -0800"
+                      , "+++ x/blaze-textual-native.cabal\t2012-01-01 12:22:21.716482151 -0800"
+                      , "@@ -66,7 +66,7 @@"
+                      , " "
+                      , "   if impl(ghc >= 6.11)"
+                      , "     cpp-options: -DINTEGER_GMP"
+                      , "-    build-depends: integer-gmp >= 0.2 && < 0.4"
+                      , "+    build-depends: integer-gmp >= 0.2"
+                      , " "
+                      , "   if impl(ghc >= 6.9) && impl(ghc < 6.11)"
+                      , "     cpp-options: -DINTEGER_GMP"
+                      , "--- x/Blaze/Text/Int.hs.orig\t2012-01-01 12:45:05.136482154 -0800"
+                      , "+++ x/Blaze/Text/Int.hs\t2012-01-01 12:45:26.016482025 -0800"
+                      , "@@ -40,7 +40,7 @@"
+                      , " # define PAIR(a,b) (a,b)"
+                      , " #endif"
+                      , " "
+                      , "-integral :: Integral a => a -> Builder"
+                      , "+integral :: (Integral a, Show a) => a -> Builder"
+                      , " {-# RULES \"integral/Int\" integral = bounded :: Int -> Builder #-}"
+                      , " {-# RULES \"integral/Int8\" integral = bounded :: Int8 -> Builder #-}"
+                      , " {-# RULES \"integral/Int16\" integral = bounded :: Int16 -> Builder #-}" ] ]
     , apt "haskell-bytestring-nums"
     , debianize "bytestring-trie" Newest []
     , P.Package { P.name = "haskell-bzlib"
@@ -164,7 +196,19 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-consumer"
                 , P.spec = Darcs "http://src.seereason.com/haskell-consumer" Nothing
                 , P.flags = [] }
-    , debianize "convertible-text" Newest []
+    , debianize "convertible-text" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- x/convertible-text.cabal.orig\t2012-01-01 12:25:22.726482131 -0800"
+                      , "+++ x/convertible-text.cabal\t2012-01-01 12:25:38.206482131 -0800"
+                      , "@@ -36,7 +36,7 @@"
+                      , "   else"
+                      , "       Buildable: True"
+                      , "   Build-Depends: base >= 4 && < 5,"
+                      , "-                 old-time >= 1.0.0.2 && < 1.1,"
+                      , "+                 old-time >= 1.0.0.2,"
+                      , "                  containers >= 0.2.0.1 && < 0.5,"
+                      , "                  text >= 0.5 && < 0.12,"
+                      , "                  bytestring >= 0.9.1.4 && < 0.10," ]]
     , debianize "cprng-aes" Newest [P.DebVersion "0.2.3-1~hackage1"]
     , apt "haskell-criterion"
     , debianize "Crypto" Newest [P.DebVersion "4.2.4-1~hackage1"]
@@ -175,7 +219,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "css" Newest [P.DebVersion "0.1-1~hackage1"]
     , debianize "css-text" Newest []
     , apt "haskell-curl"
-    , apt "haskell-data-accessor"
+    , debianize "data-accessor" Newest []
     , debianize "data-accessor-template" Newest [P.DebVersion "0.2.1.8-1"]
     , debianize "data-default" Newest [P.DebVersion "0.3.0-1~hackage1"]
     , debianize "data-object" Newest []
@@ -193,7 +237,20 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-decimal"
                 , P.spec = Darcs "http://src.seereason.com/decimal" Nothing
                 , P.flags = [] }
-    , apt "haskell-deepseq"
+    -- , apt "haskell-deepseq"
+    , debianize "deepseq" Newest
+                [ P.Patch . B.pack . unlines $
+                  [ "--- x/deepseq.cabal.orig\t2011-12-30 21:32:18.000000000 -0800"
+                  , "+++ x/deepseq.cabal\t2011-12-30 21:39:29.106482820 -0800"
+                  , "@@ -29,7 +29,7 @@"
+                  , " library {"
+                  , "   exposed-modules: Control.DeepSeq"
+                  , "   build-depends: base       >= 3   && < 5, "
+                  , "-                 array      >= 0.1 && < 0.4"
+                  , "+                 array      >= 0.1"
+                  , "   ghc-options: -Wall"
+                  , "   extensions: CPP"
+                  , " }" ] ]
 {-  , P.Package { P.name = "haskell-deepseq"
                 , P.spec = Apt "sid" "haskell-deepseq" (Just "1.1.0.2-2")
                 , P.flags = [] } -}
@@ -310,7 +367,30 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-happstack-search"
                 , P.spec = Darcs (repo ++ "/happstack-search") Nothing
                 , P.flags = [] }
-    , debianize "happstack-server" Newest []
+    , debianize "happstack-server" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- happstack-server-6.4.5/src/Happstack/Server/Internal/Types.hs.orig\t2012-01-01 12:50:54.000000000 -0800"
+                      , "+++ happstack-server-6.4.5/src/Happstack/Server/Internal/Types.hs\t2012-01-01 14:12:26.416482796 -0800"
+                      , "@@ -399,7 +399,7 @@"
+                      , " keepaliveC :: ByteString"
+                      , " keepaliveC  = P.pack \"Keep-Alive\""
+                      , " "
+                      , "-readDec' :: (Num a) => String -> a"
+                      , "+readDec' :: (Num a, Eq a) => String -> a"
+                      , " readDec' s ="
+                      , "   case readDec s of"
+                      , "     [(n,[])] -> n"
+                      , "--- happstack-server-6.4.5/src/Happstack/Server/Internal/Handler.hs.orig\t2012-01-01 14:24:42.000000000 -0800"
+                      , "+++ happstack-server-6.4.5/src/Happstack/Server/Internal/Handler.hs\t2012-01-01 19:29:04.000000000 -0800"
+                      , "@@ -344,7 +344,7 @@"
+                      , " "
+                      , " -- Response code names"
+                      , " "
+                      , "-responseMessage :: (Num t) => t -> B.ByteString"
+                      , "+responseMessage :: (Num t, Eq t, Show t) => t -> B.ByteString"
+                      , " responseMessage 100 = P.pack \" 100 Continue\\r\\n\""
+                      , " responseMessage 101 = P.pack \" 101 Switching Protocols\\r\\n\""
+                      , " responseMessage 200 = P.pack \" 200 OK\\r\\n\"" ] ]
     , debianize "happstack-state" Newest [P.DebVersion "6.1.2-1~hackage1"]
     , debianize "happstack-util" Newest [P.DebVersion "6.0.2-1~hackage1"]
     , P.Package { P.name = "haskell-happstackdotcom"
@@ -324,7 +404,26 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "hashed-storage" Newest [P.DebVersion "0.5.9-1"]
     , debianize "haskeline" Newest []
     , debianize "haskell-src" Newest [ P.ExtraDep "happy" ]
-    , debianize "haskell-src-meta" Newest []
+    , debianize "haskell-src-meta" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- x/haskell-src-meta.cabal.orig\t2012-01-01 12:17:31.176483013 -0800"
+                      , "+++ x/haskell-src-meta.cabal\t2012-01-01 12:17:51.526483198 -0800"
+                      , "@@ -18,9 +18,9 @@"
+                      , " extra-source-files: examples/*.hs README"
+                      , " "
+                      , " library"
+                      , "-  build-depends:   base >= 4.2 && < 4.5,"
+                      , "+  build-depends:   base >= 4.2 && < 4.6,"
+                      , "                    haskell-src-exts >= 1.6 && < 1.12,"
+                      , "-                   template-haskell >= 2.4 && < 2.7,"
+                      , "+                   template-haskell >= 2.4 && < 2.8,"
+                      , "                    pretty >= 1.0 && < 1.2,"
+                      , "                    syb >= 0.1 && < 0.4,"
+                      , "                    th-lift == 0.5.*" ] ]
+    -- Because we specify an exact debian version here, this package
+    -- needs to be forced to rebuilt when its build dependencies (such
+    -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
+    -- sound right...
     , debianize "HaXml" Newest [P.Epoch 1, P.DebVersion "1:1.22.5-1~hackage1"]
     , debianize "heap" Newest [P.DebVersion "1.0.0-1~hackage1"]
     , P.Package { P.name = "haskell-help"
@@ -335,7 +434,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , P.Package { P.name = "haskell-hjavascript"
                 , P.spec = Quilt (Apt "sid" "haskell-hjavascript" Nothing) (Darcs (repo ++ "/hjavascript-quilt") Nothing)
                 , P.flags = [] }
-    , apt "haskell-hjscript"
+    , debianize "HJScript" Newest [P.DebVersion "0.5.0-2"]
     , debianize "hoauth" Newest []
     , debianize "hostname" Newest [P.DebVersion "1.0-1~hackage1"]
     -- The Sid package has no profiling libraries, so dependent packages
@@ -424,7 +523,20 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     -- "0.2.0.3-1~hackage1" is the version to base our debian version
     -- on.  Both flags should be removed when we move to 0.3, but we
     -- need base 4.4 for that.
-    , debianize "monad-control" (Pin "0.2.0.3") [P.DebVersion "0.2.0.3-1~hackage1"]
+    , debianize "monad-control" Newest [] {- (Pin "0.2.0.3")
+                    [ P.DebVersion "0.2.0.3-1~hackage1"
+                    , P.Patch . B.pack . unlines $
+                      [ "--- x/monad-control.cabal.orig\t2011-12-31 17:03:11.346482038 -0800"
+                      , "+++ x/monad-control.cabal\t2011-12-31 17:03:20.856481941 -0800"
+                      , "@@ -45,7 +45,7 @@"
+                      , " Library"
+                      , "   Exposed-modules: Control.Monad.Trans.Control"
+                      , " "
+                      , "-  Build-depends: base                 >= 3     && < 4.5"
+                      , "+  Build-depends: base                 >= 3     && < 4.6"
+                      , "                , base-unicode-symbols >= 0.1.1 && < 0.3"
+                      , "                , transformers         >= 0.2   && < 0.3"
+                      , "                , transformers-base    >= 0.4   && < 0.5" ] ] -}
     , debianize "monad-par" Newest []
     , apt "haskell-monadcatchio-mtl"
     , debianize "monadLib" Newest [P.DebVersion "3.6.2-1~hackage1"]
@@ -467,7 +579,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                                           , " "
                                           , " #include \"openssl/hmac.h\"" ]]
     , debianize "network" Newest []
-    , apt "haskell-opengl"
+    , debianize "OpenGL" Newest []
     , debianize "openid" Newest
        [ P.DebVersion "0.2.0.0-1~hackage1"
        , P.Patch . B.pack . unlines $
@@ -530,7 +642,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                                        , "                  random >= 1 && < 1.1," ]]
     , apt "haskell-pandoc-types"
     , apt "haskell-pango" -- for leksah
-    , apt "haskell-parallel"
+    , debianize "parallel" Newest []
     , debianize "parse-dimacs" Newest [P.DebVersion "1.2-1~hackage1"]
     , debianize "parseargs" Newest [P.DebVersion "0.1.3.2-1~hackage1"]
     , apt "haskell-parsec"
@@ -570,7 +682,8 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , apt "haskell-regex-base"
     , apt "haskell-regex-compat"
     , apt "haskell-regex-posix"
-    , apt "haskell-regex-tdfa"
+    -- , apt "haskell-regex-tdfa"
+    , debianize "regex-tdfa" Newest []
     , P.Package { P.name = "haskell-revision"
                 , P.spec = Darcs "http://src.seereason.com/haskell-revision" Nothing
                 , P.flags = [] }
@@ -583,24 +696,38 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
 {-  , P.Package { P.name = "haskell-safecopy05"
                 , P.spec = Quilt (Hackage "safecopy" (Just "0.5.1")) (Darcs (repo ++ "/safecopy05-quilt") Nothing)
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] } -}
-    , debianize "sat" Newest [P.DebVersion "1.1.1-1~hackage1",
-                       P.Patch . B.pack . unlines $
-                            [ "--- sat/sat.cabal.orig\t2011-09-10 10:16:05.000000000 -0700"
-                            , "+++ sat/sat.cabal\t2011-09-10 14:14:46.784184607 -0700"
-                            , "@@ -13,7 +13,7 @@"
-                            , " description: CNF(Clausal Normal Form) SATisfiability Solver and Generator"
-                            , " category: algorithms"
-                            , " -- tested-with: ghc-6.4.2"
-                            , "-build-depends: base"
-                            , "+build-depends: base, random"
-                            , " "
-                            , " executable: SATSolve"
-                            , " main-is: \"SATSolver.hs\"" ]]
+    , debianize "sat" Newest
+                    [ P.DebVersion "1.1.1-1~hackage1"
+                    , P.Patch . B.pack . unlines $
+                      [ "--- sat/sat.cabal.orig\t2011-09-10 10:16:05.000000000 -0700"
+                      , "+++ sat/sat.cabal\t2011-09-10 14:14:46.784184607 -0700"
+                      , "@@ -13,7 +13,7 @@"
+                      , " description: CNF(Clausal Normal Form) SATisfiability Solver and Generator"
+                      , " category: algorithms"
+                      , " -- tested-with: ghc-6.4.2"
+                      , "-build-depends: base"
+                      , "+build-depends: base, random"
+                      , " "
+                      , " executable: SATSolve"
+                      , " main-is: \"SATSolver.hs\"" ]]
     , P.Package { P.name = "haskell-seereason-base"
                 , P.spec = Darcs "http://src.seereason.com/seereason-base" Nothing
                 , P.flags = [] }
     , debianize "semigroups" Newest [P.DebVersion "0.8-1"]
-    , apt "haskell-sendfile"
+    , debianize "sendfile" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- x/src/Network/Socket/SendFile/Linux.hsc.orig\t2012-01-01 12:41:13.396481056 -0800"
+                      , "+++ x/src/Network/Socket/SendFile/Linux.hsc\t2012-01-01 12:41:22.196480989 -0800"
+                      , "@@ -66,7 +66,7 @@"
+                      , "                 else throwErrno \"Network.Socket.SendFile.Linux.sendfileI\""
+                      , "       else return (False, fromIntegral sbytes)"
+                      , " "
+                      , "-safeMinus :: (Ord a, Num a) => a -> a -> a"
+                      , "+safeMinus :: (Ord a, Num a, Show a) => a -> a -> a"
+                      , " safeMinus x y"
+                      , "     | y > x = error $ \"y > x \" ++ show (y,x)"
+                      , "     | otherwise = x - y" ]
+                    ]
     , P.Package { P.name = "haskell-set-extra"
                 , P.spec = Darcs "http://src.seereason.com/set-extra" Nothing
                 , P.flags = [] }
@@ -630,30 +757,43 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , apt "haskell-syb-with-class-instances-text"
     , debianize "tagged" Newest [P.DebVersion "0.2.3.1-1"]
     , debianize "tagsoup" Newest []
-    , apt "haskell-tar"
+    , debianize "tar" Newest []
     , apt "haskell-terminfo"
     , debianize "test-framework" Newest [P.ExtraDep "libghc-random-prof"]
     , debianize "test-framework-hunit" Newest [P.DebVersion "0.2.6-1~hackage1"]
     , debianize "test-framework-quickcheck" Newest [P.DebVersion "0.2.7-1~hackage1"]
-    , debianize "testpack" Newest [P.DebVersion "2.1.1-1~hackage1",
-                            P.Patch (B.pack
-                                     (unlines
-                                      [ "--- testpack-2.1.1/src/Test/QuickCheck/Instances.hs.orig\t2011-09-09 18:47:51.256206942 -0700"
-                                      , "+++ testpack-2.1.1/src/Test/QuickCheck/Instances.hs\t2011-09-09 18:47:56.714633473 -0700"
-                                      , "@@ -46,9 +46,3 @@"
-                                      , "     coarbitrary n = variant (if n >= 0 then 2 * x else 2 * x + 1)"
-                                      , "                 where x = abs . fromIntegral $ n"
-                                      , " #endif"
-                                      , "-"
-                                      , "-instance Random Word8 where"
-                                      , "-    randomR (a, b) g = (\\(x, y) -> (fromInteger x, y)) $"
-                                      , "-                       randomR (toInteger a, toInteger b) g"
-                                      , "-    random g = randomR (minBound, maxBound) g"
-                                      , "-" ]))]
+    , debianize "testpack" Newest
+                    [ P.DebVersion "2.1.1-1~hackage1"
+                    , P.Patch . B.pack. unlines $
+                      [ "--- testpack-2.1.1/src/Test/QuickCheck/Instances.hs.orig\t2011-09-09 18:47:51.256206942 -0700"
+                      , "+++ testpack-2.1.1/src/Test/QuickCheck/Instances.hs\t2011-09-09 18:47:56.714633473 -0700"
+                      , "@@ -46,9 +46,3 @@"
+                      , "     coarbitrary n = variant (if n >= 0 then 2 * x else 2 * x + 1)"
+                      , "                 where x = abs . fromIntegral $ n"
+                      , " #endif"
+                      , "-"
+                      , "-instance Random Word8 where"
+                      , "-    randomR (a, b) g = (\\(x, y) -> (fromInteger x, y)) $"
+                      , "-                       randomR (toInteger a, toInteger b) g"
+                      , "-    random g = randomR (minBound, maxBound) g"
+                      , "-" ] ]
     , apt "haskell-texmath"
     , debianize "text" Newest []
     , debianize "th-expand-syns" Newest [P.DebVersion "0.3.0.0-1~hackage1"]
-    , debianize "th-lift" Newest [P.DebVersion "0.5.4-1~hackage1"]
+    , debianize "th-lift" Newest
+                    [ P.DebVersion "0.5.4-1~hackage1"
+                    , P.Patch . B.pack . unlines $
+                      [ "--- x/th-lift.cabal.orig\t2012-01-01 11:57:27.446480543 -0800"
+                      , "+++ x/th-lift.cabal\t2012-01-01 11:58:07.646482909 -0800"
+                      , "@@ -24,7 +24,7 @@"
+                      , "     Build-Depends: packedstring == 0.1.*,"
+                      , "                    template-haskell >= 2.2 && < 2.4"
+                      , "   else"
+                      , "-    Build-Depends: template-haskell >= 2.4 && < 2.7"
+                      , "+    Build-Depends: template-haskell >= 2.4 && < 2.8"
+                      , " "
+                      , " source-repository head"
+                      , "   type:     git" ] ]
     , debianize "tls" Newest []
     , debianize "tls-extra" Newest []
     , P.Package { P.name = "haskell-transformers"
@@ -680,7 +820,8 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                           , " {"
                           , " \timport Data.Map;" ] ]
     , debianize "uniplate" Newest [P.DebVersion "1.6.5-1~hackage1"]
-    , apt "haskell-unix-compat"
+    -- , apt "haskell-unix-compat"
+    , debianize "unix-compat" Newest []
 {-
     , debianize "Unixutils" Newest [ P.Patch . B.pack . unlines $
                               [ "--- Unixutils/Unixutils.cabal.orig\t2011-10-03 18:12:36.251952798 -0700"
@@ -736,7 +877,19 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "xhtml" Newest
                   [P.DebVersion "3000.2.0.4-1",
                    P.Patch . B.pack . unlines $
-                   [ "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/BlockTable.hs xhtml-3000.2.0.4/Text/XHtml/BlockTable.hs"
+                   [ "diff -ru xhtml-3000.2.0.4.orig/xhtml.cabal xhtml-3000.2.0.4/xhtml.cabal"
+                   , "--- xhtml-3000.2.0.4.orig/xhtml.cabal.orig\t2011-12-31 16:54:09.336482566 -0800"
+                   , "+++ xhtml-3000.2.0.4/xhtml.cabal\t2011-12-31 16:54:17.686482970 -0800"
+                   , "@@ -21,7 +21,7 @@"
+                   , "     location:       git@github.com:haskell/xhtml.git"
+                   , " "
+                   , " library "
+                   , "-    Build-depends:  base >= 4.0 && < 4.5"
+                   , "+    Build-depends:  base >= 4.0 && < 4.6"
+                   , "     Exposed-modules: "
+                   , "                     Text.XHtml, "
+                   , "                     Text.XHtml.Frameset,"
+                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/BlockTable.hs xhtml-3000.2.0.4/Text/XHtml/BlockTable.hs"
                    , "--- xhtml-3000.2.0.4.orig/Text/XHtml/BlockTable.hs\t2011-09-01 02:55:12.000000000 -0700"
                    , "+++ xhtml-3000.2.0.4/Text/XHtml/BlockTable.hs\t2011-09-30 11:31:26.459612132 -0700"
                    , "@@ -1,6 +1,3 @@"
@@ -906,6 +1059,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
 
                    , " -- |" ]]
     , apt "haskell-xml"
+    , debianize "xml-conduit" Newest []
     , debianize "xml-enumerator" Newest []
     , debianize "xml-types" Newest [P.DebVersion "0.3-1~hackage1"]
     , debianize "xss-sanitize" Newest []
