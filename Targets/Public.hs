@@ -332,17 +332,17 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "funsat" Newest []
     , debianize "gd" Newest [P.ExtraDep "libfreetype6-dev",
                       P.Patch . B.pack . unlines $
-                           [ "--- gd/gd.cabal.orig\t2011-06-25 12:27:26.000000000 -0700"
-                           , "+++ gd/gd.cabal\t2011-09-10 14:29:48.514415016 -0700"
-                           , "@@ -21,7 +21,7 @@"
-                           , "   Extensions: ForeignFunctionInterface"
-                           , "   Exposed-Modules: Graphics.GD, Graphics.GD.ByteString, Graphics.GD.ByteString.Lazy"
-                           , "   Ghc-options: -Wall"
-                           , "-  Extra-libraries: gd, png, z, jpeg, m, fontconfig, freetype, expat"
-                           , "+  Extra-libraries: gd, png, z, jpeg, fontconfig, freetype6, expat"
-                           , "   Includes: gd.h"
-                           , "   Include-dirs:        cbits"
-                           , "   Install-includes: gd-extras.h" ]]
+                      [ "--- gd/gd.cabal.orig\t2011-06-25 12:27:26.000000000 -0700"
+                      , "+++ gd/gd.cabal\t2011-09-10 14:29:48.514415016 -0700"
+                      , "@@ -21,7 +21,7 @@"
+                      , "   Extensions: ForeignFunctionInterface"
+                      , "   Exposed-Modules: Graphics.GD, Graphics.GD.ByteString, Graphics.GD.ByteString.Lazy"
+                      , "   Ghc-options: -Wall"
+                      , "-  Extra-libraries: gd, png, z, jpeg, m, fontconfig, freetype, expat"
+                      , "+  Extra-libraries: gd, png, z, jpeg, fontconfig, expat"
+                      , "   Includes: gd.h"
+                      , "   Include-dirs:        cbits"
+                      , "   Install-includes: gd-extras.h" ] ]
     -- , debianize "gd" Newest [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
     , P.Package { P.name = "haskell-geni"
                 , P.spec = DebDir (Darcs "http://code.haskell.org/GenI" Nothing) (Darcs (repo ++ "/haskell-geni-debian") Nothing)
