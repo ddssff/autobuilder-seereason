@@ -226,7 +226,29 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                       , "                  bytestring >= 0.9.1.4 && < 0.10," ]]
     , debianize "cprng-aes" Newest [P.DebVersion "0.2.3-1~hackage1"]
     , apt "haskell-criterion"
-    , debianize "Crypto" Newest [P.DebVersion "4.2.4-1~hackage1"]
+    , debianize "Crypto" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- old/Data/Digest/SHA2.hs\t2012-01-03 23:14:43.000000000 -0800"
+                      , "+++ new/Data/Digest/SHA2.hs\t2012-01-03 23:23:31.786481686 -0800"
+                      , "@@ -106,7 +106,7 @@"
+                      , " data Hash384 = Hash384 !Word64 !Word64 !Word64 !Word64 !Word64 !Word64 deriving (Eq, Ord)"
+                      , " data Hash224 = Hash224 !Word32 !Word32 !Word32 !Word32 !Word32 !Word32 !Word32 deriving (Eq, Ord)"
+                      , " "
+                      , "-instance (Integral a) => Show (Hash8 a) where"
+                      , "+instance (Integral a, Show a) => Show (Hash8 a) where"
+                      , "  showsPrec _ (Hash8 a b c d e f g h) ="
+                      , "   (showHex a) . (' ':) ."
+                      , "   (showHex b) . (' ':) ."
+                      , "@@ -146,7 +146,7 @@"
+                      , "      where"
+                      , "       bs = bitSize (head r)"
+                      , " "
+                      , "-instance (Integral h, Bits h) => Hash (Hash8 h) where"
+                      , "+instance (Integral h, Bits h, Show h) => Hash (Hash8 h) where"
+                      , "   toOctets (Hash8 x0 x1 x2 x3 x4 x5 x6 x7) = bitsToOctets =<< [x0, x1, x2, x3, x4, x5, x6, x7]"
+                      , " "
+                      , " instance Hash Hash384 where" ]
+                    , P.DebVersion "4.2.4-1~hackage1"]
     , debianize "crypto-api" Newest [P.DebVersion "0.8-1~hackage1"]
     , debianize "crypto-pubkey-types" Newest [P.DebVersion "0.1.0-1~hackage1"]
     , debianize "cryptocipher" Newest [P.DebVersion "0.3.0-1~hackage1"]
