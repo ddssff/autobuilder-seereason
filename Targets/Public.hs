@@ -330,8 +330,8 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.spec = DebDir (Cd "frisby" (Darcs "http://src.seereason.com/frisby" Nothing)) (Darcs "http://src.seereason.com/frisby-debian" Nothing)
                 , P.flags = [] }
     , debianize "funsat" Newest []
-    , debianize "gd" Newest [P.ExtraDep "libfreetype6-dev",
-                      P.Patch . B.pack . unlines $
+    , debianize "gd" Newest
+                    [ P.Patch . B.pack . unlines $
                       [ "--- gd/gd.cabal.orig\t2011-06-25 12:27:26.000000000 -0700"
                       , "+++ gd/gd.cabal\t2011-09-10 14:29:48.514415016 -0700"
                       , "@@ -21,7 +21,7 @@"
@@ -376,35 +376,8 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.spec = Darcs (repo ++ "/happstack-facebook") Nothing
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-hsp"
-                , P.spec = DebDir (Cd "happstack-hsp" (Darcs happstackRepo Nothing)) (Darcs (repo ++ "/happstack-hsp-debian") Nothing)
-                , P.flags = [ {-
-                             P.Patch . B.pack . unlines $
-                             [ "--- haskell-happstack-hsp-6.1.0.orig/happstack-hsp.cabal.orig\t2011-12-11 09:57:02.966483442 -0800"
-                             , "+++ haskell-happstack-hsp-6.1.0/happstack-hsp.cabal\t2011-12-11 09:57:08.126482127 -0800"
-                             , "@@ -28,7 +28,7 @@"
-                             , "                        HSP.Google.Analytics"
-                             , "   Build-depends:       base >= 3.0 && < 5.0,"
-                             , "                        bytestring,"
-                             , "-                       happstack-server >= 6.0 && < 6.4,"
-                             , "+                       happstack-server >= 6.0 && < 6.5,"
-                             , "                        harp             >= 0.4 && < 0.5,"
-                             , "                        hsx >= 0.7 && < 0.10,"
-                             , "                        hsp >= 0.5.2 && < 0.7,"
-                             , "--- haskell-happstack-hsp-6.1.0.orig/src/HSP/WebT.hs\t2012-01-02 09:59:57.256484031 -0800"
-                             , "+++ haskell-happstack-hsp-6.1.0/src/HSP/WebT.hs\t2012-01-02 10:00:07.286481970 -0800"
-                             , "@@ -10,9 +10,9 @@"
-                             , " import Happstack.Server.Internal.Monads (WebT)"
-                             , " "
-                             , " instance (Monad m) => HSX.XMLGen (WebT m) where"
-                             , "-    type HSX.XML (WebT m) = XML"
-                             , "-    newtype HSX.Child (WebT m) = WChild { unWChild :: XML }"
-                             , "-    newtype HSX.Attribute (WebT m) = WAttr { unWAttr :: Attribute }"
-                             , "+    type XML (WebT m) = XML"
-                             , "+    newtype Child (WebT m) = WChild { unWChild :: XML }"
-                             , "+    newtype Attribute (WebT m) = WAttr { unWAttr :: Attribute }"
-                             , "     genElement n attrs children = "
-                             , "         do attribs <- map unWAttr `liftM` asAttr attrs"
-                             , "            childer <- (flattenCDATA . map unWChild) `liftM` asChild children" ] -} ] }
+                , P.spec = DebDir (Cd "happstack-hsp" (Darcs happstackRepo Nothing)) (Darcs (localRepo _home ++ "/happstack-hsp-debian") Nothing)
+                , P.flags = [] }
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
     -- , debianize "happstack-ixset" Newest []
@@ -597,42 +570,24 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "hsp" Newest
                     [ P.ExtraDep "trhsx"
                     , P.Patch . B.pack . unlines $
-                      [ "--- hsp-0.6.1.orig/src/HSP/XMLGenerator.hs\t2012-01-02 09:47:50.000000000 -0800"
-                      , "+++ hsp-0.6.1/src/HSP/XMLGenerator.hs\t2012-01-02 09:52:49.986482560 -0800"
-                      , "@@ -16,7 +16,7 @@"
-                      , " import HSP.Monad\r"
-                      , " import HSP.XML hiding (Name)\r"
-                      , " \r"
-                      , "-import HSX.XMLGenerator hiding (XMLGen(..))\r"
-                      , "+import HSX.XMLGenerator\r"
-                      , " import qualified HSX.XMLGenerator as HSX (XMLGen(..))\r"
-                      , " \r"
-                      , " --import Control.Monad (liftM)\r"
-                      , "@@ -31,9 +31,9 @@"
+                      [ "--- old/src/HSP/XMLGenerator.hs\t2012-01-04 09:58:57.966483200 -0800"
+                      , "+++ new/src/HSP/XMLGenerator.hs\t2012-01-04 10:00:35.316482037 -0800"
+                      , "@@ -31,9 +31,15 @@"
                       , " \r"
                       , " -- | We can use literal XML syntax to generate values of type XML in the HSP monad.\r"
                       , " instance Monad m => HSX.XMLGen (HSPT' m) where\r"
-                      , "- type HSX.XML (HSPT' m) = XML\r"
-                      , "- newtype HSX.Attribute (HSPT' m) = HSPAttr Attribute \r"
-                      , "- newtype HSX.Child     (HSPT' m) = HSPChild XML\r"
+                      , "+#if __GLASGOW_HASKELL__ < 702\r"
+                      , "  type HSX.XML (HSPT' m) = XML\r"
+                      , "  newtype HSX.Attribute (HSPT' m) = HSPAttr Attribute \r"
+                      , "  newtype HSX.Child     (HSPT' m) = HSPChild XML\r"
+                      , "+#else\r"
                       , "+ type XML (HSPT' m) = XML\r"
                       , "+ newtype Attribute (HSPT' m) = HSPAttr Attribute \r"
                       , "+ newtype Child     (HSPT' m) = HSPChild XML\r"
+                      , "+#endif\r"
                       , "  xmlToChild = HSPChild\r"
                       , "  pcdataToChild = HSX.xmlToChild . pcdata\r"
-                      , "  genElement = element\r"
-                      , "@@ -377,9 +377,9 @@"
-                      , "                            (CDATA e1 s1, CDATA e2 s2) | e1 == e2 -> flP (CDATA e1 (s1++s2) : xs) bs\r"
-                      , "                            _ -> flP (y:xs) (x:bs)\r"
-                      , " \r"
-                      , "-stripAttr :: HSX.Attribute (HSPT' m) -> Attribute\r"
-                      , "+stripAttr :: HSX.Attribute (HSPT' m) -> HSP.XML.Attribute\r"
-                      , " stripAttr  (HSPAttr a) = a\r"
-                      , "-stripChild :: HSX.Child (HSPT' m) -> XML\r"
-                      , "+stripChild :: HSX.Child (HSPT' m) -> HSP.XML.XML\r"
-                      , " stripChild (HSPChild c) = c\r"
-                      , " \r"
-                      , " eAttrs :: Attributes\r" ]
+                      , "  genElement = element\r" ]
                     , P.DebVersion "0.6.1-1" ]
     , debianize "HsSyck" Newest []
     , debianize "HStringTemplate" Newest [P.DebVersion "0.6.6-1"]
@@ -959,7 +914,19 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , apt "haskell-stm"
     , apt "haskell-strict" -- for leksah
     , apt "haskell-strict-concurrency"
-    , debianize "strict-io" Newest [] -- for GenI
+    , debianize "strict-io" Newest -- for GenI
+                    [ P.Patch . B.pack. unlines $
+                      [ "--- old/strict-io.cabal\t2012-01-04 10:25:10.046482116 -0800"
+                      , "+++ new/strict-io.cabal\t2012-01-04 10:25:32.276482160 -0800"
+                      , "@@ -14,7 +14,7 @@"
+                      , " build-type:      Simple"
+                      , " "
+                      , " library"
+                      , "-  build-depends:   base>=3.0 && <5, deepseq==1.1.*, extensible-exceptions"
+                      , "+  build-depends:   base>=3.0 && <5, deepseq>=1.1 && <1.3, extensible-exceptions"
+                      , "   exposed-modules: System.IO.Strict"
+                      , "                    System.IO.Strict.Internals"
+                      , "                    Data.IORef.Strict" ] ]
     -- Because 0.3.3-1 is both in sid and hackage, we need to keep the debianize
     -- code from using version 0.3.3-1~hackage1 which looks older.
     , debianize "syb" Newest []
