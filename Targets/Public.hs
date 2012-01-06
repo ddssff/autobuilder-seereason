@@ -291,7 +291,10 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
 {-  , P.Package { P.name = "haskell-deepseq"
                 , P.spec = Apt "sid" "haskell-deepseq" (Just "1.1.0.2-2")
                 , P.flags = [] } -}
-    , apt "haskell-devscripts"
+    , P.Package { P.name = "haskell-devscripts"
+                , P.spec = Quilt (Apt "sid" "haskell-devscripts" Nothing)
+                                 (Darcs (repo ++ "/haskell-devscripts-quilt") Nothing)
+                , P.flags = [] }
     , apt "haskell-diff"
     , apt "haskell-digest"
     , debianize "digestive-functors" Newest []
