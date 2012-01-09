@@ -36,12 +36,14 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , apt "darcs"
     , apt "debootstrap"
     , apt "geneweb"
+{-
     , P.Package { P.name = "ghc"
                 , P.spec = case release of
                              -- The seereason server still hangs with experimental compiler version 7.2.2.  Will 7.4.1 work?
                              "natty-seereason" -> Apt "experimental" "ghc" Nothing
                              _ -> Apt "sid" "ghc" Nothing
                 , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
+-}
     , debianize "gtk2hs-buildtools" Newest
                                     [ P.ExtraDep "alex"
                                     , P.ExtraDep "happy"
@@ -206,7 +208,9 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.flags = [] }
     , apt "haskell-chart"
     , debianize "citeproc-hs" Newest [P.DebVersion "0.3.3-1~hackage1"]
-    , apt "haskell-colour"
+    , case release of
+        "natty-seereason" -> debianize "colour" Newest []
+        _ -> apt "haskell-colour"
     , apt "haskell-configfile"
     , P.Package { P.name = "haskell-consumer"
                 , P.spec = Darcs "http://src.seereason.com/haskell-consumer" Nothing
@@ -291,10 +295,12 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
 {-  , P.Package { P.name = "haskell-deepseq"
                 , P.spec = Apt "sid" "haskell-deepseq" (Just "1.1.0.2-2")
                 , P.flags = [] } -}
+{-
     , P.Package { P.name = "haskell-devscripts"
                 , P.spec = Quilt (Apt "sid" "haskell-devscripts" Nothing)
                                  (Darcs (repo ++ "/haskell-devscripts-quilt") Nothing)
                 , P.flags = [] }
+-}
     , apt "haskell-diff"
     , apt "haskell-digest"
     , debianize "digestive-functors" Newest []
