@@ -385,7 +385,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.spec = Darcs (repo ++ "/happstack-facebook") Nothing
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-hsp"
-                , P.spec = DebDir (Cd "happstack-hsp" (Darcs happstackRepo Nothing)) (Darcs (localRepo _home ++ "/happstack-hsp-debian") Nothing)
+                , P.spec = DebDir (Cd "happstack-hsp" (Darcs happstackRepo Nothing)) (Darcs (repo ++ "/happstack-hsp-debian") Nothing)
                 , P.flags = [] }
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
