@@ -859,7 +859,7 @@ targets _home release =
     -- , debianize "process" Newest []
     , debianize "PSQueue" Newest [P.DebVersion "1.1-1~hackage1"]
     , apt "haskell-puremd5"
-    , debianize "pwstore-purehaskell" Newest [P.DebVersion "2.1-1~hackage1"] ] ++
+    , debianize "pwstore-purehaskell" Newest [P.DebVersion "2.1-1~hackage1"]
     -- In Sid, source package haskell-quickcheck generates libghc-quickcheck2-*,
     -- but our debianize target becomes haskell-quickcheck2.  So we need to fiddle
     -- with the order here relative to haskell-quickcheck1. 
