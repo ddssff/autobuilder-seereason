@@ -247,7 +247,7 @@ myComponents myBuildRelease =
 -- are bundled with the compiler.  We could perhaps do some chroot thing
 -- to compute this.
 --myCompilerVersion "natty-seereason" = Just "7.2.1"
-myCompilerVersion "natty-seereason" = Just "7.0.4"
+myCompilerVersion "natty-seereason" = Just "7.4.0.20111219"
 myCompilerVersion "lucid-seereason" = Just "7.0.4"
 myCompilerVersion _myBuildRelease = Nothing
 
