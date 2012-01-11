@@ -667,7 +667,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                                , "  "
                                , "  build-depends:      base >=4 && < 5"
                                , "                    , array" ]
-                    {-, P.DebVersion "0.3.0.1-1~hackage1"-} ]
+                    , P.DebVersion "0.3.0.1-1~hackage1" ]
     , apt "haskell-ltk" -- for leksah
     , apt "haskell-maybet"
     , P.Package { P.name = "haskell-mime"
