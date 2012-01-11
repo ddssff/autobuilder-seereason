@@ -15,6 +15,7 @@
 import Control.Exception (SomeException, try)
 import Data.List (isSuffixOf, isPrefixOf, find)
 import Data.Maybe
+import Data.Monoid (mappend)
 import qualified Data.Set as Set
 import qualified Debian.AutoBuilder.Main as M
 import Debian.AutoBuilder.Params
@@ -72,19 +73,19 @@ getParams args =
           p { targets =
                   case targets p of
                     TargetSet xs -> TargetSet xs
-                    TargetNames xs -> TargetSet (Set.map findSpec xs)
+                    TargetNames xs -> TargetSet (Packages (Set.map findSpec xs))
                     AllTargets -> TargetSet allTargets
             , discard =
-                Set.union (discard p) (Set.fromList $ if testWithPrivate p then map name (private home) else [])
+                Set.union (discard p) (Set.fromList $ if testWithPrivate p then foldPackages (\ nm _ _ l -> nm : l) [] (private home) else [])
             }
           where
-            findSpec s = case Set.toList (Set.filter (\ t -> name t == s) allTargets) of
+            findSpec s = case foldPackages (\ nm sp fl l -> if nm == s then (Package nm sp fl : l) else l) [] allTargets of
                            [x] -> x
-                           [] -> error $ "Package name not found: " ++ s ++ "\navailable: " ++ show (Set.toList (Set.map name allTargets))
+                           [] -> error $ "Package name not found: " ++ s ++ "\navailable: " ++ show (foldPackages (\ nm _ _ l -> nm : l) [] allTargets)
                            xs -> error $ "Multiple packages named " ++ s ++ " found: " ++ show xs
             -- FIXME - make myTargets a set
-            allTargets = Set.union (myTargets home (const True) (relName (buildRelease p)))
-                                   (Set.fromList (if testWithPrivate p then private home else []))
+            allTargets = mappend (myTargets home (const True) (relName (buildRelease p)))
+                                 (if testWithPrivate p then private home else NoPackage)
       -- Look for the doHelp flag in the parameter set, if given output
       -- help message and exit.  If --help was given it will appear in all
       -- the parameter sets, so we only examine the first.

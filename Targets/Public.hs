@@ -3,6 +3,7 @@ module Targets.Public ( targets ) where
 
 import qualified Data.ByteString.Lazy.Char8 as B
 import Data.Char (toLower)
+import Data.Monoid (mconcat)
 import qualified Debian.AutoBuilder.Params as P
 import Debian.AutoBuilder.Spec (Spec(..))
 import Targets.Common (repo, localRepo, checkUnique, happstackRepo)
@@ -15,9 +16,9 @@ ring0 _ _ = False
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
-targets :: String -> String -> [P.Package]
-targets _home release = checkUnique $ filter (not . ring0 release) $
-    -- Alphabetized by name
+targets :: String -> String -> P.Packages
+targets _home release =
+    checkUnique $ mconcat $
     [ apt "agda"
     , debianize "hashtables" Newest []
     , apt "alex"
@@ -36,14 +37,15 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , apt "darcs"
     , apt "debootstrap"
     , apt "geneweb"
-{-
-    , P.Package { P.name = "ghc"
-                , P.spec = case release of
-                             -- The seereason server still hangs with experimental compiler version 7.2.2.  Will 7.4.1 work?
-                             "natty-seereason" -> Apt "experimental" "ghc" Nothing
-                             _ -> Apt "sid" "ghc" Nothing
-                , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
--}
+    , case release of
+        "natty-seereason" ->
+            P.NoPackage -- release 4 is in experimental, but I'm not ready to rebuild everything yet
+            {- P.Package { P.name = "ghc"
+                      , P.spec = Apt "experimental" "ghc" Nothing
+                      , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] } -}
+        _ -> P.Package { P.name = "ghc"
+                       , P.spec = Apt "sid" "ghc" Nothing
+                       , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
     , debianize "gtk2hs-buildtools" Newest
                                     [ P.ExtraDep "alex"
                                     , P.ExtraDep "happy"
@@ -141,9 +143,11 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     , debianize "base-unicode-symbols" Newest []
     , apt "haskell-base64-bytestring"
     , debianize "bimap" Newest [P.DebVersion "0.2.4-1~hackage1"]
-    , P.Package { P.name = "haskell-binary"
-                , P.spec = Quilt (Apt "sid" "haskell-binary" (Just "0.5.0.2-2")) (Darcs "http://src.seereason.com/haskell-binary-quilt" Nothing)
-                , P.flags = [] }
+    , case release of
+        "natty-seereason" -> P.NoPackage -- ghc 7.4 ships with a binary package not available in hackage
+        _ -> P.Package { P.name = "haskell-binary"
+                       , P.spec = Quilt (Apt "sid" "haskell-binary" (Just "0.5.0.2-2")) (Darcs "http://src.seereason.com/haskell-binary-quilt" Nothing)
+                       , P.flags = [] }
     , apt "haskell-binary-shared" -- for leksah
     , debianize "bitmap" Newest
                     [ P.Patch . B.pack . unlines $
@@ -279,19 +283,21 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
                 , P.spec = Darcs "http://src.seereason.com/decimal" Nothing
                 , P.flags = [] }
     -- , apt "haskell-deepseq"
-    , debianize "deepseq" Newest
-                [ P.Patch . B.pack . unlines $
-                  [ "--- x/deepseq.cabal.orig\t2011-12-30 21:32:18.000000000 -0800"
-                  , "+++ x/deepseq.cabal\t2011-12-30 21:39:29.106482820 -0800"
-                  , "@@ -29,7 +29,7 @@"
-                  , " library {"
-                  , "   exposed-modules: Control.DeepSeq"
-                  , "   build-depends: base       >= 3   && < 5, "
-                  , "-                 array      >= 0.1 && < 0.4"
-                  , "+                 array      >= 0.1"
-                  , "   ghc-options: -Wall"
-                  , "   extensions: CPP"
-                  , " }" ] ]
+    , case release of
+        "natty-seereason" -> P.NoPackage -- a version newer than the latest in hackage is bundled with ghc
+        _ -> debianize "deepseq" Newest
+             [ P.Patch . B.pack . unlines $
+               [ "--- x/deepseq.cabal.orig\t2011-12-30 21:32:18.000000000 -0800"
+               , "+++ x/deepseq.cabal\t2011-12-30 21:39:29.106482820 -0800"
+               , "@@ -29,7 +29,7 @@"
+               , " library {"
+               , "   exposed-modules: Control.DeepSeq"
+               , "   build-depends: base       >= 3   && < 5, "
+               , "-                 array      >= 0.1 && < 0.4"
+               , "+                 array      >= 0.1"
+               , "   ghc-options: -Wall"
+               , "   extensions: CPP"
+               , " }" ] ]
 {-  , P.Package { P.name = "haskell-deepseq"
                 , P.spec = Apt "sid" "haskell-deepseq" (Just "1.1.0.2-2")
                 , P.flags = [] } -}
@@ -858,14 +864,14 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
     -- but our debianize target becomes haskell-quickcheck2.  So we need to fiddle
     -- with the order here relative to haskell-quickcheck1. 
     -- lucidNatty [apt "haskell-quickcheck"] [] ++
-    [ P.Package { P.name = "haskell-quickcheck1"
+    , P.Package { P.name = "haskell-quickcheck1"
                 , P.spec = Quilt (Apt "sid" "haskell-quickcheck1" Nothing) (Darcs (repo ++ "/haskell-quickcheck-quilt") Nothing)
-                , P.flags = [] } ] ++
-    [ debianize "QuickCheck" Newest [P.ExtraDep "libghc-random-prof"] ] ++
+                , P.flags = [] }
+    , debianize "QuickCheck" Newest [P.ExtraDep "libghc-random-prof"]
     -- lucidNatty [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"]] [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"] ] ++
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
-    [ debianize "random" Newest []
+    , debianize "random" Newest []
     , apt "haskell-regex-base"
     , apt "haskell-regex-compat"
     , apt "haskell-regex-posix"
@@ -1321,7 +1327,7 @@ targets _home release = checkUnique $ filter (not . ring0 release) $
 -}
     ]
     where
-      apt :: String -> P.Package
+      apt :: String -> P.Packages
       apt name =
           let dist =
                   case release of
@@ -1380,7 +1386,7 @@ data CabalVersion = Pin String | Newest
 -- affect the debian source package names for a given cabal package,
 -- but it does not affect the dependency names generated by cabal
 -- debian when it debianizes a package.
-debianize :: String -> CabalVersion -> [P.PackageFlag] -> P.Package
+debianize :: String -> CabalVersion -> [P.PackageFlag] -> P.Packages
 debianize s ver flags =
     P.Package { P.name = debianName s
               , P.spec = Debianize s (case ver of Pin x -> Just x; Newest -> Nothing)

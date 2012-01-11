@@ -1,11 +1,12 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Targets.Private (libraries, applications) where
 
+import Data.Monoid (mconcat)
 import qualified Debian.AutoBuilder.Params as P
 import Debian.AutoBuilder.Spec
 import Targets.Common
 
-libraries _home =
+libraries _home = mconcat $
     [ P.Package { P.name = "haskell-filecache"
                 , P.spec = Darcs (privateRepo ++ "/haskell-filecache") Nothing
                 , P.flags = [] }
@@ -20,7 +21,7 @@ libraries _home =
                 , P.flags = [] }
     ]
 
-applications _home =
+applications _home = mconcat $
     [ P.Package { P.name = "haskell-appraisal"
                 , P.spec = Darcs (privateRepo ++ "/artvaluereport") Nothing
                 , P.flags = [] }

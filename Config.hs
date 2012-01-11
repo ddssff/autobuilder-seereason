@@ -35,6 +35,7 @@ module Config
 -- Import the symbols we use below.
 import Data.List (isSuffixOf, isPrefixOf)
 import Data.Maybe
+import Data.Monoid (mappend)
 import qualified Data.Set as Set
 import qualified Debian.AutoBuilder.Params as P
 import Debian.URI
@@ -132,13 +133,15 @@ myDiscards = Set.empty
 -- actually build are chosen from these.  The myBuildRelease argument
 -- comes from the autobuilder argument list.
 --
-myTargets :: FilePath -> (P.Package -> Bool) -> String -> Set.Set P.Package
+myTargets :: FilePath -> (P.Packages -> Bool) -> String -> P.Packages
 myTargets home p myBuildRelease =
-    Set.fromList $
-    filter p $
+    filterPackages p $
            if isPrivateRelease myBuildRelease
            then Targets.private home
            else Targets.public home myBuildRelease
+
+filterPackages :: (P.Packages -> Bool) -> P.Packages -> P.Packages
+filterPackages p xs = P.foldPackages (\ name spec flags xs' -> if p (P.Package name spec flags) then mappend (P.Package name spec flags) xs' else xs') P.NoPackage xs
 
 -- If you are not interested in building everything, put one or more
 -- source package names you want to build in this list.  Only these

@@ -2,6 +2,7 @@ module Targets.Common where
 
 import Data.Function (on)
 import Data.List (sortBy)
+import qualified Data.Map as Map
 import qualified Debian.AutoBuilder.Params as P
 
 data Build = Production | Testing
@@ -25,7 +26,19 @@ checkOrder ts =
             _ -> check (b : more)
       check _ = ts
 
+checkUnique :: P.Packages -> P.Packages
 checkUnique ts =
+    case P.foldPackages (\ name spec flags (mp, errs) ->
+                              case Map.lookup name mp of
+                                Nothing ->
+                                    (Map.insert name (spec, flags) mp, errs)
+                                Just (spec', flags') ->
+                                    (mp, ("Duplicate targets for package " ++ name ++
+                                          ":\n " ++ show spec ++ ", flags=" ++ show flags ++ 
+                                          "\n " ++ show spec' ++ ", flags=" ++ show flags') : errs)) (Map.empty, []) ts of
+      (_, []) -> ts
+      (_, errs) -> error (unlines errs)
+{-    
     check $ sortBy (compare `on` P.name) $ ts
     where
       check (a : b : more) =
@@ -33,3 +46,4 @@ checkUnique ts =
             EQ -> error $ "Duplicate targets:\n " ++ show a ++ "\n " ++ show b
             _ -> check (b : more)
       check _ = ts
+-}

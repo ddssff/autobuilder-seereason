@@ -6,7 +6,9 @@ module Targets
     ) where
 
 import Data.List (isPrefixOf)
+import Data.Monoid (mappend)
 import qualified Data.Set as Set
+import qualified Debian.AutoBuilder.Params as P
 import qualified Targets.Public as Public
 import qualified Targets.Private as Private
 
@@ -69,4 +71,5 @@ ubuntuReleases = [Oneiric, Natty, Maverick, Lucid, Karmic, Jaunty, Intrepid, Har
 -- don't wish to build.
 public home release = Public.targets home release
 
-private home = Private.libraries home ++ Private.applications home
+private :: String -> P.Packages
+private home = mappend (Private.libraries home) (Private.applications home)
