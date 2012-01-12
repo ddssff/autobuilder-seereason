@@ -362,6 +362,7 @@ targets _home release =
     , P.Package { P.name = "haskell-geni"
                 , P.spec = DebDir (Darcs "http://code.haskell.org/GenI" Nothing) (Darcs (repo ++ "/haskell-geni-debian") Nothing)
                 , P.flags = [] }
+    , debianize "cabal-macosx" Newest []
     , apt "haskell-ghc-paths" -- for leksah
     , apt "haskell-gio" -- for leksah
     -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
@@ -938,7 +939,7 @@ targets _home release =
                       , " "
                       , " library"
                       , "-  build-depends:   base>=3.0 && <5, deepseq==1.1.*, extensible-exceptions"
-                      , "+  build-depends:   base>=3.0 && <5, deepseq>=1.1 && <1.3, extensible-exceptions"
+                      , "+  build-depends:   base>=3.0 && <5, deepseq>=1.1 && <1.4, extensible-exceptions"
                       , "   exposed-modules: System.IO.Strict"
                       , "                    System.IO.Strict.Internals"
                       , "                    Data.IORef.Strict" ] ]
@@ -967,6 +968,7 @@ targets _home release =
                       , "         Extensions:             TypeSynonymInstances"
                       , "                                 TypeOperators" ]
                     , P.DebVersion "0.2.7-1~hackage1" ]
+    , debianize "test-framework-quickcheck2" Newest []
     , debianize "testpack" Newest
                     [ P.Patch . B.pack. unlines $
                       [ "--- testpack-2.1.1/src/Test/QuickCheck/Instances.hs.orig\t2011-09-09 18:47:51.256206942 -0700"
