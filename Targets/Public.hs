@@ -268,7 +268,6 @@ targets _home release =
     , debianize "data-accessor-template" Newest [P.DebVersion "0.2.1.8-1"]
     , debianize "data-default" Newest [P.DebVersion "0.3.0-1~hackage1"]
     , debianize "data-object" Newest []
-    , debianize "data-object-json" Newest []
     , debianize "dataenc" Newest []
     , P.Package { P.name = "haskell-debian"
                 , P.spec = Darcs (repo ++ "/haskell-debian-new") Nothing
@@ -656,7 +655,6 @@ targets _home release =
     , P.Package { P.name = "haskell-json"
                 , P.spec = Quilt (Apt "sid" "haskell-json" (Just "0.4.4-2")) (Darcs (repo ++ "/haskell-json-quilt") Nothing)
                 , P.flags = [] }
-    , debianize "JSONb" Newest [P.DebVersion "1.0.7-1~hackage1"]
     , debianize "language-css" Newest [P.DebVersion "0.0.4.1-1~hackage1"]
     , apt "haskell-largeword"
 {-  , apt "haskell-leksah"
@@ -1442,3 +1440,20 @@ data Flag
     | Local String -- ^ Use a local repo, Argument is generally the _home parameter to targets.
     deriving Eq
 -}
+
+-- Broken targets:
+--
+-- Text/JSONb/Decode.hs:48:3:
+--     Not in scope: data constructor `Done'
+--     Perhaps you meant `Attoparsec.Done' (imported from Data.Attoparsec.Char8)
+-- 
+-- Text/JSONb/Decode.hs:49:3:
+--     Not in scope: data constructor `Fail'
+--     Perhaps you meant `Attoparsec.Fail' (imported from Data.Attoparsec.Char8)
+-- 
+-- Text/JSONb/Decode.hs:50:3:
+--     Not in scope: data constructor `Partial'
+--     Perhaps you meant `Attoparsec.Partial' (imported from Data.Attoparsec.Char8)
+jsonb = mconcat $
+    [ debianize "JSONb" Newest [P.DebVersion "1.0.7-1~hackage1"]
+    , debianize "data-object-json" Newest [] ]
