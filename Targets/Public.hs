@@ -462,6 +462,10 @@ targets _home release =
     , P.Package { P.name = "haskell-help"
                 , P.spec = Darcs "http://src.seereason.com/haskell-help" Nothing
                 , P.flags = [] }
+    , debianize "heist" Newest []
+    , debianize "xmlhtml" Newest []
+    , debianize "directory-tree" Newest []
+    , debianize "MonadCatchIO-transformers" Newest []
     , debianize "HiggsSet" Newest [P.DebVersion "0.1-1~hackage1"]
     , debianize "hinotify" Newest [P.DebVersion "0.3.2-1~hackage1"]
     , P.Package { P.name = "haskell-hjavascript"
@@ -1066,6 +1070,7 @@ targets _home release =
     , debianize "virthualenv" Newest [P.DebVersion "0.2-1~hackage1"]
     , debianize "wai" Newest []
     , debianize "web-encodings" Newest []
+    , debianize "boomerang" Newest []
     , P.Package { P.name = "haskell-web-routes"
                 , P.spec = Cd "web-routes" (Darcs (repo ++ "/web-routes") Nothing)
                 , P.flags = [] }
