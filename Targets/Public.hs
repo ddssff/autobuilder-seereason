@@ -422,36 +422,7 @@ targets _home release =
     , debianize "hashed-storage" Newest [P.DebVersion "0.5.9-1"]
     , debianize "haskeline" Newest []
     , debianize "haskell-src" Newest [ P.ExtraDep "happy" ]
-    , debianize "haskell-src-meta" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- haskell-src-meta-0.5.0.2.orig/haskell-src-meta.cabal\t2012-01-01 12:17:31.176483013 -0800"
-                      , "+++ haskell-src-meta-0.5.0.2/haskell-src-meta.cabal\t2012-01-01 12:17:51.526483198 -0800"
-                      , "@@ -18,9 +18,9 @@"
-                      , " extra-source-files: examples/*.hs README"
-                      , " "
-                      , " library"
-                      , "-  build-depends:   base >= 4.2 && < 4.5,"
-                      , "+  build-depends:   base >= 4.2 && < 4.6,"
-                      , "                    haskell-src-exts >= 1.6 && < 1.12,"
-                      , "-                   template-haskell >= 2.4 && < 2.7,"
-                      , "+                   template-haskell >= 2.4 && < 2.8,"
-                      , "                    pretty >= 1.0 && < 1.2,"
-                      , "                    syb >= 0.1 && < 0.4,"
-                      , "                    th-lift == 0.5.*"
-                      , "--- haskell-src-meta-0.5.0.2.orig/src/Language/Haskell/TH/Instances/Lift.hs.orig\t2012-01-02 09:48:01.636482795 -0800"
-                      , "+++ haskell-src-meta-0.5.0.2/src/Language/Haskell/TH/Instances/Lift.hs\t2012-01-02 09:48:51.696481099 -0800"
-                      , "@@ -82,7 +82,11 @@"
-                      , "                  , ''Pred"
-                      , "                  , ''TyVarBndr"
-                      , " #if MIN_VERSION_template_haskell(2,5,0)"
-                      , "+#if MIN_VERSION_template_haskell(2,7,0)"
-                      , "+"
-                      , "+#else"
-                      , "                  , ''ClassInstance"
-                      , "+#endif /* MIN_VERSION_template_haskell(2,7,0) */"
-                      , " #endif /* MIN_VERSION_template_haskell(2,5,0) */"
-                      , " #endif /* MIN_VERSION_template_haskell(2,4,0) */"
-                      , "                  ])" ] ]
+    , debianize "haskell-src-meta" Newest []
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
