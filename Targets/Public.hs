@@ -167,7 +167,7 @@ targets _home release =
     , debianize "bitset" Newest [P.DebVersion "1.1-1~hackage1"]
     , apt "haskell-blaze-builder"
     , apt "haskell-blaze-builder-enumerator"
-    , debianize "blaze-from-html" Newest [P.DebVersion "0.3.1.0-1~hackage1"]
+    , debianize "blaze-from-html" Newest []
     , debianize "blaze-html" Newest []
     , debianize "blaze-textual" Newest []
     , debianize "blaze-textual-native" Newest
@@ -265,7 +265,7 @@ targets _home release =
     , debianize "css-text" Newest []
     , apt "haskell-curl"
     , debianize "data-accessor" Newest []
-    , debianize "data-accessor-template" Newest [P.DebVersion "0.2.1.8-1"]
+    , debianize "data-accessor-template" Newest []
     , debianize "data-default" Newest [P.DebVersion "0.3.0-1~hackage1"]
     , debianize "data-object" Newest []
     , debianize "dataenc" Newest []
@@ -1281,7 +1281,7 @@ targets _home release =
     , debianize "attoparsec-conduit" Newest []
     , debianize "blaze-builder-conduit" Newest []
     , debianize "xml-enumerator" Newest []
-    , debianize "xml-types" Newest [P.DebVersion "0.3-1~hackage1"]
+    , debianize "xml-types" Newest []
     , debianize "xss-sanitize" Newest []
     , debianize "yaml-light" Newest []
     , apt "haskell-zip-archive"
