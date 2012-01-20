@@ -21,7 +21,9 @@ targets _home release =
     checkUnique $ mconcat $
     [ apt "agda"
     , debianize "hashtables" Newest []
-    , apt "alex"
+    , P.Package { P.name = "alex"
+                , P.spec = Apt "sid" "alex" Nothing
+                , P.flags = [P.RelaxDep "alex"] }
     , apt "agda-bin"
     , apt "agda-stdlib"
     , P.Package { P.name = "autobuilder"
@@ -102,8 +104,7 @@ targets _home release =
                       , "+    deepseq < 1.3,"
                       , "     hashable >= 1.1.2.0,"
                       , "     mtl,"
-                      , "     old-locale," ]
-                    , P.DebVersion "0.3.3.1-1~hackage1" ]
+                      , "     old-locale," ] ]
     , P.Package { P.name = "haskell-agi"
                 , P.spec=Darcs "http://src.seereason.com/haskell-agi" Nothing
                 , P.flags = [] }
@@ -118,7 +119,8 @@ targets _home release =
                 , P.spec = Darcs "http://src.seereason.com/archive" Nothing
                 , P.flags = [] }
     , debianize "asn1-data" Newest []
-    , debianize "attempt" Newest [P.DebVersion "0.3.1.1-1~hackage1"]
+    , debianize "attempt" Newest []
+    , debianize "failure" Newest []
     , debianize "attoparsec" Newest []
     , debianize "attoparsec-enumerator" Newest []
     , debianize "attoparsec-text" Newest
@@ -139,7 +141,28 @@ targets _home release =
                       , "   exposed-modules: Data.Attoparsec.Text"
                       , "                    Data.Attoparsec.Text.FastSet" ] ]
     , debianize "attoparsec-text-enumerator" Newest [P.DebVersion "0.2.0.0-1~hackage1"]
-    , debianize "authenticate" Newest []
+    , debianize "authenticate" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- old/authenticate.cabal\t2012-01-19 19:39:56.000000000 -0800"
+                      , "+++ new/authenticate.cabal\t2012-01-19 19:49:13.986855292 -0800"
+                      , "@@ -16,7 +16,7 @@"
+                      , " library"
+                      , "     build-depends:   base >= 4 && < 5,"
+                      , "                      aeson >= 0.5,"
+                      , "-                     http-conduit >= 1.1 && < 1.2,"
+                      , "+                     http-conduit >= 1.1 && < 1.3,"
+                      , "                      tagsoup >= 0.12 && < 0.13,"
+                      , "                      failure >= 0.0.0 && < 0.2,"
+                      , "                      transformers >= 0.1 && < 0.3,"
+                      , "@@ -37,7 +37,7 @@"
+                      , "                      containers,"
+                      , "                      unordered-containers,"
+                      , "                      process >= 1.0.1.1 && < 1.2,"
+                      , "-                     conduit >= 0.0 && < 0.1,"
+                      , "+                     conduit >= 0.0 && < 0.2,"
+                      , "                      blaze-builder-conduit >= 0.0 && < 0.1"
+                      , "     exposed-modules: Web.Authenticate.Rpxnow,"
+                      , "                      Web.Authenticate.OpenId," ] ]
     , debianize "base-unicode-symbols" Newest []
     , apt "haskell-base64-bytestring"
     , debianize "bimap" Newest [P.DebVersion "0.2.4-1~hackage1"]
@@ -193,14 +216,12 @@ targets _home release =
                       , "+integral :: (Integral a, Show a) => a -> Builder"
                       , " {-# RULES \"integral/Int\" integral = bounded :: Int -> Builder #-}"
                       , " {-# RULES \"integral/Int8\" integral = bounded :: Int8 -> Builder #-}"
-                      , " {-# RULES \"integral/Int16\" integral = bounded :: Int16 -> Builder #-}" ]
-                    , P.DebVersion "0.2.1-1~hackage1" ]
+                      , " {-# RULES \"integral/Int16\" integral = bounded :: Int16 -> Builder #-}" ] ]
     , apt "haskell-bytestring-nums"
     , debianize "bytestring-trie" Newest []
     , P.Package { P.name = "haskell-bzlib"
                 , P.spec = Quilt (Apt "sid" "haskell-bzlib" Nothing) (Darcs "http://src.seereason.com/haskell-bzlib-quilt" Nothing)
                 , P.flags = [] }
-    -- The cairo in sid imports haskell98, that fails under 7.2.1
     , debianize "cairo" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils"] -- for leksah
     -- , debianize "cairo-pdf" Newest []
     , debianize "case-insensitive" Newest []
@@ -330,7 +351,6 @@ targets _home release =
     , P.Package { P.name = "haskell-extra"
                 , P.spec = Darcs "http://src.seereason.com/haskell-extra" Nothing
                 , P.flags = [P.RelaxDep "cabal-debian"] }
-    , apt "haskell-failure"
     , apt "haskell-feed"
     , debianize "fgl" Newest [P.DebVersion "5.4.2.4-1"]
     , debianize "file-embed" Newest [P.DebVersion "0.0.4.1-1~hackage1"]
@@ -604,7 +624,7 @@ targets _home release =
                 , P.spec = DebDir (Hackage "incremental-sat-solver" Nothing) (Darcs "http://src.seereason.com/haskell-incremental-sat-solver-debian" Nothing)
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     , debianize "instant-generics" Newest [P.DebVersion "0.3.3-1~hackage1"]
-    , apt "haskell-irc"
+    , debianize "irc" Newest []
     , P.Package { P.name = "haskell-ircbot"
                 , P.spec = Darcs "http://patch-tag.com/r/stepcut/ircbot" Nothing
                 , P.flags = []
@@ -1038,6 +1058,7 @@ targets _home release =
     , apt "haskell-vector-algorithms"
     , debianize "virthualenv" Newest [P.DebVersion "0.2-1~hackage1"]
     , debianize "wai" Newest []
+    , debianize "vault" Newest []
     , debianize "web-encodings" Newest []
     , debianize "boomerang" Newest []
     , P.Package { P.name = "haskell-web-routes"
