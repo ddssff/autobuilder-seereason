@@ -636,7 +636,7 @@ targets _home release =
     , P.Package { P.name = "haskell-incremental-sat-solver"
                 , P.spec = DebDir (Hackage "incremental-sat-solver" Nothing) (Darcs "http://src.seereason.com/haskell-incremental-sat-solver-debian" Nothing)
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
-    , debianize "instant-generics" Newest [P.DebVersion "0.3.3-1~hackage1"]
+    , debianize "instant-generics" Newest []
     , debianize "irc" Newest []
     , P.Package { P.name = "haskell-ircbot"
                 , P.spec = Darcs "http://patch-tag.com/r/stepcut/ircbot" Nothing
