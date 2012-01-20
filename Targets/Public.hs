@@ -109,7 +109,20 @@ targets _home release =
                 , P.spec=Darcs "http://src.seereason.com/haskell-agi" Nothing
                 , P.flags = [] }
     , debianize "ansi-terminal" Newest [P.DebVersion "0.5.5-1"]
-    , debianize "ansi-wl-pprint" Newest [P.DebVersion "0.6.3-1~hackage1"]
+    , debianize "ansi-wl-pprint" Newest
+                    [ P.DebVersion "0.6.3-1~hackage1",
+                      P.Patch . B.pack . unlines $
+                      [ "--- old/Text/PrettyPrint/ANSI/Leijen.hs\t2012-01-20 06:40:42.000000000 -0800"
+                      , "+++ new/Text/PrettyPrint/ANSI/Leijen.hs\t2012-01-20 08:26:55.847161750 -0800"
+                      , "@@ -152,7 +152,7 @@"
+                      , " "
+                      , " import Data.String (IsString(..))"
+                      , " import Data.Maybe (isNothing, fromMaybe, catMaybes)"
+                      , "-import Data.Monoid"
+                      , "+import Data.Monoid (Monoid(..))"
+                      , " "
+                      , " "
+                      , " infixr 5 </>,<//>,<$>,<$$>" ] ]
     -- Our applicative-extras repository has several important patches.
     , P.Package { P.name = "haskell-applicative-extras",
                   P.spec = DebDir (Hackage "applicative-extras" Nothing)
