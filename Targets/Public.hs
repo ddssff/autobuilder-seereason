@@ -41,10 +41,10 @@ targets _home release =
     , apt "geneweb"
     , case release of
         "natty-seereason" ->
-            P.NoPackage -- release 4 is in experimental, but I'm not ready to rebuild everything yet
-            {- P.Package { P.name = "ghc"
+            -- P.NoPackage
+            P.Package { P.name = "ghc"
                       , P.spec = Apt "experimental" "ghc" Nothing
-                      , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] } -}
+                      , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
         _ -> P.Package { P.name = "ghc"
                        , P.spec = Apt "sid" "ghc" Nothing
                        , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
