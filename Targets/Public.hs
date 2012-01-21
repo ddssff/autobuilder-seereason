@@ -36,15 +36,15 @@ targets _home release =
     , apt release "darcs"
     , apt release "debootstrap"
     , apt release "geneweb"
-    , case release of
-        "natty-seereason" ->
-            -- P.NoPackage
-            P.Package { P.name = "ghc"
-                      , P.spec = Apt "experimental" "ghc" Nothing
-                      , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
-        _ -> P.Package { P.name = "ghc"
-                       , P.spec = Apt "sid" "ghc" Nothing
-                       , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
+    , let ghc74 = P.Package { P.name = "ghc"
+                            , P.spec = Apt "experimental" "ghc" Nothing
+                            , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
+          ghc70 = P.Package { P.name = "ghc"
+                            , P.spec = Apt "sid" "ghc" Nothing
+                            , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] } in
+      case release of
+        "natty-seereason" -> ghc74 -- P.NoPackage
+        _ -> ghc74 -- ghc70
     , debianize "gtk2hs-buildtools" Newest
                                     [ P.ExtraDep "alex"
                                     , P.ExtraDep "happy"
