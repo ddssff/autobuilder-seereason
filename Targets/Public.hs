@@ -1,4 +1,4 @@
-{-# OPTIONS -Wall -fno-warn-missing-signatures #-}
+{-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds #-}
 module Targets.Public ( targets ) where
 
 import qualified Data.ByteString.Lazy.Char8 as B
