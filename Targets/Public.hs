@@ -358,18 +358,7 @@ targets _home release =
     , apt release "haskell-digest"
     , debianize "digestive-functors" Newest []
     , debianize "digestive-functors-blaze" Newest [P.DebVersion "0.2.1.0-1~hackage1"]
-    , debianize "digestive-functors-happstack" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- old/digestive-functors-happstack.cabal\t2012-01-23 02:59:17.000000000 -0800"
-                      , "+++ new/digestive-functors-happstack.cabal\t2012-01-23 03:03:16.656227533 -0800"
-                      , "@@ -22,6 +22,6 @@"
-                      , "     base               >= 4    && < 5,"
-                      , "     bytestring         >= 0.9  && < 0.10,"
-                      , "     digestive-functors >= 0.1  && < 0.3,"
-                      , "-    happstack-server   >= 6.0  && < 6.5,"
-                      , "+    happstack-server   >= 6.0  && < 6.6,"
-                      , "     text               >= 0.11 && < 1.0,"
-                      , "     utf8-string        >= 0.3  && < 0.4" ] ]
+    , debianize "digestive-functors-happstack" Newest []
     , P.Package { P.name = "haskell-digestive-functors-hsp"
                 , P.spec = Darcs (repo ++ "/digestive-functors-hsp") Nothing
                 , P.flags = [] }
@@ -787,41 +776,7 @@ targets _home release =
                                           , "                  x   -> x" ]
                                    , P.DebVersion "0.2.0ubuntu1" ]
     , debianize "network" Newest []
-    , debianize "openid" Newest
-       [ P.Patch . B.pack . unlines $
-         [ "--- old/openid.cabal\t2012-01-20 10:03:40.376557572 -0800"
-         , "+++ new/openid.cabal\t2012-01-20 10:01:50.246234853 -0800"
-         , "@@ -28,13 +28,14 @@"
-         , " library"
-         , "   build-depends:   base       >= 4.0.0.0  && < 5.0.0.0,"
-         , "                    bytestring >= 0.9.1.0  && < 0.10.0.0,"
-         , "-                   containers >= 0.2.0.0  && < 0.4.1.0,"
-         , "-                   HTTP       >= 4000.0.9 && < 4000.2,"
-         , "+                   containers >= 0.2.0.0,"
-         , "+                   HTTP       >= 4000.0.9,"
-         , "                    monadLib   >= 3.6.0.0  && < 3.7.0.0,"
-         , "-                   network    >= 2.2.0.0  && < 2.3.0.0,"
-         , "-                   time       >= 1.1.0.0  && < 1.3.0.0,"
-         , "+                   network    >= 2.2.0.0,"
-         , "+                   time       >= 1.1.0.0,"
-         , "                    xml        >= 1.3.0.0  && < 1.4.0.0,"
-         , "                    HsOpenSSL  >= 0.9.0.0  && < 0.11.0.0"
-         , "+  extra-libraries: ssl, crypto++"
-         , "   hs-source-dirs:  src"
-         , "   exposed-modules: Codec.Binary.Base64,"
-         , "                    Codec.Encryption.DH,"
-         , "--- old/src/Data/Digest/OpenSSL/AlternativeHMAC.hsc\t2012-01-20 11:08:20.000000000 -0800"
-         , "+++ new/src/Data/Digest/OpenSSL/AlternativeHMAC.hsc\t2012-01-20 11:40:25.566842934 -0800"
-         , "@@ -59,7 +59,7 @@"
-         , " showHMAC bs ="
-         , "     concatMap draw $ BS.unpack bs"
-         , "     where"
-         , "-      draw :: (Integral a) => a -> String"
-         , "+      draw :: (Integral a, Show a) => a -> String"
-         , "       draw w = case showHex w [] of"
-         , "                  [x] -> ['0', x]"
-         , "                  x   -> x" ]
-       , P.DebVersion "0.2.0.0-1~hackage1" ]
+    , debianize "openid" Newest []
     , debianize "operational" Newest [P.OmitLTDeps, P.DebVersion "0.2.0.3-1~hackage1"]
     , debianize "ordered" Newest []
     , debianize "pandoc" Newest
