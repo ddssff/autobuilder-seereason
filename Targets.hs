@@ -69,7 +69,23 @@ ubuntuReleases = [Oneiric, Natty, Maverick, Lucid, Karmic, Jaunty, Intrepid, Har
 -- and any sequence of groups can be built together as long as
 -- no intermediate group is omitted.  Comment out the ones you
 -- don't wish to build.
-public home release = Public.targets home release
+public :: String -> String -> P.Packages
+public home release =
+    applyDepMap $ Public.targets home release
+    -- Dangerous when uncommented - build private targets into public, do not upload!!
+    --          ++ private home
 
 private :: String -> P.Packages
-private home = mappend (Private.libraries home) (Private.applications home)
+private home =
+    applyDepMap $ mappend (Private.libraries home) (Private.applications home)
+
+-- | Supply some special cases to map cabal library names to debian.
+-- The prefix "lib" and the suffix "-dev" will be added later by
+-- cabal-debian.
+applyDepMap :: P.Packages -> P.Packages
+applyDepMap P.NoPackage = P.NoPackage
+applyDepMap (P.Packages s) = P.Packages (Set.map applyDepMap s)
+applyDepMap x@(P.Package {}) =
+    x {P.flags = P.flags x ++ mappings}
+    where
+      mappings = [P.MapDep "cryptopp" "crypto++"]
