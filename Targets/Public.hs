@@ -358,7 +358,18 @@ targets _home release =
     , apt release "haskell-digest"
     , debianize "digestive-functors" Newest []
     , debianize "digestive-functors-blaze" Newest [P.DebVersion "0.2.1.0-1~hackage1"]
-    , debianize "digestive-functors-happstack" Newest []
+    , debianize "digestive-functors-happstack" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- old/digestive-functors-happstack.cabal\t2012-01-23 02:59:17.000000000 -0800"
+                      , "+++ new/digestive-functors-happstack.cabal\t2012-01-23 03:03:16.656227533 -0800"
+                      , "@@ -22,6 +22,6 @@"
+                      , "     base               >= 4    && < 5,"
+                      , "     bytestring         >= 0.9  && < 0.10,"
+                      , "     digestive-functors >= 0.1  && < 0.3,"
+                      , "-    happstack-server   >= 6.0  && < 6.5,"
+                      , "+    happstack-server   >= 6.0  && < 6.6,"
+                      , "     text               >= 0.11 && < 1.0,"
+                      , "     utf8-string        >= 0.3  && < 0.4" ] ]
     , P.Package { P.name = "haskell-digestive-functors-hsp"
                 , P.spec = Darcs (repo ++ "/digestive-functors-hsp") Nothing
                 , P.flags = [] }
@@ -435,7 +446,7 @@ targets _home release =
                 , P.spec = DebDir (Cd "happstack-ixset" (Darcs happstackRepo Nothing)) (Darcs (repo ++ "/happstack-ixset-debian") Nothing)
                 , P.flags = [] }
 
-    , debianize "happstack-jmacro" Newest [P.DebVersion "6.0.0-1~hackage1"]
+    , debianize "happstack-jmacro" Newest []
     , P.Package { P.name = "haskell-happstack-scaffolding"
                 , P.spec = Darcs (repo ++ "/happstack-scaffolding") Nothing
                 , P.flags = [] }
@@ -607,31 +618,7 @@ targets _home release =
                       , "  genElement = element\r" ]
                     , P.DebVersion "0.6.1-1" ]
     , debianize "HsSyck" Newest []
-    , debianize "HStringTemplate" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- old/Text/StringTemplate/Instances.hs\t2012-01-20 06:43:54.000000000 -0800"
-                      , "+++ new/Text/StringTemplate/Instances.hs\t2012-01-20 10:11:40.876241721 -0800"
-                      , "@@ -83,7 +83,7 @@"
-                      , " instance ToSElem Integer where"
-                      , "     toSElem = STR . show"
-                      , " "
-                      , "-instance Integral a => ToSElem (Ratio a) where"
-                      , "+instance (Integral a, Show a) => ToSElem (Ratio a) where"
-                      , "     toSElem = STR . show"
-                      , " "
-                      , " --Dates and Times"
-                      , "--- old/Text/StringTemplate/Base.hs\t2012-01-20 11:54:02.000000000 -0800"
-                      , "+++ new/Text/StringTemplate/Base.hs\t2012-01-20 12:57:32.237077842 -0800"
-                      , "@@ -536,7 +536,7 @@"
-                      , " "
-                      , " "
-                      , " "
-                      , "-mkIndex :: Num b => [b] -> [[SElem a]]"
-                      , "+mkIndex :: (Num b, Show b) => [b] -> [[SElem a]]"
-                      , " mkIndex = map ((:) . STR . show . (1+) <*> (:[]) . STR . show)"
-                      , " ix0 :: [SElem a]"
-                      , " ix0 = [STR \"1\",STR \"0\"]" ]
-                    , P.DebVersion "0.6.6-1" ]
+    , debianize "HStringTemplate" Newest []
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
@@ -1001,20 +988,7 @@ targets _home release =
     , apt release "haskell-syb-with-class-instances-text"
     , debianize "tagged" Newest [P.DebVersion "0.2.3.1-1"]
     , debianize "tagsoup" Newest []
-    , debianize "tar" Newest
-                    [ P.DebVersion "0.3.1.0-3"
-                    , P.Patch . B.pack. unlines $
-                      [ "--- old/Codec/Archive/Tar/Write.hs\t2012-01-20 06:46:06.000000000 -0800"
-                      , "+++ new/Codec/Archive/Tar/Write.hs\t2012-01-20 09:21:06.646231113 -0800"
-                      , "@@ -119,7 +119,7 @@"
-                      , " putString n s = take n s ++ fill (n - length s) '\NUL'"
-                      , " "
-                      , " --TODO: check integer widths, eg for large file sizes"
-                      , "-putOct :: Integral a => FieldWidth -> a -> String"
-                      , "+putOct :: (Integral a, Show a) => FieldWidth -> a -> String"
-                      , " putOct n x ="
-                      , "   let octStr = take (n-1) $ showOct x \"\""
-                      , "    in fill (n - length octStr - 1) '0'" ] ]
+    , debianize "tar" Newest []
     , apt release "haskell-terminfo"
     , debianize "test-framework" Newest
                     [ P.Patch . B.pack. unlines $
