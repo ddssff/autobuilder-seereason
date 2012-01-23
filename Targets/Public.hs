@@ -583,7 +583,9 @@ targets _home release =
     , debianize "hs-bibutils" Newest [P.DebVersion "4.12-1~hackage1"]
     , apt release "haskell-hsemail"
     , debianize "HsOpenSSL" Newest
-                    [ P.Patch . B.pack . unlines $
+                    [ P.ExtraDevDep "libssl-dev"
+                    , P.ExtraDevDep "libcrypto++-dev"
+                    , P.Patch . B.pack . unlines $
                       [ "--- HsOpenSSL.orig/HsOpenSSL.cabal\t2011-09-10 15:02:20.000000000 -0700"
                       , "+++ HsOpenSSL/HsOpenSSL.cabal\t2011-09-10 15:24:16.735325250 -0700"
                       , "@@ -50,7 +50,7 @@"

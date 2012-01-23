@@ -220,7 +220,8 @@ defParams _home myBuildRelease =
     , releaseAliases = myReleaseAliases myBuildRelease
     , archList = [Binary "i386",Binary "amd64"]
     , newDistProgram = "newdist -v"
-    , requiredVersion = [(parseDebianVersion "6.7", Nothing)]
+    -- 6.14 adds the ExtraDevDep parameter.
+    , requiredVersion = [(parseDebianVersion "6.14", Nothing)]
     -- Things that are probably obsolete
     , debug = False
     , discard = myDiscards
