@@ -776,7 +776,36 @@ targets _home release =
                                           , "                  x   -> x" ]
                                    , P.DebVersion "0.2.0ubuntu1" ]
     , debianize "network" Newest []
-    , debianize "openid" Newest []
+    , debianize "openid" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- old/openid.cabal\t2012-01-23 15:04:29.547162493 -0800"
+                      , "+++ new/openid.cabal\t2012-01-23 15:04:38.637160245 -0800"
+                      , "@@ -28,11 +28,11 @@"
+                      , " library"
+                      , "   build-depends:   base       >= 4.0.0.0  && < 5.0.0.0,"
+                      , "                    bytestring >= 0.9.1.0  && < 0.10.0.0,"
+                      , "-                   containers >= 0.2.0.0  && < 0.4.1.0,"
+                      , "-                   HTTP       >= 4000.0.9 && < 4000.2,"
+                      , "+                   containers >= 0.2.0.0,"
+                      , "+                   HTTP       >= 4000.0.9,"
+                      , "                    monadLib   >= 3.6.0.0  && < 3.7.0.0,"
+                      , "                    network    >= 2.2.0.0  && < 2.4.0.0,"
+                      , "-                   time       >= 1.1.0.0  && < 1.3.0.0,"
+                      , "+                   time       >= 1.1.0.0,"
+                      , "                    xml        >= 1.3.0.0  && < 1.4.0.0,"
+                      , "                    HsOpenSSL  >= 0.9.0.0  && < 0.11.0.0"
+                      , "   hs-source-dirs:  src"
+                      , "--- old/src/Data/Digest/OpenSSL/AlternativeHMAC.hsc\t2012-01-23 15:26:46.027160840 -0800"
+                      , "+++ new/src/Data/Digest/OpenSSL/AlternativeHMAC.hsc\t2012-01-20 11:40:25.566842934 -0800"
+                      , "@@ -59,7 +59,7 @@"
+                      , " showHMAC bs ="
+                      , "     concatMap draw $ BS.unpack bs"
+                      , "     where"
+                      , "-      draw :: (Integral a) => a -> String"
+                      , "+      draw :: (Integral a, Show a) => a -> String"
+                      , "       draw w = case showHex w [] of"
+                      , "                  [x] -> ['0', x]"
+                      , "                  x   -> x" ] ]
     , debianize "operational" Newest [P.OmitLTDeps, P.DebVersion "0.2.0.3-1~hackage1"]
     , debianize "ordered" Newest []
     , debianize "pandoc" Newest
