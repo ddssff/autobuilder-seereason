@@ -967,6 +967,8 @@ targets _home release =
                       , "   exposed-modules: System.IO.Strict"
                       , "                    System.IO.Strict.Internals"
                       , "                    Data.IORef.Strict" ] ]
+    , debianize "smallcheck" Newest []
+    , debianize "test-framework-smallcheck" Newest []
     -- Because 0.3.3-1 is both in sid and hackage, we need to keep the debianize
     -- code from using version 0.3.3-1~hackage1 which looks older.
     , debianize "syb" Newest []
