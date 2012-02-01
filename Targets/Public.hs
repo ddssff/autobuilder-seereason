@@ -107,7 +107,7 @@ targets _home release =
                 , P.flags = [] }
     , debianize "ansi-terminal" Newest [P.DebVersion "0.5.5-1"]
     , debianize "ansi-wl-pprint" Newest
-                    [ P.DebVersion "0.6.3-1~hackage1",
+                    [ {- P.DebVersion "0.6.3-1~hackage1",
                       P.Patch . B.pack . unlines $
                       [ "--- old/Text/PrettyPrint/ANSI/Leijen.hs\t2012-01-20 06:40:42.000000000 -0800"
                       , "+++ new/Text/PrettyPrint/ANSI/Leijen.hs\t2012-01-20 08:26:55.847161750 -0800"
@@ -119,7 +119,7 @@ targets _home release =
                       , "+import Data.Monoid (Monoid(..))"
                       , " "
                       , " "
-                      , " infixr 5 </>,<//>,<$>,<$$>" ] ]
+                      , " infixr 5 </>,<//>,<$>,<$$>" ] -} ]
     -- Our applicative-extras repository has several important patches.
     , P.Package { P.name = "haskell-applicative-extras",
                   P.spec = DebDir (Hackage "applicative-extras" Nothing)
@@ -150,9 +150,9 @@ targets _home release =
                       , "   extensions:      CPP"
                       , "   exposed-modules: Data.Attoparsec.Text"
                       , "                    Data.Attoparsec.Text.FastSet" ] ]
-    , debianize "attoparsec-text-enumerator" Newest [P.DebVersion "0.2.0.0-1~hackage1"]
+    , debianize "attoparsec-text-enumerator" Newest []
     , debianize "authenticate" Newest
-                    [ P.Patch . B.pack . unlines $
+                    [ {- P.Patch . B.pack . unlines $
                       [ "--- old/authenticate.cabal\t2012-01-19 19:39:56.000000000 -0800"
                       , "+++ new/authenticate.cabal\t2012-01-20 11:48:58.976223078 -0800"
                       , "@@ -16,9 +16,9 @@"
@@ -175,7 +175,7 @@ targets _home release =
                       , "+                     conduit >= 0.0,"
                       , "                      blaze-builder-conduit >= 0.0 && < 0.1"
                       , "     exposed-modules: Web.Authenticate.Rpxnow,"
-                      , "                      Web.Authenticate.OpenId," ] ]
+                      , "                      Web.Authenticate.OpenId," ] -} ]
     , debianize "base-unicode-symbols" Newest []
     , apt release "haskell-base64-bytestring"
     , debianize "bimap" Newest [P.DebVersion "0.2.4-1~hackage1"]
@@ -243,7 +243,7 @@ targets _home release =
     , P.Package { P.name = "haskell-cgi"
                 , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz" "4092efaf00ac329b9771879f57a95323") (Darcs "http://src.seereason.com/haskell-cgi-debian" Nothing)
                 , P.flags = [] }
-    , debianize "citeproc-hs" Newest [P.DebVersion "0.3.3-1~hackage1"]
+    , debianize "citeproc-hs" Newest []
     , case release of
         "natty-seereason" -> debianize "colour" Newest []
         _ -> apt release "haskell-colour"
@@ -294,7 +294,7 @@ targets _home release =
                       , " "
                       , " instance Hash Hash384 where" ]
                     , P.DebVersion "4.2.4-1~hackage1"]
-    , debianize "crypto-api" Newest [P.DebVersion "0.8-1~hackage1"]
+    , debianize "crypto-api" Newest []
     , debianize "crypto-pubkey-types" Newest [P.DebVersion "0.1.0-1~hackage1"]
     , debianize "cryptocipher" Newest [P.DebVersion "0.3.0-1~hackage1"]
     , debianize "cryptohash" Newest [P.DebVersion "0.7.4-1~hackage1"]
@@ -422,6 +422,9 @@ targets _home release =
     , P.Package { P.name = "haskell-happstack-extra"
                 , P.spec = Darcs (repo ++ "/happstack-extra") Nothing
                 , P.flags = [] }
+    , P.Package { P.name = "haskell-happstack-state-extra"
+                , P.spec = Darcs (repo ++ "/happstack-state-extra") Nothing
+                , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-facebook"
                 , P.spec = Darcs (repo ++ "/happstack-facebook") Nothing
                 , P.flags = [] }
@@ -444,7 +447,7 @@ targets _home release =
                 , P.flags = [] }
     , debianize "happstack-server" Newest []
     , debianize "happstack-state" Newest [P.DebVersion "6.1.2-1~hackage1"]
-    , debianize "happstack-util" Newest [P.DebVersion "6.0.2-1~hackage1"]
+    , debianize "happstack-util" Newest []
     , apt release "haskell-harp"
     , debianize "hashable" Newest [P.DebVersion "1.1.2.2-1"]
     , debianize "hashed-storage" Newest [P.DebVersion "0.5.9-1"]
@@ -942,6 +945,7 @@ targets _home release =
     , debianize "shakespeare-css" Newest []
     , debianize "simple-css" Newest [P.DebVersion "0.0.4-1~hackage1"]
     , debianize "SMTPClient" Newest [P.DebVersion "1.0.4-2"]
+    , debianize "socks" Newest []
     , debianize "split" Newest []
     -- This package becomes the debian package "haskell-haskell-src-exts".
     -- Unfortunately, debian gave it the name "haskell-src-exts" dropping
@@ -979,7 +983,7 @@ targets _home release =
     , debianize "tar" Newest []
     , apt release "haskell-terminfo"
     , debianize "test-framework" Newest
-                    [ P.Patch . B.pack. unlines $
+                    [ {- P.Patch . B.pack. unlines $
                       [ "--- old/Test/Framework/Runners/Console/Run.hs\t2012-01-20 11:09:22.000000000 -0800"
                       , "+++ new/Test/Framework/Runners/Console/Run.hs\t2012-01-20 11:34:42.187163011 -0800"
                       , "@@ -18,7 +18,7 @@"
@@ -991,10 +995,10 @@ targets _home release =
                       , " "
                       , " import Control.Arrow (second, (&&&))"
                       , " import Control.Monad (unless)" ]
-                    , P.ExtraDep "libghc-random-prof"]
-    , debianize "test-framework-hunit" Newest [P.DebVersion "0.2.6-1~hackage1"]
+                    , P.ExtraDep "libghc-random-prof" -} ]
+    , debianize "test-framework-hunit" Newest []
     , debianize "test-framework-quickcheck" Newest
-                    [ P.Patch . B.pack. unlines $
+                    [ {- P.Patch . B.pack. unlines $
                       [ "--- old-test-framework-quickcheck/test-framework-quickcheck.cabal\t2012-01-02 12:38:41.166482292 -0800"
                       , "+++ new-test-framework-quickcheck/test-framework-quickcheck.cabal\t2012-01-02 12:38:53.896482073 -0800"
                       , "@@ -27,7 +27,7 @@"
@@ -1006,7 +1010,7 @@ targets _home release =
                       , "         "
                       , "         Extensions:             TypeSynonymInstances"
                       , "                                 TypeOperators" ]
-                    , P.DebVersion "0.2.7-1~hackage1" ]
+                    , P.DebVersion "0.2.7-1~hackage1" -} ]
     , debianize "test-framework-quickcheck2" Newest []
     , debianize "testpack" Newest
                     [ P.Patch . B.pack. unlines $
@@ -1392,7 +1396,7 @@ targets _home release =
     , debianize "yaml-light" Newest []
     , apt release "haskell-zip-archive"
     , apt release "haskell-zlib"
-    , apt release "haskell-zlib-bindings"
+    , debianize "zlib-bindings" Newest []
     , apt release "haskell-zlib-enum"
 
     , apt release "highlighting-kate"
