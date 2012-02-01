@@ -151,8 +151,8 @@ targets _home release =
                       , "   exposed-modules: Data.Attoparsec.Text"
                       , "                    Data.Attoparsec.Text.FastSet" ] ]
     , debianize "attoparsec-text-enumerator" Newest []
-    , debianize "authenticate" Newest
-                    [ {- P.Patch . B.pack . unlines $
+    , debianize "authenticate" (Pin "0.11.1")
+                    [ P.Patch . B.pack . unlines $
                       [ "--- old/authenticate.cabal\t2012-01-19 19:39:56.000000000 -0800"
                       , "+++ new/authenticate.cabal\t2012-01-20 11:48:58.976223078 -0800"
                       , "@@ -16,9 +16,9 @@"
@@ -175,7 +175,7 @@ targets _home release =
                       , "+                     conduit >= 0.0,"
                       , "                      blaze-builder-conduit >= 0.0 && < 0.1"
                       , "     exposed-modules: Web.Authenticate.Rpxnow,"
-                      , "                      Web.Authenticate.OpenId," ] -} ]
+                      , "                      Web.Authenticate.OpenId," ] ]
     , debianize "base-unicode-symbols" Newest []
     , apt release "haskell-base64-bytestring"
     , debianize "bimap" Newest [P.DebVersion "0.2.4-1~hackage1"]
@@ -1370,14 +1370,14 @@ targets _home release =
                    , " -- |" ]
                   , P.DebVersion "3000.2.0.4-1"]
     , apt release "haskell-xml"
-    , debianize "xml-conduit" Newest []
-    , debianize "http-conduit" Newest []
-    , debianize "zlib-conduit" Newest []
-    , debianize "conduit" Newest []
+    , debianize "xml-conduit" (Pin "0.5.1.2") []
+    , debianize "http-conduit" (Pin "1.2.0") []
+    , debianize "zlib-conduit" (Pin "0.0.1") []
+    , debianize "conduit" (Pin "0.1.1.1") []
     , debianize "lifted-base" Newest []
     , debianize "system-filepath" Newest []
-    , debianize "attoparsec-conduit" Newest []
-    , debianize "blaze-builder-conduit" Newest []
+    , debianize "attoparsec-conduit" (Pin "0.0.1") []
+    , debianize "blaze-builder-conduit" (Pin "0.0.1") []
     , debianize "xml-enumerator" Newest
                  [ P.Patch . B.pack . unlines $
                    [ "--- old/xml-enumerator.cabal\t2012-01-20 06:47:15.000000000 -0800"
