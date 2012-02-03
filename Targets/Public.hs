@@ -33,7 +33,6 @@ targets _home release =
     , P.Package { P.name = "cpphs"
                 , P.spec = Quilt (Apt "sid" "cpphs" Nothing) (Darcs "http://src.seereason.com/cpphs-quilt" Nothing)
                 , P.flags = [] }
-    , apt release "darcs"
     , apt release "debootstrap"
     , apt release "geneweb"
     , let ghc74 = P.Package { P.name = "ghc"
@@ -89,19 +88,6 @@ targets _home release =
     , debianize "acid-state" Newest []
     , debianize "AES" Newest [P.DebVersion "0.2.8-1~hackage1"]
     , debianize "aeson" Newest []
-    , debianize "aeson-native" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- old-aeson-native/aeson-native.cabal\t2011-12-03 08:17:32.000000000 -0800"
-                      , "+++ new-aeson-native/aeson-native.cabal\t2012-01-02 12:33:12.776486492 -0800"
-                      , "@@ -119,7 +119,7 @@"
-                      , "     blaze-textual-native >= 0.2.0.2,"
-                      , "     bytestring,"
-                      , "     containers,"
-                      , "-    deepseq < 1.2,"
-                      , "+    deepseq < 1.3,"
-                      , "     hashable >= 1.1.2.0,"
-                      , "     mtl,"
-                      , "     old-locale," ] ]
     , P.Package { P.name = "haskell-agi"
                 , P.spec=Darcs "http://src.seereason.com/haskell-agi" Nothing
                 , P.flags = [] }
@@ -184,7 +170,6 @@ targets _home release =
         _ -> P.Package { P.name = "haskell-binary"
                        , P.spec = Quilt (Apt "sid" "haskell-binary" (Just "0.5.0.2-2")) (Darcs "http://src.seereason.com/haskell-binary-quilt" Nothing)
                        , P.flags = [] }
-    , apt release "haskell-binary-shared" -- for leksah
     , debianize "bitmap" Newest
                     [ P.Patch . B.pack . unlines $
                       [ "--- tmp/Data/Bitmap/Pure.hs\t2011-09-15 06:47:30.638423438 -0700"
@@ -234,7 +219,6 @@ targets _home release =
     , P.Package { P.name = "haskell-bzlib"
                 , P.spec = Quilt (Apt "sid" "haskell-bzlib" Nothing) (Darcs "http://src.seereason.com/haskell-bzlib-quilt" Nothing)
                 , P.flags = [] }
-    , debianize "cairo" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils"] -- for leksah
     -- , debianize "cairo-pdf" Newest []
     , debianize "case-insensitive" Newest []
     , debianize "CC-delcont" Newest [P.DebVersion "0.2-1~hackage1"]
@@ -252,24 +236,6 @@ targets _home release =
     , P.Package { P.name = "haskell-consumer"
                 , P.spec = Darcs "http://src.seereason.com/haskell-consumer" Nothing
                 , P.flags = [] }
-    , debianize "convertible-text" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- old/convertible-text.cabal\t2012-01-20 09:58:49.087163068 -0800"
-                      , "+++ new/convertible-text.cabal\t2012-01-20 09:57:30.017160919 -0800"
-                      , "@@ -36,11 +36,11 @@"
-                      , "   else"
-                      , "       Buildable: True"
-                      , "   Build-Depends: base >= 4 && < 5,"
-                      , "-                 old-time >= 1.0.0.2 && < 1.1,"
-                      , "+                 old-time >= 1.0.0.2,"
-                      , "                  containers >= 0.2.0.1 && < 0.5,"
-                      , "                  text >= 0.5 && < 0.12,"
-                      , "                  bytestring >= 0.9.1.4 && < 0.10,"
-                      , "-                 attempt >= 0.3.0 && < 0.4,"
-                      , "+                 attempt >= 0.3.0,"
-                      , "                  template-haskell,"
-                      , "                  time"
-                      , " " ] ]
     , debianize "cprng-aes" Newest [P.DebVersion "0.2.3-1~hackage1"]
     , debianize "Crypto" Newest
                     [ P.Patch . B.pack . unlines $
@@ -329,19 +295,8 @@ targets _home release =
     -- , apt "haskell-deepseq"
     , case release of
         "natty-seereason" -> P.NoPackage -- a version newer than the latest in hackage is bundled with ghc
-        _ -> debianize "deepseq" Newest
-             [ P.Patch . B.pack . unlines $
-               [ "--- x/deepseq.cabal.orig\t2011-12-30 21:32:18.000000000 -0800"
-               , "+++ x/deepseq.cabal\t2011-12-30 21:39:29.106482820 -0800"
-               , "@@ -29,7 +29,7 @@"
-               , " library {"
-               , "   exposed-modules: Control.DeepSeq"
-               , "   build-depends: base       >= 3   && < 5, "
-               , "-                 array      >= 0.1 && < 0.4"
-               , "+                 array      >= 0.1"
-               , "   ghc-options: -Wall"
-               , "   extensions: CPP"
-               , " }" ] ]
+        _ -> P.NoPackage -- debianize "deepseq" Newest []
+
 {-  , P.Package { P.name = "haskell-deepseq"
                 , P.spec = Apt "sid" "haskell-deepseq" (Just "1.1.0.2-2")
                 , P.flags = [] } -}
@@ -401,9 +356,6 @@ targets _home release =
                       , "   Include-dirs:        cbits"
                       , "   Install-includes: gd-extras.h" ] ]
     -- , debianize "gd" Newest [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
-    , P.Package { P.name = "haskell-geni"
-                , P.spec = DebDir (Darcs "http://code.haskell.org/GenI" Nothing) (Darcs (repo ++ "/haskell-geni-debian") Nothing)
-                , P.flags = [] }
     , debianize "cabal-macosx" Newest []
     , apt release "haskell-ghc-paths" -- for leksah
     -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
@@ -413,7 +365,6 @@ targets _home release =
     -- Errors were encountered while processing:
     --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
-    , debianize "gnuplot" Newest [P.DebVersion "0.4.2-1~hackage1"]
     , debianize "happstack" Newest []
     , P.Package { P.name = "haskell-happstack-authenticate"
                 , P.spec = Darcs (repo ++ "/happstack-authenticate") Nothing
@@ -1014,19 +965,19 @@ targets _home release =
                     , P.ExtraDep "libghc-random-prof" -} ]
     , debianize "test-framework-hunit" Newest []
     , debianize "test-framework-quickcheck" Newest
-                    [ {- P.Patch . B.pack. unlines $
-                      [ "--- old-test-framework-quickcheck/test-framework-quickcheck.cabal\t2012-01-02 12:38:41.166482292 -0800"
-                      , "+++ new-test-framework-quickcheck/test-framework-quickcheck.cabal\t2012-01-02 12:38:53.896482073 -0800"
-                      , "@@ -27,7 +27,7 @@"
-                      , "                 Build-Depends:          base >= 3 && < 4, random >= 1, deepseq >= 1.1 && < 1.2"
+                    [ P.Patch . B.pack. unlines $
+                      [ "--- old/test-framework-quickcheck.cabal\t2012-02-02 16:33:53.000000000 -0800"
+                      , "+++ new/test-framework-quickcheck.cabal\t2012-02-02 18:10:11.000000000 -0800"
+                      , "@@ -26,8 +26,7 @@"
+                      , "         if flag(base3)"
+                      , "                 Build-Depends:          base >= 3 && < 4, random >= 1, deepseq >= 1.1 && < 1.3"
                       , "         else"
-                      , "                 if flag(base4)"
-                      , "-                        Build-Depends:          base >= 4 && < 5, random >= 1, deepseq >= 1.1 && < 1.2"
-                      , "+                        Build-Depends:          base >= 4 && < 5, random >= 1, deepseq >= 1.1 && < 1.4"
-                      , "         "
+                      , "-                if flag(base4)"
+                      , "-                        Build-Depends:          base >= 4 && < 5, random >= 1, deepseq >= 1.1 && < 1.3"
+                      , "+                Build-Depends:          base >= 4 && < 5, random >= 1, deepseq >= 1.1"
+                      , " "
                       , "         Extensions:             TypeSynonymInstances"
-                      , "                                 TypeOperators" ]
-                    , P.DebVersion "0.2.7-1~hackage1" -} ]
+                      , "                                 TypeOperators" ] ]
     , debianize "test-framework-quickcheck2" Newest []
     , debianize "testpack" Newest
                     [ P.Patch . B.pack. unlines $
@@ -1045,34 +996,7 @@ targets _home release =
                     , P.DebVersion "2.1.1-1~hackage1" ]
     , apt release "haskell-texmath"
     , debianize "text" Newest []
-    , debianize "th-expand-syns" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- old/Language/Haskell/TH/ExpandSyns.hs\t2012-01-20 06:46:20.000000000 -0800"
-                      , "+++ new/Language/Haskell/TH/ExpandSyns.hs\t2012-01-20 10:15:34.027162609 -0800"
-                      , "@@ -9,7 +9,7 @@"
-                      , "                                      ,evades,evade) where"
-                      , "     "
-                      , " import Language.Haskell.TH hiding(cxt)"
-                      , "-import Data.Set as Set    "
-                      , "+import qualified Data.Set as Set    "
-                      , " import Data.Generics"
-                      , " import Control.Monad"
-                      , " "
-                      , "@@ -198,10 +198,10 @@"
-                      , " evade :: Data d => Name -> d -> Name"
-                      , " evade n t = "
-                      , "     let"
-                      , "-        vars :: Set Name"
-                      , "-        vars = everything union (mkQ Set.empty Set.singleton) t"
-                      , "+        vars :: Set.Set Name"
-                      , "+        vars = everything Set.union (mkQ Set.empty Set.singleton) t"
-                      , " "
-                      , "-        go n1 = if n1 `member` vars"
-                      , "+        go n1 = if n1 `Set.member` vars"
-                      , "                 then go (bump n1)"
-                      , "                 else n1"
-                      , "                      " ]
-                    , P.DebVersion "0.3.0.0-1~hackage1" ]
+    , debianize "th-expand-syns" Newest []
     , debianize "th-lift" Newest
                     [ P.Patch . B.pack . unlines $
                       [ "--- x/th-lift.cabal.orig\t2012-01-01 11:57:27.446480543 -0800"
@@ -1201,190 +1125,7 @@ targets _home release =
     , P.Package { P.name = "haskell-web-routes-th"
                 , P.spec = Cd "web-routes-th" (Darcs (repo ++ "/web-routes") Nothing)
                 , P.flags = [] }
-    , debianize "xhtml" Newest
-                  [P.Patch . B.pack . unlines $
-                   [ "diff -ru xhtml-3000.2.0.4.orig/xhtml.cabal xhtml-3000.2.0.4/xhtml.cabal"
-                   , "--- xhtml-3000.2.0.4.orig/xhtml.cabal.orig\t2011-12-31 16:54:09.336482566 -0800"
-                   , "+++ xhtml-3000.2.0.4/xhtml.cabal\t2011-12-31 16:54:17.686482970 -0800"
-                   , "@@ -21,7 +21,7 @@"
-                   , "     location:       git@github.com:haskell/xhtml.git"
-                   , " "
-                   , " library "
-                   , "-    Build-depends:  base >= 4.0 && < 4.5"
-                   , "+    Build-depends:  base >= 4.0 && < 4.6"
-                   , "     Exposed-modules: "
-                   , "                     Text.XHtml, "
-                   , "                     Text.XHtml.Frameset,"
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/BlockTable.hs xhtml-3000.2.0.4/Text/XHtml/BlockTable.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/BlockTable.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/BlockTable.hs\t2011-09-30 11:31:26.459612132 -0700"
-                   , "@@ -1,6 +1,3 @@"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " -----------------------------------------------------------------------------"
-                   , " -- |"
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Debug.hs xhtml-3000.2.0.4/Text/XHtml/Debug.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Debug.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Debug.hs\t2011-09-30 11:32:38.329612144 -0700"
-                   , "@@ -1,8 +1,5 @@"
-                   , " {-# OPTIONS_HADDOCK hide #-}"
-                   , " -- #hide"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " -- | This module contains functions for displaying"
-                   , " --   HTML as a pretty tree."
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Extras.hs xhtml-3000.2.0.4/Text/XHtml/Extras.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Extras.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Extras.hs\t2011-09-30 11:32:38.119612144 -0700"
-                   , "@@ -1,6 +1,3 @@"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " module Text.XHtml.Extras where"
-                   , " "
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Frameset/Attributes.hs xhtml-3000.2.0.4/Text/XHtml/Frameset/Attributes.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Frameset/Attributes.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Frameset/Attributes.hs\t2011-09-30 11:32:39.729612144 -0700"
-                   , "@@ -1,8 +1,5 @@"
-                   , " {-# OPTIONS_HADDOCK hide #-}"
-                   , " -- #hide"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " module Text.XHtml.Frameset.Attributes where"
-                   , " "
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Frameset/Elements.hs xhtml-3000.2.0.4/Text/XHtml/Frameset/Elements.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Frameset/Elements.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Frameset/Elements.hs\t2011-09-30 11:32:40.019612144 -0700"
-                   , "@@ -1,8 +1,5 @@"
-                   , " {-# OPTIONS_HADDOCK hide #-}"
-                   , " -- #hide"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " module Text.XHtml.Frameset.Elements where"
-                   , " "
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Frameset.hs xhtml-3000.2.0.4/Text/XHtml/Frameset.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Frameset.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Frameset.hs\t2011-09-30 11:32:37.709612144 -0700"
-                   , "@@ -1,6 +1,3 @@"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " -- | Produces XHTML 1.0 Frameset."
-                   , " module Text.XHtml.Frameset ("
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Internals.hs xhtml-3000.2.0.4/Text/XHtml/Internals.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Internals.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Internals.hs\t2011-09-30 11:31:17.389612130 -0700"
-                   , "@@ -1,8 +1,5 @@"
-                   , " {-# OPTIONS_HADDOCK hide #-}"
-                   , " -- #hide"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " -----------------------------------------------------------------------------"
-                   , " -- |"
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Strict/Attributes.hs xhtml-3000.2.0.4/Text/XHtml/Strict/Attributes.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Strict/Attributes.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Strict/Attributes.hs\t2011-09-30 11:32:39.039612144 -0700"
-                   , "@@ -1,8 +1,5 @@"
-                   , " {-# OPTIONS_HADDOCK hide #-}"
-                   , " -- #hide"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " module Text.XHtml.Strict.Attributes where"
-                   , " "
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Strict/Elements.hs xhtml-3000.2.0.4/Text/XHtml/Strict/Elements.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Strict/Elements.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Strict/Elements.hs\t2011-09-30 11:32:39.379612144 -0700"
-                   , "@@ -1,8 +1,5 @@"
-                   , " {-# OPTIONS_HADDOCK hide #-}"
-                   , " -- #hide"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " module Text.XHtml.Strict.Elements where"
-                   , " "
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Strict.hs xhtml-3000.2.0.4/Text/XHtml/Strict.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Strict.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Strict.hs\t2011-09-30 11:32:34.529612144 -0700"
-                   , "@@ -1,6 +1,3 @@"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " -- | Produces XHTML 1.0 Strict."
-                   , " module Text.XHtml.Strict ("
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Table.hs xhtml-3000.2.0.4/Text/XHtml/Table.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Table.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Table.hs\t2011-09-30 11:32:38.209612144 -0700"
-                   , "@@ -1,7 +1,4 @@"
-                   , " {-# LANGUAGE CPP #-}"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " -- | Table combinators for XHTML."
-                   , " module Text.XHtml.Table (HtmlTable, HTMLTABLE(..),"
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Transitional/Attributes.hs xhtml-3000.2.0.4/Text/XHtml/Transitional/Attributes.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Transitional/Attributes.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Transitional/Attributes.hs\t2011-09-30 11:32:37.909612144 -0700"
-                   , "@@ -1,8 +1,5 @@"
-                   , " {-# OPTIONS_HADDOCK hide #-}"
-                   , " -- #hide"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " module Text.XHtml.Transitional.Attributes where"
-                   , " "
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Transitional/Elements.hs xhtml-3000.2.0.4/Text/XHtml/Transitional/Elements.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Transitional/Elements.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Transitional/Elements.hs\t2011-09-30 11:32:37.959612144 -0700"
-                   , "@@ -1,8 +1,5 @@"
-                   , " {-# OPTIONS_HADDOCK hide #-}"
-                   , " -- #hide"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " module Text.XHtml.Transitional.Elements where"
-                   , " "
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml/Transitional.hs xhtml-3000.2.0.4/Text/XHtml/Transitional.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml/Transitional.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml/Transitional.hs\t2011-09-30 11:32:38.729612144 -0700"
-                   , "@@ -1,6 +1,3 @@"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " -- | Produces XHTML 1.0 Transitional."
-                   , " module Text.XHtml.Transitional ("
-                   , "Only in xhtml-3000.2.0.4/Text/XHtml: Transitional.hs~"
-                   , "diff -ru xhtml-3000.2.0.4.orig/Text/XHtml.hs xhtml-3000.2.0.4/Text/XHtml.hs"
-                   , "--- xhtml-3000.2.0.4.orig/Text/XHtml.hs\t2011-09-01 02:55:12.000000000 -0700"
-                   , "+++ xhtml-3000.2.0.4/Text/XHtml.hs\t2011-09-30 11:31:45.339612136 -0700"
-                   , "@@ -1,6 +1,3 @@"
-                   , "-#if __GLASGOW_HASKELL__ >= 701"
-                   , "-{-# LANGUAGE Safe #-}"
-                   , "-#endif"
-                   , " "
-                   , " -----------------------------------------------------------------------------"
-
-                   , " -- |" ]
-                  , P.DebVersion "3000.2.0.4-1"]
+    , debianize "xhtml" Newest []
     , apt release "haskell-xml"
     , debianize "xml-conduit" (Pin "0.5.1.2") []
     , debianize "http-conduit" (Pin "1.2.0") []
@@ -1715,3 +1456,44 @@ agda release =
     , apt release "agda-bin"
     , apt release "agda-stdlib" ]
 
+other release =
+    [ apt release "darcs"
+    , debianize "aeson-native" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- old-aeson-native/aeson-native.cabal\t2011-12-03 08:17:32.000000000 -0800"
+                      , "+++ new-aeson-native/aeson-native.cabal\t2012-01-02 12:33:12.776486492 -0800"
+                      , "@@ -119,7 +119,7 @@"
+                      , "     blaze-textual-native >= 0.2.0.2,"
+                      , "     bytestring,"
+                      , "     containers,"
+                      , "-    deepseq < 1.2,"
+                      , "+    deepseq < 1.3,"
+                      , "     hashable >= 1.1.2.0,"
+                      , "     mtl,"
+                      , "     old-locale," ] ]
+    , apt release "haskell-binary-shared" -- for leksah
+    , debianize "cairo" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils"] -- for leksah
+    , debianize "convertible-text" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- old/convertible-text.cabal\t2012-01-20 09:58:49.087163068 -0800"
+                      , "+++ new/convertible-text.cabal\t2012-01-20 09:57:30.017160919 -0800"
+                      , "@@ -36,11 +36,11 @@"
+                      , "   else"
+                      , "       Buildable: True"
+                      , "   Build-Depends: base >= 4 && < 5,"
+                      , "-                 old-time >= 1.0.0.2 && < 1.1,"
+                      , "+                 old-time >= 1.0.0.2,"
+                      , "                  containers >= 0.2.0.1 && < 0.5,"
+                      , "                  text >= 0.5 && < 0.12,"
+                      , "                  bytestring >= 0.9.1.4 && < 0.10,"
+                      , "-                 attempt >= 0.3.0 && < 0.4,"
+                      , "+                 attempt >= 0.3.0,"
+                      , "                  template-haskell,"
+                      , "                  time"
+                      , " " ] ]
+    -- I really need this one
+    , P.Package { P.name = "haskell-geni"
+                , P.spec = DebDir (Darcs "http://code.haskell.org/GenI" Nothing) (Darcs (repo ++ "/haskell-geni-debian") Nothing)
+                , P.flags = [] }
+    , debianize "gnuplot" Newest [P.DebVersion "0.4.2-1~hackage1"]
+    ]
