@@ -36,7 +36,6 @@ main _home release =
     , P.Package { P.name = "autobuilder"
                 , P.spec = Darcs (repo ++ "/autobuilder") Nothing
                 , P.flags = [] }
-    , apt release "bash-completion"
     , P.Package { P.name = "haskell-cabal-debian"
                 , P.spec = Darcs (repo ++ "/cabal-debian") Nothing
                 , P.flags = [] }
@@ -1407,6 +1406,7 @@ other release =
                       , "                  time"
                       , " " ] ]
     , debianize "gnuplot" Newest [P.DebVersion "0.4.2-1~hackage1"]
+    , apt release "bash-completion"
     ]
 
 apt :: String -> String -> P.Packages
