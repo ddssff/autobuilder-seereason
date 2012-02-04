@@ -8,21 +8,31 @@ import qualified Debian.AutoBuilder.Params as P
 import Debian.AutoBuilder.Spec (Spec(..))
 import Targets.Common (repo, localRepo, checkUnique, happstackRepo)
 
--- |Sometimes we don't want to build the core packages even if newer
--- versions are available, because it takes so long.
--- ring0 "lucid-seereason" p = any (== (P.name p)) ["ghc", "haskell-devscripts", "haskell-dummy", "hscolour"]
-ring0 _ _ = False
-
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
 targets :: String -> String -> P.Packages
 targets _home release =
     checkUnique $ mconcat $
-    [ debianize "hashtables" Newest []
-    , P.Package { P.name = "alex"
-                , P.spec = Apt "sid" "alex" Nothing
-                , P.flags = [P.RelaxDep "alex"] }
+    [ -- platform,
+      main _home release
+    , happstackdotcom
+    , higgsset
+    -- , jsonb
+    -- , glib
+    -- , plugins
+    -- , frisby
+    -- , failing
+    -- , algebra
+    -- , agda
+    -- , other
+    ]
+
+main :: String -> String -> P.Packages
+main _home release =
+    checkUnique $ mconcat $
+    [ -- platform
+      debianize "hashtables" Newest []
     , P.Package { P.name = "autobuilder"
                 , P.spec = Darcs (repo ++ "/autobuilder") Nothing
                 , P.flags = [] }
@@ -35,15 +45,6 @@ targets _home release =
                 , P.flags = [] }
     , apt release "debootstrap"
     , apt release "geneweb"
-    , let ghc74 = P.Package { P.name = "ghc"
-                            , P.spec = Apt "experimental" "ghc" Nothing
-                            , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
-          ghc70 = P.Package { P.name = "ghc"
-                            , P.spec = Apt "sid" "ghc" Nothing
-                            , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] } in
-      case release of
-        "natty-seereason" -> ghc74 -- P.NoPackage
-        _ -> ghc74 -- ghc70
     , debianize "gtk2hs-buildtools" Newest
                                     [ P.ExtraDep "alex"
                                     , P.ExtraDep "happy"
@@ -74,17 +75,6 @@ targets _home release =
     , P.Package { P.name = "happstack-debianization"
                 , P.spec = Darcs "http://src.seereason.com/happstack-debianization" Nothing
                 , P.flags = [] }
-    -- Our automatic debianization code produces a package which is
-    -- missing the template files required for happy to work properly,
-    -- so I have imported debian's debianization and patched it to
-    -- work with ghc 7.4.1.  Note that this is also the first target
-    -- to require the new "install orig.tar.gz file" code in the
-    -- autobuilder.
-    , P.Package { P.name = "happy",
-                  P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/happy/1.18.8/happy-1.18.8.tar.gz" "907d79425351e826fb0bb8b677620418")
-                                  (Darcs "http://src.seereason.com/happy-debian" Nothing),
-                  P.flags = [P.RelaxDep "happy", P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
-    {- , debianize "happy" Newest [] -}
     , debianize "acid-state" Newest []
     , debianize "AES" Newest [P.DebVersion "0.2.8-1~hackage1"]
     , debianize "aeson" Newest []
@@ -165,11 +155,6 @@ targets _home release =
     , debianize "base-unicode-symbols" Newest []
     , apt release "haskell-base64-bytestring"
     , debianize "bimap" Newest [P.DebVersion "0.2.4-1~hackage1"]
-    , case release of
-        "natty-seereason" -> P.NoPackage -- ghc 7.4 ships with a binary package not available in hackage
-        _ -> P.Package { P.name = "haskell-binary"
-                       , P.spec = Quilt (Apt "sid" "haskell-binary" (Just "0.5.0.2-2")) (Darcs "http://src.seereason.com/haskell-binary-quilt" Nothing)
-                       , P.flags = [] }
     , debianize "bitmap" Newest
                     [ P.Patch . B.pack . unlines $
                       [ "--- tmp/Data/Bitmap/Pure.hs\t2011-09-15 06:47:30.638423438 -0700"
@@ -224,9 +209,6 @@ targets _home release =
     , debianize "CC-delcont" Newest [P.DebVersion "0.2-1~hackage1"]
     , apt release "haskell-cereal"
     , debianize "certificate" Newest [P.DebVersion "1.0.1-1~hackage1"]
-    , P.Package { P.name = "haskell-cgi"
-                , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz" "4092efaf00ac329b9771879f57a95323") (Darcs "http://src.seereason.com/haskell-cgi-debian" Nothing)
-                , P.flags = [] }
     , debianize "citeproc-hs" Newest []
     , case release of
         "natty-seereason" -> debianize "colour" Newest []
@@ -292,23 +274,7 @@ targets _home release =
     , P.Package { P.name = "haskell-debian-repo"
                 , P.spec = Darcs "http://src.seereason.com/haskell-debian-repo" Nothing
                 , P.flags = [] }
-    -- , apt "haskell-deepseq"
-    , case release of
-        "natty-seereason" -> P.NoPackage -- a version newer than the latest in hackage is bundled with ghc
-        _ -> P.NoPackage -- debianize "deepseq" Newest []
 
-{-  , P.Package { P.name = "haskell-deepseq"
-                , P.spec = Apt "sid" "haskell-deepseq" (Just "1.1.0.2-2")
-                , P.flags = [] } -}
-
-  -- Patch haskell-devscripts to generate the correct haddock
-  -- dependency in the doc packages (haddock-interface-19 rather than
-  -- just 19), and to remove the conflict with ghc 7.4 that Joachim
-  -- added.
-    , P.Package { P.name = "haskell-devscripts"
-                , P.spec = Quilt (Apt "sid" "haskell-devscripts" Nothing)
-                                 (Darcs (repo ++ "/haskell-devscripts-quilt") Nothing)
-                , P.flags = [] }
     , apt release "haskell-diff"
     , apt release "haskell-digest"
     , debianize "digestive-functors" Newest []
@@ -334,7 +300,6 @@ targets _home release =
                 , P.spec = Darcs "http://src.seereason.com/haskell-extra" Nothing
                 , P.flags = [P.RelaxDep "cabal-debian"] }
     , apt release "haskell-feed"
-    , debianize "fgl" Newest [P.DebVersion "5.4.2.4-1"]
     , debianize "file-embed" Newest [P.DebVersion "0.0.4.1-1~hackage1"]
     , P.Package { P.name = "haskell-formlets"
                 , P.spec = DebDir (Hackage "formlets" Nothing) (Darcs "http://src.seereason.com/haskell-formlets-debian" Nothing)
@@ -403,7 +368,6 @@ targets _home release =
     , debianize "hashable" Newest [P.DebVersion "1.1.2.2-1"]
     , debianize "hashed-storage" Newest [P.DebVersion "0.5.9-1"]
     , debianize "haskeline" Newest []
-    , debianize "haskell-src" Newest [ P.ExtraDep "happy" ]
     , debianize "haskell-src-meta" Newest []
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
@@ -572,15 +536,12 @@ targets _home release =
                 , P.spec = DebDir (Cd "hsx-jmacro" (Darcs happstackRepo Nothing)) (Darcs (repo ++ "/haskell-hsx-jmacro-debian") Nothing)
                 , P.flags = []
                 }
-    , apt release "haskell-html"
     , P.Package { P.name = "haskell-html-entities"
                 , P.spec = Darcs "http://src.seereason.com/html-entities" Nothing
                 , P.flags = [] }
     -- We need the epoch to stay ahead of the debian and ubuntu packages.
-    , debianize "HTTP" Newest [P.Epoch 1]
     , debianize "http-enumerator" Newest []
     , debianize "http-types" Newest []
-    , apt release "haskell-hunit"
     , debianize "i18n" Newest [P.DebVersion "0.3-1~hackage1"]
     , debianize "iconv" Newest []
     , P.Package { P.name = "haskell-incremental-sat-solver"
@@ -675,9 +636,6 @@ targets _home release =
     , debianize "monadLib" Newest [P.DebVersion "3.6.2-1~hackage1"]
     , debianize "monads-tf" Newest [P.DebVersion "0.1.0.0-1~hackage1"]
     , apt release "haskell-monoid-transformer"
-    , P.Package { P.name = "haskell-mtl"
-                , P.spec = Apt "sid" "haskell-mtl" (Just "2.0.1.0-2")
-                , P.flags = [] }
     , debianize "murmur-hash" Newest []
     , apt release "haskell-mwc-random"
     , debianize "nano-hmac" Newest [ P.Patch . B.pack . unlines $
@@ -729,7 +687,6 @@ targets _home release =
                                           , "                  [x] -> ['0', x]"
                                           , "                  x   -> x" ]
                                    , P.DebVersion "0.2.0ubuntu1" ]
-    , debianize "network" Newest []
     , debianize "openid" Newest
                     [ P.Patch . B.pack . unlines $
                       [ "--- old/openid.cabal\t2012-01-23 15:04:29.547162493 -0800"
@@ -833,10 +790,8 @@ targets _home release =
                       , " import Data.Char (isSpace)" ]
                     , P.DebVersion "1.8.2.1-1~hackage1" ]
     , apt release "haskell-pandoc-types"
-    , debianize "parallel" Newest []
     , debianize "parse-dimacs" Newest [P.DebVersion "1.2-1~hackage1"]
     , debianize "parseargs" Newest [P.DebVersion "0.1.3.2-1~hackage1"]
-    , apt release "haskell-parsec"
     , apt release "haskell-parsec2"
     , P.Package { P.name = "haskell-pbkdf2",
                   P.spec = DebDir (Hackage "PBKDF2" Nothing) (Darcs "http://src.seereason.com/pbkdf2-debian" Nothing),
@@ -851,8 +806,6 @@ targets _home release =
     {- , P.Package { P.name = "haskell-propositional-classes"
                 , P.spec = Darcs (repo ++ "/propositional-classes") Nothing
                 , P.flags = [] } -}
-    -- This is bundled with the compiler
-    -- , debianize "process" Newest []
     , debianize "PSQueue" Newest [P.DebVersion "1.1-1~hackage1"]
     , apt release "haskell-puremd5"
     , debianize "pwstore-purehaskell" Newest [P.DebVersion "2.1-1~hackage1"]
@@ -863,14 +816,7 @@ targets _home release =
     , P.Package { P.name = "haskell-quickcheck1"
                 , P.spec = Quilt (Apt "sid" "haskell-quickcheck1" Nothing) (Darcs (repo ++ "/haskell-quickcheck-quilt") Nothing)
                 , P.flags = [] }
-    , debianize "QuickCheck" Newest [P.ExtraDep "libghc-random-prof"]
     -- lucidNatty [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"]] [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"] ] ++
-    -- Random is built into 7.0, but not into 7.2, and the version
-    -- in hackage is incompatible with the version shipped with 7.0.
-    , debianize "random" Newest []
-    , apt release "haskell-regex-base"
-    , apt release "haskell-regex-compat"
-    , apt release "haskell-regex-posix"
     -- , apt release "haskell-regex-tdfa"
     , debianize "regex-tdfa" Newest []
     , P.Package { P.name = "haskell-revision"
@@ -922,7 +868,6 @@ targets _home release =
     -- , lucidNatty (hackage release "haskell-src-exts" [NP]) (debianize "haskell-src-exts" [])
     , debianize "haskell-src-exts" Newest [P.ExtraDep "happy", P.DebVersion "1.11.1-1"]
     , debianize "stb-image" Newest [P.DebVersion "0.2-1~hackage1"]
-    , apt release "haskell-stm"
     , apt release "haskell-strict" -- for leksah
     , apt release "haskell-strict-concurrency"
     , debianize "strict-io" Newest -- for GenI
@@ -942,7 +887,6 @@ targets _home release =
     , debianize "test-framework-smallcheck" Newest []
     -- Because 0.3.3-1 is both in sid and hackage, we need to keep the debianize
     -- code from using version 0.3.3-1~hackage1 which looks older.
-    , debianize "syb" Newest []
     , debianize "syb-with-class" Newest []
     , apt release "haskell-syb-with-class-instances-text"
     , debianize "tagged" Newest [P.DebVersion "0.2.3.1-1"]
@@ -995,7 +939,6 @@ targets _home release =
                       , "-" ]
                     , P.DebVersion "2.1.1-1~hackage1" ]
     , apt release "haskell-texmath"
-    , debianize "text" Newest []
     , debianize "th-expand-syns" Newest []
     , debianize "th-lift" Newest
                     [ P.Patch . B.pack . unlines $
@@ -1013,9 +956,6 @@ targets _home release =
                     , P.DebVersion "0.5.4-1~hackage1" ]
     , debianize "tls" Newest []
     , debianize "tls-extra" Newest []
-    , P.Package { P.name = "haskell-transformers"
-                , P.spec = Apt "sid" "haskell-transformers" (Just "0.2.2.0-3")
-                , P.flags = [] }
     , debianize "transformers-base" Newest []
     , debianize "unicode-names" Newest [P.DebVersion "3.2.0.0-1~hackage1"]
     , debianize "unicode-properties" Newest
@@ -1125,7 +1065,6 @@ targets _home release =
     , P.Package { P.name = "haskell-web-routes-th"
                 , P.spec = Cd "web-routes-th" (Darcs (repo ++ "/web-routes") Nothing)
                 , P.flags = [] }
-    , debianize "xhtml" Newest []
     , apt release "haskell-xml"
     , debianize "xml-conduit" (Pin "0.5.1.2") []
     , debianize "http-conduit" (Pin "1.2.0") []
@@ -1152,7 +1091,6 @@ targets _home release =
     , debianize "xss-sanitize" Newest []
     , debianize "yaml-light" Newest []
     , apt release "haskell-zip-archive"
-    , apt release "haskell-zlib"
     , debianize "zlib-bindings" Newest []
     , apt release "haskell-zlib-enum"
 
@@ -1181,6 +1119,294 @@ targets _home release =
                 , P.spec = Darcs "http://src.seereason.com/vc-darcs" Nothing
                 , P.flags = [] }
     -- , apt   "wordpress"
+    , P.Package { P.name = "haskell-geni"
+                , P.spec = DebDir (Darcs "http://code.haskell.org/GenI" Nothing) (Darcs (repo ++ "/haskell-geni-debian") Nothing)
+                , P.flags = [] }
+    ]
+
+platform release =
+    [ let ghc74 = P.Package { P.name = "ghc"
+                            , P.spec = Apt "experimental" "ghc" Nothing
+                            , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
+          ghc70 = P.Package { P.name = "ghc"
+                            , P.spec = Apt "sid" "ghc" Nothing
+                            , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] } in
+      case release of
+        "natty-seereason" -> P.NoPackage -- ghc74
+        _ -> P.NoPackage -- ghc74
+    , -- Patch haskell-devscripts to generate the correct haddock
+      -- dependency in the doc packages (haddock-interface-19 rather than
+      -- just 19), and to remove the conflict with ghc 7.4 that Joachim
+      -- added.
+      P.Package { P.name = "haskell-devscripts"
+                , P.spec = Quilt (Apt "sid" "haskell-devscripts" Nothing)
+                           (Darcs (repo ++ "/haskell-devscripts-quilt") Nothing)
+                , P.flags = [] }
+{-  , P.Package { P.name = "haskell-deepseq"
+                , P.spec = Apt "sid" "haskell-deepseq" (Just "1.1.0.2-2")
+                , P.flags = [] } -}
+    , -- Our automatic debianization code produces a package which is
+      -- missing the template files required for happy to work properly,
+      -- so I have imported debian's debianization and patched it to
+      -- work with ghc 7.4.1.  Note that this is also the first target
+      -- to require the new "install orig.tar.gz file" code in the
+      -- autobuilder.
+      P.Package { P.name = "happy",
+                  P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/happy/1.18.8/happy-1.18.8.tar.gz" "907d79425351e826fb0bb8b677620418")
+                           (Darcs "http://src.seereason.com/happy-debian" Nothing),
+                           P.flags = [P.RelaxDep "happy", P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
+    {- , debianize "happy" Newest [] -}
+    , apt release "haskell-stm"
+    , apt release "haskell-zlib"
+    -- , apt "haskell-deepseq"
+    , case release of
+        "natty-seereason" -> P.NoPackage -- a version newer than the latest in hackage is bundled with ghc
+        _ -> P.NoPackage -- debianize "deepseq" Newest []
+
+    , P.Package { P.name = "haskell-mtl"
+                , P.spec = Apt "sid" "haskell-mtl" (Just "2.0.1.0-2")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-transformers"
+                , P.spec = Apt "sid" "haskell-transformers" (Just "0.2.2.0-3")
+                , P.flags = [] }
+    , debianize "parallel" Newest []
+    , case release of
+        "natty-seereason" -> P.NoPackage -- ghc 7.4 ships with a binary package not available in hackage
+        _ -> P.Package { P.name = "haskell-binary"
+                       , P.spec = Quilt (Apt "sid" "haskell-binary" (Just "0.5.0.2-2")) (Darcs "http://src.seereason.com/haskell-binary-quilt" Nothing)
+                       , P.flags = [] }
+    , debianize "syb" Newest []
+    , debianize "fgl" Newest [P.DebVersion "5.4.2.4-1"]
+    , debianize "text" Newest []
+    , P.Package { P.name = "alex"
+                , P.spec = Apt "sid" "alex" Nothing
+                , P.flags = [P.RelaxDep "alex"] }
+    , opengl release
+    -- , haddock release
+    , debianize "haskell-src" Newest [ P.ExtraDep "happy" ]
+    , debianize "network" Newest []
+    , debianize "HTTP" Newest [P.Epoch 1]
+    , P.Package { P.name = "haskell-cgi"
+                , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz" "4092efaf00ac329b9771879f57a95323") (Darcs "http://src.seereason.com/haskell-cgi-debian" Nothing)
+                , P.flags = [] }
+    -- This is bundled with the compiler
+    -- , debianize "process" Newest []
+    -- Random is built into 7.0, but not into 7.2, and the version
+    -- in hackage is incompatible with the version shipped with 7.0.
+    , debianize "random" Newest []
+    , apt release "haskell-hunit"
+    , debianize "QuickCheck" Newest [P.ExtraDep "libghc-random-prof"]
+    , apt release "haskell-parsec"
+    , apt release "haskell-html"
+    , apt release "haskell-regex-compat"
+    , apt release "haskell-regex-base"
+    , apt release "haskell-regex-posix"
+    , debianize "xhtml" Newest []
+    ]
+
+-- Broken targets:
+--
+-- Text/JSONb/Decode.hs:48:3:
+--     Not in scope: data constructor `Done'
+--     Perhaps you meant `Attoparsec.Done' (imported from Data.Attoparsec.Char8)
+-- 
+-- Text/JSONb/Decode.hs:49:3:
+--     Not in scope: data constructor `Fail'
+--     Perhaps you meant `Attoparsec.Fail' (imported from Data.Attoparsec.Char8)
+-- 
+-- Text/JSONb/Decode.hs:50:3:
+--     Not in scope: data constructor `Partial'
+--     Perhaps you meant `Attoparsec.Partial' (imported from Data.Attoparsec.Char8)
+jsonb = mconcat $
+    [ debianize "JSONb" Newest [P.DebVersion "1.0.7-1~hackage1"]
+    , debianize "data-object-json" Newest [] ]
+
+-- May work with these added dependencies (statevar thru openglraw)
+opengl release = mconcat $
+    [ debianize "OpenGL" Newest []
+    , debianize "vacuum-opengl" Newest [{-P.DebVersion "0.0.3-1~hackage2"-}]
+    , debianize "bitmap-opengl" Newest [{-P.DebVersion "0.0.0-1~hackage1"-}]
+    , apt release "haskell-glut"
+    , debianize "statevar" Newest []
+    , debianize "tensor" Newest []
+    , debianize "gluraw" Newest []
+    , debianize "objectname" Newest []
+    , debianize "openglraw" Newest [] ]
+
+-- Problem compiling C code in glib:
+--  System/Glib/hsgclosure.c:110:8:
+--       error: void value not ignored as it ought to be
+glib release = mconcat $
+    [ debianize "glib" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils", P.ExtraDep "libglib2.0-dev"]
+    , apt release "haskell-criterion"
+    , apt release "haskell-ltk"
+    , apt release "haskell-chart"
+    , apt release "haskell-gio"
+    , apt release "haskell-gtk"
+    , apt release "haskell-gtksourceview2"
+    , apt release "haskell-pango" ]
+
+--  Using pkg-config version 0.25 found on system at: /usr/bin/ 2> 
+--  <interactive>:2:1:
+--      Failed to load interface for `Directory'
+--      It is a member of the hidden package `haskell98-2.0.0.1'.
+--      Use -v to see a list of the files searched for.
+--  
+--  src/System/Plugins/Utils.hs:21:8:
+--      Warning: In the use of `catch'
+--               (imported from Prelude, but defined in System.IO.Error):
+--               Deprecated: "Please use the new exceptions variant, Control.Exception.catch"
+--  
+--  src/System/Plugins/Load.hs:91:35:
+--      Module `GHC.Exts' does not export `addrToHValue#'
+--  make: *** [build-ghc-stamp] Error 1
+plugins = mconcat $
+    [ debianize "plugins" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- haskell-plugins-1.5.1.4.orig/src/System/Plugins/Load.hs\t2011-12-07 07:13:54.000000000 -0800"
+                      , "+++ haskell-plugins-1.5.1.4/src/System/Plugins/Load.hs\t2012-01-02 10:16:25.766481952 -0800"
+                      , "@@ -84,7 +84,9 @@"
+                      , " import System.Directory         ( doesFileExist, removeFile )"
+                      , " import Foreign.C.String         ( CString, withCString, peekCString )"
+                      , " "
+                      , "+#if !MIN_VERSION_ghc(7,2,0)"
+                      , " import GHC                      ( defaultCallbacks )"
+                      , "+#endif"
+                      , " import GHC.Ptr                  ( Ptr(..), nullPtr )"
+                      , " import GHC.Exts                 ( addrToHValue# )"
+                      , " import GHC.Prim                 ( unsafeCoerce# )"
+                      , "@@ -99,7 +101,11 @@"
+                      , " readBinIface' :: FilePath -> IO ModIface"
+                      , " readBinIface' hi_path = do"
+                      , "     -- kludgy as hell"
+                      , "+#if MIN_VERSION_ghc(7,2,0)"
+                      , "+    e <- newHscEnv undefined"
+                      , "+#else"
+                      , "     e <- newHscEnv defaultCallbacks undefined"
+                      , "+#endif"
+                      , "     initTcRnIf 'r' e undefined undefined (readBinIface IgnoreHiWay QuietBinIFaceReading hi_path)"
+                      , " "
+                      , " -- TODO need a loadPackage p package.conf :: IO () primitive"
+                      , "@@ -679,7 +685,11 @@"
+                      , " "
+                      , "                 -- and find some packages to load, as well."
+                      , "                 let ps = dep_pkgs ds"
+                      , "+#if MIN_VERSION_ghc(7,2,0)"
+                      , "+                ps' <- filterM loaded . map packageIdString . nub $ map fst ps"
+                      , "+#else"
+                      , "                 ps' <- filterM loaded . map packageIdString . nub $ ps"
+                      , "+#endif"
+                      , " "
+                      , " #if DEBUG"
+                      , "                 when (not (null ps')) $" ]
+                    , P.DebVersion "1.5.1.4-1~hackage1" ]
+    , debianize "happstack-plugins" Newest []
+    , debianize "plugins-auto" Newest [] ]
+
+-- Control/Monad/Unpack.hs:33:3:
+--      Illegal repeated type variable `a_a4L6'
+higgsset = mconcat
+    [ debianize "unpack-funcs" Newest []
+    , debianize "HiggsSet" Newest []
+    , debianize "TrieMap" Newest [P.DebVersion "4.0.1-1~hackage1"] ]
+
+-- ircbot needs a dependency on containers
+happstackdotcom = mconcat
+    [ P.Package { P.name = "haskell-ircbot"
+                , P.spec = Darcs "http://patch-tag.com/r/stepcut/ircbot" Nothing
+                , P.flags = []
+                }
+    , P.Package { P.name = "haskell-happstackdotcom"
+                , P.spec = Darcs "http://patch-tag.com/r/stepcut/happstackDotCom" Nothing
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-happstackdotcom-doc"
+                , P.spec = Darcs "http://src.seereason.com/happstackDotCom-doc" Nothing
+                , P.flags = [] } ]
+
+frisby = mconcat
+    [ P.Package { P.name = "haskell-frisby"
+                , P.spec = DebDir (Cd "frisby" (Darcs "http://src.seereason.com/frisby" Nothing)) (Darcs "http://src.seereason.com/frisby-debian" Nothing)
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-decimal"
+                , P.spec = Darcs "http://src.seereason.com/decimal" Nothing
+                , P.flags = [] } ]
+
+haddock release =
+    -- For leksah.  Version 2.9.2 specifies ghc < 7.2 and base ==
+    -- 4.3.* so we can't use "debianize "haddock" []".  I don't think
+    -- we really need this, or the hackage version.  Version 2.10.0 is
+    -- included with ghc 7.4.0.
+    [ apt release "haskell-haddock" ]
+
+-- These have been failing for some time, and I don't think we've missed them.
+failing release =
+    [ debianize "funsat" Newest []
+    , apt release "haskell-statistics" ]
+
+algebra =
+    [ debianize "adjunctions" Newest []
+    , debianize "algebra" Newest []
+    , debianize "bifunctors" Newest []
+    , debianize "categories" Newest []
+    , debianize "comonad" Newest []
+    , debianize "comonads-fd" Newest []
+    , debianize "comonad-transformers" Newest []
+    , debianize "contravariant" Newest []
+    , debianize "data-lens" Newest []
+    , debianize "distributive" Newest []
+    , debianize "free" Newest []
+    , debianize "keys" Newest []
+    , debianize "representable-functors" Newest []
+    , debianize "representable-tries" Newest []
+    , debianize "semigroupoids" Newest []
+    , debianize "void" Newest [] ]
+
+-- Debian package has versioned dependencies on binary, but the
+-- virtual binary package provided with ghc 7.4 (0.5.1.0) is
+-- newer than the version of binary in hackage (0.5.0.2.)  This
+-- means we try to pull in bogus debs for libghc-binary-* and
+-- dependency problems ensue.
+agda release =
+    [ apt release "agda"
+    , apt release "agda-bin"
+    , apt release "agda-stdlib" ]
+
+other release =
+    [ apt release "darcs"
+    , debianize "aeson-native" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- old-aeson-native/aeson-native.cabal\t2011-12-03 08:17:32.000000000 -0800"
+                      , "+++ new-aeson-native/aeson-native.cabal\t2012-01-02 12:33:12.776486492 -0800"
+                      , "@@ -119,7 +119,7 @@"
+                      , "     blaze-textual-native >= 0.2.0.2,"
+                      , "     bytestring,"
+                      , "     containers,"
+                      , "-    deepseq < 1.2,"
+                      , "+    deepseq < 1.3,"
+                      , "     hashable >= 1.1.2.0,"
+                      , "     mtl,"
+                      , "     old-locale," ] ]
+    , apt release "haskell-binary-shared" -- for leksah
+    , debianize "cairo" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils"] -- for leksah
+    , debianize "convertible-text" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- old/convertible-text.cabal\t2012-01-20 09:58:49.087163068 -0800"
+                      , "+++ new/convertible-text.cabal\t2012-01-20 09:57:30.017160919 -0800"
+                      , "@@ -36,11 +36,11 @@"
+                      , "   else"
+                      , "       Buildable: True"
+                      , "   Build-Depends: base >= 4 && < 5,"
+                      , "-                 old-time >= 1.0.0.2 && < 1.1,"
+                      , "+                 old-time >= 1.0.0.2,"
+                      , "                  containers >= 0.2.0.1 && < 0.5,"
+                      , "                  text >= 0.5 && < 0.12,"
+                      , "                  bytestring >= 0.9.1.4 && < 0.10,"
+                      , "-                 attempt >= 0.3.0 && < 0.4,"
+                      , "+                 attempt >= 0.3.0,"
+                      , "                  template-haskell,"
+                      , "                  time"
+                      , " " ] ]
+    , debianize "gnuplot" Newest [P.DebVersion "0.4.2-1~hackage1"]
     ]
 
 apt :: String -> String -> P.Packages
@@ -1288,212 +1514,3 @@ data Flag
     | Local String -- ^ Use a local repo, Argument is generally the _home parameter to targets.
     deriving Eq
 -}
-
--- Broken targets:
---
--- Text/JSONb/Decode.hs:48:3:
---     Not in scope: data constructor `Done'
---     Perhaps you meant `Attoparsec.Done' (imported from Data.Attoparsec.Char8)
--- 
--- Text/JSONb/Decode.hs:49:3:
---     Not in scope: data constructor `Fail'
---     Perhaps you meant `Attoparsec.Fail' (imported from Data.Attoparsec.Char8)
--- 
--- Text/JSONb/Decode.hs:50:3:
---     Not in scope: data constructor `Partial'
---     Perhaps you meant `Attoparsec.Partial' (imported from Data.Attoparsec.Char8)
-jsonb = mconcat $
-    [ debianize "JSONb" Newest [P.DebVersion "1.0.7-1~hackage1"]
-    , debianize "data-object-json" Newest [] ]
-
--- May work with these added dependencies (statevar thru openglraw)
-opengl release = mconcat $
-    [ debianize "OpenGL" Newest []
-    , debianize "vacuum-opengl" Newest [{-P.DebVersion "0.0.3-1~hackage2"-}]
-    , debianize "bitmap-opengl" Newest [{-P.DebVersion "0.0.0-1~hackage1"-}]
-    , apt release "haskell-glut"
-    , debianize "statevar" Newest []
-    , debianize "tensor" Newest []
-    , debianize "gluraw" Newest []
-    , debianize "objectname" Newest []
-    , debianize "openglraw" Newest [] ]
-
--- Problem compiling C code in glib:
---  System/Glib/hsgclosure.c:110:8:
---       error: void value not ignored as it ought to be
-glib release = mconcat $
-    [ debianize "glib" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils", P.ExtraDep "libglib2.0-dev"]
-    , apt release "haskell-criterion"
-    , apt release "haskell-ltk"
-    , apt release "haskell-chart"
-    , apt release "haskell-gio"
-    , apt release "haskell-gtk"
-    , apt release "haskell-gtksourceview2"
-    , apt release "haskell-pango" ]
-
---  Using pkg-config version 0.25 found on system at: /usr/bin/ 2> 
---  <interactive>:2:1:
---      Failed to load interface for `Directory'
---      It is a member of the hidden package `haskell98-2.0.0.1'.
---      Use -v to see a list of the files searched for.
---  
---  src/System/Plugins/Utils.hs:21:8:
---      Warning: In the use of `catch'
---               (imported from Prelude, but defined in System.IO.Error):
---               Deprecated: "Please use the new exceptions variant, Control.Exception.catch"
---  
---  src/System/Plugins/Load.hs:91:35:
---      Module `GHC.Exts' does not export `addrToHValue#'
---  make: *** [build-ghc-stamp] Error 1
-plugins = mconcat $
-    [ debianize "plugins" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- haskell-plugins-1.5.1.4.orig/src/System/Plugins/Load.hs\t2011-12-07 07:13:54.000000000 -0800"
-                      , "+++ haskell-plugins-1.5.1.4/src/System/Plugins/Load.hs\t2012-01-02 10:16:25.766481952 -0800"
-                      , "@@ -84,7 +84,9 @@"
-                      , " import System.Directory         ( doesFileExist, removeFile )"
-                      , " import Foreign.C.String         ( CString, withCString, peekCString )"
-                      , " "
-                      , "+#if !MIN_VERSION_ghc(7,2,0)"
-                      , " import GHC                      ( defaultCallbacks )"
-                      , "+#endif"
-                      , " import GHC.Ptr                  ( Ptr(..), nullPtr )"
-                      , " import GHC.Exts                 ( addrToHValue# )"
-                      , " import GHC.Prim                 ( unsafeCoerce# )"
-                      , "@@ -99,7 +101,11 @@"
-                      , " readBinIface' :: FilePath -> IO ModIface"
-                      , " readBinIface' hi_path = do"
-                      , "     -- kludgy as hell"
-                      , "+#if MIN_VERSION_ghc(7,2,0)"
-                      , "+    e <- newHscEnv undefined"
-                      , "+#else"
-                      , "     e <- newHscEnv defaultCallbacks undefined"
-                      , "+#endif"
-                      , "     initTcRnIf 'r' e undefined undefined (readBinIface IgnoreHiWay QuietBinIFaceReading hi_path)"
-                      , " "
-                      , " -- TODO need a loadPackage p package.conf :: IO () primitive"
-                      , "@@ -679,7 +685,11 @@"
-                      , " "
-                      , "                 -- and find some packages to load, as well."
-                      , "                 let ps = dep_pkgs ds"
-                      , "+#if MIN_VERSION_ghc(7,2,0)"
-                      , "+                ps' <- filterM loaded . map packageIdString . nub $ map fst ps"
-                      , "+#else"
-                      , "                 ps' <- filterM loaded . map packageIdString . nub $ ps"
-                      , "+#endif"
-                      , " "
-                      , " #if DEBUG"
-                      , "                 when (not (null ps')) $" ]
-                    , P.DebVersion "1.5.1.4-1~hackage1" ]
-    , debianize "happstack-plugins" Newest []
-    , debianize "plugins-auto" Newest [] ]
-
--- Control/Monad/Unpack.hs:33:3:
---      Illegal repeated type variable `a_a4L6'
-higgsset = mconcat
-    [ debianize "unpack-funcs" Newest []
-    , debianize "HiggsSet" Newest [P.DebVersion "0.1-1~hackage1"]
-    , debianize "TrieMap" Newest [P.DebVersion "4.0.1-1~hackage1"] ]
-
--- ircbot needs a dependency on containers
-happstackdotcom = mconcat
-    [ P.Package { P.name = "haskell-ircbot"
-                , P.spec = Darcs "http://patch-tag.com/r/stepcut/ircbot" Nothing
-                , P.flags = []
-                }
-    , P.Package { P.name = "haskell-happstackdotcom"
-                , P.spec = Darcs "http://patch-tag.com/r/stepcut/happstackDotCom" Nothing
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstackdotcom-doc"
-                , P.spec = Darcs "http://src.seereason.com/happstackDotCom-doc" Nothing
-                , P.flags = [] } ]
-
-frisby = mconcat
-    [ P.Package { P.name = "haskell-frisby"
-                , P.spec = DebDir (Cd "frisby" (Darcs "http://src.seereason.com/frisby" Nothing)) (Darcs "http://src.seereason.com/frisby-debian" Nothing)
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-decimal"
-                , P.spec = Darcs "http://src.seereason.com/decimal" Nothing
-                , P.flags = [] } ]
-
-haddock release =
-    -- For leksah.  Version 2.9.2 specifies ghc < 7.2 and base ==
-    -- 4.3.* so we can't use "debianize "haddock" []".  I don't think
-    -- we really need this, or the hackage version.  Version 2.10.0 is
-    -- included with ghc 7.4.0.
-    [ apt release "haskell-haddock" ]
-
--- These have been failing for some time, and I don't think we've missed them.
-failing release =
-    [ debianize "funsat" Newest []
-    , apt release "haskell-statistics" ]
-
-algebra =
-    [ debianize "adjunctions" Newest []
-    , debianize "algebra" Newest []
-    , debianize "bifunctors" Newest []
-    , debianize "categories" Newest []
-    , debianize "comonad" Newest []
-    , debianize "comonads-fd" Newest []
-    , debianize "comonad-transformers" Newest []
-    , debianize "contravariant" Newest []
-    , debianize "data-lens" Newest []
-    , debianize "distributive" Newest []
-    , debianize "free" Newest []
-    , debianize "keys" Newest []
-    , debianize "representable-functors" Newest []
-    , debianize "representable-tries" Newest []
-    , debianize "semigroupoids" Newest []
-    , debianize "void" Newest [] ]
-
--- Debian package has versioned dependencies on binary, but the
--- virtual binary package provided with ghc 7.4 (0.5.1.0) is
--- newer than the version of binary in hackage (0.5.0.2.)  This
--- means we try to pull in bogus debs for libghc-binary-* and
--- dependency problems ensue.
-agda release =
-    [ apt release "agda"
-    , apt release "agda-bin"
-    , apt release "agda-stdlib" ]
-
-other release =
-    [ apt release "darcs"
-    , debianize "aeson-native" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- old-aeson-native/aeson-native.cabal\t2011-12-03 08:17:32.000000000 -0800"
-                      , "+++ new-aeson-native/aeson-native.cabal\t2012-01-02 12:33:12.776486492 -0800"
-                      , "@@ -119,7 +119,7 @@"
-                      , "     blaze-textual-native >= 0.2.0.2,"
-                      , "     bytestring,"
-                      , "     containers,"
-                      , "-    deepseq < 1.2,"
-                      , "+    deepseq < 1.3,"
-                      , "     hashable >= 1.1.2.0,"
-                      , "     mtl,"
-                      , "     old-locale," ] ]
-    , apt release "haskell-binary-shared" -- for leksah
-    , debianize "cairo" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils"] -- for leksah
-    , debianize "convertible-text" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- old/convertible-text.cabal\t2012-01-20 09:58:49.087163068 -0800"
-                      , "+++ new/convertible-text.cabal\t2012-01-20 09:57:30.017160919 -0800"
-                      , "@@ -36,11 +36,11 @@"
-                      , "   else"
-                      , "       Buildable: True"
-                      , "   Build-Depends: base >= 4 && < 5,"
-                      , "-                 old-time >= 1.0.0.2 && < 1.1,"
-                      , "+                 old-time >= 1.0.0.2,"
-                      , "                  containers >= 0.2.0.1 && < 0.5,"
-                      , "                  text >= 0.5 && < 0.12,"
-                      , "                  bytestring >= 0.9.1.4 && < 0.10,"
-                      , "-                 attempt >= 0.3.0 && < 0.4,"
-                      , "+                 attempt >= 0.3.0,"
-                      , "                  template-haskell,"
-                      , "                  time"
-                      , " " ] ]
-    -- I really need this one
-    , P.Package { P.name = "haskell-geni"
-                , P.spec = DebDir (Darcs "http://code.haskell.org/GenI" Nothing) (Darcs (repo ++ "/haskell-geni-debian") Nothing)
-                , P.flags = [] }
-    , debianize "gnuplot" Newest [P.DebVersion "0.4.2-1~hackage1"]
-    ]
