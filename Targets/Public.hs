@@ -14,7 +14,7 @@ import Targets.Common (repo, localRepo, checkUnique, happstackRepo)
 targets :: String -> String -> P.Packages
 targets _home release =
     checkUnique $ mconcat $
-    [ -- platform,
+    [ -- platform release,
       main _home release
     , happstackdotcom
     , higgsset
@@ -1124,15 +1124,16 @@ main _home release =
     ]
 
 platform release =
-    [ let ghc74 = P.Package { P.name = "ghc"
-                            , P.spec = Apt "experimental" "ghc" Nothing
-                            , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
-          ghc70 = P.Package { P.name = "ghc"
-                            , P.spec = Apt "sid" "ghc" Nothing
-                            , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] } in
+    mconcat
+    [ let ghc740 = P.Package { P.name = "ghc"
+                             , P.spec = Apt "experimental" "ghc" Nothing
+                             , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
+          ghc741 = P.Package { P.name = "ghc"
+                             , P.spec = Apt "sid" "ghc" Nothing
+                             , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] } in
       case release of
-        "natty-seereason" -> P.NoPackage -- ghc74
-        _ -> P.NoPackage -- ghc74
+        "natty-seereason" -> ghc741 -- P.NoPackage
+        _ -> ghc741 -- P.NoPackage
     , -- Patch haskell-devscripts to generate the correct haddock
       -- dependency in the doc packages (haddock-interface-19 rather than
       -- just 19), and to remove the conflict with ghc 7.4 that Joachim
