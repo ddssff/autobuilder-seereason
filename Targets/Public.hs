@@ -1138,10 +1138,7 @@ platform release =
       -- dependency in the doc packages (haddock-interface-19 rather than
       -- just 19), and to remove the conflict with ghc 7.4 that Joachim
       -- added.
-      P.Package { P.name = "haskell-devscripts"
-                , P.spec = Quilt (Apt "sid" "haskell-devscripts" Nothing)
-                           (Darcs (repo ++ "/haskell-devscripts-quilt") Nothing)
-                , P.flags = [] }
+      apt release "haskell-devscripts"
 {-  , P.Package { P.name = "haskell-deepseq"
                 , P.spec = Apt "sid" "haskell-deepseq" (Just "1.1.0.2-2")
                 , P.flags = [] } -}
