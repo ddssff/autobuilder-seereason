@@ -17,7 +17,8 @@ targets _home release =
     [ -- platform release,
       main _home release
     , happstackdotcom
-    , higgsset
+    -- , fixme
+    -- , higgsset
     -- , jsonb
     -- , glib
     -- , plugins
@@ -26,6 +27,13 @@ targets _home release =
     -- , algebra
     -- , agda
     -- , other
+    ]
+
+fixme =
+    [ debianize "test-framework-smallcheck" Newest []
+    , P.Package { P.name = "haskell-geni"
+                , P.spec = DebDir (Darcs "http://code.haskell.org/GenI" Nothing) (Darcs (repo ++ "/haskell-geni-debian") Nothing)
+                , P.flags = [] }
     ]
 
 main :: String -> String -> P.Packages
@@ -883,7 +891,6 @@ main _home release =
                       , "                    System.IO.Strict.Internals"
                       , "                    Data.IORef.Strict" ] ]
     , debianize "smallcheck" Newest []
-    , debianize "test-framework-smallcheck" Newest []
     -- Because 0.3.3-1 is both in sid and hackage, we need to keep the debianize
     -- code from using version 0.3.3-1~hackage1 which looks older.
     , debianize "syb-with-class" Newest []
@@ -1029,7 +1036,7 @@ main _home release =
                       , "                , bytestring >= 0.9.1.7 && < 0.10"
                       , "                , file-embed >= 0.0.4.1 && < 0.1" ]
                     , P.DebVersion "0.2-1~hackage1" ]
-    , debianize "wai" Newest []
+    , debianize "wai" (Pin "1.0.0") []
     , debianize "vault" Newest []
     , debianize "web-encodings" Newest
                     [ P.Patch . B.pack . unlines $
@@ -1118,9 +1125,6 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/vc-darcs" Nothing
                 , P.flags = [] }
     -- , apt   "wordpress"
-    , P.Package { P.name = "haskell-geni"
-                , P.spec = DebDir (Darcs "http://code.haskell.org/GenI" Nothing) (Darcs (repo ++ "/haskell-geni-debian") Nothing)
-                , P.flags = [] }
     ]
 
 platform release =
@@ -1178,7 +1182,7 @@ platform release =
     , P.Package { P.name = "alex"
                 , P.spec = Apt "sid" "alex" Nothing
                 , P.flags = [P.RelaxDep "alex"] }
-    , opengl release
+    -- , opengl release
     -- , haddock release
     , debianize "haskell-src" Newest [ P.ExtraDep "happy" ]
     , debianize "network" Newest []
