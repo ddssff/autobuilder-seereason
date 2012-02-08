@@ -345,9 +345,6 @@ main _home release =
     , P.Package { P.name = "haskell-happstack-extra"
                 , P.spec = Darcs (repo ++ "/happstack-extra") Nothing
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-state-extra"
-                , P.spec = Darcs (repo ++ "/happstack-state-extra") Nothing
-                , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-facebook"
                 , P.spec = Darcs (repo ++ "/happstack-facebook") Nothing
                 , P.flags = [] }
@@ -369,7 +366,6 @@ main _home release =
                 , P.spec = Darcs (repo ++ "/happstack-search") Nothing
                 , P.flags = [] }
     , debianize "happstack-server" Newest []
-    , debianize "happstack-state" Newest [P.DebVersion "6.1.2-1~hackage1"]
     , debianize "happstack-util" Newest []
     , apt release "haskell-harp"
     , debianize "hashable" Newest [P.DebVersion "1.1.2.2-1"]

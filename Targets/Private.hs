@@ -22,10 +22,13 @@ libraries _home = mconcat $
     ]
 
 applications _home = mconcat $
-    [ P.Package { P.name = "haskell-appraisal"
+    [ P.Package { P.name = "haskell-artvaluereport"
                 , P.spec = Darcs (privateRepo ++ "/artvaluereport") Nothing
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-appraisal-data"
+    , P.Package { P.name = "haskell-artvaluereport2"
+                , P.spec = Darcs (privateRepo ++ "/artvaluereport2") Nothing
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-artvaluereport-data"
                 , P.spec = Darcs (privateRepo ++ "/artvaluereport-data") Nothing
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-mailinglist"
