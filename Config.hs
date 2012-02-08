@@ -92,7 +92,7 @@ myBuildURI myBuildRelease =
 -- only with the vendor tag.  Sid is always a development release,
 -- Ubuntu creates a new one for each cycle.
 --
-myDevelopmentReleaseNames = ["sid", "oneiric"]
+myDevelopmentReleaseNames = ["sid", "precise"]
 
 -- This tag is used to construct the customized part of the version
 -- number for any package the autobuilder builds.
