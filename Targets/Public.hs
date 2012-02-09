@@ -376,7 +376,7 @@ main _home release =
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
     -- sound right...
-    , debianize "HaXml" Newest [P.Epoch 1, P.DebVersion "1:1.22.5-1~hackage1"]
+    , debianize "HaXml" Newest [P.DebVersion "1:1.22.5-1~hackage1"]
     , debianize "heap" Newest [P.DebVersion "1.0.0-1~hackage1"]
     , P.Package { P.name = "haskell-help"
                 , P.spec = Darcs "http://src.seereason.com/haskell-help" Nothing
@@ -1113,7 +1113,7 @@ platform release =
     -- , haddock release
     , debianize "haskell-src" Newest [ P.ExtraDep "happy" ]
     , debianize "network" Newest []
-    , debianize "HTTP" Newest [P.Epoch 1]
+    , debianize "HTTP" Newest []
     , P.Package { P.name = "haskell-cgi"
                 , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz" "4092efaf00ac329b9771879f57a95323") (Darcs "http://src.seereason.com/haskell-cgi-debian" Nothing)
                 , P.flags = [] }

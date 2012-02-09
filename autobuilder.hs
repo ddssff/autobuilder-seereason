@@ -221,7 +221,8 @@ defParams _home myBuildRelease =
     , archList = [Binary "i386",Binary "amd64"]
     , newDistProgram = "newdist -v"
     -- 6.14 adds the ExtraDevDep parameter.
-    , requiredVersion = [(parseDebianVersion "6.14", Nothing)]
+    -- 6.15 changes Epoch parameter arity to 2
+    , requiredVersion = [(parseDebianVersion "6.15", Nothing)]
     -- Things that are probably obsolete
     , debug = False
     , discard = myDiscards

@@ -71,13 +71,13 @@ ubuntuReleases = [Oneiric, Natty, Maverick, Lucid, Karmic, Jaunty, Intrepid, Har
 -- don't wish to build.
 public :: String -> String -> P.Packages
 public home release =
-    applyDepMap $ Public.targets home release
+    applyEpochMap $ applyDepMap $ Public.targets home release
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     --          ++ private home
 
 private :: String -> P.Packages
 private home =
-    applyDepMap $ mappend (Private.libraries home) (Private.applications home)
+    applyEpochMap $ applyDepMap $ mappend (Private.libraries home) (Private.applications home)
 
 -- | Supply some special cases to map cabal library names to debian.
 -- The prefix "lib" and the suffix "-dev" will be added later by
@@ -89,3 +89,13 @@ applyDepMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
       mappings = [P.MapDep "cryptopp" "crypto++"]
+
+applyEpochMap :: P.Packages -> P.Packages
+applyEpochMap P.NoPackage = P.NoPackage
+applyEpochMap (P.Packages s) = P.Packages (Set.map applyEpochMap s)
+applyEpochMap x@(P.Package {}) =
+    x {P.flags = P.flags x ++ mappings}
+    where
+      mappings =
+          [ P.Epoch "HTTP" 1
+          , P.Epoch "HaXml" 1 ]
