@@ -337,7 +337,35 @@ main _home release =
     -- Errors were encountered while processing:
     --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
-    , debianize "happstack" Newest []
+    , debianize "happstack" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "diff -rN -u old/happstack.cabal new/happstack.cabal"
+                      , "--- old/happstack.cabal\t2012-02-09 08:32:13.583459831 -0800"
+                      , "+++ new/happstack.cabal\t2012-02-09 08:32:13.603088527 -0800"
+                      , "@@ -71,7 +71,6 @@"
+                      , "                        happstack-data   >= 6.0 && < 6.1,"
+                      , "                        happstack-ixset  >= 6.0 && < 6.2,"
+                      , "                        happstack-server >= 6.0 && < 6.6,"
+                      , "-                       happstack-state  >= 6.0 && < 6.2,"
+                      , "                        happstack-util   >= 6.0 && < 6.1,"
+                      , "                        old-time"
+                      , " "
+                      , "diff -rN -u old/src/Happstack/State/ClockTime.hs new/src/Happstack/State/ClockTime.hs"
+                      , "--- old/src/Happstack/State/ClockTime.hs\t2012-02-09 08:32:13.573458439 -0800"
+                      , "+++ new/src/Happstack/State/ClockTime.hs\t2012-02-09 08:32:13.603088527 -0800"
+                      , "@@ -8,11 +8,8 @@"
+                      , " "
+                      , " import Data.Generics (Data, Typeable)"
+                      , " import Happstack.Data (deriveNewData)"
+                      , "-import Happstack.State (Version, deriveSerialize)"
+                      , " import System.Time (ClockTime(..))"
+                      , " "
+                      , " deriving instance Typeable ClockTime"
+                      , " deriving instance Data ClockTime"
+                      , "-instance Version ClockTime"
+                      , "-$(deriveSerialize ''ClockTime)"
+                      , " $(deriveNewData [''ClockTime])" ]
+                    ]
     , P.Package { P.name = "haskell-happstack-authenticate"
                 , P.spec = Darcs (repo ++ "/happstack-authenticate") Nothing
                 , P.flags = [] }
