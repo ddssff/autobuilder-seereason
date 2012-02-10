@@ -544,7 +544,6 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/html-entities" Nothing
                 , P.flags = [] }
     -- We need the epoch to stay ahead of the debian and ubuntu packages.
-    , debianize "http-enumerator" Newest []
     , debianize "http-types" Newest []
     , debianize "i18n" Newest [P.DebVersion "0.3-1~hackage1"]
     , debianize "iconv" Newest []
@@ -1123,6 +1122,7 @@ authenticate = mconcat $
     , debianize "conduit" (pin "0.1.1.1") []
     , debianize "attoparsec-conduit" (pin "0.0.1") []
     , debianize "blaze-builder-conduit" (pin "0.0.1") []
+    , debianize "http-enumerator" (pin "0.7.2.5") []
     , debianize "tls" (pin "0.8.5") []
     , debianize "tls-extra" (pin "0.4.2.1") []
     , debianize "certificate" (pin "1.0.1")
