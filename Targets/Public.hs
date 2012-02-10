@@ -1125,7 +1125,10 @@ authenticate = mconcat $
     , debianize "blaze-builder-conduit" (pin "0.0.1") []
     , debianize "tls" (pin "0.8.5") []
     , debianize "tls-extra" (pin "0.4.2.1") []
-    , debianize "certificate" (pin "1.0.1") []
+    , debianize "certificate" (pin "1.0.1")
+                (case (pin "1.0.1") of
+                   Newest -> []
+                   Pin _ -> [P.DebVersion "1.0.1-1~hackage1"])
     , debianize "authenticate" (pin "0.11.1")
                 (case (pin "0.11.1") of
                    Newest -> []
