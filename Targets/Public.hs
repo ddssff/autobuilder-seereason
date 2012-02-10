@@ -192,7 +192,6 @@ main _home release =
     , debianize "case-insensitive" Newest []
     , debianize "CC-delcont" Newest [P.DebVersion "0.2-1~hackage1"]
     , apt release "haskell-cereal"
-    , debianize "certificate" Newest []
     , debianize "citeproc-hs" Newest []
     , case release of
         "natty-seereason" -> debianize "colour" Newest []
@@ -875,8 +874,6 @@ main _home release =
                     , P.DebVersion "2.1.1-1~hackage1" ]
     , debianize "th-expand-syns" Newest []
     , debianize "th-lift" Newest []
-    , debianize "tls" Newest []
-    , debianize "tls-extra" Newest []
     , debianize "transformers-base" Newest []
     , debianize "unicode-names" Newest [P.DebVersion "3.2.0.0-1~hackage1"]
     , debianize "unicode-properties" Newest
@@ -1126,6 +1123,9 @@ authenticate = mconcat $
     , debianize "conduit" (pin "0.1.1.1") []
     , debianize "attoparsec-conduit" (pin "0.0.1") []
     , debianize "blaze-builder-conduit" (pin "0.0.1") []
+    , debianize "tls" (pin "0.8.5") []
+    , debianize "tls-extra" (pin "0.4.2.1") []
+    , debianize "certificate" (pin "1.0.1") []
     , debianize "authenticate" (pin "0.11.1")
                 (case (pin "0.11.1") of
                    Newest -> []
