@@ -874,20 +874,7 @@ main _home release =
                       , "-" ]
                     , P.DebVersion "2.1.1-1~hackage1" ]
     , debianize "th-expand-syns" Newest []
-    , debianize "th-lift" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- x/th-lift.cabal.orig\t2012-01-01 11:57:27.446480543 -0800"
-                      , "+++ x/th-lift.cabal\t2012-01-01 11:58:07.646482909 -0800"
-                      , "@@ -24,7 +24,7 @@"
-                      , "     Build-Depends: packedstring == 0.1.*,"
-                      , "                    template-haskell >= 2.2 && < 2.4"
-                      , "   else"
-                      , "-    Build-Depends: template-haskell >= 2.4 && < 2.7"
-                      , "+    Build-Depends: template-haskell >= 2.4 && < 2.8"
-                      , " "
-                      , " source-repository head"
-                      , "   type:     git" ]
-                    , P.DebVersion "0.5.4-1~hackage1" ]
+    , debianize "th-lift" Newest []
     , debianize "tls" Newest []
     , debianize "tls-extra" Newest []
     , debianize "transformers-base" Newest []
