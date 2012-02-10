@@ -16,6 +16,7 @@ targets _home release =
     checkUnique $ mconcat $
     [ -- platform release,
       main _home release
+    , authenticate
     , happstackdotcom
     -- , fixme
     -- , higgsset
@@ -48,7 +49,7 @@ main _home release =
                 , P.spec = Darcs (repo ++ "/cabal-debian") Nothing
                 , P.flags = [] }
     , P.Package { P.name = "cpphs"
-                , P.spec = Quilt (Apt "sid" "cpphs" Nothing) (Darcs "http://src.seereason.com/cpphs-quilt" Nothing)
+                , P.spec = Apt "sid" "cpphs" Nothing
                 , P.flags = [] }
     , apt release "debootstrap"
     , apt release "geneweb"
@@ -134,31 +135,7 @@ main _home release =
                       , "   exposed-modules: Data.Attoparsec.Text"
                       , "                    Data.Attoparsec.Text.FastSet" ] ]
     , debianize "attoparsec-text-enumerator" Newest []
-    , debianize "authenticate" (Pin "0.11.1")
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- old/authenticate.cabal\t2012-01-19 19:39:56.000000000 -0800"
-                      , "+++ new/authenticate.cabal\t2012-01-20 11:48:58.976223078 -0800"
-                      , "@@ -16,9 +16,9 @@"
-                      , " library"
-                      , "     build-depends:   base >= 4 && < 5,"
-                      , "                      aeson >= 0.5,"
-                      , "-                     http-conduit >= 1.1 && < 1.2,"
-                      , "+                     http-conduit >= 1.1,"
-                      , "                      tagsoup >= 0.12 && < 0.13,"
-                      , "-                     failure >= 0.0.0 && < 0.2,"
-                      , "+                     failure >= 0.0.0,"
-                      , "                      transformers >= 0.1 && < 0.3,"
-                      , "                      bytestring >= 0.9 && < 0.10,"
-                      , "                      network >= 2.2.1 && < 2.4,"
-                      , "@@ -37,7 +37,7 @@"
-                      , "                      containers,"
-                      , "                      unordered-containers,"
-                      , "                      process >= 1.0.1.1 && < 1.2,"
-                      , "-                     conduit >= 0.0 && < 0.1,"
-                      , "+                     conduit >= 0.0,"
-                      , "                      blaze-builder-conduit >= 0.0 && < 0.1"
-                      , "     exposed-modules: Web.Authenticate.Rpxnow,"
-                      , "                      Web.Authenticate.OpenId," ] ]
+    , debianize "fb" Newest []
     , debianize "base-unicode-symbols" Newest []
     , apt release "haskell-base64-bytestring"
     , debianize "bimap" Newest [P.DebVersion "0.2.4-1~hackage1"]
@@ -215,7 +192,7 @@ main _home release =
     , debianize "case-insensitive" Newest []
     , debianize "CC-delcont" Newest [P.DebVersion "0.2-1~hackage1"]
     , apt release "haskell-cereal"
-    , debianize "certificate" Newest [P.DebVersion "1.0.1-1~hackage1"]
+    , debianize "certificate" Newest []
     , debianize "citeproc-hs" Newest []
     , case release of
         "natty-seereason" -> debianize "colour" Newest []
@@ -366,10 +343,7 @@ main _home release =
                       , "-$(deriveSerialize ''ClockTime)"
                       , " $(deriveNewData [''ClockTime])" ]
                     ]
-    , P.Package { P.name = "haskell-happstack-authenticate"
-                , P.spec = Darcs (repo ++ "/happstack-authenticate") Nothing
-                , P.flags = [] }
-    , debianize "happstack-data" Newest [P.DebVersion "6.0.0-1~hackage1"]
+    , debianize "happstack-data" Newest []
     , P.Package { P.name = "haskell-happstack-extra"
                 , P.spec = Darcs (repo ++ "/happstack-extra") Nothing
                 , P.flags = [] }
@@ -751,7 +725,9 @@ main _home release =
     , debianize "operational" Newest [P.OmitLTDeps, P.DebVersion "0.2.0.3-1~hackage1"]
     , debianize "ordered" Newest []
     , debianize "pandoc" Newest []
-    , apt release "haskell-pandoc-types"
+    , debianize "texmath" Newest []
+    , debianize "temporary" Newest []
+    , debianize "pandoc-types" Newest []
     , debianize "parse-dimacs" Newest [P.DebVersion "1.2-1~hackage1"]
     , debianize "parseargs" Newest [P.DebVersion "0.1.3.2-1~hackage1"]
     , apt release "haskell-parsec2"
@@ -775,9 +751,7 @@ main _home release =
     -- but our debianize target becomes haskell-quickcheck2.  So we need to fiddle
     -- with the order here relative to haskell-quickcheck1. 
     -- lucidNatty [apt "haskell-quickcheck"] [] ++
-    , P.Package { P.name = "haskell-quickcheck1"
-                , P.spec = Quilt (Apt "sid" "haskell-quickcheck1" Nothing) (Darcs (repo ++ "/haskell-quickcheck-quilt") Nothing)
-                , P.flags = [] }
+    , apt release "haskell-quickcheck1"
     -- lucidNatty [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"]] [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"] ] ++
     -- , apt release "haskell-regex-tdfa"
     , debianize "regex-tdfa" Newest []
@@ -816,7 +790,7 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/set-extra" Nothing
                 , P.flags = [] }
     , apt release "haskell-sha"
-    , debianize "shakespeare" Newest [P.DebVersion "0.10.2-1~hackage1"]
+    , debianize "shakespeare" Newest []
     , debianize "shakespeare-css" Newest []
     , debianize "simple-css" Newest [P.DebVersion "0.0.4-1~hackage1"]
     , debianize "SMTPClient" Newest [P.DebVersion "1.0.4-2"]
@@ -899,7 +873,6 @@ main _home release =
                       , "-    random g = randomR (minBound, maxBound) g"
                       , "-" ]
                     , P.DebVersion "2.1.1-1~hackage1" ]
-    , apt release "haskell-texmath"
     , debianize "th-expand-syns" Newest []
     , debianize "th-lift" Newest
                     [ P.Patch . B.pack . unlines $
@@ -991,7 +964,6 @@ main _home release =
                       , "                , bytestring >= 0.9.1.7 && < 0.10"
                       , "                , file-embed >= 0.0.4.1 && < 0.1" ]
                     , P.DebVersion "0.2-1~hackage1" ]
-    , debianize "wai" (Pin "1.0.0") []
     , debianize "vault" Newest []
     , debianize "web-encodings" Newest
                     [ P.Patch . B.pack . unlines $
@@ -1027,14 +999,9 @@ main _home release =
                 , P.spec = Cd "web-routes-th" (Darcs (repo ++ "/web-routes") Nothing)
                 , P.flags = [] }
     , apt release "haskell-xml"
-    , debianize "xml-conduit" (Pin "0.5.1.2") []
-    , debianize "http-conduit" (Pin "1.2.0") []
-    , debianize "zlib-conduit" (Pin "0.0.1") []
-    , debianize "conduit" (Pin "0.1.1.1") []
+    , debianize "cookie" Newest []
     , debianize "lifted-base" Newest []
     , debianize "system-filepath" Newest []
-    , debianize "attoparsec-conduit" (Pin "0.0.1") []
-    , debianize "blaze-builder-conduit" (Pin "0.0.1") []
     , debianize "xml-enumerator" Newest
                  [ P.Patch . B.pack . unlines $
                    [ "--- old/xml-enumerator.cabal\t2012-01-20 06:47:15.000000000 -0800"
@@ -1055,7 +1022,8 @@ main _home release =
     , debianize "zlib-bindings" Newest []
     , apt release "haskell-zlib-enum"
 
-    , apt release "highlighting-kate"
+    , debianize "highlighting-kate" Newest []
+    , debianize "regex-pcre-builtin" Newest[]
     , P.Package { P.name = "hscolour"
                 , P.spec = Apt "sid" "hscolour" Nothing
                 , P.flags = [P.RelaxDep "hscolour"] }
@@ -1158,6 +1126,50 @@ platform release =
     , apt release "haskell-regex-base"
     , apt release "haskell-regex-posix"
     , debianize "xhtml" Newest []
+    ]
+
+-- | Packages pinned pending update of happstack-authenticate
+authenticate = mconcat $
+    let -- pin _ = Newest
+        pin x = Pin x in
+    [ debianize "wai" (pin "1.0.0") []
+    , debianize "xml-conduit" (pin "0.5.1.2") []
+    , debianize "http-conduit" (pin "1.2.0") []
+    , debianize "zlib-conduit" (pin "0.0.1") []
+    , debianize "conduit" (pin "0.1.1.1") []
+    , debianize "attoparsec-conduit" (pin "0.0.1") []
+    , debianize "blaze-builder-conduit" (pin "0.0.1") []
+    , debianize "authenticate" (pin "0.11.1")
+                (case (pin "0.11.1") of
+                   Newest -> []
+                   Pin _ ->
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- old/authenticate.cabal\t2012-01-19 19:39:56.000000000 -0800"
+                      , "+++ new/authenticate.cabal\t2012-01-20 11:48:58.976223078 -0800"
+                      , "@@ -16,9 +16,9 @@"
+                      , " library"
+                      , "     build-depends:   base >= 4 && < 5,"
+                      , "                      aeson >= 0.5,"
+                      , "-                     http-conduit >= 1.1 && < 1.2,"
+                      , "+                     http-conduit >= 1.1,"
+                      , "                      tagsoup >= 0.12 && < 0.13,"
+                      , "-                     failure >= 0.0.0 && < 0.2,"
+                      , "+                     failure >= 0.0.0,"
+                      , "                      transformers >= 0.1 && < 0.3,"
+                      , "                      bytestring >= 0.9 && < 0.10,"
+                      , "                      network >= 2.2.1 && < 2.4,"
+                      , "@@ -37,7 +37,7 @@"
+                      , "                      containers,"
+                      , "                      unordered-containers,"
+                      , "                      process >= 1.0.1.1 && < 1.2,"
+                      , "-                     conduit >= 0.0 && < 0.1,"
+                      , "+                     conduit >= 0.0,"
+                      , "                      blaze-builder-conduit >= 0.0 && < 0.1"
+                      , "     exposed-modules: Web.Authenticate.Rpxnow,"
+                      , "                      Web.Authenticate.OpenId," ] ])
+    , P.Package { P.name = "haskell-happstack-authenticate"
+                , P.spec = Darcs (repo ++ "/happstack-authenticate") Nothing
+                , P.flags = [] }
     ]
 
 -- Broken targets:
