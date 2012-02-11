@@ -40,7 +40,7 @@ fixme =
 main :: String -> String -> P.Packages
 main _home release =
     checkUnique $ mconcat $
-    [ -- platform
+    [ -- platform release,
       debianize "hashtables" Newest []
     , P.Package { P.name = "autobuilder"
                 , P.spec = Darcs (repo ++ "/autobuilder") Nothing
