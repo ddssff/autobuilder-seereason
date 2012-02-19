@@ -139,20 +139,7 @@ main _home release =
     , debianize "base-unicode-symbols" Newest []
     , apt release "haskell-base64-bytestring"
     , debianize "bimap" Newest [P.DebVersion "0.2.4-1~hackage1"]
-    , debianize "bitmap" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- tmp/Data/Bitmap/Pure.hs\t2011-09-15 06:47:30.638423438 -0700"
-                      , "+++ tmp/Data/Bitmap/Pure.hs.orig\t2011-09-15 06:47:18.188439156 -0700"
-                      , "@@ -47,7 +47,7 @@"
-                      , " "
-                      , " import Data.Word"
-                      , " "
-                      , "-import Foreign"
-                      , "+import Foreign hiding (unsafePerformIO)"
-                      , " "
-                      , " import Data.ByteString (ByteString)"
-                      , " import qualified Data.ByteString as B" ]
-                    , P.DebVersion "0.0.1-1~hackage1" ]
+    , debianize "bitmap" Newest []
     , debianize "bitset" Newest [P.DebVersion "1.1-1~hackage1"]
     , apt release "haskell-blaze-builder"
     , apt release "haskell-blaze-builder-enumerator"
@@ -226,7 +213,7 @@ main _home release =
                       , " instance Hash Hash384 where" ]
                     , P.DebVersion "4.2.4-1~hackage1"]
     , debianize "crypto-api" Newest []
-    , debianize "crypto-pubkey-types" Newest [P.DebVersion "0.1.0-1~hackage1"]
+    , debianize "crypto-pubkey-types" Newest []
     , debianize "cryptocipher" Newest [P.DebVersion "0.3.0-1~hackage1"]
     , debianize "cryptohash" Newest [P.DebVersion "0.7.4-1~hackage1"]
     , debianize "css" Newest [P.DebVersion "0.1-1~hackage1"]
@@ -291,7 +278,8 @@ main _home release =
                 , P.spec = Darcs (repo ++ "/formlets-hsp") Nothing
                 , P.flags = [] }
     , debianize "gd" Newest
-                    [ P.Patch . B.pack . unlines $
+                    [ P.ExtraDevDep "libgd-dev"
+                    , P.Patch . B.pack . unlines $
                       [ "--- gd/gd.cabal.orig\t2011-06-25 12:27:26.000000000 -0700"
                       , "+++ gd/gd.cabal\t2011-09-10 14:29:48.514415016 -0700"
                       , "@@ -21,7 +21,7 @@"
@@ -313,35 +301,7 @@ main _home release =
     -- Errors were encountered while processing:
     --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
-    , debianize "happstack" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "diff -rN -u old/happstack.cabal new/happstack.cabal"
-                      , "--- old/happstack.cabal\t2012-02-09 08:32:13.583459831 -0800"
-                      , "+++ new/happstack.cabal\t2012-02-09 08:32:13.603088527 -0800"
-                      , "@@ -71,7 +71,6 @@"
-                      , "                        happstack-data   >= 6.0 && < 6.1,"
-                      , "                        happstack-ixset  >= 6.0 && < 6.2,"
-                      , "                        happstack-server >= 6.0 && < 6.6,"
-                      , "-                       happstack-state  >= 6.0 && < 6.2,"
-                      , "                        happstack-util   >= 6.0 && < 6.1,"
-                      , "                        old-time"
-                      , " "
-                      , "diff -rN -u old/src/Happstack/State/ClockTime.hs new/src/Happstack/State/ClockTime.hs"
-                      , "--- old/src/Happstack/State/ClockTime.hs\t2012-02-09 08:32:13.573458439 -0800"
-                      , "+++ new/src/Happstack/State/ClockTime.hs\t2012-02-09 08:32:13.603088527 -0800"
-                      , "@@ -8,11 +8,8 @@"
-                      , " "
-                      , " import Data.Generics (Data, Typeable)"
-                      , " import Happstack.Data (deriveNewData)"
-                      , "-import Happstack.State (Version, deriveSerialize)"
-                      , " import System.Time (ClockTime(..))"
-                      , " "
-                      , " deriving instance Typeable ClockTime"
-                      , " deriving instance Data ClockTime"
-                      , "-instance Version ClockTime"
-                      , "-$(deriveSerialize ''ClockTime)"
-                      , " $(deriveNewData [''ClockTime])" ]
-                    ]
+    , debianize "happstack" Newest []
     , debianize "happstack-data" Newest []
     , P.Package { P.name = "haskell-happstack-extra"
                 , P.spec = Darcs (repo ++ "/happstack-extra") Nothing
@@ -369,7 +329,7 @@ main _home release =
     , debianize "happstack-server" Newest []
     , debianize "happstack-util" Newest []
     , apt release "haskell-harp"
-    , debianize "hashable" Newest [P.DebVersion "1.1.2.2-1"]
+    , debianize "hashable" Newest []
     , debianize "hashed-storage" Newest [P.DebVersion "0.5.9-1"]
     , debianize "haskeline" Newest []
     , debianize "haskell-src-meta" Newest []
@@ -801,7 +761,7 @@ main _home release =
     -- when we generate the debianization.
     -- , lucidNatty (hackage release "haskell-src-exts" [NP]) (debianize "haskell-src-exts" [])
     , debianize "haskell-src-exts" Newest [P.ExtraDep "happy", P.DebVersion "1.11.1-1"]
-    , debianize "stb-image" Newest [P.DebVersion "0.2-1~hackage1"]
+    , debianize "stb-image" Newest []
     , apt release "haskell-strict" -- for leksah
     , apt release "haskell-strict-concurrency"
     , debianize "strict-io" Newest -- for GenI
@@ -892,7 +852,7 @@ main _home release =
                           , " {"
                           , " \timport Data.Map;" ]
                     , P.DebVersion "3.2.0.0-1~hackage1" ]
-    , debianize "uniplate" Newest [P.DebVersion "1.6.5-1~hackage1"]
+    , debianize "uniplate" Newest []
     -- , apt release "haskell-unix-compat"
     , debianize "unix-compat" Newest []
 {-
@@ -1346,24 +1306,6 @@ other release =
                       , "     old-locale," ] ]
     , apt release "haskell-binary-shared" -- for leksah
     , debianize "cairo" Newest [P.ExtraDep "haskell-gtk2hs-buildtools-utils"] -- for leksah
-    , debianize "convertible-text" Newest
-                    [ P.Patch . B.pack . unlines $
-                      [ "--- old/convertible-text.cabal\t2012-01-20 09:58:49.087163068 -0800"
-                      , "+++ new/convertible-text.cabal\t2012-01-20 09:57:30.017160919 -0800"
-                      , "@@ -36,11 +36,11 @@"
-                      , "   else"
-                      , "       Buildable: True"
-                      , "   Build-Depends: base >= 4 && < 5,"
-                      , "-                 old-time >= 1.0.0.2 && < 1.1,"
-                      , "+                 old-time >= 1.0.0.2,"
-                      , "                  containers >= 0.2.0.1 && < 0.5,"
-                      , "                  text >= 0.5 && < 0.12,"
-                      , "                  bytestring >= 0.9.1.4 && < 0.10,"
-                      , "-                 attempt >= 0.3.0 && < 0.4,"
-                      , "+                 attempt >= 0.3.0,"
-                      , "                  template-haskell,"
-                      , "                  time"
-                      , " " ] ]
     , debianize "gnuplot" Newest [P.DebVersion "0.4.2-1~hackage1"]
     , apt release "bash-completion"
     ]
