@@ -301,7 +301,18 @@ main _home release =
     -- Errors were encountered while processing:
     --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
-    , debianize "happstack" Newest []
+    , debianize "happstack" Newest
+                    [ P.Patch . B.pack . unlines $
+                      [ "--- old/happstack.cabal\t2012-02-17 10:29:02.000000000 -0800"
+                      , "+++ new/happstack.cabal\t2012-02-19 07:54:49.703458782 -0800"
+                      , "@@ -32,7 +32,6 @@"
+                      , "                        happstack-data   >= 6.0 && < 6.1,"
+                      , "                        happstack-ixset  >= 6.0 && < 6.2,"
+                      , "                        happstack-server >= 6.0 && < 6.7,"
+                      , "-                       happstack-state  >= 6.0 && < 6.2,"
+                      , "                        happstack-util   >= 6.0 && < 6.1"
+                      , "                        " ]
+                    ]
     , debianize "happstack-data" Newest []
     , P.Package { P.name = "haskell-happstack-extra"
                 , P.spec = Darcs (repo ++ "/happstack-extra") Nothing
