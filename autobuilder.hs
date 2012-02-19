@@ -223,6 +223,7 @@ defParams _home myBuildRelease =
     -- 6.14 adds the ExtraDevDep parameter.
     -- 6.15 changes Epoch parameter arity to 2
     , requiredVersion = [(parseDebianVersion "6.15", Nothing)]
+    , hackageServer = myHackageServer
     -- Things that are probably obsolete
     , debug = False
     , discard = myDiscards
