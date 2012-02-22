@@ -234,5 +234,4 @@ defParams _home myBuildRelease =
     , noClean = False
     , cleanUp = False
     , ifSourcesChanged = SourcesChangedError
-    , hackageServer = "hackage.haskell.org"
     }
