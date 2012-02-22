@@ -9,6 +9,9 @@ import Data.List (isPrefixOf)
 import Data.Monoid (mappend)
 import qualified Data.Set as Set
 import qualified Debian.AutoBuilder.Params as P
+import qualified Debian.AutoBuilder.Types.CacheRec as P
+import qualified Debian.AutoBuilder.Types.PackageFlag as P
+import qualified Debian.AutoBuilder.Types.Packages as P
 import qualified Targets.Public as Public
 import qualified Targets.Private as Private
 

@@ -18,7 +18,9 @@ import Data.Maybe
 import Data.Monoid (mappend)
 import qualified Data.Set as Set
 import qualified Debian.AutoBuilder.Main as M
-import Debian.AutoBuilder.Params
+import Debian.AutoBuilder.Types.ParamRec
+import Debian.AutoBuilder.Types.PackageFlag
+import Debian.AutoBuilder.Types.Packages
 import Debian.Release (ReleaseName(ReleaseName, relName), Arch(Binary))
 import Debian.Repo.Cache (SourcesChangedAction(SourcesChangedError))
 import Debian.URI
@@ -222,7 +224,7 @@ defParams _home myBuildRelease =
     , newDistProgram = "newdist -v"
     -- 6.14 adds the ExtraDevDep parameter.
     -- 6.15 changes Epoch parameter arity to 2
-    , requiredVersion = [(parseDebianVersion "6.15", Nothing)]
+    , requiredVersion = [(parseDebianVersion "6.17", Nothing)]
     , hackageServer = myHackageServer
     -- Things that are probably obsolete
     , debug = False

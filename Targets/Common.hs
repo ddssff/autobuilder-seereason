@@ -4,6 +4,7 @@ import Data.Function (on)
 import Data.List (sortBy)
 import qualified Data.Map as Map
 import qualified Debian.AutoBuilder.Params as P
+import qualified Debian.AutoBuilder.Types.Packages as P
 
 data Build = Production | Testing
 build = Production

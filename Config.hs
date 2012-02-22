@@ -38,7 +38,7 @@ import Data.List (isSuffixOf, isPrefixOf)
 import Data.Maybe
 import Data.Monoid (mappend)
 import qualified Data.Set as Set
-import qualified Debian.AutoBuilder.Params as P
+import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.URI
 
 import qualified Targets

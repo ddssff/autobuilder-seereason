@@ -5,7 +5,9 @@ import qualified Data.ByteString.Lazy.Char8 as B
 import Data.Char (toLower)
 import Data.Monoid (mconcat)
 import qualified Debian.AutoBuilder.Params as P
-import Debian.AutoBuilder.Spec (Spec(..))
+import qualified Debian.AutoBuilder.Types.PackageFlag as P
+import qualified Debian.AutoBuilder.Types.Packages as P
+import Debian.AutoBuilder.Types.Spec (Spec(..))
 import Targets.Common (repo, localRepo, checkUnique, happstackRepo)
 
 -- |the _home parameter has an underscore because normally it is unused, but when
@@ -135,7 +137,7 @@ main _home release =
                       , "   exposed-modules: Data.Attoparsec.Text"
                       , "                    Data.Attoparsec.Text.FastSet" ] ]
     , debianize "attoparsec-text-enumerator" Newest []
-    , debianize "fb" Newest []
+    -- , debianize "fb" Newest []
     , debianize "base-unicode-symbols" Newest []
     , apt release "haskell-base64-bytestring"
     , debianize "bimap" Newest [P.DebVersion "0.2.4-1~hackage1"]
@@ -1001,7 +1003,7 @@ main _home release =
     , P.Package { P.name = "vc-darcs"
                 , P.spec = Darcs "http://src.seereason.com/vc-darcs" Nothing
                 , P.flags = [] }
-    -- , apt   "wordpress"
+    -- , debianize "hlatex" Newest []
     ]
 
 platform release =

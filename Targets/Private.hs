@@ -2,8 +2,8 @@
 module Targets.Private (libraries, applications) where
 
 import Data.Monoid (mconcat)
-import qualified Debian.AutoBuilder.Params as P
-import Debian.AutoBuilder.Spec
+import qualified Debian.AutoBuilder.Types.Packages as P
+import Debian.AutoBuilder.Types.Spec
 import Targets.Common
 
 libraries _home = mconcat $
