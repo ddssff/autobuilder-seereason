@@ -255,8 +255,8 @@ myCompilerVersion "natty-seereason" = Just "7.4.1"
 myCompilerVersion "lucid-seereason" = Just "7.4.1"
 myCompilerVersion _myBuildRelease = Nothing
 
--- myHackageServer = "hackage.haskell.org"
-myHackageServer = "hackage.factisresearch.com"
+myHackageServer = "hackage.haskell.org"
+-- myHackageServer = "hackage.factisresearch.com"
 
 ------------------------- SOURCES --------------------------------
 
