@@ -12,6 +12,7 @@ import qualified Debian.AutoBuilder.Params as P
 import qualified Debian.AutoBuilder.Types.CacheRec as P
 import qualified Debian.AutoBuilder.Types.PackageFlag as P
 import qualified Debian.AutoBuilder.Types.Packages as P
+import Debian.AutoBuilder.Types.RetrieveMethod (RetrieveMethod(Debianize, Hackage))
 import qualified Targets.Public as Public
 import qualified Targets.Private as Private
 
@@ -89,7 +90,10 @@ applyDepMap :: P.Packages -> P.Packages
 applyDepMap P.NoPackage = P.NoPackage
 applyDepMap (P.Packages s) = P.Packages (Set.map applyDepMap s)
 applyDepMap x@(P.Package {}) =
-    x {P.flags = P.flags x ++ mappings}
+    x {P.spec = case P.spec x of
+                  Debianize s flags -> Debianize s (flags ++ mappings)
+                  Hackage s flags -> Hackage s (flags ++ mappings)
+                  _ -> P.spec x }
     where
       mappings = [P.MapDep "cryptopp" "crypto++"]
 
@@ -97,7 +101,10 @@ applyEpochMap :: P.Packages -> P.Packages
 applyEpochMap P.NoPackage = P.NoPackage
 applyEpochMap (P.Packages s) = P.Packages (Set.map applyEpochMap s)
 applyEpochMap x@(P.Package {}) =
-    x {P.flags = P.flags x ++ mappings}
+    x {P.spec = case P.spec x of
+                  Debianize s flags -> Debianize s (flags ++ mappings)
+                  Hackage s flags -> Hackage s (flags ++ mappings)
+                  _ -> P.spec x }
     where
       mappings =
           [ P.Epoch "HTTP" 1
