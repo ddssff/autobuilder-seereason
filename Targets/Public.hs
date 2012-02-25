@@ -7,7 +7,7 @@ import Data.Monoid (mconcat)
 import qualified Debian.AutoBuilder.Params as P
 import qualified Debian.AutoBuilder.Types.PackageFlag as P
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Spec (Spec(..))
+import Debian.AutoBuilder.Types.RetrieveMethod (RetrieveMethod(..))
 import Targets.Common (repo, localRepo, checkUnique, happstackRepo)
 
 -- |the _home parameter has an underscore because normally it is unused, but when

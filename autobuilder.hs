@@ -224,7 +224,8 @@ defParams _home myBuildRelease =
     , newDistProgram = "newdist -v"
     -- 6.14 adds the ExtraDevDep parameter.
     -- 6.15 changes Epoch parameter arity to 2
-    , requiredVersion = [(parseDebianVersion "6.17", Nothing)]
+    -- 6.18 renames type Spec -> RetrieveMethod
+    , requiredVersion = [(parseDebianVersion "6.18", Nothing)]
     , hackageServer = myHackageServer
     -- Things that are probably obsolete
     , debug = False
