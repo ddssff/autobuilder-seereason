@@ -7,14 +7,14 @@ import Data.Monoid (mconcat)
 import qualified Debian.AutoBuilder.Types.PackageFlag as P
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.RetrieveMethod (RetrieveMethod(..))
-import Targets.Common (repo, {-localRepo,-} checkUnique, happstackRepo)
+import Targets.Common (repo, {-localRepo,-} happstackRepo)
 
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
 targets :: String -> String -> P.Packages
 targets _home release =
-    checkUnique $ mconcat $
+    mconcat $
     [ -- platform release,
       main _home release
     , authenticate
@@ -40,7 +40,7 @@ fixme =
 
 main :: String -> String -> P.Packages
 main _home release =
-    checkUnique $ mconcat $
+    mconcat $
     [ -- platform release,
       debianize "hashtables" [] []
     , P.Package { P.name = "autobuilder"
