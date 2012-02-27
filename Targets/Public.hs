@@ -236,7 +236,7 @@ main _home release =
                       , "     ghc-options:     -Wall" ] ]
     , debianize "dataenc" [] []
     , P.Package { P.name = "haskell-debian"
-                , P.spec = Darcs (repo ++ "/haskell-debian-new") []
+                , P.spec = Darcs (repo ++ "/haskell-debian") []
                 , P.flags = [P.RelaxDep "cabal-debian"] }
     , P.Package { P.name = "haskell-debian-mirror"
                 , P.spec = Darcs "http://src.seereason.com/mirror" []
@@ -260,7 +260,7 @@ main _home release =
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
     , P.Package { P.name = "haskell-edison-api"
-                , P.spec = Quilt (Apt "sid" "haskell-edison-api" []) (Darcs (repo ++ "/haskell-edison-api-quilt") [])
+                , P.spec = Apt "sid" "haskell-edison-api" []
                 , P.flags = [] }
     , apt release "haskell-edison-core"
     , apt release "haskell-entropy"
