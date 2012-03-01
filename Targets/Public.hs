@@ -827,21 +827,7 @@ main _home release =
                       , "         Extensions:             TypeSynonymInstances"
                       , "                                 TypeOperators" ] ]
     , debianize "test-framework-quickcheck2" [] []
-    , debianize "testpack"
-                    [ P.DebVersion "2.1.1-1~hackage1" ]
-                    [ P.Patch . B.pack. unlines $
-                      [ "--- testpack-2.1.1/src/Test/QuickCheck/Instances.hs.orig\t2011-09-09 18:47:51.256206942 -0700"
-                      , "+++ testpack-2.1.1/src/Test/QuickCheck/Instances.hs\t2011-09-09 18:47:56.714633473 -0700"
-                      , "@@ -46,9 +46,3 @@"
-                      , "     coarbitrary n = variant (if n >= 0 then 2 * x else 2 * x + 1)"
-                      , "                 where x = abs . fromIntegral $ n"
-                      , " #endif"
-                      , "-"
-                      , "-instance Random Word8 where"
-                      , "-    randomR (a, b) g = (\\(x, y) -> (fromInteger x, y)) $"
-                      , "-                       randomR (toInteger a, toInteger b) g"
-                      , "-    random g = randomR (minBound, maxBound) g"
-                      , "-" ] ]
+    , debianize "testpack" [] []
     , debianize "th-expand-syns" [] []
     , debianize "th-lift" [] []
     , debianize "transformers-base" [] []
