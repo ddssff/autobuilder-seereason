@@ -1371,7 +1371,7 @@ debianize s cflags flags =
       -- The correct name would be haskell-haskell-src-exts, but the package
       -- in sid has the name "haskell-src-exts".
       debianName "haskell-src-exts" = "haskell-src-exts"
-      debianName "MissingH" = "missingh"
+      debianName "MissingH" = "haskell-missingh"
       debianName _ = "haskell-" ++ map toLower s
 {-
 hackage :: String -> [Flag] -> P.Package
