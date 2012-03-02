@@ -997,15 +997,13 @@ platform release =
                              , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
           ghc741 = P.Package { P.name = "ghc"
                              , P.spec = Apt "sid" "ghc" []
-                             , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] } in
+                             , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal"] } in
       case release of
         "natty-seereason" -> ghc741 -- P.NoPackage
         _ -> ghc741 -- P.NoPackage
-    , -- Patch haskell-devscripts to generate the correct haddock
-      -- dependency in the doc packages (haddock-interface-19 rather than
-      -- just 19), and to remove the conflict with ghc 7.4 that Joachim
-      -- added.
-      apt release "haskell-devscripts"
+    , P.Package { P.name = "haskell-devscripts"
+                , P.spec = Apt "sid" "haskell-devscripts" []
+                , P.flags = [P.RelaxDep "python-minimal"] }
 {-  , P.Package { P.name = "haskell-deepseq"
                 , P.spec = Apt "sid" "haskell-deepseq" [P.AptPin "1.1.0.2-2"])
                 , P.flags = [] } -}
