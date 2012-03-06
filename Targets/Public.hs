@@ -52,7 +52,9 @@ main _home release =
     , P.Package { P.name = "cpphs"
                 , P.spec = Apt "sid" "cpphs"
                 , P.flags = [] }
-    , apt release "debootstrap"
+    , P.Package { P.name = "debootstrap"
+                , P.spec = Apt "sid" "debootstrap"
+                , P.flags = [P.UDeb "debootstrap-udeb"] }
     , apt release "geneweb"
     , debianize "gtk2hs-buildtools" [ P.ExtraDep "alex"
                                     , P.ExtraDep "happy" ]
@@ -957,7 +959,9 @@ main _home release =
     , P.Package { P.name = "jquery"
                 , P.spec = Proc (Apt "sid" "jquery")
                 , P.flags = [] }
-    , apt release "jquery-goodies"
+    , P.Package { P.name = "jquery-goodies"
+                , P.spec = Proc (Apt "sid" "jquery-goodies")
+                , P.flags = [] }
     , P.Package { P.name = "jqueryui"
                 , P.spec = Proc (Apt "sid" "jqueryui")
                 , P.flags = [] }
@@ -975,7 +979,7 @@ main _home release =
     , debianize "MissingH" [P.DebVersion "1.1.1.0-1~hackage1"] []
     , P.Package { P.name = "seereason-keyring"
                 , P.spec = Darcs "http://src.seereason.com/seereason-keyring"
-                , P.flags = [] }
+                , P.flags = [P.UDeb "seereason-keyring-udeb"] }
     , apt release "tinymce"
     , P.Package { P.name = "vc-darcs"
                 , P.spec = Darcs "http://src.seereason.com/vc-darcs"
