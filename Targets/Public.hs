@@ -1,4 +1,4 @@
-{-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds #-}
+{-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
 module Targets.Public ( targets ) where
 
 import qualified Data.ByteString.Lazy.Char8 as B
@@ -181,21 +181,18 @@ main _home release =
     , debianize "CC-delcont" [P.DebVersion "0.2-1~hackage1"]
     , apt release "haskell-cereal"
     , debianize "citeproc-hs" []
-{-
     , P.Package { P.name = "haskell-clckwrks"
-                , P.spec = DebDir (Cd "clckwrks" (Darcs "http://src.clckwrks.com/clckwrks" Nothing))
-                                  (Darcs "http://src.seereason.com/clckwrks-debian" Nothing)
-                , P.flags = [] }
+                , P.spec = Debianize (Cd "clckwrks" (Darcs "http://src.clckwrks.com/clckwrks"))
+                , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     , P.Package { P.name = "haskell-clckwrks-cli"
-                , P.spec = Cd "clckwrks-cli" (Darcs "http://src.clckwrks.com/clckwrks" Nothing)
+                , P.spec = Debianize (Cd "clckwrks-cli" (Darcs "http://src.clckwrks.com/clckwrks"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-clckwrks-plugin-media"
-                , P.spec = Cd "clckwrks-plugin" (Darcs "http://src.clckwrks.com/clckwrks" Nothing)
+                , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs "http://src.clckwrks.com/clckwrks"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-clckwrks-theme-basic"
-                , P.spec = Cd "clckwrks-theme-basic" (Darcs "http://src.clckwrks.com/clckwrks" Nothing)
+                , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs "http://src.clckwrks.com/clckwrks"))
                 , P.flags = [] }
--}
     , case release of
         "natty-seereason" -> debianize "colour" []
         _ -> apt release "haskell-colour"
@@ -1367,7 +1364,7 @@ main =
 debianize :: String -> [P.PackageFlag] -> P.Packages
 debianize s flags =
     P.Package { P.name = debianName s
-              , P.spec = Debianize s
+              , P.spec = Debianize (Hackage s)
               , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] ++ flags ++ [P.Revision ""]}
     where
       -- This is a quick hack, but what we should do is have
