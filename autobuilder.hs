@@ -149,7 +149,7 @@ optSpecs home =
                , "targets will be built.  (As of version 5.2 there are known bugs with"
                , "this this option which may cause the autobuilder to exit before the"
                , "goal package is built.)"])
-    , Option [] ["force"] (ReqArg (\ s -> (Right (\ p -> p {forceBuild = forceBuild p ++ [s]}))) "PACKAGE")
+    , Option [] ["force"] (ReqArg (\ s -> (Right (\ p -> p {forceBuild = forceBuild p ++ [s], targets = addTarget s p}))) "PACKAGE")
       ("Build the specified source package even if it doesn't seem to need it.")
     , Option [] ["lax"] (NoArg (Right (\ p -> p {strictness = Lax})))
       "Use the lax build environment, where dependencies are not removed between package builds."
@@ -196,6 +196,9 @@ defParams _home myBuildRelease =
     , buildTrumped = myBuildTrumped
     , doSSHExport = myDoSSHExport
     , doHelp = False
+    , aptFlags = []
+    , cabalFlags = []
+    , darcsFlags = []
     -- Things that are occasionally useful
     , goals = myGoals
     , dryRun = False
@@ -225,7 +228,7 @@ defParams _home myBuildRelease =
     -- 6.14 adds the ExtraDevDep parameter.
     -- 6.15 changes Epoch parameter arity to 2
     -- 6.18 renames type Spec -> RetrieveMethod
-    , requiredVersion = [(parseDebianVersion "6.18", Nothing)]
+    , requiredVersion = [(parseDebianVersion "6.20", Nothing)]
     , hackageServer = myHackageServer
     -- Things that are probably obsolete
     , debug = False

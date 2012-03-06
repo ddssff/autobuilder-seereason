@@ -90,22 +90,14 @@ applyDepMap :: P.Packages -> P.Packages
 applyDepMap P.NoPackage = P.NoPackage
 applyDepMap (P.Packages s) = P.Packages (Set.map applyDepMap s)
 applyDepMap x@(P.Package {}) =
-    x {P.spec = case P.spec x of
-                  Debianize s flags -> Debianize s (flags ++ mappings)
-                  Hackage s flags -> Hackage s (flags ++ mappings)
-                  _ -> P.spec x }
+    x {P.flags = P.flags x ++ map P.CabalFlag mappings}
     where
-      mappings = [P.MapDep "cryptopp" "crypto++"]
+      mappings = [P.MapDep "cryptopp" "crypto++", P.MapDep "crypt" "c6"]
 
 applyEpochMap :: P.Packages -> P.Packages
 applyEpochMap P.NoPackage = P.NoPackage
 applyEpochMap (P.Packages s) = P.Packages (Set.map applyEpochMap s)
 applyEpochMap x@(P.Package {}) =
-    x {P.spec = case P.spec x of
-                  Debianize s flags -> Debianize s (flags ++ mappings)
-                  Hackage s flags -> Hackage s (flags ++ mappings)
-                  _ -> P.spec x }
+    x {P.flags = P.flags x ++ map P.CabalFlag mappings}
     where
-      mappings =
-          [ P.Epoch "HTTP" 1
-          , P.Epoch "HaXml" 1 ]
+      mappings = [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]
