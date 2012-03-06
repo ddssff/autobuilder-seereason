@@ -1043,11 +1043,6 @@ platform release =
                 , P.spec = Apt "sid" "haskell-transformers"
                 , P.flags = [P.AptPin "0.2.2.0-3"] }
     , debianize "parallel" []
-    , case release of
-        "natty-seereason" -> P.NoPackage -- ghc 7.4 ships with a binary package not available in hackage
-        _ -> P.Package { P.name = "haskell-binary"
-                       , P.spec = Quilt (Apt "sid" "haskell-binary") (Darcs "http://src.seereason.com/haskell-binary-quilt")
-                       , P.flags = [P.AptPin "0.5.0.2-2"] }
     , debianize "syb" []
     , debianize "fgl" [P.DebVersion "5.4.2.4-1"]
     , debianize "text" []
