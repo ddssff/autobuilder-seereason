@@ -10,9 +10,8 @@ import Data.Monoid (mappend)
 import qualified Data.Set as Set
 import qualified Debian.AutoBuilder.Params as P
 import qualified Debian.AutoBuilder.Types.CacheRec as P
-import qualified Debian.AutoBuilder.Types.PackageFlag as P
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.RetrieveMethod (RetrieveMethod(Debianize, Hackage))
+import Debian.AutoBuilder.Types.Packages
 import qualified Targets.Public as Public
 import qualified Targets.Private as Private
 
@@ -90,7 +89,7 @@ applyDepMap :: P.Packages -> P.Packages
 applyDepMap P.NoPackage = P.NoPackage
 applyDepMap (P.Packages s) = P.Packages (Set.map applyDepMap s)
 applyDepMap x@(P.Package {}) =
-    x {P.flags = P.flags x ++ map P.CabalFlag mappings}
+    x {P.flags = P.flags x ++ mappings}
     where
       mappings = [P.MapDep "cryptopp" "crypto++", P.MapDep "crypt" "c6"]
 
@@ -98,6 +97,6 @@ applyEpochMap :: P.Packages -> P.Packages
 applyEpochMap P.NoPackage = P.NoPackage
 applyEpochMap (P.Packages s) = P.Packages (Set.map applyEpochMap s)
 applyEpochMap x@(P.Package {}) =
-    x {P.flags = P.flags x ++ map P.CabalFlag mappings}
+    x {P.flags = P.flags x ++ mappings}
     where
       mappings = [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]

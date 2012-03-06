@@ -19,7 +19,6 @@ import Data.Monoid (mappend)
 import qualified Data.Set as Set
 import qualified Debian.AutoBuilder.Main as M
 import Debian.AutoBuilder.Types.ParamRec
-import Debian.AutoBuilder.Types.PackageFlag
 import Debian.AutoBuilder.Types.Packages
 import Debian.Release (ReleaseName(ReleaseName, relName), Arch(Binary))
 import Debian.Repo.Cache (SourcesChangedAction(SourcesChangedError))
@@ -196,9 +195,6 @@ defParams _home myBuildRelease =
     , buildTrumped = myBuildTrumped
     , doSSHExport = myDoSSHExport
     , doHelp = False
-    , aptFlags = []
-    , cabalFlags = []
-    , darcsFlags = []
     -- Things that are occasionally useful
     , goals = myGoals
     , dryRun = False
