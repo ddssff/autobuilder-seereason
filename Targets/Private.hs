@@ -19,6 +19,9 @@ libraries _home = mconcat $
     , P.Package { P.name = "haskell-ontology"
                 , P.spec = Darcs (privateRepo ++ "/haskell-ontology")
                 , P.flags = [] }
+    , P.Package { P.name = "happstack-clckwrks"
+                , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (privateRepo ++ "/happstack-clckwrks")))
+                , P.flags = [] }
     ]
 
 applications _home = mconcat $
@@ -42,6 +45,9 @@ applications _home = mconcat $
                 , P.flags = [] }
     , P.Package { P.name = "haskell-creativeprompts"
                 , P.spec = Darcs (privateRepo ++ "/creativeprompts")
+                , P.flags = [] }
+    , P.Package { P.name = "happstack-dot-com"
+                , P.spec = Debianize (Cd "happstack-dot-com" (Darcs (privateRepo ++ "/happstack-clckwrks")))
                 , P.flags = [] }
 {-
     , P.Package { P.name = "prefeteria"
