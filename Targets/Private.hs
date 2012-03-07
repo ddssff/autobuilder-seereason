@@ -1,12 +1,13 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Targets.Private (libraries, applications) where
 
-import Data.Monoid (mconcat)
+import Data.Set (singleton)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
 import Targets.Common
 
-libraries _home = mconcat $
+libraries _home =
+    P.Packages (singleton "libraries") $
     [ P.Package { P.name = "haskell-filecache"
                 , P.spec = Darcs (privateRepo ++ "/haskell-filecache")
                 , P.flags = [] }
@@ -19,12 +20,13 @@ libraries _home = mconcat $
     , P.Package { P.name = "haskell-ontology"
                 , P.spec = Darcs (privateRepo ++ "/haskell-ontology")
                 , P.flags = [] }
-    , P.Package { P.name = "happstack-clckwrks"
+    , P.Package { P.name = "clckwrks-theme-happstack"
                 , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (privateRepo ++ "/happstack-clckwrks")))
                 , P.flags = [] }
     ]
 
-applications _home = mconcat $
+applications _home =
+    P.Packages (singleton "applications") $
     [ P.Package { P.name = "haskell-artvaluereport"
                 , P.spec = Darcs (privateRepo ++ "/artvaluereport")
                 , P.flags = [] }

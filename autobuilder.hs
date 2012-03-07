@@ -74,15 +74,15 @@ getParams args =
           p { targets =
                   case targets p of
                     TargetSet xs -> TargetSet xs
-                    TargetNames xs -> TargetSet (Packages (Set.map findSpec xs))
+                    TargetNames xs -> TargetSet (Packages Set.empty (map findSpec (Set.toList xs)))
                     AllTargets -> TargetSet allTargets
             , discard =
-                Set.union (discard p) (Set.fromList $ if testWithPrivate p then foldPackages (\ nm _ _ l -> nm : l) [] (private home) else [])
+                Set.union (discard p) (Set.fromList $ if testWithPrivate p then foldPackages (\ nm _ _ l -> nm : l) (private home) [] else [])
             }
           where
-            findSpec s = case foldPackages (\ nm sp fl l -> if nm == s then (Package nm sp fl : l) else l) [] allTargets of
+            findSpec s = case foldPackages (\ nm sp fl l -> if nm == s then (Package nm sp fl : l) else l) allTargets [] of
                            [x] -> x
-                           [] -> error $ "Package name not found: " ++ s ++ "\navailable: " ++ show (foldPackages (\ nm _ _ l -> nm : l) [] allTargets)
+                           [] -> error $ "Package name not found: " ++ s ++ "\navailable: " ++ show (foldPackages (\ nm _ _ l -> nm : l) allTargets [])
                            xs -> error $ "Multiple packages named " ++ s ++ " found: " ++ show xs
             -- FIXME - make myTargets a set
             allTargets = mappend (myTargets home (const True) (relName (buildRelease p)))

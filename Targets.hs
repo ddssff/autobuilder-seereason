@@ -87,7 +87,7 @@ private home =
 -- cabal-debian.
 applyDepMap :: P.Packages -> P.Packages
 applyDepMap P.NoPackage = P.NoPackage
-applyDepMap (P.Packages s) = P.Packages (Set.map applyDepMap s)
+applyDepMap (P.Packages n s) = P.Packages n (map applyDepMap s)
 applyDepMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
@@ -95,7 +95,7 @@ applyDepMap x@(P.Package {}) =
 
 applyEpochMap :: P.Packages -> P.Packages
 applyEpochMap P.NoPackage = P.NoPackage
-applyEpochMap (P.Packages s) = P.Packages (Set.map applyEpochMap s)
+applyEpochMap (P.Packages n s) = P.Packages n (map applyEpochMap s)
 applyEpochMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
