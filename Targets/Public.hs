@@ -989,14 +989,6 @@ main _home release =
     , P.Package { P.name = "jqueryui"
                 , P.spec = Proc (Apt "sid" "jqueryui")
                 , P.flags = [] }
-{-
-    , P.Package { P.name = "jstree"
-                , P.spec = DebDir (Uri "http://github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip" "e211065e573ea0239d6449882c9d860d") (Darcs (repo ++ "/haskell-jstree-debian") Nothing)
-                , P.flags = [] }
-    , P.Package { P.name = "json2"
-                , P.spec = DebDir (Uri "https://raw.github.com/douglascrockford/JSON-js/master/json2.js" "2ee84c1e82528e5e09c645cf07c97877") (Darcs (repo ++ "/haskell-json2-debian") Nothing)
-                , P.flags = [] }
--}
     , P.Package { P.name = "magic-haskell"
                 , P.spec = Quilt (Apt "sid" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
                 , P.flags = [P.AptPin "1.0.8-7"] }
@@ -1131,7 +1123,99 @@ authenticate = P.Packages (singleton "authenticate") $
 clckwrks =
     P.Packages (singleton "clckwrks") $
         [ P.Package { P.name = "haskell-clckwrks"
-                    , P.spec = Debianize (Cd "clckwrks" (Darcs "http://src.clckwrks.com/clckwrks"))
+                    , P.spec = Debianize (Patch
+                                          (DataFiles
+                                           (DataFiles
+                                            (Cd "clckwrks" (Darcs "http://src.clckwrks.com/clckwrks"))
+                                            (Uri "http://cloud.github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip"
+                                                 "e211065e573ea0239d6449882c9d860d")
+                                            "jstree")
+                                           (Uri "https://raw.github.com/douglascrockford/JSON-js/master/json2.js"
+                                                "2ee84c1e82528e5e09c645cf07c97877")
+                                           "json2")
+                                          (unlines
+                                           [ "--- old/clckwrks.cabal.orig\t2012-03-06 11:34:28.000000000 -0800"
+                                           , "+++ new/clckwrks.cabal\t2012-03-07 20:17:25.465527760 -0800"
+                                           , "@@ -15,6 +15,79 @@"
+                                           , " Cabal-version:       >=1.2"
+                                           , " Data-Files:"
+                                           , "     static/admin.css"
+                                           , "+    jstree/_lib/jquery.hotkeys.js"
+                                           , "+    jstree/_lib/jquery.js"
+                                           , "+    jstree/_lib/jquery.cookie.js"
+                                           , "+    jstree/jquery.jstree.js"
+                                           , "+    jstree/_demo/_inc/class._database.php"
+                                           , "+    jstree/_demo/_inc/class.tree.php"
+                                           , "+    jstree/_demo/_inc/class._database_i.php"
+                                           , "+    jstree/_demo/_inc/__mysql_errors.log"
+                                           , "+    jstree/_demo/_install.txt"
+                                           , "+    jstree/_demo/file.png"
+                                           , "+    jstree/_demo/index.html"
+                                           , "+    jstree/_demo/_dump.sql"
+                                           , "+    jstree/_demo/config.php"
+                                           , "+    jstree/_demo/root.png"
+                                           , "+    jstree/_demo/server.php"
+                                           , "+    jstree/_demo/folder.png"
+                                           , "+    jstree/_docs/cookies.html"
+                                           , "+    jstree/_docs/unique.html"
+                                           , "+    jstree/_docs/_json_data.json"
+                                           , "+    jstree/_docs/json_data.html"
+                                           , "+    jstree/_docs/_html_data.html"
+                                           , "+    jstree/_docs/sort.html"
+                                           , "+    jstree/_docs/html_data.html"
+                                           , "+    jstree/_docs/themeroller.html"
+                                           , "+    jstree/_docs/_drive.png"
+                                           , "+    jstree/_docs/xml_data.html"
+                                           , "+    jstree/_docs/index.html"
+                                           , "+    jstree/_docs/hotkeys.html"
+                                           , "+    jstree/_docs/languages.html"
+                                           , "+    jstree/_docs/ui.html"
+                                           , "+    jstree/_docs/!style.css"
+                                           , "+    jstree/_docs/checkbox.html"
+                                           , "+    jstree/_docs/_search_data.json"
+                                           , "+    jstree/_docs/syntax/page_white_code.png"
+                                           , "+    jstree/_docs/syntax/wrapping.png"
+                                           , "+    jstree/_docs/syntax/page_white_copy.png"
+                                           , "+    jstree/_docs/syntax/!script.js"
+                                           , "+    jstree/_docs/syntax/printer.png"
+                                           , "+    jstree/_docs/syntax/!style.css"
+                                           , "+    jstree/_docs/syntax/magnifier.png"
+                                           , "+    jstree/_docs/syntax/clipboard.swf"
+                                           , "+    jstree/_docs/syntax/help.png"
+                                           , "+    jstree/_docs/_search_result.json"
+                                           , "+    jstree/_docs/crrm.html"
+                                           , "+    jstree/_docs/types.html"
+                                           , "+    jstree/_docs/core.html"
+                                           , "+    jstree/_docs/dnd.html"
+                                           , "+    jstree/_docs/logo.png"
+                                           , "+    jstree/_docs/search.html"
+                                           , "+    jstree/_docs/contextmenu.html"
+                                           , "+    jstree/_docs/themes.html"
+                                           , "+    jstree/_docs/_xml_nest.xml"
+                                           , "+    jstree/_docs/_xml_flat.xml"
+                                           , "+    jstree/themes/default/d.gif"
+                                           , "+    jstree/themes/default/d.png"
+                                           , "+    jstree/themes/default/style.css"
+                                           , "+    jstree/themes/default/throbber.gif"
+                                           , "+    jstree/themes/apple/d.png"
+                                           , "+    jstree/themes/apple/style.css"
+                                           , "+    jstree/themes/apple/dot_for_ie.gif"
+                                           , "+    jstree/themes/apple/bg.jpg"
+                                           , "+    jstree/themes/apple/throbber.gif"
+                                           , "+    jstree/themes/default-rtl/d.gif"
+                                           , "+    jstree/themes/default-rtl/d.png"
+                                           , "+    jstree/themes/default-rtl/dots.gif"
+                                           , "+    jstree/themes/default-rtl/style.css"
+                                           , "+    jstree/themes/default-rtl/throbber.gif"
+                                           , "+    jstree/themes/classic/d.gif"
+                                           , "+    jstree/themes/classic/d.png"
+                                           , "+    jstree/themes/classic/style.css"
+                                           , "+    jstree/themes/classic/dot_for_ie.gif"
+                                           , "+    jstree/themes/classic/throbber.gif"
+                                           , "+    json2/json2.js"
+                                           , " "
+                                           , " Library"
+                                           , "   Exposed-modules: Clckwrks" ]))
                     , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Cd "clckwrks-cli" (Darcs "http://src.clckwrks.com/clckwrks"))
