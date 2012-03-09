@@ -12,7 +12,7 @@
 -- This may run very slowly.
 
 -- Import the symbols we use below.
-import Control.Exception (SomeException, try)
+import Control.Exception (SomeException, try, throw)
 import Data.List (isSuffixOf, isPrefixOf, find)
 import Data.Maybe
 import Data.Monoid (mappend)
@@ -33,52 +33,57 @@ import Config
 import Targets (private)
 import Usage
 
-main = try (getArgs >>= getParams >>= M.main) >>=
-       either (\ (e :: SomeException) -> hPutStrLn stderr ("Exception: " ++ show e)) return
+main =
+    getArgs >>= \ args ->
+    getEnv "HOME" >>= \ home ->
+    try (help (getParams home args) >>= M.main) >>=
+    either (\ (e :: SomeException) -> hPutStrLn stderr ("Exception: " ++ show e) >> throw e) return
+
+-- | Look for the doHelp flag in any parameter set, if given output
+-- help message and exit.  If --help was given it will appear in all
+-- the parameter sets, so we only examine the first.
+help :: [(ParamRec, Packages)] -> IO [(ParamRec, Packages)]
+help pairs =
+    case (any (doHelp . fst) pairs) of
+      True -> hPutStr stderr (usage "Usage: " optSpecs) >> return []
+      False -> return pairs
 
 -- |given a list of strings as they would be returned from getArgs,
 -- build the list of ParamRec which defines the build.
 -- 
 -- Example: getParams ["lucid-seereason" "--all-targets"] >>= return . map buildRelease
 --            -> [ReleaseName {relName = "lucid-seereason"}]
-getParams :: [String] -> IO [ParamRec]
-getParams args =
-    getEnv "HOME" >>= \ home ->
-    hPutStrLn stderr "Autobuilder starting..." >>
-    doParams home (getOpt' (ReturnInOrder Left) (optSpecs home) args)
+getParams :: String -> [String] -> [(ParamRec, Packages)]
+getParams home args =
+    -- getEnv "HOME" >>= \ home ->
+    -- hPutStrLn stderr "Autobuilder starting..." >>
+    doParams (getOpt' (ReturnInOrder Left) optSpecs args)
     where
       -- Turn the parameter information into a list of parameter records
       -- containing all the info needed during runtime.  Each return record
       -- represents a separate autobuilder run.
-      doParams :: FilePath
-               -> ([Either String (ParamRec -> ParamRec)], -- The list of functions to apply to the default record
+      doParams :: ([Either String (ParamRec -> ParamRec)], -- The list of functions to apply to the default record
                    [String],               -- non-options
                    [String],               -- unrecognized options
                    [String])               -- error messages
-               -> IO [ParamRec]
-      doParams home (fns, [], [], []) =
-          maybeDoHelp home . map (finalizeTargets home) . reverse $ f [] fns
+               -> [(ParamRec, Packages)]
+      doParams (fns, [], [], []) =
+          {- maybeDoHelp home . -} 
+          map (\ params -> (params, finalizeTargets params)) . reverse $ f [] fns
           where
             f recs [] = recs
             f recs (Left rel : xs) = f (defParams home rel : recs) xs
             f (rec : more) (Right fn : xs) = f (fn rec : more) xs
             f _ _ = error "First argument must be a release name"
           -- maybeDoHelp home . map (finalizeTargets home) . map (\ p -> foldr ($) p fns) . map (defParams home) $ dists
-      doParams home (_, _, badopts, errs) =
-          hPutStr stderr (usage ("Bad options: " ++ show badopts ++
-                           ", errors: " ++ show errs) (optSpecs home)) >> return []
-      -- Finalize the target list in a parameter set, turning the targets field into a value
-      -- with the constructor TargetSet.
-      finalizeTargets :: FilePath -> ParamRec -> ParamRec
-      finalizeTargets home p =
-          p { targets =
-                  case targets p of
-                    TargetSet xs -> TargetSet xs
-                    TargetNames xs -> TargetSet (Packages Set.empty (map findSpec (Set.toList xs)))
-                    AllTargets -> TargetSet allTargets
-            , discard =
-                Set.union (discard p) (Set.fromList $ if testWithPrivate p then foldPackages (\ nm _ _ l -> nm : l) (private home) [] else [])
-            }
+      doParams (_, _, badopts, errs) =
+          error (usage ("Bad options: " ++ show badopts ++ ", errors: " ++ show errs) optSpecs)
+
+      finalizeTargets :: ParamRec -> Packages
+      finalizeTargets p =
+          case targets p of
+            TargetNames xs -> Packages Set.empty (map findSpec (Set.toList xs))
+            AllTargets -> allTargets
           where
             findSpec s = case foldPackages (\ nm sp fl l -> if nm == s then (Package nm sp fl : l) else l) allTargets [] of
                            [x] -> x
@@ -87,18 +92,10 @@ getParams args =
             -- FIXME - make myTargets a set
             allTargets = mappend (myTargets home (const True) (relName (buildRelease p)))
                                  (if testWithPrivate p then private home else NoPackage)
-      -- Look for the doHelp flag in the parameter set, if given output
-      -- help message and exit.  If --help was given it will appear in all
-      -- the parameter sets, so we only examine the first.
-      maybeDoHelp home xs@(x : _)
-          | doHelp x = hPutStr stderr (usage "Usage: " (optSpecs home)) >>
-                       exitWith ExitSuccess >> return xs
-          | True = return xs
-      maybeDoHelp _ [] = return []
 
 -- |Each option is defined as a function transforming the parameter record.
-optSpecs :: FilePath -> [OptDescr (Either String (ParamRec -> ParamRec))]
-optSpecs home =
+optSpecs :: [OptDescr (Either String (ParamRec -> ParamRec))]
+optSpecs =
     [ Option ['v'] ["verbose"] (NoArg (Right (\ p -> p {verbosity = verbosity p + 1})))
       "Increase progress reporting.  Can be used multiple times."
     , Option ['q'] ["quiet"] (NoArg (Right (\ p -> p {verbosity = verbosity p - 1})))
@@ -141,7 +138,8 @@ optSpecs home =
                , "actually build the private targets.  This is to avoid the risk of"
                , "uploading private targets to the public repository" ])
     , Option [] ["goal"] (ReqArg (\ s -> (Right (\ p -> p { goals = goals p ++ [s]
-                                                                 , targets = TargetSet (myTargets home (const True) (relName (buildRelease p)))}))) "PACKAGE")
+                                                          -- , targets = TargetSet (myTargets home (const True) (relName (buildRelease p)))
+                                                          }))) "PACKAGE")
       (unlines [ "If one or more goal package names are given the autobuilder"
                , "will only build these packages and any of their build dependencies"
                , "which are in the package list.  If no goals are specified, all the"
@@ -162,7 +160,6 @@ optSpecs home =
           case targets p of
             AllTargets -> AllTargets
             TargetNames xs -> TargetNames (Set.insert s xs)
-            TargetSet _ -> error "optSpecs: unexpected value in target specs"
 {-
       allTargets p =
           p {targets = let name = (relName (buildRelease p)) in TargetList (myTargets (releaseTargetNamePred name) name)})
