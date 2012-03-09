@@ -991,7 +991,7 @@ main _home release =
                 , P.flags = [] }
     , P.Package { P.name = "magic-haskell"
                 , P.spec = Quilt (Apt "sid" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
-                , P.flags = [P.AptPin "1.0.8-7"] }
+                , P.flags = [] }
     , debianize "MissingH" [P.DebVersion "1.1.1.0-1~hackage1"]
     , P.Package { P.name = "seereason-keyring"
                 , P.spec = Darcs "http://src.seereason.com/seereason-keyring"
