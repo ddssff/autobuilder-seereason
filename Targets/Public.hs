@@ -1051,7 +1051,7 @@ platform release =
     , P.Package { P.name = "alex"
                 , P.spec = Apt "sid" "alex"
                 , P.flags = [P.RelaxDep "alex"] }
-    -- , opengl release
+    , opengl release
     -- , haddock release
     , debianize "haskell-src" [ P.ExtraDep "happy" ]
     , debianize "network" []
@@ -1251,11 +1251,12 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize "vacuum-opengl" [{-P.DebVersion "0.0.3-1~hackage2"-}]
     , debianize "bitmap-opengl" [{-P.DebVersion "0.0.0-1~hackage1"-}]
     , apt release "haskell-glut"
-    , debianize "statevar" []
-    , debianize "tensor" []
-    , debianize "gluraw" []
-    , debianize "objectname" []
-    , debianize "openglraw" [] ]
+    , debianize "StateVar" []
+    , debianize "Tensor" []
+    , debianize "GLURaw" []
+    , debianize "ObjectName" []
+    , debianize "OpenGLRaw" [ P.ExtraDep "libgl1-mesa-dev" ]
+    ]
 
 -- Problem compiling C code in glib:
 --  System/Glib/hsgclosure.c:110:8:

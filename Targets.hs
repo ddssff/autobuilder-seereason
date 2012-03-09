@@ -91,7 +91,7 @@ applyDepMap (P.Packages n s) = P.Packages n (map applyDepMap s)
 applyDepMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
-      mappings = [P.MapDep "cryptopp" "crypto++", P.MapDep "crypt" "c6"]
+      mappings = [P.MapDep "cryptopp" "crypto++", P.MapDep "crypt" "c6", P.MapDep "GL" "gl1-mesa"]
 
 applyEpochMap :: P.Packages -> P.Packages
 applyEpochMap P.NoPackage = P.NoPackage
