@@ -14,6 +14,7 @@
 -- Import the symbols we use below.
 import Control.Exception (SomeException, try, throw)
 import Data.List (isSuffixOf, isPrefixOf, find)
+import qualified Data.Map as Map
 import Data.Maybe
 import Data.Monoid (mappend)
 import qualified Data.Set as Set
@@ -34,6 +35,7 @@ import Targets (private)
 import Usage
 
 main =
+    hPutStrLn stderr "Autobuilder starting..." >>
     getArgs >>= \ args ->
     getEnv "HOME" >>= \ home ->
     try (help (getParams home args) >>= M.main) >>=
@@ -55,8 +57,6 @@ help pairs =
 --            -> [ReleaseName {relName = "lucid-seereason"}]
 getParams :: String -> [String] -> [(ParamRec, Packages)]
 getParams home args =
-    -- getEnv "HOME" >>= \ home ->
-    -- hPutStrLn stderr "Autobuilder starting..." >>
     doParams (getOpt' (ReturnInOrder Left) optSpecs args)
     where
       -- Turn the parameter information into a list of parameter records
@@ -68,30 +68,41 @@ getParams home args =
                    [String])               -- error messages
                -> [(ParamRec, Packages)]
       doParams (fns, [], [], []) =
-          {- maybeDoHelp home . -} 
           map (\ params -> (params, finalizeTargets params)) . reverse $ f [] fns
           where
             f recs [] = recs
             f recs (Left rel : xs) = f (defParams home rel : recs) xs
             f (rec : more) (Right fn : xs) = f (fn rec : more) xs
             f _ _ = error "First argument must be a release name"
-          -- maybeDoHelp home . map (finalizeTargets home) . map (\ p -> foldr ($) p fns) . map (defParams home) $ dists
       doParams (_, _, badopts, errs) =
           error (usage ("Bad options: " ++ show badopts ++ ", errors: " ++ show errs) optSpecs)
 
       finalizeTargets :: ParamRec -> Packages
-      finalizeTargets p =
-          case targets p of
-            TargetNames xs -> Packages Set.empty (map findSpec (Set.toList xs))
-            AllTargets -> allTargets
+      finalizeTargets params =
+          Packages { group = Set.empty
+                   , packages = Map.elems $ case targets params of
+                                              AllTargets -> collectAll allTargets Map.empty
+                                              TargetNames xs -> Set.fold (collectByName allTargets) Map.empty xs }
           where
-            findSpec s = case foldPackages (\ nm sp fl l -> if nm == s then (Package nm sp fl : l) else l) allTargets [] of
-                           [x] -> x
-                           [] -> error $ "Package name not found: " ++ s ++ "\navailable: " ++ show (foldPackages (\ nm _ _ l -> nm : l) allTargets [])
-                           xs -> error $ "Multiple packages named " ++ s ++ " found: " ++ show xs
+            collectByName available n collected =
+                case available of
+                  NoPackage -> collected
+                  p@(Package {}) -> if name p == n then Map.insertWith check n p collected else collected
+                  ps@(Packages {}) ->
+                      if Set.member n (group ps)
+                      then foldr collectAll collected (packages ps)
+                      else foldr (collect' n) collected (packages ps)
+            collect' n available collected = collectByName available n collected
+            collectAll :: Packages -> Map.Map String Packages -> Map.Map String Packages
+            collectAll p collected =
+                case p of
+                  NoPackage -> collected
+                  Package {} -> Map.insertWith check (name p) p collected
+                  Packages {} -> foldr collectAll collected (packages p)
+            check old new = if old /= new then error ("Multiple packages with same name: " ++ show old ++ ", " ++ show new) else old
             -- FIXME - make myTargets a set
-            allTargets = mappend (myTargets home (const True) (relName (buildRelease p)))
-                                 (if testWithPrivate p then private home else NoPackage)
+            allTargets = mappend (myTargets home (const True) (relName (buildRelease params)))
+                                 (if testWithPrivate params then private home else NoPackage)
 
 -- |Each option is defined as a function transforming the parameter record.
 optSpecs :: [OptDescr (Either String (ParamRec -> ParamRec))]
