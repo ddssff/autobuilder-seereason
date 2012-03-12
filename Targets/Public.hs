@@ -13,7 +13,7 @@ import Targets.Common (repo, {-localRepo,-} happstackRepo)
 targets :: String -> String -> P.Packages
 targets _home release =
     P.Packages empty $
-    [ -- platform release,
+    [ platform release,
       main _home release
     , authenticate
     , happstackdotcom
