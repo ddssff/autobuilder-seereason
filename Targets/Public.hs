@@ -1248,8 +1248,8 @@ jsonb = P.Packages (singleton "jsonb") $
 -- May work with these added dependencies (statevar thru openglraw)
 opengl release = P.Packages (singleton "opengl") $
     [ debianize "OpenGL" []
-    , debianize "vacuum-opengl" [{-P.DebVersion "0.0.3-1~hackage2"-}]
-    , debianize "bitmap-opengl" [{-P.DebVersion "0.0.0-1~hackage1"-}]
+    , debianize "vacuum-opengl" [P.DebVersion "0.0.3-1~hackage2"]
+    , debianize "bitmap-opengl" [P.DebVersion "0.0.0-1~hackage1"]
     , apt release "haskell-glut"
     , debianize "StateVar" []
     , debianize "Tensor" []
