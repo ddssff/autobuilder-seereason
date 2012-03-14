@@ -13,8 +13,8 @@ import Targets.Common (repo, localRepo, happstackRepo)
 targets :: String -> String -> P.Packages
 targets _home release =
     P.Packages empty $
-    [ platform release,
-      main _home release
+    [ main _home release
+    , autobuilder _home
     , authenticate
     , happstackdotcom
     -- , fixme
@@ -37,17 +37,51 @@ fixme =
                 , P.flags = [] }
     ]
 
-main :: String -> String -> P.Packages
-main _home release =
-    P.Packages (singleton "main") $
-    [ platform release,
-      debianize "hashtables" []
+unixutils _home =
+    P.Packages (singleton "Unixutils")
+    [ -- , debianize "progress" []
+      -- , debianize "Unixutils" []
+      P.Package { P.name = "Unixutils"
+                , P.spec = Darcs (repo ++ "/haskell-unixutils")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-progress"
+                , P.spec = Debianize (Cd "progress" (Darcs (repo ++ "/haskell-unixutils")))
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-extra"
+                , P.spec = Darcs "http://src.seereason.com/haskell-extra"
+                , P.flags = [P.RelaxDep "cabal-debian"] }
+    , P.Package { P.name = "haskell-help"
+                , P.spec = Darcs "http://src.seereason.com/haskell-help"
+                , P.flags = [] } ]
+
+autobuilder _home =
+    P.Packages (singleton "autobuilder") $
+    [ unixutils _home
     , P.Package { P.name = "autobuilder"
                 , P.spec = Darcs (repo ++ "/autobuilder")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-cabal-debian"
                 , P.spec = Darcs (repo ++ "/cabal-debian")
                 , P.flags = [] }
+    , P.Package { P.name = "haskell-debian"
+                , P.spec = Darcs (repo ++ "/haskell-debian")
+                , P.flags = [P.RelaxDep "cabal-debian"] }
+    , P.Package { P.name = "haskell-debian-mirror"
+                , P.spec = Darcs "http://src.seereason.com/mirror"
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-debian-repo"
+                , P.spec = Darcs "http://src.seereason.com/haskell-debian-repo"
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-archive"
+                , P.spec = Darcs "http://src.seereason.com/archive"
+                , P.flags = [] } ]
+
+main :: String -> String -> P.Packages
+main _home release =
+    P.Packages (singleton "main") $
+    [ -- ghc,
+      -- platform release,
+      debianize "hashtables" []
     , P.Package { P.name = "cpphs"
                 , P.spec = Apt "sid" "cpphs"
                 , P.flags = [] }
@@ -56,65 +90,12 @@ main _home release =
                 , P.flags = [P.UDeb "debootstrap-udeb"] }
     , apt release "geneweb"
     , P.Package { P.name = "gtk2hs-buildtools"
-                , P.spec = Debianize (P.Patch
-                                       (Hackage "gtk2hs-buildtools")
-                                       (unlines
-                                             [ "--- tmp/gtk2hs-buildtools.cabal.orig\t2011-09-15 16:29:46.000000000 -0700"
-                                             , "+++ tmp/gtk2hs-buildtools.cabal\t2011-09-15 17:15:50.008424830 -0700"
-                                             , "@@ -41,6 +41,7 @@"
-                                             , "         hs-source-dirs: hierarchyGen"
-                                             , "         other-modules:  Paths_gtk2hs_buildtools"
-                                             , "         build-depends:  base"
-                                             , "+        GHC-options:    -XBangPatterns"
-                                             , " "
-                                             , " Executable gtk2hsHookGenerator"
-                                             , "         main-is:        HookGenerator.hs"
-                                             , "@@ -49,6 +50,7 @@"
-                                             , "           cpp-options:  -DUSE_GCLOSURE_SIGNALS_IMPL"
-                                             , "         other-modules:  Paths_gtk2hs_buildtools"
-                                             , "         build-depends:  base"
-                                             , "+        GHC-options:    -XBangPatterns"
-                                             , " "
-                                             , " Executable gtk2hsC2hs"
-                                             , "         main-is:        Main.hs"
-                                             , "@@ -114,3 +116,4 @@"
-                                             , "         else"
-                                             , "           cpp-options:  -D_C2HS_CPP_LANG_SINGLE"
-                                             , "         extensions:     ForeignFunctionInterface"
-                                             , "+        GHC-options:    -XBangPatterns" ]))
+                , P.spec = Debianize (Hackage "gtk2hs-buildtools")
                 , P.flags =
                     [ P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"
                     , P.ExtraDep "alex"
                     , P.ExtraDep "happy"
                     , P.Revision "" ] }
-{-
-    , debianize "gtk2hs-buildtools" [ P.ExtraDep "alex"
-                                    , P.ExtraDep "happy"
-                                    , P.Patch . B.pack . unlines $
-                                      [ "--- tmp/gtk2hs-buildtools.cabal.orig\t2011-09-15 16:29:46.000000000 -0700"
-                                      , "+++ tmp/gtk2hs-buildtools.cabal\t2011-09-15 17:15:50.008424830 -0700"
-                                      , "@@ -41,6 +41,7 @@"
-                                      , "         hs-source-dirs: hierarchyGen"
-                                      , "         other-modules:  Paths_gtk2hs_buildtools"
-                                      , "         build-depends:  base"
-                                      , "+        GHC-options:    -XBangPatterns"
-                                      , " "
-                                      , " Executable gtk2hsHookGenerator"
-                                      , "         main-is:        HookGenerator.hs"
-                                      , "@@ -49,6 +50,7 @@"
-                                      , "           cpp-options:  -DUSE_GCLOSURE_SIGNALS_IMPL"
-                                      , "         other-modules:  Paths_gtk2hs_buildtools"
-                                      , "         build-depends:  base"
-                                      , "+        GHC-options:    -XBangPatterns"
-                                      , " "
-                                      , " Executable gtk2hsC2hs"
-                                      , "         main-is:        Main.hs"
-                                      , "@@ -114,3 +116,4 @@"
-                                      , "         else"
-                                      , "           cpp-options:  -D_C2HS_CPP_LANG_SINGLE"
-                                      , "         extensions:     ForeignFunctionInterface"
-                                      , "+        GHC-options:    -XBangPatterns" ] ]
--}
     , P.Package { P.name = "happstack-debianization"
                 , P.spec = Darcs "http://src.seereason.com/happstack-debianization"
                 , P.flags = [] }
@@ -131,9 +112,6 @@ main _home release =
                   P.spec = DebDir (Hackage "applicative-extras")
                                   (Darcs "http://src.seereason.com/applicative-extras-debian"),
                   P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
-    , P.Package { P.name = "haskell-archive"
-                , P.spec = Darcs "http://src.seereason.com/archive"
-                , P.flags = [] }
     , debianize "asn1-data" []
     , debianize "attempt" []
     , debianize "failure" []
@@ -264,15 +242,6 @@ main _home release =
                       , "     exposed-modules: Data.Object"
                       , "     ghc-options:     -Wall" ])
     , debianize "dataenc" []
-    , P.Package { P.name = "haskell-debian"
-                , P.spec = Darcs (repo ++ "/haskell-debian")
-                , P.flags = [P.RelaxDep "cabal-debian"] }
-    , P.Package { P.name = "haskell-debian-mirror"
-                , P.spec = Darcs "http://src.seereason.com/mirror"
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-debian-repo"
-                , P.spec = Darcs "http://src.seereason.com/haskell-debian-repo"
-                , P.flags = [] }
 
     , apt release "haskell-diff"
     , apt release "haskell-digest"
@@ -295,9 +264,6 @@ main _home release =
     , apt release "haskell-entropy"
     , apt release "haskell-enumerator"
     , apt release "haskell-erf"
-    , P.Package { P.name = "haskell-extra"
-                , P.spec = Darcs "http://src.seereason.com/haskell-extra"
-                , P.flags = [P.RelaxDep "cabal-debian"] }
     , apt release "haskell-feed"
     , debianize "file-embed" [P.DebVersion "0.0.4.1-1~hackage1"]
     , P.Package { P.name = "haskell-formlets"
@@ -377,9 +343,6 @@ main _home release =
     -- sound right...
     , debianize "HaXml" [P.DebVersion "1:1.22.5-1~hackage1"]
     , debianize "heap" [P.DebVersion "1.0.0-1~hackage1"]
-    , P.Package { P.name = "haskell-help"
-                , P.spec = Darcs "http://src.seereason.com/haskell-help"
-                , P.flags = [] }
     , debianize "heist" []
     , debianize "xmlhtml" []
     , debianize "directory-tree" []
@@ -731,7 +694,7 @@ main _home release =
                   P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"]}
     , apt release "haskell-pcre-light"
     , debianize "permutation" [P.DebVersion "0.4.1-1~hackage1"]
-    , debianize "polyparse" [P.DebVersion "1.7-1~hackage1"]
+    , debianize "polyparse" []
     , apt release "haskell-primitive"
     , P.Package { P.name = "haskell-proplogic"
                 , P.spec = DebDir (Uri "http://www.bucephalus.org/PropLogic/PropLogic-0.9.tar.gz" "e2fb3445dd16d435e81d7630d7f78c01") (Darcs (repo ++ "/haskell-proplogic-debian"))
@@ -879,7 +842,6 @@ main _home release =
     , debianize "uniplate" []
     -- , apt release "haskell-unix-compat"
     , debianize "unix-compat" []
-    , debianize "Unixutils" []
     , debianize "Unixutils-shadow" []
     , debianize "unordered-containers" []
     , debianize "utf8-prelude" [P.DebVersion "0.1.6-1~hackage1"]
@@ -1003,23 +965,22 @@ main _home release =
     -- , debianize "hlatex" []
     ]
 
+ghc release =
+    let ghc740 = P.Package { P.name = "ghc"
+                           , P.spec = Apt "experimental" "ghc"
+                           , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
+        ghc741 = P.Package { P.name = "ghc"
+                           , P.spec = Apt "sid" "ghc"
+                           , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"] } in
+    case release of
+      "natty-seereason" -> ghc741 -- P.NoPackage
+      _ -> ghc741 -- P.NoPackage
+
 platform release =
     P.Packages (singleton "platform") $
-    [ let ghc740 = P.Package { P.name = "ghc"
-                             , P.spec = Apt "experimental" "ghc"
-                             , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt"] }
-          ghc741 = P.Package { P.name = "ghc"
-                             , P.spec = Apt "sid" "ghc"
-                             , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"] } in
-      case release of
-        "natty-seereason" -> ghc741 -- P.NoPackage
-        _ -> ghc741 -- P.NoPackage
-    , P.Package { P.name = "haskell-devscripts"
+    [ P.Package { P.name = "haskell-devscripts"
                 , P.spec = Apt "sid" "haskell-devscripts"
                 , P.flags = [P.RelaxDep "python-minimal"] }
-{-  , P.Package { P.name = "haskell-deepseq"
-                , P.spec = Apt "sid" "haskell-deepseq" [P.AptPin "1.1.0.2-2"])
-                , P.flags = [] } -}
     , -- Our automatic debianization code produces a package which is
       -- missing the template files required for happy to work properly,
       -- so I have imported debian's debianization and patched it to
