@@ -39,9 +39,7 @@ fixme =
 
 unixutils _home =
     P.Packages (singleton "Unixutils")
-    [ -- , debianize "progress" []
-      -- , debianize "Unixutils" []
-      P.Package { P.name = "Unixutils"
+    [ P.Package { P.name = "haskell-unixutils"
                 , P.spec = Darcs (repo ++ "/haskell-unixutils")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-progress"
@@ -52,6 +50,9 @@ unixutils _home =
                 , P.flags = [P.RelaxDep "cabal-debian"] }
     , P.Package { P.name = "haskell-help"
                 , P.spec = Darcs "http://src.seereason.com/haskell-help"
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-happstack-scaffolding"
+                , P.spec = Darcs (repo ++ "/happstack-scaffolding")
                 , P.flags = [] } ]
 
 autobuilder _home =
@@ -324,9 +325,6 @@ main _home release =
                 , P.flags = [] }
 
     , debianize "happstack-jmacro" []
-    , P.Package { P.name = "haskell-happstack-scaffolding"
-                , P.spec = Darcs (repo ++ "/happstack-scaffolding")
-                , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-search"
                 , P.spec = Darcs (repo ++ "/happstack-search")
                 , P.flags = [] }
