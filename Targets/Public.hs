@@ -1,11 +1,11 @@
-{-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
+{-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-unused-imports -fno-warn-name-shadowing #-}
 module Targets.Public ( targets ) where
 
 import Data.Char (toLower)
 import Data.Set (empty, singleton)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
-import Targets.Common (repo, {-localRepo,-} happstackRepo)
+import Targets.Common (repo, localRepo, happstackRepo)
 
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
