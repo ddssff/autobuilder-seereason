@@ -22,7 +22,7 @@ libraries _home =
                 , P.flags = [] }
     , P.Package { P.name = "clckwrks-theme-happstack"
                 , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (privateRepo ++ "/happstack-clckwrks")))
-                , P.flags = [] }
+                , P.flags = [P.ExtraDep "trhsx"] }
     ]
 
 applications _home =

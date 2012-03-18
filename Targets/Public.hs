@@ -81,7 +81,7 @@ main :: String -> String -> P.Packages
 main _home release =
     P.Packages (singleton "main") $
     [ -- ghc,
-      -- platform release,
+      platform release,
       debianize "hashtables" []
     , P.Package { P.name = "cpphs"
                 , P.spec = Apt "sid" "cpphs"
@@ -1175,16 +1175,16 @@ clckwrks =
                                            , " "
                                            , " Library"
                                            , "   Exposed-modules: Clckwrks" ]))
-                    , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
+                    , P.flags = [P.ExtraDep "trhsx"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Cd "clckwrks-cli" (Darcs "http://src.clckwrks.com/clckwrks"))
                     , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
                     , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs "http://src.clckwrks.com/clckwrks"))
-                    , P.flags = [] }
+                    , P.flags = [P.ExtraDep "trhsx"] }
         , P.Package { P.name = "haskell-clckwrks-theme-basic"
                     , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs "http://src.clckwrks.com/clckwrks"))
-                    , P.flags = [] }
+                    , P.flags = [P.ExtraDep "trhsx"] }
         ]
 
 -- Broken targets:
