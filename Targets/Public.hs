@@ -1446,8 +1446,10 @@ debianize s flags =
       debianName "parsec" = "haskell-parsec3"
       debianName "gtk2hs-buildtools" = "gtk2hs-buildtools"
       -- The correct name would be haskell-haskell-src-exts, but the package
-      -- in sid has the name "haskell-src-exts".
-      debianName "haskell-src-exts" = "haskell-src-exts"
+      -- in sid has the name "haskell-src-exts".  (Update: we no longer use
+      -- the haskell-src-exts package from sid.  Now packages from sid that
+      -- depend on this package will fail, so we will have to remove those too.
+      -- debianName "haskell-src-exts" = "haskell-src-exts"
       debianName "MissingH" = "haskell-missingh"
       debianName _ = "haskell-" ++ map toLower s
 
