@@ -247,7 +247,7 @@ main _home release =
     , apt release "haskell-diff"
     , apt release "haskell-digest"
     , debianize "digestive-functors" []
-    , debianize "digestive-functors-blaze" [P.DebVersion "0.2.1.0-1~hackage1"]
+    , debianize "digestive-functors-blaze" []
     , debianize "digestive-functors-happstack" []
     , P.Package { P.name = "haskell-digestive-functors-hsp"
                 , P.spec = Darcs (repo ++ "/digestive-functors-hsp")
