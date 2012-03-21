@@ -468,7 +468,7 @@ main _home release =
                       , "       CC-Options:         -D PTHREAD"
                       , "       CPP-Options:        -DCALLCONV=ccall" ])
     , patched "hsp"
-                    [ P.ExtraDep "trhsx"
+                    [ P.ExtraDep "haskell-hsx-utils"
                     , P.DebVersion "0.6.1-1" ]
                     (unlines
                       [ "--- old/src/HSP/XMLGenerator.hs\t2012-01-04 09:58:57.966483200 -0800"
@@ -1175,16 +1175,16 @@ clckwrks =
                                            , " "
                                            , " Library"
                                            , "   Exposed-modules: Clckwrks" ]))
-                    , P.flags = [P.ExtraDep "trhsx"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Cd "clckwrks-cli" (Darcs "http://src.clckwrks.com/clckwrks"))
                     , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
                     , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs "http://src.clckwrks.com/clckwrks"))
-                    , P.flags = [P.ExtraDep "trhsx"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-theme-basic"
                     , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs "http://src.clckwrks.com/clckwrks"))
-                    , P.flags = [P.ExtraDep "trhsx"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         ]
 
 -- Broken targets:
