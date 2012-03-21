@@ -1302,7 +1302,19 @@ happstackdotcom = P.Packages (singleton "happstackdotcom") $
                 , P.flags = []
                 }
     , P.Package { P.name = "haskell-happstackdotcom"
-                , P.spec = Darcs "http://patch-tag.com/r/stepcut/happstackDotCom"
+                , P.spec = Patch (Darcs "http://patch-tag.com/r/stepcut/happstackDotCom")
+                                 (unlines
+                                  [ "--- old/debian/control\t2012-02-09 09:26:12.000000000 -0800"
+                                  , "+++ new/debian/control\t2012-03-21 07:24:34.007926833 -0700"
+                                  , "@@ -16,7 +16,7 @@"
+                                  , "                libghc-hsx-prof (>= 0.9.1),"
+                                  , "                libghc-ircbot-dev,"
+                                  , "                libghc-mtl-prof,"
+                                  , "-               trhsx"
+                                  , "+               haskell-hsx-utils"
+                                  , " Build-Depends-Indep: ghc-doc,"
+                                  , "                      haddock,"
+                                  , "                      libghc-happstack-doc," ])
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstackdotcom-doc"
                 , P.spec = Darcs "http://src.seereason.com/happstackDotCom-doc"
