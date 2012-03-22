@@ -15,7 +15,8 @@ targets _home release =
     P.Packages empty $
     [ main _home release
     , autobuilder _home
-    , authenticate
+    , digestiveFunctors
+    , authenticate _home
     , happstackdotcom
     -- , fixme
     -- , higgsset
@@ -75,6 +76,15 @@ autobuilder _home =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-archive"
                 , P.spec = Darcs "http://src.seereason.com/archive"
+                , P.flags = [] } ]
+
+digestiveFunctors =
+    P.Packages (singleton "digestive-functors")
+    [ debianize "digestive-functors" [P.CabalPin "0.2.1.0"]  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
+    , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
+    , debianize "digestive-functors-happstack" [P.CabalPin "0.1.1.4"]
+    , P.Package { P.name = "haskell-digestive-functors-hsp"
+                , P.spec = Darcs (repo ++ "/digestive-functors-hsp")
                 , P.flags = [] } ]
 
 main :: String -> String -> P.Packages
@@ -246,12 +256,6 @@ main _home release =
 
     , apt release "haskell-diff"
     , apt release "haskell-digest"
-    , debianize "digestive-functors" []
-    , debianize "digestive-functors-blaze" []
-    , debianize "digestive-functors-happstack" []
-    , P.Package { P.name = "haskell-digestive-functors-hsp"
-                , P.spec = Darcs (repo ++ "/digestive-functors-hsp")
-                , P.flags = [] }
     , apt release "haskell-dlist"
     -- Natty only(?)
     , debianize "double-conversion" []
