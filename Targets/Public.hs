@@ -934,8 +934,6 @@ main _home release =
     , debianize "xss-sanitize" []
     , debianize "yaml-light" []
     , apt release "haskell-zip-archive"
-    , debianize "zlib-bindings" []
-    , apt release "haskell-zlib-enum"
 
     , debianize "highlighting-kate" []
     , debianize "regex-pcre-builtin" []
@@ -1038,22 +1036,25 @@ platform release =
     ]
 
 -- | Packages pinned pending update of happstack-authenticate
-authenticate = P.Packages (singleton "authenticate") $
+authenticate _home = P.Packages (singleton "authenticate") $
     let -- pin _ = []
         pin x = [P.CabalPin x] in
-    [ debianize "wai" [P.CabalPin "1.0.0"]
-    , debianize "xml-conduit" [P.CabalPin "0.5.1.2"]
-    , debianize "http-conduit" [P.CabalPin "1.2.0"]
-    , debianize "zlib-conduit" [P.CabalPin "0.0.1"]
-    , debianize "conduit" [P.CabalPin "0.1.1.1"]
-    , debianize "attoparsec-conduit" [P.CabalPin "0.0.1"]
-    , debianize "blaze-builder-conduit" [P.CabalPin "0.0.1"]
-    , debianize "http-enumerator" [P.CabalPin "0.7.2.5"]
-    , debianize "tls" [P.CabalPin "0.8.5"]
-    , debianize "tls-extra" [P.CabalPin "0.4.2.1"]
-    , debianize "certificate" [P.CabalPin "1.0.1", P.DebVersion "1.0.1-1~hackage1"]
+    [ debianize "zlib-bindings" [pin "0.0.3.2"]       -- Waiting for a zlib-conduit (currently 0.0.1) and zlib-enum (currently 0.2.1) that can handle 0.1.0
+    , apt release "haskell-zlib-enum"                 -- 0.2.1, currently the newest version in hackage
+    , debianize "wai" [pin "1.0.0"]                   -- 1.1.0.1 is in hackage
+    , debianize "xml-conduit" [pin "0.5.1.2"]         -- 0.6.0 is in hackage
+    , debianize "http-conduit" [pin "1.2.0"]          -- 1.3.0 is in hackage
+    , debianize "zlib-conduit" [pin "0.0.1"]          -- 0.3.0 is in hackage
+    , debianize "conduit" [pin "0.1.1.1"]             -- 0.3.0 is in hackage
+    , debianize "attoparsec-conduit" [pin "0.0.1"]    -- 0.3.0 is in hackage
+    , debianize "blaze-builder-conduit" [pin "0.0.1"] -- 0.3.0 is in hackage
+    , debianize "http-enumerator" [pin "0.7.2.5"]     -- 0.7.3.1 is in hackage
+    , debianize "tls" [pin "0.8.5"]                   -- 0.9.1 is in hackage
+    , debianize "tls-extra" [pin "0.4.2.1"]           -- 0.4.3 is in hackage
+    , debianize "certificate" [pin "1.0.1", P.DebVersion "1.0.1-1~hackage1"]
+                                                      -- 1.1.0 is in hackage
     , patched "authenticate"
-                    [ P.CabalPin "0.11.1" ]
+                    [ pin "0.11.1" ]                  -- 1.1.0 is in hackage
                     (unlines
                       [ "--- old/authenticate.cabal\t2012-01-19 19:39:56.000000000 -0800"
                       , "+++ new/authenticate.cabal\t2012-01-20 11:48:58.976223078 -0800"
