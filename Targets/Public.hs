@@ -516,30 +516,7 @@ main _home release =
     , debianize "instant-generics" []
     , debianize "irc" []
     , debianize "ixset" [P.DebVersion "1.0.2-1~hackage1"]
-    , patched "jmacro"
-                    [ P.DebVersion "0.5.2-1~hackage1" ]
-                    (unlines
-                      [ "--- old/Language/Javascript/JMacro/Base.hs\t2012-01-20 11:07:56.000000000 -0800"
-                      , "+++ new/Language/Javascript/JMacro/Base.hs\t2012-01-20 11:32:03.207161474 -0800"
-                      , "@@ -46,7 +46,7 @@"
-                      , " import qualified Data.Set as S"
-                      , " import qualified Data.Map as M"
-                      , " import Data.Generics"
-                      , "-import Data.Monoid"
-                      , "+import Data.Monoid (Monoid(..))"
-                      , " "
-                      , " import Numeric(showHex)"
-                      , " import Safe"
-                      , "--- old/Language/Javascript/JMacro/Util.hs\t2012-01-02 10:57:46.000000000 -0800"
-                      , "+++ new/Language/Javascript/JMacro/Util.hs\t2012-01-02 11:01:26.866482026 -0800"
-                      , "@@ -1,6 +1,6 @@"
-                      , " module Language.Javascript.JMacro.Util where"
-                      , " "
-                      , "-import Prelude hiding (tail, init, head, last, minimum, maximum, foldr1, foldl1, (!!), read)"
-                      , "+import Prelude hiding (tail, init, head, last, minimum, maximum, foldr1, foldl1, (!!), read, (&&), (<))"
-                      , " "
-                      , " import qualified Prelude as P"
-                      , " import Language.Javascript.JMacro.Base" ])
+    , debianize "jmacro" []
     , P.Package { P.name = "haskell-json"
                 , P.spec = Darcs (repo ++ "/haskell-json")
                 , P.flags = [] }
@@ -752,7 +729,72 @@ main _home release =
     , apt release "haskell-sha"
     , debianize "shakespeare" []
     , debianize "shakespeare-css" []
-    , debianize "simple-css" [P.DebVersion "0.0.4-1~hackage1"]
+    , P.Package { P.name = "haskell-simple-css",
+                  P.spec = Patch (Debianize (Hackage "simple-css"))
+                                 (unlines
+                                  [ "--- old/src/SimpleCss.hs\t2012-03-25 07:53:41.000000000 -0700"
+                                  , "+++ new/src/SimpleCss.hs\t2012-03-25 14:43:54.789176546 -0700"
+                                  , "@@ -20,7 +20,7 @@"
+                                  , " "
+                                  , " --import qualified Data.Map as M"
+                                  , " import Data.Hashable"
+                                  , "-import qualified Data.HashMap.Lazy as H"
+                                  , "+import qualified Data.HashMap.Lazy as HM"
+                                  , " "
+                                  , " import qualified Text.Blaze as H"
+                                  , " import qualified Text.Blaze.Html5 as H"
+                                  , "@@ -135,11 +135,11 @@"
+                                  , " blazeSpec = HtmlSpec"
+                                  , "     (blazeTag H.div)"
+                                  , "     (blazeTag H.span)"
+                                  , "-    (\\href -> blazeTag (H.a H.! HA.href (H.stringValue href)))"
+                                  , "-    (\\s x -> x H.! HA.class_ (H.stringValue s))"
+                                  , "+    (\\href -> blazeTag (H.a H.! HA.href (H.toValue href)))"
+                                  , "+    (\\s x -> x H.! HA.class_ (H.toValue s))"
+                                  , " "
+                                  , " blazeTag tag xs"
+                                  , "-    | null xs   = tag $ H.string \"\""
+                                  , "+    | null xs   = tag $ H.toHtml \"\""
+                                  , "     | otherwise = tag $ foldl1 (>>) xs"
+                                  , " "
+                                  , " -------------------------------------------------------------------------"
+                                  , "@@ -149,7 +149,7 @@"
+                                  , "     deriving (Show, Eq, Ord)"
+                                  , " "
+                                  , " type ClassId    = String"
+                                  , "-type ClassTable = H.HashMap Rule ClassId"
+                                  , "+type ClassTable = HM.HashMap Rule ClassId"
+                                  , " "
+                                  , " data CssTag a = DivTag | SpanTag | ATag Href | Prim a"
+                                  , " "
+                                  , "@@ -171,7 +171,7 @@"
+                                  , " "
+                                  , " -- class names table"
+                                  , " classTable :: [Rule] -> ClassTable"
+                                  , "-classTable = H.fromList . flip zip ids . nub"
+                                  , "+classTable = HM.fromList . flip zip ids . nub"
+                                  , "     where ids = map (('c' : ). show) [0 ..]  "
+                                  , "           phi id (a, b) = (b, (id, a))"
+                                  , "  "
+                                  , "@@ -245,7 +245,7 @@"
+                                  , " -- print ruleSets"
+                                  , " ppRuleSets :: ClassTable -> [RuleSet]"
+                                  , " ppRuleSets = ((uncurry $ flip toRuleSet) =<< ) "
+                                  , "-    . sortOn snd . H.toList"
+                                  , "+    . sortOn snd . HM.toList"
+                                  , " "
+                                  , " "
+                                  , " toRuleSet :: String -> Rule -> [RuleSet]"
+                                  , "@@ -260,7 +260,7 @@"
+                                  , " ppHtml :: HtmlSpec a -> ClassTable -> TagTree a -> a"
+                                  , " ppHtml spec table (TagTree (CssNode tag rules) xs) = "
+                                  , "     setAttrs spec attrs next"
+                                  , "-    where attrs = map (maybe [] id . flip H.lookup table) rules"
+                                  , "+    where attrs = map (maybe [] id . flip HM.lookup table) rules"
+                                  , "           next  = case tag of"
+                                  , "                     Prim a    -> a"
+                                  , "                     DivTag    -> divTag  spec next'" ])
+                , P.flags = [P.DebVersion "0.0.4-1~hackage1"] }
     , debianize "SMTPClient" [P.DebVersion "1.0.4-2"]
     , debianize "socks" []
     , debianize "split" []
@@ -992,7 +1034,9 @@ ghc release =
                               , " Replaces: ghc6 (<< 7)"
                               , " Conflicts: ghc6 (<< 7), ${provided-devs}" ])
                   , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"] }
-    else apt "sid" "ghc"
+    else if elem release ["lucid-seereason", "natty-seereason"]
+         then P.NoPackage
+         else apt "sid" "ghc"
 
 platform release =
     P.Packages (singleton "platform") $
@@ -1053,24 +1097,22 @@ platform release =
     , debianize "xhtml" []
     ]
 
--- | Packages pinned pending update of happstack-authenticate
+-- | Packages pinned pending update of happstack-authenticate (in one possible build order.)
 authenticate _home = P.Packages (singleton "authenticate") $
-    let -- pin _ = []
-        pin x = [P.CabalPin x] in
-    [ debianize "zlib-bindings" [P.CabalPin "0.0.3.2"]       -- Waiting for a zlib-conduit (currently 0.0.1) and zlib-enum (currently 0.2.1) that can handle 0.1.0
-    , apt "sid" "haskell-zlib-enum"                          -- 0.2.1, currently the newest version in hackage
-    , debianize "wai" [P.CabalPin "1.0.0"]                   -- 1.1.0.1 is in hackage
-    , debianize "xml-conduit" [P.CabalPin "0.5.1.2"]         -- 0.6.0 is in hackage
-    , debianize "http-conduit" [P.CabalPin "1.2.0"]          -- 1.3.0 is in hackage
-    , debianize "zlib-conduit" [P.CabalPin "0.0.1"]          -- 0.3.0 is in hackage
+    let unpin = filter (\ x -> case x of P.CabalPin _ -> False; _ -> True) in
+    [ debianize "resourcet" []
     , debianize "conduit" [P.CabalPin "0.1.1.1"]             -- 0.3.0 is in hackage
-    , debianize "attoparsec-conduit" [P.CabalPin "0.0.1"]    -- 0.3.0 is in hackage
-    , debianize "blaze-builder-conduit" [P.CabalPin "0.0.1"] -- 0.3.0 is in hackage
-    , debianize "http-enumerator" [P.CabalPin "0.7.2.5"]     -- 0.7.3.1 is in hackage
-    , debianize "tls" [P.CabalPin "0.8.5"]                   -- 0.9.1 is in hackage
-    , debianize "tls-extra" [P.CabalPin "0.4.2.1"]           -- 0.4.3 is in hackage
     , debianize "certificate" [P.CabalPin "1.0.1", P.DebVersion "1.0.1-1~hackage1"]
                                                              -- 1.1.0 is in hackage
+    , debianize "zlib-bindings" [P.CabalPin "0.0.3.2"]       -- Waiting for a zlib-conduit (currently 0.0.1) and zlib-enum (currently 0.2.1) that can handle 0.1.0
+    , debianize "tls" [P.CabalPin "0.8.5"]                   -- 0.9.1 is in hackage
+    , debianize "tls-extra" [P.CabalPin "0.4.2.1"]           -- 0.4.3 is in hackage
+    , debianize "attoparsec-conduit" [P.CabalPin "0.0.1"]    -- 0.3.0 is in hackage
+    , debianize "blaze-builder-conduit" [P.CabalPin "0.0.1"] -- 0.3.0 is in hackage
+    , debianize "zlib-conduit" [P.CabalPin "0.0.1"]          -- 0.3.0 is in hackage
+    , debianize "http-conduit" [P.CabalPin "1.2.0"]          -- 1.3.0 is in hackage
+    , debianize "xml-conduit" [P.CabalPin "0.5.1.2"]         -- 0.6.0 is in hackage
+    -- , debianize "authenticate" []
     , patched "authenticate"
                     [P.CabalPin "0.11.1"]                    -- 1.1.0 is in hackage
                     (unlines
@@ -1097,6 +1139,9 @@ authenticate _home = P.Packages (singleton "authenticate") $
                       , "                      blaze-builder-conduit >= 0.0 && < 0.1"
                       , "     exposed-modules: Web.Authenticate.Rpxnow,"
                       , "                      Web.Authenticate.OpenId," ])
+    , apt "sid" "haskell-zlib-enum"                          -- 0.2.1, currently the newest version in hackage
+    , debianize "wai" [P.CabalPin "1.0.0"]                   -- 1.1.0.1 is in hackage
+    , debianize "http-enumerator" [P.CabalPin "0.7.2.5"]     -- 0.7.3.1 is in hackage
     , P.Package { P.name = "haskell-happstack-authenticate"
                 , P.spec = Darcs (repo ++ "/happstack-authenticate")
                 , P.flags = [] }
@@ -1228,11 +1273,38 @@ jsonb = P.Packages (singleton "jsonb") $
     , debianize "data-object-json" [] ]
 
 -- May work with these added dependencies (statevar thru openglraw)
-opengl release = P.Packages (singleton "opengl") $
+opengl _release = P.Packages (singleton "opengl") $
     [ debianize "OpenGL" []
-    , debianize "vacuum-opengl" [P.DebVersion "0.0.3-1~hackage2"]
-    , debianize "bitmap-opengl" [P.DebVersion "0.0.0-1~hackage1"]
-    , apt release "haskell-glut"
+{-  , P.Package { P.name = "haskell-vacuum-opengl"
+                , P.spec = Patch (Debianize (Hackage "vacuum-opengl"))
+                                 (unlines
+                                  [ "--- old/System/Vacuum/OpenGL/Server.hs\t2012-03-25 14:26:14.000000000 -0700"
+                                  , "+++ new/System/Vacuum/OpenGL/Server.hs\t2012-03-25 14:32:17.027953252 -0700"
+                                  , "@@ -34,7 +34,7 @@"
+                                  , " "
+                                  , " import Network"
+                                  , " "
+                                  , "-import Foreign"
+                                  , "+import Foreign (shiftR)"
+                                  , " import Foreign.C"
+                                  , " "
+                                  , " --------------------------------------------------------------------------------" ])
+                , P.flags = [ P.DebVersion "0.0.3-1~hackage2" ] } -}
+    , P.Package { P.name = "haskell-bitmap-opengl"
+                , P.spec = Patch (Debianize (Hackage "bitmap-opengl"))
+                                 (unlines
+                                  [ "--- old/Data/Bitmap/OpenGL.hs\t2012-03-25 07:48:39.000000000 -0700"
+                                  , "+++ new/Data/Bitmap/OpenGL.hs\t2012-03-25 09:07:54.849175710 -0700"
+                                  , "@@ -11,6 +11,7 @@"
+                                  , " --------------------------------------------------------------------------------"
+                                  , " "
+                                  , " import Data.Bitmap.IO"
+                                  , "+import Data.Bitmap.Simple (withBitmap)"
+                                  , " "
+                                  , " import Graphics.Rendering.OpenGL"
+                                  , " " ])
+                , P.flags = [P.ExtraDep "libglu1-mesa-dev", P.DebVersion "0.0.0-1~hackage1"] }
+    , debianize "GLUT" []
     , debianize "StateVar" []
     , debianize "Tensor" []
     , debianize "GLURaw" []
