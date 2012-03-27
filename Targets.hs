@@ -12,6 +12,7 @@ import qualified Debian.AutoBuilder.Params as P
 import qualified Debian.AutoBuilder.Types.CacheRec as P
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
+import Debian.Relation (PkgName(..), BinPkgName(..))
 import qualified Targets.Public as Public
 import qualified Targets.Private as Private
 
@@ -91,7 +92,12 @@ applyDepMap (P.Packages n s) = P.Packages n (map applyDepMap s)
 applyDepMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
-      mappings = [P.MapDep "cryptopp" "crypto++", P.MapDep "crypt" "c6", P.MapDep "GL" "gl1-mesa"]
+      mappings = [P.MapDep "cryptopp" (deb "libcrypto++-dev"),
+                  P.MapDep "crypt" (deb "libc6-dev"),
+                  P.MapDep "GL" (deb "libgl1-mesa-dev"),
+                  P.MapDep "GLU" (deb "libglu1-mesa-dev"),
+                  P.MapDep "glut" (deb "freeglut3-dev")]
+      deb = BinPkgName . PkgName
 
 applyEpochMap :: P.Packages -> P.Packages
 applyEpochMap P.NoPackage = P.NoPackage
