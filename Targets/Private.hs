@@ -49,8 +49,8 @@ applications _home =
                 , P.spec = Darcs (privateRepo ++ "/creativeprompts")
                 , P.flags = [] }
     , P.Package { P.name = "happstack-dot-com"
-                , P.spec = Debianize (Cd "happstack-dot-com" (Darcs (privateRepo ++ "/happstack-clckwrks")))
-                , P.flags = [] }
+                , P.spec = Cd "happstack-dot-com" (Darcs (privateRepo ++ "/happstack-clckwrks"))
+                , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
 {-
     , P.Package { P.name = "prefeteria"
                 , P.spec = Darcs (privateRepo ++ "/prefeteria") []
