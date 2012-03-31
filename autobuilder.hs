@@ -163,6 +163,8 @@ optSpecs =
       "Use the lax build environment, where dependencies are not removed between package builds."
     , Option [] ["build-trumped"] (ReqArg (\ s -> (Right (\ p -> p {buildTrumped = buildTrumped p ++ [s]}))) "PACKAGE")
       ("Build the specified source package even if it seems older than the uploaded version.")
+    , Option [] ["report"] (NoArg (Right (\ p -> p {report = True})))
+      "Output a report of packages that are pinned or patched."
     , Option ['h'] ["help", "usage"] (NoArg (Right (\ p -> p {doHelp = True})))
       "Print a help message and exit."
     ]
@@ -202,6 +204,7 @@ defParams _home myBuildRelease =
     , forceBuild = myForceBuild
     , buildTrumped = myBuildTrumped
     , doSSHExport = myDoSSHExport
+    , report = False
     , doHelp = False
     -- Things that are occasionally useful
     , goals = myGoals
@@ -232,7 +235,7 @@ defParams _home myBuildRelease =
     -- 6.14 adds the ExtraDevDep parameter.
     -- 6.15 changes Epoch parameter arity to 2
     -- 6.18 renames type Spec -> RetrieveMethod
-    , requiredVersion = [(parseDebianVersion "6.22", Nothing)]
+    , requiredVersion = [(parseDebianVersion "6.26", Nothing)]
     , hackageServer = myHackageServer
     -- Things that are probably obsolete
     , debug = False
