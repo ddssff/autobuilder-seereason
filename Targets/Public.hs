@@ -17,7 +17,8 @@ targets _home release =
     , autobuilder _home
     , digestiveFunctors
     , authenticate _home
-    , happstackdotcom
+    , happstackdotcom _home
+    , happstack
     -- , fixme
     -- , higgsset
     -- , jsonb
@@ -86,6 +87,40 @@ digestiveFunctors =
     , P.Package { P.name = "haskell-digestive-functors-hsp"
                 , P.spec = Darcs (repo ++ "/digestive-functors-hsp")
                 , P.flags = [] } ]
+
+happstack =
+    P.Packages (singleton "happstack")
+    [ P.Package { P.name = "happstack-debianization"
+                , P.spec = Darcs "http://src.seereason.com/happstack-debianization"
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-seereason-base"
+                , P.spec = Darcs (repo ++ "/seereason-base")
+                , P.flags = [] }
+    , debianize "happstack" []
+    , debianize "happstack-data" []
+    , P.Package { P.name = "haskell-happstack-extra"
+                , P.spec = Darcs (repo ++ "/happstack-extra")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-happstack-facebook"
+                , P.spec = Darcs (repo ++ "/happstack-facebook")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-happstack-hsp"
+                , P.spec = DebDir (Cd "happstack-hsp" (Darcs happstackRepo)) (Darcs (repo ++ "/happstack-hsp-debian"))
+                , P.flags = [] }
+    -- Version 6.1.0, which is just a wrapper around the non-happstack
+    -- ixset package, has not yet been uploaded to hackage.
+    -- , debianize "happstack-ixset" []
+    , P.Package { P.name = "haskell-happstack-ixset"
+                , P.spec = DebDir (Cd "happstack-ixset" (Darcs happstackRepo)) (Darcs (repo ++ "/happstack-ixset-debian"))
+                , P.flags = [] }
+
+    , debianize "happstack-jmacro" []
+    , P.Package { P.name = "haskell-happstack-search"
+                , P.spec = Darcs (repo ++ "/happstack-search")
+                , P.flags = [] }
+    , debianize "happstack-server" []
+    , debianize "happstack-util" []
+    ]
 
 main :: String -> String -> P.Packages
 main _home release =
@@ -239,7 +274,7 @@ main _home release =
     , apt release "haskell-curl"
     , debianize "data-accessor" []
     , debianize "data-accessor-template" []
-    , debianize "data-default" [P.DebVersion "0.3.0-1~hackage1"]
+    , debianize "data-default" []
     , patched "data-object" []
                     (unlines
                       [ "--- old/data-object.cabal\t2012-01-20 06:42:12.000000000 -0800"
@@ -300,40 +335,6 @@ main _home release =
     -- Errors were encountered while processing:
     --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
-    , patched "happstack" []
-                    (unlines
-                      [ "--- old/happstack.cabal\t2012-02-17 10:29:02.000000000 -0800"
-                      , "+++ new/happstack.cabal\t2012-02-19 07:54:49.703458782 -0800"
-                      , "@@ -32,7 +32,6 @@"
-                      , "                        happstack-data   >= 6.0 && < 6.1,"
-                      , "                        happstack-ixset  >= 6.0 && < 6.2,"
-                      , "                        happstack-server >= 6.0 && < 6.7,"
-                      , "-                       happstack-state  >= 6.0 && < 6.2,"
-                      , "                        happstack-util   >= 6.0 && < 6.1"
-                      , "                        " ])
-    , debianize "happstack-data" []
-    , P.Package { P.name = "haskell-happstack-extra"
-                , P.spec = Darcs (repo ++ "/happstack-extra")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-facebook"
-                , P.spec = Darcs (repo ++ "/happstack-facebook")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-hsp"
-                , P.spec = DebDir (Cd "happstack-hsp" (Darcs happstackRepo)) (Darcs (repo ++ "/happstack-hsp-debian"))
-                , P.flags = [] }
-    -- Version 6.1.0, which is just a wrapper around the non-happstack
-    -- ixset package, has not yet been uploaded to hackage.
-    -- , debianize "happstack-ixset" []
-    , P.Package { P.name = "haskell-happstack-ixset"
-                , P.spec = DebDir (Cd "happstack-ixset" (Darcs happstackRepo)) (Darcs (repo ++ "/happstack-ixset-debian"))
-                , P.flags = [] }
-
-    , debianize "happstack-jmacro" []
-    , P.Package { P.name = "haskell-happstack-search"
-                , P.spec = Darcs (repo ++ "/happstack-search")
-                , P.flags = [] }
-    , debianize "happstack-server" []
-    , debianize "happstack-util" []
     , apt release "haskell-harp"
     , debianize "hashable" []
     , debianize "hashed-storage" [P.DebVersion "0.5.9-1"]
@@ -696,7 +697,7 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/haskell-revision"
                 , P.flags = [] }
     , debianize "RJson" []
-    , debianize "RSA" [P.DebVersion "1.0.6.2-1~hackage1"]
+    , debianize "RSA" []
     , apt release "haskell-safe"
     -- Depends on pandoc
     --, P.Package {P.name = "haskell-safecopy", P.spec = DebDir (Hackage "safecopy" [P.CabalPin "0.5.1"])) (Darcs "http://src.seereason.com/haskell-safecopy-debian" []), P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"]}
@@ -718,9 +719,6 @@ main _home release =
                       , " "
                       , " executable: SATSolve"
                       , " main-is: \"SATSolver.hs\"" ])
-    , P.Package { P.name = "haskell-seereason-base"
-                , P.spec = Darcs (repo ++ "/seereason-base")
-                , P.flags = [] }
     , debianize "semigroups" [P.DebVersion "0.8-1"]
     , debianize "sendfile" []
     , P.Package { P.name = "haskell-set-extra"
@@ -804,24 +802,11 @@ main _home release =
     -- packages (such as haskell-hsx) which reference it get the name wrong
     -- when we generate the debianization.
     -- , lucidNatty (hackage release "haskell-src-exts" [NP]) (debianize "haskell-src-exts" [])
-    , debianize "haskell-src-exts" [P.ExtraDep "happy", P.DebVersion "1.11.1-1"]
+    , debianize "haskell-src-exts" [P.ExtraDep "happy"]
     , debianize "stb-image" []
     , apt release "haskell-strict" -- for leksah
     , apt release "haskell-strict-concurrency"
-    , patched "strict-io" -- for GenI
-                    []
-                    (unlines
-                      [ "--- old/strict-io.cabal\t2012-01-04 10:25:10.046482116 -0800"
-                      , "+++ new/strict-io.cabal\t2012-01-04 10:25:32.276482160 -0800"
-                      , "@@ -14,7 +14,7 @@"
-                      , " build-type:      Simple"
-                      , " "
-                      , " library"
-                      , "-  build-depends:   base>=3.0 && <5, deepseq==1.1.*, extensible-exceptions"
-                      , "+  build-depends:   base>=3.0 && <5, deepseq>=1.1 && <1.4, extensible-exceptions"
-                      , "   exposed-modules: System.IO.Strict"
-                      , "                    System.IO.Strict.Internals"
-                      , "                    Data.IORef.Strict" ])
+    , debianize "strict-io" [] -- for GenI
     , debianize "smallcheck" []
     -- Because 0.3.3-1 is both in sid and hackage, we need to keep the debianize
     -- code from using version 0.3.3-1~hackage1 which looks older.
@@ -1391,25 +1376,13 @@ higgsset = P.Packages (singleton "higgsset") $
     , debianize "TrieMap" [P.DebVersion "4.0.1-1~hackage1"] ]
 
 -- ircbot needs a dependency on containers
-happstackdotcom = P.Packages (singleton "happstackdotcom") $
+happstackdotcom _home =
+    P.Packages (singleton "happstackdotcom") $
     [ P.Package { P.name = "haskell-ircbot"
                 , P.spec = Darcs "http://patch-tag.com/r/stepcut/ircbot"
-                , P.flags = []
-                }
+                , P.flags = [] }
     , P.Package { P.name = "haskell-happstackdotcom"
-                , P.spec = Patch (Darcs "http://patch-tag.com/r/stepcut/happstackDotCom")
-                                 (unlines
-                                  [ "--- old/debian/control\t2012-02-09 09:26:12.000000000 -0800"
-                                  , "+++ new/debian/control\t2012-03-21 07:24:34.007926833 -0700"
-                                  , "@@ -16,7 +16,7 @@"
-                                  , "                libghc-hsx-prof (>= 0.9.1),"
-                                  , "                libghc-ircbot-dev,"
-                                  , "                libghc-mtl-prof,"
-                                  , "-               trhsx"
-                                  , "+               haskell-hsx-utils"
-                                  , " Build-Depends-Indep: ghc-doc,"
-                                  , "                      haddock,"
-                                  , "                      libghc-happstack-doc," ])
+                , P.spec = Darcs (localRepo _home ++ "/happstackDotCom")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstackdotcom-doc"
                 , P.spec = Darcs "http://src.seereason.com/happstackDotCom-doc"
