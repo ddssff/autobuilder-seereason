@@ -1357,7 +1357,22 @@ clckwrks =
                                            , "+    json2/json2.js"
                                            , " "
                                            , " Library"
-                                           , "   Exposed-modules: Clckwrks" ]))
+                                           , "   Exposed-modules: Clckwrks"
+                                           , "@@ -66,11 +66,11 @@"
+                                           , "      directory == 1.1.*,"
+                                           , "      filepath >= 1.2 && <1.4,"
+                                           , "      happstack-authenticate == 0.7.*,"
+                                           , "-     happstack-hsp == 6.2.*,"
+                                           , "-     happstack-server == 6.6.*,"
+                                           , "+     happstack-hsp >= 6.2,"
+                                           , "+     happstack-server >= 6.6,"
+                                           , "      hsp == 0.6.*,"
+                                           , "      hsx == 0.9.*,"
+                                           , "-     hsx-jmacro == 6.0.*,"
+                                           , "+     hsx-jmacro >= 6.0,"
+                                           , "      ixset == 1.0.*,"
+                                           , "      jmacro == 0.5.*,"
+                                           , "      mtl == 2.0.*,"]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Cd "clckwrks-cli" (Darcs "http://src.clckwrks.com/clckwrks"))
@@ -1366,7 +1381,19 @@ clckwrks =
                     , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs "http://src.clckwrks.com/clckwrks"))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-theme-basic"
-                    , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs "http://src.clckwrks.com/clckwrks"))
+                    , P.spec = Debianize (Patch (Cd "clckwrks-theme-basic" (Darcs "http://src.clckwrks.com/clckwrks"))
+                                                (unlines
+                                                 [ "--- old/clckwrks-plugin-media.cabal\t2012-03-23 11:00:04.000000000 -0700"
+                                                 , "+++ new/clckwrks-plugin-media.cabal\t2012-03-31 08:33:02.236464138 -0700"
+                                                 , "@@ -41,7 +41,7 @@"
+                                                 , "     directory == 1.1.*,"
+                                                 , "     filepath >= 1.2 && < 1.4,"
+                                                 , "     gd == 3000.*,"
+                                                 , "-    happstack-server == 6.6.*,"
+                                                 , "+    happstack-server >= 6.6,"
+                                                 , "     hsp == 0.6.*,"
+                                                 , "     ixset == 1.0.*,"
+                                                 , "     magic == 1.0.*," ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         ]
 
