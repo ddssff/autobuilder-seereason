@@ -83,7 +83,20 @@ digestiveFunctors =
     P.Packages (singleton "digestive-functors")
     [ debianize "digestive-functors" [P.CabalPin "0.2.1.0"]  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
     , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
-    , debianize "digestive-functors-happstack" [P.CabalPin "0.1.1.4"]
+    , P.Package { P.name = "haskell-digestive-functors-happstack"
+                , P.spec = Debianize (Patch (Hackage "digestive-functors-happstack")
+                                            (unlines
+                                             [ "--- old/digestive-functors-happstack.cabal\t2012-03-31 07:29:48.000000000 -0700"
+                                             , "+++ new/digestive-functors-happstack.cabal\t2012-03-31 07:43:39.326188726 -0700"
+                                             , "@@ -22,6 +22,6 @@"
+                                             , "     base               >= 4    && < 5,"
+                                             , "     bytestring         >= 0.9  && < 0.10,"
+                                             , "     digestive-functors >= 0.1  && < 0.3,"
+                                             , "-    happstack-server   >= 6.0  && < 6.7,"
+                                             , "+    happstack-server   >= 6.0,"
+                                             , "     text               >= 0.11 && < 1.0,"
+                                             , "     utf8-string        >= 0.3  && < 0.4" ]))
+                , P.flags = [P.CabalPin "0.1.1.4"] }
     , P.Package { P.name = "haskell-digestive-functors-hsp"
                 , P.spec = Darcs (repo ++ "/digestive-functors-hsp")
                 , P.flags = [] } ]
@@ -105,7 +118,19 @@ happstack =
                 , P.spec = Darcs (repo ++ "/happstack-facebook")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-hsp"
-                , P.spec = DebDir (Cd "happstack-hsp" (Darcs happstackRepo)) (Darcs (repo ++ "/happstack-hsp-debian"))
+                , P.spec = Debianize (Cd "happstack-hsp" (Darcs happstackRepo))
+                                            {- (unlines $
+                                             [ "--- old/happstack-hsp.cabal\t2012-02-22 10:43:47.000000000 -0800"
+                                             , "+++ new/happstack-hsp.cabal\t2012-03-31 06:36:08.926463040 -0700"
+                                             , "@@ -30,7 +30,7 @@"
+                                             , " "
+                                             , "   Build-depends:       base             >= 3.0 && < 5.0,"
+                                             , "                        bytestring       == 0.9.*,"
+                                             , "-                       happstack-server >= 6.0 && < 6.7,"
+                                             , "+                       happstack-server >= 6.0 && < 7.1,"
+                                             , "                        harp             >= 0.4 && < 0.5,"
+                                             , "                        hsx              >= 0.9.1 && < 0.10,"
+                                             , "                        hsp              >= 0.6.1 && < 0.7," ]) -}
                 , P.flags = [] }
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
@@ -1009,15 +1034,17 @@ main _home release =
                  (unlines
                    [ "--- old/xml-enumerator.cabal\t2012-01-20 06:47:15.000000000 -0800"
                    , "+++ new/xml-enumerator.cabal\t2012-01-20 09:54:58.246541244 -0800"
-                   , "@@ -43,7 +43,7 @@"
+                   , "@@ -43,8 +43,8 @@"
                    , "                    , blaze-builder             >= 0.2      && < 0.4"
                    , "                    , blaze-builder-enumerator  >= 0.2      && < 0.3"
                    , "                    , transformers              >= 0.2      && < 0.3"
                    , "-                   , failure                   >= 0.1      && < 0.2"
+                   , "-                   , data-default              >= 0.2      && < 0.4"
                    , "+                   , failure                   >= 0.1"
-                   , "                    , data-default              >= 0.2      && < 0.4"
+                   , "+                   , data-default              >= 0.2"
                    , "     exposed-modules: Text.XML.Stream.Parse"
-                   , "                      Text.XML.Stream.Render" ])
+                   , "                      Text.XML.Stream.Render"
+                   , "                      Text.XML.Unresolved" ])
     , debianize "xml-types" []
     , debianize "xss-sanitize" []
     , debianize "yaml-light" []
@@ -1156,8 +1183,36 @@ authenticate _home = P.Packages (singleton "authenticate") $
     , debianize "attoparsec-conduit" [P.CabalPin "0.0.1"]    -- 0.3.0 is in hackage
     , debianize "blaze-builder-conduit" [P.CabalPin "0.0.1"] -- 0.3.0 is in hackage
     , debianize "zlib-conduit" [P.CabalPin "0.0.1"]          -- 0.3.0 is in hackage
-    , debianize "http-conduit" [P.CabalPin "1.2.0"]          -- 1.3.0 is in hackage
-    , debianize "xml-conduit" [P.CabalPin "0.5.1.2"]         -- 0.6.0 is in hackage
+    , P.Package { P.name = "haskell-http-conduit"
+                , P.spec = Debianize (Patch (Hackage "http-conduit")
+                                            (unlines
+                                             [ "--- old/http-conduit.cabal\t2012-03-22 10:30:29.000000000 -0700"
+                                             , "+++ new/http-conduit.cabal\t2012-03-31 07:32:16.616162506 -0700"
+                                             , "@@ -40,7 +40,7 @@"
+                                             , "                  , case-insensitive      >= 0.2"
+                                             , "                  , base64-bytestring     >= 0.1     && < 0.2"
+                                             , "                  , asn1-data             >= 0.5.1   && < 0.7"
+                                             , "-                 , data-default          >= 0.3     && < 0.4"
+                                             , "+                 , data-default          >= 0.3"
+                                             , "                  , text"
+                                             , "                  , transformers-base     >= 0.4     && < 0.5"
+                                             , "                  , lifted-base           >= 0.1     && < 0.2" ]))
+                , P.flags = [P.CabalPin "1.2.0"] }          -- 1.3.0 is in hackage
+    , P.Package { P.name = "haskell-xml-conduit"
+                , P.spec = Debianize (Patch (Hackage "xml-conduit")
+                                            (unlines
+                                             [ "--- old/xml-conduit.cabal\t2012-03-31 07:29:57.000000000 -0700"
+                                             , "+++ new/xml-conduit.cabal\t2012-03-31 07:38:28.786463878 -0700"
+                                             , "@@ -39,7 +39,7 @@"
+                                             , "                    , blaze-builder             >= 0.2      && < 0.4"
+                                             , "                    , transformers              >= 0.2      && < 0.3"
+                                             , "                    , failure                   >= 0.1      && < 0.3"
+                                             , "-                   , data-default              >= 0.2      && < 0.4"
+                                             , "+                   , data-default              >= 0.2"
+                                             , "                    , system-filepath           >= 0.4      && < 0.5"
+                                             , "     exposed-modules: Text.XML.Stream.Parse"
+                                             , "                      Text.XML.Stream.Render" ]))
+                , P.flags = [P.CabalPin "0.5.1.2"] }         -- 0.6.0 is in hackage
     -- , debianize "authenticate" []
     , patched "authenticate"
                     [P.CabalPin "0.11.1"]                    -- 1.1.0 is in hackage
@@ -1187,9 +1242,23 @@ authenticate _home = P.Packages (singleton "authenticate") $
                       , "                      Web.Authenticate.OpenId," ])
     , apt "sid" "haskell-zlib-enum"                          -- 0.2.1, currently the newest version in hackage
     , debianize "wai" [P.CabalPin "1.0.0"]                   -- 1.1.0.1 is in hackage
-    , debianize "http-enumerator" [P.CabalPin "0.7.2.5"]     -- 0.7.3.1 is in hackage
+    , P.Package { P.name = "haskell-http-enumerator"
+                , P.spec = Debianize (Patch (Hackage "http-enumerator")
+                                            (unlines
+                                             [ "--- old/http-enumerator.cabal\t2012-03-31 07:44:58.000000000 -0700"
+                                             , "+++ new/http-enumerator.cabal\t2012-03-31 07:49:26.206463206 -0700"
+                                             , "@@ -41,7 +41,7 @@"
+                                             , "                  , case-insensitive      >= 0.2"
+                                             , "                  , base64-bytestring     >= 0.1     && < 0.2"
+                                             , "                  , asn1-data             >= 0.5.1   && < 0.7"
+                                             , "-                 , data-default          >= 0.3     && < 0.4"
+                                             , "+                 , data-default          >= 0.3"
+                                             , "     if flag(network-bytestring)"
+                                             , "         build-depends: network               >= 2.2.1   && < 2.2.3"
+                                             , "                      , network-bytestring    >= 0.1.3   && < 0.1.4" ]))
+                , P.flags = [P.CabalPin "0.7.2.5"] }     -- 0.7.3.1 is in hackage
     , P.Package { P.name = "haskell-happstack-authenticate"
-                , P.spec = Darcs (repo ++ "/happstack-authenticate")
+                , P.spec = Debianize (Darcs (repo ++ "/happstack-authenticate"))
                 , P.flags = [] }
     ]
 
