@@ -318,7 +318,7 @@ main _home release =
     , debianize "CC-delcont" [P.DebVersion "0.2-1~hackage1"]
     , apt release "haskell-cereal"
     , debianize "citeproc-hs" []
-    , clckwrks
+    , clckwrks _home
     , case release of
         "natty-seereason" -> debianize "colour" []
         _ -> apt release "haskell-colour"
@@ -1262,13 +1262,14 @@ authenticate _home = P.Packages (singleton "authenticate") $
                 , P.flags = [] }
     ]
 
-clckwrks =
+clckwrks _home =
+    let repo = {- localRepo _home ++ "/clckwrks" -} "http://src.clckwrks.com/clckwrks" in
     P.Packages (singleton "clckwrks") $
         [ P.Package { P.name = "haskell-clckwrks"
                     , P.spec = Debianize (Patch
                                           (DataFiles
                                            (DataFiles
-                                            (Cd "clckwrks" (Darcs "http://src.clckwrks.com/clckwrks"))
+                                            (Cd "clckwrks" (Darcs repo))
                                             (Uri "http://cloud.github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip"
                                                  "e211065e573ea0239d6449882c9d860d")
                                             "jstree")
@@ -1375,10 +1376,10 @@ clckwrks =
                                            , "      mtl == 2.0.*,"]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
-                    , P.spec = Debianize (Cd "clckwrks-cli" (Darcs "http://src.clckwrks.com/clckwrks"))
+                    , P.spec = Debianize (Cd "clckwrks-cli" (Darcs repo))
                     , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
-                    , P.spec = Debianize (Patch (Cd "clckwrks-plugin-media" (Darcs "http://src.clckwrks.com/clckwrks"))
+                    , P.spec = Debianize (Patch (Cd "clckwrks-plugin-media" (Darcs repo))
                                                 (unlines
                                                  [ "--- old/clckwrks-plugin-media.cabal\t2012-03-23 11:00:04.000000000 -0700"
                                                  , "+++ new/clckwrks-plugin-media.cabal\t2012-03-31 08:33:02.236464138 -0700"
@@ -1393,7 +1394,7 @@ clckwrks =
                                                  , "     magic == 1.0.*," ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-theme-basic"
-                    , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs "http://src.clckwrks.com/clckwrks"))
+                    , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         ]
 
