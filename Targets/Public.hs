@@ -16,7 +16,7 @@ targets _home release =
     [ main _home release
     , autobuilder _home
     , digestiveFunctors
-    , authenticate _home
+    , authenticate _home release
     , happstackdotcom _home
     , happstack
     -- , fixme
@@ -586,10 +586,6 @@ main _home release =
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
     , debianize "hsx" [P.DebVersion "0.9.1-1"]
-    , P.Package { P.name = "haskell-hsx-jmacro"
-                , P.spec = DebDir (Cd "hsx-jmacro" (Darcs happstackRepo)) (Darcs (repo ++ "/haskell-hsx-jmacro-debian"))
-                , P.flags = []
-                }
     , P.Package { P.name = "haskell-html-entities"
                 , P.spec = Darcs "http://src.seereason.com/html-entities"
                 , P.flags = [] }
@@ -603,7 +599,6 @@ main _home release =
     , debianize "instant-generics" []
     , debianize "irc" []
     , debianize "ixset" [P.DebVersion "1.0.2-1~hackage1"]
-    , debianize "jmacro" []
     , P.Package { P.name = "haskell-json"
                 , P.spec = Darcs (repo ++ "/haskell-json")
                 , P.flags = [] }
@@ -769,7 +764,6 @@ main _home release =
                 , P.spec = Darcs (repo ++ "/propositional-classes")
                 , P.flags = [] } -}
     , debianize "PSQueue" [P.DebVersion "1.1-1~hackage1"]
-    , apt release "haskell-puremd5"
     , debianize "pwstore-purehaskell" [P.DebVersion "2.1-1~hackage1"]
     -- In Sid, source package haskell-quickcheck generates libghc-quickcheck2-*,
     -- but our debianize target becomes haskell-quickcheck2.  So we need to fiddle
@@ -783,7 +777,6 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/haskell-revision"
                 , P.flags = [] }
     , debianize "RJson" []
-    , debianize "RSA" []
     , apt release "haskell-safe"
     -- Depends on pandoc
     --, P.Package {P.name = "haskell-safecopy", P.spec = DebDir (Hackage "safecopy" [P.CabalPin "0.5.1"])) (Darcs "http://src.seereason.com/haskell-safecopy-debian" []), P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"]}
@@ -1171,9 +1164,12 @@ platform release =
     ]
 
 -- | Packages pinned pending update of happstack-authenticate (in one possible build order.)
-authenticate _home = P.Packages (singleton "authenticate") $
+authenticate _home release = P.Packages (singleton "authenticate") $
     let unpin = filter (\ x -> case x of P.CabalPin _ -> False; _ -> True) in
-    [ debianize "resourcet" []
+    [ apt release "haskell-puremd5"
+    , debianize "monadcryptorandom" []
+    , debianize "RSA" []
+    , debianize "resourcet" []
     , debianize "conduit" [P.CabalPin "0.1.1.1"]             -- 0.3.0 is in hackage
     , debianize "certificate" [P.CabalPin "1.0.1", P.DebVersion "1.0.1-1~hackage1"]
                                                              -- 1.1.0 is in hackage
@@ -1217,9 +1213,9 @@ authenticate _home = P.Packages (singleton "authenticate") $
     , patched "authenticate"
                     [P.CabalPin "0.11.1"]                    -- 1.1.0 is in hackage
                     (unlines
-                      [ "--- old/authenticate.cabal\t2012-01-19 19:39:56.000000000 -0800"
-                      , "+++ new/authenticate.cabal\t2012-01-20 11:48:58.976223078 -0800"
-                      , "@@ -16,9 +16,9 @@"
+                      [ "--- old/authenticate.cabal\t2012-04-05 11:45:34.000000000 -0700"
+                      , "+++ new/authenticate.cabal\t2012-04-05 11:56:19.726480904 -0700"
+                      , "@@ -16,14 +16,14 @@"
                       , " library"
                       , "     build-depends:   base >= 4 && < 5,"
                       , "                      aeson >= 0.5,"
@@ -1231,6 +1227,12 @@ authenticate _home = P.Packages (singleton "authenticate") $
                       , "                      transformers >= 0.1 && < 0.3,"
                       , "                      bytestring >= 0.9 && < 0.10,"
                       , "                      network >= 2.2.1 && < 2.4,"
+                      , "                      case-insensitive >= 0.2,"
+                      , "-                     RSA >= 1.0 && < 1.1,"
+                      , "+                     RSA >= 1.0,"
+                      , "                      time >= 1.1,"
+                      , "                      base64-bytestring >= 0.1 && < 0.2,"
+                      , "                      SHA >= 1.4 && < 1.6,"
                       , "@@ -37,7 +37,7 @@"
                       , "                      containers,"
                       , "                      unordered-containers,"
@@ -1263,7 +1265,7 @@ authenticate _home = P.Packages (singleton "authenticate") $
     ]
 
 clckwrks _home =
-    let repo = {- localRepo _home ++ "/clckwrks" -} "http://src.clckwrks.com/clckwrks" in
+    let repo = "http://src.clckwrks.com/clckwrks" {- localRepo _home ++ "/clckwrks" -} in
     P.Packages (singleton "clckwrks") $
         [ P.Package { P.name = "haskell-clckwrks"
                     , P.spec = Debianize (Patch
@@ -1358,44 +1360,19 @@ clckwrks _home =
                                            , "+    json2/json2.js"
                                            , " "
                                            , " Library"
-                                           , "   Exposed-modules: Clckwrks"
-                                           , "@@ -66,11 +66,11 @@"
-                                           , "      directory == 1.1.*,"
-                                           , "      filepath >= 1.2 && <1.4,"
-                                           , "      happstack-authenticate == 0.7.*,"
-                                           , "-     happstack-hsp == 6.2.*,"
-                                           , "-     happstack-server == 6.6.*,"
-                                           , "+     happstack-hsp >= 6.2,"
-                                           , "+     happstack-server >= 6.6,"
-                                           , "      hsp == 0.6.*,"
-                                           , "      hsx == 0.9.*,"
-                                           , "-     hsx-jmacro == 6.0.*,"
-                                           , "+     hsx-jmacro >= 6.0,"
-                                           , "      ixset == 1.0.*,"
-                                           , "      jmacro == 0.5.*,"
-                                           , "      mtl == 2.0.*,"]))
+                                           , "   Exposed-modules: Clckwrks" ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Cd "clckwrks-cli" (Darcs repo))
                     , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
-                    , P.spec = Debianize (Patch (Cd "clckwrks-plugin-media" (Darcs repo))
-                                                (unlines
-                                                 [ "--- old/clckwrks-plugin-media.cabal\t2012-03-23 11:00:04.000000000 -0700"
-                                                 , "+++ new/clckwrks-plugin-media.cabal\t2012-03-31 08:33:02.236464138 -0700"
-                                                 , "@@ -41,7 +41,7 @@"
-                                                 , "     directory == 1.1.*,"
-                                                 , "     filepath >= 1.2 && < 1.4,"
-                                                 , "     gd == 3000.*,"
-                                                 , "-    happstack-server == 6.6.*,"
-                                                 , "+    happstack-server >= 6.6,"
-                                                 , "     hsp == 0.6.*,"
-                                                 , "     ixset == 1.0.*,"
-                                                 , "     magic == 1.0.*," ]))
+                    , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-theme-basic"
                     , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+        , debianize "jmacro" []
+        , debianize "hsx-jmacro" []
         ]
 
 -- Broken targets:
