@@ -547,8 +547,8 @@ main _home release =
                     [ P.ExtraDevDep "libssl-dev"
                     , P.ExtraDevDep "libcrypto++-dev" ]
                     (unlines
-                      [ "--- HsOpenSSL.orig/HsOpenSSL.cabal\t2011-09-10 15:02:20.000000000 -0700"
-                      , "+++ HsOpenSSL/HsOpenSSL.cabal\t2011-09-10 15:24:16.735325250 -0700"
+                      [ "--- old/HsOpenSSL.cabal\t2011-09-10 15:02:20.000000000 -0700"
+                      , "+++ new/HsOpenSSL.cabal\t2011-09-10 15:24:16.735325250 -0700"
                       , "@@ -50,7 +50,7 @@"
                       , "       CC-Options:         -D MINGW32"
                       , "       CPP-Options:        -DCALLCONV=stdcall"
@@ -557,7 +557,26 @@ main _home release =
                       , "+      Extra-Libraries: crypto++ ssl"
                       , "       C-Sources:          cbits/mutex-pthread.c"
                       , "       CC-Options:         -D PTHREAD"
-                      , "       CPP-Options:        -DCALLCONV=ccall" ])
+                      , "       CPP-Options:        -DCALLCONV=ccall"
+                      , "@@ -108,6 +108,6 @@"
+                      , "   C-Sources:"
+                      , "           cbits/HsOpenSSL.c"
+                      , "   Include-Dirs:"
+                      , "-          cbits"
+                      , "+          cbits, dist/build/autogen, dist-ghc/build/autogen"
+                      , "   Install-Includes:"
+                      , "           HsOpenSSL.h"
+                      , "--- old/cbits/HsOpenSSL.h\t2012-04-06 18:54:18.000000000 -0700"
+                      , "+++ new/cbits/HsOpenSSL.h\t2012-04-06 20:37:47.827713118 -0700"
+                      , "@@ -27,7 +27,7 @@"
+                      , "  * hsc2hs so we can reach the cabal_macros.h from cbits."
+                      , "  */"
+                      , " #if !defined(MIN_VERSION_base)"
+                      , "-#  include \"../dist/build/autogen/cabal_macros.h\""
+                      , "+#  include <cabal_macros.h>"
+                      , " #endif"
+                      , " "
+                      , " /* OpenSSL ********************************************************************/" ])
     , patched "hsp"
                     [ P.ExtraDep "haskell-hsx-utils"
                     , P.DebVersion "0.6.1-1" ]
