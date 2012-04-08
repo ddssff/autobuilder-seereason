@@ -1295,7 +1295,7 @@ clckwrks _home =
                                                  "e211065e573ea0239d6449882c9d860d")
                                             "jstree")
                                            (Uri "https://raw.github.com/douglascrockford/JSON-js/master/json2.js"
-                                                "2ee84c1e82528e5e09c645cf07c97877")
+                                                "95def87b93d11289cd2eee1cc3ca7948")
                                            "json2")
                                           (unlines
                                            [ "--- old/clckwrks.cabal.orig\t2012-03-06 11:34:28.000000000 -0800"
