@@ -391,7 +391,7 @@ main _home release =
     , apt release "haskell-enumerator"
     , apt release "haskell-erf"
     , apt release "haskell-feed"
-    , debianize "file-embed" [P.DebVersion "0.0.4.1-1~hackage1"]
+    , debianize "file-embed" []
     , P.Package { P.name = "haskell-formlets"
                 , P.spec = DebDir (Hackage "formlets") (Darcs "http://src.seereason.com/haskell-formlets-debian")
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
@@ -817,7 +817,7 @@ main _home release =
                       , " "
                       , " executable: SATSolve"
                       , " main-is: \"SATSolver.hs\"" ])
-    , debianize "semigroups" [P.DebVersion "0.8-1"]
+    , debianize "semigroups" []
     , debianize "sendfile" []
     , P.Package { P.name = "haskell-set-extra"
                 , P.spec = Darcs "http://src.seereason.com/set-extra"
