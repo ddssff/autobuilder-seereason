@@ -1388,7 +1388,7 @@ clckwrks _home =
                     , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
-                    , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
+                    , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-theme-basic"
                     , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs repo))
@@ -1536,7 +1536,7 @@ higgsset = P.Packages (singleton "higgsset") $
 happstackdotcom _home =
     P.Packages (singleton "happstackdotcom") $
     [ P.Package { P.name = "haskell-ircbot"
-                , P.spec = Darcs "http://patch-tag.com/r/stepcut/ircbot"
+                , P.spec = Debianize (Darcs "http://patch-tag.com/r/stepcut/ircbot")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstackdotcom"
                 , P.spec = Darcs ("http://src.seereason.com/happstackDotCom")
