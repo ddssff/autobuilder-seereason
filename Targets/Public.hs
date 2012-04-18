@@ -1677,6 +1677,7 @@ authenticate _home release =
     , debianize "conduit" []
     , debianize "void" []
     , debianize "certificate" []
+    , debianize "pem" []
     , debianize "zlib-bindings" []
     , debianize "tls" []
     , debianize "tls-extra" []
