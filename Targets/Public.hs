@@ -298,9 +298,8 @@ main _home release =
     , debianize "ansi-wl-pprint" [P.DebVersion "0.6.4-1"]
     -- Our applicative-extras repository has several important patches.
     , P.Package { P.name = "haskell-applicative-extras",
-                  P.spec = DebDir (Hackage "applicative-extras")
-                                  (Darcs "http://src.seereason.com/applicative-extras-debian"),
-                  P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
+                  P.spec = Debianize (Hackage "applicative-extras"),
+                  P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.DebVersion "0.1.8-1"] }
     , debianize "asn1-data" [P.DebVersion "0.6.1.3-2"]
     , debianize "attempt" [P.DebVersion "0.4.0-1"]
     , debianize "failure" []
