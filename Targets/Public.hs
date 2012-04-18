@@ -1721,7 +1721,20 @@ authenticate _home release =
                 , P.flags = [] }
     , debianize "wai" []
     , P.Package { P.name = "haskell-http-enumerator"
-                , P.spec = Debianize (Hackage "http-enumerator")
+                , P.spec = Debianize (Patch
+                                      (Hackage "http-enumerator")
+                                      (unlines
+                                       [ "--- old/http-enumerator.cabal\t2012-04-18 06:24:08.000000000 -0700"
+                                       , "+++ new/http-enumerator.cabal\t2012-04-18 06:46:46.365816097 -0700"
+                                       , "@@ -37,7 +37,7 @@"
+                                       , "                  , tls-extra             >= 0.4.3   && < 0.5"
+                                       , "                  , monad-control         >= 0.2     && < 0.4"
+                                       , "                  , containers            >= 0.2"
+                                       , "-                 , certificate           >= 1.1     && < 1.2"
+                                       , "+                 , certificate           >= 1.1"
+                                       , "                  , case-insensitive      >= 0.2"
+                                       , "                  , base64-bytestring     >= 0.1     && < 0.2"
+                                       , "                  , asn1-data             >= 0.5.1   && < 0.7" ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-authenticate"
                 , P.spec = Debianize (Patch
