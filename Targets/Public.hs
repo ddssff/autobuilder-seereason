@@ -738,7 +738,7 @@ main _home release =
                       , "     exposed-modules: Data.Object"
                       , "     ghc-options:     -Wall" ])
     , debianize "dataenc" [P.DebVersion "0.14.0.3-1"]
-    , debianize "Diff" [P.DebVersion "0.1.3-1build1"]
+    , debianize "Diff" [P.DebVersion "0.1.3-2"]
     , apt release "haskell-digest"
     , apt release "haskell-dlist"
     -- Natty only(?)
@@ -752,7 +752,7 @@ main _home release =
     , apt release "haskell-edison-core"
     , apt release "haskell-entropy"
     , debianize "enumerator" []
-    , debianize "erf" [P.DebVersion "2.0.0.0-2build1"]
+    , debianize "erf" [P.DebVersion "2.0.0.0-3"]
     , apt release "haskell-feed"
     , debianize "file-embed" []
     , P.Package { P.name = "haskell-formlets"
@@ -1035,7 +1035,7 @@ main _home release =
                 , P.spec = Darcs (repo ++ "/haskell-json")
                 , P.flags = [] }
     , debianize "language-css" [P.DebVersion "0.0.4.1-1~hackage1"]
-    , debianize "largeword" [P.DebVersion "1.0.1-2build1"]
+    , debianize "largeword" [P.DebVersion "1.0.1-3"]
 {-  , apt release "haskell-leksah"
     , apt release "haskell-leksah-server" -- for leksah -}
     , P.Package { P.name = "haskell-logic-classes"
@@ -1243,7 +1243,7 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/haskell-revision"
                 , P.flags = [] }
     , debianize "RJson" []
-    , debianize "safe" [P.DebVersion "0.3.3-1build1"]
+    , debianize "safe" [P.DebVersion "0.3.3-2"]
     -- Depends on pandoc
     --, P.Package {P.name = "haskell-safecopy", P.spec = DebDir (Hackage "safecopy" [P.CabalPin "0.5.1"])) (Darcs "http://src.seereason.com/haskell-safecopy-debian" []), P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"]}
     , debianize "safecopy" []
@@ -1350,7 +1350,7 @@ main _home release =
     , debianize "haskell-src-exts" [P.ExtraDep "happy"]
     , debianize "stb-image" []
     , apt release "haskell-strict" -- for leksah
-    , debianize "strict-concurrency" [P.DebVersion "0.2.4.1-2build1"]
+    , debianize "strict-concurrency" [P.DebVersion "0.2.4.1-3"]
     , debianize "strict-io" [] -- for GenI
     , debianize "smallcheck" []
     -- Because 0.3.3-1 is both in sid and hackage, we need to keep the debianize
@@ -1360,7 +1360,7 @@ main _home release =
     , debianize "tagged" []
     , debianize "tagsoup" [P.DebVersion "0.12.6-1"]
     , debianize "tar" []
-    , debianize "terminfo" [P.DebVersion "0.3.2.3-1build1"]
+    , debianize "terminfo" [P.DebVersion "0.3.2.3-2"]
     , debianize "test-framework"
                     [ {- P.Patch . B.pack. unlines $
                       [ "--- old/Test/Framework/Runners/Console/Run.hs\t2012-01-20 11:09:22.000000000 -0800"
@@ -1659,7 +1659,7 @@ platform release =
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
     , debianize "random" [P.DebVersion "1.0.1.1-1"]
-    , debianize "HUnit" [P.DebVersion "1.2.4.2-2build1"]
+    , debianize "HUnit" [P.DebVersion "1.2.4.2-3"]
     , debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"]
     , apt release "haskell-parsec"
     , apt release "haskell-html"
