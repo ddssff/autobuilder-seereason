@@ -1864,35 +1864,13 @@ clckwrks _home =
                                            , "+    json2/json2.js"
                                            , " "
                                            , " Library"
-                                           , "   Exposed-modules: Clckwrks" 
-                                           , "@@ -73,7 +146,7 @@"
-                                           , "      hsx-jmacro == 7.0.*,"
-                                           , "      ixset == 1.0.*,"
-                                           , "      jmacro == 0.5.*,"
-                                           , "-     mtl == 2.0.*,"
-                                           , "+     mtl >= 2.0,"
-                                           , "      network == 2.3.*,"
-                                           , "      old-locale ==  1.0.*,"
-                                           , "      process >= 1.0 && < 1.2," ]))
+                                           , "   Exposed-modules: Clckwrks" ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Cd "clckwrks-cli" (Darcs repo))
                     , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
-                    , P.spec = Debianize (Patch
-                                          (Cd "clckwrks-plugin-media" (Darcs repo))
-                                          (unlines
-                                           [ "--- old/clckwrks-plugin-media.cabal\t2012-04-13 19:24:26.000000000 -0700"
-                                           , "+++ new/clckwrks-plugin-media.cabal\t2012-04-17 20:44:36.303745160 -0700"
-                                           , "@@ -47,7 +47,7 @@"
-                                           , "     hsp == 0.6.*,"
-                                           , "     ixset == 1.0.*,"
-                                           , "     magic == 1.0.*,"
-                                           , "-    mtl == 2.0.*,"
-                                           , "+    mtl >= 2.0,"
-                                           , "     safecopy == 0.6.*,"
-                                           , "     text == 0.11.*,"
-                                           , "     web-routes == 0.27.*," ]))
+                    , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
                     , P.spec = Debianize (Patch
