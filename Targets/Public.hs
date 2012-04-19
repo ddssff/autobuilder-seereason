@@ -682,6 +682,8 @@ main _home release =
     , apt release "haskell-cereal"
     , debianize "citeproc-hs" [P.DebVersion "0.3.4-1"]
     , clckwrks _home
+    , debianize "uuid" []
+    , debianize "maccatcher" []
     , case release of
         "natty-seereason" -> debianize "colour" []
         "precise-seereason" -> debianize "colour" [P.DebVersion "2.3.3-1build1"]
