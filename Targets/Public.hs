@@ -2071,9 +2071,9 @@ happstackdotcom _home =
                                        , "                   old-locale == 1.0.*,"  
                                        , "                   parsec     == 3.1.*," ]))
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-happstackdotcom"
+{-  , P.Package { P.name = "haskell-happstackdotcom"
                 , P.spec = Darcs ("http://src.seereason.com/happstackDotCom")
-                , P.flags = [] }
+                , P.flags = [] } -}
     , P.Package { P.name = "haskell-happstackdotcom-doc"
                 , P.spec = Darcs "http://src.seereason.com/happstackDotCom-doc"
                 , P.flags = [] } ]
