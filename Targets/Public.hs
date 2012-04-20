@@ -289,7 +289,7 @@ main _home release =
                                        , " -- Schedule a new log entry. This call does not block"
                                        , " -- The given IO action runs once the object is durable. The IO action" ]))
                 , P.flags = [] }
-    , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
+    -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
     , debianize "aeson" []
     , P.Package { P.name = "haskell-agi"
                 , P.spec = Darcs "http://src.seereason.com/haskell-agi"
@@ -1093,7 +1093,7 @@ main _home release =
     , debianize "monad-par" [P.DebVersion "0.1.0.3-2"]
     , apt release "haskell-monadcatchio-mtl"
     , debianize "monadLib" [P.DebVersion "3.6.2-1~hackage1"]
-    , debianize "monads-tf" [P.DebVersion "0.1.0.0-1~hackage1"]
+    -- , debianize "monads-tf" [P.DebVersion "0.1.0.0-1~hackage1"]
     , apt release "haskell-monoid-transformer"
     , debianize "murmur-hash" [P.DebVersion "0.1.0.5-2"]
     , apt release "haskell-mwc-random"
