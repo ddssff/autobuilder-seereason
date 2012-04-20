@@ -150,7 +150,7 @@ happstack =
                                        , "                        utf8-string      == 0.3.*,"
                                        , "                        syb              == 0.3.*,"
                                        , "                        text             >= 0.10 && < 0.12" ]))
-                , P.flags = [] }
+                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
     -- , debianize "happstack-ixset" []
@@ -627,20 +627,8 @@ main _home release =
     , debianize "bitset" [P.DebVersion "1.1-1~hackage1"]
     , apt release "haskell-blaze-builder"
     , P.Package { P.name = "haskell-blaze-builder-enumerator" 
-                , P.spec = Debianize (Patch 
-                                      (Hackage "blaze-builder-enumerator")
-                                      (unlines
-                                       [ "--- old/blaze-builder-enumerator.cabal\t2011-10-18 04:02:13.000000000 -0700"	
-                                       , "+++ new/blaze-builder-enumerator.cabal\t2012-04-17 05:27:12.574684071 -0700"	
-                                       , "@@ -39,6 +39,6 @@"				      
-                                       , "     , blaze-builder >= 0.2.1.4 && < 0.4"	      
-                                       , "     , bytestring    >= 0.9     && < 0.10"	      
-                                       , "     , enumerator    >= 0.4.3.1 && < 0.5"	      
-                                       , "-    , transformers  >= 0.2     && < 0.3"	      
-                                       , "+    , transformers  >= 0.2"	   
-                                       , "   Exposed-modules:"	
-                                       , "     Blaze.ByteString.Builder.Enumerator" ]))
-                , P.flags = [P.DebVersion "0.2.0.3-2"] }
+                , P.spec = Debianize (Hackage "blaze-builder-enumerator")
+                , P.flags = [] }
     , debianize "blaze-from-html" []
     , debianize "blaze-html" []
     , debianize "blaze-textual" [P.DebVersion "0.2.0.6-2"]
@@ -1875,20 +1863,7 @@ clckwrks _home =
                     , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
-                    , P.spec = Debianize (Patch
-                                          (Cd "clckwrks-plugin-ircbot" (Darcs repo))
-                                          (unlines
-                                           [ "--- old/clckwrks-plugin-ircbot.cabal\t2012-04-13 19:24:25.000000000 -0700"
-                                           , "+++ new/clckwrks-plugin-ircbot.cabal\t2012-04-17 20:49:07.019730708 -0700"
-                                           , "@@ -49,7 +49,7 @@"
-                                           , "     ircbot                 == 0.5.*,"
-                                           , "     ixset                  == 1.0.*,"
-                                           , " --    magic                  == 1.0.*,"
-                                           , "-    mtl                    == 2.0.*,"
-                                           , "+    mtl                    >= 2.0,"
-                                           , "     network                == 2.3.*,"
-                                           , "     safecopy               == 0.6.*,"
-                                           , "     text                   == 0.11.*," ]))
+                    , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-theme-basic"
                     , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs repo))
