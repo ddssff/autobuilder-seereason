@@ -1827,6 +1827,7 @@ other release =
                       , "     old-locale," ])
     , apt release "haskell-binary-shared" -- for leksah
     , debianize "cairo" [P.ExtraDep "haskell-gtk2hs-buildtools-utils"] -- for leksah
+    , debianize "cabal-dev" [] -- build-env for cabal
     , debianize "gnuplot" [P.DebVersion "0.4.2-1~hackage1"]
     , apt release "bash-completion"
     ]
