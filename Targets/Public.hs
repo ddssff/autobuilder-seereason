@@ -135,22 +135,7 @@ happstack =
     , P.Package { P.name = "haskell-happstack-facebook"
                 , P.spec = Darcs (repo ++ "/happstack-facebook")
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-hsp"
-                , P.spec = Debianize (Patch 
-                                      (Cd "happstack-hsp" (Darcs happstackRepo))
-                                      (unlines
-                                       [ "--- old/happstack-hsp.cabal\t2012-04-13 19:27:54.000000000 -0700"
-                                       , "+++ new/happstack-hsp.cabal\t2012-04-17 05:25:23.410689899 -0700"
-                                       , "@@ -34,7 +34,7 @@"
-                                       , "                        harp             >= 0.4 && < 0.5,"
-                                       , "                        hsx              >= 0.9.1 && < 0.10,"
-                                       , "                        hsp              >= 0.6.1 && < 0.7,"
-                                       , "-                       mtl              >= 1.1 && < 2.1,"
-                                       , "+                       mtl              >= 1.1,"
-                                       , "                        utf8-string      == 0.3.*,"
-                                       , "                        syb              == 0.3.*,"
-                                       , "                        text             >= 0.10 && < 0.12" ]))
-                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+    , debianize "happstack-hsp" []
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
     -- , debianize "happstack-ixset" []
@@ -163,30 +148,8 @@ happstack =
                 , P.spec = Darcs (repo ++ "/happstack-search")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-server"
-                , P.spec = Debianize (Patch 
-                                      (Hackage "happstack-server") 
-                                      (unlines
-                                       [ "--- old/happstack-server.cabal\t2012-04-16 09:55:41.000000000 -0700"
-                                       , "+++ new/happstack-server.cabal\t2012-04-16 10:35:56.791680263 -0700"
-                                       , "@@ -87,7 +87,7 @@"
-                                       , "                        hslogger >= 1.0.2,"
-                                       , "                        html,"
-                                       , "                        monad-control >= 0.3 && < 0.4,"
-                                       , "-                       mtl >= 2 && < 2.1,"
-                                       , "+                       mtl >= 2,"
-                                       , "                        old-locale,"
-                                       , "                        old-time,"
-                                       , "                        parsec < 4," 
-                                       , "@@ -96,7 +96,7 @@"
-                                       , "                        template-haskell,"
-                                       , "                        text >= 0.10 && < 0.12,"
-                                       , "                        time,"
-                                       , "-                       transformers >= 0.1.3 && < 0.3,"
-                                       , "+                       transformers >= 0.1.3,"
-                                       , "                        transformers-base >= 0.4 && < 0.5,"
-                                       , "                        utf8-string >= 0.3.4 && < 0.4,"
-                                       , "                        xhtml,"]))
-                , P.flags = [P.DebVersion "7.0.0-1~hackage1"] }
+                , P.spec = Debianize (Hackage "happstack-server")
+                , P.flags = [P.DebVersion "7.0.0-1~hackage1", P.CabalPin "7.0.0"] }
     , P.Package { P.name = "haskell-happstack-util"
                 , P.spec = Debianize (Patch
                                       (Hackage "happstack-util") 
@@ -845,7 +808,7 @@ main _home release =
                 , P.spec = Quilt (Apt "sid" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
                 , P.flags = [] }
     , patched "HJScript"
-                    [ P.DebVersion "0.5.0-3" ]
+                    [ P.DebVersion "0.5.0-3", P.CabalPin "0.5.0" ]
                     (unlines
                       [ "--- old-HJScript-0.5.0/src/HJScript/XMLGenerator.hs\t2012-01-01 14:25:05.000000000 -0800"
                       , "+++ new-HJScript-0.5.0/src/HJScript/XMLGenerator.hs\t2012-01-02 09:18:41.226482198 -0800"
@@ -983,7 +946,7 @@ main _home release =
                       , " /* OpenSSL ********************************************************************/" ])
     , patched "hsp"
                     [ P.ExtraDep "haskell-hsx-utils"
-                    , P.DebVersion "0.6.1-2" ]
+                    , P.DebVersion "0.6.1-2", P.CabalPin"0.6.1" ]
                     (unlines
                       [ "--- old/src/HSP/XMLGenerator.hs\t2012-01-04 09:58:57.966483200 -0800"
                       , "+++ new/src/HSP/XMLGenerator.hs\t2012-01-04 10:00:35.316482037 -0800"
@@ -1008,7 +971,7 @@ main _home release =
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
-    , debianize "hsx" [P.DebVersion "0.9.1-2"]
+    , debianize "hsx" [P.DebVersion "0.9.1-2", P.CabalPin "0.9.1"]
     , P.Package { P.name = "haskell-html-entities"
                 , P.spec = Darcs "http://src.seereason.com/html-entities"
                 , P.flags = [] }
