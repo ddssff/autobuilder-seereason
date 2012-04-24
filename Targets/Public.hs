@@ -1535,7 +1535,27 @@ clckwrks _home =
                                            , "+     stm                          >= 2.2,"
                                            , "      tagsoup                      == 0.12.*,"
                                            , "      text                         == 0.11.*,"
-                                           , "      time                         >= 1.2 && <1.5," ]))
+                                           , "      time                         >= 1.2 && <1.5," 
+                                           , "--- old/Clckwrks/Monad.hs\t2012-04-24 15:45:57.000000000 -0700"
+                                           , "+++ new/Clckwrks/Monad.hs\t2012-04-24 15:49:43.638997119 -0700"
+                                           , "@@ -39,7 +39,7 @@"
+                                           , " import Clckwrks.URL                  (ClckURL(..))"
+                                           , " import Control.Applicative           (Alternative, Applicative, (<$>), (<|>), many)"
+                                           , " import Control.Monad                 (MonadPlus)"
+                                           , "-import Control.Monad.State           (MonadState, StateT, evalStateT, execStateT, get, mapStateT, modify, put, runStateT)"
+                                           , "+import Control.Monad.State           (MonadState, StateT, evalStateT, execStateT, get, mapStateT, {-modify,-} put, runStateT)"
+                                           , " import Control.Monad.Reader          (MonadReader, ReaderT, mapReaderT)"
+                                           , " import Control.Monad.Trans           (MonadIO(liftIO), lift)"
+                                           , " import Control.Concurrent.STM        (TVar, readTVar, writeTVar, atomically)"
+                                           , "@@ -457,3 +457,8 @@"
+                                           , "                 if r"
+                                           , "                    then return url"
+                                           , "                    else escape $ unauthorizedPage (\"You do not have permission to view this page.\" :: T.Text)"
+                                           , "+"
+                                           , "+modify :: (MonadState s m) => (s -> s) -> m ()"
+                                           , "+modify f = do"
+                                           , "+    s <- get"
+                                           , "+    put (f s)" ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Patch
