@@ -88,20 +88,7 @@ digestiveFunctors =
                 , P.spec = Debianize (Hackage "digestive-functors-happstack")
                 , P.flags = [P.CabalPin "0.1.1.5"] }
     , P.Package { P.name = "haskell-digestive-functors-hsp"
-                , P.spec = Debianize (Patch 
-                                      (Darcs (repo ++ "/digestive-functors-hsp"))
-                                      (unlines
-                                       [ "--- old/digestive-functors-hsp.cabal\t2012-04-13 19:27:00.000000000 -0700"	
-                                       , "+++ new/digestive-functors-hsp.cabal\t2012-04-17 05:50:20.146609985 -0700"	
-                                       , "@@ -15,7 +15,7 @@"				    
-                                       , " Library"	  
-                                       , "   Exposed-modules:     Text.Digestive.HSP.Html4"	
-                                       , "   Build-depends:       base == 4.*,"		
-                                       , "-                       digestive-functors >= 0.2 && < 0.3,"	
-                                       , "+                       digestive-functors >= 0.2,"	
-                                       , "                        hsp,"	      
-                                       , "                        hsx,"	      
-                                       , "                        text" ]))
+                , P.spec = Debianize (Darcs (repo ++ "/digestive-functors-hsp"))
                 , P.flags = [] } ]
 
 happstack =
@@ -148,22 +135,44 @@ happstack =
                 , P.spec = Darcs (repo ++ "/happstack-search")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-server"
-                , P.spec = Debianize (Hackage "happstack-server")
+                , P.spec = Debianize (Patch
+                                      (Hackage "happstack-server")
+                                      (unlines
+                                       [ "--- old/happstack-server.cabal\t2012-04-24 21:36:40.000000000 -0700"
+                                       , "+++ new/happstack-server.cabal\t2012-04-24 21:38:55.563119248 -0700"
+                                       , "@@ -87,7 +87,7 @@"
+                                       , "                        hslogger >= 1.0.2,"
+                                       , "                        html,"
+                                       , "                        monad-control >= 0.3 && < 0.4,"
+                                       , "-                       mtl >= 2 && < 2.1,"
+                                       , "+                       mtl >= 2,"
+                                       , "                        old-locale,"
+                                       , "                        old-time,"
+                                       , "                        parsec < 4,"
+                                       , "@@ -96,7 +96,7 @@"
+                                       , "                        template-haskell,"
+                                       , "                        text >= 0.10 && < 0.12,"
+                                       , "                        time,"
+                                       , "-                       transformers >= 0.1.3 && < 0.3,"
+                                       , "+                       transformers >= 0.1.3,"
+                                       , "                        transformers-base >= 0.4 && < 0.5,"
+                                       , "                        utf8-string >= 0.3.4 && < 0.4,"
+                                       , "                        xhtml," ]))
                 , P.flags = [P.DebVersion "7.0.0-1~hackage1", P.CabalPin "7.0.0"] }
     , P.Package { P.name = "haskell-happstack-util"
                 , P.spec = Debianize (Patch
-                                      (Hackage "happstack-util") 
+                                      (Hackage "happstack-util")
                                       (unlines
-                                       [ "--- old/happstack-util.cabal\t2012-04-17 05:38:25.000000000 -0700"	
-                                       , "+++ new/happstack-util.cabal\t2012-04-17 05:53:09.430600945 -0700"	
-                                       , "@@ -29,7 +29,7 @@"			    
-                                       , "                        directory,"	    
-                                       , "                        extensible-exceptions, "	
-                                       , "                        hslogger >= 1.0.2,"	  
-                                       , "-                       mtl >= 1.1 && < 2.1,"  
-                                       , "+                       mtl >= 1.1,"	 
-                                       , "                        old-locale,"	 
-                                       , "                        old-time,"	 
+                                       [ "--- old/happstack-util.cabal\t2012-04-17 05:38:25.000000000 -0700"
+                                       , "+++ new/happstack-util.cabal\t2012-04-17 05:53:09.430600945 -0700"
+                                       , "@@ -29,7 +29,7 @@"
+                                       , "                        directory,"
+                                       , "                        extensible-exceptions, "
+                                       , "                        hslogger >= 1.0.2,"
+                                       , "-                       mtl >= 1.1 && < 2.1,"
+                                       , "+                       mtl >= 1.1,"
+                                       , "                        old-locale,"
+                                       , "                        old-time,"
                                        , "                        parsec < 4," ]))
                 , P.flags = [P.DebVersion "6.0.3-1"] }
     ]
@@ -516,101 +525,7 @@ main _home release =
     , P.Package { P.name = "haskell-hjavascript"
                 , P.spec = Quilt (Apt "sid" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
                 , P.flags = [] }
-    , patched "HJScript"
-                    [ P.DebVersion "0.5.0-3", P.CabalPin "0.5.0" ]
-                    (unlines
-                      [ "--- old-HJScript-0.5.0/src/HJScript/XMLGenerator.hs\t2012-01-01 14:25:05.000000000 -0800"
-                      , "+++ new-HJScript-0.5.0/src/HJScript/XMLGenerator.hs\t2012-01-02 09:18:41.226482198 -0800"
-                      , "@@ -6,8 +6,7 @@"
-                      , "         ) where"
-                      , " "
-                      , " import qualified HSX.XMLGenerator as HSX (XMLGen(..))"
-                      , "-import HSX.XMLGenerator hiding (XMLGen(..))"
-                      , "-import HSX.XMLGenerator (genElement, genEElement)"
-                      , "+import HSX.XMLGenerator"
-                      , " "
-                      , " import HJScript.Monad"
-                      , " import HJScript.Lang"
-                      , "@@ -18,14 +18,14 @@"
-                      , " import HJScript.DOM.TextNode"
-                      , " import HJScript.DOM.Document"
-                      , " "
-                      , "-type XML   = Exp ElementNode"
-                      , "-type Child = Exp Node"
-                      , "-type Attribute = Exp AttributeNode"
-                      , "+type XML'   = Exp ElementNode"
-                      , "+type Child' = Exp Node"
-                      , "+type Attribute' = Exp AttributeNode"
-                      , " "
-                      , " instance HSX.XMLGen HJScript' where"
-                      , "- type HSX.XML          HJScript' = XML"
-                      , "- newtype HSX.Child     HJScript' = HJSChild Child"
-                      , "- newtype HSX.Attribute HJScript' = HJSAttr Attribute"
-                      , "+ type XML          HJScript' = XML'"
-                      , "+ newtype Child     HJScript' = HJSChild Child'"
-                      , "+ newtype Attribute HJScript' = HJSAttr Attribute'"
-                      , "  genElement = element"
-                      , "  genEElement = eElement"
-                      , "  xmlToChild = HJSChild . castToNode"
-                      , "@@ -33,7 +33,7 @@"
-                      , " "
-                      , " element :: (EmbedAsChild HJScript' c, "
-                      , "             EmbedAsAttr HJScript' a) "
-                      , "-            => Name -> [a] -> [c] -> HJScript XML"
-                      , "+            => Name -> [a] -> [c] -> HJScript XML'"
-                      , " element (ns, ln) atts xmls = do"
-                      , "   let name = (maybe id (\\x y -> y ++ ':':x) ns) ln"
-                      , "   elem <- fmap val $ varWith $ document # createElement (string name)"
-                      , "@@ -43,8 +43,8 @@"
-                      , "   mapM (\\child -> elem # appendChild child) $ map stripChild cxml"
-                      , "   return elem"
-                      , " "
-                      , "-eElement :: EmbedAsAttr HJScript' a => Name -> [a] -> HJScript XML"
-                      , "-eElement n attrs = element n attrs ([] :: [Child])"
-                      , "+eElement :: EmbedAsAttr HJScript' a => Name -> [a] -> HJScript XML'"
-                      , "+eElement n attrs = element n attrs ([] :: [Child'])"
-                      , " "
-                      , " "
-                      , " instance XMLGenerator HJScript'"
-                      , "@@ -52,7 +52,7 @@"
-                      , " --------------------------------------------"
-                      , " -- EmbedAsChild and EmbedAsAttr"
-                      , " "
-                      , "-instance EmbedAsChild HJScript' Child where"
-                      , "+instance EmbedAsChild HJScript' Child' where"
-                      , "  asChild = asChild . HJSChild"
-                      , " "
-                      , " instance EmbedAsChild HJScript' JString where"
-                      , "@@ -66,10 +66,10 @@"
-                      , " "
-                      , " -- This instance should already be there, probably doesn't work due"
-                      , " -- to type families not being fully supported yet."
-                      , "-instance EmbedAsChild HJScript' XML where"
-                      , "+instance EmbedAsChild HJScript' XML' where"
-                      , "  asChild = return . return . HSX.xmlToChild"
-                      , " "
-                      , "-instance EmbedAsAttr HJScript' Attribute where"
-                      , "+instance EmbedAsAttr HJScript' Attribute' where"
-                      , "  asAttr = asAttr . HJSAttr"
-                      , " "
-                      , " instance (IsName n, IsAttrNodeValue a) => EmbedAsAttr HJScript' (Attr n a) where"
-                      , "@@ -94,14 +94,14 @@"
-                      , " -----------------------------------"
-                      , " -- SetAttr and AppendChild."
-                      , " "
-                      , "-instance SetAttr HJScript' XML where"
-                      , "+instance SetAttr HJScript' XML' where"
-                      , "  setAll en ats = do"
-                      , "         ev <- inVar en"
-                      , "         as <- ats"
-                      , "         mapM (\\attr -> ev # setAttributeNode attr) (map stripAttr as)"
-                      , "         return ev"
-                      , " "
-                      , "-instance AppendChild HJScript' XML where"
-                      , "+instance AppendChild HJScript' XML' where"
-                      , "  appAll en cns = do"
-                      , "         ev <- inVar en"
-                      , "         cs <- cns" ])
+    , debianize "HJScript" []
     , debianize "hoauth" []
     , debianize "hostname" [P.DebVersion "1.0-4build1"]
     -- The Sid package has no profiling libraries, so dependent packages
@@ -653,34 +568,15 @@ main _home release =
                       , " #endif"
                       , " "
                       , " /* OpenSSL ********************************************************************/" ])
-    , patched "hsp"
-                    [ P.ExtraDep "haskell-hsx-utils"
-                    , P.DebVersion "0.6.1-2", P.CabalPin"0.6.1" ]
-                    (unlines
-                      [ "--- old/src/HSP/XMLGenerator.hs\t2012-01-04 09:58:57.966483200 -0800"
-                      , "+++ new/src/HSP/XMLGenerator.hs\t2012-01-04 10:00:35.316482037 -0800"
-                      , "@@ -31,9 +31,15 @@"
-                      , " \r"
-                      , " -- | We can use literal XML syntax to generate values of type XML in the HSP monad.\r"
-                      , " instance Monad m => HSX.XMLGen (HSPT' m) where\r"
-                      , "+#if __GLASGOW_HASKELL__ < 702\r"
-                      , "  type HSX.XML (HSPT' m) = XML\r"
-                      , "  newtype HSX.Attribute (HSPT' m) = HSPAttr Attribute \r"
-                      , "  newtype HSX.Child     (HSPT' m) = HSPChild XML\r"
-                      , "+#else\r"
-                      , "+ type XML (HSPT' m) = XML\r"
-                      , "+ newtype Attribute (HSPT' m) = HSPAttr Attribute \r"
-                      , "+ newtype Child     (HSPT' m) = HSPChild XML\r"
-                      , "+#endif\r"
-                      , "  xmlToChild = HSPChild\r"
-                      , "  pcdataToChild = HSX.xmlToChild . pcdata\r"
-                      , "  genElement = element\r" ])
+    , P.Package { P.name = "haskell-hsp"
+                , P.spec = Debianize (Hackage "hsp")
+                , P.flags = [ P.ExtraDep "haskell-hsx-utils" ] }
     , debianize "HsSyck" [P.DebVersion "0.50-2"]
     , debianize "HStringTemplate" []
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
-    , debianize "hsx" [P.DebVersion "0.9.1-2", P.CabalPin "0.9.1"]
+    , debianize "hsx" []
     , P.Package { P.name = "haskell-html-entities"
                 , P.spec = Darcs "http://src.seereason.com/html-entities"
                 , P.flags = [] }
@@ -1728,15 +1624,20 @@ happstackdotcom _home =
                                       (unlines
                                        [ "--- old/ircbot.cabal\t2012-04-17 05:18:09.000000000 -0700"	
                                        , "+++ new/ircbot.cabal\t2012-04-17 05:34:20.122661243 -0700"  
-                                       , "@@ -35,7 +35,7 @@"	
-                                       , "                   directory   < 1.2,"	
-                                       , "                   filepath   >= 1.2 && < 1.4,"	
-                                       , "                   irc        == 0.5.*,"  
-                                       , "-                  mtl        == 2.0.*,"  
-                                       , "+                  mtl        >= 2.0,"    
-                                       , "                   network    == 2.3.*,"  
-                                       , "                   old-locale == 1.0.*,"  
-                                       , "                   parsec     == 3.1.*," ]))
+                                       , "@@ -35,11 +35,11 @@"
+                                       , "                   directory   < 1.2,"
+                                       , "                   filepath   >= 1.2 && < 1.4,"
+                                       , "                   irc        == 0.5.*,"
+                                       , "-                  mtl        == 2.0.*,"
+                                       , "+                  mtl        >= 2.0,"
+                                       , "                   network    == 2.3.*,"
+                                       , "                   old-locale == 1.0.*,"
+                                       , "                   parsec     == 3.1.*,"
+                                       , "                   time       == 1.4.*,"
+                                       , "                   unix       >= 2.4 && < 2.6,"
+                                       , "                   random     == 1.0.*,"
+                                       , "-                  stm        == 2.2.*"
+                                       , "+                  stm        >= 2.2" ]))
                 , P.flags = [] }
 {-  , P.Package { P.name = "haskell-happstackdotcom"
                 , P.spec = Darcs ("http://src.seereason.com/happstackDotCom")
