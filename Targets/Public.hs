@@ -306,6 +306,7 @@ main _home release =
     , debianize "bimap" [P.DebVersion "0.2.4-1~hackage1"]
     , debianize "bitmap" []
     , debianize "bitset" [P.DebVersion "1.1-1~hackage1"]
+    , debianize "blaze-markup" []
     , apt release "haskell-blaze-builder"
     , P.Package { P.name = "haskell-blaze-builder-enumerator" 
                 , P.spec = Debianize (Hackage "blaze-builder-enumerator")
