@@ -1257,29 +1257,7 @@ authenticate _home release =
                 , P.flags = [] }
 
     , P.Package { P.name = "haskell-zlib-enum"
-                , P.spec = Debianize (Patch 
-                                      (Hackage "zlib-enum") 
-                                      (unlines
-                                       [ "--- old/zlib-enum.cabal\t2012-04-17 05:18:19.000000000 -0700"
-                                       , "+++ new/zlib-enum.cabal\t2012-04-17 05:30:32.558673393 -0700"
-                                       , "@@ -24,7 +24,7 @@"
-                                       , "          Buildable: False"
-                                       , "     build-depends: base                  >= 4 && < 5"
-                                       , "                  , bytestring"
-                                       , "-                 , transformers          == 0.2.*"
-                                       , "+                 , transformers          >= 0.2"
-                                       , "                  , enumerator            == 0.4.*"
-                                       , "                  , zlib-bindings         == 0.1.*"
-                                       , "     exposed-modules: Codec.Zlib.Enum"
-                                       , "@@ -38,7 +38,7 @@"
-                                       , "         build-depends:"
-                                       , "               base                       >= 4.0   &&   < 5.0"
-                                       , "             , bytestring                 >= 0.9   &&   < 0.10"
-                                       , "-            , transformers               == 0.2.*"
-                                       , "+            , transformers               >= 0.2"
-                                       , "             , enumerator                 >= 0.4   &&   < 0.5"
-                                       , "             , zlib-bindings              >= 0.1"
-                                       , "             , test-framework             >= 0.6   &&   < 0.7" ]))
+                , P.spec = Debianize (Hackage "zlib-enum")
                 , P.flags = [] }
     , debianize "wai" []
     , P.Package { P.name = "haskell-http-enumerator"
