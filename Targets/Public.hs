@@ -52,10 +52,6 @@ unixutils _home =
                 , P.flags = [P.RelaxDep "cabal-debian"] }
     , P.Package { P.name = "haskell-help"
                 , P.spec = Darcs "http://src.seereason.com/haskell-help"
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-scaffolding"
-                , P.spec = Darcs (repo ++ "/happstack-scaffolding")
-                           -- Don't use Debianize here, it restores the doc package which crashes the build
                 , P.flags = [] } ]
 
 autobuilder _home =
@@ -119,9 +115,11 @@ happstack =
     , P.Package { P.name = "haskell-happstack-extra"
                 , P.spec = Darcs (repo ++ "/happstack-extra")
                 , P.flags = [] }
+{- retired
     , P.Package { P.name = "haskell-happstack-facebook"
                 , P.spec = Darcs (repo ++ "/happstack-facebook")
                 , P.flags = [] }
+-}
     , debianize "happstack-hsp" []
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
@@ -135,30 +133,8 @@ happstack =
                 , P.spec = Darcs (repo ++ "/happstack-search")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-server"
-                , P.spec = Debianize (Patch
-                                      (Hackage "happstack-server")
-                                      (unlines
-                                       [ "--- old/happstack-server.cabal\t2012-04-24 21:36:40.000000000 -0700"
-                                       , "+++ new/happstack-server.cabal\t2012-04-24 21:38:55.563119248 -0700"
-                                       , "@@ -87,7 +87,7 @@"
-                                       , "                        hslogger >= 1.0.2,"
-                                       , "                        html,"
-                                       , "                        monad-control >= 0.3 && < 0.4,"
-                                       , "-                       mtl >= 2 && < 2.1,"
-                                       , "+                       mtl >= 2,"
-                                       , "                        old-locale,"
-                                       , "                        old-time,"
-                                       , "                        parsec < 4,"
-                                       , "@@ -96,7 +96,7 @@"
-                                       , "                        template-haskell,"
-                                       , "                        text >= 0.10 && < 0.12,"
-                                       , "                        time,"
-                                       , "-                       transformers >= 0.1.3 && < 0.3,"
-                                       , "+                       transformers >= 0.1.3,"
-                                       , "                        transformers-base >= 0.4 && < 0.5,"
-                                       , "                        utf8-string >= 0.3.4 && < 0.4,"
-                                       , "                        xhtml," ]))
-                , P.flags = [P.DebVersion "7.0.0-1~hackage1", P.CabalPin "7.0.0"] }
+                , P.spec = Debianize (Hackage "happstack-server")
+                , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-util"
                 , P.spec = Debianize (Patch
                                       (Hackage "happstack-util")
@@ -175,6 +151,105 @@ happstack =
                                        , "                        old-time,"
                                        , "                        parsec < 4," ]))
                 , P.flags = [P.DebVersion "6.0.3-1"] }
+    -- This target puts the trhsx binary in its own package, while the
+    -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
+    -- use debianize for natty and apt:sid for lucid.
+    , P.Package { P.name = "haskell-hsp"
+                , P.spec = Debianize (Hackage "hsp")
+                , P.flags = [ P.ExtraDep "haskell-hsx-utils" ] }
+    , P.Package { P.name = "haskell-hsx"
+                , P.spec = Debianize (Patch
+                                      (Hackage "hsx")
+                                      (unlines
+                                       [ "--- old/src/HSX/Transform.hs\t2012-04-25 07:01:33.000000000 -0700"
+                                       , "+++ new/src/HSX/Transform.hs\t2012-04-27 14:46:30.382898556 -0700"
+                                       , "@@ -1920,7 +1920,7 @@"
+                                       , " -- | Create a property from an attribute and a value."
+                                       , " metaAssign :: Exp -> Exp -> Exp"
+                                       , " metaAssign e1 e2 = infixApp e1 assignOp e2"
+                                       , "-  where assignOp = QVarOp $ UnQual $ Symbol \":=\""
+                                       , "+  where assignOp = QConOp $ UnQual $ Symbol \":=\""
+                                       , " "
+                                       , " -- | Make xml out of some expression by applying the overloaded function"
+                                       , " -- @asChild@." ]))
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-pandoc"
+                , P.spec = Debianize (Patch
+                                      (Hackage "pandoc")
+                                      (unlines
+                                             [ "--- old/pandoc.cabal\t2012-04-13 20:31:20.000000000 -0700"
+                                             , "+++ new/pandoc.cabal\t2012-04-13 23:36:47.139174491 -0700"
+                                             , "@@ -193,7 +193,7 @@"
+                                             , "   Build-Depends: containers >= 0.1 && < 0.5,"
+                                             , "                  parsec >= 3.1 && < 3.2,"
+                                             , "                  blaze-html >= 0.4.3.0 && < 0.5,"
+                                             , "-                 mtl >= 1.1 && < 2.1,"
+                                             , "+                 mtl >= 1.1,"
+                                             , "                  network >= 2 && < 2.4,"
+                                             , "                  filepath >= 1.1 && < 1.4,"
+                                             , "                  process >= 1 && < 1.2,"
+                                             , "@@ -291,7 +291,7 @@"
+                                             , "   Build-Depends: containers >= 0.1 && < 0.5,"
+                                             , "                  parsec >= 3.1 && < 3.2,"
+                                             , "                  blaze-html >= 0.4.3.0 && < 0.5,"
+                                             , "-                 mtl >= 1.1 && < 2.1,"
+                                             , "+                 mtl >= 1.1,"
+                                             , "                  network >= 2 && < 2.4,"
+                                             , "                  filepath >= 1.1 && < 1.4,"
+                                             , "                  process >= 1 && < 1.2,"
+                                             , "@@ -349,7 +349,7 @@"
+                                             , "   Build-Depends: containers >= 0.1 && < 0.5,"
+                                             , "                  parsec >= 3.1 && < 3.2,"
+                                             , "                  blaze-html >= 0.4.3.0 && < 0.5,"
+                                             , "-                 mtl >= 1.1 && < 2.1,"
+                                             , "+                 mtl >= 1.1,"
+                                             , "                  network >= 2 && < 2.4,"
+                                             , "                  filepath >= 1.1 && < 1.4,"
+                                             , "                  process >= 1 && < 1.2," ]))
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-highlighting-kate"
+                , P.spec = Debianize (Patch
+                                      (Hackage "highlighting-kate")
+                                      (unlines
+                                       [ "--- old/highlighting-kate.cabal\t2012-04-25 07:01:14.000000000 -0700"
+                                       , "+++ new/highlighting-kate.cabal\t2012-04-25 08:17:18.013026272 -0700"
+                                       , "@@ -144,7 +144,7 @@"
+                                       , "     cpp-options:     -D_PCRE_LIGHT"
+                                       , "   else"
+                                       , "     Build-depends:   regex-pcre-builtin"
+                                       , "-  Build-Depends:     parsec, mtl, blaze-html >= 0.4.2 && < 0.5"
+                                       , "+  Build-Depends:     parsec, mtl, blaze-html >= 0.4.2"
+                                       , "   Exposed-Modules:   Text.Highlighting.Kate"
+                                       , "                      Text.Highlighting.Kate.Syntax"
+                                       , "                      Text.Highlighting.Kate.Types" ]))
+                , P.flags = [P.DebVersion "0.5.0.5-1"] }
+    , P.Package { P.name = "haskell-web-routes"
+                , P.spec = Cd "web-routes" (Darcs (repo ++ "/web-routes"))
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-web-routes-boomerang"
+                , P.spec = Cd "web-routes-boomerang" (Darcs (repo ++ "/web-routes"))
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-web-routes-happstack"
+                , P.spec = Cd "web-routes-happstack" (Darcs (repo ++ "/web-routes"))
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-web-routes-hsp"
+                , P.spec = Cd "web-routes-hsp" (Darcs (repo ++ "/web-routes"))
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-web-routes-mtl"
+                , P.spec = Cd "web-routes-mtl" (Darcs (repo ++ "/web-routes"))
+                , P.flags = [] }      
+    , P.Package { P.name = "haskell-web-routes-th"
+                , P.spec = Cd "web-routes-th" (Darcs (repo ++ "/web-routes"))
+                , P.flags = [] }
+{- retired
+    , P.Package { P.name = "haskell-formlets-hsp"
+                , P.spec = Darcs (repo ++ "/formlets-hsp")
+                , P.flags = [] }
+-}
+    , P.Package { P.name = "haskell-happstack-scaffolding"
+                , P.spec = Darcs (repo ++ "/happstack-scaffolding")
+                           -- Don't use Debianize here, it restores the doc package which crashes the build
+                , P.flags = [] }
     ]
 
 main _home release =
@@ -312,7 +387,7 @@ main _home release =
                 , P.spec = Debianize (Hackage "blaze-builder-enumerator")
                 , P.flags = [] }
     , debianize "blaze-from-html" []
-    , debianize "blaze-html" []
+    , debianize "blaze-html" [P.CabalPin "0.4.3.4"]
     , debianize "blaze-textual" [P.DebVersion "0.2.0.6-2"]
     , P.Package { P.name = "haskell-blaze-textual-native"
                 , P.spec = Debianize (Patch
@@ -449,9 +524,6 @@ main _home release =
                                           , "     Build-Depends: base >= 4 && < 5, syb"
                                           , "   else" ]))
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
-    , P.Package { P.name = "haskell-formlets-hsp"
-                , P.spec = Darcs (repo ++ "/formlets-hsp")
-                , P.flags = [] }
     , patched "gd"  [ P.ExtraDevDep "libgd-dev" ]
                     (unlines
                       [ "--- gd/gd.cabal.orig\t2011-06-25 12:27:26.000000000 -0700"
@@ -502,22 +574,36 @@ main _home release =
     , debianize "HaXml" [P.DebVersion "1:1.22.5-2"]
     , debianize "heap" [P.DebVersion "1.0.0-1~hackage1"]
     , P.Package { P.name = "haskell-heist"
-                , P.spec = Debianize (Patch 
-                                      (Hackage "heist") 
+                , P.spec = Debianize (Patch
+                                      (Hackage "heist")
                                       (unlines
-                                       [ "--- old/heist.cabal\t2012-04-17 05:18:05.000000000 -0700"	
-                                       , "+++ new/heist.cabal\t2012-04-17 05:35:49.742656458 -0700"	
-                                       , "@@ -94,8 +94,8 @@"		   
-                                       , "     directory,"		   
-                                       , "     directory-tree,"	   
-                                       , "     filepath,"		   
-                                       , "-    MonadCatchIO-transformers >= 0.2.1 && < 0.3,"	
-                                       , "-    mtl                       >= 2.0   && < 2.1,"	
-                                       , "+    MonadCatchIO-transformers >= 0.2.1,"  
-                                       , "+    mtl                       >= 2.0,"    
-                                       , "     process,"		  
-                                       , "     random,"		  
-                                       , "     text                      >= 0.10  && < 0.12," ]))
+                                       [ "--- old/heist.cabal\t2012-04-25 08:25:18.883009790 -0700"
+                                       , "+++ new/heist.cabal\t2012-04-25 08:24:04.483119555 -0700"
+                                       , "@@ -88,20 +88,20 @@"
+                                       , "     attoparsec                >= 0.10  && < 0.11,"
+                                       , "     base                      >= 4     && < 5,"
+                                       , "     blaze-builder             >= 0.2   && < 0.4,"
+                                       , "-    blaze-html                >= 0.4   && < 0.5,"
+                                       , "+    blaze-html                >= 0.4,"
+                                       , "     bytestring,"
+                                       , "     containers                >= 0.2   && < 0.5,"
+                                       , "     directory,"
+                                       , "     directory-tree,"
+                                       , "     filepath,"
+                                       , "-    MonadCatchIO-transformers >= 0.2.1 && < 0.3,"
+                                       , "-    mtl                       >= 2.0 && < 2.1,"
+                                       , "+    MonadCatchIO-transformers >= 0.2.1,"
+                                       , "+    mtl                       >= 2.0,"
+                                       , "     process,"
+                                       , "     random,"
+                                       , "     text                      >= 0.10  && < 0.12,"
+                                       , "     time                      >= 1.1   && < 1.5,"
+                                       , "     transformers,"
+                                       , "-    xmlhtml                   >= 0.1.6 && < 0.2,"
+                                       , "+    xmlhtml                   >= 0.1.6,"
+                                       , "     unordered-containers      >= 0.1.4 && < 0.3,"
+                                       , "     vector                    >= 0.9   && < 0.10"
+                                       , " " ]))
                 , P.flags = [] }
     , debianize "xmlhtml" []
     , debianize "directory-tree" [P.DebVersion "0.10.0-2"]
@@ -569,15 +655,8 @@ main _home release =
                       , " #endif"
                       , " "
                       , " /* OpenSSL ********************************************************************/" ])
-    , P.Package { P.name = "haskell-hsp"
-                , P.spec = Debianize (Hackage "hsp")
-                , P.flags = [ P.ExtraDep "haskell-hsx-utils" ] }
     , debianize "HsSyck" [P.DebVersion "0.50-2"]
     , debianize "HStringTemplate" []
-    -- This target puts the trhsx binary in its own package, while the
-    -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
-    -- use debianize for natty and apt:sid for lucid.
-    , debianize "hsx" []
     , P.Package { P.name = "haskell-html-entities"
                 , P.spec = Darcs "http://src.seereason.com/html-entities"
                 , P.flags = [] }
@@ -734,40 +813,6 @@ main _home release =
                       , "                  x   -> x" ])
     , debianize "operational" [P.DebVersion "0.2.0.3-1~hackage1", P.OmitLTDeps]
     , debianize "ordered" []
-    , P.Package { P.name = "haskell-pandoc"
-                , P.spec = Debianize (Patch
-                                      (Hackage "pandoc")
-                                      (unlines
-                                             [ "--- old/pandoc.cabal\t2012-04-13 20:31:20.000000000 -0700"
-                                             , "+++ new/pandoc.cabal\t2012-04-13 23:36:47.139174491 -0700"
-                                             , "@@ -193,7 +193,7 @@"
-                                             , "   Build-Depends: containers >= 0.1 && < 0.5,"
-                                             , "                  parsec >= 3.1 && < 3.2,"
-                                             , "                  blaze-html >= 0.4.3.0 && < 0.5,"
-                                             , "-                 mtl >= 1.1 && < 2.1,"
-                                             , "+                 mtl >= 1.1,"
-                                             , "                  network >= 2 && < 2.4,"
-                                             , "                  filepath >= 1.1 && < 1.4,"
-                                             , "                  process >= 1 && < 1.2,"
-                                             , "@@ -291,7 +291,7 @@"
-                                             , "   Build-Depends: containers >= 0.1 && < 0.5,"
-                                             , "                  parsec >= 3.1 && < 3.2,"
-                                             , "                  blaze-html >= 0.4.3.0 && < 0.5,"
-                                             , "-                 mtl >= 1.1 && < 2.1,"
-                                             , "+                 mtl >= 1.1,"
-                                             , "                  network >= 2 && < 2.4,"
-                                             , "                  filepath >= 1.1 && < 1.4,"
-                                             , "                  process >= 1 && < 1.2,"
-                                             , "@@ -349,7 +349,7 @@"
-                                             , "   Build-Depends: containers >= 0.1 && < 0.5,"
-                                             , "                  parsec >= 3.1 && < 3.2,"
-                                             , "                  blaze-html >= 0.4.3.0 && < 0.5,"
-                                             , "-                 mtl >= 1.1 && < 2.1,"
-                                             , "+                 mtl >= 1.1,"
-                                             , "                  network >= 2 && < 2.4,"
-                                             , "                  filepath >= 1.1 && < 1.4,"
-                                             , "                  process >= 1 && < 1.2," ]))
-                , P.flags = [] }
     , debianize "texmath" []
     , debianize "temporary" [P.DebVersion "1.1.2.3-1build1"]
     , debianize "pandoc-types" [P.DebVersion "1.9.1-1"]
@@ -834,7 +879,18 @@ main _home release =
     , P.Package { P.name = "haskell-simple-css",
                   P.spec = Patch (Debianize (Hackage "simple-css"))
                                  (unlines
-                                  [ "--- old/src/SimpleCss.hs\t2012-03-25 07:53:41.000000000 -0700"
+                                  [ "--- old/simple-css.cabal\t2012-04-25 07:03:34.000000000 -0700"
+                                  , "+++ new/simple-css.cabal\t2012-04-25 08:21:48.752940413 -0700"
+                                  , "@@ -26,7 +26,7 @@"
+                                  , "   Build-Depends:"
+                                  , "         base >= 4, base < 5, "
+                                  , "         unordered-containers >= 0.1.1, hashable >= 1.1.1.0,"
+                                  , "-        language-css >= 0.0.2, blaze-html >= 0.4  "
+                                  , "+        language-css >= 0.0.2, blaze-html >= 0.4, blaze-markup "
+                                  , "   Hs-Source-Dirs:      src/"
+                                  , "   Exposed-Modules:"
+                                  , "         SimpleCss"
+                                  , "--- old/src/SimpleCss.hs\t2012-03-25 07:53:41.000000000 -0700"
                                   , "+++ new/src/SimpleCss.hs\t2012-03-25 14:43:54.789176546 -0700"
                                   , "@@ -20,7 +20,7 @@"
                                   , " "
@@ -1042,24 +1098,6 @@ main _home release =
                       , "     exposed-modules: Web.Encodings"
                       , "                      Web.Encodings.MimeHeader," ])
     , debianize "boomerang" []
-    , P.Package { P.name = "haskell-web-routes"
-                , P.spec = Cd "web-routes" (Darcs (repo ++ "/web-routes"))
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-web-routes-boomerang"
-                , P.spec = Cd "web-routes-boomerang" (Darcs (repo ++ "/web-routes"))
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-web-routes-happstack"
-                , P.spec = Cd "web-routes-happstack" (Darcs (repo ++ "/web-routes"))
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-web-routes-hsp"
-                , P.spec = Cd "web-routes-hsp" (Darcs (repo ++ "/web-routes"))
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-web-routes-mtl"
-                , P.spec = Cd "web-routes-mtl" (Darcs (repo ++ "/web-routes"))
-                , P.flags = [] }      
-    , P.Package { P.name = "haskell-web-routes-th"
-                , P.spec = Cd "web-routes-th" (Darcs (repo ++ "/web-routes"))
-                , P.flags = [] }
     , apt release "haskell-xml"
     , debianize "cookie" [P.DebVersion "0.4.0-1"]
     , debianize "lifted-base" []
@@ -1095,9 +1133,6 @@ main _home release =
     , debianize "yaml-light" [P.DebVersion "0.1.4-2"]
     , apt release "haskell-zip-archive"
 
-    , P.Package { P.name = "haskell-highlighting-kate"
-                , P.spec = Debianize (Hackage "highlighting-kate")
-                , P.flags = [P.DebVersion "0.5.0.5-1"] }
     , debianize "regex-pcre-builtin" []
     , P.Package { P.name = "hscolour"
                 , P.spec = Apt "sid" "hscolour"
@@ -1295,7 +1330,8 @@ authenticate _home release =
                                        , "                        happstack-server             >= 6.0 && < 7.1,"
                                        , "                        http-conduit                 == 1.4.*,"
                                        , "                        http-types                   == 0.6.*,"
-                                       , "                        fb                           == 0.8.*,"
+                                       , "-                       fb                           == 0.8.*,"
+                                       , "+                       fb                           >= 0.8,"
                                        , "                        safecopy                     == 0.6.*,"
                                        , "-                       mtl                          == 2.0.*,"
                                        , "+                       mtl                          >= 2.0,"
@@ -1303,6 +1339,7 @@ authenticate _home release =
                                        , "                        QuickCheck                   >= 2,"
                                        , "                        text                         == 0.11.*," ]))
                 , P.flags = [] }
+    , digestiveFunctors
     ]
 
 clckwrks _home =
