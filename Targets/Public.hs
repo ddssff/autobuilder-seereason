@@ -208,21 +208,8 @@ happstack =
                                              , "                  process >= 1 && < 1.2," ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-highlighting-kate"
-                , P.spec = Debianize (Patch
-                                      (Hackage "highlighting-kate")
-                                      (unlines
-                                       [ "--- old/highlighting-kate.cabal\t2012-04-25 07:01:14.000000000 -0700"
-                                       , "+++ new/highlighting-kate.cabal\t2012-04-25 08:17:18.013026272 -0700"
-                                       , "@@ -144,7 +144,7 @@"
-                                       , "     cpp-options:     -D_PCRE_LIGHT"
-                                       , "   else"
-                                       , "     Build-depends:   regex-pcre-builtin"
-                                       , "-  Build-Depends:     parsec, mtl, blaze-html >= 0.4.2 && < 0.5"
-                                       , "+  Build-Depends:     parsec, mtl, blaze-html >= 0.4.2"
-                                       , "   Exposed-Modules:   Text.Highlighting.Kate"
-                                       , "                      Text.Highlighting.Kate.Syntax"
-                                       , "                      Text.Highlighting.Kate.Types" ]))
-                , P.flags = [P.DebVersion "0.5.0.5-1"] }
+                , P.spec = Debianize (Hackage "highlighting-kate")
+                , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes"
                 , P.spec = Cd "web-routes" (Darcs (repo ++ "/web-routes"))
                 , P.flags = [] }
@@ -250,6 +237,7 @@ happstack =
                 , P.spec = Darcs (repo ++ "/happstack-scaffolding")
                            -- Don't use Debianize here, it restores the doc package which crashes the build
                 , P.flags = [] }
+    , debianize "HJScript" []
     ]
 
 main _home release =
@@ -373,9 +361,6 @@ main _home release =
                                        , "                    Data.Attoparsec.Text.FastSet" ]))
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
     , debianize "attoparsec-text-enumerator" []
-    , P.Package { P.name = "haskell-fb" 
-                , P.spec = Debianize (Hackage "fb")
-                , P.flags = [] }
     , debianize "base-unicode-symbols" [P.DebVersion "0.2.2.3-1build1"]
     , apt release "haskell-base64-bytestring"
     , debianize "bimap" [P.DebVersion "0.2.4-1~hackage1"]
@@ -462,7 +447,7 @@ main _home release =
                       , "   toOctets (Hash8 x0 x1 x2 x3 x4 x5 x6 x7) = bitsToOctets =<< [x0, x1, x2, x3, x4, x5, x6, x7]"
                       , " "
                       , " instance Hash Hash384 where" ])
-    , debianize "crypto-api" [P.DebVersion "0.10.1-1~hackage1"]
+    , debianize "crypto-api" []
     , debianize "crypto-pubkey-types" []
     , debianize "cryptocipher" [P.DebVersion "0.3.0-2"]
     , debianize "cryptohash" []
@@ -574,36 +559,7 @@ main _home release =
     , debianize "HaXml" [P.DebVersion "1:1.22.5-2"]
     , debianize "heap" [P.DebVersion "1.0.0-1~hackage1"]
     , P.Package { P.name = "haskell-heist"
-                , P.spec = Debianize (Patch
-                                      (Hackage "heist")
-                                      (unlines
-                                       [ "--- old/heist.cabal\t2012-04-25 08:25:18.883009790 -0700"
-                                       , "+++ new/heist.cabal\t2012-04-25 08:24:04.483119555 -0700"
-                                       , "@@ -88,20 +88,20 @@"
-                                       , "     attoparsec                >= 0.10  && < 0.11,"
-                                       , "     base                      >= 4     && < 5,"
-                                       , "     blaze-builder             >= 0.2   && < 0.4,"
-                                       , "-    blaze-html                >= 0.4   && < 0.5,"
-                                       , "+    blaze-html                >= 0.4,"
-                                       , "     bytestring,"
-                                       , "     containers                >= 0.2   && < 0.5,"
-                                       , "     directory,"
-                                       , "     directory-tree,"
-                                       , "     filepath,"
-                                       , "-    MonadCatchIO-transformers >= 0.2.1 && < 0.3,"
-                                       , "-    mtl                       >= 2.0 && < 2.1,"
-                                       , "+    MonadCatchIO-transformers >= 0.2.1,"
-                                       , "+    mtl                       >= 2.0,"
-                                       , "     process,"
-                                       , "     random,"
-                                       , "     text                      >= 0.10  && < 0.12,"
-                                       , "     time                      >= 1.1   && < 1.5,"
-                                       , "     transformers,"
-                                       , "-    xmlhtml                   >= 0.1.6 && < 0.2,"
-                                       , "+    xmlhtml                   >= 0.1.6,"
-                                       , "     unordered-containers      >= 0.1.4 && < 0.3,"
-                                       , "     vector                    >= 0.9   && < 0.10"
-                                       , " " ]))
+                , P.spec = Debianize (Hackage "heist")
                 , P.flags = [] }
     , debianize "xmlhtml" []
     , debianize "directory-tree" [P.DebVersion "0.10.0-2"]
@@ -612,7 +568,6 @@ main _home release =
     , P.Package { P.name = "haskell-hjavascript"
                 , P.spec = Quilt (Apt "sid" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
                 , P.flags = [] }
-    , debianize "HJScript" []
     , debianize "hoauth" []
     , debianize "hostname" [P.DebVersion "1.0-4build1"]
     -- The Sid package has no profiling libraries, so dependent packages
@@ -1233,7 +1188,7 @@ platform release =
                        , P.spec = Apt "sid" "haskell-transformers"
                        , P.flags = [{-P.AptPin "0.2.2.0-3"-}] }
     , debianize "parallel" [P.DebVersion "3.2.0.2-2build1"]
-    , debianize "syb" [P.DebVersion "0.3.6-1"]
+    , debianize "syb" []
     , debianize "fgl" [P.DebVersion "5.4.2.4-2"]
     , debianize "text" []
     , P.Package { P.name = "alex"
@@ -1340,6 +1295,9 @@ authenticate _home release =
                                        , "                        text                         == 0.11.*," ]))
                 , P.flags = [] }
     , digestiveFunctors
+    , P.Package { P.name = "haskell-fb" 
+                , P.spec = Debianize (Hackage "fb")
+                , P.flags = [] }
     ]
 
 clckwrks _home =
