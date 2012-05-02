@@ -366,7 +366,8 @@ main _home release =
     , debianize "bimap" [P.DebVersion "0.2.4-1~hackage1"]
     , debianize "bitmap" []
     , debianize "bitset" [P.DebVersion "1.1-1~hackage1"]
-    , debianize "blaze-markup" []
+    -- Not until we unpin blaze-html
+    -- , debianize "blaze-markup" []
     , apt release "haskell-blaze-builder"
     , P.Package { P.name = "haskell-blaze-builder-enumerator" 
                 , P.spec = Debianize (Hackage "blaze-builder-enumerator")
@@ -449,8 +450,9 @@ main _home release =
                       , " instance Hash Hash384 where" ])
     , debianize "crypto-api" []
     , debianize "crypto-pubkey-types" []
-    , debianize "cryptocipher" [P.DebVersion "0.3.0-2"]
+    , debianize "cryptocipher" []
     , debianize "cryptohash" []
+    , debianize "cpu" []
     , debianize "css" [P.DebVersion "0.1-1~hackage1"]
     , debianize "css-text" [P.DebVersion "0.1.1-3"]
     , apt release "haskell-curl"
@@ -559,9 +561,24 @@ main _home release =
     , debianize "HaXml" [P.DebVersion "1:1.22.5-2"]
     , debianize "heap" [P.DebVersion "1.0.0-1~hackage1"]
     , P.Package { P.name = "haskell-heist"
-                , P.spec = Debianize (Hackage "heist")
+                , P.spec = Debianize (Patch
+                                      (Hackage "heist")
+                                      (unlines
+                                       [ "--- old/heist.cabal\t2012-04-25 08:25:18.883009790 -0700"
+                                       , "+++ new/heist.cabal\t2012-05-02 08:28:42.673118359 -0700"
+                                       , "@@ -94,8 +94,8 @@"
+                                       , "     directory,"
+                                       , "     directory-tree,"
+                                       , "     filepath,"
+                                       , "-    MonadCatchIO-transformers >= 0.2.1 && < 0.3,"
+                                       , "-    mtl                       >= 2.0   && < 2.1,"
+                                       , "+    MonadCatchIO-transformers >= 0.2.1,"
+                                       , "+    mtl                       >= 2.0,"
+                                       , "     process,"
+                                       , "     random,"
+                                       , "     text                      >= 0.10  && < 0.12," ]))
                 , P.flags = [] }
-    , debianize "xmlhtml" []
+    , debianize "xmlhtml" [P.CabalPin "0.1.7"]
     , debianize "directory-tree" [P.DebVersion "0.10.0-2"]
     , debianize "MonadCatchIO-transformers" []
     , debianize "hinotify" [P.DebVersion "0.3.2-1"]
@@ -766,7 +783,22 @@ main _home release =
                       , "       draw w = case showHex w [] of"
                       , "                  [x] -> ['0', x]"
                       , "                  x   -> x" ])
-    , debianize "operational" [P.DebVersion "0.2.0.3-1~hackage1", P.OmitLTDeps]
+    , P.Package { P.name = "haskell-operational"
+                , P.spec = Debianize (Patch 
+                                      (Hackage "operational")
+                                      (unlines
+                                       [ "--- old/operational.cabal\t2012-05-01 23:34:41.000000000 -0700"
+                                       , "+++ new/operational.cabal\t2012-05-02 08:22:57.822808084 -0700"
+                                       , "@@ -36,7 +36,7 @@"
+                                       , " "
+                                       , " Library"
+                                       , "     hs-source-dirs:     src"
+                                       , "-    build-depends:      base == 4.* , mtl >= 1.1 && < 2.1.0"
+                                       , "+    build-depends:      base == 4.* , mtl >= 1.1"
+                                       , "     ghc-options:        -Wall"
+                                       , "     extensions:         GADTs, UndecidableInstances,"
+                                       , "                         MultiParamTypeClasses, FlexibleInstances" ]))
+                , P.flags = [P.DebVersion "0.2.0.3-1~hackage1", P.OmitLTDeps] }
     , debianize "ordered" []
     , debianize "texmath" []
     , debianize "temporary" [P.DebVersion "1.1.2.3-1build1"]
@@ -834,18 +866,7 @@ main _home release =
     , P.Package { P.name = "haskell-simple-css",
                   P.spec = Patch (Debianize (Hackage "simple-css"))
                                  (unlines
-                                  [ "--- old/simple-css.cabal\t2012-04-25 07:03:34.000000000 -0700"
-                                  , "+++ new/simple-css.cabal\t2012-04-25 08:21:48.752940413 -0700"
-                                  , "@@ -26,7 +26,7 @@"
-                                  , "   Build-Depends:"
-                                  , "         base >= 4, base < 5, "
-                                  , "         unordered-containers >= 0.1.1, hashable >= 1.1.1.0,"
-                                  , "-        language-css >= 0.0.2, blaze-html >= 0.4  "
-                                  , "+        language-css >= 0.0.2, blaze-html >= 0.4, blaze-markup "
-                                  , "   Hs-Source-Dirs:      src/"
-                                  , "   Exposed-Modules:"
-                                  , "         SimpleCss"
-                                  , "--- old/src/SimpleCss.hs\t2012-03-25 07:53:41.000000000 -0700"
+                                  [ "--- old/src/SimpleCss.hs\t2012-03-25 07:53:41.000000000 -0700"
                                   , "+++ new/src/SimpleCss.hs\t2012-03-25 14:43:54.789176546 -0700"
                                   , "@@ -20,7 +20,7 @@"
                                   , " "
@@ -1405,27 +1426,7 @@ clckwrks _home =
                                            , "+     stm                          >= 2.2,"
                                            , "      tagsoup                      == 0.12.*,"
                                            , "      text                         == 0.11.*,"
-                                           , "      time                         >= 1.2 && <1.5," 
-                                           , "--- old/Clckwrks/Monad.hs\t2012-04-24 15:45:57.000000000 -0700"
-                                           , "+++ new/Clckwrks/Monad.hs\t2012-04-24 15:49:43.638997119 -0700"
-                                           , "@@ -39,7 +39,7 @@"
-                                           , " import Clckwrks.URL                  (ClckURL(..))"
-                                           , " import Control.Applicative           (Alternative, Applicative, (<$>), (<|>), many)"
-                                           , " import Control.Monad                 (MonadPlus)"
-                                           , "-import Control.Monad.State           (MonadState, StateT, evalStateT, execStateT, get, mapStateT, modify, put, runStateT)"
-                                           , "+import Control.Monad.State           (MonadState, StateT, evalStateT, execStateT, get, mapStateT, {-modify,-} put, runStateT)"
-                                           , " import Control.Monad.Reader          (MonadReader, ReaderT, mapReaderT)"
-                                           , " import Control.Monad.Trans           (MonadIO(liftIO), lift)"
-                                           , " import Control.Concurrent.STM        (TVar, readTVar, writeTVar, atomically)"
-                                           , "@@ -457,3 +457,8 @@"
-                                           , "                 if r"
-                                           , "                    then return url"
-                                           , "                    else escape $ unauthorizedPage (\"You do not have permission to view this page.\" :: T.Text)"
-                                           , "+"
-                                           , "+modify :: (MonadState s m) => (s -> s) -> m ()"
-                                           , "+modify f = do"
-                                           , "+    s <- get"
-                                           , "+    put (f s)" ]))
+                                           , "      time                         >= 1.2 && <1.5," ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Patch
