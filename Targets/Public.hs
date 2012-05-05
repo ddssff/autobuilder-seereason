@@ -802,6 +802,7 @@ main _home release =
                                        , "                         MultiParamTypeClasses, FlexibleInstances" ]))
                 , P.flags = [P.DebVersion "0.2.0.3-1~hackage1", P.OmitLTDeps] }
     , debianize "ordered" []
+    , debianize "multiset" []
     , debianize "texmath" []
     , debianize "temporary" [P.DebVersion "1.1.2.3-1build1"]
     , debianize "pandoc-types" [P.DebVersion "1.9.1-1"]
