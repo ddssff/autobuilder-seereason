@@ -585,7 +585,8 @@ main _home release =
     , P.Package { P.name = "haskell-hjavascript"
                 , P.spec = Quilt (Apt "sid" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
                 , P.flags = [] }
-    , debianize "hoauth" []
+    -- Not used, and not building.
+    -- , debianize "hoauth" []
     , debianize "hostname" [P.DebVersion "1.0-4build1"]
     -- The Sid package has no profiling libraries, so dependent packages
     -- won't build.  Use our debianization instead.  This means keeping
@@ -693,12 +694,13 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/haskell-mime"
                 , P.flags = [] }
     , apt release "haskell-mmap"
-    -- "0.2.0.3" is the version to get from hackage,
-    -- "0.2.0.3-1~hackage1" is the version to base our debian version
-    -- on.  Both flags should be removed when we move to 0.3, but we
-    -- need base 4.4 for that.
     , debianize "monad-control" []
-    , debianize "monad-par" [P.DebVersion "0.1.0.3-2"]
+    , debianize "monad-par-extras" []
+    , debianize "abstract-deque" []
+    , debianize "abstract-par" []
+    , debianize "monad-par" []
+    , debianize "IORefCAS" []
+    , debianize "bits-atomic" []
     , apt release "haskell-monadcatchio-mtl"
     , debianize "monadLib" [P.DebVersion "3.6.2-1~hackage1"]
     -- , debianize "monads-tf" [P.DebVersion "0.1.0.0-1~hackage1"]
@@ -951,7 +953,7 @@ main _home release =
     , debianize "tagged" []
     , debianize "tagsoup" [P.DebVersion "0.12.6-1"]
     , debianize "tar" []
-    , debianize "terminfo" [P.DebVersion "0.3.2.3-2"]
+    , debianize "terminfo" [P.DebVersion "0.3.2.3-2", P.ExtraDep "libncurses-dev"]
     , debianize "test-framework"
                     [ {- P.Patch . B.pack. unlines $
                       [ "--- old/Test/Framework/Runners/Console/Run.hs\t2012-01-20 11:09:22.000000000 -0800"
@@ -1059,7 +1061,7 @@ main _home release =
                      , "                , bytestring >= 0.9.1.7 && < 0.10"
                      , "                , file-embed >= 0.0.4.1 && < 0.1"
                      , "                , split >= 0.1.4 && < 0.2" ])
-    , debianize "vault" [P.DebVersion "0.1.0.0-2build1"]
+    , debianize "vault" []
     , patched "web-encodings" []
                     (unlines
                       [ "--- old/web-encodings.cabal\t2012-01-20 06:47:07.000000000 -0800"
@@ -1270,7 +1272,21 @@ authenticate _home release =
     , P.Package { P.name = "haskell-zlib-enum"
                 , P.spec = Debianize (Hackage "zlib-enum")
                 , P.flags = [] }
-    , debianize "wai" []
+    , P.Package { P.name = "haskell-wai"
+                , P.spec = Debianize (Patch
+                                      (Hackage "wai")
+                                      (unlines
+                                       [ "--- old/wai.cabal\t2012-05-02 16:05:54.000000000 -0700"
+                                       , "+++ new/wai.cabal\t2012-05-03 09:18:18.903118993 -0700"
+                                       , "@@ -25,6 +25,6 @@"
+                                       , "                    , http-types                >= 0.6      && < 0.7"
+                                       , "                    , text                      >= 0.7      && < 0.12"
+                                       , "                    , transformers              >= 0.2.2    && < 0.4"
+                                       , "-                   , vault                     >= 0.1      && < 0.2"
+                                       , "+                   , vault                     >= 0.1"
+                                       , "   Exposed-modules:   Network.Wai"
+                                       , "   ghc-options:       -Wall" ]))
+                , P.flags = [] }
     , P.Package { P.name = "haskell-http-enumerator"
                 , P.spec = Debianize (Patch
                                       (Hackage "http-enumerator")
