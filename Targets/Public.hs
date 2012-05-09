@@ -364,6 +364,8 @@ main _home release =
     , debianize "base-unicode-symbols" [P.DebVersion "0.2.2.3-1build1"]
     , apt release "haskell-base64-bytestring"
     , debianize "bimap" [P.DebVersion "0.2.4-1~hackage1"]
+    , debianize "data-default" []
+    , debianize "template-default" []
     , debianize "bitmap" []
     , debianize "bitset" [P.DebVersion "1.1-1~hackage1"]
     -- Not until we unpin blaze-html
