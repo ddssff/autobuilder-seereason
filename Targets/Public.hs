@@ -697,7 +697,25 @@ main _home release =
                 , P.flags = [] }
     , apt release "haskell-mmap"
     , debianize "monad-control" []
-    , debianize "monad-par-extras" []
+    , P.Package { P.name = "haskell-monad-par-extras"
+                , P.spec = Debianize (Patch
+                                      (Hackage "monad-par-extras")
+                                      (unlines
+                                       [ "--- old/monad-par-extras.cabal\t2012-05-05 06:13:32.000000000 -0700"
+                                       , "+++ new/monad-par-extras.cabal\t2012-05-05 07:52:45.843118526 -0700"
+                                       , "@@ -53,9 +53,9 @@"
+                                       , "                , abstract-par == 0.3.*"
+                                       , "                , cereal == 0.3.*"
+                                       , "                , deepseq == 1.3.*     "
+                                       , "-               , mtl == 2.0.*"
+                                       , "+               , mtl >= 2.0"
+                                       , "                , random == 1.0.*          "
+                                       , "-               , transformers == 0.2.*"
+                                       , "+               , transformers >= 0.2"
+                                       , " "
+                                       , "   ghc-options: -O2"
+                                       , "   Other-modules:" ]))
+                , P.flags = [] }
     , debianize "abstract-deque" []
     , debianize "abstract-par" []
     , debianize "monad-par" []
