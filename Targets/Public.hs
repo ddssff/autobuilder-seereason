@@ -488,6 +488,8 @@ main _home release =
     , apt release "haskell-edison-core"
     , apt release "haskell-entropy"
     , debianize "enumerator" []
+    , debianize "hdaemonize" []
+    , debianize "hsyslog" []
     , debianize "erf" [P.DebVersion "2.0.0.0-3"]
     , apt release "haskell-feed"
     , debianize "file-embed" []
@@ -1038,21 +1040,8 @@ main _home release =
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize "unification-fd" []
     , P.Package { P.name = "haskell-logict"
-                , P.spec = Debianize (Patch 
-                                      (Hackage "logict") 
-                                      (unlines
-                                       [ "--- old/logict.cabal\t2012-04-17 05:38:33.000000000 -0700"	
-                                       , "+++ new/logict.cabal\t2012-04-17 05:55:22.242593856 -0700"	
-                                       , "@@ -17,7 +17,7 @@"		    
-                                       , " " 
-                                       , " Stability:              Experimental"	
-                                       , " Tested-With:            GHC"		
-                                       , "-Build-Depends:          base >=2 && < 5, mtl>=1.0.1 && <2.1"	
-                                       , "+Build-Depends:          base >=2 && < 5, mtl>=1.0.1"   
-                                       , " Build-Type:             Simple"  
-                                       , " "			    
-                                       , " Exposed-Modules:        Control.Monad.Logic," ]))
-                , P.flags = [P.DebVersion "0.5.0-2"] }
+                , P.spec = Debianize (Hackage "logict")
+                , P.flags = [] }
     , apt release "haskell-utility-ht"
     , debianize "vacuum" [P.DebVersion "1.0.0.2-1~hackage1"]
     -- Requires devscripts 0.8.9, restore when that gets built
@@ -1061,27 +1050,7 @@ main _home release =
     -- remove this pin when a new hackage version comes out to trump it.
     , debianize "vector" [P.DebVersion "0.9.1-2"]
     , apt release "haskell-vector-algorithms"
-    , patched "virthualenv" [ P.DebVersion "0.2-1~hackage1" ]
-                    (unlines
-                     [ "--- old/virthualenv.cabal\t2012-04-16 11:19:52.000000000 -0700"
-                     , "+++ new/virthualenv.cabal\t2012-04-16 12:27:37.987322472 -0700"
-                     , "@@ -98,12 +98,12 @@"
-                     , " "
-                     , "   Ghc-options: -threaded -Wall"
-                     , " "
-                     , "-  Build-depends: base >= 4.2.0.0 && < 4.5"
-                     , "+  Build-depends: base >= 4.2.0.0"
-                     , "                , process >= 1.0.1.2 && < 1.2"
-                     , "-               , filepath >= 1.1.0.3 && < 1.3"
-                     , "+               , filepath >= 1.1.0.3"
-                     , "                , directory >= 1.0.1.0 && < 1.2"
-                     , "-               , Cabal >= 1.8.0.6 && < 1.13"
-                     , "-               , mtl >= 1.1.0.2 && < 2.1"
-                     , "+               , Cabal >= 1.8.0.6"
-                     , "+               , mtl >= 1.1.0.2"
-                     , "                , bytestring >= 0.9.1.7 && < 0.10"
-                     , "                , file-embed >= 0.0.4.1 && < 0.1"
-                     , "                , split >= 0.1.4 && < 0.2" ])
+    , debianize "virthualenv" []
     , debianize "vault" []
     , patched "web-encodings" []
                     (unlines
@@ -1294,19 +1263,7 @@ authenticate _home release =
                 , P.spec = Debianize (Hackage "zlib-enum")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-wai"
-                , P.spec = Debianize (Patch
-                                      (Hackage "wai")
-                                      (unlines
-                                       [ "--- old/wai.cabal\t2012-05-02 16:05:54.000000000 -0700"
-                                       , "+++ new/wai.cabal\t2012-05-03 09:18:18.903118993 -0700"
-                                       , "@@ -25,6 +25,6 @@"
-                                       , "                    , http-types                >= 0.6      && < 0.7"
-                                       , "                    , text                      >= 0.7      && < 0.12"
-                                       , "                    , transformers              >= 0.2.2    && < 0.4"
-                                       , "-                   , vault                     >= 0.1      && < 0.2"
-                                       , "+                   , vault                     >= 0.1"
-                                       , "   Exposed-modules:   Network.Wai"
-                                       , "   ghc-options:       -Wall" ]))
+                , P.spec = Debianize (Hackage "wai")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-http-enumerator"
                 , P.spec = Debianize (Patch
