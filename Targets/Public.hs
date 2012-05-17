@@ -26,7 +26,7 @@ targets _home release =
     -- , plugins
     -- , frisby
     -- , failing
-    -- , algebra
+    , algebra
     -- , agda
     -- , other
     ]
@@ -1635,8 +1635,9 @@ failing release =
     [ debianize "funsat" []
     , apt release "haskell-statistics" ]
 
-algebra =
-    [ debianize "adjunctions" []
+algebra = P.Packages (singleton "algebra")
+    [ debianize "data-lens" []
+    , debianize "adjunctions" []
     , debianize "algebra" []
     , debianize "bifunctors" []
     , debianize "categories" []
@@ -1646,7 +1647,21 @@ algebra =
     , debianize "contravariant" []
     , debianize "data-lens" []
     , debianize "distributive" []
-    , debianize "free" []
+    , P.Package { P.name = "free"
+                , P.spec = Debianize (Patch
+                                      (Hackage "free")
+                                      (unlines [ "--- old/free.cabal\t2012-05-17 09:03:31.000000000 -0700"
+                                               , "+++ new/free.cabal\t2012-05-17 09:30:05.405092205 -0700"
+                                               , "@@ -35,7 +35,7 @@"
+                                               , "     comonad              >= 1.1.1.5 && < 1.2,"
+                                               , "     comonad-transformers >= 2.1.1.1 && < 2.2,"
+                                               , "     comonads-fd          >= 2.1.1.1 && < 2.2,"
+                                               , "-    data-lens            >= 2.0.4.1 && < 2.10,"
+                                               , "+    data-lens            >= 2.0.4.1,"
+                                               , "     semigroups           >= 0.8.3.1 && < 0.9"
+                                               , " "
+                                               , "   if impl(ghc)" ]))
+                , P.flags = [] }
     , debianize "keys" []
     , debianize "representable-functors" []
     , debianize "representable-tries" []
