@@ -174,38 +174,7 @@ happstack =
                                        , " -- @asChild@." ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-pandoc"
-                , P.spec = Debianize (Patch
-                                      (Hackage "pandoc")
-                                      (unlines
-                                             [ "--- old/pandoc.cabal\t2012-04-13 20:31:20.000000000 -0700"
-                                             , "+++ new/pandoc.cabal\t2012-04-13 23:36:47.139174491 -0700"
-                                             , "@@ -193,7 +193,7 @@"
-                                             , "   Build-Depends: containers >= 0.1 && < 0.5,"
-                                             , "                  parsec >= 3.1 && < 3.2,"
-                                             , "                  blaze-html >= 0.4.3.0 && < 0.5,"
-                                             , "-                 mtl >= 1.1 && < 2.1,"
-                                             , "+                 mtl >= 1.1,"
-                                             , "                  network >= 2 && < 2.4,"
-                                             , "                  filepath >= 1.1 && < 1.4,"
-                                             , "                  process >= 1 && < 1.2,"
-                                             , "@@ -291,7 +291,7 @@"
-                                             , "   Build-Depends: containers >= 0.1 && < 0.5,"
-                                             , "                  parsec >= 3.1 && < 3.2,"
-                                             , "                  blaze-html >= 0.4.3.0 && < 0.5,"
-                                             , "-                 mtl >= 1.1 && < 2.1,"
-                                             , "+                 mtl >= 1.1,"
-                                             , "                  network >= 2 && < 2.4,"
-                                             , "                  filepath >= 1.1 && < 1.4,"
-                                             , "                  process >= 1 && < 1.2,"
-                                             , "@@ -349,7 +349,7 @@"
-                                             , "   Build-Depends: containers >= 0.1 && < 0.5,"
-                                             , "                  parsec >= 3.1 && < 3.2,"
-                                             , "                  blaze-html >= 0.4.3.0 && < 0.5,"
-                                             , "-                 mtl >= 1.1 && < 2.1,"
-                                             , "+                 mtl >= 1.1,"
-                                             , "                  network >= 2 && < 2.4,"
-                                             , "                  filepath >= 1.1 && < 1.4,"
-                                             , "                  process >= 1 && < 1.2," ]))
+                , P.spec = Debianize (Hackage "pandoc")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-highlighting-kate"
                 , P.spec = Debianize (Hackage "highlighting-kate")
@@ -238,6 +207,21 @@ happstack =
                            -- Don't use Debianize here, it restores the doc package which crashes the build
                 , P.flags = [] }
     , debianize "HJScript" []
+    , P.Package { P.name = "reform"
+                , P.spec = Debianize (Cd "reform" (Darcs "http://patch-tag.com/r/stepcut/reform"))
+                , P.flags = [] }
+    , P.Package { P.name = "reform-blaze"
+                , P.spec = Debianize (Cd "reform-blaze" (Darcs "http://patch-tag.com/r/stepcut/reform"))
+                , P.flags = [] }
+    , P.Package { P.name = "reform-happstack"
+                , P.spec = Debianize (Cd "reform-happstack" (Darcs "http://patch-tag.com/r/stepcut/reform"))
+                , P.flags = [] }
+{-  , P.Package { P.name = "reform-heist"
+                , P.spec = Debianize (Cd "reform-heist" (Darcs "http://patch-tag.com/r/stepcut/reform"))
+                , P.flags = [] } -}
+    , P.Package { P.name = "reform-hsp"
+                , P.spec = Debianize (Cd "reform-hsp" (Darcs "http://patch-tag.com/r/stepcut/reform"))
+                , P.flags = [] }
     ]
 
 main _home release =
@@ -369,13 +353,13 @@ main _home release =
     , debianize "bitmap" []
     , debianize "bitset" [P.DebVersion "1.1-1~hackage1"]
     -- Not until we unpin blaze-html
-    -- , debianize "blaze-markup" []
+    , debianize "blaze-markup" []
     , apt release "haskell-blaze-builder"
     , P.Package { P.name = "haskell-blaze-builder-enumerator" 
                 , P.spec = Debianize (Hackage "blaze-builder-enumerator")
                 , P.flags = [] }
     , debianize "blaze-from-html" []
-    , debianize "blaze-html" [P.CabalPin "0.4.3.4"]
+    , debianize "blaze-html" []
     , debianize "blaze-textual" [P.DebVersion "0.2.0.6-2"]
     , P.Package { P.name = "haskell-blaze-textual-native"
                 , P.spec = Debianize (Patch
