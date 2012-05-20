@@ -18,7 +18,7 @@ targets _home release =
     , digestiveFunctors
     , authenticate _home release
     , happstackdotcom _home
-    , happstack
+    , happstack release
     -- , fixme
     -- , higgsset
     -- , jsonb
@@ -78,8 +78,8 @@ autobuilder _home =
 
 digestiveFunctors =
     P.Packages (singleton "digestive-functors")
-    [ debianize "digestive-functors" [P.CabalPin "0.2.1.0" ]  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
-    , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1" ]
+    [ debianize "digestive-functors" [P.CabalPin "0.2.1.0"]  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
+    -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
     , P.Package { P.name = "haskell-digestive-functors-happstack"
                 , P.spec = Debianize (Hackage "digestive-functors-happstack")
                 , P.flags = [P.CabalPin "0.1.1.5"] }
@@ -87,7 +87,7 @@ digestiveFunctors =
                 , P.spec = Debianize (Darcs (repo ++ "/digestive-functors-hsp"))
                 , P.flags = [] } ]
 
-happstack =
+happstack release =
     P.Packages (singleton "happstack")
     [ P.Package { P.name = "happstack-debianization"
                 , P.spec = Darcs "http://src.seereason.com/happstack-debianization"
@@ -174,7 +174,20 @@ happstack =
                                        , " -- @asChild@." ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-pandoc"
-                , P.spec = Debianize (Hackage "pandoc")
+                , P.spec = Debianize (Patch
+                                      (Hackage "pandoc")
+                                      (unlines
+                                       [ "--- old/pandoc.cabal\t2012-05-17 10:39:32.000000000 -0700"
+                                       , "+++ new/pandoc.cabal\t2012-05-17 11:00:03.323301229 -0700"
+                                       , "@@ -187,7 +187,7 @@"
+                                       , "   Default:       False"
+                                       , " Flag blaze_html_0_5"
+                                       , "   Description:   Use blaze-html 0.5 and blaze-markup 0.5"
+                                       , "-  Default:       False"
+                                       , "+  Default:       True"
+                                       , " "
+                                       , " Library"
+                                       , "   -- Note: the following is duplicated in all stanzas." ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-highlighting-kate"
                 , P.spec = Debianize (Hackage "highlighting-kate")
@@ -222,6 +235,42 @@ happstack =
     , P.Package { P.name = "reform-hsp"
                 , P.spec = Debianize (Cd "reform-hsp" (Darcs "http://patch-tag.com/r/stepcut/reform"))
                 , P.flags = [] }
+    -- Not until we unpin blaze-html
+    , debianize "blaze-markup" []
+    , apt release "haskell-blaze-builder"
+    , P.Package { P.name = "haskell-blaze-builder-enumerator" 
+                , P.spec = Debianize (Hackage "blaze-builder-enumerator")
+                , P.flags = [] }
+    , debianize "blaze-from-html" []
+    , debianize "blaze-html" []
+    , debianize "blaze-textual" [P.DebVersion "0.2.0.6-2"]
+    , P.Package { P.name = "haskell-blaze-textual-native"
+                , P.spec = Debianize (Patch
+                                      (Hackage "blaze-textual-native")
+                                      (unlines
+                                       [ "--- x/blaze-textual-native.cabal.orig\t2012-01-01 12:22:11.676481147 -0800"
+                                       , "+++ x/blaze-textual-native.cabal\t2012-01-01 12:22:21.716482151 -0800"
+                                       , "@@ -66,7 +66,7 @@"
+                                       , " "
+                                       , "   if impl(ghc >= 6.11)"
+                                       , "     cpp-options: -DINTEGER_GMP"
+                                       , "-    build-depends: integer-gmp >= 0.2 && < 0.4"
+                                       , "+    build-depends: integer-gmp >= 0.2"
+                                       , " "
+                                       , "   if impl(ghc >= 6.9) && impl(ghc < 6.11)"
+                                       , "     cpp-options: -DINTEGER_GMP"
+                                       , "--- x/Blaze/Text/Int.hs.orig\t2012-01-01 12:45:05.136482154 -0800"
+                                       , "+++ x/Blaze/Text/Int.hs\t2012-01-01 12:45:26.016482025 -0800"
+                                       , "@@ -40,7 +40,7 @@"
+                                       , " # define PAIR(a,b) (a,b)"
+                                       , " #endif"
+                                       , " "
+                                       , "-integral :: Integral a => a -> Builder"
+                                       , "+integral :: (Integral a, Show a) => a -> Builder"
+                                       , " {-# RULES \"integral/Int\" integral = bounded :: Int -> Builder #-}"
+                                       , " {-# RULES \"integral/Int8\" integral = bounded :: Int8 -> Builder #-}"
+                                       , " {-# RULES \"integral/Int16\" integral = bounded :: Int16 -> Builder #-}" ]))
+                , flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
     ]
 
 main _home release =
@@ -352,42 +401,6 @@ main _home release =
     , debianize "template-default" []
     , debianize "bitmap" []
     , debianize "bitset" [P.DebVersion "1.1-1~hackage1"]
-    -- Not until we unpin blaze-html
-    , debianize "blaze-markup" []
-    , apt release "haskell-blaze-builder"
-    , P.Package { P.name = "haskell-blaze-builder-enumerator" 
-                , P.spec = Debianize (Hackage "blaze-builder-enumerator")
-                , P.flags = [] }
-    , debianize "blaze-from-html" []
-    , debianize "blaze-html" []
-    , debianize "blaze-textual" [P.DebVersion "0.2.0.6-2"]
-    , P.Package { P.name = "haskell-blaze-textual-native"
-                , P.spec = Debianize (Patch
-                                      (Hackage "blaze-textual-native")
-                                      (unlines
-                                       [ "--- x/blaze-textual-native.cabal.orig\t2012-01-01 12:22:11.676481147 -0800"
-                                       , "+++ x/blaze-textual-native.cabal\t2012-01-01 12:22:21.716482151 -0800"
-                                       , "@@ -66,7 +66,7 @@"
-                                       , " "
-                                       , "   if impl(ghc >= 6.11)"
-                                       , "     cpp-options: -DINTEGER_GMP"
-                                       , "-    build-depends: integer-gmp >= 0.2 && < 0.4"
-                                       , "+    build-depends: integer-gmp >= 0.2"
-                                       , " "
-                                       , "   if impl(ghc >= 6.9) && impl(ghc < 6.11)"
-                                       , "     cpp-options: -DINTEGER_GMP"
-                                       , "--- x/Blaze/Text/Int.hs.orig\t2012-01-01 12:45:05.136482154 -0800"
-                                       , "+++ x/Blaze/Text/Int.hs\t2012-01-01 12:45:26.016482025 -0800"
-                                       , "@@ -40,7 +40,7 @@"
-                                       , " # define PAIR(a,b) (a,b)"
-                                       , " #endif"
-                                       , " "
-                                       , "-integral :: Integral a => a -> Builder"
-                                       , "+integral :: (Integral a, Show a) => a -> Builder"
-                                       , " {-# RULES \"integral/Int\" integral = bounded :: Int -> Builder #-}"
-                                       , " {-# RULES \"integral/Int8\" integral = bounded :: Int8 -> Builder #-}"
-                                       , " {-# RULES \"integral/Int16\" integral = bounded :: Int16 -> Builder #-}" ]))
-                , flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
     , apt release "haskell-bytestring-nums"
     , debianize "bytestring-trie" []
     , P.Package { P.name = "haskell-bzlib"
@@ -1211,7 +1224,8 @@ ghc release =
                               , " Replaces: ghc6 (<< 7)"
                               , " Conflicts: ghc6 (<< 7), ${provided-devs}" ])
                   , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"] }
-    else if elem release ["lucid-seereason", "natty-seereason"]
+    else if elem release ["lucid-seereason", "natty-seereason", "precise-seereason"]
+         -- 7.4.1-3 doesn't look very interesting, postpone build for now.
          then P.NoPackage
          else (apt "sid" "ghc") {P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"]}
 
@@ -1336,23 +1350,11 @@ authenticate _home release =
                 , P.spec = Debianize (Patch
                                       (Darcs (repo ++ "/happstack-authenticate"))
                                       (unlines
-                                       [ "--- old/happstack-authenticate.cabal\t2012-04-17 16:46:28.000000000 -0700"
-                                       , "+++ new/happstack-authenticate.cabal\t2012-04-17 16:51:02.576493389 -0700"
-                                       , "@@ -31,16 +31,16 @@"
-                                       , "                        blaze-html                   == 0.4.*,"
-                                       , "                        bytestring                   == 0.9.*,"
-                                       , "                        containers                   == 0.4.*,"
-                                       , "-                       digestive-functors           == 0.2.*,"
-                                       , "+                       digestive-functors           >= 0.2,"
-                                       , "                        digestive-functors-happstack >= 0.1,"
-                                       , "-                       digestive-functors-blaze     == 0.2.*,"
-                                       , "+                       digestive-functors-blaze     >= 0.2,"
-                                       , "                        ixset                        >= 1.0 && < 1.1,"
-                                       , "                        happstack-server             >= 6.0 && < 7.1,"
-                                       , "                        http-conduit                 == 1.4.*,"
+                                       [ "--- old/happstack-authenticate.cabal\t2012-05-18 18:39:59.543903307 -0700"
+                                       , "+++ new/happstack-authenticate.cabal\t2012-05-18 18:40:16.473573842 -0700"
+                                       , "@@ -37,7 +37,7 @@"
                                        , "                        http-types                   == 0.6.*,"
-                                       , "-                       fb                           == 0.8.*,"
-                                       , "+                       fb                           >= 0.8,"
+                                       , "                        fb                           == 0.9.*,"
                                        , "                        safecopy                     == 0.6.*,"
                                        , "-                       mtl                          == 2.0.*,"
                                        , "+                       mtl                          >= 2.0,"
@@ -1462,16 +1464,7 @@ clckwrks _home =
                                            , "+    json2/json2.js"
                                            , " "
                                            , " Library"
-                                           , "   Exposed-modules: Clckwrks"
-                                           , "@@ -83,7 +83,7 @@"
-                                           , "      process                      >= 1.0 && < 1.2,"
-                                           , " --     plugins-auto == 0.0.1.1,"
-                                           , "      safecopy                     == 0.6.*,"
-                                           , "-     stm                          == 2.2.*,"
-                                           , "+     stm                          >= 2.2,"
-                                           , "      tagsoup                      == 0.12.*,"
-                                           , "      text                         == 0.11.*,"
-                                           , "      time                         >= 1.2 && <1.5," ]))
+                                           , "   Exposed-modules: Clckwrks" ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Patch
@@ -1495,6 +1488,12 @@ clckwrks _home =
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-theme-basic"
                     , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs repo))
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+        , P.Package { P.name = "clckwrks-dot-com"
+                    , P.spec = Debianize (Cd "clckwrks-dot-com" (Darcs repo))
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+        , P.Package { P.name = "clckwrks-theme-clckwrks"
+                    , P.spec = Debianize (Cd "clckwrks-theme-clckwrks" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , debianize "jmacro" []
         , debianize "hsx-jmacro" []
