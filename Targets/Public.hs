@@ -1480,6 +1480,9 @@ clckwrks _home =
                                            , "+     clckwrks   >= 0.5.0,"
                                            , "      network    == 2.3.*" ]))
                     , P.flags = [] }
+        , P.Package { P.name = "haskell-clckwrks-plugin-bugs"
+                    , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
                     , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
