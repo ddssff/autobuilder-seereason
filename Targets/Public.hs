@@ -88,6 +88,7 @@ digestiveFunctors =
                 , P.flags = [] } ]
 
 happstack release =
+    let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" in
     P.Packages (singleton "happstack")
     [ P.Package { P.name = "happstack-debianization"
                 , P.spec = Darcs "http://src.seereason.com/happstack-debianization"
@@ -271,6 +272,12 @@ happstack release =
                                        , " {-# RULES \"integral/Int8\" integral = bounded :: Int8 -> Builder #-}"
                                        , " {-# RULES \"integral/Int16\" integral = bounded :: Int16 -> Builder #-}" ]))
                 , flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
+    , P.Package { P.name = "clckwrks-theme-happstack"
+                , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (privateRepo ++ "/happstack-clckwrks")))
+                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+    , P.Package { P.name = "happstack-dot-com"
+                , P.spec = Cd "happstack-dot-com" (Darcs (privateRepo ++ "/happstack-clckwrks"))
+                , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
     ]
 
 main _home release =
@@ -424,7 +431,10 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/haskell-consumer"
                 , P.flags = [] }
     , debianize "cprng-aes" [P.DebVersion "0.2.3-3"]
-    , patched "Crypto"
+    , P.Package { P.name = "haskell-crypto"
+                , P.spec = Debianize (Hackage "Crypto")
+                , P.flags = [] }
+{-  , patched "Crypto"
                     [ P.DebVersion "4.2.4-1"]
                     (unlines
                       [ "--- old/Data/Digest/SHA2.hs\t2012-01-03 23:14:43.000000000 -0800"
@@ -446,7 +456,7 @@ main _home release =
                       , "+instance (Integral h, Bits h, Show h) => Hash (Hash8 h) where"
                       , "   toOctets (Hash8 x0 x1 x2 x3 x4 x5 x6 x7) = bitsToOctets =<< [x0, x1, x2, x3, x4, x5, x6, x7]"
                       , " "
-                      , " instance Hash Hash384 where" ])
+                      , " instance Hash Hash384 where" ]) -}
     , debianize "crypto-api" []
     , debianize "crypto-pubkey-types" []
     , debianize "cryptocipher" []
@@ -561,23 +571,154 @@ main _home release =
                 , P.spec = Debianize (Patch
                                       (Hackage "formlets")
                                       (unlines
-                                          [ "--- old/formlets.cabal\t2012-04-12 20:06:08.000000000 -0700"
-                                          , "+++ new/formlets.cabal\t2012-04-12 21:29:51.670096327 -0700"
-                                          , "@@ -21,12 +21,11 @@"
-                                          , "     Description: Choose the even newer, even smaller, split-up base package."
-                                          , " "
-                                          , " Library"
-                                          , "-  Build-Depends:   haskell98, "
-                                          , "-                   xhtml, "
-                                          , "+  Build-Depends:   xhtml, "
-                                          , "                    applicative-extras >= 0.1.7, "
-                                          , "                    bytestring,"
-                                          , "                    blaze-html >= 0.2,"
-                                          , "-                   transformers == 0.2.2.0"
-                                          , "+                   transformers >= 0.2.2.0"
-                                          , "   if flag(base4)"
-                                          , "     Build-Depends: base >= 4 && < 5, syb"
-                                          , "   else" ]))
+                                       [ "diff -ru formlets-0.8.orig/formlets.cabal formlets-0.8/formlets.cabal"
+                                       , "--- old/formlets.cabal\t2010-12-21 19:08:34.000000000 -0800"
+                                       , "+++ new/formlets.cabal\t2012-05-21 17:32:06.863265531 -0700"
+                                       , "@@ -21,12 +21,12 @@"
+                                       , "     Description: Choose the even newer, even smaller, split-up base package."
+                                       , " "
+                                       , " Library"
+                                       , "-  Build-Depends:   haskell98, "
+                                       , "-                   xhtml, "
+                                       , "+  Build-Depends:   xhtml, "
+                                       , "                    applicative-extras >= 0.1.7, "
+                                       , "                    bytestring,"
+                                       , "-                   blaze-html >= 0.2,"
+                                       , "-                   transformers == 0.2.2.0"
+                                       , "+                   blaze-html >= 0.5,"
+                                       , "+                   blaze-markup,"
+                                       , "+                   transformers >= 0.2.2.0"
+                                       , "   if flag(base4)"
+                                       , "     Build-Depends: base >= 4 && < 5, syb"
+                                       , "   else"
+                                       , "diff -ru formlets-0.8.orig/Text/Blaze/Html5/Formlets.hs formlets-0.8/Text/Blaze/Html5/Formlets.hs"
+                                       , "--- old/Text/Blaze/Html5/Formlets.hs\t2010-12-21 19:08:34.000000000 -0800"
+                                       , "+++ new/Text/Blaze/Html5/Formlets.hs\t2012-05-21 17:30:10.513955542 -0700"
+                                       , "@@ -35,34 +35,34 @@"
+                                       , " --"
+                                       , " input :: Monad m => Html5Formlet m String"
+                                       , " input = input' $ \\n v -> H.input ! A.type_ \"text\""
+                                       , "-                                 ! A.name (H.stringValue n)"
+                                       , "-                                 ! A.id (H.stringValue n)"
+                                       , "-                                 ! A.value (H.stringValue v)"
+                                       , "+                                 ! A.name (H.toValue n)"
+                                       , "+                                 ! A.id (H.toValue n)"
+                                       , "+                                 ! A.value (H.toValue v)"
+                                       , " "
+                                       , " -- | A textarea with optional rows and columns, and an optional value"
+                                       , " --"
+                                       , " textarea :: Monad m => Maybe Int -> Maybe Int -> Html5Formlet m String"
+                                       , "-textarea r c = input' $ \\n v -> (applyAttrs n H.textarea) (H.string v)"
+                                       , "+textarea r c = input' $ \\n v -> (applyAttrs n H.textarea) (H.toHtml v)"
+                                       , "   where"
+                                       , "-    applyAttrs n = (! A.name (H.stringValue n)) . rows r . cols c"
+                                       , "-    rows = maybe id $ \\x -> (! A.rows (H.stringValue $ show x))"
+                                       , "-    cols = maybe id $ \\x -> (! A.cols (H.stringValue $ show x))"
+                                       , "+    applyAttrs n = (! A.name (H.toValue n)) . rows r . cols c"
+                                       , "+    rows = maybe id $ \\x -> (! A.rows (H.toValue $ show x))"
+                                       , "+    cols = maybe id $ \\x -> (! A.cols (H.toValue $ show x))"
+                                       , " "
+                                       , " -- | A password field with an optional value"
+                                       , " --"
+                                       , " password :: Monad m => Html5Formlet m String"
+                                       , " password = input' $ \\n v -> H.input ! A.type_ \"password\""
+                                       , "-                                    ! A.name (H.stringValue n)"
+                                       , "-                                    ! A.id (H.stringValue n)"
+                                       , "-                                    ! A.value (H.stringValue v)"
+                                       , "+                                    ! A.name (H.toValue n)"
+                                       , "+                                    ! A.id (H.toValue n)"
+                                       , "+                                    ! A.value (H.toValue v)"
+                                       , " "
+                                       , " -- | A hidden input field"
+                                       , " --"
+                                       , " hidden :: Monad m => Html5Formlet m String"
+                                       , " hidden = input' $ \\n v -> H.input ! A.type_ \"hidden\""
+                                       , "-                                  ! A.name (H.stringValue n)"
+                                       , "-                                  ! A.id (H.stringValue n)"
+                                       , "-                                  ! A.value (H.stringValue v)"
+                                       , "+                                  ! A.name (H.toValue n)"
+                                       , "+                                  ! A.id (H.toValue n)"
+                                       , "+                                  ! A.value (H.toValue v)"
+                                       , " "
+                                       , " -- | A validated integer component"
+                                       , " --"
+                                       , "@@ -73,8 +73,8 @@"
+                                       , " --"
+                                       , " file :: Monad m => Html5Form m File"
+                                       , " file = inputFile $ \\n -> H.input ! A.type_ \"file\""
+                                       , "-                                 ! A.name (H.stringValue n)"
+                                       , "-                                 ! A.id (H.stringValue n)"
+                                       , "+                                 ! A.name (H.toValue n)"
+                                       , "+                                 ! A.id (H.toValue n)"
+                                       , " "
+                                       , " -- | A checkbox with an optional default value"
+                                       , " --"
+                                       , "@@ -84,13 +84,13 @@"
+                                       , "     asBool (Just _) = Success True"
+                                       , "     asBool Nothing = Success False"
+                                       , "     html (Just True) n = H.input ! A.type_ \"checkbox\" "
+                                       , "-                                 ! A.name (H.stringValue n)"
+                                       , "-                                 ! A.id (H.stringValue n)"
+                                       , "+                                 ! A.name (H.toValue n)"
+                                       , "+                                 ! A.id (H.toValue n)"
+                                       , "                                  ! A.value \"on\""
+                                       , "                                  ! A.checked \"checked\""
+                                       , "     html _ n = H.input ! A.type_ \"checkbox\""
+                                       , "-                       ! A.name (H.stringValue n)"
+                                       , "-                       ! A.id (H.stringValue n)"
+                                       , "+                       ! A.name (H.toValue n)"
+                                       , "+                       ! A.id (H.toValue n)"
+                                       , "                        ! A.value \"on\""
+                                       , " "
+                                       , " -- | A radio choice"
+                                       , "@@ -102,19 +102,19 @@"
+                                       , "   where"
+                                       , "     makeRadio name selected ((value, label'), idx) = do"
+                                       , "         applyAttrs (radio' name value id')"
+                                       , "-        H.label ! A.for (H.stringValue id')"
+                                       , "+        H.label ! A.for (H.toValue id')"
+                                       , "                 ! A.class_ \"radio\""
+                                       , "-                $ H.string label'"
+                                       , "+                $ H.toHtml label'"
+                                       , "       where"
+                                       , "         applyAttrs | selected == value = (! A.checked \"checked\")"
+                                       , "                    | otherwise = id"
+                                       , "         id' = name ++ \"_\" ++ show idx"
+                                       , " "
+                                       , "     radio' n v i = H.input ! A.type_ \"radio\""
+                                       , "-                           ! A.name (H.stringValue n)"
+                                       , "-                           ! A.id (H.stringValue i)"
+                                       , "+                           ! A.name (H.toValue n)"
+                                       , "+                           ! A.id (H.toValue i)"
+                                       , "                            ! A.class_ \"radio\""
+                                       , "-                           ! A.value (H.stringValue v)"
+                                       , "+                           ! A.value (H.toValue v)"
+                                       , " "
+                                       , " -- | An radio choice for Enums"
+                                       , " --"
+                                       , "@@ -129,7 +129,7 @@"
+                                       , " -- | A label"
+                                       , " --"
+                                       , " label :: Monad m => String -> Form H.Html m ()"
+                                       , "-label = xml . H.label . H.string"
+                                       , "+label = xml . H.label . H.toHtml"
+                                       , " "
+                                       , " -- | This is a helper function to generate select boxes"
+                                       , " --"
+                                       , "@@ -138,11 +138,11 @@"
+                                       , "            -> String              -- ^ The value that is selected"
+                                       , "            -> H.Html"
+                                       , " selectHtml choices name selected ="
+                                       , "-    H.select ! A.name (H.stringValue name)"
+                                       , "+    H.select ! A.name (H.toValue name)"
+                                       , "              $ mconcat $ map makeChoice choices"
+                                       , "   where"
+                                       , "     makeChoice (value, label') = applyAttrs $"
+                                       , "-        H.option ! A.value (H.stringValue value) $ label'"
+                                       , "+        H.option ! A.value (H.toValue value) $ label'"
+                                       , "       where"
+                                       , "         applyAttrs | selected == value = (! A.selected \"selected\")"
+                                       , "                    | otherwise = id" ]))
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     , patched "gd"  [ P.ExtraDevDep "libgd-dev" ]
                     (unlines
@@ -606,21 +747,8 @@ main _home release =
     , debianize "hashable" [P.DebVersion "1.1.2.3-1"]
     , debianize "hashed-storage" [P.DebVersion "0.5.9-2build1"]
     , P.Package { P.name = "haskell-haskeline"
-                , P.spec = Debianize (Patch
-                                      (Hackage "haskeline") 
-                                      (unlines
-                                       [ "--- old/haskeline.cabal\t2012-04-17 05:38:27.000000000 -0700"	
-                                       , "+++ new/haskeline.cabal\t2012-04-17 05:58:03.514585245 -0700"	
-                                       , "@@ -58,7 +58,7 @@"		       
-                                       , "                            bytestring==0.9.*"	
-                                       , "         }"		       
-                                       , "     }"  
-                                       , "-    Build-depends:  filepath >= 1.1 && < 1.4, mtl >= 1.1 && < 2.1,"	
-                                       , "+    Build-depends:  filepath >= 1.1 && < 1.4, mtl >= 1.1,"	
-                                       , "                     utf8-string==0.3.* && >=0.3.6,"	 
-                                       , "                     extensible-exceptions==0.1.* && >=0.1.1.0"	
-                                       , "     Extensions:     ForeignFunctionInterface, Rank2Types, FlexibleInstances," ]))
-                , P.flags = [P.DebVersion "0.6.4.6-1"] }
+                , P.spec = Debianize (Hackage "haskeline")
+                , P.flags = [] }
     , debianize "haskell-src-meta" []
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
@@ -764,23 +892,7 @@ main _home release =
     , apt release "haskell-mmap"
     , debianize "monad-control" []
     , P.Package { P.name = "haskell-monad-par-extras"
-                , P.spec = Debianize (Patch
-                                      (Hackage "monad-par-extras")
-                                      (unlines
-                                       [ "--- old/monad-par-extras.cabal\t2012-05-05 06:13:32.000000000 -0700"
-                                       , "+++ new/monad-par-extras.cabal\t2012-05-05 07:52:45.843118526 -0700"
-                                       , "@@ -53,9 +53,9 @@"
-                                       , "                , abstract-par == 0.3.*"
-                                       , "                , cereal == 0.3.*"
-                                       , "                , deepseq == 1.3.*     "
-                                       , "-               , mtl == 2.0.*"
-                                       , "+               , mtl >= 2.0"
-                                       , "                , random == 1.0.*          "
-                                       , "-               , transformers == 0.2.*"
-                                       , "+               , transformers >= 0.2"
-                                       , " "
-                                       , "   ghc-options: -O2"
-                                       , "   Other-modules:" ]))
+                , P.spec = Debianize (Hackage "monad-par-extras")
                 , P.flags = [] }
     , debianize "abstract-deque" []
     , debianize "abstract-par" []
@@ -886,7 +998,7 @@ main _home release =
                                        , "     ghc-options:        -Wall"
                                        , "     extensions:         GADTs, UndecidableInstances,"
                                        , "                         MultiParamTypeClasses, FlexibleInstances" ]))
-                , P.flags = [P.DebVersion "0.2.0.3-1~hackage1", P.OmitLTDeps] }
+                , P.flags = [P.OmitLTDeps] }
     , debianize "ordered" []
     , debianize "multiset" []
     , debianize "texmath" []
@@ -1265,7 +1377,7 @@ platform release =
         _ -> P.Package { P.name = "haskell-transformers"
                        , P.spec = Apt "sid" "haskell-transformers"
                        , P.flags = [{-P.AptPin "0.2.2.0-3"-}] }
-    , debianize "parallel" [P.DebVersion "3.2.0.2-2build1"]
+    , debianize "parallel" []
     , debianize "syb" []
     , debianize "fgl" [P.DebVersion "5.4.2.4-2"]
     , debianize "text" []
@@ -1293,7 +1405,7 @@ platform release =
     , apt release "haskell-regex-compat"
     , apt release "haskell-regex-base"
     , apt release "haskell-regex-posix"
-    , debianize "xhtml" [P.DebVersion "3000.2.0.5-1"]
+    , debianize "xhtml" []
     ]
 
 -- | Packages pinned pending update of happstack-authenticate (in one possible build order.)
@@ -1347,20 +1459,7 @@ authenticate _home release =
                                        , "                  , asn1-data             >= 0.5.1   && < 0.7" ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-authenticate"
-                , P.spec = Debianize (Patch
-                                      (Darcs (repo ++ "/happstack-authenticate"))
-                                      (unlines
-                                       [ "--- old/happstack-authenticate.cabal\t2012-05-18 18:39:59.543903307 -0700"
-                                       , "+++ new/happstack-authenticate.cabal\t2012-05-18 18:40:16.473573842 -0700"
-                                       , "@@ -37,7 +37,7 @@"
-                                       , "                        http-types                   == 0.6.*,"
-                                       , "                        fb                           == 0.9.*,"
-                                       , "                        safecopy                     == 0.6.*,"
-                                       , "-                       mtl                          == 2.0.*,"
-                                       , "+                       mtl                          >= 2.0,"
-                                       , "                        pwstore-purehaskell          == 2.1.*,"
-                                       , "                        QuickCheck                   >= 2,"
-                                       , "                        text                         == 0.11.*," ]))
+                , P.spec = Debianize (Darcs (repo ++ "/happstack-authenticate"))
                 , P.flags = [] }
     , digestiveFunctors
     , P.Package { P.name = "haskell-fb" 
@@ -1493,8 +1592,8 @@ clckwrks _home =
                     , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "clckwrks-dot-com"
-                    , P.spec = Debianize (Cd "clckwrks-dot-com" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.spec = Cd "clckwrks-dot-com" (Darcs repo)
+                    , P.flags = [] }
         , P.Package { P.name = "clckwrks-theme-clckwrks"
                     , P.spec = Debianize (Cd "clckwrks-theme-clckwrks" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
