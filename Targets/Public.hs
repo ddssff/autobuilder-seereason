@@ -1566,18 +1566,7 @@ clckwrks _home =
                                            , "   Exposed-modules: Clckwrks" ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
-                    , P.spec = Debianize (Patch
-                                          (Cd "clckwrks-cli" (Darcs repo))
-                                          (unlines
-                                           [ "--- old/clckwrks-cli.cabal\t2012-04-18 21:22:22.000000000 -0700"
-                                           , "+++ new/clckwrks-cli.cabal\t2012-04-23 21:02:30.932816903 -0700"
-                                           , "@@ -19,5 +19,5 @@"
-                                           , "   Build-depends:"
-                                           , "      acid-state == 0.6.*,"
-                                           , "      base        < 5,"
-                                           , "-     clckwrks   == 0.5.0,"
-                                           , "+     clckwrks   >= 0.5.0,"
-                                           , "      network    == 2.3.*" ]))
+                    , P.spec = Debianize (Cd "clckwrks-cli" (Darcs repo))
                     , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-bugs"
                     , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
