@@ -20,9 +20,6 @@ libraries _home =
     , P.Package { P.name = "haskell-ontology"
                 , P.spec = Darcs (privateRepo ++ "/haskell-ontology")
                 , P.flags = [] }
-    , P.Package { P.name = "clckwrks-theme-happstack"
-                , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (privateRepo ++ "/happstack-clckwrks")))
-                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     ]
 
 applications _home =
@@ -48,9 +45,6 @@ applications _home =
     , P.Package { P.name = "haskell-creativeprompts"
                 , P.spec = Darcs (privateRepo ++ "/creativeprompts")
                 , P.flags = [] }
-    , P.Package { P.name = "happstack-dot-com"
-                , P.spec = Cd "happstack-dot-com" (Darcs (privateRepo ++ "/happstack-clckwrks"))
-                , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
 {-
     , P.Package { P.name = "prefeteria"
                 , P.spec = Darcs (privateRepo ++ "/prefeteria") []
