@@ -1116,6 +1116,9 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/vc-darcs"
                 , P.flags = [] }
     -- , debianize "hlatex" []
+    , P.Package { P.name = "foo2zjs"
+                , P.spec = Apt "quantal" "foo2zjs"
+                , P.flags = [] }
     ]
 
 ghc release =
