@@ -1426,6 +1426,12 @@ happstack release =
     , P.Package { P.name = "haskell-happstack-server"
                 , P.spec = Debianize (Hackage "happstack-server")
                 , P.flags = [] }
+    , P.Package { P.name = "haskell-list-tries"
+                , P.spec = Debianize (Hackage "list-tries")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-happstack-static-routing"
+                , P.spec = Debianize (Hackage "happstack-static-routing")
+                , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-util"
                 , P.spec = Debianize (Patch
                                       (Hackage "happstack-util")
