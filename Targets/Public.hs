@@ -1054,6 +1054,12 @@ main _home release =
     , P.Package { P.name = "foo2zjs"
                 , P.spec = Apt "quantal" "foo2zjs"
                 , P.flags = [] }
+{-
+    -- Fails in lucid due to build deps
+    , P.Package { P.name = "jbigkit"
+                , P.spec = Apt "sid" "jbigkit"
+                , P.flags = [] }
+-}
     ]
 
 ghc release =
