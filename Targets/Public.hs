@@ -1105,7 +1105,28 @@ platform release =
                      "precise-seereason" -> "precise"
                      _ -> "sid") in
       P.Package { P.name = "haskell-devscripts"
-                , P.spec = Apt dist "haskell-devscripts"
+                , P.spec =
+                    Patch
+                      -- Ubuntu's version number looks newer than sid's, so use their
+                      -- package to avoid "failure to trump".
+                      (Apt dist "haskell-devscripts")
+                      (unlines
+                       [ "--- old/dh_haskell_depends\t2012-03-10 09:07:37.000000000 -0800"
+                       , "+++ new/dh_haskell_depends\t2012-06-28 11:30:04.266489732 -0700"
+                       , "@@ -102,6 +102,12 @@"
+                       , "                     dev=`echo $pkg | sed -e 's/-prof$/-dev/'`"
+                       , "                     version='(=${binary:Version})'"
+                       , "                     depends=\"$dev ${version}, `depends_for_ghc_prof $cfiles`\""
+                       , "+                    # If there is a doc package, add it to the"
+                       , "+                    # Haskell:depends list of the prof package."
+                       , "+                    doc=`echo $pkg | sed -e 's/-prof$/-doc/'`"
+                       , "+                    for p in `dh_listpackages $args`; do"
+                       , "+                        if [ \"$p\" = \"$doc\" ]; then depends=\"$doc ${version}, $depends\"; fi"
+                       , "+                    done"
+                       , " \t\t    echo \"haskell:Depends=$depends\" >> $sfile.tmp"
+                       , "                     echo \"haskell:Recommends=\" >> $sfile.tmp"
+                       , "                     echo \"haskell:Suggests=\" >> $sfile.tmp" ])
+
                 , P.flags = [P.RelaxDep "python-minimal"] }
     , -- Our automatic debianization code produces a package which is
       -- missing the template files required for happy to work properly,
