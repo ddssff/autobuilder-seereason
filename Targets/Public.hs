@@ -1519,10 +1519,10 @@ happstack release =
                                        , " {-# RULES \"integral/Int16\" integral = bounded :: Int16 -> Builder #-}" ]))
                 , flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
     , P.Package { P.name = "clckwrks-theme-happstack"
-                , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (privateRepo ++ "/happstack-clckwrks")))
+                , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (repo ++ "/happstack-clckwrks")))
                 , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     , P.Package { P.name = "happstack-dot-com"
-                , P.spec = Cd "happstack-dot-com" (Darcs (privateRepo ++ "/happstack-clckwrks"))
+                , P.spec = Cd "happstack-dot-com" (Darcs (repo ++ "/happstack-clckwrks"))
                 , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
     ]
 
