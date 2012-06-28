@@ -80,19 +80,46 @@ getParams home args =
       finalizeTargets :: ParamRec -> Packages
       finalizeTargets params =
           Packages { group = Set.empty
-                   , packages = Map.elems $ case targets params of
-                                              AllTargets -> collectAll allTargets Map.empty
-                                              TargetNames xs -> Set.fold (collectByName allTargets) Map.empty xs }
+                   , packages = Map.elems $ if allTargets (targets params)
+                                            then collectAll knownTargets Map.empty
+                                            else Set.fold collectName Map.empty (targetNames (targets params))
+                                            -- else Set.fold (collectByName knownTargets) Map.empty (targetNames (targets params))
+                   }
           where
-            collectByName available n collected =
-                case available of
+            collectName n collected =
+              case findByName n knownTargets of
+                [] -> error $ "Unknown target name: " ++ show n
+                ps -> foldr (\ p collected' -> 
+                              case p of
+                                (Package {}) -> Map.insertWith check (name p) p collected'
+                                _ -> error $ "Internal error: " ++ show p) collected ps
+            findByName n known =
+              case known of
+                NoPackage -> []
+                ps@(Packages {}) ->
+                  if Set.member n (group ps)
+                  then concatMap findAll (packages ps)
+                  else concatMap (findByName n) (packages ps)
+                p@(Package {}) ->
+                  if name p == n
+                  then [p]
+                  else []
+            findAll known =
+              case known of
+                NoPackage -> []
+                ps@(Packages {}) -> concatMap findAll (packages ps)
+                p@(Package {}) -> [p]
+{-
+            collectByName known n collected =
+                case known of
                   NoPackage -> collected
                   p@(Package {}) -> if name p == n then Map.insertWith check n p collected else collected
                   ps@(Packages {}) ->
                       if Set.member n (group ps)
                       then foldr collectAll collected (packages ps)
                       else foldr (collect' n) collected (packages ps)
-            collect' n available collected = collectByName available n collected
+            collect' n known collected = collectByName known n collected
+-}
             collectAll :: Packages -> Map.Map String Packages -> Map.Map String Packages
             collectAll p collected =
                 case p of
@@ -101,8 +128,8 @@ getParams home args =
                   Packages {} -> foldr collectAll collected (packages p)
             check old new = if old /= new then error ("Multiple packages with same name: " ++ show old ++ ", " ++ show new) else old
             -- FIXME - make myTargets a set
-            allTargets = mappend (myTargets home (const True) (relName (buildRelease params)))
-                                 (if testWithPrivate params then private home else NoPackage)
+            knownTargets = mappend (myTargets home (const True) (relName (buildRelease params)))
+                                   (if testWithPrivate params then private home else NoPackage)
 
 -- |Each option is defined as a function transforming the parameter record.
 optSpecs :: [OptDescr (Either String (ParamRec -> ParamRec))]
@@ -130,7 +157,7 @@ optSpecs =
       "Run newdist on the remote server after a successful build and upload."
     , Option ['n'] ["dry-run"] (NoArg (Right (\ p -> p {dryRun = True})))
       "Exit as soon as we discover a package that needs to be built."
-    , Option [] ["all-targets"] (NoArg (Right (\ p ->  p {targets = AllTargets})))
+    , Option [] ["all-targets"] (NoArg (Right (\ p ->  p {targets = (targets p) {allTargets = True}})))
       "Add all known targets for the release to the target list."
     , Option [] ["allow-build-dependency-regressions"]
                  (NoArg (Right (\ p -> p {allowBuildDependencyRegressions = True})))
@@ -169,10 +196,7 @@ optSpecs =
       "Print a help message and exit."
     ]
     where
-      addTarget s p =
-          case targets p of
-            AllTargets -> AllTargets
-            TargetNames xs -> TargetNames (Set.insert s xs)
+      addTarget s p = (targets p) {targetNames = Set.insert s (targetNames (targets p))}
 {-
       allTargets p =
           p {targets = let name = (relName (buildRelease p)) in TargetList (myTargets (releaseTargetNamePred name) name)})
@@ -196,7 +220,7 @@ defParams _home myBuildRelease =
     , uploadURI = myUploadURI myBuildRelease
     , buildURI = myBuildURI myBuildRelease
     -- What we plan to build
-    , targets = TargetNames Set.empty
+    , targets = TargetSpec {allTargets = False, targetNames = Set.empty}
     , doUpload = myDoUpload
     , doNewDist = myDoNewDist
     , flushPool = myFlushPool
@@ -235,7 +259,7 @@ defParams _home myBuildRelease =
     -- 6.14 adds the ExtraDevDep parameter.
     -- 6.15 changes Epoch parameter arity to 2
     -- 6.18 renames type Spec -> RetrieveMethod
-    , requiredVersion = [(parseDebianVersion "6.26", Nothing)]
+    , requiredVersion = [(parseDebianVersion "6.28", Nothing)]
     , hackageServer = myHackageServer
     -- Things that are probably obsolete
     , debug = False
