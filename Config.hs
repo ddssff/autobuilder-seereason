@@ -156,7 +156,9 @@ myGoals = []
 -- probably won't work outside the United States.
 --
 myDebianMirrorHost = "mirror.anl.gov"
-myUbuntuMirrorHost = "mirror.anl.gov"
+--myUbuntuMirrorHost = "mirror.anl.gov"
+myUbuntuMirrorHost = "us.archive.ubuntu.com/ubuntu"
+--myUbuntuMirrorHost = "ubuntu.cs.utah.edu"
 --myDebianMirrorHost = "mirrors.usc.edu/pub/linux/distributions"
 --myUbuntuMirrorHost = "mirrors.usc.edu/pub/linux/distributions"
 
