@@ -1115,10 +1115,10 @@ ghc release =
     (if not (elem release ["lucid-seereason", "natty-seereason", "precise-seereason"])
          -- 7.4.1-3 doesn't look very interesting, postpone build for now.
      then [(apt "sid" "ghc") {P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"]}]
-     else []) ++
+     else []) {- ++
     (if release == "lucid-seereason"
      then [apt "sid" "debhelper"]
-     else [])
+     else []) -}
 
 platform release =
     P.Packages (singleton "platform") $
