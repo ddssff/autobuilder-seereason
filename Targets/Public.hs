@@ -1637,7 +1637,8 @@ authenticate _home release =
     -- , debianize "authenticate" []
     , P.Package { P.name = "haskell-authenticate"
                 , P.spec = Debianize (Hackage "authenticate")
-                , P.flags = [] }
+                -- Last version that works with conduit 0.4.
+                , P.flags = [P.CabalPin "1.2.1.1"] }
 
     , P.Package { P.name = "haskell-zlib-enum"
                 , P.spec = Debianize (Hackage "zlib-enum")
@@ -1670,7 +1671,8 @@ authenticate _home release =
                 , P.spec = Debianize (Darcs (repo ++ "/happstack-authenticate"))
                 , P.flags = [] }
     , digestiveFunctors
-    , P.Package { P.name = "haskell-fb" 
+      -- Note that current version of fb does not build with conduit 0.5.
+    , P.Package { P.name = "haskell-fb"
                 , P.spec = Debianize (Hackage "fb")
                 , P.flags = [] }
     ]
@@ -1856,19 +1858,7 @@ algebra = P.Packages (singleton "algebra")
     , debianize "data-lens" []
     , debianize "distributive" []
     , P.Package { P.name = "free"
-                , P.spec = Debianize (Patch
-                                      (Hackage "free")
-                                      (unlines [ "--- old/free.cabal\t2012-05-17 09:03:31.000000000 -0700"
-                                               , "+++ new/free.cabal\t2012-05-17 09:30:05.405092205 -0700"
-                                               , "@@ -35,7 +35,7 @@"
-                                               , "     comonad              >= 1.1.1.5 && < 1.2,"
-                                               , "     comonad-transformers >= 2.1.1.1 && < 2.2,"
-                                               , "     comonads-fd          >= 2.1.1.1 && < 2.2,"
-                                               , "-    data-lens            >= 2.0.4.1 && < 2.10,"
-                                               , "+    data-lens            >= 2.0.4.1,"
-                                               , "     semigroups           >= 0.8.3.1 && < 0.9"
-                                               , " "
-                                               , "   if impl(ghc)" ]))
+                , P.spec = Debianize (Hackage "free")
                 , P.flags = [] }
     , debianize "keys" []
     , debianize "representable-functors" []
