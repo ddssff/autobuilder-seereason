@@ -1905,6 +1905,9 @@ algebra = P.Packages (singleton "algebra")
                 , P.spec = Debianize (Hackage "free")
                 , P.flags = [] }
     , debianize "keys" []
+    , debianize "lens-family-core" []
+    , debianize "lens-family" []
+    , debianize "lens-family-th" []
     , debianize "representable-functors" []
     , debianize "representable-tries" []
     , debianize "semigroupoids" [] ]
