@@ -146,7 +146,7 @@ main _home release =
                                        , "                    Data.Attoparsec.Text.FastSet" ]))
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
     , debianize "attoparsec-text-enumerator" []
-    , debianize "base-unicode-symbols" [P.DebVersion "0.2.2.3-1build1"]
+    , debianize "base-unicode-symbols" []
     , apt release "haskell-base64-bytestring"
     , debianize "bimap" [P.DebVersion "0.2.4-1~hackage1"]
     , debianize "data-default" []
@@ -505,14 +505,15 @@ main _home release =
                 , P.flags = [] }
     , patched "xmlhtml" [P.CabalPin "0.1.7"]
               (unlines
-               [ "--- old/xmlhtml.cabal\t2012-07-01 14:42:35.000000000 -0700"
-               , "+++ new/xmlhtml.cabal\t2012-07-01 17:04:23.969087609 -0700"
-               , "@@ -821,7 +821,7 @@"
+               [ "--- old/xmlhtml.cabal\t2012-07-10 07:13:39.000000000 -0700"
+               , "+++ new/xmlhtml.cabal\t2012-07-10 09:45:14.862970736 -0700"
+               , "@@ -821,7 +821,8 @@"
                , " "
                , "   Build-depends:       base                 >= 4     && < 5,"
                , "                        blaze-builder        >= 0.2   && < 0.4,"
                , "-                       blaze-html           >= 0.3.2 && < 0.5,"
-               , "+                       blaze-html           >= 0.3.2,"
+               , "+                       blaze-html           >= 0.5,"
+               , "+                       blaze-markup         >= 0.5.1,"
                , "                        bytestring           >= 0.9   && < 0.10,"
                , "                        containers           >= 0.3   && < 0.5,"
                , "                        parsec               >= 3.1.2 && < 3.2," ])
@@ -583,7 +584,7 @@ main _home release =
                 , P.spec = Darcs (repo ++ "/haskell-json")
                 , P.flags = [] }
     , debianize "language-css" [P.DebVersion "0.0.4.1-1~hackage1"]
-    , debianize "largeword" [P.DebVersion "1.0.1-3"]
+    , debianize "largeword" []
 {-  , apt release "haskell-leksah"
     , apt release "haskell-leksah-server" -- for leksah -}
     , P.Package { P.name = "haskell-logic-classes"
@@ -808,7 +809,18 @@ main _home release =
     , P.Package { P.name = "haskell-simple-css",
                   P.spec = Patch (Debianize (Hackage "simple-css"))
                                  (unlines
-                                  [ "--- old/src/SimpleCss.hs\t2012-03-25 07:53:41.000000000 -0700"
+                                  [ "--- old/simple-css.cabal\t2012-07-10 07:12:19.000000000 -0700"
+                                  , "+++ new/simple-css.cabal\t2012-07-10 09:49:49.394977221 -0700"
+                                  , "@@ -26,7 +26,7 @@"
+                                  , "   Build-Depends:"
+                                  , "         base >= 4, base < 5, "
+                                  , "         unordered-containers >= 0.1.1, hashable >= 1.1.1.0,"
+                                  , "-        language-css >= 0.0.2, blaze-html >= 0.4  "
+                                  , "+        language-css >= 0.0.2, blaze-html >= 0.5, blaze-markup >= 0.5.1"
+                                  , "   Hs-Source-Dirs:      src/"
+                                  , "   Exposed-Modules:"
+                                  , "         SimpleCss"
+                                  , "--- old/src/SimpleCss.hs\t2012-03-25 07:53:41.000000000 -0700"
                                   , "+++ new/src/SimpleCss.hs\t2012-03-25 14:43:54.789176546 -0700"
                                   , "@@ -20,7 +20,7 @@"
                                   , " "
@@ -1591,6 +1603,15 @@ conduit =
                                       (unlines
                                        [ "--- old/http-conduit.cabal\t2012-07-01 13:16:22.000000000 -0700"
                                        , "+++ new/http-conduit.cabal\t2012-07-01 14:29:30.364868030 -0700"
+                                       , "@@ -30,7 +30,7 @@"
+                                       , "                  , attoparsec            >= 0.8.0.2 && < 0.11"
+                                       , "                  , utf8-string           >= 0.3.4   && < 0.4"
+                                       , "                  , blaze-builder         >= 0.2.1   && < 0.4"
+                                       , "-                 , http-types            >= 0.6     && < 0.7"
+                                       , "+                 , http-types            >= 0.6"
+                                       , "                  , cprng-aes             >= 0.2     && < 0.3"
+                                       , "                  , tls                   >= 0.9.3   && < 0.10"
+                                       , "                  , tls-extra             >= 0.4.5   && < 0.5"
                                        , "@@ -40,7 +40,7 @@"
                                        , "                  , case-insensitive      >= 0.2"
                                        , "                  , base64-bytestring     >= 0.1     && < 0.2"
@@ -1636,7 +1657,20 @@ authenticate _home release =
     , debianize "tls-extra" []
     -- , debianize "authenticate" []
     , P.Package { P.name = "haskell-authenticate"
-                , P.spec = Debianize (Hackage "authenticate")
+                , P.spec = Debianize (Patch
+                                      (Hackage "authenticate")
+                                      (unlines
+                                       [ "--- old/authenticate.cabal\t2012-07-10 10:36:28.000000000 -0700"
+                                       , "+++ new/authenticate.cabal\t2012-07-10 10:47:22.839058816 -0700"
+                                       , "@@ -25,7 +25,7 @@"
+                                       , "                    , network"
+                                       , "                    , case-insensitive              >= 0.2"
+                                       , "                    , text"
+                                       , "-                   , http-types                    >= 0.6      && < 0.7"
+                                       , "+                   , http-types                    >= 0.6"
+                                       , "                    , xml-conduit                   >= 0.7      && < 0.8"
+                                       , "                    , blaze-builder"
+                                       , "                    , attoparsec" ]))
                 -- Last version that works with conduit 0.4.
                 , P.flags = [P.CabalPin "1.2.1.1"] }
 
@@ -1644,7 +1678,20 @@ authenticate _home release =
                 , P.spec = Debianize (Hackage "zlib-enum")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-wai"
-                , P.spec = Debianize (Hackage "wai")
+                , P.spec = Debianize (Patch
+                                      (Hackage "wai")
+                                      (unlines
+                                       [ "--- old/wai.cabal\t2012-07-10 07:13:29.000000000 -0700"
+                                       , "+++ new/wai.cabal\t2012-07-10 10:30:05.891034347 -0700"
+                                       , "@@ -22,7 +22,7 @@"
+                                       , "                    , blaze-builder             >= 0.2.1.4  && < 0.4"
+                                       , "                    , conduit                   >= 0.4      && < 0.5"
+                                       , "                    , network                   >= 2.2.1.5  && < 2.4"
+                                       , "-                   , http-types                >= 0.6      && < 0.7"
+                                       , "+                   , http-types                >= 0.6"
+                                       , "                    , text                      >= 0.7      && < 0.12"
+                                       , "                    , transformers              >= 0.2.2    && < 0.4"
+                                       , "                    , vault                     >= 0.1      && < 0.3" ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-http-enumerator"
                 , P.spec = Debianize (Patch
@@ -1652,7 +1699,15 @@ authenticate _home release =
                                       (unlines
                                        [ "--- old/http-enumerator.cabal\t2012-07-02 06:17:36.000000000 -0700"
                                        , "+++ new/http-enumerator.cabal\t2012-07-02 06:23:28.106220387 -0700"
-                                       , "@@ -37,11 +37,11 @@"
+                                       , "@@ -30,18 +30,18 @@"
+                                       , "                  , utf8-string           >= 0.3.4   && < 0.4"
+                                       , "                  , blaze-builder         >= 0.2.1   && < 0.4"
+                                       , "                  , zlib-enum             >= 0.2     && < 0.3"
+                                       , "-                 , http-types            >= 0.6     && < 0.7"
+                                       , "+                 , http-types            >= 0.6"
+                                       , "                  , blaze-builder-enumerator >= 0.2  && < 0.3"
+                                       , "                  , cprng-aes             >= 0.2     && < 0.3"
+                                       , "                  , tls                   >= 0.9     && < 0.10"
                                        , "                  , tls-extra             >= 0.4.3   && < 0.5"
                                        , "                  , monad-control         >= 0.2     && < 0.4"
                                        , "                  , containers            >= 0.2"
@@ -1681,7 +1736,17 @@ authenticate _home release =
 happstackdotcom _home =
     P.Packages (singleton "happstackdotcom") $
     [ P.Package { P.name = "haskell-ircbot"
-                , P.spec = Debianize (Darcs "http://patch-tag.com/r/stepcut/ircbot")
+                , P.spec = Debianize (Patch
+                                      (Darcs "http://patch-tag.com/r/stepcut/ircbot")
+                                      (unlines
+                                       [ "--- old/ircbot.cabal\t2012-07-10 07:10:51.000000000 -0700"
+                                       , "+++ new/ircbot.cabal\t2012-07-10 09:56:17.482986391 -0700"
+                                       , "@@ -42,4 +42,4 @@"
+                                       , "                   time       == 1.4.*,"
+                                       , "                   unix       >= 2.4 && < 2.6,"
+                                       , "                   random     == 1.0.*,"
+                                       , "-                  stm        >= 2.2 && < 2.4"
+                                       , "+                  stm        >= 2.2" ]))
                 , P.flags = [] }
 {-  , P.Package { P.name = "haskell-happstackdotcom"
                 , P.spec = Darcs ("http://src.seereason.com/happstackDotCom")
@@ -1846,7 +1911,24 @@ failing release =
     , apt release "haskell-statistics" ]
 
 algebra = P.Packages (singleton "algebra")
-    [ debianize "data-lens" []
+    [ patched "data-lens" []
+        (unlines
+         [ "--- old/data-lens.cabal\t2012-07-05 09:35:04.000000000 -0700"
+         , "+++ new/data-lens.cabal\t2012-07-06 06:30:27.722529101 -0700"
+         , "@@ -25,10 +25,10 @@"
+         , " library"
+         , "   build-depends:"
+         , "     base                 >= 4       && < 5,"
+         , "-    comonad              >= 1.1.1.3 && < 1.2,"
+         , "-    comonad-transformers >= 2.0     && < 2.2,"
+         , "+    comonad              >= 1.1.1.3,"
+         , "+    comonad-transformers >= 2.0,"
+         , "     containers           >= 0.3     && < 0.5,"
+         , "-    semigroupoids        >= 1.2.4   && < 1.4,"
+         , "+    semigroupoids        >= 1.2.4,"
+         , "     transformers         >= 0.2.0   && < 0.4"
+         , " "
+         , "   if flag(DeriveDataTypeable)" ])
     , debianize "adjunctions" []
     , debianize "algebra" []
     , debianize "bifunctors" []
@@ -1855,7 +1937,6 @@ algebra = P.Packages (singleton "algebra")
     , debianize "comonads-fd" []
     , debianize "comonad-transformers" []
     , debianize "contravariant" []
-    , debianize "data-lens" []
     , debianize "distributive" []
     , P.Package { P.name = "free"
                 , P.spec = Debianize (Hackage "free")
