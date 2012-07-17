@@ -63,4 +63,12 @@ applications _home =
     , P.Package { P.name = "clcksmith"
                 , P.spec = Darcs (privateRepo ++ "/clcksmith")
                 , P.flags = [P.ExtraDep "aphaskell-hsx-utils"] }
+
+    , P.Package { P.name = "haskell-clckwrks-theme-appraisalreportonline"
+                , P.spec = Debianize (Cd "clckwrks-theme-appraisalreportonline" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks")))
+                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+
+    , P.Package { P.name = "appraisalreportonline-dot-com"
+                , P.spec = Cd "appraisalreportonline-dot-com" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks"))
+                , P.flags = [] }
     ]
