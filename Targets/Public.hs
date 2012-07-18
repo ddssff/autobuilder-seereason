@@ -1060,6 +1060,7 @@ main _home release =
                 , P.flags = [P.RelaxDep "hscolour"] }
     , apt release "hslogger"
     , apt release "html-xml-utils"
+    , apt release "node-uglify"
     , P.Package { P.name = "jquery"
                 , P.spec = Proc (Apt "sid" "jquery")
                 , P.flags = [] }
@@ -1158,8 +1159,27 @@ platform release =
                        , "+                    done"
                        , " \t\t    echo \"haskell:Depends=$depends\" >> $sfile.tmp"
                        , "                     echo \"haskell:Recommends=\" >> $sfile.tmp"
-                       , "                     echo \"haskell:Suggests=\" >> $sfile.tmp" ])
-
+                       , "                     echo \"haskell:Suggests=\" >> $sfile.tmp"
+                       , "--- old/hlibrary.mk\t2012-01-04 11:06:45.000000000 -0800"
+                       , "+++ new/hlibrary.mk\t2012-07-18 08:50:59.485188897 -0700"
+                       , "@@ -135,7 +135,7 @@"
+                       , " \t$(DEB_SETUP_BIN_NAME) copy --builddir=dist-ghc --destdir=debian/tmp-inst-ghc"
+                       , " "
+                       , " debian/extra-depends: debian/tmp-inst-ghc"
+                       , "-\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | sed -r 's,.*: ,,'` ; \\"
+                       , "+\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | sed -n '/^[^:]*$$/p'` ; \\"
+                       , " \t\tdh_haskell_extra_depends $$pkg_config ; \\"
+                       , " \t\trm $$pkg_config"
+                       , " "
+                       , "@@ -143,7 +143,7 @@"
+                       , " \tcd debian/tmp-inst-ghc ; find usr/lib/haskell-packages/ghc/lib/ \\"
+                       , " \t\t\\( ! -name \"*_p.a\" ! -name \"*.p_hi\" \\) \\"
+                       , " \t\t-exec install -Dm 644 '{}' ../$(notdir $@)/'{}' ';'"
+                       , "-\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | sed -r 's,.*: ,,'`; \\"
+                       , "+\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | sed -n '/^[^:]*$$/p'`; \\"
+                       , " \t\t$(if $(HASKELL_HIDE_PACKAGES),sed -i 's/^exposed: True$$/exposed: False/' $$pkg_config;) \\"
+                       , " \t\tinstall -Dm 644 $$pkg_config debian/$(notdir $@)/var/lib/ghc/package.conf.d/$$pkg_config; \\"
+                       , " \t\trm -f $$pkg_config" ])
                 , P.flags = [P.RelaxDep "python-minimal"] }
     , -- Our automatic debianization code produces a package which is
       -- missing the template files required for happy to work properly,

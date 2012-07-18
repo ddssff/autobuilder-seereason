@@ -376,7 +376,8 @@ myGlobalRelaxInfo =
      "perl-base",
      "tar",
      "sysvinit",
-     "libc6-dev"]
+     "libc6-dev",
+     "haskell-devscripts"]
 
 ----------------------- BUILD RELEASE ----------------------------
 
