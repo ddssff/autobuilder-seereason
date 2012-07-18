@@ -1636,20 +1636,7 @@ authenticate _home release =
                 , P.spec = Debianize (Hackage "zlib-enum")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-wai"
-                , P.spec = Debianize (Patch
-                                      (Hackage "wai")
-                                      (unlines
-                                       [ "--- old/wai.cabal\t2012-07-10 07:13:29.000000000 -0700"
-                                       , "+++ new/wai.cabal\t2012-07-10 10:30:05.891034347 -0700"
-                                       , "@@ -22,7 +22,7 @@"
-                                       , "                    , blaze-builder             >= 0.2.1.4  && < 0.4"
-                                       , "                    , conduit                   >= 0.4      && < 0.5"
-                                       , "                    , network                   >= 2.2.1.5  && < 2.4"
-                                       , "-                   , http-types                >= 0.6      && < 0.7"
-                                       , "+                   , http-types                >= 0.6"
-                                       , "                    , text                      >= 0.7      && < 0.12"
-                                       , "                    , transformers              >= 0.2.2    && < 0.4"
-                                       , "                    , vault                     >= 0.1      && < 0.3" ]))
+                , P.spec = Debianize (Hackage "wai")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-http-enumerator"
                 , P.spec = Debianize (Patch
