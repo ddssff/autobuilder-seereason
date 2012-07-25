@@ -230,6 +230,7 @@ main _home release =
     , apt release "haskell-dlist"
     -- Natty only(?)
     , debianize "double-conversion" []
+    , debianize "groom" []
     , apt release "haskell-dummy"
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
