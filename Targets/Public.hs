@@ -518,7 +518,7 @@ main _home release =
                , "                        bytestring           >= 0.9   && < 0.10,"
                , "                        containers           >= 0.3   && < 0.5,"
                , "                        parsec               >= 3.1.2 && < 3.2," ])
-    , debianize "directory-tree" [P.DebVersion "0.10.0-2"]
+    , debianize "directory-tree" []
     , debianize "MonadCatchIO-transformers" []
     , debianize "hinotify" [P.DebVersion "0.3.2-1"]
     , P.Package { P.name = "haskell-hjavascript"
@@ -727,20 +727,7 @@ main _home release =
                       , "                  [x] -> ['0', x]"
                       , "                  x   -> x" ])
     , P.Package { P.name = "haskell-operational"
-                , P.spec = Debianize (Patch 
-                                      (Hackage "operational")
-                                      (unlines
-                                       [ "--- old/operational.cabal\t2012-05-01 23:34:41.000000000 -0700"
-                                       , "+++ new/operational.cabal\t2012-05-02 08:22:57.822808084 -0700"
-                                       , "@@ -36,7 +36,7 @@"
-                                       , " "
-                                       , " Library"
-                                       , "     hs-source-dirs:     src"
-                                       , "-    build-depends:      base == 4.* , mtl >= 1.1 && < 2.1.0"
-                                       , "+    build-depends:      base == 4.* , mtl >= 1.1"
-                                       , "     ghc-options:        -Wall"
-                                       , "     extensions:         GADTs, UndecidableInstances,"
-                                       , "                         MultiParamTypeClasses, FlexibleInstances" ]))
+                , P.spec = Debianize (Hackage "operational")
                 , P.flags = [P.OmitLTDeps] }
     , debianize "ordered" []
     , debianize "multiset" []
@@ -906,7 +893,7 @@ main _home release =
     , debianize "tagged" []
     , debianize "tagsoup" [P.DebVersion "0.12.6-1"]
     , debianize "tar" []
-    , debianize "terminfo" [P.DebVersion "0.3.2.3-2", P.ExtraDep "libncurses-dev"]
+    , debianize "terminfo" [P.ExtraDep "libncurses-dev"]
     , debianize "test-framework"
                     [ {- P.Patch . B.pack. unlines $
                       [ "--- old/Test/Framework/Runners/Console/Run.hs\t2012-01-20 11:09:22.000000000 -0800"
@@ -1006,6 +993,9 @@ main _home release =
                      , "                , file-embed >= 0.0.4.1 && < 0.1"
                      , "                , split >= 0.1.4 && < 0.2" ])
     , debianize "vault" []
+    , P.Package { P.name = "haskell-wai"
+                , P.spec = Debianize (Hackage "wai")
+                , P.flags = [] }
     , patched "web-encodings" []
                     (unlines
                       [ "--- old/web-encodings.cabal\t2012-01-20 06:47:07.000000000 -0800"
@@ -1478,22 +1468,35 @@ happstack release =
                 , P.spec = Debianize (Hackage "highlighting-kate")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes"
-                , P.spec = Cd "web-routes" (Darcs (repo ++ "/web-routes"))
+                , P.spec = Debianize (Patch
+                                      (Hackage "web-routes")
+                                      (unlines
+                                       [ "--- old/web-routes.cabal\t2012-07-20 13:22:05.000000000 -0700"
+                                       , "+++ new/web-routes.cabal\t2012-07-20 13:37:42.277678100 -0700"
+                                       , "@@ -16,7 +16,7 @@"
+                                       , "                           blaze-builder >= 0.2 && < 0.4,"
+                                       , "                           parsec >= 2 && <4,"
+                                       , "                           bytestring >= 0.9 && < 0.10,"
+                                       , "-                          http-types == 0.6.*,"
+                                       , "+                          http-types >= 0.6,"
+                                       , "                           mtl,"
+                                       , "                           network >= 2.2 && < 2.4,"
+                                       , "                           text == 0.11.*," ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes-boomerang"
-                , P.spec = Cd "web-routes-boomerang" (Darcs (repo ++ "/web-routes"))
+                , P.spec = Debianize (Hackage "web-routes-boomerang")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes-happstack"
-                , P.spec = Cd "web-routes-happstack" (Darcs (repo ++ "/web-routes"))
+                , P.spec = Debianize (Hackage "web-routes-happstack")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes-hsp"
-                , P.spec = Cd "web-routes-hsp" (Darcs (repo ++ "/web-routes"))
+                , P.spec = Debianize (Hackage "web-routes-hsp")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes-mtl"
-                , P.spec = Cd "web-routes-mtl" (Darcs (repo ++ "/web-routes"))
-                , P.flags = [] }      
+                , P.spec = Debianize (Hackage "web-routes-mtl")
+                , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes-th"
-                , P.spec = Cd "web-routes-th" (Darcs (repo ++ "/web-routes"))
+                , P.spec = Debianize (Hackage "web-routes-th")
                 , P.flags = [] }
 {- retired
     , P.Package { P.name = "haskell-formlets-hsp"
@@ -1652,9 +1655,6 @@ authenticate _home release =
 
     , P.Package { P.name = "haskell-zlib-enum"
                 , P.spec = Debianize (Hackage "zlib-enum")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-wai"
-                , P.spec = Debianize (Hackage "wai")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-http-enumerator"
                 , P.spec = Debianize (Patch
@@ -1876,15 +1876,13 @@ failing release =
 algebra = P.Packages (singleton "algebra")
     [ patched "data-lens" []
         (unlines
-         [ "--- old/data-lens.cabal\t2012-07-05 09:35:04.000000000 -0700"
-         , "+++ new/data-lens.cabal\t2012-07-06 06:30:27.722529101 -0700"
-         , "@@ -25,10 +25,10 @@"
-         , " library"
+         [ "--- old/data-lens.cabal\t2012-07-25 09:29:07.000000000 -0700"
+         , "+++ new/data-lens.cabal\t2012-07-25 09:32:24.191537240 -0700"
+         , "@@ -26,9 +26,9 @@"
          , "   build-depends:"
          , "     base                 >= 4       && < 5,"
-         , "-    comonad              >= 1.1.1.3 && < 1.2,"
+         , "     comonad              >= 1.1.1.3 && < 3.1,"
          , "-    comonad-transformers >= 2.0     && < 2.2,"
-         , "+    comonad              >= 1.1.1.3,"
          , "+    comonad-transformers >= 2.0,"
          , "     containers           >= 0.3     && < 0.5,"
          , "-    semigroupoids        >= 1.2.4   && < 1.4,"
