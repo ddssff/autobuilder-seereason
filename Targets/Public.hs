@@ -960,6 +960,38 @@ main _home release =
                           , " \timport Data.Map;" ])
     , debianize "uniplate" []
     -- , apt release "haskell-unix-compat"
+    , debianize "cmdargs" []
+    , P.Package { P.name = "haskell-language-javascript",
+                  P.spec = Patch (Debianize (Hackage "language-javascript"))
+                                 (unlines [ "--- language-javascript-0.5.4/debian/control~\t2012-07-29 17:42:20.055247337 -0700"
+                                          , "+++ language-javascript-0.5.4/debian/control\t2012-07-29 18:20:09.983238576 -0700"
+                                          , "@@ -7,6 +7,7 @@"
+                                          , "                , cdbs"
+                                          , "                , ghc"
+                                          , "                , ghc-prof"
+                                          , "+\t       , happy"
+                                          , "                , libghc-array-dev (>= 0.3) | ghc"
+                                          , "                , libghc-array-dev (<< 0.5) | ghc"
+                                          , "                , libghc-array-prof (>= 0.3) | ghc-prof"
+                                          ]),
+                   P.flags = [] 
+                 }
+
+    , debianize "fay" []
+    , debianize "Elm" []
+    , patched "elm-server" []
+                  (unlines
+                   [ "--- old/elm-server.cabal~\t2012-07-28 15:40:05.267609057 -0700"
+                   , "+++ new/elm-server.cabal\t2012-07-28 16:02:39.259603831 -0700"
+                   , "@@ -32,6 +32,6 @@"
+                   , "                        parsec >= 3.1.1,"
+                   , "                        blaze-html == 0.5.0.*,"
+                   , "                        HTTP >= 4000,"
+                   , "-                       happstack-server == 7.0.2,"
+                   , "+                       happstack-server >= 7.0.2,"
+                   , "                        deepseq,"
+                   , "                        Elm == 0.3.*"
+                   ])
     , debianize "unix-compat" [P.DebVersion "0.3.0.1-1build1"]
     , debianize "Unixutils-shadow" []
     , debianize "unordered-containers" []
