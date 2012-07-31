@@ -1930,6 +1930,7 @@ algebra = P.Packages (singleton "algebra")
     , debianize "comonads-fd" []
     , debianize "comonad-transformers" []
     , debianize "control-monad-free" []
+    , debianize "transformers-free" []
     , debianize "contravariant" []
     , debianize "distributive" []
     , P.Package { P.name = "free"
