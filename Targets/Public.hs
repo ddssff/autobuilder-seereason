@@ -1937,6 +1937,7 @@ algebra = P.Packages (singleton "algebra")
                 , P.spec = Debianize (Hackage "free")
                 , P.flags = [] }
     , debianize "keys" []
+    , debianize "lens" []
     , debianize "lens-family-core" []
     , debianize "lens-family" []
     , debianize "lens-family-th" []
