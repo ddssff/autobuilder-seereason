@@ -1443,6 +1443,8 @@ happstack release =
                 , P.flags = [] }
 
     , debianize "happstack-jmacro" []
+    , debianize "jmacro-rpc-happstack" []
+    , debianize "jmacro-rpc" []
     , P.Package { P.name = "haskell-happstack-search"
                 , P.spec = Darcs (repo ++ "/happstack-search")
                 , P.flags = [] }
