@@ -579,7 +579,7 @@ main _home release =
                 , P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs "http://src.seereason.com/haskell-incremental-sat-solver-debian")
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     , debianize "instant-generics" []
-    , debianize "irc" [P.DebVersion "0.5.0.0-1"]
+    , debianize "irc" []
     , debianize "ixset" []
     , P.Package { P.name = "haskell-json"
                 , P.spec = Darcs (repo ++ "/haskell-json")
@@ -872,7 +872,7 @@ main _home release =
                                   , "                     DivTag    -> divTag  spec next'" ])
                 , P.flags = [P.DebVersion "0.0.4-1~hackage1"] }
     , debianize "SMTPClient" [P.DebVersion "1.0.4-3"]
-    , debianize "socks" [P.DebVersion "0.4.1-1"]
+    , debianize "socks" []
     , debianize "split" []
     -- This package becomes the debian package "haskell-haskell-src-exts".
     -- Unfortunately, debian gave it the name "haskell-src-exts" dropping
@@ -1908,22 +1908,7 @@ failing release =
     , apt release "haskell-statistics" ]
 
 algebra = P.Packages (singleton "algebra")
-    [ patched "data-lens" []
-        (unlines
-         [ "--- old/data-lens.cabal\t2012-07-25 09:29:07.000000000 -0700"
-         , "+++ new/data-lens.cabal\t2012-07-25 09:32:24.191537240 -0700"
-         , "@@ -26,9 +26,9 @@"
-         , "   build-depends:"
-         , "     base                 >= 4       && < 5,"
-         , "     comonad              >= 1.1.1.3 && < 3.1,"
-         , "-    comonad-transformers >= 2.0     && < 2.2,"
-         , "+    comonad-transformers >= 2.0,"
-         , "     containers           >= 0.3     && < 0.5,"
-         , "-    semigroupoids        >= 1.2.4   && < 1.4,"
-         , "+    semigroupoids        >= 1.2.4,"
-         , "     transformers         >= 0.2.0   && < 0.4"
-         , " "
-         , "   if flag(DeriveDataTypeable)" ])
+    [ debianize "data-lens" []
     , debianize "adjunctions" []
     , debianize "algebra" []
     , debianize "bifunctors" []
