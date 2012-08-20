@@ -1927,7 +1927,8 @@ algebra = P.Packages (singleton "algebra")
     , debianize "lens-family-th" []
     , debianize "representable-functors" []
     , debianize "representable-tries" []
-    , debianize "semigroupoids" [] ]
+    , debianize "semigroupoids" []
+    , debianize "spine" [] ]
 
 -- Debian package has versioned dependencies on binary, but the
 -- virtual binary package provided with ghc 7.4 (0.5.1.0) is
