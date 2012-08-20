@@ -1920,9 +1920,6 @@ algebra = P.Packages (singleton "algebra")
     , debianize "transformers-free" []
     , debianize "contravariant" []
     , debianize "distributive" []
-    , P.Package { P.name = "free"
-                , P.spec = Debianize (Hackage "free")
-                , P.flags = [] }
     , debianize "keys" []
     , debianize "lens" []
     , debianize "lens-family-core" []
