@@ -731,6 +731,9 @@ main _home release =
                 , P.flags = [P.OmitLTDeps] }
     , debianize "ordered" []
     , debianize "multiset" []
+    , P.Package { P.name = "haskell-process-extras"
+                , P.spec = Debianize (Hackage "process-extras")
+                , P.flags = [] }
     , debianize "texmath" []
     , debianize "temporary" [P.DebVersion "1.1.2.3-1build1"]
     , debianize "pandoc-types" [P.DebVersion "1.9.1-1"]
@@ -1280,6 +1283,7 @@ clckwrks _home release =
         [ happstack release
         , authenticate _home release
         , happstackdotcom _home
+        , plugins
         , P.Package { P.name = "haskell-clckwrks"
                     , P.spec = Debianize (Patch
                                           (DataFiles
@@ -1373,7 +1377,16 @@ clckwrks _home release =
                                            , "+    json2/json2.js"
                                            , " "
                                            , " Library"
-                                           , "   Exposed-modules: Clckwrks" ]))
+                                           , "   Exposed-modules: Clckwrks" 
+                                           , "@@ -59,7 +132,7 @@"
+                                           , "                    Paths_clckwrks"
+                                           , " "
+                                           , "   Build-depends:"
+                                           , "-     acid-state                   == 0.6.*,"
+                                           , "+     acid-state                   >= 0.6,"
+                                           , "      aeson                        >= 0.5 && < 0.7,"
+                                           , "      attoparsec                   == 0.10.*,"
+                                           , "      base                           < 5," ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Cd "clckwrks-cli" (Darcs repo))
@@ -1382,7 +1395,20 @@ clckwrks _home release =
                     , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
-                    , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
+                    , P.spec = Debianize (Patch
+                                          (Cd "clckwrks-plugin-media" (Darcs repo))
+                                          (unlines
+                                           [ "--- old/clckwrks-plugin-media.cabal\t2012-08-21 10:13:12.000000000 -0700"
+                                           , "+++ new/clckwrks-plugin-media.cabal\t2012-08-21 11:46:18.766302890 -0700"
+                                           , "@@ -33,7 +33,7 @@"
+                                           , " "
+                                           , "   Build-depends:"
+                                           , "     base                     < 5,"
+                                           , "-    acid-state             == 0.6.*,"
+                                           , "+    acid-state             >= 0.6,"
+                                           , "     attoparsec             == 0.10.*,"
+                                           , "     blaze-html             == 0.5.*,"
+                                           , "     clckwrks               >= 0.10 && < 0.12," ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
                     , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
@@ -1403,7 +1429,8 @@ clckwrks _home release =
 happstack release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" in
     P.Packages (singleton "happstack")
-    [ P.Package { P.name = "happstack-debianization"
+    [ plugins
+    , P.Package { P.name = "happstack-debianization"
                 , P.spec = Darcs "http://src.seereason.com/happstack-debianization"
                 , P.flags = [] }
     , P.Package { P.name = "haskell-seereason-base"
@@ -1723,10 +1750,10 @@ authenticate _home release =
                 , P.spec = Debianize (Darcs (repo ++ "/happstack-authenticate"))
                 , P.flags = [] }
     , digestiveFunctors
-      -- Note that current version of fb does not build with conduit 0.5.
+      -- The new version of fb (0.11) would require unpinned conduit packages.
     , P.Package { P.name = "haskell-fb"
                 , P.spec = Debianize (Hackage "fb")
-                , P.flags = [] }
+                , P.flags = [P.CabalPin "0.9.7"] }
     ]
 
 -- ircbot needs a dependency on containers
@@ -1838,45 +1865,7 @@ glib release = P.Packages (singleton "glib") $
 --      Module `GHC.Exts' does not export `addrToHValue#'
 --  make: *** [build-ghc-stamp] Error 1
 plugins = P.Packages (singleton "plugins") $
-    [ patched "plugins"
-                    [ P.DebVersion "1.5.1.4-1~hackage1" ]
-                    (unlines
-                      [ "--- haskell-plugins-1.5.1.4.orig/src/System/Plugins/Load.hs\t2011-12-07 07:13:54.000000000 -0800"
-                      , "+++ haskell-plugins-1.5.1.4/src/System/Plugins/Load.hs\t2012-01-02 10:16:25.766481952 -0800"
-                      , "@@ -84,7 +84,9 @@"
-                      , " import System.Directory         ( doesFileExist, removeFile )"
-                      , " import Foreign.C.String         ( CString, withCString, peekCString )"
-                      , " "
-                      , "+#if !MIN_VERSION_ghc(7,2,0)"
-                      , " import GHC                      ( defaultCallbacks )"
-                      , "+#endif"
-                      , " import GHC.Ptr                  ( Ptr(..), nullPtr )"
-                      , " import GHC.Exts                 ( addrToHValue# )"
-                      , " import GHC.Prim                 ( unsafeCoerce# )"
-                      , "@@ -99,7 +101,11 @@"
-                      , " readBinIface' :: FilePath -> IO ModIface"
-                      , " readBinIface' hi_path = do"
-                      , "     -- kludgy as hell"
-                      , "+#if MIN_VERSION_ghc(7,2,0)"
-                      , "+    e <- newHscEnv undefined"
-                      , "+#else"
-                      , "     e <- newHscEnv defaultCallbacks undefined"
-                      , "+#endif"
-                      , "     initTcRnIf 'r' e undefined undefined (readBinIface IgnoreHiWay QuietBinIFaceReading hi_path)"
-                      , " "
-                      , " -- TODO need a loadPackage p package.conf :: IO () primitive"
-                      , "@@ -679,7 +685,11 @@"
-                      , " "
-                      , "                 -- and find some packages to load, as well."
-                      , "                 let ps = dep_pkgs ds"
-                      , "+#if MIN_VERSION_ghc(7,2,0)"
-                      , "+                ps' <- filterM loaded . map packageIdString . nub $ map fst ps"
-                      , "+#else"
-                      , "                 ps' <- filterM loaded . map packageIdString . nub $ ps"
-                      , "+#endif"
-                      , " "
-                      , " #if DEBUG"
-                      , "                 when (not (null ps')) $" ])
+    [ debianize "plugins" []
     , debianize "happstack-plugins" []
     , debianize "plugins-auto" [] ]
 
