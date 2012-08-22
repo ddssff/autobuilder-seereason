@@ -1296,10 +1296,10 @@ clckwrks _home release =
                                                 "95def87b93d11289cd2eee1cc3ca7948")
                                            "json2")
                                           (unlines
-                                           [ "--- old/clckwrks.cabal.orig\t2012-03-06 11:34:28.000000000 -0800"
-                                           , "+++ new/clckwrks.cabal\t2012-03-07 20:17:25.465527760 -0800"
+                                           [ "--- old/clckwrks.cabal\t2012-08-22 10:37:00.000000000 -0700"
+                                           , "+++ new/clckwrks.cabal\t2012-08-22 10:37:50.000000000 -0700"
                                            , "@@ -15,6 +15,79 @@"
-                                           , " Cabal-version:       >=1.2"
+                                           , " Cabal-version:       >=1.6"
                                            , " Data-Files:"
                                            , "     static/admin.css"
                                            , "+    jstree/_lib/jquery.hotkeys.js"
@@ -1377,16 +1377,7 @@ clckwrks _home release =
                                            , "+    json2/json2.js"
                                            , " "
                                            , " Library"
-                                           , "   Exposed-modules: Clckwrks" 
-                                           , "@@ -59,7 +132,7 @@"
-                                           , "                    Paths_clckwrks"
-                                           , " "
-                                           , "   Build-depends:"
-                                           , "-     acid-state                   == 0.6.*,"
-                                           , "+     acid-state                   >= 0.6,"
-                                           , "      aeson                        >= 0.5 && < 0.7,"
-                                           , "      attoparsec                   == 0.10.*,"
-                                           , "      base                           < 5," ]))
+                                           , "   Build-tools:     trhsx" ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Cd "clckwrks-cli" (Darcs repo))
@@ -1395,20 +1386,7 @@ clckwrks _home release =
                     , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
-                    , P.spec = Debianize (Patch
-                                          (Cd "clckwrks-plugin-media" (Darcs repo))
-                                          (unlines
-                                           [ "--- old/clckwrks-plugin-media.cabal\t2012-08-21 10:13:12.000000000 -0700"
-                                           , "+++ new/clckwrks-plugin-media.cabal\t2012-08-21 11:46:18.766302890 -0700"
-                                           , "@@ -33,7 +33,7 @@"
-                                           , " "
-                                           , "   Build-depends:"
-                                           , "     base                     < 5,"
-                                           , "-    acid-state             == 0.6.*,"
-                                           , "+    acid-state             >= 0.6,"
-                                           , "     attoparsec             == 0.10.*,"
-                                           , "     blaze-html             == 0.5.*,"
-                                           , "     clckwrks               >= 0.10 && < 0.12," ]))
+                    , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
                     , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
