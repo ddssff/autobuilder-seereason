@@ -64,7 +64,7 @@ applications _home =
                 -- Haddock gets upset about the HSX.QQ modules.  Not sure why.
                 , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc] }
     , P.Package { P.name = "seereasonpartners-dot-com"
-                , P.spec = Debianize (Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks")))
+                , P.spec = Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-clckwrks-theme-seereasonpartners"
                 , P.spec = Debianize (Cd "clckwrks-theme-seereasonpartners" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks")))

@@ -591,6 +591,7 @@ main _home release =
     , P.Package { P.name = "haskell-logic-classes"
                 , P.spec = Darcs (repo ++ "/haskell-logic")
                 , P.flags = [] }
+    , debianize "pointed" []
     , patched "logic-TPTP" [ P.ExtraDep "alex"
                            , P.ExtraDep "happy"
                            , P.DebVersion "0.3.0.1-1~hackage1" ]
@@ -891,7 +892,7 @@ main _home release =
     , debianize "smallcheck" []
     -- Because 0.3.3-1 is both in sid and hackage, we need to keep the debianize
     -- code from using version 0.3.3-1~hackage1 which looks older.
-    , debianize "syb-with-class" [P.DebVersion "0.6.1.3-1build1"]
+    , debianize "syb-with-class" []
     , apt release "haskell-syb-with-class-instances-text"
     , debianize "tagged" []
     , debianize "tagsoup" [P.DebVersion "0.12.6-1"]
@@ -1612,7 +1613,25 @@ happstack release =
 -- from conduit 0.4.2 to 0.5.
 conduit =
   P.Packages (singleton "conduit")
-    [ debianize "conduit" [P.CabalPin "0.4.2"]
+    [ P.Package { P.name = "haskell-conduit"
+                , P.spec = Debianize (Hackage "conduit")
+{-
+                                     (Patch
+                                      (Hackage "conduit")
+                                      (unlines
+                                       [ "--- old/conduit.cabal\t2012-09-11 05:08:42.000000000 -0700"
+                                       , "+++ new/conduit.cabal\t2012-09-11 06:02:31.251909751 -0700"
+                                       , "@@ -49,7 +49,7 @@"
+                                       , "                        Data.Conduit.Util.Sink"
+                                       , "                        Data.Conduit.Util.Conduit"
+                                       , "   Build-depends:       base                     >= 4.3          && < 5"
+                                       , "-                     , resourcet                >= 0.3          && < 0.4"
+                                       , "+                     , resourcet                >= 0.3"
+                                       , "                      , lifted-base              >= 0.1          && < 0.2"
+                                       , "                      , transformers-base        >= 0.4.1        && < 0.5"
+                                       , "                      , monad-control            >= 0.3.1        && < 0.4" ]))
+-}
+                , P.flags = [P.CabalPin "0.4.2"] }
     , debianize "attoparsec-conduit" [P.CabalPin "0.4.0.1"]
     , debianize "blaze-builder-conduit" [P.CabalPin "0.4.0.2"]
     , P.Package { P.name = "haskell-http-conduit"
@@ -1666,7 +1685,7 @@ authenticate _home release =
     , apt release "haskell-puremd5"
     , debianize "monadcryptorandom" []
     , debianize "RSA" []
-    , debianize "resourcet" []
+    , debianize "resourcet" [P.CabalPin "0.3.3.1"] -- Due to conduit=0.4.2 pin
     , debianize "void" []
     , debianize "certificate" []
     , debianize "pem" []
