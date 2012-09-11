@@ -120,11 +120,11 @@ main _home release =
     , P.Package { P.name = "haskell-applicative-extras",
                   P.spec = Debianize (Hackage "applicative-extras"),
                   P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.DebVersion "0.1.8-1"] }
-    , debianize "asn1-data" [P.DebVersion "0.6.1.3-2"]
+    , debianize "asn1-data" []
     , debianize "attempt" [P.DebVersion "0.4.0-1"]
     , debianize "failure" []
     , debianize "attoparsec" []
-    , debianize "attoparsec-enumerator" [P.DebVersion "0.3-3"]
+    , debianize "attoparsec-enumerator" []
     , P.Package { P.name = "haskell-attoparsec-text"
                 , P.spec = Debianize (Patch
                                       (Hackage "attoparsec-text")
@@ -159,7 +159,7 @@ main _home release =
                 , P.spec = Quilt (Apt "sid" "haskell-bzlib") (Darcs "http://src.seereason.com/haskell-bzlib-quilt")
                 , P.flags = [] }
     -- , debianize "cairo-pdf" []
-    , debianize "case-insensitive" [P.DebVersion "0.4.0.1-2"]
+    , debianize "case-insensitive" []
     , debianize "CC-delcont" [P.DebVersion "0.2-1~hackage1"]
     , apt release "haskell-cereal"
     , debianize "citeproc-hs" [P.DebVersion "0.3.4-1"]
@@ -174,7 +174,8 @@ main _home release =
     , P.Package { P.name = "haskell-consumer"
                 , P.spec = Darcs "http://src.seereason.com/haskell-consumer"
                 , P.flags = [] }
-    , debianize "cprng-aes" [P.DebVersion "0.2.3-3"]
+    , debianize "cipher-aes" []
+    , debianize "cprng-aes" []
     , P.Package { P.name = "haskell-crypto"
                 , P.spec = Debianize (Hackage "Crypto")
                 , P.flags = [] }
@@ -489,7 +490,7 @@ main _home release =
     --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
     , apt release "haskell-harp"
-    , debianize "hashable" [P.DebVersion "1.1.2.3-1"]
+    , debianize "hashable" []
     , debianize "hashed-storage" [P.DebVersion "0.5.9-2build1"]
     , P.Package { P.name = "haskell-haskeline"
                 , P.spec = Debianize (Hackage "haskeline")
@@ -593,8 +594,7 @@ main _home release =
                 , P.flags = [] }
     , debianize "pointed" []
     , patched "logic-TPTP" [ P.ExtraDep "alex"
-                           , P.ExtraDep "happy"
-                           , P.DebVersion "0.3.0.1-1~hackage1" ]
+                           , P.ExtraDep "happy" ]
                            (unlines
                                [ "--- old/logic-TPTP.cabal\t2011-09-15 16:31:03.000000000 -0700"
                                , "+++ new/logic-TPTP.cabal\t2011-09-16 13:40:26.458725487 -0700"
@@ -895,7 +895,7 @@ main _home release =
     , debianize "syb-with-class" []
     , apt release "haskell-syb-with-class-instances-text"
     , debianize "tagged" []
-    , debianize "tagsoup" [P.DebVersion "0.12.6-1"]
+    , debianize "tagsoup" []
     , debianize "tar" []
     , debianize "terminfo" [P.ExtraDep "libncurses-dev"]
     , debianize "test-framework"
@@ -927,19 +927,7 @@ main _home release =
                       , " "
                       , "         Extensions:             TypeSynonymInstances"
                       , "                                 TypeOperators" ])
-    , patched "test-framework-quickcheck2" []
-              (unlines
-               [ "--- old/test-framework-quickcheck2.cabal\t2012-06-30 08:55:08.894352658 -0700"
-               , "+++ new/test-framework-quickcheck2.cabal\t2012-06-30 08:55:14.430352790 -0700"
-               , "@@ -22,7 +22,7 @@"
-               , " Library"
-               , "         Exposed-Modules:        Test.Framework.Providers.QuickCheck2"
-               , " "
-               , "-        Build-Depends:          test-framework >= 0.6, QuickCheck >= 2.4 && < 2.5, extensible-exceptions >= 0.1.1 && < 0.2.0"
-               , "+        Build-Depends:          test-framework >= 0.6, QuickCheck >= 2.4 && < 2.6, extensible-exceptions >= 0.1.1 && < 0.2.0"
-               , "         if flag(base3)"
-               , "                 Build-Depends:          base >= 3 && < 4, random >= 1"
-               , "         else" ])
+    , debianize "test-framework-quickcheck2" []
     , debianize "testpack" []
     , debianize "th-expand-syns" []
     , debianize "th-lift" []
@@ -996,7 +984,7 @@ main _home release =
                    , "                        deepseq,"
                    , "                        Elm == 0.3.*"
                    ])
-    , debianize "unix-compat" [P.DebVersion "0.3.0.1-1build1"]
+    , debianize "unix-compat" []
     , debianize "Unixutils-shadow" []
     , debianize "unordered-containers" []
     , debianize "utf8-prelude" [P.DebVersion "0.1.6-1~hackage1"]
@@ -1008,7 +996,7 @@ main _home release =
                 , P.spec = Debianize (Hackage "logict")
                 , P.flags = [] }
     , apt release "haskell-utility-ht"
-    , debianize "vacuum" [P.DebVersion "1.0.0.2-1~hackage1"]
+    , debianize "vacuum" []
     -- Requires devscripts 0.8.9, restore when that gets built
     -- apt release "haskell-vector"
     -- Version 0.9-1+seereason1~lucid1 is uploaded to lucid already,
@@ -1017,9 +1005,9 @@ main _home release =
     , apt release "haskell-vector-algorithms"
     , patched "virthualenv" []
                     (unlines
-                     [ "--- old/virthualenv.cabal\t2012-07-02 06:17:41.000000000 -0700"
-                     , "+++ new/virthualenv.cabal\t2012-07-02 06:33:28.174234565 -0700"
-                     , "@@ -103,7 +103,7 @@"
+                     [ "--- old/virthualenv.cabal\t2012-09-05 22:50:47.809090845 -0700"
+                     , "+++ new/virthualenv.cabal\t2012-09-05 22:49:55.521089609 -0700"
+                     , "@@ -103,10 +103,10 @@"
                      , "                , filepath >= 1.1.0.3 && < 1.4"
                      , "                , directory >= 1.0.1.0 && < 1.2"
                      , "                , Cabal >= 1.8.0.6 && < 1.15"
@@ -1027,7 +1015,11 @@ main _home release =
                      , "+               , mtl >= 1.1.0.2"
                      , "                , bytestring >= 0.9.1.7 && < 0.10"
                      , "                , file-embed >= 0.0.4.1 && < 0.1"
-                     , "                , split >= 0.1.4 && < 0.2" ])
+                     , "-               , split >= 0.1.4 && < 0.2"
+                     , "+               , split >= 0.1.4"
+                     , "                , safe >= 0.3 && < 0.4"
+                     , " "
+                     , "   Other-modules: Util.Cabal" ])
     , debianize "vault" []
     , P.Package { P.name = "haskell-wai"
                 , P.spec = Debianize (Hackage "wai")
@@ -1049,7 +1041,7 @@ main _home release =
     , apt release "haskell-xml"
     , debianize "cookie" [P.DebVersion "0.4.0-1"]
     , debianize "lifted-base" []
-    , debianize "system-filepath" [P.DebVersion "0.4.6-1"]
+    , debianize "system-filepath" []
     , patched "xml-enumerator" []
                  (unlines
                    [ "--- old/xml-enumerator.cabal\t2012-01-20 06:47:15.000000000 -0800"
@@ -1378,10 +1370,32 @@ clckwrks _home release =
                                            , "+    json2/json2.js"
                                            , " "
                                            , " Library"
-                                           , "   Build-tools:     trhsx" ]))
+                                           , "   Build-tools:     trhsx" 
+                                           , "@@ -59,7 +132,7 @@"
+                                           , "                    Paths_clckwrks"
+                                           , " "
+                                           , "   Build-depends:"
+                                           , "-     acid-state                   == 0.7.*,"
+                                           , "+     acid-state                   >= 0.6,"
+                                           , "      aeson                        >= 0.5 && < 0.7,"
+                                           , "      attoparsec                   == 0.10.*,"
+                                           , "      base                           < 5," ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
-                    , P.spec = Debianize (Cd "clckwrks-cli" (Darcs repo))
+                    , P.spec = Debianize (Patch
+                                          (Cd "clckwrks-cli" (Darcs repo))
+                                          (unlines
+                                           [ "--- old/clckwrks-cli.cabal\t2012-08-22 10:36:25.000000000 -0700"
+                                           , "+++ new/clckwrks-cli.cabal\t2012-08-22 14:00:31.336534523 -0700"
+                                           , "@@ -17,7 +17,7 @@"
+                                           , "      Main.hs"
+                                           , " "
+                                           , "   Build-depends:"
+                                           , "-     acid-state == 0.7.*,"
+                                           , "+     acid-state >= 0.6,"
+                                           , "      base        < 5,"
+                                           , "      clckwrks   == 0.12.*,"
+                                           , "      network    == 2.3.*" ]))
                     , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-bugs"
                     , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
@@ -1403,6 +1417,7 @@ clckwrks _home release =
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , debianize "jmacro" []
         , debianize "hsx-jmacro" []
+        , debianize "monadlist" []
         ]
 
 happstack release =
@@ -1570,7 +1585,7 @@ happstack release =
                 , P.flags = [] }
     , debianize "blaze-from-html" []
     , debianize "blaze-html" []
-    , debianize "blaze-textual" [P.DebVersion "0.2.0.6-2"]
+    , debianize "blaze-textual" []
     , P.Package { P.name = "haskell-blaze-textual-native"
                 , P.spec = Debianize (Patch
                                       (Hackage "blaze-textual-native")
@@ -1652,8 +1667,9 @@ conduit =
                                        , "@@ -40,7 +40,7 @@"
                                        , "                  , case-insensitive      >= 0.2"
                                        , "                  , base64-bytestring     >= 0.1     && < 0.2"
-                                       , "                  , asn1-data             >= 0.5.1   && < 0.7"
+                                       , "-                 , asn1-data             >= 0.5.1   && < 0.7"
                                        , "-                 , data-default          >= 0.3     && < 0.5"
+                                       , "+                 , asn1-data             >= 0.5.1"
                                        , "+                 , data-default          >= 0.3"
                                        , "                  , text"
                                        , "                  , transformers-base     >= 0.4     && < 0.5"
@@ -1736,8 +1752,9 @@ authenticate _home release =
                                        , "+                 , certificate           >= 1.1"
                                        , "                  , case-insensitive      >= 0.2"
                                        , "                  , base64-bytestring     >= 0.1     && < 0.2"
-                                       , "                  , asn1-data             >= 0.5.1   && < 0.7"
+                                       , "-                 , asn1-data             >= 0.5.1   && < 0.7"
                                        , "-                 , data-default          >= 0.3     && < 0.5"
+                                       , "+                 , asn1-data             >= 0.5.1"
                                        , "+                 , data-default          >= 0.3"
                                        , "     if flag(network-bytestring)"
                                        , "         build-depends: network               >= 2.2.1   && < 2.2.3"
