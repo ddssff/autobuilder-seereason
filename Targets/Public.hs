@@ -491,9 +491,30 @@ main _home release =
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
     , apt release "haskell-harp"
     , debianize "hashable" []
-    , debianize "hashed-storage" [P.DebVersion "0.5.9-2build1"]
+    , debianize "hashed-storage" []
     , P.Package { P.name = "haskell-haskeline"
                 , P.spec = Debianize (Hackage "haskeline")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-th-orphans"
+                , P.spec = Debianize (Patch
+                                      (Hackage "th-orphans") 
+                                      (unlines
+                                       [ "--- old/src/Language/Haskell/TH/Instances.hs\t2012-09-17 21:52:45.000000000 -0700"
+                                       , "+++ new/src/Language/Haskell/TH/Instances.hs\t2012-09-17 22:17:14.057539784 -0700"
+                                       , "@@ -9,10 +9,11 @@"
+                                       , "   Maintainer  :  Michael Sloan <mgsloan at gmail>"
+                                       , "   Stability   :  experimental"
+                                       , "   Portability :  portable (template-haskell)"
+                                       , "+"
+                                       , "+  Provides Ord and Lift instances for the TH datatypes.  Also provides"
+                                       , "+  Show / Eq for Loc, and Ppr for Loc / Lit."
+                                       , " -}"
+                                       , " "
+                                       , "--- | Provides Ord and Lift instances for the TH datatypes.  Also provides"
+                                       , "---   Show / Eq for Loc, and Ppr for Loc / Lit."
+                                       , " module Language.Haskell.TH.Instances () where"
+                                       , " "
+                                       , " import Language.Haskell.TH.Syntax" ]))
                 , P.flags = [] }
     , debianize "haskell-src-meta" []
     -- Because we specify an exact debian version here, this package
@@ -592,7 +613,22 @@ main _home release =
     , P.Package { P.name = "haskell-logic-classes"
                 , P.spec = Darcs (repo ++ "/haskell-logic")
                 , P.flags = [] }
-    , debianize "pointed" []
+    , P.Package { P.name = "haskell-pointed"
+                , P.spec = Debianize (Patch 
+                                      (Hackage "pointed")
+                                      (unlines
+                                       [ "--- old/pointed.cabal\t2012-09-17 16:18:20.000000000 -0700"
+                                       , "+++ new/pointed.cabal\t2012-09-17 21:17:10.225454635 -0700"
+                                       , "@@ -26,7 +26,7 @@"
+                                       , "     containers           >= 0.4     && < 0.6,"
+                                       , "     comonad              >= 3.0     && < 3.1,"
+                                       , "     comonad-transformers >= 3.0     && < 3.1,"
+                                       , "-    data-default         >= 0.4     && < 0.5,"
+                                       , "+    data-default         >= 0.4     && < 0.6,"
+                                       , "     semigroups           >= 0.8.3.1 && < 0.9,"
+                                       , "     semigroupoids        >= 3.0     && < 3.1,"
+                                       , "     stm                  >= 2.1.2.1 && < 2.5" ]))
+                , P.flags = [] }
     , patched "logic-TPTP" [ P.ExtraDep "alex"
                            , P.ExtraDep "happy" ]
                            (unlines
@@ -699,8 +735,8 @@ main _home release =
                              , "                  x   -> x" ])
     , patched "openid" []
                     (unlines
-                      [ "--- old/openid.cabal\t2012-01-23 15:04:29.547162493 -0800"
-                      , "+++ new/openid.cabal\t2012-01-23 15:04:38.637160245 -0800"
+                      [ "--- old/openid.cabal\t2012-09-17 16:18:01.000000000 -0700"
+                      , "+++ new/openid.cabal\t2012-09-17 21:23:19.021463349 -0700"
                       , "@@ -28,11 +28,11 @@"
                       , " library"
                       , "   build-depends:   base       >= 4.0.0.0  && < 5.0.0.0,"
@@ -710,8 +746,9 @@ main _home release =
                       , "+                   containers >= 0.2.0.0,"
                       , "+                   HTTP       >= 4000.0.9,"
                       , "                    monadLib   >= 3.6.0.0  && < 3.7.0.0,"
-                      , "                    network    >= 2.2.0.0  && < 2.4.0.0,"
+                      , "-                   network    >= 2.2.0.0  && < 2.4.0.0,"
                       , "-                   time       >= 1.1.0.0  && < 1.3.0.0,"
+                      , "+                   network    >= 2.2.0.0  && < 2.5.0.0,"
                       , "+                   time       >= 1.1.0.0,"
                       , "                    xml        >= 1.3.0.0  && < 1.4.0.0,"
                       , "                    HsOpenSSL  >= 0.9.0.0  && < 0.11.0.0"
@@ -970,7 +1007,58 @@ main _home release =
                  }
 
     , debianize "fay" []
-    , debianize "Elm" []
+    , debianize "options" []
+    , P.Package { P.name = "haskell-language-ecmascript" 
+                , P.spec = Debianize (Patch
+                                      (Hackage "language-ecmascript")
+                                      (unlines
+                                       [ "--- old/language-ecmascript.cabal\t2012-09-18 05:33:30.000000000 -0700"
+                                       , "+++ new/language-ecmascript.cabal\t2012-09-18 05:52:14.738184818 -0700"
+                                       , "@@ -42,7 +42,7 @@"
+                                       , "     containers >= 0.1,"
+                                       , "     syb >= 0.1,"
+                                       , "     uniplate >= 1.6 && <1.7,"
+                                       , "-    data-default >= 0.4 && <0.5"
+                                       , "+    data-default >= 0.4 && <0.6"
+                                       , "   ghc-options:"
+                                       , "     -fwarn-incomplete-patterns"
+                                       , "   Exposed-Modules:"
+                                       , "@@ -72,7 +72,7 @@"
+                                       , "     directory,"
+                                       , "     filepath,"
+                                       , "     HUnit,"
+                                       , "-    data-default >=0.4 && <0.5"
+                                       , "+    data-default >=0.4 && <0.6"
+                                       , "   Default-Extensions: DeriveDataTypeable, ScopedTypeVariables, DeriveFunctor, DeriveFoldable, DeriveTraversable, FlexibleContexts"
+                                       , "   Default-Language: Haskell2010"
+                                       , "   ghc-options:" ]))
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-elm"
+                , P.spec = Debianize (Patch
+                                      (Hackage "Elm") 
+                                      (unlines
+                                       [ "--- old/Elm.cabal\t2012-09-17 22:23:05.000000000 -0700"
+                                       , "+++ new/Elm.cabal\t2012-09-17 22:39:42.669571647 -0700"
+                                       , "@@ -62,7 +62,7 @@"
+                                       , "                        transformers >= 0.2,"
+                                       , "                        mtl >= 2,"
+                                       , "                        parsec >= 3.1.1,"
+                                       , "-                       blaze-html == 0.5.0.*,"
+                                       , "+                       blaze-html == 0.5.1.*,"
+                                       , "                        blaze-markup == 0.5.1.*,"
+                                       , "                        deepseq,"
+                                       , "                        text,"
+                                       , "@@ -104,7 +104,7 @@"
+                                       , "                        transformers >= 0.2,"
+                                       , "                        mtl >= 2,"
+                                       , "                        parsec >= 3.1.1,"
+                                       , "-                       blaze-html == 0.5.0.*,"
+                                       , "+                       blaze-html == 0.5.1.*,"
+                                       , "                        blaze-markup == 0.5.1.*,"
+                                       , "                        deepseq,"
+                                       , "                        cmdargs," ]))
+                , P.flags = [] }
+    , debianize "hjsmin" []
     , patched "elm-server" []
                   (unlines
                    [ "--- old/elm-server.cabal~\t2012-07-28 15:40:05.267609057 -0700"
@@ -1039,7 +1127,7 @@ main _home release =
                       , "                      Web.Encodings.MimeHeader," ])
     , debianize "boomerang" []
     , apt release "haskell-xml"
-    , debianize "cookie" [P.DebVersion "0.4.0-1"]
+    , debianize "cookie" []
     , debianize "lifted-base" []
     , debianize "system-filepath" []
     , patched "xml-enumerator" []
@@ -1077,7 +1165,20 @@ main _home release =
     , P.Package { P.name = "hscolour"
                 , P.spec = Apt "sid" "hscolour"
                 , P.flags = [P.RelaxDep "hscolour"] }
-    , apt release "hslogger"
+    , P.Package { P.name = "hslogger"
+                , P.spec = Patch (Apt "sid" "hslogger")
+                                 (unlines [ "--- old/hslogger.cabal\t2011-03-07 07:22:05.000000000 -0800"
+                                          , "+++ new/hslogger.cabal\t2012-09-17 20:54:27.381422435 -0700"
+                                          , "@@ -42,7 +42,7 @@"
+                                          , "         System.Log.Handler.Growl, System.Log.Handler.Log4jXML,"
+                                          , "         System.Log.Logger"
+                                          , "     Extensions: CPP, ExistentialQuantification"
+                                          , "-    Build-Depends: network < 2.4, mtl"
+                                          , "+    Build-Depends: network < 2.5, mtl"
+                                          , "     if !os(windows)"
+                                          , "         Build-Depends: unix"
+                                          , "     if flag(small_base)" ])
+                , P.flags = [] }
     , apt release "html-xml-utils"
     , apt release "node-uglify"
     , P.Package { P.name = "jquery"
@@ -1254,7 +1355,7 @@ platform release =
     , P.Package { P.name = "haskell-cgi"
                 , P.spec = Debianize (Hackage "cgi")
                 -- , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz" "4092efaf00ac329b9771879f57a95323") (Darcs "http://src.seereason.com/haskell-cgi-debian")
-                , P.flags = [P.DebVersion "3001.1.8.2-2"] }
+                , P.flags = [] }
     -- This is bundled with the compiler
     -- , debianize "process" []
     -- Random is built into 7.0, but not into 7.2, and the version
@@ -1379,7 +1480,16 @@ clckwrks _home release =
                                            , "+     acid-state                   >= 0.6,"
                                            , "      aeson                        >= 0.5 && < 0.7,"
                                            , "      attoparsec                   == 0.10.*,"
-                                           , "      base                           < 5," ]))
+                                           , "      base                           < 5," 
+                                           , "@@ -77,7 +150,7 @@"
+                                           , "      ixset                        == 1.0.*,"
+                                           , "      jmacro                       == 0.5.*,"
+                                           , "      mtl                          >= 2.0 && <2.3,"
+                                           , "-     network                      == 2.3.*,"
+                                           , "+     network                      == 2.4.*,"
+                                           , "      old-locale                   ==  1.0.*,"
+                                           , "      process                      >= 1.0 && < 1.2,"
+                                           , " --     plugins-auto == 0.0.1.1," ]))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Patch
@@ -1507,9 +1617,9 @@ happstack release =
                 , P.spec = Debianize (Patch
                                       (Hackage "pandoc")
                                       (unlines
-                                       [ "--- old/pandoc.cabal\t2012-05-17 10:39:32.000000000 -0700"
-                                       , "+++ new/pandoc.cabal\t2012-05-17 11:00:03.323301229 -0700"
-                                       , "@@ -187,7 +187,7 @@"
+                                       [ "--- old/pandoc.cabal\t2012-09-17 16:18:06.000000000 -0700"
+                                       , "+++ new/pandoc.cabal\t2012-09-17 21:13:46.545449823 -0700"
+                                       , "@@ -193,7 +193,7 @@"
                                        , "   Default:       False"
                                        , " Flag blaze_html_0_5"
                                        , "   Description:   Use blaze-html 0.5 and blaze-markup 0.5"
@@ -1517,7 +1627,35 @@ happstack release =
                                        , "+  Default:       True"
                                        , " "
                                        , " Library"
-                                       , "   -- Note: the following is duplicated in all stanzas." ]))
+                                       , "   -- Note: the following is duplicated in all stanzas."
+                                       , "@@ -202,7 +202,7 @@"
+                                       , "   Build-Depends: containers >= 0.1 && < 0.5,"
+                                       , "                  parsec >= 3.1 && < 3.2,"
+                                       , "                  mtl >= 1.1 && < 2.2,"
+                                       , "-                 network >= 2 && < 2.4,"
+                                       , "+                 network >= 2 && < 2.5,"
+                                       , "                  filepath >= 1.1 && < 1.4,"
+                                       , "                  process >= 1 && < 1.2,"
+                                       , "                  directory >= 1 && < 1.2," 
+                                       , "@@ -310,7 +310,7 @@"
+                                       , "   Build-Depends: containers >= 0.1 && < 0.5,"
+                                       , "                  parsec >= 3.1 && < 3.2,"
+                                       , "                  mtl >= 1.1 && < 2.2,"
+                                       , "-                 network >= 2 && < 2.4,"
+                                       , "+                 network >= 2 && < 2.5,"
+                                       , "                  filepath >= 1.1 && < 1.4,"
+                                       , "                  process >= 1 && < 1.2,"
+                                       , "                  directory >= 1 && < 1.2,"
+                                       , "@@ -377,7 +377,7 @@"
+                                       , "   Build-Depends: containers >= 0.1 && < 0.5,"
+                                       , "                  parsec >= 3.1 && < 3.2,"
+                                       , "                  mtl >= 1.1 && < 2.2,"
+                                       , "-                 network >= 2 && < 2.4,"
+                                       , "+                 network >= 2 && < 2.5,"
+                                       , "                  filepath >= 1.1 && < 1.4,"
+                                       , "                  process >= 1 && < 1.2,"
+                                       , "                  directory >= 1 && < 1.2,"
+                                       ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-highlighting-kate"
                 , P.spec = Debianize (Hackage "highlighting-kate")
@@ -1526,17 +1664,20 @@ happstack release =
                 , P.spec = Debianize (Patch
                                       (Hackage "web-routes")
                                       (unlines
-                                       [ "--- old/web-routes.cabal\t2012-07-20 13:22:05.000000000 -0700"
-                                       , "+++ new/web-routes.cabal\t2012-07-20 13:37:42.277678100 -0700"
-                                       , "@@ -16,7 +16,7 @@"
+                                       [ "--- old/web-routes.cabal\t2012-09-17 16:20:11.000000000 -0700"
+                                       , "+++ new/web-routes.cabal\t2012-09-17 21:04:37.641436856 -0700"
+                                       , "@@ -16,9 +16,9 @@"
                                        , "                           blaze-builder >= 0.2 && < 0.4,"
                                        , "                           parsec >= 2 && <4,"
                                        , "                           bytestring >= 0.9 && < 0.10,"
                                        , "-                          http-types == 0.6.*,"
                                        , "+                          http-types >= 0.6,"
                                        , "                           mtl,"
-                                       , "                           network >= 2.2 && < 2.4,"
-                                       , "                           text == 0.11.*," ]))
+                                       , "-                          network >= 2.2 && < 2.4,"
+                                       , "+                          network >= 2.2 && < 2.5,"
+                                       , "                           text == 0.11.*,"
+                                       , "                           utf8-string >= 0.3 && < 0.4"
+                                       , "         Exposed-Modules:  Web.Routes" ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes-boomerang"
                 , P.spec = Debianize (Hackage "web-routes-boomerang")
@@ -1653,8 +1794,8 @@ conduit =
                 , P.spec = Debianize (Patch
                                       (Hackage "http-conduit")
                                       (unlines
-                                       [ "--- old/http-conduit.cabal\t2012-07-01 13:16:22.000000000 -0700"
-                                       , "+++ new/http-conduit.cabal\t2012-07-01 14:29:30.364868030 -0700"
+                                       [ "--- old/http-conduit.cabal\t2012-09-17 16:16:53.000000000 -0700"
+                                       , "+++ new/http-conduit.cabal\t2012-09-17 21:07:15.501440585 -0700"
                                        , "@@ -30,7 +30,7 @@"
                                        , "                  , attoparsec            >= 0.8.0.2 && < 0.11"
                                        , "                  , utf8-string           >= 0.3.4   && < 0.4"
@@ -1664,7 +1805,8 @@ conduit =
                                        , "                  , cprng-aes             >= 0.2     && < 0.3"
                                        , "                  , tls                   >= 0.9.3   && < 0.10"
                                        , "                  , tls-extra             >= 0.4.5   && < 0.5"
-                                       , "@@ -40,7 +40,7 @@"
+                                       , "@@ -39,8 +39,8 @@"
+                                       , "                  , certificate           >= 1.2     && < 1.3"
                                        , "                  , case-insensitive      >= 0.2"
                                        , "                  , base64-bytestring     >= 0.1     && < 0.2"
                                        , "-                 , asn1-data             >= 0.5.1   && < 0.7"
@@ -1673,7 +1815,29 @@ conduit =
                                        , "+                 , data-default          >= 0.3"
                                        , "                  , text"
                                        , "                  , transformers-base     >= 0.4     && < 0.5"
-                                       , "                  , lifted-base           >= 0.1     && < 0.2" ]))
+                                       , "                  , lifted-base           >= 0.1     && < 0.2"
+                                       , "@@ -55,7 +55,7 @@"
+                                       , "         build-depends: network               >= 2.2.1   && < 2.2.3"
+                                       , "                      , network-bytestring    >= 0.1.3   && < 0.1.4"
+                                       , "     else"
+                                       , "-        build-depends: network               >= 2.3     && < 2.4"
+                                       , "+        build-depends: network               >= 2.3     && < 2.5"
+                                       , "     exposed-modules: Network.HTTP.Conduit"
+                                       , "                      Network.HTTP.Conduit.Browser"
+                                       , "                      Network.HTTP.Conduit.Internal" 
+                                       , "--- old/Network/HTTP/Conduit/Request.hs\t2012-09-17 21:34:00.000000000 -0700"
+                                       , "+++ new/Network/HTTP/Conduit/Request.hs\t2012-09-17 21:45:33.657494882 -0700"
+                                       , "@@ -145,9 +145,7 @@"
+                                       , " -- it as per 'setUri'; if it is relative, merge it with the existing request."
+                                       , " setUriRelative :: Failure HttpException m => Request m' -> URI -> m (Request m')"
+                                       , " setUriRelative req uri ="
+                                       , "-    case uri `relativeTo` getUri req of"
+                                       , "-        Just uri' -> setUri req uri'"
+                                       , "-        Nothing   -> failure $ InvalidUrlException (show uri) \"Invalid URL\""
+                                       , "+    setUri req (uri `relativeTo` getUri req)"
+                                       , " "
+                                       , " -- | Extract a 'URI' from the request."
+                                       , " getUri :: Request m' -> URI" ]))
                 , P.flags = [P.CabalPin "1.4.1.10"] }
     , debianize "zlib-conduit" [P.CabalPin "0.4.0.1"]
     , P.Package { P.name = "haskell-xml-conduit"
@@ -1734,9 +1898,9 @@ authenticate _home release =
                 , P.spec = Debianize (Patch
                                       (Hackage "http-enumerator")
                                       (unlines
-                                       [ "--- old/http-enumerator.cabal\t2012-07-02 06:17:36.000000000 -0700"
-                                       , "+++ new/http-enumerator.cabal\t2012-07-02 06:23:28.106220387 -0700"
-                                       , "@@ -30,18 +30,18 @@"
+                                       [ "--- old/http-enumerator.cabal\t2012-09-17 16:16:55.000000000 -0700"
+                                       , "+++ new/http-enumerator.cabal\t2012-09-17 21:29:30.465472125 -0700"
+                                       , "@@ -30,23 +30,23 @@"
                                        , "                  , utf8-string           >= 0.3.4   && < 0.4"
                                        , "                  , blaze-builder         >= 0.2.1   && < 0.4"
                                        , "                  , zlib-enum             >= 0.2     && < 0.3"
@@ -1758,7 +1922,13 @@ authenticate _home release =
                                        , "+                 , data-default          >= 0.3"
                                        , "     if flag(network-bytestring)"
                                        , "         build-depends: network               >= 2.2.1   && < 2.2.3"
-                                       , "                      , network-bytestring    >= 0.1.3   && < 0.1.4" ]))
+                                       , "                      , network-bytestring    >= 0.1.3   && < 0.1.4"
+                                       , "     else"
+                                       , "-        build-depends: network               >= 2.3     && < 2.4"
+                                       , "+        build-depends: network               >= 2.3     && < 2.5"
+                                       , "     exposed-modules: Network.HTTP.Enumerator"
+                                       , "     other-modules:   Network.HTTP.Enumerator.HttpParser"
+                                       , "                      Network.TLS.Client.Enumerator" ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-authenticate"
                 , P.spec = Debianize (Darcs (repo ++ "/happstack-authenticate"))
@@ -1777,9 +1947,16 @@ happstackdotcom _home =
                 , P.spec = Debianize (Patch
                                       (Darcs "http://patch-tag.com/r/stepcut/ircbot")
                                       (unlines
-                                       [ "--- old/ircbot.cabal\t2012-07-10 07:10:51.000000000 -0700"
-                                       , "+++ new/ircbot.cabal\t2012-07-10 09:56:17.482986391 -0700"
-                                       , "@@ -42,4 +42,4 @@"
+                                       [ "--- old/ircbot.cabal\t2012-07-10 10:36:52.000000000 -0700"
+                                       , "+++ new/ircbot.cabal\t2012-09-17 21:26:23.613467711 -0700"
+                                       , "@@ -36,10 +36,10 @@"
+                                       , "                   filepath   >= 1.2 && < 1.4,"
+                                       , "                   irc        == 0.5.*,"
+                                       , "                   mtl        >= 2.0 && < 2.2,"
+                                       , "-                  network    == 2.3.*,"
+                                       , "+                  network    == 2.4.*,"
+                                       , "                   old-locale == 1.0.*,"
+                                       , "                   parsec     == 3.1.*,"
                                        , "                   time       == 1.4.*,"
                                        , "                   unix       >= 2.4 && < 2.6,"
                                        , "                   random     == 1.0.*,"
@@ -1923,6 +2100,9 @@ algebra = P.Packages (singleton "algebra")
     , debianize "transformers-free" []
     , debianize "contravariant" []
     , debianize "distributive" []
+    , P.Package { P.name = "free"
+                , P.spec = Debianize (Hackage "free")
+                , P.flags = [] }
     , debianize "keys" []
     , debianize "lens" []
     , debianize "lens-family-core" []
