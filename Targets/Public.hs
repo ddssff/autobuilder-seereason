@@ -681,7 +681,14 @@ main _home release =
     , debianize "bits-atomic" []
     , apt release "haskell-monadcatchio-mtl"
     , debianize "monadLib" [P.DebVersion "3.6.2-1~hackage1"]
-    -- , debianize "monads-tf" [P.DebVersion "0.1.0.0-1~hackage1"]
+    -- Putting this in our repo can cause problems, because when it is
+    -- installed some packages can't compile unless you add package
+    -- qualifiers to their imports.  For this reason, when we run the
+    -- autobuilder with the --lax flag we usually get a failure from
+    -- some package that builds after monads-tf got installed.  On the
+    -- other hand, without monads-tf we lose this dependency chain:
+    -- monads-tf -> options -> fay.
+    -- , debianize "monads-tf" []
     , apt release "haskell-monoid-transformer"
     , debianize "murmur-hash" [P.DebVersion "0.1.0.5-2"]
     , apt release "haskell-mwc-random"
