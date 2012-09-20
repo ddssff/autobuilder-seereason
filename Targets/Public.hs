@@ -600,7 +600,7 @@ main _home release =
     , P.Package { P.name = "haskell-incremental-sat-solver"
                 , P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs "http://src.seereason.com/haskell-incremental-sat-solver-debian")
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
-    , debianize "instant-generics" []
+    , debianize "generic-deriving" []
     , debianize "irc" []
     , debianize "ixset" []
     , P.Package { P.name = "haskell-json"
