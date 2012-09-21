@@ -14,5 +14,5 @@ repo = "http://src.seereason.com"
 localRepo home = "file://" ++ home ++ "/darcs"
 privateRepo = "ssh://upload@src.seereason.com/srv/darcs"
 
-happstackRepo = "http://patch-tag.com/r/mae/happstack"
+happstackRepo = "http://hub.darcs.net/stepcut/happstack"
 --happstackRepo = repo ++ "/happstack"
