@@ -775,6 +775,7 @@ main _home release =
     , P.Package { P.name = "haskell-operational"
                 , P.spec = Debianize (Hackage "operational")
                 , P.flags = [P.OmitLTDeps] }
+    , debianize "options" []
     , debianize "ordered" []
     , debianize "multiset" []
     , P.Package { P.name = "haskell-process-extras"
