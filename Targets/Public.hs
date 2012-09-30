@@ -7,6 +7,8 @@ import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
 import Targets.Common (repo, localRepo, happstackRepo)
 
+patchTag = "http://patch-tag.com/r/stepcut"
+
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
@@ -147,7 +149,6 @@ main _home release =
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
     , debianize "attoparsec-text-enumerator" []
     , debianize "base-unicode-symbols" []
-    , apt release "haskell-base64-bytestring"
     , debianize "bimap" [P.DebVersion "0.2.4-1~hackage1"]
     , debianize "data-default" []
     , debianize "template-default" []
@@ -162,7 +163,7 @@ main _home release =
     , debianize "case-insensitive" []
     , debianize "CC-delcont" [P.DebVersion "0.2-1~hackage1"]
     , apt release "haskell-cereal"
-    , debianize "citeproc-hs" [P.DebVersion "0.3.4-1"]
+    , debianize "citeproc-hs" []
     , debianize "uuid" []
     , debianize "maccatcher" [P.DebVersion "2.1.5-3"]
     , case release of
@@ -225,7 +226,7 @@ main _home release =
                       , "+                     failure >= 0.1.0"
                       , "     exposed-modules: Data.Object"
                       , "     ghc-options:     -Wall" ])
-    , debianize "dataenc" [P.DebVersion "0.14.0.3-1"]
+    , debianize "dataenc" []
     , debianize "Diff" [P.DebVersion "0.1.3-2"]
     , apt release "haskell-digest"
     , apt release "haskell-dlist"
@@ -553,7 +554,7 @@ main _home release =
     -- won't build.  Use our debianization instead.  This means keeping
     -- up with sid's version.
     , debianize "HPDF" []
-    , debianize "hs-bibutils" [P.DebVersion "4.12-5"]
+    , debianize "hs-bibutils" []
     , apt release "haskell-hsemail"
     , patched "HsOpenSSL"
                     [ P.ExtraDevDep "libssl-dev"
@@ -690,7 +691,7 @@ main _home release =
     -- monads-tf -> options -> fay.
     -- , debianize "monads-tf" []
     , apt release "haskell-monoid-transformer"
-    , debianize "murmur-hash" [P.DebVersion "0.1.0.5-2"]
+    , debianize "murmur-hash" []
     , apt release "haskell-mwc-random"
     , patched "nano-hmac" [ P.DebVersion "0.2.0ubuntu1" ]
                             (unlines
@@ -791,7 +792,7 @@ main _home release =
     , apt release "haskell-pcre-light"
     , debianize "permutation" [P.DebVersion "0.4.1-1~hackage1"]
     , debianize "polyparse" []
-    , apt release "haskell-primitive"
+    , debianize "primitive" []
     , debianize "PropLogic" []
 {-  , P.Package { P.name = "haskell-proplogic"
                 , P.spec = DebDir (Uri "http://www.bucephalus.org/PropLogic/PropLogic-0.9.tar.gz" "e2fb3445dd16d435e81d7630d7f78c01") (Darcs (repo ++ "/haskell-proplogic-debian"))
@@ -1096,7 +1097,7 @@ main _home release =
     -- apt release "haskell-vector"
     -- Version 0.9-1+seereason1~lucid1 is uploaded to lucid already,
     -- remove this pin when a new hackage version comes out to trump it.
-    , debianize "vector" [P.DebVersion "0.9.1-2"]
+    , debianize "vector" []
     , apt release "haskell-vector-algorithms"
     , patched "virthualenv" []
                     (unlines
@@ -1187,7 +1188,10 @@ main _home release =
                                           , "     if flag(small_base)" ])
                 , P.flags = [] }
     , apt release "html-xml-utils"
-    , apt release "node-uglify"
+-- No longer in sid
+--  , P.Package { P.name = "node-uglify"
+--              , P.spec = Apt "sid" "node-uglify"
+--              , P.flags = [] }
     , P.Package { P.name = "jquery"
                 , P.spec = Proc (Apt "sid" "jquery")
                 , P.flags = [] }
@@ -1203,7 +1207,7 @@ main _home release =
     , P.Package { P.name = "magic-haskell"
                 , P.spec = Quilt (Apt "sid" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
                 , P.flags = [] }
-    , debianize "MissingH" [P.DebVersion "1.1.1.0-1~hackage1"]
+    , debianize "MissingH" []
     , P.Package { P.name = "seereason-keyring"
                 , P.spec = Darcs "http://src.seereason.com/seereason-keyring"
                 , P.flags = [P.UDeb "seereason-keyring-udeb"] }
@@ -1572,7 +1576,10 @@ happstack release =
                 , P.spec = Darcs (repo ++ "/happstack-facebook")
                 , P.flags = [] }
 -}
-    , debianize "happstack-hsp" []
+    , P.Package { P.name = "haskell-happstack-hsp"
+                , P.spec = Debianize (Hackage "happstack-hsp")
+                -- trhsx 
+                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
     -- , debianize "happstack-ixset" []
@@ -1580,7 +1587,22 @@ happstack release =
                 , P.spec = DebDir (Cd "happstack-ixset" (Darcs happstackRepo)) (Darcs (repo ++ "/happstack-ixset-debian"))
                 , P.flags = [] }
 
-    , debianize "happstack-jmacro" []
+    , P.Package { P.name = "haskell-happstack-jmacro"
+                , P.spec = Debianize (Patch
+                                      (Hackage "happstack-jmacro")
+                                      (unlines
+                                       [ "--- old/happstack-jmacro.cabal\t2012-09-23 10:36:40.000000000 -0700"
+                                       , "+++ new/happstack-jmacro.cabal\t2012-09-23 12:18:49.913972876 -0700"
+                                       , "@@ -17,7 +17,7 @@"
+                                       , "   Exposed-modules:     Happstack.Server.JMacro"
+                                       , "   Build-depends:"
+                                       , "      base              >4 && <5,"
+                                       , "-     base64-bytestring == 0.1.*,"
+                                       , "+     base64-bytestring >= 0.1,"
+                                       , "      bytestring        == 0.9.*,"
+                                       , "      cereal            == 0.3.*,"
+                                       , "      digest            == 0.0.*," ]))
+                , P.flags = [] }
     , debianize "jmacro-rpc-happstack" []
     , debianize "jmacro-rpc" []
     , P.Package { P.name = "haskell-happstack-search"
@@ -1589,6 +1611,8 @@ happstack release =
     , P.Package { P.name = "haskell-happstack-server"
                 , P.spec = Debianize (Hackage "happstack-server")
                 , P.flags = [] }
+    , debianize "base64-bytestring" []
+    , debianize "threads" []
     , P.Package { P.name = "haskell-list-tries"
                 , P.spec = Debianize (Hackage "list-tries")
                 , P.flags = [] }
@@ -1624,8 +1648,8 @@ happstack release =
                 , P.spec = Debianize (Patch
                                       (Hackage "pandoc")
                                       (unlines
-                                       [ "--- old/pandoc.cabal\t2012-09-17 16:18:06.000000000 -0700"
-                                       , "+++ new/pandoc.cabal\t2012-09-17 21:13:46.545449823 -0700"
+                                       [ "--- old/pandoc.cabal\t2012-09-23 10:36:54.000000000 -0700"
+                                       , "+++ new/pandoc.cabal\t2012-09-23 12:24:12.389980496 -0700"
                                        , "@@ -193,7 +193,7 @@"
                                        , "   Default:       False"
                                        , " Flag blaze_html_0_5"
@@ -1643,7 +1667,16 @@ happstack release =
                                        , "+                 network >= 2 && < 2.5,"
                                        , "                  filepath >= 1.1 && < 1.4,"
                                        , "                  process >= 1 && < 1.2,"
-                                       , "                  directory >= 1 && < 1.2," 
+                                       , "                  directory >= 1 && < 1.2,"
+                                       , "@@ -220,7 +220,7 @@"
+                                       , "                  pandoc-types >= 1.9.0.2 && < 1.10,"
+                                       , "                  json >= 0.4 && < 0.6,"
+                                       , "                  tagsoup >= 0.12.5 && < 0.13,"
+                                       , "-                 base64-bytestring >= 0.1 && < 0.2,"
+                                       , "+                 base64-bytestring >= 0.1,"
+                                       , "                  zlib >= 0.5 && < 0.6,"
+                                       , "                  highlighting-kate >= 0.5.1 && < 0.6,"
+                                       , "                  temporary >= 1.1 && < 1.2"
                                        , "@@ -310,7 +310,7 @@"
                                        , "   Build-Depends: containers >= 0.1 && < 0.5,"
                                        , "                  parsec >= 3.1 && < 3.2,"
@@ -1653,6 +1686,15 @@ happstack release =
                                        , "                  filepath >= 1.1 && < 1.4,"
                                        , "                  process >= 1 && < 1.2,"
                                        , "                  directory >= 1 && < 1.2,"
+                                       , "@@ -328,7 +328,7 @@"
+                                       , "                  pandoc-types >= 1.9.0.2 && < 1.10,"
+                                       , "                  json >= 0.4 && < 0.6,"
+                                       , "                  tagsoup >= 0.12.5 && < 0.13,"
+                                       , "-                 base64-bytestring >= 0.1 && < 0.2,"
+                                       , "+                 base64-bytestring >= 0.1,"
+                                       , "                  zlib >= 0.5 && < 0.6,"
+                                       , "                  highlighting-kate >= 0.5.1 && < 0.6,"
+                                       , "                  temporary >= 1.1 && < 1.2"
                                        , "@@ -377,7 +377,7 @@"
                                        , "   Build-Depends: containers >= 0.1 && < 0.5,"
                                        , "                  parsec >= 3.1 && < 3.2,"
@@ -1662,7 +1704,15 @@ happstack release =
                                        , "                  filepath >= 1.1 && < 1.4,"
                                        , "                  process >= 1 && < 1.2,"
                                        , "                  directory >= 1 && < 1.2,"
-                                       ]))
+                                       , "@@ -395,7 +395,7 @@"
+                                       , "                  pandoc-types >= 1.9.0.2 && < 1.10,"
+                                       , "                  json >= 0.4 && < 0.6,"
+                                       , "                  tagsoup >= 0.12.5 && < 0.13,"
+                                       , "-                 base64-bytestring >= 0.1 && < 0.2,"
+                                       , "+                 base64-bytestring >= 0.1,"
+                                       , "                  zlib >= 0.5 && < 0.6,"
+                                       , "                  highlighting-kate >= 0.5.1 && < 0.6,"
+                                       , "                  temporary >= 1.1 && < 1.2" ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-highlighting-kate"
                 , P.spec = Debianize (Hackage "highlighting-kate")
@@ -1701,30 +1751,28 @@ happstack release =
     , P.Package { P.name = "haskell-web-routes-th"
                 , P.spec = Debianize (Hackage "web-routes-th")
                 , P.flags = [] }
-{- retired
     , P.Package { P.name = "haskell-formlets-hsp"
                 , P.spec = Darcs (repo ++ "/formlets-hsp")
                 , P.flags = [] }
--}
     , P.Package { P.name = "haskell-happstack-scaffolding"
                 , P.spec = Darcs (repo ++ "/happstack-scaffolding")
                            -- Don't use Debianize here, it restores the doc package which crashes the build
                 , P.flags = [] }
     , debianize "HJScript" []
     , P.Package { P.name = "reform"
-                , P.spec = Debianize (Cd "reform" (Darcs "http://patch-tag.com/r/stepcut/reform"))
+                , P.spec = Debianize (Cd "reform" (Darcs (patchTag ++ "/reform")))
                 , P.flags = [] }
     , P.Package { P.name = "reform-blaze"
-                , P.spec = Debianize (Cd "reform-blaze" (Darcs "http://patch-tag.com/r/stepcut/reform"))
+                , P.spec = Debianize (Cd "reform-blaze" (Darcs (patchTag ++ "/reform")))
                 , P.flags = [] }
     , P.Package { P.name = "reform-happstack"
-                , P.spec = Debianize (Cd "reform-happstack" (Darcs "http://patch-tag.com/r/stepcut/reform"))
+                , P.spec = Debianize (Cd "reform-happstack" (Darcs (patchTag ++ "/reform")))
                 , P.flags = [] }
 {-  , P.Package { P.name = "reform-heist"
-                , P.spec = Debianize (Cd "reform-heist" (Darcs "http://patch-tag.com/r/stepcut/reform"))
+                , P.spec = Debianize (Cd "reform-heist" (Darcs patchTag ++ "/reform"))
                 , P.flags = [] } -}
     , P.Package { P.name = "reform-hsp"
-                , P.spec = Debianize (Cd "reform-hsp" (Darcs "http://patch-tag.com/r/stepcut/reform"))
+                , P.spec = Debianize (Cd "reform-hsp" (Darcs (patchTag ++ "/reform")))
                 , P.flags = [] }
     , debianize "blaze-markup" []
     , apt release "haskell-blaze-builder"
@@ -1760,7 +1808,7 @@ happstack release =
                                        , " {-# RULES \"integral/Int\" integral = bounded :: Int -> Builder #-}"
                                        , " {-# RULES \"integral/Int8\" integral = bounded :: Int8 -> Builder #-}"
                                        , " {-# RULES \"integral/Int16\" integral = bounded :: Int16 -> Builder #-}" ]))
-                , flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
+                , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
     , P.Package { P.name = "clckwrks-theme-happstack"
                 , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (repo ++ "/happstack-clckwrks")))
                 , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
@@ -1801,8 +1849,8 @@ conduit =
                 , P.spec = Debianize (Patch
                                       (Hackage "http-conduit")
                                       (unlines
-                                       [ "--- old/http-conduit.cabal\t2012-09-17 16:16:53.000000000 -0700"
-                                       , "+++ new/http-conduit.cabal\t2012-09-17 21:07:15.501440585 -0700"
+                                       [ "--- old/http-conduit.cabal\t2012-09-23 12:33:16.000000000 -0700"
+                                       , "+++ new/http-conduit.cabal\t2012-09-23 12:47:52.894014059 -0700"
                                        , "@@ -30,7 +30,7 @@"
                                        , "                  , attoparsec            >= 0.8.0.2 && < 0.11"
                                        , "                  , utf8-string           >= 0.3.4   && < 0.4"
@@ -1812,12 +1860,14 @@ conduit =
                                        , "                  , cprng-aes             >= 0.2     && < 0.3"
                                        , "                  , tls                   >= 0.9.3   && < 0.10"
                                        , "                  , tls-extra             >= 0.4.5   && < 0.5"
-                                       , "@@ -39,8 +39,8 @@"
+                                       , "@@ -38,9 +38,9 @@"
+                                       , "                  , containers            >= 0.2"
                                        , "                  , certificate           >= 1.2     && < 1.3"
                                        , "                  , case-insensitive      >= 0.2"
-                                       , "                  , base64-bytestring     >= 0.1     && < 0.2"
+                                       , "-                 , base64-bytestring     >= 0.1     && < 0.2"
                                        , "-                 , asn1-data             >= 0.5.1   && < 0.7"
                                        , "-                 , data-default          >= 0.3     && < 0.5"
+                                       , "+                 , base64-bytestring     >= 0.1"
                                        , "+                 , asn1-data             >= 0.5.1"
                                        , "+                 , data-default          >= 0.3"
                                        , "                  , text"
@@ -1828,10 +1878,10 @@ conduit =
                                        , "                      , network-bytestring    >= 0.1.3   && < 0.1.4"
                                        , "     else"
                                        , "-        build-depends: network               >= 2.3     && < 2.4"
-                                       , "+        build-depends: network               >= 2.3     && < 2.5"
+                                       , "+        build-depends: network               >= 2.3"
                                        , "     exposed-modules: Network.HTTP.Conduit"
                                        , "                      Network.HTTP.Conduit.Browser"
-                                       , "                      Network.HTTP.Conduit.Internal" 
+                                       , "                      Network.HTTP.Conduit.Internal"
                                        , "--- old/Network/HTTP/Conduit/Request.hs\t2012-09-17 21:34:00.000000000 -0700"
                                        , "+++ new/Network/HTTP/Conduit/Request.hs\t2012-09-17 21:45:33.657494882 -0700"
                                        , "@@ -145,9 +145,7 @@"
@@ -1922,9 +1972,10 @@ authenticate _home release =
                                        , "-                 , certificate           >= 1.1     && < 1.2"
                                        , "+                 , certificate           >= 1.1"
                                        , "                  , case-insensitive      >= 0.2"
-                                       , "                  , base64-bytestring     >= 0.1     && < 0.2"
+                                       , "-                 , base64-bytestring     >= 0.1     && < 0.2"
                                        , "-                 , asn1-data             >= 0.5.1   && < 0.7"
                                        , "-                 , data-default          >= 0.3     && < 0.5"
+                                       , "+                 , base64-bytestring     >= 0.1"
                                        , "+                 , asn1-data             >= 0.5.1"
                                        , "+                 , data-default          >= 0.3"
                                        , "     if flag(network-bytestring)"
@@ -1943,7 +1994,20 @@ authenticate _home release =
     , digestiveFunctors
       -- The new version of fb (0.11) would require unpinned conduit packages.
     , P.Package { P.name = "haskell-fb"
-                , P.spec = Debianize (Hackage "fb")
+                , P.spec = Debianize (Patch
+                                      (Hackage "fb")
+                                      (unlines
+                                       [ "--- old/fb.cabal\t2012-09-23 12:50:29.000000000 -0700"
+                                       , "+++ new/fb.cabal\t2012-09-23 12:55:23.910024716 -0700"
+                                       , "@@ -67,7 +67,7 @@"
+                                       , "     , attoparsec         >= 0.10    && < 0.11"
+                                       , "     , attoparsec-conduit >= 0.4     && < 0.5"
+                                       , "     , aeson              >= 0.5     && < 0.7"
+                                       , "-    , base64-bytestring  >= 0.1.1   && < 0.2"
+                                       , "+    , base64-bytestring  >= 0.1.1"
+                                       , "     , time               >= 1.2     && < 1.5"
+                                       , "     , old-locale"
+                                       , "     , cereal             == 0.3.*" ]))
                 , P.flags = [P.CabalPin "0.9.7"] }
     ]
 
@@ -1952,7 +2016,7 @@ happstackdotcom _home =
     P.Packages (singleton "happstackdotcom") $
     [ P.Package { P.name = "haskell-ircbot"
                 , P.spec = Debianize (Patch
-                                      (Darcs "http://patch-tag.com/r/stepcut/ircbot")
+                                      (Darcs (patchTag ++ "/ircbot"))
                                       (unlines
                                        [ "--- old/ircbot.cabal\t2012-07-10 10:36:52.000000000 -0700"
                                        , "+++ new/ircbot.cabal\t2012-09-17 21:26:23.613467711 -0700"
