@@ -775,7 +775,8 @@ main _home release =
     , P.Package { P.name = "haskell-operational"
                 , P.spec = Debianize (Hackage "operational")
                 , P.flags = [P.OmitLTDeps] }
-    , debianize "options" []
+--    , debianize "options" []
+    , debianize "optparse-applicative" []
     , debianize "ordered" []
     , debianize "multiset" []
     , P.Package { P.name = "haskell-process-extras"
@@ -974,6 +975,7 @@ main _home release =
                       , "         Extensions:             TypeSynonymInstances"
                       , "                                 TypeOperators" ])
     , debianize "test-framework-quickcheck2" []
+    , debianize "test-framework-th" [P.DebVersion "0.2.2-4"]
     , debianize "testpack" []
     , debianize "th-expand-syns" []
     , debianize "th-lift" []
@@ -1014,9 +1016,11 @@ main _home release =
                                           ]),
                    P.flags = [] 
                  }
-
-    , debianize "fay" []
-    , debianize "options" []
+    -- , debianize "fay" []
+    , P.Package { P.name = "haskell-fay" 
+                , P.spec = Debianize ( Uri "http://src.seereason.com/faytar/fay.tar.gz" "84316ac761094dcd2309e8b885b6b9b7")
+                , P.flags = [P.ExtraDep "libncurses5-dev", P.ExtraDevDep "libncurses5-dev"]
+                }
     , P.Package { P.name = "haskell-language-ecmascript" 
                 , P.spec = Debianize (Patch
                                       (Hackage "language-ecmascript")
