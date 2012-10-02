@@ -817,12 +817,10 @@ main _home release =
                 , P.flags = [] }
     , debianize "RJson" []
     , debianize "safe" [P.DebVersion "0.3.3-2"]
-    -- Depends on pandoc
-    --, P.Package {P.name = "haskell-safecopy", P.spec = DebDir (Hackage "safecopy" [P.CabalPin "0.5.1"])) (Darcs "http://src.seereason.com/haskell-safecopy-debian" []), P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"]}
     , debianize "safecopy" []
-{-  , P.Package { P.name = "haskell-safecopy05"
-                , P.spec = Quilt (Hackage "safecopy" [P.CabalPin "0.5.1"])) (Darcs (repo ++ "/safecopy05-quilt") [])
-                , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] } -}
+    , P.Package { P.name = "haskell-debian-packaging"
+                , P.spec = Debianize (Darcs "http://src.seereason.com/debian-packaging")
+                , P.flags = [] }
     , patched "sat"
                     [ P.DebVersion "1.1.1-1~hackage1" ]
                     (unlines
@@ -1017,6 +1015,8 @@ main _home release =
                    P.flags = [] 
                  }
     -- , debianize "fay" []
+    , debianize "utf8-light" []
+    , debianize "language-haskell-extract" []
     , P.Package { P.name = "haskell-fay" 
                 , P.spec = Debianize ( Uri "http://src.seereason.com/faytar/fay.tar.gz" "84316ac761094dcd2309e8b885b6b9b7")
                 , P.flags = [P.ExtraDep "libncurses5-dev", P.ExtraDevDep "libncurses5-dev"]
@@ -1212,7 +1212,9 @@ main _home release =
     , P.Package { P.name = "magic-haskell"
                 , P.spec = Quilt (Apt "sid" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
                 , P.flags = [] }
-    , debianize "MissingH" []
+    , P.Package { P.name = "haskell-missingh" 
+                , P.spec = Debianize (Hackage "MissingH")
+                , P.flags = [P.Maintainer "SeeReason Autobuilder <logic@seereason.com>", P.Revision ""] }
     , P.Package { P.name = "seereason-keyring"
                 , P.spec = Darcs "http://src.seereason.com/seereason-keyring"
                 , P.flags = [P.UDeb "seereason-keyring-udeb"] }
