@@ -62,17 +62,17 @@ applications _home =
     , P.Package { P.name = "clckwrks-theme-clcksmith"
                 , P.spec = Debianize (Cd "clckwrks-theme-clcksmith" (Darcs (privateRepo ++ "/clcksmith")))
                 -- Haddock gets upset about the HSX.QQ modules.  Not sure why.
-                , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc] }
+                , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc, P.DebVersion "0.1-1~hackage1"] }
     , P.Package { P.name = "seereasonpartners-dot-com"
                 , P.spec = Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-clckwrks-theme-seereasonpartners"
                 , P.spec = Debianize (Cd "clckwrks-theme-seereasonpartners" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks")))
-                , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc] }
+                , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc, P.DebVersion "0.1.3-1~hackage1"] }
     , P.Package { P.name = "appraisalreportonline-dot-com"
                 , P.spec = Cd "appraisalreportonline-dot-com" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-clckwrks-theme-appraisalreportonline"
                 , P.spec = Debianize (Cd "clckwrks-theme-appraisalreportonline" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks")))
-                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.1.3-1~hackage1"] }
     ]
