@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable, StandaloneDeriving #-}
 -- |This module defines how we obtain and assemble the source code for
 -- the packages we want to build.
 module Targets 
@@ -5,7 +6,9 @@ module Targets
     , private
     ) where
 
-import Data.List (isPrefixOf)
+import Data.Data (Data, toConstr)
+import Data.Typeable (Typeable)
+import Data.List (isPrefixOf, partition)
 import Data.Monoid (mappend)
 import qualified Data.Set as Set
 import qualified Debian.AutoBuilder.Params as P
@@ -69,19 +72,26 @@ developmentRelease Debian = Sid
 ubuntuReleases = [Oneiric, Natty, Maverick, Lucid, Karmic, Jaunty, Intrepid, Hardy, Edgy, Feisty, Dapper]
 -}
 
+deriving instance Typeable PackageFlag
+deriving instance Typeable BinPkgName
+deriving instance Typeable PkgName
+deriving instance Data PackageFlag
+deriving instance Data BinPkgName
+deriving instance Data PkgName
+
 -- |Each of theses lists can be built on their own as a group,
 -- and any sequence of groups can be built together as long as
 -- no intermediate group is omitted.  Comment out the ones you
 -- don't wish to build.
 public :: String -> String -> P.Packages
 public home release =
-    applyEpochMap $ applyDepMap $ Public.targets home release
+    fixFlags $ applyEpochMap $ applyDepMap $ Public.targets home release
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     --          ++ private home
 
 private :: String -> P.Packages
 private home =
-    applyEpochMap $ applyDepMap $ mappend (Private.libraries home) (Private.applications home)
+    fixFlags $ applyEpochMap $ applyDepMap $ mappend (Private.libraries home) (Private.applications home)
 
 -- | Supply some special cases to map cabal library names to debian.
 -- The prefix "lib" and the suffix "-dev" will be added later by
@@ -106,3 +116,15 @@ applyEpochMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
       mappings = [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]
+
+fixFlags :: P.Packages -> P.Packages 
+fixFlags = ensureFlag (P.Revision "") . ensureFlag (P.Maintainer "SeeReason Autobuilder <partners@seereason.com>")
+
+-- | If the package contains no flag with the same constructor as def add it to the flag list.
+ensureFlag :: P.PackageFlag -> P.Packages -> P.Packages
+ensureFlag _ P.NoPackage = P.NoPackage
+ensureFlag def p@(P.Packages {Debian.AutoBuilder.Types.Packages.packages = ps}) = p {Debian.AutoBuilder.Types.Packages.packages = map (ensureFlag def) ps}
+ensureFlag def p@(P.Package {flags = fs}) =
+  case partition (\ x -> toConstr x == toConstr def) fs of
+    ([], _) -> p {P.flags = def : fs}
+    _ -> p
