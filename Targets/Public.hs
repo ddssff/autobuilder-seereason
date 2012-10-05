@@ -51,7 +51,7 @@ unixutils _home =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-progress"
                 , P.spec = Debianize (Darcs (repo ++ "/progress"))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "1.52-1~hackage1"] }
     , P.Package { P.name = "haskell-extra"
                 , P.spec = Darcs "http://src.seereason.com/haskell-extra"
                 , P.flags = [P.RelaxDep "cabal-debian"] }
@@ -87,10 +87,10 @@ digestiveFunctors =
     -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
     , P.Package { P.name = "haskell-digestive-functors-happstack"
                 , P.spec = Debianize (Hackage "digestive-functors-happstack")
-                , P.flags = [P.CabalPin "0.1.1.5"] }
+                , P.flags = [P.CabalPin "0.1.1.5", P.DebVersion "0.1.1.5-1~hackage1"] }
     , P.Package { P.name = "haskell-digestive-functors-hsp"
                 , P.spec = Debianize (Darcs (repo ++ "/digestive-functors-hsp"))
-                , P.flags = [] } ]
+                , P.flags = [P.DebVersion "0.5.0-1~hackage1"] } ]
 
 main _home release =
     P.Packages (singleton "main") $
@@ -103,7 +103,8 @@ main _home release =
     , P.Package { P.name = "debootstrap"
                 , P.spec = Apt "sid" "debootstrap"
                 , P.flags = [P.UDeb "debootstrap-udeb"] }
-    , apt release "geneweb"
+-- Build fails due to some debianization issue
+--    , apt release "geneweb"
     , P.Package { P.name = "gtk2hs-buildtools"
                 , P.spec = Debianize (Hackage "gtk2hs-buildtools")
                 , P.flags =
@@ -179,7 +180,7 @@ main _home release =
     , debianize "cprng-aes" []
     , P.Package { P.name = "haskell-crypto"
                 , P.spec = Debianize (Hackage "Crypto")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "4.2.5-1~hackage1"] }
 {-  , patched "Crypto"
                     [ P.DebVersion "4.2.4-1"]
                     (unlines
@@ -309,7 +310,7 @@ main _home release =
                                        , " }"
                                        , "   "
                                        , " " ]))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.4.4.1-1~hackage1"] }
     , debianize "hsyslog" []
     , debianize "erf" [P.DebVersion "2.0.0.0-3"]
     , apt release "haskell-feed"
@@ -466,7 +467,7 @@ main _home release =
                                        , "       where"
                                        , "         applyAttrs | selected == value = (! A.selected \"selected\")"
                                        , "                    | otherwise = id" ]))
-                , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
+                , P.flags = [P.DebVersion "0.8-1~hackage1"] }
     , patched "gd"  [ P.ExtraDevDep "libgd-dev" ]
                     (unlines
                       [ "--- gd/gd.cabal.orig\t2011-06-25 12:27:26.000000000 -0700"
@@ -495,7 +496,7 @@ main _home release =
     , debianize "hashed-storage" []
     , P.Package { P.name = "haskell-haskeline"
                 , P.spec = Debianize (Hackage "haskeline")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.7.0.3-1~hackage1"] }
     , P.Package { P.name = "haskell-th-orphans"
                 , P.spec = Debianize (Patch
                                       (Hackage "th-orphans") 
@@ -516,7 +517,7 @@ main _home release =
                                        , " module Language.Haskell.TH.Instances () where"
                                        , " "
                                        , " import Language.Haskell.TH.Syntax" ]))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.6-1~hackage1"] }
     , debianize "haskell-src-meta" []
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
@@ -629,7 +630,7 @@ main _home release =
                                        , "     semigroups           >= 0.8.3.1 && < 0.9,"
                                        , "     semigroupoids        >= 3.0     && < 3.1,"
                                        , "     stm                  >= 2.1.2.1 && < 2.5" ]))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "3.0.0.1-1~hackage1"] }
     , patched "logic-TPTP" [ P.ExtraDep "alex"
                            , P.ExtraDep "happy" ]
                            (unlines
@@ -674,14 +675,14 @@ main _home release =
     , debianize "monad-control" []
     , P.Package { P.name = "haskell-monad-par-extras"
                 , P.spec = Debianize (Hackage "monad-par-extras")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.3.2-1~hackage1"] }
     , debianize "abstract-deque" []
     , debianize "abstract-par" []
     , debianize "monad-par" []
     , debianize "IORefCAS" []
     , debianize "bits-atomic" []
     , apt release "haskell-monadcatchio-mtl"
-    , debianize "monadLib" [P.DebVersion "3.6.2-1~hackage1"]
+    , debianize "monadLib" []
     -- Putting this in our repo can cause problems, because when it is
     -- installed some packages can't compile unless you add package
     -- qualifiers to their imports.  For this reason, when we run the
@@ -751,11 +752,12 @@ main _home release =
                       , "                    bytestring >= 0.9.1.0  && < 0.10.0.0,"
                       , "-                   containers >= 0.2.0.0  && < 0.4.1.0,"
                       , "-                   HTTP       >= 4000.0.9 && < 4000.2,"
-                      , "+                   containers >= 0.2.0.0,"
-                      , "+                   HTTP       >= 4000.0.9,"
-                      , "                    monadLib   >= 3.6.0.0  && < 3.7.0.0,"
+                      , "-                   monadLib   >= 3.6.0.0  && < 3.7.0.0,"
                       , "-                   network    >= 2.2.0.0  && < 2.4.0.0,"
                       , "-                   time       >= 1.1.0.0  && < 1.3.0.0,"
+                      , "+                   containers >= 0.2.0.0,"
+                      , "+                   HTTP       >= 4000.0.9,"
+                      , "+                   monadLib   >= 3.6.0.0,"
                       , "+                   network    >= 2.2.0.0  && < 2.5.0.0,"
                       , "+                   time       >= 1.1.0.0,"
                       , "                    xml        >= 1.3.0.0  && < 1.4.0.0,"
@@ -774,18 +776,18 @@ main _home release =
                       , "                  x   -> x" ])
     , P.Package { P.name = "haskell-operational"
                 , P.spec = Debianize (Hackage "operational")
-                , P.flags = [P.OmitLTDeps] }
+                , P.flags = [P.OmitLTDeps, P.DebVersion "0.2.1.3-1~hackage1"] }
 --    , debianize "options" []
     , debianize "optparse-applicative" []
     , debianize "ordered" []
     , debianize "multiset" []
     , P.Package { P.name = "haskell-process-extras"
                 , P.spec = Debianize (Hackage "process-extras")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.2.0-1~hackage1"] }
     , debianize "texmath" []
-    , debianize "temporary" [P.DebVersion "1.1.2.3-1build1"]
+    , debianize "temporary" []
     , debianize "pandoc-types" [P.DebVersion "1.9.1-1"]
-    , debianize "parse-dimacs" [P.DebVersion "1.2-1~hackage1"]
+    , debianize "parse-dimacs" []
     , debianize "parseargs" [P.DebVersion "0.1.3.2-2"]
     , apt release "haskell-parsec2"
     , P.Package { P.name = "haskell-pbkdf2",
@@ -820,7 +822,7 @@ main _home release =
     , debianize "safecopy" []
     , P.Package { P.name = "haskell-debian-packaging"
                 , P.spec = Debianize (Darcs "http://src.seereason.com/debian-packaging")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.8-1~hackage1"] }
     , patched "sat"
                     [ P.DebVersion "1.1.1-1~hackage1" ]
                     (unlines
@@ -1012,14 +1014,14 @@ main _home release =
                                           , "                , libghc-array-dev (<< 0.5) | ghc"
                                           , "                , libghc-array-prof (>= 0.3) | ghc-prof"
                                           ]),
-                   P.flags = [] 
+                   P.flags = [P.DebVersion "0.5.4-1~hackage1"]
                  }
     -- , debianize "fay" []
-    , debianize "utf8-light" []
-    , debianize "language-haskell-extract" []
+    , debianize "utf8-light" [P.DebVersion "0.4.0.1-2build1"]
+    , debianize "language-haskell-extract" [P.DebVersion "0.2.1-4"]
     , P.Package { P.name = "haskell-fay" 
                 , P.spec = Debianize ( Uri "http://src.seereason.com/faytar/fay.tar.gz" "84316ac761094dcd2309e8b885b6b9b7")
-                , P.flags = [P.ExtraDep "libncurses5-dev", P.ExtraDevDep "libncurses5-dev"]
+                , P.flags = [P.ExtraDep "libncurses5-dev", P.ExtraDevDep "libncurses5-dev", P.DebVersion "0.9.1.1-1~hackage1"]
                 }
     , P.Package { P.name = "haskell-language-ecmascript" 
                 , P.spec = Debianize (Patch
@@ -1045,7 +1047,7 @@ main _home release =
                                        , "   Default-Extensions: DeriveDataTypeable, ScopedTypeVariables, DeriveFunctor, DeriveFoldable, DeriveTraversable, FlexibleContexts"
                                        , "   Default-Language: Haskell2010"
                                        , "   ghc-options:" ]))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.9-1~hackage1"] }
     , P.Package { P.name = "haskell-elm"
                 , P.spec = Debianize (Patch
                                       (Hackage "Elm") 
@@ -1078,7 +1080,8 @@ main _home release =
                    , "+++ new/elm-server.cabal\t2012-07-28 16:02:39.259603831 -0700"
                    , "@@ -32,6 +32,6 @@"
                    , "                        parsec >= 3.1.1,"
-                   , "                        blaze-html == 0.5.0.*,"
+                   , "-                       blaze-html == 0.5.0.*,"
+                   , "+                       blaze-html >= 0.5,"
                    , "                        HTTP >= 4000,"
                    , "-                       happstack-server == 7.0.2,"
                    , "+                       happstack-server >= 7.0.2,"
@@ -1095,7 +1098,7 @@ main _home release =
     , debianize "unification-fd" []
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.5.0.2-1~hackage1"] }
     , apt release "haskell-utility-ht"
     , debianize "vacuum" []
     -- Requires devscripts 0.8.9, restore when that gets built
@@ -1103,7 +1106,7 @@ main _home release =
     -- Version 0.9-1+seereason1~lucid1 is uploaded to lucid already,
     -- remove this pin when a new hackage version comes out to trump it.
     , debianize "vector" []
-    , apt release "haskell-vector-algorithms"
+    , debianize "vector-algorithms" []
     , patched "virthualenv" []
                     (unlines
                      [ "--- old/virthualenv.cabal\t2012-09-05 22:50:47.809090845 -0700"
@@ -1124,7 +1127,7 @@ main _home release =
     , debianize "vault" []
     , P.Package { P.name = "haskell-wai"
                 , P.spec = Debianize (Hackage "wai")
-                , P.flags = [] }
+                , P.flags = [P.CabalPin "1.2.0.3", P.DebVersion "1.2.0.3-1~hackage1"] }
     , patched "web-encodings" []
                     (unlines
                       [ "--- old/web-encodings.cabal\t2012-01-20 06:47:07.000000000 -0800"
@@ -1373,7 +1376,7 @@ platform release =
     , P.Package { P.name = "haskell-cgi"
                 , P.spec = Debianize (Hackage "cgi")
                 -- , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz" "4092efaf00ac329b9771879f57a95323") (Darcs "http://src.seereason.com/haskell-cgi-debian")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "3001.1.8.3-1~hackage1"] }
     -- This is bundled with the compiler
     -- , debianize "process" []
     -- Random is built into 7.0, but not into 7.2, and the version
@@ -1508,7 +1511,7 @@ clckwrks _home release =
                                            , "      old-locale                   ==  1.0.*,"
                                            , "      process                      >= 1.0 && < 1.2,"
                                            , " --     plugins-auto == 0.0.1.1," ]))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.12.0-1~hackage1"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Patch
                                           (Cd "clckwrks-cli" (Darcs repo))
@@ -1524,25 +1527,25 @@ clckwrks _home release =
                                            , "      base        < 5,"
                                            , "      clckwrks   == 0.12.*,"
                                            , "      network    == 2.3.*" ]))
-                    , P.flags = [] }
+                    , P.flags = [P.DebVersion "0.1.4-1~hackage1"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-bugs"
                     , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.2.7-1~hackage1"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
                     , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.2.6-1~hackage1"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
                     , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.2.5-1~hackage1"] }
         , P.Package { P.name = "haskell-clckwrks-theme-basic"
                     , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.2.3-1~hackage1"] }
         , P.Package { P.name = "clckwrks-dot-com"
                     , P.spec = Cd "clckwrks-dot-com" (Darcs repo)
                     , P.flags = [] }
         , P.Package { P.name = "clckwrks-theme-clckwrks"
                     , P.spec = Debianize (Cd "clckwrks-theme-clckwrks" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.1.22-1~hackage1"] }
         , debianize "jmacro" []
         , debianize "hsx-jmacro" []
         , debianize "monadlist" []
@@ -1586,7 +1589,7 @@ happstack release =
     , P.Package { P.name = "haskell-happstack-hsp"
                 , P.spec = Debianize (Hackage "happstack-hsp")
                 -- trhsx 
-                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "7.1.0-1~hackage1"] }
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
     -- , debianize "happstack-ixset" []
@@ -1609,7 +1612,7 @@ happstack release =
                                        , "      bytestring        == 0.9.*,"
                                        , "      cereal            == 0.3.*,"
                                        , "      digest            == 0.0.*," ]))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "7.0.2-1~hackage1"] }
     , debianize "jmacro-rpc-happstack" []
     , debianize "jmacro-rpc" []
     , P.Package { P.name = "haskell-happstack-search"
@@ -1617,15 +1620,15 @@ happstack release =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-server"
                 , P.spec = Debianize (Hackage "happstack-server")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "7.0.7-1~hackage1"] }
     , debianize "base64-bytestring" []
     , debianize "threads" []
     , P.Package { P.name = "haskell-list-tries"
                 , P.spec = Debianize (Hackage "list-tries")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.4.2-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-static-routing"
                 , P.spec = Debianize (Hackage "happstack-static-routing")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.3.1-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-util"
                 , P.spec = Debianize (Patch
                                       (Hackage "happstack-util")
@@ -1647,10 +1650,10 @@ happstack release =
     -- use debianize for natty and apt:sid for lucid.
     , P.Package { P.name = "haskell-hsp"
                 , P.spec = Debianize (Hackage "hsp")
-                , P.flags = [ P.ExtraDep "haskell-hsx-utils" ] }
+                , P.flags = [ P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.7.1-1~hackage1" ] }
     , P.Package { P.name = "haskell-hsx"
                 , P.spec = Debianize (Hackage "hsx")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.10.4-1~hackage1"] }
     , P.Package { P.name = "haskell-pandoc"
                 , P.spec = Debianize (Patch
                                       (Hackage "pandoc")
@@ -1720,10 +1723,10 @@ happstack release =
                                        , "                  zlib >= 0.5 && < 0.6,"
                                        , "                  highlighting-kate >= 0.5.1 && < 0.6,"
                                        , "                  temporary >= 1.1 && < 1.2" ]))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "1.9.4.2-1~hackage1"] }
     , P.Package { P.name = "haskell-highlighting-kate"
                 , P.spec = Debianize (Hackage "highlighting-kate")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.5.3.2-1~hackage1"] }
     , P.Package { P.name = "haskell-web-routes"
                 , P.spec = Debianize (Patch
                                       (Hackage "web-routes")
@@ -1742,22 +1745,22 @@ happstack release =
                                        , "                           text == 0.11.*,"
                                        , "                           utf8-string >= 0.3 && < 0.4"
                                        , "         Exposed-Modules:  Web.Routes" ]))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.27.1-1~hackage1"] }
     , P.Package { P.name = "haskell-web-routes-boomerang"
                 , P.spec = Debianize (Hackage "web-routes-boomerang")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.27.0-1~hackage1"] }
     , P.Package { P.name = "haskell-web-routes-happstack"
                 , P.spec = Debianize (Hackage "web-routes-happstack")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.23.3-1~hackage1"] }
     , P.Package { P.name = "haskell-web-routes-hsp"
                 , P.spec = Debianize (Hackage "web-routes-hsp")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.23.0-1~hackage1"] }
     , P.Package { P.name = "haskell-web-routes-mtl"
                 , P.spec = Debianize (Hackage "web-routes-mtl")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.20.1-1~hackage1"] }
     , P.Package { P.name = "haskell-web-routes-th"
                 , P.spec = Debianize (Hackage "web-routes-th")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.22.1-1~hackage1"] }
     , P.Package { P.name = "haskell-formlets-hsp"
                 , P.spec = Darcs (repo ++ "/formlets-hsp")
                 , P.flags = [] }
@@ -1768,24 +1771,24 @@ happstack release =
     , debianize "HJScript" []
     , P.Package { P.name = "reform"
                 , P.spec = Debianize (Cd "reform" (Darcs (patchTag ++ "/reform")))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.1.2-1~hackage1"] }
     , P.Package { P.name = "reform-blaze"
                 , P.spec = Debianize (Cd "reform-blaze" (Darcs (patchTag ++ "/reform")))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.1-1~hackage1"] }
     , P.Package { P.name = "reform-happstack"
                 , P.spec = Debianize (Cd "reform-happstack" (Darcs (patchTag ++ "/reform")))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
 {-  , P.Package { P.name = "reform-heist"
                 , P.spec = Debianize (Cd "reform-heist" (Darcs patchTag ++ "/reform"))
                 , P.flags = [] } -}
     , P.Package { P.name = "reform-hsp"
                 , P.spec = Debianize (Cd "reform-hsp" (Darcs (patchTag ++ "/reform")))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
     , debianize "blaze-markup" []
     , apt release "haskell-blaze-builder"
     , P.Package { P.name = "haskell-blaze-builder-enumerator" 
                 , P.spec = Debianize (Hackage "blaze-builder-enumerator")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.2.0.5-1~hackage1"] }
     , debianize "blaze-from-html" []
     , debianize "blaze-html" []
     , debianize "blaze-textual" []
@@ -1824,7 +1827,7 @@ happstack release =
                 , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
     , P.Package { P.name = "haskell-acid-state"
                 , P.spec = Debianize (Hackage "acid-state")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.8.1-1~hackage1"] }
     ]
 
 -- | We need new releases of all the conduit packages before we can move 
@@ -1849,7 +1852,7 @@ conduit =
                                        , "                      , transformers-base        >= 0.4.1        && < 0.5"
                                        , "                      , monad-control            >= 0.3.1        && < 0.4" ]))
 -}
-                , P.flags = [P.CabalPin "0.4.2"] }
+                , P.flags = [P.CabalPin "0.4.2", P.DebVersion "0.4.2-1~hackage1"] }
     , debianize "attoparsec-conduit" [P.CabalPin "0.4.0.1"]
     , debianize "blaze-builder-conduit" [P.CabalPin "0.4.0.2"]
     , P.Package { P.name = "haskell-http-conduit"
@@ -1902,7 +1905,7 @@ conduit =
                                        , " "
                                        , " -- | Extract a 'URI' from the request."
                                        , " getUri :: Request m' -> URI" ]))
-                , P.flags = [P.CabalPin "1.4.1.10"] }
+                , P.flags = [P.CabalPin "1.4.1.10", P.DebVersion "1.4.1.10-1~hackage1"] }
     , debianize "zlib-conduit" [P.CabalPin "0.4.0.1"]
     , P.Package { P.name = "haskell-xml-conduit"
                 , P.spec = Debianize (Patch
@@ -1919,7 +1922,7 @@ conduit =
                                        , "                    , system-filepath           >= 0.4      && < 0.5"
                                        , "                    , monad-control             >= 0.3      && < 0.4"
                                        , "     exposed-modules: Text.XML.Stream.Parse" ]))
-                , P.flags = [P.CabalPin "0.7.0.3"] }
+                , P.flags = [P.CabalPin "0.7.0.3", P.DebVersion "0.7.0.3-1~hackage1"] }
     ]
 
 -- | Packages pinned pending update of happstack-authenticate (in one possible build order.)
@@ -1953,11 +1956,11 @@ authenticate _home release =
                                        , "                    , blaze-builder"
                                        , "                    , attoparsec" ]))
                 -- Last version that works with conduit 0.4.
-                , P.flags = [P.CabalPin "1.2.1.1"] }
+                , P.flags = [P.CabalPin "1.2.1.1", P.DebVersion "1.2.1.1-1~hackage1"] }
 
     , P.Package { P.name = "haskell-zlib-enum"
                 , P.spec = Debianize (Hackage "zlib-enum")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.2.3-1~hackage1"] }
     , P.Package { P.name = "haskell-http-enumerator"
                 , P.spec = Debianize (Patch
                                       (Hackage "http-enumerator")
@@ -1994,10 +1997,10 @@ authenticate _home release =
                                        , "     exposed-modules: Network.HTTP.Enumerator"
                                        , "     other-modules:   Network.HTTP.Enumerator.HttpParser"
                                        , "                      Network.TLS.Client.Enumerator" ]))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.7.3.3-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-authenticate"
                 , P.spec = Debianize (Darcs (repo ++ "/happstack-authenticate"))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.9.4-1~hackage1"] }
     , digestiveFunctors
       -- The new version of fb (0.11) would require unpinned conduit packages.
     , P.Package { P.name = "haskell-fb"
@@ -2015,7 +2018,7 @@ authenticate _home release =
                                        , "     , time               >= 1.2     && < 1.5"
                                        , "     , old-locale"
                                        , "     , cereal             == 0.3.*" ]))
-                , P.flags = [P.CabalPin "0.9.7"] }
+                , P.flags = [P.CabalPin "0.9.7", P.DebVersion "0.9.7-1~hackage1"] }
     ]
 
 -- ircbot needs a dependency on containers
@@ -2040,7 +2043,7 @@ happstackdotcom _home =
                                        , "                   random     == 1.0.*,"
                                        , "-                  stm        >= 2.2 && < 2.4"
                                        , "+                  stm        >= 2.2" ]))
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "0.5.1-1~hackage1"] }
 {-  , P.Package { P.name = "haskell-happstackdotcom"
                 , P.spec = Darcs ("http://src.seereason.com/happstackDotCom")
                 , P.flags = [] } -}
@@ -2180,7 +2183,7 @@ algebra = P.Packages (singleton "algebra")
     , debianize "distributive" []
     , P.Package { P.name = "free"
                 , P.spec = Debianize (Hackage "free")
-                , P.flags = [] }
+                , P.flags = [P.DebVersion "3.2-1~hackage1"] }
     , debianize "keys" []
     , debianize "lens" []
     , debianize "lens-family-core" []
@@ -2284,7 +2287,7 @@ debianize :: String -> [P.PackageFlag] -> P.Packages
 debianize s flags =
     P.Package { P.name = debianName s
               , P.spec = Debianize (Hackage s)
-              , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] ++ flags ++ [P.Revision ""]}
+              , P.flags = flags}
     where
       -- This is a quick hack, but what we should do is have
       -- cabal-debian compute and return the source package name.
