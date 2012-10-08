@@ -213,7 +213,7 @@ main _home release =
     , debianize "css-text" [P.DebVersion "0.1.1-3"]
     , apt release "haskell-curl"
     , debianize "data-accessor" []
-    , debianize "data-accessor-template" [P.DebVersion "0.2.1.9-1"]
+    , debianize "data-accessor-template" []
     , debianize "data-default" []
     , patched "data-object" []
                     (unlines
@@ -976,7 +976,40 @@ main _home release =
                       , "                                 TypeOperators" ])
     , debianize "test-framework-quickcheck2" []
     , debianize "test-framework-th" [P.DebVersion "0.2.2-4"]
-    , debianize "testpack" []
+    , P.Package { P.name = "haskell-testpack"
+                , P.spec = Debianize (Patch
+                                      (Hackage "testpack") 
+                                      (unlines
+                                       [ "--- old/src/Test/HUnit/Tools.hs\t2012-10-05 04:45:37.000000000 -0700"
+                                       , "+++ new/src/Test/HUnit/Tools.hs\t2012-10-05 05:02:50.779290231 -0700"
+                                       , "@@ -99,7 +99,7 @@"
+                                       , " tests :: Args -> Gen Result -> StdGen -> Int -> Int -> [[String]] -> IO ()"
+                                       , " tests config gen rnd0 ntest nfail stamps"
+                                       , "   | ntest == maxSuccess config = return ()"
+                                       , "-  | nfail == maxDiscard config = assertFailure $ \"Arguments exhausted after \" ++ show ntest ++ \" tests.\""
+                                       , "+  | nfail == maxDiscardRatio config = assertFailure $ \"Arguments exhausted after \" ++ show ntest ++ \" tests.\""
+                                       , "   | otherwise               ="
+                                       , "       do putStr (configEvery config ntest (arguments result))"
+                                       , "          case ok result of"
+                                       , "@@ -128,7 +128,7 @@"
+                                       , " >        q \"Integer -> Int (safe bounds)\" prop_integer_to_int_pass]"
+                                       , " -}"
+                                       , " qc2hu :: QC.Testable a => Int -> String -> a -> HU.Test"
+                                       , "-qc2hu maxTest = qccheck (stdArgs {maxSuccess = maxTest, maxDiscard = 20000})"
+                                       , "+qc2hu maxTest = qccheck (stdArgs {maxSuccess = maxTest, maxDiscardRatio = 20000})"
+                                       , " "
+                                       , " {- | Run verbose tests.  Example:"
+                                       , " "
+                                       , "@@ -174,7 +174,7 @@"
+                                       , "               Just (rnd,_) -> return rnd"
+                                       , "      test MkState{ terminal          = tm"
+                                       , "                  , maxSuccessTests   = maxSuccess args"
+                                       , "-                 , maxDiscardedTests = maxDiscard args"
+                                       , "+                 , maxDiscardedTests = maxDiscardRatio args"
+                                       , "                  , computeSize       = case replay args of"
+                                       , "                                          Nothing    -> \n d -> (n * maxSize args)"
+                                       , "                                                          `div` maxSuccess args" ]))
+                , P.flags = [] }
     , debianize "th-expand-syns" []
     , debianize "th-lift" []
     , debianize "transformers-base" [P.DebVersion "0.4.1-2"]
@@ -1023,6 +1056,7 @@ main _home release =
                 , P.spec = Debianize ( Uri "http://src.seereason.com/faytar/fay.tar.gz" "84316ac761094dcd2309e8b885b6b9b7")
                 , P.flags = [P.ExtraDep "libncurses5-dev", P.ExtraDevDep "libncurses5-dev", P.DebVersion "0.9.1.1-1~hackage1"]
                 }
+    , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
     , P.Package { P.name = "haskell-language-ecmascript" 
                 , P.spec = Debianize (Patch
                                       (Hackage "language-ecmascript")
@@ -1492,51 +1526,20 @@ clckwrks _home release =
                                            , "+    json2/json2.js"
                                            , " "
                                            , " Library"
-                                           , "   Build-tools:     trhsx" 
-                                           , "@@ -59,7 +132,7 @@"
-                                           , "                    Paths_clckwrks"
-                                           , " "
-                                           , "   Build-depends:"
-                                           , "-     acid-state                   == 0.7.*,"
-                                           , "+     acid-state                   >= 0.6,"
-                                           , "      aeson                        >= 0.5 && < 0.7,"
-                                           , "      attoparsec                   == 0.10.*,"
-                                           , "      base                           < 5," 
-                                           , "@@ -77,7 +150,7 @@"
-                                           , "      ixset                        == 1.0.*,"
-                                           , "      jmacro                       == 0.5.*,"
-                                           , "      mtl                          >= 2.0 && <2.3,"
-                                           , "-     network                      == 2.3.*,"
-                                           , "+     network                      == 2.4.*,"
-                                           , "      old-locale                   ==  1.0.*,"
-                                           , "      process                      >= 1.0 && < 1.2,"
-                                           , " --     plugins-auto == 0.0.1.1," ]))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.12.0-1~hackage1"] }
+                                           , "   Build-tools:     trhsx" ]))
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
-                    , P.spec = Debianize (Patch
-                                          (Cd "clckwrks-cli" (Darcs repo))
-                                          (unlines
-                                           [ "--- old/clckwrks-cli.cabal\t2012-08-22 10:36:25.000000000 -0700"
-                                           , "+++ new/clckwrks-cli.cabal\t2012-08-22 14:00:31.336534523 -0700"
-                                           , "@@ -17,7 +17,7 @@"
-                                           , "      Main.hs"
-                                           , " "
-                                           , "   Build-depends:"
-                                           , "-     acid-state == 0.7.*,"
-                                           , "+     acid-state >= 0.6,"
-                                           , "      base        < 5,"
-                                           , "      clckwrks   == 0.12.*,"
-                                           , "      network    == 2.3.*" ]))
-                    , P.flags = [P.DebVersion "0.1.4-1~hackage1"] }
+                    , P.spec = Debianize (Cd "clckwrks-cli" (Darcs repo))
+                    , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-bugs"
                     , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.2.7-1~hackage1"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
                     , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.2.6-1~hackage1"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
                     , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.2.5-1~hackage1"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-theme-basic"
                     , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.2.3-1~hackage1"] }
@@ -1545,7 +1548,7 @@ clckwrks _home release =
                     , P.flags = [] }
         , P.Package { P.name = "clckwrks-theme-clckwrks"
                     , P.spec = Debianize (Cd "clckwrks-theme-clckwrks" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.1.22-1~hackage1"] }
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , debianize "jmacro" []
         , debianize "hsx-jmacro" []
         , debianize "monadlist" []
@@ -1835,23 +1838,22 @@ happstack release =
 conduit =
   P.Packages (singleton "conduit")
     [ P.Package { P.name = "haskell-conduit"
-                , P.spec = Debianize (Hackage "conduit")
-{-
-                                     (Patch
+                , P.spec = Debianize (Patch
                                       (Hackage "conduit")
                                       (unlines
-                                       [ "--- old/conduit.cabal\t2012-09-11 05:08:42.000000000 -0700"
-                                       , "+++ new/conduit.cabal\t2012-09-11 06:02:31.251909751 -0700"
-                                       , "@@ -49,7 +49,7 @@"
+                                       [ "--- old/conduit.cabal\t2012-10-05 05:36:11.000000000 -0700"
+                                       , "+++ new/conduit.cabal\t2012-10-05 05:57:05.419367129 -0700"
+                                       , "@@ -49,8 +49,8 @@"
                                        , "                        Data.Conduit.Util.Sink"
                                        , "                        Data.Conduit.Util.Conduit"
                                        , "   Build-depends:       base                     >= 4.3          && < 5"
                                        , "-                     , resourcet                >= 0.3          && < 0.4"
+                                       , "-                     , lifted-base              >= 0.1          && < 0.2"
                                        , "+                     , resourcet                >= 0.3"
-                                       , "                      , lifted-base              >= 0.1          && < 0.2"
+                                       , "+                     , lifted-base              >= 0.1"
                                        , "                      , transformers-base        >= 0.4.1        && < 0.5"
-                                       , "                      , monad-control            >= 0.3.1        && < 0.4" ]))
--}
+                                       , "                      , monad-control            >= 0.3.1        && < 0.4"
+                                       , "                      , containers" ]))
                 , P.flags = [P.CabalPin "0.4.2", P.DebVersion "0.4.2-1~hackage1"] }
     , debianize "attoparsec-conduit" [P.CabalPin "0.4.0.1"]
     , debianize "blaze-builder-conduit" [P.CabalPin "0.4.0.2"]
@@ -1870,7 +1872,7 @@ conduit =
                                        , "                  , cprng-aes             >= 0.2     && < 0.3"
                                        , "                  , tls                   >= 0.9.3   && < 0.10"
                                        , "                  , tls-extra             >= 0.4.5   && < 0.5"
-                                       , "@@ -38,9 +38,9 @@"
+                                       , "@@ -38,12 +38,12 @@"
                                        , "                  , containers            >= 0.2"
                                        , "                  , certificate           >= 1.2     && < 1.3"
                                        , "                  , case-insensitive      >= 0.2"
@@ -1882,7 +1884,11 @@ conduit =
                                        , "+                 , data-default          >= 0.3"
                                        , "                  , text"
                                        , "                  , transformers-base     >= 0.4     && < 0.5"
-                                       , "                  , lifted-base           >= 0.1     && < 0.2"
+                                       , "-                 , lifted-base           >= 0.1     && < 0.2"
+                                       , "+                 , lifted-base           >= 0.1"
+                                       , "                  , socks                 >= 0.4     && < 0.5"
+                                       , "                  , time"
+                                       , "                  , cookie                >= 0.4     && < 0.5"
                                        , "@@ -55,7 +55,7 @@"
                                        , "         build-depends: network               >= 2.2.1   && < 2.2.3"
                                        , "                      , network-bytestring    >= 0.1.3   && < 0.1.4"
@@ -1932,7 +1938,22 @@ authenticate _home release =
     , apt release "haskell-puremd5"
     , debianize "monadcryptorandom" []
     , debianize "RSA" []
-    , debianize "resourcet" [P.CabalPin "0.3.3.1"] -- Due to conduit=0.4.2 pin
+    , P.Package { P.name = "haskell-resourcet"
+                , P.spec = Debianize (Patch 
+                                      (Hackage "resourcet")
+                                      (unlines
+                                       [ "--- old/resourcet.cabal\t2012-10-04 23:01:57.000000000 -0700"
+                                       , "+++ new/resourcet.cabal\t2012-10-05 04:32:39.911247446 -0700"
+                                       , "@@ -15,7 +15,7 @@"
+                                       , " Library"
+                                       , "   Exposed-modules:     Control.Monad.Trans.Resource"
+                                       , "   Build-depends:       base                     >= 4.3          && < 5"
+                                       , "-                     , lifted-base              >= 0.1          && < 0.2"
+                                       , "+                     , lifted-base              >= 0.1"
+                                       , "                      , transformers-base        >= 0.4.1        && < 0.5"
+                                       , "                      , monad-control            >= 0.3.1        && < 0.4"
+                                       , "                      , containers" ]))
+                , P.flags = [P.CabalPin "0.3.3.1"] } -- Due to conduit=0.4.2 pin
     , debianize "void" []
     , debianize "certificate" []
     , debianize "pem" []
@@ -1999,7 +2020,7 @@ authenticate _home release =
                                        , "                      Network.TLS.Client.Enumerator" ]))
                 , P.flags = [P.DebVersion "0.7.3.3-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-authenticate"
-                , P.spec = Debianize (Darcs (repo ++ "/happstack-authenticate"))
+                , P.spec = Debianize (Darcs (repo ++ "/happstack-authenticate-0.9.4"))
                 , P.flags = [P.DebVersion "0.9.4-1~hackage1"] }
     , digestiveFunctors
       -- The new version of fb (0.11) would require unpinned conduit packages.
@@ -2009,6 +2030,15 @@ authenticate _home release =
                                       (unlines
                                        [ "--- old/fb.cabal\t2012-09-23 12:50:29.000000000 -0700"
                                        , "+++ new/fb.cabal\t2012-09-23 12:55:23.910024716 -0700"
+                                       , "@@ -55,7 +55,7 @@"
+                                       , "     Facebook.OpenGraph"
+                                       , "   build-depends:"
+                                       , "       base               >= 4       && < 5"
+                                       , "-    , lifted-base        >= 0.1     && < 0.2"
+                                       , "+    , lifted-base        >= 0.1"
+                                       , "     , bytestring         >= 0.9     && < 0.10"
+                                       , "     , text               >= 0.11    && < 0.12"
+                                       , "     , transformers       >= 0.2     && < 0.4"
                                        , "@@ -67,7 +67,7 @@"
                                        , "     , attoparsec         >= 0.10    && < 0.11"
                                        , "     , attoparsec-conduit >= 0.4     && < 0.5"
@@ -2017,7 +2047,7 @@ authenticate _home release =
                                        , "+    , base64-bytestring  >= 0.1.1"
                                        , "     , time               >= 1.2     && < 1.5"
                                        , "     , old-locale"
-                                       , "     , cereal             == 0.3.*" ]))
+                                       , "     , cereal             == 0.3.* ]))" ]))
                 , P.flags = [P.CabalPin "0.9.7", P.DebVersion "0.9.7-1~hackage1"] }
     ]
 

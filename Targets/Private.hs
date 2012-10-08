@@ -8,10 +8,7 @@ import Targets.Common
 
 libraries _home =
     P.Packages (singleton "libraries") $
-    [ P.Package { P.name = "haskell-filecache"
-                , P.spec = Darcs (privateRepo ++ "/haskell-filecache")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-document"
+    [ P.Package { P.name = "haskell-document"
                 , P.spec = Darcs (privateRepo ++ "/haskell-document")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-generic-formlets3"
