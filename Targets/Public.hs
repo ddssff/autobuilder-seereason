@@ -528,20 +528,7 @@ main _home release =
     , P.Package { P.name = "haskell-heist"
                 , P.spec = Debianize (Hackage "heist")
                 , P.flags = [] }
-    , patched "xmlhtml" [P.CabalPin "0.1.7"]
-              (unlines
-               [ "--- old/xmlhtml.cabal\t2012-07-10 07:13:39.000000000 -0700"
-               , "+++ new/xmlhtml.cabal\t2012-07-10 09:45:14.862970736 -0700"
-               , "@@ -821,7 +821,8 @@"
-               , " "
-               , "   Build-depends:       base                 >= 4     && < 5,"
-               , "                        blaze-builder        >= 0.2   && < 0.4,"
-               , "-                       blaze-html           >= 0.3.2 && < 0.5,"
-               , "+                       blaze-html           >= 0.5,"
-               , "+                       blaze-markup         >= 0.5.1,"
-               , "                        bytestring           >= 0.9   && < 0.10,"
-               , "                        containers           >= 0.3   && < 0.5,"
-               , "                        parsec               >= 3.1.2 && < 3.2," ])
+    , debianize "xmlhtml" []
     , debianize "directory-tree" []
     , debianize "MonadCatchIO-transformers" []
     , debianize "hinotify" [P.DebVersion "0.3.2-1"]
@@ -1161,7 +1148,7 @@ main _home release =
     , debianize "vault" []
     , P.Package { P.name = "haskell-wai"
                 , P.spec = Debianize (Hackage "wai")
-                , P.flags = [P.CabalPin "1.2.0.3", P.DebVersion "1.2.0.3-1~hackage1"] }
+                , P.flags = [] }
     , patched "web-encodings" []
                     (unlines
                       [ "--- old/web-encodings.cabal\t2012-01-20 06:47:07.000000000 -0800"
@@ -1841,94 +1828,40 @@ conduit =
                 , P.spec = Debianize (Patch
                                       (Hackage "conduit")
                                       (unlines
-                                       [ "--- old/conduit.cabal\t2012-10-05 05:36:11.000000000 -0700"
-                                       , "+++ new/conduit.cabal\t2012-10-05 05:57:05.419367129 -0700"
-                                       , "@@ -49,8 +49,8 @@"
-                                       , "                        Data.Conduit.Util.Sink"
+                                       [ "--- old/conduit.cabal\t2012-10-08 08:48:24.000000000 -0700"
+                                       , "+++ new/conduit.cabal\t2012-10-08 09:24:28.725784772 -0700"
+                                       , "@@ -53,7 +53,7 @@"
                                        , "                        Data.Conduit.Util.Conduit"
                                        , "   Build-depends:       base                     >= 4.3          && < 5"
-                                       , "-                     , resourcet                >= 0.3          && < 0.4"
+                                       , "                      , resourcet                >= 0.3          && < 0.5"
                                        , "-                     , lifted-base              >= 0.1          && < 0.2"
-                                       , "+                     , resourcet                >= 0.3"
                                        , "+                     , lifted-base              >= 0.1"
                                        , "                      , transformers-base        >= 0.4.1        && < 0.5"
                                        , "                      , monad-control            >= 0.3.1        && < 0.4"
                                        , "                      , containers" ]))
-                , P.flags = [P.CabalPin "0.4.2", P.DebVersion "0.4.2-1~hackage1"] }
-    , debianize "attoparsec-conduit" [P.CabalPin "0.4.0.1"]
-    , debianize "blaze-builder-conduit" [P.CabalPin "0.4.0.2"]
+                , P.flags = [] }
+    , debianize "attoparsec-conduit" []
+    , debianize "blaze-builder-conduit" []
     , P.Package { P.name = "haskell-http-conduit"
                 , P.spec = Debianize (Patch
                                       (Hackage "http-conduit")
                                       (unlines
-                                       [ "--- old/http-conduit.cabal\t2012-09-23 12:33:16.000000000 -0700"
-                                       , "+++ new/http-conduit.cabal\t2012-09-23 12:47:52.894014059 -0700"
-                                       , "@@ -30,7 +30,7 @@"
-                                       , "                  , attoparsec            >= 0.8.0.2 && < 0.11"
-                                       , "                  , utf8-string           >= 0.3.4   && < 0.4"
-                                       , "                  , blaze-builder         >= 0.2.1   && < 0.4"
-                                       , "-                 , http-types            >= 0.6     && < 0.7"
-                                       , "+                 , http-types            >= 0.6"
-                                       , "                  , cprng-aes             >= 0.2     && < 0.3"
-                                       , "                  , tls                   >= 0.9.3   && < 0.10"
-                                       , "                  , tls-extra             >= 0.4.5   && < 0.5"
-                                       , "@@ -38,12 +38,12 @@"
-                                       , "                  , containers            >= 0.2"
-                                       , "                  , certificate           >= 1.2     && < 1.3"
-                                       , "                  , case-insensitive      >= 0.2"
-                                       , "-                 , base64-bytestring     >= 0.1     && < 0.2"
-                                       , "-                 , asn1-data             >= 0.5.1   && < 0.7"
-                                       , "-                 , data-default          >= 0.3     && < 0.5"
-                                       , "+                 , base64-bytestring     >= 0.1"
-                                       , "+                 , asn1-data             >= 0.5.1"
-                                       , "+                 , data-default          >= 0.3"
+                                       [ "--- old/http-conduit.cabal\t2012-10-08 09:34:30.000000000 -0700"
+                                       , "+++ new/http-conduit.cabal\t2012-10-08 09:41:10.229808951 -0700"
+                                       , "@@ -43,7 +43,7 @@"
+                                       , "                  , data-default"
                                        , "                  , text"
                                        , "                  , transformers-base     >= 0.4     && < 0.5"
                                        , "-                 , lifted-base           >= 0.1     && < 0.2"
                                        , "+                 , lifted-base           >= 0.1"
                                        , "                  , socks                 >= 0.4     && < 0.5"
                                        , "                  , time"
-                                       , "                  , cookie                >= 0.4     && < 0.5"
-                                       , "@@ -55,7 +55,7 @@"
-                                       , "         build-depends: network               >= 2.2.1   && < 2.2.3"
-                                       , "                      , network-bytestring    >= 0.1.3   && < 0.1.4"
-                                       , "     else"
-                                       , "-        build-depends: network               >= 2.3     && < 2.4"
-                                       , "+        build-depends: network               >= 2.3"
-                                       , "     exposed-modules: Network.HTTP.Conduit"
-                                       , "                      Network.HTTP.Conduit.Browser"
-                                       , "                      Network.HTTP.Conduit.Internal"
-                                       , "--- old/Network/HTTP/Conduit/Request.hs\t2012-09-17 21:34:00.000000000 -0700"
-                                       , "+++ new/Network/HTTP/Conduit/Request.hs\t2012-09-17 21:45:33.657494882 -0700"
-                                       , "@@ -145,9 +145,7 @@"
-                                       , " -- it as per 'setUri'; if it is relative, merge it with the existing request."
-                                       , " setUriRelative :: Failure HttpException m => Request m' -> URI -> m (Request m')"
-                                       , " setUriRelative req uri ="
-                                       , "-    case uri `relativeTo` getUri req of"
-                                       , "-        Just uri' -> setUri req uri'"
-                                       , "-        Nothing   -> failure $ InvalidUrlException (show uri) \"Invalid URL\""
-                                       , "+    setUri req (uri `relativeTo` getUri req)"
-                                       , " "
-                                       , " -- | Extract a 'URI' from the request."
-                                       , " getUri :: Request m' -> URI" ]))
-                , P.flags = [P.CabalPin "1.4.1.10", P.DebVersion "1.4.1.10-1~hackage1"] }
-    , debianize "zlib-conduit" [P.CabalPin "0.4.0.1"]
+                                       , "                  , cookie                >= 0.4     && < 0.5" ]))
+                , P.flags = [] }
+    , debianize "zlib-conduit" []
     , P.Package { P.name = "haskell-xml-conduit"
-                , P.spec = Debianize (Patch
-                                      (Hackage "xml-conduit")
-                                      (unlines
-                                       [ "--- old/xml-conduit.cabal\t2012-07-01 14:42:31.000000000 -0700"
-                                       , "+++ new/xml-conduit.cabal\t2012-07-01 15:55:44.860990286 -0700"
-                                       , "@@ -40,7 +40,7 @@"
-                                       , "                    , blaze-builder             >= 0.2      && < 0.4"
-                                       , "                    , transformers              >= 0.2      && < 0.4"
-                                       , "                    , failure                   >= 0.1      && < 0.3"
-                                       , "-                   , data-default              >= 0.2      && < 0.5"
-                                       , "+                   , data-default              >= 0.2"
-                                       , "                    , system-filepath           >= 0.4      && < 0.5"
-                                       , "                    , monad-control             >= 0.3      && < 0.4"
-                                       , "     exposed-modules: Text.XML.Stream.Parse" ]))
-                , P.flags = [P.CabalPin "0.7.0.3", P.DebVersion "0.7.0.3-1~hackage1"] }
+                , P.spec = Debianize (Hackage "xml-conduit")
+                , P.flags = [] }
     ]
 
 -- | Packages pinned pending update of happstack-authenticate (in one possible build order.)
@@ -1953,7 +1886,7 @@ authenticate _home release =
                                        , "                      , transformers-base        >= 0.4.1        && < 0.5"
                                        , "                      , monad-control            >= 0.3.1        && < 0.4"
                                        , "                      , containers" ]))
-                , P.flags = [P.CabalPin "0.3.3.1"] } -- Due to conduit=0.4.2 pin
+                , P.flags = [] }
     , debianize "void" []
     , debianize "certificate" []
     , debianize "pem" []
@@ -1962,22 +1895,8 @@ authenticate _home release =
     , debianize "tls-extra" []
     -- , debianize "authenticate" []
     , P.Package { P.name = "haskell-authenticate"
-                , P.spec = Debianize (Patch
-                                      (Hackage "authenticate")
-                                      (unlines
-                                       [ "--- old/authenticate.cabal\t2012-07-10 10:36:28.000000000 -0700"
-                                       , "+++ new/authenticate.cabal\t2012-07-10 10:47:22.839058816 -0700"
-                                       , "@@ -25,7 +25,7 @@"
-                                       , "                    , network"
-                                       , "                    , case-insensitive              >= 0.2"
-                                       , "                    , text"
-                                       , "-                   , http-types                    >= 0.6      && < 0.7"
-                                       , "+                   , http-types                    >= 0.6"
-                                       , "                    , xml-conduit                   >= 0.7      && < 0.8"
-                                       , "                    , blaze-builder"
-                                       , "                    , attoparsec" ]))
-                -- Last version that works with conduit 0.4.
-                , P.flags = [P.CabalPin "1.2.1.1", P.DebVersion "1.2.1.1-1~hackage1"] }
+                , P.spec = Debianize (Hackage "authenticate")
+                , P.flags = [] }
 
     , P.Package { P.name = "haskell-zlib-enum"
                 , P.spec = Debianize (Hackage "zlib-enum")
@@ -2020,35 +1939,26 @@ authenticate _home release =
                                        , "                      Network.TLS.Client.Enumerator" ]))
                 , P.flags = [P.DebVersion "0.7.3.3-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-authenticate"
-                , P.spec = Debianize (Darcs (repo ++ "/happstack-authenticate-0.9.4"))
-                , P.flags = [P.DebVersion "0.9.4-1~hackage1"] }
+                , P.spec = Debianize (Darcs (repo ++ "/happstack-authenticate"))
+                , P.flags = [] }
     , digestiveFunctors
       -- The new version of fb (0.11) would require unpinned conduit packages.
     , P.Package { P.name = "haskell-fb"
                 , P.spec = Debianize (Patch
                                       (Hackage "fb")
                                       (unlines
-                                       [ "--- old/fb.cabal\t2012-09-23 12:50:29.000000000 -0700"
-                                       , "+++ new/fb.cabal\t2012-09-23 12:55:23.910024716 -0700"
-                                       , "@@ -55,7 +55,7 @@"
-                                       , "     Facebook.OpenGraph"
+                                       [ "--- old/fb.cabal\t2012-10-08 09:42:36.000000000 -0700"
+                                       , "+++ new/fb.cabal\t2012-10-08 09:47:43.305818022 -0700"
+                                       , "@@ -61,7 +61,7 @@"
+                                       , "     Facebook.TestUsers"
                                        , "   build-depends:"
                                        , "       base               >= 4       && < 5"
                                        , "-    , lifted-base        >= 0.1     && < 0.2"
                                        , "+    , lifted-base        >= 0.1"
-                                       , "     , bytestring         >= 0.9     && < 0.10"
+                                       , "     , bytestring         >= 0.9     && < 0.11"
                                        , "     , text               >= 0.11    && < 0.12"
-                                       , "     , transformers       >= 0.2     && < 0.4"
-                                       , "@@ -67,7 +67,7 @@"
-                                       , "     , attoparsec         >= 0.10    && < 0.11"
-                                       , "     , attoparsec-conduit >= 0.4     && < 0.5"
-                                       , "     , aeson              >= 0.5     && < 0.7"
-                                       , "-    , base64-bytestring  >= 0.1.1   && < 0.2"
-                                       , "+    , base64-bytestring  >= 0.1.1"
-                                       , "     , time               >= 1.2     && < 1.5"
-                                       , "     , old-locale"
-                                       , "     , cereal             == 0.3.* ]))" ]))
-                , P.flags = [P.CabalPin "0.9.7", P.DebVersion "0.9.7-1~hackage1"] }
+                                       , "     , transformers       >= 0.2     && < 0.4" ]))
+                , P.flags = [] }
     ]
 
 -- ircbot needs a dependency on containers
