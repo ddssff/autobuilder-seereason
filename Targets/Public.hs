@@ -769,8 +769,10 @@ main _home release =
     , debianize "ordered" []
     , debianize "multiset" []
     , P.Package { P.name = "haskell-process-extras"
-                , P.spec = Debianize (Hackage "process-extras")
-                , P.flags = [P.DebVersion "0.2.0-1~hackage1"] }
+                -- , P.spec = Debianize (Hackage "process-extras")
+                -- , P.flags = [P.DebVersion "0.2.0-1~hackage1"]
+                , P.spec = Debianize (Darcs "http://src.seereason.com/process-extras")
+                , P.flags = [] }
     , debianize "texmath" []
     , debianize "temporary" []
     , debianize "pandoc-types" [P.DebVersion "1.9.1-1"]
