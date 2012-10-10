@@ -811,7 +811,7 @@ main _home release =
     , debianize "safecopy" []
     , P.Package { P.name = "haskell-debian-packaging"
                 , P.spec = Debianize (Darcs "http://src.seereason.com/debian-packaging")
-                , P.flags = [P.DebVersion "0.8-1~hackage1"] }
+                , P.flags = [] }
     , patched "sat"
                     [ P.DebVersion "1.1.1-1~hackage1" ]
                     (unlines

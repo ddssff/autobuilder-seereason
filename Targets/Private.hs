@@ -71,5 +71,5 @@ applications _home =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-clckwrks-theme-appraisalreportonline"
                 , P.spec = Debianize (Cd "clckwrks-theme-appraisalreportonline" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks")))
-                , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.1.3-1~hackage1"] }
+                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     ]
