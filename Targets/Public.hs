@@ -909,7 +909,95 @@ main _home release =
                                   , "+    where attrs = map (maybe [] id . flip HM.lookup table) rules"
                                   , "           next  = case tag of"
                                   , "                     Prim a    -> a"
-                                  , "                     DivTag    -> divTag  spec next'" ])
+                                  , "                     DivTag    -> divTag  spec next'" 
+                                  , "--- old/src/SimpleCss/Tricks/Shortcuts/Html.hs\t2012-10-12 10:38:26.000000000 -0700"
+                                  , "+++ new/src/SimpleCss/Tricks/Shortcuts/Html.hs\t2012-10-12 11:02:38.474180790 -0700"
+                                  , "@@ -19,7 +19,7 @@"
+                                  , " "
+                                  , " -- html-elements"
+                                  , " "
+                                  , "-textTag tag = prim . tag . H.string"
+                                  , "+textTag tag = prim . tag . H.toHtml"
+                                  , " "
+                                  , " -- | @p@ tag "
+                                  , " p :: String -> Css H.Html"
+                                  , "@@ -37,7 +37,7 @@"
+                                  , " --"
+                                  , " -- * text"
+                                  , " a :: String -> String -> Css H.Html"
+                                  , "-a href text = prim $ H.a H.! HA.href (H.stringValue href) $ H.string text"
+                                  , "+a href text = prim $ H.a H.! HA.href (H.toValue href) $ H.toHtml text"
+                                  , " "
+                                  , " -- headers"
+                                  , " "
+                                  , "@@ -73,7 +73,7 @@"
+                                  , " --"
+                                  , " -- * @src@ atribute value"
+                                  , " img :: String -> String -> Css H.Html"
+                                  , "-img alt src = prim $ H.img H.! HA.src (H.stringValue src) H.! HA.alt (H.stringValue alt)"
+                                  , "+img alt src = prim $ H.img H.! HA.src (H.toValue src) H.! HA.alt (H.toValue alt)"
+                                  , " "
+                                  , " "
+                                  , " -- | @ul@ tag"
+                                  , "@@ -85,7 +85,7 @@"
+                                  , " ol = ls H.ol"
+                                  , " "
+                                  , " -- lists"
+                                  , "-ls constr = prim . constr . foldl1 (>>) . map (H.li . H.string)"
+                                  , "+ls constr = prim . constr . foldl1 (>>) . map (H.li . H.toHtml)"
+                                  , " "
+                                  , " "
+                                  , " -- | @ul@ tag with links"
+                                  , "@@ -102,7 +102,7 @@"
+                                  , " "
+                                  , " "
+                                  , " als constr = prim . constr . foldl1 (>>) . map (H.li . setA)"
+                                  , "-    where setA (href, name) = H.a H.! HA.href (H.stringValue href) $ H.string name"
+                                  , "+    where setA (href, name) = H.a H.! HA.href (H.toValue href) $ H.toHtml name"
+                                  , " "
+                                  , " "
+                                  , " "
+                                  , "@@ -121,15 +121,15 @@"
+                                  , "     case h of"
+                                  , "         Just x  -> tr H.th x >> trs"
+                                  , "         Nothing -> trs"
+                                  , "-    where tr f x  = H.tr $ foldl (>>) (return ()) $ map (f . H.string) x"
+                                  , "+    where tr f x  = H.tr $ foldl (>>) (return ()) $ map (f . H.toHtml) x"
+                                  , "           trs     = foldl1 (>>) $ map (tr H.td) rs   "
+                                  , " "
+                                  , " "
+                                  , " "
+                                  , " encoding :: String -> H.Html"
+                                  , "-encoding str = H.meta H.! HA.httpEquiv (H.stringValue \"Content-Type\")"
+                                  , "-                      H.! HA.content (H.stringValue \"text/html\")"
+                                  , "-                      H.! HA.charset (H.stringValue str)"
+                                  , "+encoding str = H.meta H.! HA.httpEquiv (H.toValue \"Content-Type\")"
+                                  , "+                      H.! HA.content (H.toValue \"text/html\")"
+                                  , "+                      H.! HA.charset (H.toValue str)"
+                                  , " "
+                                  , " "
+                                  , " -- | writes css and htmls to files"
+                                  , "@@ -162,16 +162,16 @@"
+                                  , " "
+                                  , " linkCss :: String -> H.Html"
+                                  , " linkCss cssFile = "
+                                  , "-    H.link H.! HA.rel   (H.stringValue \"stylesheet\")"
+                                  , "-           H.! HA.type_ (H.stringValue \"text/css\") "
+                                  , "-           H.! HA.href  (H.stringValue cssFile)"
+                                  , "+    H.link H.! HA.rel   (H.toValue \"stylesheet\")"
+                                  , "+           H.! HA.type_ (H.toValue \"text/css\") "
+                                  , "+           H.! HA.href  (H.toValue cssFile)"
+                                  , " "
+                                  , " -- | genereates html filenames and head's sublelements from list of titles"
+                                  , " initHtmls :: [String] -> [(String, H.Html)]"
+                                  , " initHtmls names = zip (map (++ \".html\") names) $ map fromTitle names"
+                                  , " "
+                                  , " fromTitle :: String -> H.Html"
+                                  , "-fromTitle title = encoding \"UTF-8\" >> (H.title $ H.string title)"
+                                  , "+fromTitle title = encoding \"UTF-8\" >> (H.title $ H.toHtml title)"
+                                  , " "
+                                  , " "
+                                  , " " ])
                 , P.flags = [P.DebVersion "0.0.4-1~hackage1"] }
     , debianize "SMTPClient" [P.DebVersion "1.0.4-3"]
     , debianize "socks" []
@@ -1718,7 +1806,7 @@ happstack release =
                 , P.flags = [P.DebVersion "1.9.4.2-1~hackage1"] }
     , P.Package { P.name = "haskell-highlighting-kate"
                 , P.spec = Debianize (Hackage "highlighting-kate")
-                , P.flags = [P.DebVersion "0.5.3.2-1~hackage1"] }
+                , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes"
                 , P.spec = Debianize (Patch
                                       (Hackage "web-routes")
@@ -1827,38 +1915,12 @@ happstack release =
 conduit =
   P.Packages (singleton "conduit")
     [ P.Package { P.name = "haskell-conduit"
-                , P.spec = Debianize (Patch
-                                      (Hackage "conduit")
-                                      (unlines
-                                       [ "--- old/conduit.cabal\t2012-10-08 08:48:24.000000000 -0700"
-                                       , "+++ new/conduit.cabal\t2012-10-08 09:24:28.725784772 -0700"
-                                       , "@@ -53,7 +53,7 @@"
-                                       , "                        Data.Conduit.Util.Conduit"
-                                       , "   Build-depends:       base                     >= 4.3          && < 5"
-                                       , "                      , resourcet                >= 0.3          && < 0.5"
-                                       , "-                     , lifted-base              >= 0.1          && < 0.2"
-                                       , "+                     , lifted-base              >= 0.1"
-                                       , "                      , transformers-base        >= 0.4.1        && < 0.5"
-                                       , "                      , monad-control            >= 0.3.1        && < 0.4"
-                                       , "                      , containers" ]))
+                , P.spec = Debianize (Hackage "conduit")
                 , P.flags = [] }
     , debianize "attoparsec-conduit" []
     , debianize "blaze-builder-conduit" []
     , P.Package { P.name = "haskell-http-conduit"
-                , P.spec = Debianize (Patch
-                                      (Hackage "http-conduit")
-                                      (unlines
-                                       [ "--- old/http-conduit.cabal\t2012-10-08 09:34:30.000000000 -0700"
-                                       , "+++ new/http-conduit.cabal\t2012-10-08 09:41:10.229808951 -0700"
-                                       , "@@ -43,7 +43,7 @@"
-                                       , "                  , data-default"
-                                       , "                  , text"
-                                       , "                  , transformers-base     >= 0.4     && < 0.5"
-                                       , "-                 , lifted-base           >= 0.1     && < 0.2"
-                                       , "+                 , lifted-base           >= 0.1"
-                                       , "                  , socks                 >= 0.4     && < 0.5"
-                                       , "                  , time"
-                                       , "                  , cookie                >= 0.4     && < 0.5" ]))
+                , P.spec = Debianize (Hackage "http-conduit")
                 , P.flags = [] }
     , debianize "zlib-conduit" []
     , P.Package { P.name = "haskell-xml-conduit"
@@ -1874,20 +1936,7 @@ authenticate _home release =
     , debianize "monadcryptorandom" []
     , debianize "RSA" []
     , P.Package { P.name = "haskell-resourcet"
-                , P.spec = Debianize (Patch 
-                                      (Hackage "resourcet")
-                                      (unlines
-                                       [ "--- old/resourcet.cabal\t2012-10-04 23:01:57.000000000 -0700"
-                                       , "+++ new/resourcet.cabal\t2012-10-05 04:32:39.911247446 -0700"
-                                       , "@@ -15,7 +15,7 @@"
-                                       , " Library"
-                                       , "   Exposed-modules:     Control.Monad.Trans.Resource"
-                                       , "   Build-depends:       base                     >= 4.3          && < 5"
-                                       , "-                     , lifted-base              >= 0.1          && < 0.2"
-                                       , "+                     , lifted-base              >= 0.1"
-                                       , "                      , transformers-base        >= 0.4.1        && < 0.5"
-                                       , "                      , monad-control            >= 0.3.1        && < 0.4"
-                                       , "                      , containers" ]))
+                , P.spec = Debianize (Hackage "resourcet")
                 , P.flags = [] }
     , debianize "void" []
     , debianize "certificate" []
