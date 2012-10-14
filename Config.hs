@@ -155,7 +155,8 @@ myGoals = []
 -- access the Debian and Ubuntu repositories.  The anl.gov values here
 -- probably won't work outside the United States.
 --
-myDebianMirrorHost = "mirror.anl.gov"
+--myDebianMirrorHost = "mirror.anl.gov"
+myDebianMirrorHost = "ftp.debian.org"
 --myUbuntuMirrorHost = "mirror.anl.gov"
 myUbuntuMirrorHost = "us.archive.ubuntu.com/ubuntu"
 --myUbuntuMirrorHost = "ubuntu.cs.utah.edu"

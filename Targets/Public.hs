@@ -1350,12 +1350,20 @@ main _home release =
 
 ghc release =
   P.Packages (singleton "ghc") $
-    (if elem release ["squeeze-seereason"]
-     then
-        [P.Package { P.name = "ghc"
-                  , P.spec = Patch (Apt "sid" "ghc")
-                             (unlines
-                              [ "--- old/ghc-7.4.1/debian/control\t2012-03-10 10:38:09.000000000 -0800"
+  case release of
+    "squeeze-seereason" ->
+      [P.Package { P.name = "ghc"
+                 , P.spec = Patch (Apt "sid" "ghc") patch741
+                 , P.flags = relax }]
+    "quantal-seereason" ->
+      [P.Package { P.name = "ghc"
+                 , P.spec = Apt "experimental" "ghc"
+                 , P.flags = relax }]
+    "precise-seereason" -> []
+    _ ->  []
+    where
+      relax = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"]
+      patch741 = (unlines     [ "--- old/ghc-7.4.1/debian/control\t2012-03-10 10:38:09.000000000 -0800"
                               , "+++ new/ghc-7.4.1/debian/control\t2012-03-22 17:18:51.548720165 -0700"
                               , "@@ -6,7 +6,7 @@"
                               , " Standards-Version: 3.9.2"
@@ -1375,15 +1383,6 @@ ghc release =
                               , " Provides: haskell-compiler, ${provided-devs}, ${haskell:Provides}, ${ghci}"
                               , " Replaces: ghc6 (<< 7)"
                               , " Conflicts: ghc6 (<< 7), ${provided-devs}" ])
-                  , P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"] }]
-        else []) ++
-    (if not (elem release ["lucid-seereason", "natty-seereason", "precise-seereason"])
-         -- 7.4.1-3 doesn't look very interesting, postpone build for now.
-     then [(apt "sid" "ghc") {P.flags = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"]}]
-     else []) {- ++
-    (if release == "lucid-seereason"
-     then [apt "sid" "debhelper"]
-     else []) -}
 
 platform release =
     P.Packages (singleton "platform") $
