@@ -1354,17 +1354,13 @@ main _home release =
 ghc release =
   P.Packages (singleton "ghc") $
   case release of
-    "squeeze-seereason" ->
-      [P.Package { P.name = "ghc"
-                 , P.spec = Patch (Apt "sid" "ghc") patch741
-                 , P.flags = relax }]
-    "quantal-seereason" ->
-      [P.Package { P.name = "ghc"
-                 , P.spec = Apt "experimental" "ghc"
-                 , P.flags = relax }]
-    "precise-seereason" -> []
-    _ ->  []
+    "quantal-seereason" -> [ghc, devscripts]
+    "precise-seereason" -> [devscripts]
+    _ ->  [devscripts]
     where
+      ghc = P.Package { P.name = "ghc"
+                      , P.spec = Apt "experimental" "ghc"
+                      , P.flags = relax }
       relax = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"]
       patch741 = (unlines     [ "--- old/ghc-7.4.1/debian/control\t2012-03-10 10:38:09.000000000 -0800"
                               , "+++ new/ghc-7.4.1/debian/control\t2012-03-22 17:18:51.548720165 -0700"
@@ -1386,67 +1382,72 @@ ghc release =
                               , " Provides: haskell-compiler, ${provided-devs}, ${haskell:Provides}, ${ghci}"
                               , " Replaces: ghc6 (<< 7)"
                               , " Conflicts: ghc6 (<< 7), ${provided-devs}" ])
+      patch spec =
+        case release of
+           "quantal-seereason" -> spec
+           _ ->
+             Patch
+               spec
+               (unlines [ "--- old/dh_haskell_depends\t2012-03-10 09:07:37.000000000 -0800"
+                         , "+++ new/dh_haskell_depends\t2012-06-28 11:30:04.266489732 -0700"
+                         , "@@ -102,6 +102,12 @@"
+                         , "                     dev=`echo $pkg | sed -e 's/-prof$/-dev/'`"
+                         , "                     version='(=${binary:Version})'"
+                         , "                     depends=\"$dev ${version}, `depends_for_ghc_prof $cfiles`\""
+                         , "+                    # If there is a doc package, add it to the"
+                         , "+                    # Haskell:depends list of the prof package."
+                         , "+                    doc=`echo $pkg | sed -e 's/-prof$/-doc/'`"
+                         , "+                    for p in `dh_listpackages $args`; do"
+                         , "+                        if [ \"$p\" = \"$doc\" ]; then depends=\"$doc ${version}, $depends\"; fi"
+                         , "+                    done"
+                         , " \t\t    echo \"haskell:Depends=$depends\" >> $sfile.tmp"
+                         , "                     echo \"haskell:Recommends=\" >> $sfile.tmp"
+                         , "                     echo \"haskell:Suggests=\" >> $sfile.tmp"
+                         , "--- old/hlibrary.mk\t2012-01-04 11:06:45.000000000 -0800"
+                         , "+++ new/hlibrary.mk\t2012-07-18 08:50:59.485188897 -0700"
+                         , "@@ -135,15 +135,15 @@"
+                         , " \t$(DEB_SETUP_BIN_NAME) copy --builddir=dist-ghc --destdir=debian/tmp-inst-ghc"
+                         , " "
+                         , " debian/extra-depends: debian/tmp-inst-ghc"
+                         , "-\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | sed -r 's,.*: ,,'` ; \\"
+                         , "+\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | tr -d ' \\n' | sed -r 's,^.*:,,'`; \\"
+                         , " \t\tdh_haskell_extra_depends $$pkg_config ; \\"
+                         , " \t\trm $$pkg_config"
+                         , " "
+                         , " install/libghc-$(CABAL_PACKAGE)-dev:: debian/tmp-inst-ghc debian/extra-depends"
+                         , " \tcd debian/tmp-inst-ghc ; find usr/lib/haskell-packages/ghc/lib/ \\"
+                         , "-\t\t\\( ! -name \"*_p.a\" ! -name \"*.p_hi\" \\) \\"
+                         , "+\t\t! -type d \\( ! -name \"*_p.a\" ! -name \"*.p_hi\" \\) \\"
+                         , " \t\t-exec install -Dm 644 '{}' ../$(notdir $@)/'{}' ';'"
+                         , "-\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | sed -r 's,.*: ,,'`; \\"
+                         , "+\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | tr -d ' \\n' | sed -r 's,^.*:,,'`; \\"
+                         , " \t\t$(if $(HASKELL_HIDE_PACKAGES),sed -i 's/^exposed: True$$/exposed: False/' $$pkg_config;) \\"
+                         , " \t\tinstall -Dm 644 $$pkg_config debian/$(notdir $@)/var/lib/ghc/package.conf.d/$$pkg_config; \\"
+                         , " \t\trm -f $$pkg_config"
+                         , "@@ -156,7 +156,7 @@"
+                         , " "
+                         , " install/libghc-$(CABAL_PACKAGE)-prof:: debian/tmp-inst-ghc install/libghc-$(CABAL_PACKAGE)-dev debian/extra-depends"
+                         , " \tcd debian/tmp-inst-ghc ; find usr/lib/haskell-packages/ghc/lib/ \\"
+                         , "-\t\t! \\( ! -name \"*_p.a\" ! -name \"*.p_hi\" \\) \\"
+                         , "+\t\t! -type d ! \\( ! -name \"*_p.a\" ! -name \"*.p_hi\" \\) \\"
+                         , " \t\t-exec install -Dm 644 '{}' ../$(notdir $@)/'{}' ';'"
+                         , " \tdh_haskell_provides -p$(notdir $@)"
+                         , " \tdh_haskell_depends -p$(notdir $@)"
+                         ])
+      devscripts =
+        let dist = (case release of 
+                        -- Ubuntu's version number looks newer than sid's, so use their
+                        -- package to avoid "failure to trump".
+                       "precise-seereason" -> "precise"
+                       "quantal-seereason" -> "experimental"
+                       _ -> "sid") in
+        P.Package { P.name = "haskell-devscripts"
+                  , P.spec = patch (Apt dist "haskell-devscripts")
+                  , P.flags = [P.RelaxDep "python-minimal"] }
 
 platform release =
     P.Packages (singleton "platform") $
-    [ let dist = (case release of 
-                     "precise-seereason" -> "precise"
-                     _ -> "sid") in
-      P.Package { P.name = "haskell-devscripts"
-                , P.spec =
-                    Patch
-                      -- Ubuntu's version number looks newer than sid's, so use their
-                      -- package to avoid "failure to trump".
-                      (Apt dist "haskell-devscripts")
-                      (unlines
-                       [ "--- old/dh_haskell_depends\t2012-03-10 09:07:37.000000000 -0800"
-                       , "+++ new/dh_haskell_depends\t2012-06-28 11:30:04.266489732 -0700"
-                       , "@@ -102,6 +102,12 @@"
-                       , "                     dev=`echo $pkg | sed -e 's/-prof$/-dev/'`"
-                       , "                     version='(=${binary:Version})'"
-                       , "                     depends=\"$dev ${version}, `depends_for_ghc_prof $cfiles`\""
-                       , "+                    # If there is a doc package, add it to the"
-                       , "+                    # Haskell:depends list of the prof package."
-                       , "+                    doc=`echo $pkg | sed -e 's/-prof$/-doc/'`"
-                       , "+                    for p in `dh_listpackages $args`; do"
-                       , "+                        if [ \"$p\" = \"$doc\" ]; then depends=\"$doc ${version}, $depends\"; fi"
-                       , "+                    done"
-                       , " \t\t    echo \"haskell:Depends=$depends\" >> $sfile.tmp"
-                       , "                     echo \"haskell:Recommends=\" >> $sfile.tmp"
-                       , "                     echo \"haskell:Suggests=\" >> $sfile.tmp"
-                       , "--- old/hlibrary.mk\t2012-01-04 11:06:45.000000000 -0800"
-                       , "+++ new/hlibrary.mk\t2012-07-18 08:50:59.485188897 -0700"
-                       , "@@ -135,15 +135,15 @@"
-                       , " \t$(DEB_SETUP_BIN_NAME) copy --builddir=dist-ghc --destdir=debian/tmp-inst-ghc"
-                       , " "
-                       , " debian/extra-depends: debian/tmp-inst-ghc"
-                       , "-\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | sed -r 's,.*: ,,'` ; \\"
-                       , "+\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | tr -d ' \\n' | sed -r 's,^.*:,,'`; \\"
-                       , " \t\tdh_haskell_extra_depends $$pkg_config ; \\"
-                       , " \t\trm $$pkg_config"
-                       , " "
-                       , " install/libghc-$(CABAL_PACKAGE)-dev:: debian/tmp-inst-ghc debian/extra-depends"
-                       , " \tcd debian/tmp-inst-ghc ; find usr/lib/haskell-packages/ghc/lib/ \\"
-                       , "-\t\t\\( ! -name \"*_p.a\" ! -name \"*.p_hi\" \\) \\"
-                       , "+\t\t! -type d \\( ! -name \"*_p.a\" ! -name \"*.p_hi\" \\) \\"
-                       , " \t\t-exec install -Dm 644 '{}' ../$(notdir $@)/'{}' ';'"
-                       , "-\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | sed -r 's,.*: ,,'`; \\"
-                       , "+\tpkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | tr -d ' \\n' | sed -r 's,^.*:,,'`; \\"
-                       , " \t\t$(if $(HASKELL_HIDE_PACKAGES),sed -i 's/^exposed: True$$/exposed: False/' $$pkg_config;) \\"
-                       , " \t\tinstall -Dm 644 $$pkg_config debian/$(notdir $@)/var/lib/ghc/package.conf.d/$$pkg_config; \\"
-                       , " \t\trm -f $$pkg_config"
-                       , "@@ -156,7 +156,7 @@"
-                       , " "
-                       , " install/libghc-$(CABAL_PACKAGE)-prof:: debian/tmp-inst-ghc install/libghc-$(CABAL_PACKAGE)-dev debian/extra-depends"
-                       , " \tcd debian/tmp-inst-ghc ; find usr/lib/haskell-packages/ghc/lib/ \\"
-                       , "-\t\t! \\( ! -name \"*_p.a\" ! -name \"*.p_hi\" \\) \\"
-                       , "+\t\t! -type d ! \\( ! -name \"*_p.a\" ! -name \"*.p_hi\" \\) \\"
-                       , " \t\t-exec install -Dm 644 '{}' ../$(notdir $@)/'{}' ';'"
-                       , " \tdh_haskell_provides -p$(notdir $@)"
-                       , " \tdh_haskell_depends -p$(notdir $@)"
-                       ])
-                , P.flags = [P.RelaxDep "python-minimal"] }
-    , -- Our automatic debianization code produces a package which is
+    [ -- Our automatic debianization code produces a package which is
       -- missing the template files required for happy to work properly,
       -- so I have imported debian's debianization and patched it to
       -- work with ghc 7.4.1.  Note that this is also the first target
