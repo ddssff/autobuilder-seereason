@@ -1754,7 +1754,7 @@ happstack release =
 
     , P.Package { P.name = "haskell-happstack-jmacro"
                 , P.spec = Debianize (Hackage "happstack-jmacro")
-                , P.flags = [P.DebVersion "7.0.2-1~hackage1"] }
+                , P.flags = [] }
     , debianize "jmacro-rpc-happstack" []
     , debianize "jmacro-rpc" []
     , P.Package { P.name = "haskell-happstack-search"
@@ -1871,7 +1871,7 @@ happstack release =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes"
                 , P.spec = Debianize (Hackage "web-routes")
-                , P.flags = [P.DebVersion "0.27.1-1~hackage1"] }
+                , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes-boomerang"
                 , P.spec = Debianize (Hackage "web-routes-boomerang")
                 , P.flags = [P.DebVersion "0.27.0-1~hackage1"] }
