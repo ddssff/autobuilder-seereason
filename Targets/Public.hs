@@ -771,6 +771,9 @@ main _home release =
     , P.Package { P.name = "haskell-process-extras"
                 , P.spec = Debianize (Darcs "http://src.seereason.com/process-extras")
                 , P.flags = [] }
+    , P.Package { P.name = "haskell-pretty-class"
+                , P.spec = Debianize (Darcs "http://src.seereason.com/pretty-class")
+                , P.flags = [] }
     , debianize "texmath" []
     , debianize "temporary" []
     , debianize "pandoc-types" [P.DebVersion "1.9.1-1"]
