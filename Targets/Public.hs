@@ -1307,7 +1307,9 @@ main _home release =
                                           , "         Build-Depends: unix"
                                           , "     if flag(small_base)" ])
                 , P.flags = [] }
-    , apt release "html-xml-utils"
+    , case release of
+      "quantal-seereason" -> P.NoPackage -- This build hangs when performing tests
+      _ -> apt release "html-xml-utils"
 -- No longer in sid
 --  , P.Package { P.name = "node-uglify"
 --              , P.spec = Apt "sid" "node-uglify"
