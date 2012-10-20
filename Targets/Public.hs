@@ -769,8 +769,6 @@ main _home release =
     , debianize "ordered" []
     , debianize "multiset" []
     , P.Package { P.name = "haskell-process-extras"
-                -- , P.spec = Debianize (Hackage "process-extras")
-                -- , P.flags = [P.DebVersion "0.2.0-1~hackage1"]
                 , P.spec = Debianize (Darcs "http://src.seereason.com/process-extras")
                 , P.flags = [] }
     , debianize "texmath" []
@@ -1124,7 +1122,7 @@ main _home release =
                                           , "                , libghc-array-dev (<< 0.5) | ghc"
                                           , "                , libghc-array-prof (>= 0.3) | ghc-prof"
                                           ]),
-                   P.flags = [P.DebVersion "0.5.4-1~hackage1"]
+                   P.flags = []
                  }
     -- , debianize "fay" []
     , debianize "utf8-light" [P.DebVersion "0.4.0.1-2build1"]
@@ -1668,7 +1666,7 @@ happstack release =
     , P.Package { P.name = "haskell-happstack-hsp"
                 , P.spec = Debianize (Hackage "happstack-hsp")
                 -- trhsx 
-                , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "7.1.0-1~hackage1"] }
+                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
     -- , debianize "happstack-ixset" []
@@ -1677,20 +1675,7 @@ happstack release =
                 , P.flags = [] }
 
     , P.Package { P.name = "haskell-happstack-jmacro"
-                , P.spec = Debianize (Patch
-                                      (Hackage "happstack-jmacro")
-                                      (unlines
-                                       [ "--- old/happstack-jmacro.cabal\t2012-09-23 10:36:40.000000000 -0700"
-                                       , "+++ new/happstack-jmacro.cabal\t2012-09-23 12:18:49.913972876 -0700"
-                                       , "@@ -17,7 +17,7 @@"
-                                       , "   Exposed-modules:     Happstack.Server.JMacro"
-                                       , "   Build-depends:"
-                                       , "      base              >4 && <5,"
-                                       , "-     base64-bytestring == 0.1.*,"
-                                       , "+     base64-bytestring >= 0.1,"
-                                       , "      bytestring        == 0.9.*,"
-                                       , "      cereal            == 0.3.*,"
-                                       , "      digest            == 0.0.*," ]))
+                , P.spec = Debianize (Hackage "happstack-jmacro")
                 , P.flags = [P.DebVersion "7.0.2-1~hackage1"] }
     , debianize "jmacro-rpc-happstack" []
     , debianize "jmacro-rpc" []
@@ -1699,12 +1684,12 @@ happstack release =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-server"
                 , P.spec = Debianize (Hackage "happstack-server")
-                , P.flags = [P.DebVersion "7.0.7-1~hackage1"] }
+                , P.flags = [] }
     , debianize "base64-bytestring" []
     , debianize "threads" []
     , P.Package { P.name = "haskell-list-tries"
                 , P.spec = Debianize (Hackage "list-tries")
-                , P.flags = [P.DebVersion "0.4.2-1~hackage1"] }
+                , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-static-routing"
                 , P.spec = Debianize (Hackage "happstack-static-routing")
                 , P.flags = [P.DebVersion "0.3.1-1~hackage1"] }
@@ -1802,35 +1787,19 @@ happstack release =
                                        , "                  zlib >= 0.5 && < 0.6,"
                                        , "                  highlighting-kate >= 0.5.1 && < 0.6,"
                                        , "                  temporary >= 1.1 && < 1.2" ]))
-                , P.flags = [P.DebVersion "1.9.4.2-1~hackage1"] }
+                , P.flags = [] }
     , P.Package { P.name = "haskell-highlighting-kate"
                 , P.spec = Debianize (Hackage "highlighting-kate")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes"
-                , P.spec = Debianize (Patch
-                                      (Hackage "web-routes")
-                                      (unlines
-                                       [ "--- old/web-routes.cabal\t2012-09-17 16:20:11.000000000 -0700"
-                                       , "+++ new/web-routes.cabal\t2012-09-17 21:04:37.641436856 -0700"
-                                       , "@@ -16,9 +16,9 @@"
-                                       , "                           blaze-builder >= 0.2 && < 0.4,"
-                                       , "                           parsec >= 2 && <4,"
-                                       , "                           bytestring >= 0.9 && < 0.10,"
-                                       , "-                          http-types == 0.6.*,"
-                                       , "+                          http-types >= 0.6,"
-                                       , "                           mtl,"
-                                       , "-                          network >= 2.2 && < 2.4,"
-                                       , "+                          network >= 2.2 && < 2.5,"
-                                       , "                           text == 0.11.*,"
-                                       , "                           utf8-string >= 0.3 && < 0.4"
-                                       , "         Exposed-Modules:  Web.Routes" ]))
+                , P.spec = Debianize (Hackage "web-routes")
                 , P.flags = [P.DebVersion "0.27.1-1~hackage1"] }
     , P.Package { P.name = "haskell-web-routes-boomerang"
                 , P.spec = Debianize (Hackage "web-routes-boomerang")
                 , P.flags = [P.DebVersion "0.27.0-1~hackage1"] }
     , P.Package { P.name = "haskell-web-routes-happstack"
                 , P.spec = Debianize (Hackage "web-routes-happstack")
-                , P.flags = [P.DebVersion "0.23.3-1~hackage1"] }
+                , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes-hsp"
                 , P.spec = Debianize (Hackage "web-routes-hsp")
                 , P.flags = [P.DebVersion "0.23.0-1~hackage1"] }
