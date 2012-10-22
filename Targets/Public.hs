@@ -79,7 +79,14 @@ autobuilder _home =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-archive"
                 , P.spec = Darcs "http://src.seereason.com/archive"
-                , P.flags = [] } ]
+                , P.flags = [] } 
+    , P.Package { P.name = "haskell-process-extras"
+                , P.spec = Debianize (Darcs "http://src.seereason.com/process-extras")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-pretty-class"
+                , P.spec = Debianize (Darcs "http://src.seereason.com/pretty-class")
+                , P.flags = [] }
+    ]
 
 digestiveFunctors =
     P.Packages (singleton "digestive-functors")
@@ -840,12 +847,6 @@ main _home release =
     , debianize "optparse-applicative" []
     , debianize "ordered" []
     , debianize "multiset" []
-    , P.Package { P.name = "haskell-process-extras"
-                , P.spec = Debianize (Darcs "http://src.seereason.com/process-extras")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-pretty-class"
-                , P.spec = Debianize (Darcs "http://src.seereason.com/pretty-class")
-                , P.flags = [] }
     , debianize "texmath" []
     , debianize "temporary" []
     , debianize "pandoc-types" [P.DebVersion "1.9.1-1"]
