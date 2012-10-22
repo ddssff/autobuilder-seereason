@@ -2052,8 +2052,8 @@ authenticate _home release =
                 , P.spec = Debianize (Patch
                                       (Hackage "fb")
                                       (unlines
-                                       [ "--- old/fb.cabal\t2012-10-08 09:42:36.000000000 -0700"
-                                       , "+++ new/fb.cabal\t2012-10-08 09:47:43.305818022 -0700"
+                                       [ "--- old/fb.cabal\t2012-10-21 05:29:45.000000000 -0700"
+                                       , "+++ new/fb.cabal\t2012-10-21 07:39:56.385757671 -0700"
                                        , "@@ -61,7 +61,7 @@"
                                        , "     Facebook.TestUsers"
                                        , "   build-depends:"
@@ -2062,7 +2062,16 @@ authenticate _home release =
                                        , "+    , lifted-base        >= 0.1"
                                        , "     , bytestring         >= 0.9     && < 0.11"
                                        , "     , text               >= 0.11    && < 0.12"
-                                       , "     , transformers       >= 0.2     && < 0.4" ]))
+                                       , "     , transformers       >= 0.2     && < 0.4"
+                                       , "@@ -71,7 +71,7 @@"
+                                       , "     , conduit            >= 0.5     && < 0.6"
+                                       , "     , data-default"
+                                       , "     , http-types"
+                                       , "-    , http-conduit       >= 1.5     && < 1.7"
+                                       , "+    , http-conduit       >= 1.5"
+                                       , "     , attoparsec         >= 0.10    && < 0.11"
+                                       , "     , attoparsec-conduit >= 0.5     && < 0.6"
+                                       , "     , unordered-containers" ]))
                 , P.flags = [] }
     ]
 
