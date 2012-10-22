@@ -1531,6 +1531,10 @@ platform release =
                   P.flags = [P.RelaxDep "happy", 
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     {- , debianize "happy" [] -}
+    -- There are newer versions in hackage, but it will trigger a huge
+    -- build.  Also, ghc conflicts with libghc-directory-dev, so we actually
+    -- can't build this unless we modify the ghc package first.
+    -- debianize "directory" []
     , debianize "stm" []
     , apt release "haskell-zlib"
     -- , apt "haskell-deepseq"
@@ -1763,7 +1767,7 @@ happstack release =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-server"
                 , P.spec = Debianize (Hackage "happstack-server")
-                , P.flags = [] }
+                , P.flags = [P.CabalPin "7.0.7", P.DebVersion "7.0.7-1"] }
     , debianize "base64-bytestring" []
     , debianize "threads" []
     , P.Package { P.name = "haskell-list-tries"
