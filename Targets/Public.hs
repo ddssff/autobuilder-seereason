@@ -1801,6 +1801,9 @@ happstack release =
     , P.Package { P.name = "haskell-hsx"
                 , P.spec = Debianize (Hackage "hsx")
                 , P.flags = [P.DebVersion "0.10.4-1~hackage1"] }
+    -- This is pinned because version 1.9.4.4 failed to build.  I'm not sure
+    -- if this is a bug that will be resolved in future pandocs or if it is
+    -- something we need to fix.
     , P.Package { P.name = "haskell-pandoc"
                 , P.spec = Debianize (Patch
                                       (Hackage "pandoc")
@@ -1870,7 +1873,7 @@ happstack release =
                                        , "                  zlib >= 0.5 && < 0.6,"
                                        , "                  highlighting-kate >= 0.5.1 && < 0.6,"
                                        , "                  temporary >= 1.1 && < 1.2" ]))
-                , P.flags = [] }
+                , P.flags = [P.CabalPin "1.9.4.3"] }
     , P.Package { P.name = "haskell-highlighting-kate"
                 , P.spec = Debianize (Hackage "highlighting-kate")
                 , P.flags = [] }
