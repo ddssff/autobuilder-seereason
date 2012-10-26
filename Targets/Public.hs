@@ -1098,7 +1098,7 @@ main _home release =
     , debianize "tagged" []
     , debianize "tagsoup" []
     , debianize "tar" []
-    , debianize "terminfo" [P.ExtraDep "libncurses-dev"]
+    , debianize "terminfo" [P.ExtraDep "libncurses5-dev", P.ExtraDevDep "libncurses5-dev"]
     , debianize "test-framework"
                     [ {- P.Patch . B.pack. unlines $
                       [ "--- old/Test/Framework/Runners/Console/Run.hs\t2012-01-20 11:09:22.000000000 -0800"
@@ -1208,7 +1208,7 @@ main _home release =
     , debianize "language-haskell-extract" [P.DebVersion "0.2.1-4"]
     , P.Package { P.name = "haskell-fay" 
                 , P.spec = Debianize ( Uri "http://src.seereason.com/faytar/fay.tar.gz" "84316ac761094dcd2309e8b885b6b9b7")
-                , P.flags = [P.ExtraDep "libncurses5-dev", P.ExtraDevDep "libncurses5-dev", P.DebVersion "0.9.1.1-1~hackage1"]
+                , P.flags = [P.DebVersion "0.9.1.1-1~hackage1"]
                 }
     , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
     , P.Package { P.name = "haskell-language-ecmascript" 
@@ -1237,45 +1237,25 @@ main _home release =
                                        , "   ghc-options:" ]))
                 , P.flags = [P.DebVersion "0.9-1~hackage1"] }
     , P.Package { P.name = "haskell-elm"
+                , P.spec = Debianize (Hackage "Elm")
+                , P.flags = [] }
+    , P.Package { P.name = "elm-server" 
                 , P.spec = Debianize (Patch
-                                      (Hackage "Elm") 
+                                      (Hackage "elm-server")
                                       (unlines
-                                       [ "--- old/Elm.cabal\t2012-09-17 22:23:05.000000000 -0700"
-                                       , "+++ new/Elm.cabal\t2012-09-17 22:39:42.669571647 -0700"
-                                       , "@@ -62,7 +62,7 @@"
-                                       , "                        transformers >= 0.2,"
-                                       , "                        mtl >= 2,"
+                                       [ "--- old/elm-server.cabal\t2012-10-26 05:14:32.000000000 -0700"
+                                       , "+++ new/elm-server.cabal\t2012-10-26 05:15:15.811759457 -0700"
+                                       , "@@ -32,7 +32,7 @@"
                                        , "                        parsec >= 3.1.1,"
-                                       , "-                       blaze-html == 0.5.0.*,"
-                                       , "+                       blaze-html == 0.5.1.*,"
-                                       , "                        blaze-markup == 0.5.1.*,"
+                                       , "                        blaze-html >= 0.5.1,"
+                                       , "                        HTTP >= 4000,"
+                                       , "-                       happstack-server == 7.0.2,"
+                                       , "+                       happstack-server >= 7.0.2,"
                                        , "                        deepseq,"
-                                       , "                        text,"
-                                       , "@@ -104,7 +104,7 @@"
-                                       , "                        transformers >= 0.2,"
-                                       , "                        mtl >= 2,"
-                                       , "                        parsec >= 3.1.1,"
-                                       , "-                       blaze-html == 0.5.0.*,"
-                                       , "+                       blaze-html == 0.5.1.*,"
-                                       , "                        blaze-markup == 0.5.1.*,"
-                                       , "                        deepseq,"
-                                       , "                        cmdargs," ]))
+                                       , "                        directory,"
+                                       , "                        Elm >= 0.5.0" ]))
                 , P.flags = [] }
     , debianize "hjsmin" []
-    , patched "elm-server" []
-                  (unlines
-                   [ "--- old/elm-server.cabal~\t2012-07-28 15:40:05.267609057 -0700"
-                   , "+++ new/elm-server.cabal\t2012-07-28 16:02:39.259603831 -0700"
-                   , "@@ -32,6 +32,6 @@"
-                   , "                        parsec >= 3.1.1,"
-                   , "-                       blaze-html == 0.5.0.*,"
-                   , "+                       blaze-html >= 0.5,"
-                   , "                        HTTP >= 4000,"
-                   , "-                       happstack-server == 7.0.2,"
-                   , "+                       happstack-server >= 7.0.2,"
-                   , "                        deepseq,"
-                   , "                        Elm == 0.3.*"
-                   ])
     , debianize "unix-compat" []
     , debianize "Unixutils-shadow" []
     , debianize "unordered-containers" []
@@ -1978,7 +1958,7 @@ conduit =
     , debianize "blaze-builder-conduit" []
     , P.Package { P.name = "haskell-http-conduit"
                 , P.spec = Debianize (Hackage "http-conduit")
-                , P.flags = [] }
+                , P.flags = [P.CabalPin "1.7.0"] }
     , debianize "zlib-conduit" []
     , P.Package { P.name = "haskell-xml-conduit"
                 , P.spec = Debianize (Hackage "xml-conduit")
@@ -1996,15 +1976,17 @@ authenticate _home release =
                 , P.spec = Debianize (Hackage "resourcet")
                 , P.flags = [] }
     , debianize "void" []
-    , debianize "certificate" []
+    -- Version 1.3.1 may be too new for tls 0.9.11
+    , debianize "certificate" [P.CabalPin "1.2.8"]
     , debianize "pem" []
     , debianize "zlib-bindings" []
-    , debianize "tls" []
-    , debianize "tls-extra" []
+    -- Version 1.0.0 leads to a build failure in http-enumerator-0.7.3.3.
+    , debianize "tls" [P.CabalPin "0.9.11"]
+    , debianize "tls-extra" [P.CabalPin "0.4.7"]
     -- , debianize "authenticate" []
     , P.Package { P.name = "haskell-authenticate"
                 , P.spec = Debianize (Hackage "authenticate")
-                , P.flags = [] }
+                , P.flags = [P.CabalPin "1.3.1.2"] }
 
     , P.Package { P.name = "haskell-zlib-enum"
                 , P.spec = Debianize (Hackage "zlib-enum")
