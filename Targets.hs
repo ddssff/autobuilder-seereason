@@ -117,14 +117,31 @@ applyEpochMap x@(P.Package {}) =
     where
       mappings = [ P.CabalDebian ["--epoch", "HTTP=1"], P.CabalDebian ["--epoch", "HaXml=1"] ]
 
-fixFlags :: P.Packages -> P.Packages 
-fixFlags = ensureFlag (P.CabalDebian ["--revision", ""]) . ensureFlag (P.CabalDebian ["--maintainer", "SeeReason Autobuilder <partners@seereason.com>"])
+fixFlags :: P.Packages -> P.Packages
+fixFlags P.NoPackage = P.NoPackage
+fixFlags p@(P.Packages {Debian.AutoBuilder.Types.Packages.packages = ps}) = p {Debian.AutoBuilder.Types.Packages.packages = map fixFlags ps}
+fixFlags p@(P.Package {flags = fs}) = p {flags = fixCabalDebian . collectCabalDebian . flags $ p}
 
--- | If the package contains no flag with the same constructor as def add it to the flag list.
-ensureFlag :: P.PackageFlag -> P.Packages -> P.Packages
-ensureFlag _ P.NoPackage = P.NoPackage
-ensureFlag def p@(P.Packages {Debian.AutoBuilder.Types.Packages.packages = ps}) = p {Debian.AutoBuilder.Types.Packages.packages = map (ensureFlag def) ps}
-ensureFlag def p@(P.Package {flags = fs}) =
-  case partition (\ x -> toConstr x == toConstr def) fs of
-    ([], _) -> p {P.flags = def : fs}
-    _ -> p
+collectCabalDebian :: [PackageFlag] -> ([PackageFlag], [String])
+collectCabalDebian flags =
+    loop ([], []) flags
+    where
+      loop (flags, args) [] = (flags, args)
+      loop (flags, args) (P.CabalDebian args' : more) = loop (flags, args ++ args') more
+      loop (flags, args) (flag : more) = loop (flags ++ [flag], args) more
+
+fixCabalDebian :: ([PackageFlag], [String]) -> [PackageFlag]
+fixCabalDebian (flags, args) = flags ++ [P.CabalDebian (fixArgs args)]
+
+fixArgs :: [String] -> [String]
+fixArgs = ensureFlag "--revision" "" . ensureFlag "--maintainer" "SeeReason Autobuilder <partners@seereason.com>"
+
+ensureFlag :: String -> String -> [String] -> [String]
+ensureFlag flag value args =
+    loop args
+    where
+      loop :: [String] -> [String]
+      loop done@(flag' : value' : more) | flag' == flag = done
+      loop (flag' : value' : more) = flag' : loop (value' : more)
+      loop [x] = [x, flag, value]
+      loop [] = [flag, value]
