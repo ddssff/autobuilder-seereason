@@ -617,7 +617,7 @@ main _home release =
     , debianize "xmlhtml" []
     , debianize "directory-tree" []
     , debianize "MonadCatchIO-transformers" []
-    , debianize "hinotify" [P.CabalDebian ["--deb-version", "0.3.2-1"]]
+    , debianize "hinotify" []
     , P.Package { P.name = "haskell-hjavascript"
                 , P.spec = Quilt (Apt "sid" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
                 , P.flags = [] }
