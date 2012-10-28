@@ -102,11 +102,11 @@ applyDepMap (P.Packages n s) = P.Packages n (map applyDepMap s)
 applyDepMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
-      mappings = [P.MapDep "cryptopp" (deb "libcrypto++-dev"),
-                  P.MapDep "crypt" (deb "libc6-dev"),
-                  P.MapDep "GL" (deb "libgl1-mesa-dev"),
-                  P.MapDep "GLU" (deb "libglu1-mesa-dev"),
-                  P.MapDep "glut" (deb "freeglut3-dev")]
+      mappings = [P.CabalDebian ["--map-dep", "cryptopp=libcrypto++-dev"],
+                  P.CabalDebian ["--map-dep", "crypt=libc6-dev"],
+                  P.CabalDebian ["--map-dep", "GL=libgl1-mesa-dev"],
+                  P.CabalDebian ["--map-dep", "GLU=libglu1-mesa-dev"],
+                  P.CabalDebian ["--map-dep", "glut=freeglut3-dev"]]
       deb = BinPkgName . PkgName
 
 applyEpochMap :: P.Packages -> P.Packages
@@ -115,10 +115,10 @@ applyEpochMap (P.Packages n s) = P.Packages n (map applyEpochMap s)
 applyEpochMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
-      mappings = [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]
+      mappings = [ P.CabalDebian ["--epoch", "HTTP=1"], P.CabalDebian ["--epoch", "HaXml=1"] ]
 
 fixFlags :: P.Packages -> P.Packages 
-fixFlags = ensureFlag (P.Revision "") . ensureFlag (P.Maintainer "SeeReason Autobuilder <partners@seereason.com>")
+fixFlags = ensureFlag (P.CabalDebian ["--revision", ""]) . ensureFlag (P.CabalDebian ["--maintainer", "SeeReason Autobuilder <partners@seereason.com>"])
 
 -- | If the package contains no flag with the same constructor as def add it to the flag list.
 ensureFlag :: P.PackageFlag -> P.Packages -> P.Packages
