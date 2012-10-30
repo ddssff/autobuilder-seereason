@@ -67,7 +67,7 @@ autobuilder _home =
     P.Packages (singleton "autobuilder") $
     [ unixutils _home
     , P.Package { P.name = "autobuilder"
-                , P.spec = Darcs (repo ++ "/autobuilder")
+                , P.spec = Debianize (Darcs (repo ++ "/autobuilder"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-cabal-debian"
                 , P.spec = Darcs (repo ++ "/cabal-debian")
@@ -122,7 +122,7 @@ main _home release =
     , P.Package { P.name = "gtk2hs-buildtools"
                 , P.spec = Debianize (Hackage "gtk2hs-buildtools")
                 , P.flags =
-                    [ P.CabalDebian ["--maintainer", "SeeReason Autobuilder <partners@seereason.com>"
+                    [ P.CabalDebian [ "--maintainer", "SeeReason Autobuilder <partners@seereason.com>"
                                     , "--build-dep", "alex"
                                     , "--build-dep", "happy"
                                     , "--revision", ""] ] }

@@ -131,10 +131,10 @@ collectCabalDebian flags =
       loop (flags, args) (flag : more) = loop (flags ++ [flag], args) more
 
 fixCabalDebian :: ([PackageFlag], [String]) -> [PackageFlag]
-fixCabalDebian (flags, args) = flags ++ [P.CabalDebian (fixArgs args)]
+fixCabalDebian (flags, args) = flags ++ [P.CabalDebian args]
 
 fixArgs :: [String] -> [String]
-fixArgs = ensureFlag "--revision" "" . ensureFlag "--maintainer" "SeeReason Autobuilder <partners@seereason.com>"
+fixArgs = ensureFlag "--maintainer" "SeeReason Autobuilder <partners@seereason.com>"
 
 ensureFlag :: String -> String -> [String] -> [String]
 ensureFlag flag value args =
