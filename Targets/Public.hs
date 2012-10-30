@@ -1244,29 +1244,7 @@ main _home release =
                 }
     , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
     , P.Package { P.name = "haskell-language-ecmascript" 
-                , P.spec = Debianize (Patch
-                                      (Hackage "language-ecmascript")
-                                      (unlines
-                                       [ "--- old/language-ecmascript.cabal\t2012-09-18 05:33:30.000000000 -0700"
-                                       , "+++ new/language-ecmascript.cabal\t2012-09-18 05:52:14.738184818 -0700"
-                                       , "@@ -42,7 +42,7 @@"
-                                       , "     containers >= 0.1,"
-                                       , "     syb >= 0.1,"
-                                       , "     uniplate >= 1.6 && <1.7,"
-                                       , "-    data-default >= 0.4 && <0.5"
-                                       , "+    data-default >= 0.4 && <0.6"
-                                       , "   ghc-options:"
-                                       , "     -fwarn-incomplete-patterns"
-                                       , "   Exposed-Modules:"
-                                       , "@@ -72,7 +72,7 @@"
-                                       , "     directory,"
-                                       , "     filepath,"
-                                       , "     HUnit,"
-                                       , "-    data-default >=0.4 && <0.5"
-                                       , "+    data-default >=0.4 && <0.6"
-                                       , "   Default-Extensions: DeriveDataTypeable, ScopedTypeVariables, DeriveFunctor, DeriveFoldable, DeriveTraversable, FlexibleContexts"
-                                       , "   Default-Language: Haskell2010"
-                                       , "   ghc-options:" ]))
+                , P.spec = Debianize (Hackage "language-ecmascript")
                 , P.flags = [P.CabalDebian ["--deb-version", "0.9-1~hackage1"]] }
     , P.Package { P.name = "haskell-elm"
                 , P.spec = Debianize (Hackage "Elm")
