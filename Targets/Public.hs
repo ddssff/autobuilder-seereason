@@ -2240,6 +2240,7 @@ algebra = P.Packages (singleton "algebra")
     , debianize "lens-family-core" []
     , debianize "lens-family" []
     , debianize "lens-family-th" []
+    , debianize "linear" []
     , debianize "representable-functors" []
     , debianize "representable-tries" []
     , debianize "semigroupoids" []
