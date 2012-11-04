@@ -102,11 +102,11 @@ applyDepMap (P.Packages n s) = P.Packages n (map applyDepMap s)
 applyDepMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
-      mappings = [P.CabalDebian ["--map-dep", "cryptopp=libcrypto++-dev"],
-                  P.CabalDebian ["--map-dep", "crypt=libc6-dev"],
-                  P.CabalDebian ["--map-dep", "GL=libgl1-mesa-dev"],
-                  P.CabalDebian ["--map-dep", "GLU=libglu1-mesa-dev"],
-                  P.CabalDebian ["--map-dep", "glut=freeglut3-dev"]]
+      mappings = [P.MapDep "cryptopp" (deb "libcrypto++-dev"),
+                  P.MapDep "crypt" (deb "libc6-dev"),
+                  P.MapDep "GL" (deb "libgl1-mesa-dev"),
+                  P.MapDep "GLU" (deb "libglu1-mesa-dev"),
+                  P.MapDep "glut" (deb "freeglut3-dev")]
       deb = BinPkgName . PkgName
 
 applyEpochMap :: P.Packages -> P.Packages
@@ -115,33 +115,16 @@ applyEpochMap (P.Packages n s) = P.Packages n (map applyEpochMap s)
 applyEpochMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
-      mappings = [ P.CabalDebian ["--epoch", "HTTP=1"], P.CabalDebian ["--epoch", "HaXml=1"] ]
+      mappings = [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]
 
-fixFlags :: P.Packages -> P.Packages
-fixFlags P.NoPackage = P.NoPackage
-fixFlags p@(P.Packages {Debian.AutoBuilder.Types.Packages.packages = ps}) = p {Debian.AutoBuilder.Types.Packages.packages = map fixFlags ps}
-fixFlags p@(P.Package {flags = fs}) = p {flags = fixCabalDebian . collectCabalDebian . flags $ p}
+fixFlags :: P.Packages -> P.Packages 
+fixFlags = ensureFlag (P.Revision "") . ensureFlag (P.Maintainer "SeeReason Autobuilder <partners@seereason.com>")
 
-collectCabalDebian :: [PackageFlag] -> ([PackageFlag], [String])
-collectCabalDebian flags =
-    loop ([], []) flags
-    where
-      loop (flags, args) [] = (flags, args)
-      loop (flags, args) (P.CabalDebian args' : more) = loop (flags, args ++ args') more
-      loop (flags, args) (flag : more) = loop (flags ++ [flag], args) more
-
-fixCabalDebian :: ([PackageFlag], [String]) -> [PackageFlag]
-fixCabalDebian (flags, args) = flags ++ [P.CabalDebian args]
-
-fixArgs :: [String] -> [String]
-fixArgs = ensureFlag "--maintainer" "SeeReason Autobuilder <partners@seereason.com>"
-
-ensureFlag :: String -> String -> [String] -> [String]
-ensureFlag flag value args =
-    loop args
-    where
-      loop :: [String] -> [String]
-      loop done@(flag' : value' : more) | flag' == flag = done
-      loop (flag' : value' : more) = flag' : loop (value' : more)
-      loop [x] = [x, flag, value]
-      loop [] = [flag, value]
+-- | If the package contains no flag with the same constructor as def add it to the flag list.
+ensureFlag :: P.PackageFlag -> P.Packages -> P.Packages
+ensureFlag _ P.NoPackage = P.NoPackage
+ensureFlag def p@(P.Packages {Debian.AutoBuilder.Types.Packages.packages = ps}) = p {Debian.AutoBuilder.Types.Packages.packages = map (ensureFlag def) ps}
+ensureFlag def p@(P.Package {flags = fs}) =
+  case partition (\ x -> toConstr x == toConstr def) fs of
+    ([], _) -> p {P.flags = def : fs}
+    _ -> p
