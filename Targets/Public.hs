@@ -638,7 +638,7 @@ main _home release =
     , debianize "xmlhtml" []
     , debianize "directory-tree" []
     , debianize "MonadCatchIO-transformers" []
-    , debianize "hinotify" [P.DebVersion "0.3.2-1"]
+    , debianize "hinotify" []
     , P.Package { P.name = "haskell-hjavascript"
                 , P.spec = Quilt (Apt "sid" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
                 , P.flags = [] }
@@ -692,7 +692,7 @@ main _home release =
                 , P.flags = [] }
     , debianize "http-types" []
     , debianize "i18n" [P.DebVersion "0.3-1~hackage1"]
-    , debianize "iconv" [P.DebVersion "0.4.1.0-2"]
+    , debianize "iconv" []
     , P.Package { P.name = "haskell-incremental-sat-solver"
                 , P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs "http://src.seereason.com/haskell-incremental-sat-solver-debian")
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
@@ -1238,7 +1238,7 @@ main _home release =
     , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
     , P.Package { P.name = "haskell-language-ecmascript" 
                 , P.spec = Debianize (Hackage "language-ecmascript")
-                , P.flags = [P.DebVersion "0.9-1~hackage1"] }
+                , P.flags = [] }
     , P.Package { P.name = "haskell-elm"
                 , P.spec = Debianize (Hackage "Elm")
                 , P.flags = [] }
