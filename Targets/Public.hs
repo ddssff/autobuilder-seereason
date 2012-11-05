@@ -1233,7 +1233,7 @@ main _home release =
     , debianize "language-haskell-extract" [P.DebVersion "0.2.1-4"]
     , P.Package { P.name = "haskell-fay" 
                 , P.spec = Debianize ( Uri "http://src.seereason.com/faytar/fay.tar.gz" "84316ac761094dcd2309e8b885b6b9b7")
-                , P.flags = [P.DebVersion "0.9.1.1-1~hackage1"]
+                , P.flags = []
                 }
     , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
     , P.Package { P.name = "haskell-language-ecmascript" 
