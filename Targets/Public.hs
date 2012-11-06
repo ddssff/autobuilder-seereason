@@ -5,6 +5,7 @@ import Data.Char (toLower)
 import Data.Set (empty, singleton)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
+import System.FilePath((</>))
 import Targets.Common (repo, localRepo, happstackRepo)
 
 patchTag = "http://patch-tag.com/r/stepcut"
@@ -56,14 +57,15 @@ unixutils _home =
                 , P.spec = Darcs "http://src.seereason.com/haskell-help"
                 , P.flags = [] } ]
 
-autobuilder _home =
+autobuilder home =
+    -- let repo = localRepo home in
     P.Packages (singleton "autobuilder") $
-    [ unixutils _home
+    [ unixutils home
     , P.Package { P.name = "autobuilder"
-                , P.spec = Darcs (repo ++ "/autobuilder")
+                , P.spec = Cd "autobuilder" (Darcs (repo </> "debian-tools"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-cabal-debian"
-                , P.spec = Darcs (repo ++ "/cabal-debian")
+                , P.spec = Cd "cabal-debian" (Darcs (repo </> "debian-tools"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-debian"
                 , P.spec = Darcs (repo ++ "/haskell-debian")
@@ -72,7 +74,7 @@ autobuilder _home =
                 , P.spec = Darcs "http://src.seereason.com/mirror"
                 , P.flags = [] }
     , P.Package { P.name = "haskell-debian-repo"
-                , P.spec = Darcs "http://src.seereason.com/haskell-debian-repo"
+                , P.spec = Cd "debian-repo" (Darcs (repo </> "debian-tools"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-archive"
                 , P.spec = Darcs "http://src.seereason.com/archive"
@@ -81,7 +83,7 @@ autobuilder _home =
                 , P.spec = Debianize (Darcs "http://src.seereason.com/process-extras")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-process-progress"
-                , P.spec = Debianize (Darcs "http://src.seereason.com/process-progress")
+                , P.spec = Cd "process-progress" (Darcs (repo </> "debian-tools"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-pretty-class"
                 , P.spec = Debianize (Darcs "http://src.seereason.com/pretty-class")
@@ -1236,7 +1238,28 @@ main _home release =
                 , P.spec = Debianize (Hackage "language-ecmascript")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-elm"
-                , P.spec = Debianize (Hackage "Elm")
+                , P.spec = Debianize (Patch
+                                      (Hackage "Elm")
+                                      (unlines
+                                       [ "--- old/Elm.cabal\t2012-11-06 04:08:41.000000000 -0800"
+                                       , "+++ new/Elm.cabal\t2012-11-06 04:20:54.966287740 -0800"
+                                       , "@@ -69,7 +69,7 @@"
+                                       , "                        text,"
+                                       , "                        template-haskell,"
+                                       , "                        shakespeare >= 1,"
+                                       , "-                       pandoc <= 1.9.4.2,"
+                                       , "+                       pandoc,"
+                                       , "                        bytestring,"
+                                       , "                        hjsmin"
+                                       , " "
+                                       , "@@ -110,6 +110,6 @@"
+                                       , "                        blaze-markup == 0.5.1.*,"
+                                       , "                        deepseq,"
+                                       , "                        cmdargs,"
+                                       , "-                       pandoc <= 1.9.4.2,"
+                                       , "+                       pandoc,"
+                                       , "                        bytestring,"
+                                       , "                        hjsmin" ]))
                 , P.flags = [] }
     , P.Package { P.name = "elm-server" 
                 , P.spec = Debianize (Patch
@@ -1703,7 +1726,9 @@ happstack release =
     , P.Package { P.name = "haskell-seereason-base"
                 , P.spec = Darcs (repo ++ "/seereason-base")
                 , P.flags = [] }
-    , debianize "happstack" []
+    , P.Package { P.name = "haskell-happstack"
+                , P.spec = Debianize (Hackage "happstack")
+                , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-data"
                 , P.spec = Debianize (Patch 
                                       (Hackage "happstack-data") 
@@ -2229,7 +2254,22 @@ algebra = P.Packages (singleton "algebra")
     , debianize "lens-family-core" []
     , debianize "lens-family" []
     , debianize "lens-family-th" []
-    , debianize "linear" []
+    , P.Package { P.name = "haskell-linear"
+                , P.spec = Debianize (Patch
+                                      (Hackage "linear")
+                                      (unlines
+                                       [ "--- old/linear.cabal\t2012-11-05 22:46:21.000000000 -0800"
+                                       , "+++ new/linear.cabal\t2012-11-06 04:30:02.998300474 -0800"
+                                       , "@@ -31,7 +31,7 @@"
+                                       , "   build-depends:"
+                                       , "     base == 4.*,"
+                                       , "     distributive >= 0.2.2 && < 0.3,"
+                                       , "-    lens >= 2.9 && < 3.1"
+                                       , "+    lens >= 2.9"
+                                       , " "
+                                       , "   exposed-modules:"
+                                       , "     Linear.Conjugate" ]))
+                , P.flags = [P.DebVersion "0.2.0.2-1~hackage1"] }
     , debianize "representable-functors" []
     , debianize "representable-tries" []
     , debianize "semigroupoids" []
