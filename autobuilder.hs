@@ -149,6 +149,8 @@ optSpecs =
       "Discard and recreate the clean and build environments."
     , Option [] ["flush-source"] (NoArg (Right (\ p -> p {flushSource = True})))
       "Discard and re-download all source code."
+    , Option [] ["flush-depends"] (NoArg (Right (\ p -> p {flushDepends = True})))
+      "Flush all the installed build dependencies from the build environment."
     , Option [] ["flush-all"] (NoArg (Right (\ p -> p {flushAll = True})))
       "Remove and re-create the entire autobuilder working directory."
     , Option [] ["do-upload"] (NoArg (Right (\ p -> p {doUpload = True})))
@@ -186,7 +188,7 @@ optSpecs =
                , "goal package is built.)"])
     , Option [] ["force"] (ReqArg (\ s -> (Right (\ p -> p {forceBuild = forceBuild p ++ [s], targets = addTarget s p}))) "PACKAGE")
       ("Build the specified source package even if it doesn't seem to need it.")
-    , Option [] ["lax"] (NoArg (Right (\ p -> p {strictness = Lax})))
+    , Option [] ["strict"] (NoArg (Right (\ p -> p {strictness = Strict})))
       "Use the lax build environment, where dependencies are not removed between package builds."
     , Option [] ["build-trumped"] (ReqArg (\ s -> (Right (\ p -> p {buildTrumped = buildTrumped p ++ [s]}))) "PACKAGE")
       ("Build the specified source package even if it seems older than the uploaded version.")
@@ -247,7 +249,8 @@ defParams _home myBuildRelease =
     -- Things that rarely change
     , sources = mySources myBuildRelease myDebianMirrorHost myUbuntuMirrorHost
     , globalRelaxInfo = myGlobalRelaxInfo
-    , strictness = Moderate
+    , strictness = Lax
+    , flushDepends = False
     , includePackages = myIncludePackages myBuildRelease
     , excludePackages = myExcludePackages myBuildRelease
     , components = myComponents myBuildRelease
