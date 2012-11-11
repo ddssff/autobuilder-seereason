@@ -51,7 +51,7 @@ applications _home =
     -- (Targets.hs), and it creates a package named seereason-darcs-backups,
     -- which performs backups on the darcs repo.
     , P.Package { P.name = "seereason-darcs-backups"
-                , P.spec = Debianize (Darcs (privateRepo ++ "/clcksmith"))
+                , P.spec = Debianize (Darcs (repo ++ "/autobuilder-config"))
                 , P.flags = [] }
     , P.Package { P.name = "clcksmith"
                 , P.spec = Darcs (privateRepo ++ "/clcksmith")
