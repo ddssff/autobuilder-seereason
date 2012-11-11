@@ -175,31 +175,7 @@ main _home release =
     , apt release "haskell-cereal"
     , debianize "citeproc-hs" []
     , P.Package {P.name = "haskell-hexpat",
-                 P.spec = Debianize (Patch
-                                     (Hackage "hexpat")
-                                     (unlines
-                                      [ "--- old/hexpat.cabal\t2012-10-28 09:19:13.000000000 -0700"
-                                      , "+++ new/hexpat.cabal\t2012-10-28 09:21:21.901712290 -0700"
-                                      , "@@ -123,7 +123,7 @@"
-                                      , "     deepseq >= 1.1.0.0 && < 1.4.0.0,"
-                                      , "     containers,"
-                                      , "     extensible-exceptions == 0.1.*,"
-                                      , "-    List >= 0.4.2 && < 0.5"
-                                      , "+    List >= 0.4.2"
-                                      , "   Exposed-Modules:"
-                                      , "     Text.XML.Expat.Annotated,"
-                                      , "     Text.XML.Expat.Cursor,"
-                                      , "--- old/Text/XML/Expat/Extended.hs\t2012-10-28 09:23:20.000000000 -0700"
-                                      , "+++ new/Text/XML/Expat/Extended.hs\t2012-10-28 09:28:47.349688505 -0700"
-                                      , "@@ -80,7 +80,7 @@"
-                                      , " import Control.DeepSeq"
-                                      , " import qualified Data.ByteString as B"
-                                      , " import qualified Data.ByteString.Lazy as L"
-                                      , "-import Data.List.Class"
-                                      , "+import Data.List.Class hiding (mapMaybe)"
-                                      , " import Data.Maybe"
-                                      , " import Data.Monoid"
-                                      , " " ])),
+                 P.spec = Debianize (Hackage "hexpat"),
                  P.flags = []}
     , debianize "List" []
     , debianize "uuid" []
@@ -913,9 +889,6 @@ main _home release =
     , debianize "RJson" []
     , debianize "safe" [P.DebVersion "0.3.3-2"]
     , debianize "safecopy" []
-    , P.Package { P.name = "haskell-debian-packaging"
-                , P.spec = Debianize (Darcs "http://src.seereason.com/debian-packaging")
-                , P.flags = [] }
     , patched "sat"
                     [ P.DebVersion "1.1.1-1~hackage1" ]
                     (unlines
