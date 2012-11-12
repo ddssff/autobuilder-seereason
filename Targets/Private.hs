@@ -51,7 +51,7 @@ applications _home =
     -- (Targets.hs), and it creates a package named seereason-darcs-backups,
     -- which performs backups on the darcs repo.
     , P.Package { P.name = "seereason-darcs-backups"
-                , P.spec = Debianize (Darcs (repo ++ "/autobuilder-config"))
+                , P.spec = Darcs (repo ++ "/autobuilder-config")
                 , P.flags = [] }
     , P.Package { P.name = "clcksmith"
                 , P.spec = Debianize (Darcs (privateRepo ++ "/clcksmith"))
@@ -61,7 +61,7 @@ applications _home =
                 -- Haddock gets upset about the HSX.QQ modules.  Not sure why.
                 , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc, P.DebVersion "0.1-1~hackage1"] }
     , P.Package { P.name = "seereasonpartners-dot-com"
-                , P.spec = Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks"))
+                , P.spec = Debianize (Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks")))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-clckwrks-theme-seereasonpartners"
                 , P.spec = Debianize (Cd "clckwrks-theme-seereasonpartners" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks")))
