@@ -1405,41 +1405,27 @@ main _home release =
 ghc release =
   P.Packages (singleton "ghc") $
   case release of
-    "quantal-seereason" -> [ghc, devscripts]
+    "quantal-seereason" -> [ghc76, devscripts]
     "precise-seereason" -> [devscripts]
     _ ->  [devscripts]
     where
-      ghc = P.Package { P.name = "ghc"
-                      , P.spec = Apt "experimental" "ghc"
-                      , P.flags = relax }
+      ghc76 = P.Package { P.name = "ghc"
+                        , P.spec = Apt "experimental" "ghc"
+                        , P.flags = relax }
+      ghc74 = P.Package { P.name = "ghc"
+                        , P.spec = Apt "sid" "ghc"
+                        , P.flags = relax }
       relax = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"]
-      patch741 = (unlines     [ "--- old/ghc-7.4.1/debian/control\t2012-03-10 10:38:09.000000000 -0800"
-                              , "+++ new/ghc-7.4.1/debian/control\t2012-03-22 17:18:51.548720165 -0700"
-                              , "@@ -6,7 +6,7 @@"
-                              , " Standards-Version: 3.9.2"
-                              , " Build-Depends:"
-                              , "   debhelper (>= 7),"
-                              , "-  libgmp-dev,"
-                              , "+  libgmp-dev | libgmp3-dev,"
-                              , "   devscripts,"
-                              , "   ghc,"
-                              , "   grep-dctrl,"
-                              , "@@ -31,7 +31,7 @@"
-                              , " "
-                              , " Package: ghc"
-                              , " Architecture: any"
-                              , "-Depends: gcc (>= 4:4.2), llvm-3.0 [armel armhf], libgmp-dev, libffi-dev, libbsd-dev, libc6-dev, ${shlibs:Depends}, ${misc:Depends}"
-                              , "+Depends: gcc (>= 4:4.2), llvm-3.0 [armel armhf], libgmp-dev | libgmp3-dev, libffi-dev, libbsd-dev, libc6-dev, ${shlibs:Depends}, ${misc:Depends}"
-                              , " Provides: haskell-compiler, ${provided-devs}, ${haskell:Provides}, ${ghci}"
-                              , " Replaces: ghc6 (<< 7)"
-                              , " Conflicts: ghc6 (<< 7), ${provided-devs}" ])
-      patch spec =
-        case release of
-           "quantal-seereason" -> spec
-           _ ->
-             Patch
-               spec
-               (unlines [ "--- old/dh_haskell_depends\t2012-03-10 09:07:37.000000000 -0800"
+      devscripts =
+        P.Package { P.name = "haskell-devscripts"
+                  , P.spec = case release of
+                               "quantal-seereason" -> Apt "experimental" "haskell-devscripts"
+                               "precise-seereason" -> Patch (Apt "sid" "haskell-devscripts") devscripts0812Patch
+                               _ -> Apt "sid" "haskell-devscripts"
+                  , P.flags = [P.RelaxDep "python-minimal"] }
+      -- haskell-devscripts-0.8.13 is for ghc-7.6 only
+      devscripts0812Patch =
+                (unlines [ "--- old/dh_haskell_depends\t2012-03-10 09:07:37.000000000 -0800"
                          , "+++ new/dh_haskell_depends\t2012-06-28 11:30:04.266489732 -0700"
                          , "@@ -102,6 +102,12 @@"
                          , "                     dev=`echo $pkg | sed -e 's/-prof$/-dev/'`"
@@ -1485,16 +1471,29 @@ ghc release =
                          , " \tdh_haskell_provides -p$(notdir $@)"
                          , " \tdh_haskell_depends -p$(notdir $@)"
                          ])
-      devscripts =
-        let dist = (case release of 
-                        -- Ubuntu's version number looks newer than sid's, so use their
-                        -- package to avoid "failure to trump".
-                       "precise-seereason" -> "precise"
-                       "quantal-seereason" -> "experimental"
-                       _ -> "sid") in
-        P.Package { P.name = "haskell-devscripts"
-                  , P.spec = patch (Apt dist "haskell-devscripts")
-                  , P.flags = [P.RelaxDep "python-minimal"] }
+      -- This was required to build ghc-7.4.1 on ubuntu, but we don't use
+      -- it because we don't build ghc-7.4.1, we just stick with the one
+      -- we have.
+      ghc741Patch = (unlines  [ "--- old/ghc-7.4.1/debian/control\t2012-03-10 10:38:09.000000000 -0800"
+                              , "+++ new/ghc-7.4.1/debian/control\t2012-03-22 17:18:51.548720165 -0700"
+                              , "@@ -6,7 +6,7 @@"
+                              , " Standards-Version: 3.9.2"
+                              , " Build-Depends:"
+                              , "   debhelper (>= 7),"
+                              , "-  libgmp-dev,"
+                              , "+  libgmp-dev | libgmp3-dev,"
+                              , "   devscripts,"
+                              , "   ghc,"
+                              , "   grep-dctrl,"
+                              , "@@ -31,7 +31,7 @@"
+                              , " "
+                              , " Package: ghc"
+                              , " Architecture: any"
+                              , "-Depends: gcc (>= 4:4.2), llvm-3.0 [armel armhf], libgmp-dev, libffi-dev, libbsd-dev, libc6-dev, ${shlibs:Depends}, ${misc:Depends}"
+                              , "+Depends: gcc (>= 4:4.2), llvm-3.0 [armel armhf], libgmp-dev | libgmp3-dev, libffi-dev, libbsd-dev, libc6-dev, ${shlibs:Depends}, ${misc:Depends}"
+                              , " Provides: haskell-compiler, ${provided-devs}, ${haskell:Provides}, ${ghci}"
+                              , " Replaces: ghc6 (<< 7)"
+                              , " Conflicts: ghc6 (<< 7), ${provided-devs}" ])
 
 platform release =
     P.Packages (singleton "platform") $
