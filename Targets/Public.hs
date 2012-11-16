@@ -1693,9 +1693,9 @@ happstack release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" in
     P.Packages (singleton "happstack")
     [ plugins
-    , P.Package { P.name = "happstack-debianization"
+{-  , P.Package { P.name = "happstack-debianization"
                 , P.spec = Darcs "http://src.seereason.com/happstack-debianization"
-                , P.flags = [] }
+                , P.flags = [] } -}
     , P.Package { P.name = "haskell-seereason-base"
                 , P.spec = Darcs (repo ++ "/seereason-base")
                 , P.flags = [] }
