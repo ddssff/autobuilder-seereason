@@ -219,8 +219,8 @@ main _home release =
                       , " "
                       , " instance Hash Hash384 where" ]) -}
     , debianize "crypto-api" []
-    , debianize "crypto-pubkey-types" []
-    , debianize "cryptocipher" []
+    , debianize "crypto-pubkey-types" [P.CabalPin "0.1.1"] -- Need newer RSA and certificate to unpin this
+    , debianize "cryptocipher" [P.CabalPin "0.3.5"] -- waiting for crypto-pubkey-types to be unpinned
     , debianize "cryptohash" []
     , debianize "cpu" []
     , debianize "css" [P.DebVersion "0.1-1~hackage1"]
@@ -1974,12 +1974,11 @@ authenticate _home release =
                 , P.flags = [] }
     , debianize "void" []
     -- Version 1.3.1 may be too new for tls 0.9.11
-    , debianize "certificate" [P.CabalPin "1.2.8"]
+    , debianize "certificate" [P.CabalPin "1.2.8"] -- waiting for crypto-pubkey-types to be unpinned
     , debianize "pem" []
     , debianize "zlib-bindings" []
-    -- Version 1.0.0 leads to a build failure in http-enumerator-0.7.3.3.
-    , debianize "tls" [P.CabalPin "0.9.11"]
-    , debianize "tls-extra" [P.CabalPin "0.4.7"]
+    , debianize "tls" [P.CabalPin "0.9.11"] -- pinned until a compatible http-enumerator-0.7.3.3 is released
+    , debianize "tls-extra" [P.CabalPin "0.4.7"] -- waiting for tls to be unpinned
     -- , debianize "authenticate" []
     , P.Package { P.name = "haskell-authenticate"
                 , P.spec = Debianize (Hackage "authenticate")
