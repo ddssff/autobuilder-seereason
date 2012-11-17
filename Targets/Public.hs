@@ -5,7 +5,7 @@ import Data.Char (toLower)
 import Data.Set (empty, singleton)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
-import Debian.Relation (PkgName(..), BinPkgName(..))
+import Debian.Relation (BinPkgName(..))
 import System.FilePath((</>))
 import Targets.Common (repo, localRepo, happstackRepo)
 
@@ -1340,7 +1340,7 @@ main _home release =
     , debianize "xss-sanitize" []
     , debianize "yaml-light" [P.DebVersion "0.1.4-2"]
     , apt release "haskell-zip-archive"
-    , debianize "regex-pcre-builtin" [P.MapDep "pcre" (BinPkgName (PkgName "libpcre3-dev")) {-, P.ExtraDevDep "libpcre3-dev"-}]
+    , debianize "regex-pcre-builtin" [P.MapDep "pcre" (BinPkgName "libpcre3-dev") {-, P.ExtraDevDep "libpcre3-dev"-}]
     , P.Package { P.name = "hscolour"
                 , P.spec = Apt "sid" "hscolour"
                 , P.flags = [P.RelaxDep "hscolour"] }

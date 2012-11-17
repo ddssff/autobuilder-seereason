@@ -15,7 +15,7 @@ import qualified Debian.AutoBuilder.Params as P
 import qualified Debian.AutoBuilder.Types.CacheRec as P
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
-import Debian.Relation (PkgName(..), BinPkgName(..))
+import Debian.Relation (BinPkgName(..))
 import qualified Targets.Public as Public
 import qualified Targets.Private as Private
 
@@ -74,10 +74,8 @@ ubuntuReleases = [Oneiric, Natty, Maverick, Lucid, Karmic, Jaunty, Intrepid, Har
 
 deriving instance Typeable PackageFlag
 deriving instance Typeable BinPkgName
-deriving instance Typeable PkgName
 deriving instance Data PackageFlag
 deriving instance Data BinPkgName
-deriving instance Data PkgName
 
 -- |Each of theses lists can be built on their own as a group,
 -- and any sequence of groups can be built together as long as
@@ -107,7 +105,7 @@ applyDepMap x@(P.Package {}) =
                   P.MapDep "GL" (deb "libgl1-mesa-dev"),
                   P.MapDep "GLU" (deb "libglu1-mesa-dev"),
                   P.MapDep "glut" (deb "freeglut3-dev")]
-      deb = BinPkgName . PkgName
+      deb = BinPkgName
 
 applyEpochMap :: P.Packages -> P.Packages
 applyEpochMap P.NoPackage = P.NoPackage
