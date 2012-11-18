@@ -10,6 +10,7 @@ import System.FilePath((</>))
 import Targets.Common (repo, localRepo, happstackRepo)
 
 patchTag = "http://patch-tag.com/r/stepcut"
+darcsHub = "http://hub.darcs.net/stepcut"
 
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
@@ -79,7 +80,7 @@ autobuilder home =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-archive"
                 , P.spec = Darcs "http://src.seereason.com/archive"
-                , P.flags = [] } 
+                , P.flags = [] }
     , P.Package { P.name = "haskell-process-extras"
                 , P.spec = Debianize (Darcs "http://src.seereason.com/process-extras")
                 , P.flags = [] }
@@ -331,7 +332,7 @@ main _home release =
     -- Darcs 2.8.1 won't build with the current version of haskeline.
 {-
     , P.Package { P.name = "darcs"
-                , P.spec = Patch 
+                , P.spec = Patch
                              (Apt "sid" "darcs")
                              (unlines
                               [ "--- old/darcs.cabal\t2012-05-14 04:10:13.000000000 -0700"
@@ -379,7 +380,7 @@ main _home release =
                               , "+                   tar        >= 0.3,"
                               , "                    random     == 1.0.*"
                               , " "
-                              , "     if flag(mmap) && !os(windows)" 
+                              , "     if flag(mmap) && !os(windows)"
                               , "--- old/debian/control\t2012-05-15 14:30:36.000000000 -0700"
                               , "+++ new/debian/control\t2012-10-15 21:30:24.386686701 -0700"
                               , "@@ -13,7 +13,6 @@"
@@ -585,7 +586,7 @@ main _home release =
                 , P.flags = [P.DebVersion "0.7.0.3-1~hackage1"] }
     , P.Package { P.name = "haskell-th-orphans"
                 , P.spec = Debianize (Patch
-                                      (Hackage "th-orphans") 
+                                      (Hackage "th-orphans")
                                       (unlines
                                        [ "--- old/src/Language/Haskell/TH/Instances.hs\t2012-09-17 21:52:45.000000000 -0700"
                                        , "+++ new/src/Language/Haskell/TH/Instances.hs\t2012-09-17 22:17:14.057539784 -0700"
@@ -689,7 +690,7 @@ main _home release =
                 , P.spec = Darcs (repo ++ "/haskell-logic")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-pointed"
-                , P.spec = Debianize (Patch 
+                , P.spec = Debianize (Patch
                                       (Hackage "pointed")
                                       (unlines
                                        [ "--- old/pointed.cabal\t2012-09-17 16:18:20.000000000 -0700"
@@ -878,7 +879,7 @@ main _home release =
     , debianize "pwstore-purehaskell" [P.DebVersion "2.1-1~hackage1"]
     -- In Sid, source package haskell-quickcheck generates libghc-quickcheck2-*,
     -- but our debianize target becomes haskell-quickcheck2.  So we need to fiddle
-    -- with the order here relative to haskell-quickcheck1. 
+    -- with the order here relative to haskell-quickcheck1.
     -- lucidNatty [apt "haskell-quickcheck"] [] ++
     , apt release "haskell-quickcheck1"
     -- lucidNatty [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"]] [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"] ] ++
@@ -987,7 +988,7 @@ main _home release =
                                   , "+    where attrs = map (maybe [] id . flip HM.lookup table) rules"
                                   , "           next  = case tag of"
                                   , "                     Prim a    -> a"
-                                  , "                     DivTag    -> divTag  spec next'" 
+                                  , "                     DivTag    -> divTag  spec next'"
                                   , "--- old/src/SimpleCss/Tricks/Shortcuts/Html.hs\t2012-10-12 10:38:26.000000000 -0700"
                                   , "+++ new/src/SimpleCss/Tricks/Shortcuts/Html.hs\t2012-10-12 11:02:38.474180790 -0700"
                                   , "@@ -19,7 +19,7 @@"
@@ -1133,7 +1134,7 @@ main _home release =
     , debianize "test-framework-th" [P.DebVersion "0.2.2-4"]
     , P.Package { P.name = "haskell-testpack"
                 , P.spec = Debianize (Patch
-                                      (Hackage "testpack") 
+                                      (Hackage "testpack")
                                       (unlines
                                        [ "--- old/src/Test/HUnit/Tools.hs\t2012-10-05 04:45:37.000000000 -0700"
                                        , "+++ new/src/Test/HUnit/Tools.hs\t2012-10-05 05:02:50.779290231 -0700"
@@ -1208,7 +1209,7 @@ main _home release =
     , debianize "utf8-light" [P.DebVersion "0.4.0.1-2build1"]
     , debianize "language-haskell-extract" [P.DebVersion "0.2.1-4"]
     , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
-    , P.Package { P.name = "haskell-language-ecmascript" 
+    , P.Package { P.name = "haskell-language-ecmascript"
                 , P.spec = Debianize (Hackage "language-ecmascript")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-elm"
@@ -1235,7 +1236,7 @@ main _home release =
                                        , "                        bytestring,"
                                        , "                        hjsmin" ]))
                 , P.flags = [] }
-    , P.Package { P.name = "elm-server" 
+    , P.Package { P.name = "elm-server"
                 , P.spec = Debianize (Patch
                                       (Hackage "elm-server")
                                       (unlines
@@ -1380,7 +1381,7 @@ main _home release =
     , P.Package { P.name = "magic-haskell"
                 , P.spec = Quilt (Apt "sid" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-missingh" 
+    , P.Package { P.name = "haskell-missingh"
                 , P.spec = Debianize (Hackage "MissingH")
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <logic@seereason.com>", P.Revision ""] }
     , P.Package { P.name = "seereason-keyring"
@@ -1505,7 +1506,7 @@ platform release =
       -- autobuilder.
       P.Package { P.name = "happy",
                   P.spec = DebDir (Hackage "happy") (Darcs "http://src.seereason.com/happy-debian"),
-                  P.flags = [P.RelaxDep "happy", 
+                  P.flags = [P.RelaxDep "happy",
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     {- , debianize "happy" [] -}
     -- There are newer versions in hackage, but it will trigger a huge
@@ -1705,8 +1706,8 @@ happstack release =
                 , P.spec = Debianize (Hackage "happstack")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-data"
-                , P.spec = Debianize (Patch 
-                                      (Hackage "happstack-data") 
+                , P.spec = Debianize (Patch
+                                      (Hackage "happstack-data")
                                       (unlines
                                        [ "--- old/happstack-data.cabal\t2012-04-16 09:55:33.000000000 -0700"
                                        , "+++ new/happstack-data.cabal\t2012-04-16 10:38:09.015673204 -0700"
@@ -1730,7 +1731,7 @@ happstack release =
 -}
     , P.Package { P.name = "haskell-happstack-hsp"
                 , P.spec = Debianize (Hackage "happstack-hsp")
-                -- trhsx 
+                -- trhsx
                 , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
@@ -1902,7 +1903,7 @@ happstack release =
                 , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
     , debianize "blaze-markup" []
     , apt release "haskell-blaze-builder"
-    , P.Package { P.name = "haskell-blaze-builder-enumerator" 
+    , P.Package { P.name = "haskell-blaze-builder-enumerator"
                 , P.spec = Debianize (Hackage "blaze-builder-enumerator")
                 , P.flags = [P.DebVersion "0.2.0.5-1~hackage1"] }
     , debianize "blaze-from-html" []
@@ -1946,7 +1947,7 @@ happstack release =
                 , P.flags = [P.DebVersion "0.8.1-1~hackage1"] }
     ]
 
--- | We need new releases of all the conduit packages before we can move 
+-- | We need new releases of all the conduit packages before we can move
 -- from conduit 0.4.2 to 0.5.
 conduit =
   P.Packages (singleton "conduit")
@@ -1965,7 +1966,7 @@ conduit =
     ]
 
 -- | Packages pinned pending update of happstack-authenticate (in one possible build order.)
-authenticate _home release = 
+authenticate _home release =
   P.Packages (singleton "authenticate") $
     [ conduit
     , apt release "haskell-puremd5"
@@ -2029,7 +2030,7 @@ authenticate _home release =
                                        , "                      Network.TLS.Client.Enumerator" ]))
                 , P.flags = [P.DebVersion "0.7.3.3-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-authenticate"
-                , P.spec = Debianize (Darcs (repo ++ "/happstack-authenticate"))
+                , P.spec = Debianize (Darcs (darcsHub ++ "/happstack-authenticate"))
                 , P.flags = [] }
     , digestiveFunctors
       -- The new version of fb (0.11) would require unpinned conduit packages.
@@ -2095,11 +2096,11 @@ happstackdotcom _home =
 -- Text/JSONb/Decode.hs:48:3:
 --     Not in scope: data constructor `Done'
 --     Perhaps you meant `Attoparsec.Done' (imported from Data.Attoparsec.Char8)
--- 
+--
 -- Text/JSONb/Decode.hs:49:3:
 --     Not in scope: data constructor `Fail'
 --     Perhaps you meant `Attoparsec.Fail' (imported from Data.Attoparsec.Char8)
--- 
+--
 -- Text/JSONb/Decode.hs:50:3:
 --     Not in scope: data constructor `Partial'
 --     Perhaps you meant `Attoparsec.Partial' (imported from Data.Attoparsec.Char8)
@@ -2161,17 +2162,17 @@ glib release = P.Packages (singleton "glib") $
     , apt release "haskell-gtksourceview2"
     , apt release "haskell-pango" ]
 
---  Using pkg-config version 0.25 found on system at: /usr/bin/ 2> 
+--  Using pkg-config version 0.25 found on system at: /usr/bin/ 2>
 --  <interactive>:2:1:
 --      Failed to load interface for `Directory'
 --      It is a member of the hidden package `haskell98-2.0.0.1'.
 --      Use -v to see a list of the files searched for.
---  
+--
 --  src/System/Plugins/Utils.hs:21:8:
 --      Warning: In the use of `catch'
 --               (imported from Prelude, but defined in System.IO.Error):
 --               Deprecated: "Please use the new exceptions variant, Control.Exception.catch"
---  
+--
 --  src/System/Plugins/Load.hs:91:35:
 --      Module `GHC.Exts' does not export `addrToHValue#'
 --  make: *** [build-ghc-stamp] Error 1
