@@ -1131,7 +1131,7 @@ main _home release =
                       , "         Extensions:             TypeSynonymInstances"
                       , "                                 TypeOperators" ])
     , debianize "test-framework-quickcheck2" []
-    , debianize "test-framework-th" [P.DebVersion "0.2.2-4"]
+    , debianize "test-framework-th" []
     , P.Package { P.name = "haskell-testpack"
                 , P.spec = Debianize (Patch
                                       (Hackage "testpack")
@@ -1207,7 +1207,7 @@ main _home release =
                  }
     , debianize "fay" []
     , debianize "utf8-light" [P.DebVersion "0.4.0.1-2build1"]
-    , debianize "language-haskell-extract" [P.DebVersion "0.2.1-4"]
+    , debianize "language-haskell-extract" []
     , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
     , P.Package { P.name = "haskell-language-ecmascript"
                 , P.spec = Debianize (Hackage "language-ecmascript")
