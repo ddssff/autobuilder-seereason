@@ -1971,7 +1971,7 @@ authenticate _home release =
     [ conduit
     , apt release "haskell-puremd5"
     , debianize "monadcryptorandom" []
-    , debianize "RSA" []
+    , debianize "RSA" [P.CabalPin "1.2.1.0"]
     , P.Package { P.name = "haskell-resourcet"
                 , P.spec = Debianize (Hackage "resourcet")
                 , P.flags = [] }
