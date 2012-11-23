@@ -854,7 +854,7 @@ main _home release =
 --    , debianize "options" []
     , debianize "optparse-applicative" []
     , debianize "ordered" []
-    , debianize "multiset" []
+    , debianize "multiset" [P.CabalPin "0.2.1"] -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize "texmath" []
     , debianize "temporary" []
     , debianize "pandoc-types" [P.DebVersion "1.9.1-1"]
