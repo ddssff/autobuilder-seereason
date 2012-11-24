@@ -1705,6 +1705,25 @@ happstack release =
     , P.Package { P.name = "haskell-happstack"
                 , P.spec = Debianize (Hackage "happstack")
                 , P.flags = [] }
+    , P.Package { P.name = "haskell-happstack-fay"
+                , P.spec = Debianize (Patch
+                                      (Hackage "happstack-fay")
+                                      (unlines
+                                       [ "--- old/happstack-fay.cabal\t2012-11-24 06:12:24.000000000 -0800"
+                                       , "+++ new/happstack-fay.cabal\t2012-11-24 06:33:36.694192699 -0800"
+                                       , "@@ -23,7 +23,7 @@"
+                                       , "                        Happstack.Fay,"
+                                       , "                        Paths_happstack_fay"
+                                       , "   build-depends:       base             > 4 && <5,"
+                                       , "-                       fay              == 0.9.*,"
+                                       , "+                       fay              >= 0.9,"
+                                       , "                        fay-jquery       == 0.1.*,"
+                                       , "                        aeson            == 0.6.*,"
+                                       , "                        happstack-server >= 7.0 && <7.2" ]))
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-fay-jquery"
+                , P.spec = Debianize (Git "https://github.com/faylang/fay-jquery.git")
+                , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-data"
                 , P.spec = Debianize (Patch
                                       (Hackage "happstack-data")
