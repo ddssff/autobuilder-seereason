@@ -2042,22 +2042,12 @@ authenticate _home release =
                 , P.spec = Debianize (Darcs (darcsHub ++ "/happstack-authenticate"))
                 , P.flags = [] }
     , digestiveFunctors
-      -- The new version of fb (0.11) would require unpinned conduit packages.
     , P.Package { P.name = "haskell-fb"
                 , P.spec = Debianize (Patch
                                       (Hackage "fb")
                                       (unlines
-                                       [ "--- old/fb.cabal\t2012-10-21 05:29:45.000000000 -0700"
-                                       , "+++ new/fb.cabal\t2012-10-21 07:39:56.385757671 -0700"
-                                       , "@@ -61,7 +61,7 @@"
-                                       , "     Facebook.TestUsers"
-                                       , "   build-depends:"
-                                       , "       base               >= 4       && < 5"
-                                       , "-    , lifted-base        >= 0.1     && < 0.2"
-                                       , "+    , lifted-base        >= 0.1"
-                                       , "     , bytestring         >= 0.9     && < 0.11"
-                                       , "     , text               >= 0.11    && < 0.12"
-                                       , "     , transformers       >= 0.2     && < 0.4"
+                                       [ "--- old/fb.cabal\t2012-11-24 05:03:18.000000000 -0800"
+                                       , "+++ new/fb.cabal\t2012-11-24 05:04:40.522854000 -0800"
                                        , "@@ -71,7 +71,7 @@"
                                        , "     , conduit            >= 0.5     && < 0.6"
                                        , "     , data-default"
