@@ -220,8 +220,8 @@ main _home release =
                       , " "
                       , " instance Hash Hash384 where" ]) -}
     , debianize "crypto-api" []
-    , debianize "crypto-pubkey-types" [P.CabalPin "0.1.1"] -- Need newer RSA and certificate to unpin this
-    , debianize "cryptocipher" [P.CabalPin "0.3.5"] -- waiting for crypto-pubkey-types to be unpinned
+    , debianize "crypto-pubkey-types" []
+    , debianize "cryptocipher" []
     , debianize "cryptohash" []
     , debianize "cpu" []
     , debianize "css" [P.DebVersion "0.1-1~hackage1"]
@@ -1967,7 +1967,7 @@ conduit =
     , debianize "blaze-builder-conduit" []
     , P.Package { P.name = "haskell-http-conduit"
                 , P.spec = Debianize (Hackage "http-conduit")
-                , P.flags = [P.CabalPin "1.7.0"] }
+                , P.flags = [] }
     , debianize "zlib-conduit" []
     , P.Package { P.name = "haskell-xml-conduit"
                 , P.spec = Debianize (Hackage "xml-conduit")
@@ -1980,64 +1980,23 @@ authenticate _home release =
     [ conduit
     , apt release "haskell-puremd5"
     , debianize "monadcryptorandom" []
-    , debianize "RSA" [P.CabalPin "1.2.1.0"]
+    , debianize "RSA" []
     , P.Package { P.name = "haskell-resourcet"
                 , P.spec = Debianize (Hackage "resourcet")
                 , P.flags = [] }
     , debianize "void" []
     -- Version 1.3.1 may be too new for tls 0.9.11
-    , debianize "certificate" [P.CabalPin "1.2.8"] -- waiting for crypto-pubkey-types to be unpinned
+    , debianize "certificate" []
     , debianize "pem" []
     , debianize "zlib-bindings" []
-    , debianize "tls" [P.CabalPin "0.9.11"] -- pinned until a compatible http-enumerator-0.7.3.3 is released
-    , debianize "tls-extra" [P.CabalPin "0.4.7"] -- waiting for tls to be unpinned
-    -- , debianize "authenticate" []
+    , debianize "tls" []
+    , debianize "tls-extra" []
     , P.Package { P.name = "haskell-authenticate"
                 , P.spec = Debianize (Hackage "authenticate")
-                , P.flags = [P.CabalPin "1.3.1.2"] }
-
+                , P.flags = [] }
     , P.Package { P.name = "haskell-zlib-enum"
                 , P.spec = Debianize (Hackage "zlib-enum")
                 , P.flags = [P.DebVersion "0.2.3-1~hackage1"] }
-    , P.Package { P.name = "haskell-http-enumerator"
-                , P.spec = Debianize (Patch
-                                      (Hackage "http-enumerator")
-                                      (unlines
-                                       [ "--- old/http-enumerator.cabal\t2012-09-17 16:16:55.000000000 -0700"
-                                       , "+++ new/http-enumerator.cabal\t2012-09-17 21:29:30.465472125 -0700"
-                                       , "@@ -30,23 +30,23 @@"
-                                       , "                  , utf8-string           >= 0.3.4   && < 0.4"
-                                       , "                  , blaze-builder         >= 0.2.1   && < 0.4"
-                                       , "                  , zlib-enum             >= 0.2     && < 0.3"
-                                       , "-                 , http-types            >= 0.6     && < 0.7"
-                                       , "+                 , http-types            >= 0.6"
-                                       , "                  , blaze-builder-enumerator >= 0.2  && < 0.3"
-                                       , "                  , cprng-aes             >= 0.2     && < 0.3"
-                                       , "-                 , tls                   >= 0.9     && < 0.10"
-                                       , "-                 , tls-extra             >= 0.4.3   && < 0.5"
-                                       , "+                 , tls                   >= 0.9"
-                                       , "+                 , tls-extra             >= 0.4.3"
-                                       , "                  , monad-control         >= 0.2     && < 0.4"
-                                       , "                  , containers            >= 0.2"
-                                       , "-                 , certificate           >= 1.1     && < 1.2"
-                                       , "+                 , certificate           >= 1.1"
-                                       , "                  , case-insensitive      >= 0.2"
-                                       , "-                 , base64-bytestring     >= 0.1     && < 0.2"
-                                       , "-                 , asn1-data             >= 0.5.1   && < 0.7"
-                                       , "-                 , data-default          >= 0.3     && < 0.5"
-                                       , "+                 , base64-bytestring     >= 0.1"
-                                       , "+                 , asn1-data             >= 0.5.1"
-                                       , "+                 , data-default          >= 0.3"
-                                       , "     if flag(network-bytestring)"
-                                       , "         build-depends: network               >= 2.2.1   && < 2.2.3"
-                                       , "                      , network-bytestring    >= 0.1.3   && < 0.1.4"
-                                       , "     else"
-                                       , "-        build-depends: network               >= 2.3     && < 2.4"
-                                       , "+        build-depends: network               >= 2.3     && < 2.5"
-                                       , "     exposed-modules: Network.HTTP.Enumerator"
-                                       , "     other-modules:   Network.HTTP.Enumerator.HttpParser"
-                                       , "                      Network.TLS.Client.Enumerator" ]))
-                , P.flags = [P.DebVersion "0.7.3.3-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-authenticate"
                 , P.spec = Debianize (Darcs (darcsHub ++ "/happstack-authenticate"))
                 , P.flags = [] }
