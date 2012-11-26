@@ -61,7 +61,7 @@ unixutils _home =
 
 autobuilder home =
     -- let repo = localRepo home in
-    P.Packages (singleton "autobuilder") $
+    P.Packages (singleton "autobuilder-group") $
     [ unixutils home
     , P.Package { P.name = "autobuilder"
                 , P.spec = Cd "autobuilder" (Darcs (repo </> "debian-tools"))
@@ -86,9 +86,6 @@ autobuilder home =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-process-progress"
                 , P.spec = Cd "process-progress" (Darcs (repo </> "debian-tools"))
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-pretty-class"
-                , P.spec = Debianize (Darcs "http://src.seereason.com/pretty-class")
                 , P.flags = [] }
     ]
 
