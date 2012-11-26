@@ -1721,6 +1721,22 @@ happstack release =
     , P.Package { P.name = "haskell-fay-jquery"
                 , P.spec = Debianize (Git "https://github.com/faylang/fay-jquery.git")
                 , P.flags = [] }
+    , P.Package { P.name = "mastermind"
+                , P.spec = Debianize (Patch
+                                      (Darcs "http://hub.darcs.net/stepcut/mastermind")
+                                      (unlines
+                                       [ "--- old/mastermind.cabal\t2012-11-26 12:11:40.277002455 -0800"
+                                       , "+++ new/mastermind.cabal\t2012-11-26 12:11:32.241002885 -0800"
+                                       , "@@ -22,7 +22,7 @@"
+                                       , "                      acid-state       == 0.8.*,"
+                                       , "                      aeson            == 0.6.*,"
+                                       , "                      containers       == 0.4.*,"
+                                       , "-                     fay              == 0.9.*,"
+                                       , "+                     fay              >= 0.9,"
+                                       , "                      fay-jquery       == 0.1.*,"
+                                       , "                      happstack-fay    == 0.1.*,"
+                                       , "                      happstack-server == 7.0.*," ]))
+                , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-data"
                 , P.spec = Debianize (Patch
                                       (Hackage "happstack-data")
