@@ -1418,7 +1418,7 @@ ghc release =
         P.Package { P.name = "haskell-devscripts"
                   , P.spec = case release of
                                "quantal-seereason" -> Apt "experimental" "haskell-devscripts"
-                               "precise-seereason" -> Patch (Apt "sid" "haskell-devscripts") devscripts0812Patch
+                               "precise-seereason" -> Patch (Apt "precise" "haskell-devscripts") devscripts0812Patch
                                _ -> Apt "sid" "haskell-devscripts"
                   , P.flags = [P.RelaxDep "python-minimal"] }
       -- haskell-devscripts-0.8.13 is for ghc-7.6 only
