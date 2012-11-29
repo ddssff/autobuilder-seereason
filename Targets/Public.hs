@@ -102,9 +102,12 @@ digestiveFunctors =
 
 main _home release =
     P.Packages (singleton "main") $
-    [ ghc release,
-      platform release,
-      debianize "hashtables" []
+    [ ghc release
+    , platform release
+    , debianize "hashtables" []
+    , P.Package { P.name = "bugzilla"
+                , P.spec = Apt "squeeze" "bugzilla"
+                , P.flags = [] }
     , P.Package { P.name = "haskell-listlike"
                 , P.spec = Debianize (Hackage "ListLike")
                 , P.flags = [] }
