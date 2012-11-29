@@ -105,6 +105,12 @@ main _home release =
     [ ghc release,
       platform release,
       debianize "hashtables" []
+    , P.Package { P.name = "haskell-listlike"
+                , P.spec = Debianize (Hackage "ListLike")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-listlike-instances"
+                , P.spec = Debianize (Hackage "listlike-instances")
+                , P.flags = [] }
     , P.Package { P.name = "cpphs"
                 , P.spec = Apt "sid" "cpphs"
                 , P.flags = [] }

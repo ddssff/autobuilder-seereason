@@ -21,11 +21,11 @@ libraries _home =
 
 applications _home =
     P.Packages (singleton "applications") $
-    [ P.Package { P.name = "haskell-artvaluereport"
-                , P.spec = Darcs (privateRepo ++ "/artvaluereport")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-artvaluereport2"
+    [ P.Package { P.name = "haskell-artvaluereport2"
                 , P.spec = Darcs (privateRepo ++ "/artvaluereport2")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-artvaluereport"
+                , P.spec = Darcs (privateRepo ++ "/artvaluereport")
                 , P.flags = [] }
     , P.Package { P.name = "appraisalreportonline"
                 , P.spec = Debianize (Darcs (privateRepo ++ "/appraisalreportonline"))
