@@ -861,6 +861,7 @@ main _home release =
     , debianize "optparse-applicative" []
     , debianize "ordered" []
     , debianize "multiset" [P.CabalPin "0.2.1"] -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
+    , debianize "HaTeX" []
     , debianize "texmath" []
     , debianize "temporary" []
     , debianize "pandoc-types" [P.DebVersion "1.9.1-1"]
@@ -1397,7 +1398,6 @@ main _home release =
     , P.Package { P.name = "vc-darcs"
                 , P.spec = Darcs "http://src.seereason.com/vc-darcs"
                 , P.flags = [] }
-    -- , debianize "hlatex" []
     , P.Package { P.name = "foo2zjs"
                 , P.spec = Apt "quantal" "foo2zjs"
                 , P.flags = [] }
