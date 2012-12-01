@@ -1416,6 +1416,22 @@ main _home release =
     , P.Package { P.name = "foo2zjs"
                 , P.spec = Apt "quantal" "foo2zjs"
                 , P.flags = [] }
+{-  -- Has no Setup.hs file, not sure how to build this.
+    , P.Package { P.name = "hackage"
+                , P.spec = Debianize (Darcs "http://code.haskell.org/hackage-server")
+                , P.flags = [] } -}
+    , P.Package { P.name = "stringsearch"
+                , P.spec = Debianize (Hackage "stringsearch")
+                , P.flags = [] }
+    , P.Package { P.name = "rss"
+                , P.spec = Debianize (Hackage "rss")
+                , P.flags = [] }
+    , P.Package { P.name = "async"
+                , P.spec = Debianize (Hackage "async")
+                , P.flags = [] }
+    , P.Package { P.name = "csv"
+                , P.spec = Debianize (Hackage "csv")
+                , P.flags = [P.DebVersion "0.1.2-2"] }
 {-
     -- Fails in lucid due to build deps
     , P.Package { P.name = "jbigkit"
