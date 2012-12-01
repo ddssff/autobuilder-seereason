@@ -861,8 +861,6 @@ main _home release =
     , debianize "optparse-applicative" []
     , debianize "ordered" []
     , debianize "multiset" [P.CabalPin "0.2.1"] -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
-    , debianize "HaTeX" []
-    , debianize "texmath" []
     , debianize "temporary" []
     , debianize "pandoc-types" [P.DebVersion "1.9.1-1"]
     , debianize "parse-dimacs" []
@@ -1407,6 +1405,7 @@ main _home release =
     , P.Package { P.name = "latex"
                 , P.spec = Debianize (Hackage "latex")
                 , P.flags = [] }
+    , debianize "texmath" []
     , P.Package { P.name = "derive"
                 , P.spec = Debianize (Hackage "derive")
                 , P.flags = [] }
