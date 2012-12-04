@@ -1598,7 +1598,7 @@ platform release =
     ]
 
 clckwrks _home release =
-    let repo = "http://src.clckwrks.com/clckwrks" {- localRepo _home ++ "/clckwrks" -} in
+    let repo = "http://hub.darcs.net/stepcut/clckwrks" {- localRepo _home ++ "/clckwrks" -} in
     P.Packages (singleton "clckwrks") $
         [ happstack release
         , authenticate _home release
@@ -2157,25 +2157,8 @@ authenticate _home release =
 happstackdotcom _home =
     P.Packages (singleton "happstackdotcom") $
     [ P.Package { P.name = "haskell-ircbot"
-                , P.spec = Debianize (Patch
-                                      (Darcs (patchTag ++ "/ircbot"))
-                                      (unlines
-                                       [ "--- old/ircbot.cabal\t2012-07-10 10:36:52.000000000 -0700"
-                                       , "+++ new/ircbot.cabal\t2012-09-17 21:26:23.613467711 -0700"
-                                       , "@@ -36,10 +36,10 @@"
-                                       , "                   filepath   >= 1.2 && < 1.4,"
-                                       , "                   irc        == 0.5.*,"
-                                       , "                   mtl        >= 2.0 && < 2.2,"
-                                       , "-                  network    == 2.3.*,"
-                                       , "+                  network    == 2.4.*,"
-                                       , "                   old-locale == 1.0.*,"
-                                       , "                   parsec     == 3.1.*,"
-                                       , "                   time       == 1.4.*,"
-                                       , "                   unix       >= 2.4 && < 2.6,"
-                                       , "                   random     == 1.0.*,"
-                                       , "-                  stm        >= 2.2 && < 2.4"
-                                       , "+                  stm        >= 2.2" ]))
-                , P.flags = [P.DebVersion "0.5.1-1~hackage1"] }
+                , P.spec = Debianize (Hackage "ircbot")
+                , P.flags = [] }
 {-  , P.Package { P.name = "haskell-happstackdotcom"
                 , P.spec = Darcs ("http://src.seereason.com/happstackDotCom")
                 , P.flags = [] } -}
