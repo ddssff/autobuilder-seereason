@@ -1715,7 +1715,7 @@ clckwrks _home release =
                     , P.spec = Debianize (Cd "clckwrks-theme-basic" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils", P.DebVersion "0.2.3-1~hackage1"] }
         , P.Package { P.name = "clckwrks-dot-com"
-                    , P.spec = Cd "clckwrks-dot-com" (Darcs repo)
+                    , P.spec = Debianize (Cd "clckwrks-dot-com" (Darcs repo))
                     , P.flags = [] }
         , P.Package { P.name = "clckwrks-theme-clckwrks"
                     , P.spec = Debianize (Cd "clckwrks-theme-clckwrks" (Darcs repo))
@@ -2083,8 +2083,8 @@ happstack release =
                 , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (repo ++ "/happstack-clckwrks")))
                 , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     , P.Package { P.name = "happstack-dot-com"
-                , P.spec = Cd "happstack-dot-com" (Darcs (repo ++ "/happstack-clckwrks"))
-                , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
+                , P.spec = Debianize (Cd "happstack-dot-com" (Darcs (repo ++ "/happstack-clckwrks")))
+                , P.flags = [] }
     , P.Package { P.name = "haskell-acid-state"
                 , P.spec = Debianize (Hackage "acid-state")
                 , P.flags = [P.DebVersion "0.8.1-1~hackage1"] }
@@ -2136,20 +2136,7 @@ authenticate _home release =
                 , P.flags = [] }
     , digestiveFunctors
     , P.Package { P.name = "haskell-fb"
-                , P.spec = Debianize (Patch
-                                      (Hackage "fb")
-                                      (unlines
-                                       [ "--- old/fb.cabal\t2012-11-24 05:03:18.000000000 -0800"
-                                       , "+++ new/fb.cabal\t2012-11-24 05:04:40.522854000 -0800"
-                                       , "@@ -71,7 +71,7 @@"
-                                       , "     , conduit            >= 0.5     && < 0.6"
-                                       , "     , data-default"
-                                       , "     , http-types"
-                                       , "-    , http-conduit       >= 1.5     && < 1.7"
-                                       , "+    , http-conduit       >= 1.5"
-                                       , "     , attoparsec         >= 0.10    && < 0.11"
-                                       , "     , attoparsec-conduit >= 0.5     && < 0.6"
-                                       , "     , unordered-containers" ]))
+                , P.spec = Debianize (Hackage "fb")
                 , P.flags = [] }
     ]
 
