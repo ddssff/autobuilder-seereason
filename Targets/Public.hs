@@ -134,7 +134,7 @@ main _home release =
     , P.Package { P.name = "haskell-agi"
                 , P.spec = Darcs "http://src.seereason.com/haskell-agi"
                 , P.flags = [] }
-    , debianize "ansi-terminal" [P.DebVersion "0.5.5-3build1"]
+    , debianize "ansi-terminal" []
     , debianize "ansi-wl-pprint" [P.DebVersion "0.6.4-1"]
     -- Our applicative-extras repository has several important patches.
     , P.Package { P.name = "haskell-applicative-extras",
@@ -696,21 +696,8 @@ main _home release =
                 , P.spec = Darcs (repo ++ "/haskell-logic")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-pointed"
-                , P.spec = Debianize (Patch
-                                      (Hackage "pointed")
-                                      (unlines
-                                       [ "--- old/pointed.cabal\t2012-09-17 16:18:20.000000000 -0700"
-                                       , "+++ new/pointed.cabal\t2012-09-17 21:17:10.225454635 -0700"
-                                       , "@@ -26,7 +26,7 @@"
-                                       , "     containers           >= 0.4     && < 0.6,"
-                                       , "     comonad              >= 3.0     && < 3.1,"
-                                       , "     comonad-transformers >= 3.0     && < 3.1,"
-                                       , "-    data-default         >= 0.4     && < 0.5,"
-                                       , "+    data-default         >= 0.4     && < 0.6,"
-                                       , "     semigroups           >= 0.8.3.1 && < 0.9,"
-                                       , "     semigroupoids        >= 3.0     && < 3.1,"
-                                       , "     stm                  >= 2.1.2.1 && < 2.5" ]))
-                , P.flags = [P.DebVersion "3.0.0.1-1~hackage1"] }
+                , P.spec = Debianize (Hackage "pointed")
+                , P.flags = [] }
     , patched "logic-TPTP" [ P.ExtraDep "alex"
                            , P.ExtraDep "happy" ]
                            (unlines
@@ -864,7 +851,7 @@ main _home release =
     , debianize "temporary" []
     , debianize "pandoc-types" [P.DebVersion "1.9.1-1"]
     , debianize "parse-dimacs" []
-    , debianize "parseargs" [P.DebVersion "0.1.3.2-2"]
+    , debianize "parseargs" []
     , apt release "haskell-parsec2"
     , P.Package { P.name = "haskell-pbkdf2",
                   P.spec = DebDir (Hackage "PBKDF2") (Darcs "http://src.seereason.com/pbkdf2-debian"),
@@ -1120,21 +1107,8 @@ main _home release =
                       , " import Control.Arrow (second, (&&&))"
                       , " import Control.Monad (unless)" ]
                     , P.ExtraDep "libghc-random-prof" -} ]
-    , debianize "test-framework-hunit" [P.DebVersion "0.2.7-1"]
-    , patched "test-framework-quickcheck" []
-                    (unlines
-                      [ "--- old/test-framework-quickcheck.cabal\t2012-02-02 16:33:53.000000000 -0800"
-                      , "+++ new/test-framework-quickcheck.cabal\t2012-02-02 18:10:11.000000000 -0800"
-                      , "@@ -26,8 +26,7 @@"
-                      , "         if flag(base3)"
-                      , "                 Build-Depends:          base >= 3 && < 4, random >= 1, deepseq >= 1.1 && < 1.3"
-                      , "         else"
-                      , "-                if flag(base4)"
-                      , "-                        Build-Depends:          base >= 4 && < 5, random >= 1, deepseq >= 1.1 && < 1.3"
-                      , "+                Build-Depends:          base >= 4 && < 5, random >= 1, deepseq >= 1.1"
-                      , " "
-                      , "         Extensions:             TypeSynonymInstances"
-                      , "                                 TypeOperators" ])
+    , debianize "test-framework-hunit" []
+    , debianize "test-framework-quickcheck" []
     , debianize "test-framework-quickcheck2" []
     , debianize "test-framework-th" []
     , P.Package { P.name = "haskell-testpack"
@@ -1210,7 +1184,6 @@ main _home release =
                                           ]),
                    P.flags = []
                  }
-    , debianize "fay" []
     , debianize "utf8-light" [P.DebVersion "0.4.0.1-2build1"]
     , debianize "language-haskell-extract" []
     , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
@@ -1546,7 +1519,7 @@ platform release =
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     {- , debianize "happy" [] -}
     -- There are newer versions in hackage, but it will trigger a huge
-    -- build.  Also, ghc conflicts with libghc-directory-dev, so we actually
+    -- build.  Also, ghc-7.4.1-2 conflicts with libghc-directory-dev, so we actually
     -- can't build this unless we modify the ghc package first.
     -- debianize "directory" []
     , debianize "stm" []
@@ -1736,6 +1709,7 @@ clckwrks _home release =
         , debianize "jmacro" []
         , debianize "hsx-jmacro" []
         , debianize "monadlist" []
+        , debianize "fay" []
         ]
 
 happstack release =
@@ -1941,6 +1915,7 @@ happstack release =
     , P.Package { P.name = "haskell-happstack-search"
                 , P.spec = Darcs (repo ++ "/happstack-search")
                 , P.flags = [] }
+    -- Current happstack-server requires directory >= 1.2, which comes with ghc-7.6.
     , P.Package { P.name = "haskell-happstack-server"
                 , P.spec = Debianize (Hackage "happstack-server")
                 , P.flags = [P.CabalPin "7.0.7", P.DebVersion "7.0.7-1"] }
@@ -2322,21 +2297,8 @@ algebra = P.Packages (singleton "algebra")
     , debianize "lens-family" []
     , debianize "lens-family-th" []
     , P.Package { P.name = "haskell-linear"
-                , P.spec = Debianize (Patch
-                                      (Hackage "linear")
-                                      (unlines
-                                       [ "--- old/linear.cabal\t2012-11-05 22:46:21.000000000 -0800"
-                                       , "+++ new/linear.cabal\t2012-11-06 04:30:02.998300474 -0800"
-                                       , "@@ -31,7 +31,7 @@"
-                                       , "   build-depends:"
-                                       , "     base == 4.*,"
-                                       , "     distributive >= 0.2.2 && < 0.3,"
-                                       , "-    lens >= 2.9 && < 3.1"
-                                       , "+    lens >= 2.9"
-                                       , " "
-                                       , "   exposed-modules:"
-                                       , "     Linear.Conjugate" ]))
-                , P.flags = [P.DebVersion "0.2.0.2-1~hackage1"] }
+                , P.spec = Debianize (Hackage "linear")
+                , P.flags = [] }
     , debianize "representable-functors" []
     , debianize "representable-tries" []
     , debianize "semigroupoids" []
