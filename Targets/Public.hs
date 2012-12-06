@@ -1715,7 +1715,20 @@ clckwrks _home release =
                     , P.spec = Debianize (Cd "clckwrks-theme-bootstrap" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "clckwrks-dot-com"
-                    , P.spec = Debianize (Cd "clckwrks-dot-com" (Darcs repo))
+                    , P.spec = Debianize (Patch
+                                          (Cd "clckwrks-dot-com" (Darcs repo))
+                                          (unlines
+                                           [ "--- old/clckwrks-dot-com.cabal\t2012-12-06 08:47:42.000000000 -0800"
+                                           , "+++ new/clckwrks-dot-com.cabal\t2012-12-06 08:49:46.069545349 -0800"
+                                           , "@@ -12,7 +12,7 @@"
+                                           , " "
+                                           , " Flag backups"
+                                           , "      Description: enable the backups executable (currently disabled by default do to wacky dependencies not on hackage)"
+                                           , "-     Default: False"
+                                           , "+     Default: True"
+                                           , " "
+                                           , " Executable             clckwrks-dot-com-server"
+                                           , "   main-is:             Main.hs" ]))
                     , P.flags = [] }
         , P.Package { P.name = "clckwrks-theme-clckwrks"
                     , P.spec = Debianize (Cd "clckwrks-theme-clckwrks" (Darcs repo))
@@ -2083,7 +2096,20 @@ happstack release =
                 , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (repo ++ "/happstack-clckwrks")))
                 , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     , P.Package { P.name = "happstack-dot-com"
-                , P.spec = Debianize (Cd "happstack-dot-com" (Darcs (repo ++ "/happstack-clckwrks")))
+                , P.spec = Debianize (Patch
+                                      (Cd "happstack-dot-com" (Darcs (repo ++ "/happstack-clckwrks")))
+                                      (unlines
+                                       [ "--- old/happstack-dot-com.cabal\t2012-12-06 08:32:56.000000000 -0800"
+                                       , "+++ new/happstack-dot-com.cabal\t2012-12-06 08:40:39.773574517 -0800"
+                                       , "@@ -18,7 +18,7 @@"
+                                       , " "
+                                       , " Flag backups"
+                                       , "      Description: enable the backups executable (currently disabled by default do to wacky dependencies not on hackage)"
+                                       , "-     Default: False"
+                                       , "+     Default: True"
+                                       , " "
+                                       , " Executable happstack-dot-com-server"
+                                       , "   Main-is: Main.hs" ]))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-acid-state"
                 , P.spec = Debianize (Hackage "acid-state")
