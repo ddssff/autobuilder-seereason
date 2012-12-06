@@ -1986,7 +1986,38 @@ happstack release =
                                        , " "
                                        , " Library"
                                        , "   -- Note: the following is duplicated in all stanzas."
-                                       ]))
+                                       ] ++
+                                       -- Disable some troublesome markdown parser rules
+                                       [ "--- old/src/Text/Pandoc/Readers/Markdown.hs\t2012-12-05 20:20:58.459944135 -0800"
+                                       , "+++ new/src/Text/Pandoc/Readers/Markdown.hs\t2012-12-06 12:44:30.744793336 -0800"
+                                       , "@@ -299,7 +299,7 @@"
+                                       , "                    , blockQuote"
+                                       , "                    , hrule"
+                                       , "                    , bulletList"
+                                       , "-                   , orderedList"
+                                       , "+                   -- , orderedList"
+                                       , "                    , htmlBlock"
+                                       , "                    , para"
+                                       , "                    , plain"
+                                       , "@@ -313,7 +313,7 @@"
+                                       , "                    , blockQuote"
+                                       , "                    , hrule"
+                                       , "                    , bulletList"
+                                       , "-                   , orderedList"
+                                       , "+                   -- , orderedList"
+                                       , "                    , definitionList"
+                                       , "                    , rawTeXBlock"
+                                       , "                    , para"
+                                       , "@@ -922,7 +922,7 @@"
+                                       , " inlineParsers = [ whitespace"
+                                       , "                 , str"
+                                       , "                 , endline"
+                                       , "-                , code"
+                                       , "+                -- , code"
+                                       , "                 , fours"
+                                       , "                 , strong"
+                                       , "                 , emph" ]
+                                      ))
                 , P.flags = []
                 }
     , P.Package { P.name = "haskell-highlighting-kate"
