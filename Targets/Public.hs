@@ -2241,7 +2241,11 @@ glib release = P.Packages (singleton "glib") $
 plugins = P.Packages (singleton "plugins") $
     [ debianize "plugins" []
     , debianize "happstack-plugins" []
-    , debianize "plugins-auto" [] ]
+    , debianize "plugins-auto" []
+    , P.Package { P.name = "haskell-web-plugins"
+                , P.spec = Debianize (Cd "web-plugins" (Darcs "http://hub.darcs.net/stepcut/web-plugins"))
+                , P.flags = [] }
+    ]
 
 -- Control/Monad/Unpack.hs:33:3:
 --      Illegal repeated type variable `a_a4L6'
