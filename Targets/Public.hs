@@ -199,6 +199,7 @@ main _home release =
                 , P.flags = [] }
     , debianize "cipher-aes" []
     , debianize "cprng-aes" []
+    , debianize "crypto-random-api" []
     , P.Package { P.name = "haskell-crypto"
                 , P.spec = Debianize (Hackage "Crypto")
                 , P.flags = [P.DebVersion "4.2.5-1~hackage1"] }
