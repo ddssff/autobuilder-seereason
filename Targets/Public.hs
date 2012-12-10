@@ -1989,25 +1989,30 @@ happstack release =
                                        -- Disable some troublesome markdown parser rules
                                        , "--- old/src/Text/Pandoc/Readers/Markdown.hs\t2012-12-05 20:20:58.459944135 -0800"
                                        , "+++ new/src/Text/Pandoc/Readers/Markdown.hs\t2012-12-06 12:44:30.744793336 -0800"
-                                       , "@@ -299,7 +299,7 @@"
+                                       , "@@ -299,13 +299,11 @@"
                                        , "                    , blockQuote"
                                        , "                    , hrule"
                                        , "                    , bulletList"
                                        , "-                   , orderedList"
-                                       , "+                   -- , orderedList"
                                        , "                    , htmlBlock"
                                        , "                    , para"
                                        , "                    , plain"
-                                       , "@@ -313,7 +313,7 @@"
+                                       , "                    , nullBlock ]"
+                                       , "-              else [ codeBlockDelimited"
+                                       , "-                   , macro"
+                                       , "+              else [ macro"
+                                       , "                    , header "
+                                       , "                    , table"
+                                       , "                    , codeBlockIndented"
+                                       , "@@ -313,7 +311,6 @@"
                                        , "                    , blockQuote"
                                        , "                    , hrule"
                                        , "                    , bulletList"
                                        , "-                   , orderedList"
-                                       , "+                   -- , orderedList"
                                        , "                    , definitionList"
                                        , "                    , rawTeXBlock"
                                        , "                    , para"
-                                       , "@@ -922,7 +922,7 @@"
+                                       , "@@ -922,7 +919,7 @@"
                                        , " inlineParsers = [ whitespace"
                                        , "                 , str"
                                        , "                 , endline"
@@ -2015,10 +2020,12 @@ happstack release =
                                        , "+                -- , code"
                                        , "                 , fours"
                                        , "                 , strong"
-                                       , "                 , emph" ]
-                                      ))
+                                       , "                 , emph" ]))
                 , P.flags = []
                 }
+    , P.Package { P.name = "markdown"
+                , P.spec = Debianize (Hackage "markdown")
+                , P.flags = [] }
     , P.Package { P.name = "haskell-highlighting-kate"
                 , P.spec = Debianize (Hackage "highlighting-kate")
                 , P.flags = [] }
