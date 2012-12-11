@@ -57,7 +57,7 @@ applications _home =
     , P.Package { P.name = "clckwrks-theme-clcksmith"
                 , P.spec = Debianize (Cd "clckwrks-theme-clcksmith" (Darcs (privateRepo ++ "/clcksmith")))
                 -- Haddock gets upset about the HSX.QQ modules.  Not sure why.
-                , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc, P.DebVersion "0.1-1~hackage1"] }
+                , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc] }
     , P.Package { P.name = "seereasonpartners-dot-com"
                 , P.spec = Debianize (Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks")))
                 , P.flags = [] }
