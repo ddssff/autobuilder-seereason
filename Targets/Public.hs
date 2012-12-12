@@ -905,6 +905,7 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/set-extra"
                 , P.flags = [] }
     , apt release "haskell-sha"
+    , debianize "shake" []
     , debianize "shakespeare" []
     , debianize "shakespeare-css" []
     , P.Package { P.name = "haskell-simple-css",
