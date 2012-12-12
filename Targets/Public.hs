@@ -27,6 +27,7 @@ targets _home release =
     , digestiveFunctors
 
     , algebra
+--    , diagrams
 
     -- , fixme
     -- , higgsset
@@ -749,7 +750,6 @@ main _home release =
     , debianize "monad-par" []
     , debianize "IORefCAS" []
     , debianize "bits-atomic" []
-    , apt release "haskell-monadcatchio-mtl"
     , debianize "monadLib" []
     -- Putting this in our repo can cause problems, because when it is
     -- installed some packages can't compile unless you add package
@@ -2322,6 +2322,30 @@ haddock release =
 failing release =
     [ debianize "funsat" []
     , apt release "haskell-statistics" ]
+
+diagrams = P.Packages (singleton "diagrams")
+    [ debianize "diagrams" []
+    , debianize "diagrams-lib" []
+    , debianize "diagrams-builder" []
+    , debianize "diagrams-core" []
+    , debianize "diagrams-contrib" []
+    , debianize "diagrams-gtk" []
+    , debianize "diagrams-cairo" []
+    , debianize "diagrams-svg" []
+    , debianize "dual-tree" []
+    , debianize "monoid-extras" []
+    , debianize "newtype" []
+    , debianize "active" []
+    , debianize "Boolean" []
+    , debianize "MemoTrie" []
+    , debianize "blaze-svg" []
+    , debianize "force-layout" []
+    , debianize "cairo" []
+    , debianize "hint" []
+    , debianize "vector-space" []
+    , debianize "vector-space-points" []
+    , debianize "MonadCatchIO-mtl" []
+    ]
 
 algebra = P.Packages (singleton "algebra")
     [ debianize "data-lens" []
