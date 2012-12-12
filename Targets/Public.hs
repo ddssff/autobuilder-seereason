@@ -859,6 +859,7 @@ main _home release =
                   P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"]}
     , apt release "haskell-pcre-light"
     , debianize "permutation" [P.DebVersion "0.4.1-1~hackage1"]
+    , debianize "pipes" []
     , debianize "polyparse" []
     , debianize "primitive" []
     , debianize "PropLogic" []
