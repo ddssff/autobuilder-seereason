@@ -141,6 +141,7 @@ main _home release =
                 , P.flags = [] }
     , debianize "ansi-terminal" []
     , debianize "ansi-wl-pprint" [P.DebVersion "0.6.4-1"]
+    , debianize "wl-pprint-text" []
     -- Our applicative-extras repository has several important patches.
     , P.Package { P.name = "haskell-applicative-extras",
                   P.spec = Debianize (Hackage "applicative-extras"),
