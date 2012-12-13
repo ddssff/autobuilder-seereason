@@ -1194,28 +1194,7 @@ main _home release =
                 , P.spec = Debianize (Hackage "language-ecmascript")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-elm"
-                , P.spec = Debianize (Patch
-                                      (Hackage "Elm")
-                                      (unlines
-                                       [ "--- old/Elm.cabal\t2012-11-06 04:08:41.000000000 -0800"
-                                       , "+++ new/Elm.cabal\t2012-11-06 04:20:54.966287740 -0800"
-                                       , "@@ -69,7 +69,7 @@"
-                                       , "                        text,"
-                                       , "                        template-haskell,"
-                                       , "                        shakespeare >= 1,"
-                                       , "-                       pandoc <= 1.9.4.2,"
-                                       , "+                       pandoc,"
-                                       , "                        bytestring,"
-                                       , "                        hjsmin"
-                                       , " "
-                                       , "@@ -110,6 +110,6 @@"
-                                       , "                        blaze-markup == 0.5.1.*,"
-                                       , "                        deepseq,"
-                                       , "                        cmdargs,"
-                                       , "-                       pandoc <= 1.9.4.2,"
-                                       , "+                       pandoc,"
-                                       , "                        bytestring,"
-                                       , "                        hjsmin" ]))
+                , P.spec = Debianize (Hackage "Elm")
                 , P.flags = [] }
     , P.Package { P.name = "elm-server"
                 , P.spec = Debianize (Patch
