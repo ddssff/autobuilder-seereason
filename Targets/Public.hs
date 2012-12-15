@@ -846,7 +846,7 @@ main _home release =
                       , "                  x   -> x" ])
     , P.Package { P.name = "haskell-operational"
                 , P.spec = Debianize (Hackage "operational")
-                , P.flags = [P.OmitLTDeps, P.DebVersion "0.2.1.3-1~hackage1"] }
+                , P.flags = [P.OmitLTDeps] }
 --    , debianize "options" []
     , debianize "optparse-applicative" []
     , debianize "ordered" []
@@ -2200,19 +2200,8 @@ opengl release = P.Packages (singleton "opengl") $
                                   , " --------------------------------------------------------------------------------" ])
                 , P.flags = [ P.DebVersion "0.0.3-1~hackage2" ] } -}
     , P.Package { P.name = "haskell-bitmap-opengl"
-                , P.spec = Patch (Debianize (Hackage "bitmap-opengl"))
-                                 (unlines
-                                  [ "--- old/Data/Bitmap/OpenGL.hs\t2012-03-25 07:48:39.000000000 -0700"
-                                  , "+++ new/Data/Bitmap/OpenGL.hs\t2012-03-25 09:07:54.849175710 -0700"
-                                  , "@@ -11,6 +11,7 @@"
-                                  , " --------------------------------------------------------------------------------"
-                                  , " "
-                                  , " import Data.Bitmap.IO"
-                                  , "+import Data.Bitmap.Simple (withBitmap)"
-                                  , " "
-                                  , " import Graphics.Rendering.OpenGL"
-                                  , " " ])
-                , P.flags = [P.ExtraDep "libglu1-mesa-dev", P.DebVersion "0.0.0-1~hackage1"] }
+                , P.spec = Debianize (Hackage "bitmap-opengl")
+                , P.flags = [P.ExtraDep "libglu1-mesa-dev"] }
     , debianize "GLUT" []
     , debianize "StateVar" (quantal release [P.DebVersion "1.0.0.0-2build1"] [P.DebVersion "1.0.0.0-2build3"])
     , debianize "Tensor" []
