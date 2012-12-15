@@ -253,9 +253,12 @@ myComponents myBuildRelease =
 
 -- | Unfortunately, we need to tell the autobuilder what version of ghc
 -- is going to be in our release so that cabal-debian knows what packages
--- are bundled with the compiler.  We could perhaps do some chroot thing
--- to compute this.
---myCompilerVersion "natty-seereason" = Just "7.2.1"
+-- are bundled with the compiler.  If a compiler version is assigned here
+-- it must be known to the cabal-debian library installed on the machine
+-- on which the autobuilder is running.  If the result is Nothing it
+-- assumes the same compiler is used in the build environment as in the
+-- parent environment.
+myCompilerVersion "quantal-seereason" = Just "7.6.1"
 myCompilerVersion "natty-seereason" = Just "7.4.1"
 myCompilerVersion "lucid-seereason" = Just "7.4.1"
 myCompilerVersion _myBuildRelease = Nothing
