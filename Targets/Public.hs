@@ -1,7 +1,10 @@
+{-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-unused-imports -fno-warn-name-shadowing #-}
 module Targets.Public ( targets ) where
 
-import Data.Char (toLower)
+import qualified Data.ByteString as B
+import Data.Char (toLower, chr)
+import Data.FileEmbed (embedFile)
 import Data.Set (empty, singleton)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
@@ -148,28 +151,12 @@ main _home release =
                   P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.DebVersion "0.1.8-1"] }
     , debianize "asn1-data" []
     , debianize "attempt" (quantal release [P.DebVersion "0.4.0-1"] [P.DebVersion "0.4.0-1build2"])
+    , debianize "errors" []
     , debianize "failure" (quantal release [] [P.DebVersion "0.2.0.1-1build2"])
     , debianize "attoparsec" []
     , debianize "attoparsec-enumerator" []
     , P.Package { P.name = "haskell-attoparsec-text"
-                , P.spec = Debianize (Patch
-                                      (Hackage "attoparsec-text")
-                                      (unlines
-                                       [ "--- x/attoparsec-text.cabal.orig\t2012-01-01 12:43:48.746481982 -0800"
-                                       , "+++ x/attoparsec-text.cabal\t2012-01-01 12:20:22.226482130 -0800"
-                                       , "@@ -59,10 +59,10 @@"
-                                       , " "
-                                       , " library"
-                                       , "   build-depends: base       >= 3       && < 5,"
-                                       , "-                 attoparsec >= 0.7     && < 0.10,"
-                                       , "+                 attoparsec >= 0.7,"
-                                       , "                  text       >= 0.10    && < 0.12,"
-                                       , "                  containers >= 0.1.0.1 && < 0.5,"
-                                       , "-                 array      >= 0.1     && < 0.4"
-                                       , "+                 array      >= 0.1     && < 0.5"
-                                       , "   extensions:      CPP"
-                                       , "   exposed-modules: Data.Attoparsec.Text"
-                                       , "                    Data.Attoparsec.Text.FastSet" ]))
+                , P.spec = Debianize (Patch (Hackage "attoparsec-text") (asciiToString $(embedFile "patches/attoparsec-text.diff")))
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
     , debianize "attoparsec-text-enumerator" []
     , debianize "base-unicode-symbols" []
@@ -240,18 +227,7 @@ main _home release =
     , debianize "data-accessor" []
     , debianize "data-accessor-template" []
     , debianize "data-default" []
-    , patch (debianize "data-object" [])
-                    (unlines
-                      [ "--- old/data-object.cabal\t2012-01-20 06:42:12.000000000 -0800"
-                      , "+++ new/data-object.cabal\t2012-01-20 10:13:25.147160370 -0800"
-                      , "@@ -20,6 +20,6 @@"
-                      , "                      bytestring >= 0.9.1.4,"
-                      , "                      text >= 0.5,"
-                      , "                      time >= 1.1.4,"
-                      , "-                     failure >= 0.1.0 && < 0.2"
-                      , "+                     failure >= 0.1.0"
-                      , "     exposed-modules: Data.Object"
-                      , "     ghc-options:     -Wall" ])
+    , patch (debianize "data-object" []) (asciiToString $(embedFile "patches/data-object.diff"))
     , debianize "dataenc" []
     , debianize "Diff" []
     , apt (quantal release "sid" "quantal") "haskell-digest" []
@@ -270,72 +246,7 @@ main _home release =
     , apt (quantal release "sid" "quantal") "haskell-entropy" []
     , debianize "enumerator" (quantal release [] [P.DebVersion "0.4.19-1build2"])
     , P.Package { P.name = "haskell-hdaemonize"
-                , P.spec = Debianize (Patch
-                                      (Hackage "hdaemonize")
-                                      (unlines
-                                       [ "--- old/System/Posix/Daemonize.hs\t2012-02-04 17:36:24.000000000 -0800"
-                                       , "+++ new/System/Posix/Daemonize.hs\t2012-05-18 10:59:27.809909158 -0700"
-                                       , "@@ -156,23 +156,33 @@"
-                                       , "                  "
-                                       , "       process daemon [\"stop\"]  = "
-                                       , "           do pid <- pidRead daemon"
-                                       , "-             let ifdo x f = x >>= \\x -> if x then f else pass"
-                                       , "              case pid of"
-                                       , "                Nothing  -> pass"
-                                       , "-               Just pid -> "
-                                       , "-                   (do signalProcess sigTERM pid"
-                                       , "-                       usleep (10^6)"
-                                       , "-                       ifdo (pidLive pid) $ "
-                                       , "-                            do usleep (3*10^6)"
-                                       , "-                               ifdo (pidLive pid) (signalProcess sigKILL pid))"
-                                       , "-                   `finally`"
-                                       , "-                   removeLink (pidFile daemon)"
-                                       , "+               Just pid -> (stop pid >> wait (waitSecs daemon) pid) `finally` removeLink (pidFile daemon)"
-                                       , " "
-                                       , "       process daemon [\"restart\"] = do process daemon [\"stop\"]"
-                                       , "                                       process daemon [\"start\"]"
-                                       , "       process _      _ = "
-                                       , "         getProgName >>= \\pname -> putStrLn $ \"usage: \" ++ pname ++ \" {start|stop|restart}\""
-                                       , " "
-                                       , "+      -- If the process still exists, begin the shutdown process."
-                                       , "+      stop :: CPid -> IO ()"
-                                       , "+      stop pid ="
-                                       , "+          pidLive pid >>= \\ alive ->"
-                                       , "+          if alive"
-                                       , "+          then signalProcess sigTERM pid >> usleep (10^3)"
-                                       , "+          else pass"
-                                       , "+"
-                                       , "+      -- If still alive wait the designated period."
-                                       , "+      wait :: Maybe Int -> CPid -> IO ()"
-                                       , "+      wait remain pid ="
-                                       , "+          pidLive pid >>= \\ alive -> "
-                                       , "+          if alive"
-                                       , "+          then if maybe True (> 0) remain"
-                                       , "+               then (usleep (10^6) >> wait (fmap (\\x->x-1) remain) pid)"
-                                       , "+               else signalProcess sigKILL pid"
-                                       , "+          else pass"
-                                       , "+"
-                                       , " -- | The details of any given daemon are fixed by the 'CreateDaemon'"
-                                       , " -- record passed to 'serviced'.  You can also take a predefined form"
-                                       , " -- of 'CreateDaemon', such as 'simpleDaemon' below, and set what"
-                                       , "@@ -214,6 +224,7 @@"
-                                       , "                                      -- have a good reason to do"
-                                       , "                                      -- otherwise, leave this as"
-                                       , "                                      -- 'Nothing'."
-                                       , "+  , waitSecs :: Maybe Int   -- ^ How many seconds to wait before sending the sigKILL.  If Nothing wait forever.  Default 4."
-                                       , " }"
-                                       , " "
-                                       , " -- | The simplest possible instance of 'CreateDaemon' is "
-                                       , "@@ -240,7 +251,8 @@"
-                                       , "   syslogOptions = [],"
-                                       , "   pidfileDirectory = Nothing,"
-                                       , "   program = const $ M.forever $ return (),"
-                                       , "-  privilegedAction = return ()"
-                                       , "+  privilegedAction = return (),"
-                                       , "+  waitSecs = Just 4"
-                                       , " }"
-                                       , "   "
-                                       , " " ]))
+                , P.spec = Debianize (Patch (Hackage "hdaemonize") (asciiToString $(embedFile "patches/hdaemonize.diff")))
                 , P.flags = [P.DebVersion "0.4.4.1-1~hackage1"] }
     , debianize "hsyslog" []
     , debianize "erf" [P.DebVersion "2.0.0.0-3"]
@@ -872,7 +783,9 @@ main _home release =
                 , P.spec = Darcs (repo ++ "/propositional-classes")
                 , P.flags = [] } -}
     , debianize "PSQueue" (quantal release [P.DebVersion "1.1-2"] [P.DebVersion "1.1-2build2"])
-    , debianize "pwstore-purehaskell" [P.DebVersion "2.1-1~hackage1"]
+    , P.Package { P.name = "haskell-pwstore-purehaskell"
+                , P.spec = Debianize (Patch (Hackage "pwstore-purehaskell") (asciiToString $(embedFile "patches/pwstore-purehaskell.diff")))
+                , P.flags = [P.DebVersion "2.1-1~hackage1"] }
     -- In Sid, source package haskell-quickcheck generates libghc-quickcheck2-*,
     -- but our debianize target becomes haskell-quickcheck2.  So we need to fiddle
     -- with the order here relative to haskell-quickcheck1.
@@ -2416,3 +2329,6 @@ patch :: P.Packages -> String -> P.Packages
 patch package@(P.Package {}) s = package {P.spec = Patch (P.spec package) s}
 patch p@(P.Packages {}) s = p {P.packages = map (`patch` s) (P.packages p)}
 patch P.NoPackage _ = P.NoPackage
+
+asciiToString :: B.ByteString -> String
+asciiToString = map (chr . fromIntegral) . B.unpack

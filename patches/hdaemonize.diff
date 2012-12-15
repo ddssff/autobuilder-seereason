@@ -1,0 +1,63 @@
+--- old/System/Posix/Daemonize.hs	2012-02-04 17:36:24.000000000 -0800
++++ new/System/Posix/Daemonize.hs	2012-05-18 10:59:27.809909158 -0700
+@@ -156,23 +156,33 @@
+                  
+       process daemon ["stop"]  = 
+           do pid <- pidRead daemon
+-             let ifdo x f = x >>= \x -> if x then f else pass
+              case pid of
+                Nothing  -> pass
+-               Just pid -> 
+-                   (do signalProcess sigTERM pid
+-                       usleep (10^6)
+-                       ifdo (pidLive pid) $ 
+-                            do usleep (3*10^6)
+-                               ifdo (pidLive pid) (signalProcess sigKILL pid))
+-                   `finally`
+-                   removeLink (pidFile daemon)
++               Just pid -> (stop pid >> wait (waitSecs daemon) pid) `finally` removeLink (pidFile daemon)
+ 
+       process daemon ["restart"] = do process daemon ["stop"]
+                                       process daemon ["start"]
+       process _      _ = 
+         getProgName >>= \pname -> putStrLn $ "usage: " ++ pname ++ " {start|stop|restart}"
+ 
++      -- If the process still exists, begin the shutdown process.
++      stop :: CPid -> IO ()
++      stop pid =
++          pidLive pid >>= \ alive ->
++          if alive
++          then signalProcess sigTERM pid >> usleep (10^3)
++          else pass
++
++      -- If still alive wait the designated period.
++      wait :: Maybe Int -> CPid -> IO ()
++      wait remain pid =
++          pidLive pid >>= \ alive -> 
++          if alive
++          then if maybe True (> 0) remain
++               then (usleep (10^6) >> wait (fmap (\x->x-1) remain) pid)
++               else signalProcess sigKILL pid
++          else pass
++
+ -- | The details of any given daemon are fixed by the 'CreateDaemon'
+ -- record passed to 'serviced'.  You can also take a predefined form
+ -- of 'CreateDaemon', such as 'simpleDaemon' below, and set what
+@@ -214,6 +224,7 @@
+                                      -- have a good reason to do
+                                      -- otherwise, leave this as
+                                      -- 'Nothing'.
++  , waitSecs :: Maybe Int   -- ^ How many seconds to wait before sending the sigKILL.  If Nothing wait forever.  Default 4.
+ }
+ 
+ -- | The simplest possible instance of 'CreateDaemon' is 
+@@ -240,7 +251,8 @@
+   syslogOptions = [],
+   pidfileDirectory = Nothing,
+   program = const $ M.forever $ return (),
+-  privilegedAction = return ()
++  privilegedAction = return (),
++  waitSecs = Just 4
+ }
+   
+ 
