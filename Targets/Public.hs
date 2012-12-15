@@ -590,7 +590,7 @@ main _home release =
     --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
     , apt (quantal release "sid" "quantal") "haskell-harp" []
-    , debianize "hashable" []
+    , debianize "hashable" [CabalPin "1.1.2.5"]
     , debianize "hashed-storage" []
     , P.Package { P.name = "haskell-haskeline"
                 , P.spec = Debianize (Hackage "haskeline")
