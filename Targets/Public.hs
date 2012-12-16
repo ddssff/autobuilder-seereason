@@ -954,7 +954,7 @@ happstack release =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-acid-state"
                 , P.spec = Debianize (Hackage "acid-state")
-                , P.flags = [P.DebVersion "0.8.1-1~hackage1"] }
+                , P.flags = [] }
     ]
 
 -- | We need new releases of all the conduit packages before we can move
