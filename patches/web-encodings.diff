@@ -1,0 +1,11 @@
+--- old/web-encodings.cabal	2012-01-20 06:47:07.000000000 -0800
++++ new/web-encodings.cabal	2012-01-20 08:55:12.256222810 -0800
+@@ -22,7 +22,7 @@
+                      old-locale >= 1.0.0.1 && < 1.1,
+                      bytestring >= 0.9.1.4 && < 0.10,
+                      text >= 0.11 && < 0.12,
+-                     failure >= 0.0.0 && < 0.2,
++                     failure >= 0.0.0 && < 0.3,
+                      directory >= 1 && < 1.2
+     exposed-modules: Web.Encodings
+                      Web.Encodings.MimeHeader,

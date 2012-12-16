@@ -1,0 +1,14 @@
+--- haskell-unicode-properties-3.2.0.0/Data/Char/Properties/MiscData.hs~	2011-12-04 10:25:17.000000000 -0800
++++ haskell-unicode-properties-3.2.0.0/Data/Char/Properties/MiscData.hs	2011-12-04 11:25:53.000000000 -0800
+@@ -1,4 +1,3 @@
+-{-# OPTIONS -fvia-C #-}
+ module Data.Char.Properties.MiscData where
+ {
+ 	import Data.Char.Properties.PrivateData;
+--- haskell-unicode-properties-3.2.0.0/Data/Char/Properties/CaseData.hs~	2011-12-04 10:25:17.000000000 -0800
++++ haskell-unicode-properties-3.2.0.0/Data/Char/Properties/CaseData.hs	2011-12-04 11:24:00.000000000 -0800
+@@ -1,4 +1,3 @@
+-{-# OPTIONS -fvia-C #-}
+ module Data.Char.Properties.CaseData where
+ {
+ 	import Data.Map;

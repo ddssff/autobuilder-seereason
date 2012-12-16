@@ -1,0 +1,46 @@
+--- nano-hmac/nano-hmac.cabal.orig	2011-08-14 09:25:43.000000000 -0700
++++ nano-hmac/nano-hmac.cabal	2011-09-10 14:24:25.234226579 -0700
+@@ -20,8 +20,8 @@
+   else
+     build-depends:     base < 3
+   exposed-modules:     Data.Digest.OpenSSL.HMAC
+-  ghc-options:         -Wall -Werror -O2 -fvia-C
++  ghc-options:         -Wall -Werror -O2
+   extensions:          ForeignFunctionInterface, BangPatterns, CPP
+   includes:            openssl/hmac.h
+-  extra-libraries:     crypto ssl
++  extra-libraries:     crypto++ ssl
+ 
+--- old/Data/Digest/OpenSSL/HMAC.hsc	2011-09-16 16:39:39.603631778 -0700
++++ new/Data/Digest/OpenSSL/HMAC.hsc	2011-09-16 13:57:55.000000000 -0700
+@@ -35,8 +35,11 @@
+ 
+ import qualified Data.ByteString as B
+ import qualified Data.ByteString.Unsafe as BU
+-import Foreign
++import System.IO.Unsafe
+ import Foreign.C.Types
++import Foreign.Ptr
++import Foreign.Storable
++import Data.Word
+ import Numeric (showHex)
+ 
+ #include "openssl/hmac.h"
+--- old/Data/Digest/OpenSSL/HMAC.hsc	2012-01-20 06:44:45.000000000 -0800
++++ new/Data/Digest/OpenSSL/HMAC.hsc	2012-01-20 10:35:41.337161457 -0800
+@@ -103,13 +103,13 @@
+        what else was I going to do?
+     -}
+     where
+-      go :: (Storable a, Integral a) => Ptr a -> Int -> [String] -> IO String
++      go :: (Storable a, Integral a, Show a) => Ptr a -> Int -> [String] -> IO String
+       go !q !n acc
+           | n >= len  = return $ concat (reverse acc)
+           | otherwise = do w <- peekElemOff q n
+                            go q (n+1) (draw w : acc)
+ 
+-      draw :: (Integral a) => a -> String
++      draw :: (Integral a, Show a) => a -> String
+       draw w = case showHex w [] of
+                  [x] -> ['0', x]
+                  x   -> x

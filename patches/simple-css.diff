@@ -1,0 +1,161 @@
+--- old/simple-css.cabal	2012-07-10 07:12:19.000000000 -0700
++++ new/simple-css.cabal	2012-07-10 09:49:49.394977221 -0700
+@@ -26,7 +26,7 @@
+   Build-Depends:
+         base >= 4, base < 5, 
+         unordered-containers >= 0.1.1, hashable >= 1.1.1.0,
+-        language-css >= 0.0.2, blaze-html >= 0.4  
++        language-css >= 0.0.2, blaze-html >= 0.5, blaze-markup >= 0.5.1
+   Hs-Source-Dirs:      src/
+   Exposed-Modules:
+         SimpleCss
+--- old/src/SimpleCss.hs	2012-03-25 07:53:41.000000000 -0700
++++ new/src/SimpleCss.hs	2012-03-25 14:43:54.789176546 -0700
+@@ -20,7 +20,7 @@
+ 
+ --import qualified Data.Map as M
+ import Data.Hashable
+-import qualified Data.HashMap.Lazy as H
++import qualified Data.HashMap.Lazy as HM
+ 
+ import qualified Text.Blaze as H
+ import qualified Text.Blaze.Html5 as H
+@@ -135,11 +135,11 @@
+ blazeSpec = HtmlSpec
+     (blazeTag H.div)
+     (blazeTag H.span)
+-    (\href -> blazeTag (H.a H.! HA.href (H.stringValue href)))
+-    (\s x -> x H.! HA.class_ (H.stringValue s))
++    (\href -> blazeTag (H.a H.! HA.href (H.toValue href)))
++    (\s x -> x H.! HA.class_ (H.toValue s))
+ 
+ blazeTag tag xs
+-    | null xs   = tag $ H.string ""
++    | null xs   = tag $ H.toHtml ""
+     | otherwise = tag $ foldl1 (>>) xs
+ 
+ -------------------------------------------------------------------------
+@@ -149,7 +149,7 @@
+     deriving (Show, Eq, Ord)
+ 
+ type ClassId    = String
+-type ClassTable = H.HashMap Rule ClassId
++type ClassTable = HM.HashMap Rule ClassId
+ 
+ data CssTag a = DivTag | SpanTag | ATag Href | Prim a
+ 
+@@ -171,7 +171,7 @@
+ 
+ -- class names table
+ classTable :: [Rule] -> ClassTable
+-classTable = H.fromList . flip zip ids . nub
++classTable = HM.fromList . flip zip ids . nub
+     where ids = map (('c' : ). show) [0 ..]  
+           phi id (a, b) = (b, (id, a))
+  
+@@ -245,7 +245,7 @@
+ -- print ruleSets
+ ppRuleSets :: ClassTable -> [RuleSet]
+ ppRuleSets = ((uncurry $ flip toRuleSet) =<< ) 
+-    . sortOn snd . H.toList
++    . sortOn snd . HM.toList
+ 
+ 
+ toRuleSet :: String -> Rule -> [RuleSet]
+@@ -260,7 +260,7 @@
+ ppHtml :: HtmlSpec a -> ClassTable -> TagTree a -> a
+ ppHtml spec table (TagTree (CssNode tag rules) xs) = 
+     setAttrs spec attrs next
+-    where attrs = map (maybe [] id . flip H.lookup table) rules
++    where attrs = map (maybe [] id . flip HM.lookup table) rules
+           next  = case tag of
+                     Prim a    -> a
+                     DivTag    -> divTag  spec next'
+--- old/src/SimpleCss/Tricks/Shortcuts/Html.hs	2012-10-12 10:38:26.000000000 -0700
++++ new/src/SimpleCss/Tricks/Shortcuts/Html.hs	2012-10-12 11:02:38.474180790 -0700
+@@ -19,7 +19,7 @@
+ 
+ -- html-elements
+ 
+-textTag tag = prim . tag . H.string
++textTag tag = prim . tag . H.toHtml
+ 
+ -- | @p@ tag 
+ p :: String -> Css H.Html
+@@ -37,7 +37,7 @@
+ --
+ -- * text
+ a :: String -> String -> Css H.Html
+-a href text = prim $ H.a H.! HA.href (H.stringValue href) $ H.string text
++a href text = prim $ H.a H.! HA.href (H.toValue href) $ H.toHtml text
+ 
+ -- headers
+ 
+@@ -73,7 +73,7 @@
+ --
+ -- * @src@ atribute value
+ img :: String -> String -> Css H.Html
+-img alt src = prim $ H.img H.! HA.src (H.stringValue src) H.! HA.alt (H.stringValue alt)
++img alt src = prim $ H.img H.! HA.src (H.toValue src) H.! HA.alt (H.toValue alt)
+ 
+ 
+ -- | @ul@ tag
+@@ -85,7 +85,7 @@
+ ol = ls H.ol
+ 
+ -- lists
+-ls constr = prim . constr . foldl1 (>>) . map (H.li . H.string)
++ls constr = prim . constr . foldl1 (>>) . map (H.li . H.toHtml)
+ 
+ 
+ -- | @ul@ tag with links
+@@ -102,7 +102,7 @@
+ 
+ 
+ als constr = prim . constr . foldl1 (>>) . map (H.li . setA)
+-    where setA (href, name) = H.a H.! HA.href (H.stringValue href) $ H.string name
++    where setA (href, name) = H.a H.! HA.href (H.toValue href) $ H.toHtml name
+ 
+ 
+ 
+@@ -121,15 +121,15 @@
+     case h of
+         Just x  -> tr H.th x >> trs
+         Nothing -> trs
+-    where tr f x  = H.tr $ foldl (>>) (return ()) $ map (f . H.string) x
++    where tr f x  = H.tr $ foldl (>>) (return ()) $ map (f . H.toHtml) x
+           trs     = foldl1 (>>) $ map (tr H.td) rs   
+ 
+ 
+ 
+ encoding :: String -> H.Html
+-encoding str = H.meta H.! HA.httpEquiv (H.stringValue "Content-Type")
+-                      H.! HA.content (H.stringValue "text/html")
+-                      H.! HA.charset (H.stringValue str)
++encoding str = H.meta H.! HA.httpEquiv (H.toValue "Content-Type")
++                      H.! HA.content (H.toValue "text/html")
++                      H.! HA.charset (H.toValue str)
+ 
+ 
+ -- | writes css and htmls to files
+@@ -162,16 +162,16 @@
+ 
+ linkCss :: String -> H.Html
+ linkCss cssFile = 
+-    H.link H.! HA.rel   (H.stringValue "stylesheet")
+-           H.! HA.type_ (H.stringValue "text/css") 
+-           H.! HA.href  (H.stringValue cssFile)
++    H.link H.! HA.rel   (H.toValue "stylesheet")
++           H.! HA.type_ (H.toValue "text/css") 
++           H.! HA.href  (H.toValue cssFile)
+ 
+ -- | genereates html filenames and head's sublelements from list of titles
+ initHtmls :: [String] -> [(String, H.Html)]
+ initHtmls names = zip (map (++ ".html") names) $ map fromTitle names
+ 
+ fromTitle :: String -> H.Html
+-fromTitle title = encoding "UTF-8" >> (H.title $ H.string title)
++fromTitle title = encoding "UTF-8" >> (H.title $ H.toHtml title)
+ 
+ 
+ 

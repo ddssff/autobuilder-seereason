@@ -1,0 +1,10 @@
+--- language-javascript-0.5.4/debian/control~	2012-07-29 17:42:20.055247337 -0700
++++ language-javascript-0.5.4/debian/control	2012-07-29 18:20:09.983238576 -0700
+@@ -7,6 +7,7 @@
+                , cdbs
+                , ghc
+                , ghc-prof
++	       , happy
+                , libghc-array-dev (>= 0.3) | ghc
+                , libghc-array-dev (<< 0.5) | ghc
+                , libghc-array-prof (>= 0.3) | ghc-prof

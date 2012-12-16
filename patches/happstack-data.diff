@@ -1,0 +1,11 @@
+--- old/happstack-data.cabal	2012-04-16 09:55:33.000000000 -0700
++++ new/happstack-data.cabal	2012-04-16 10:38:09.015673204 -0700
+@@ -68,7 +68,7 @@
+   Build-Depends:      binary,
+                       bytestring,
+                       containers,
+-                      mtl >= 1.1 && < 2.1,
++                      mtl >= 1.1,
+                       pretty,
+                       syb-with-class-instances-text,
+                       text >= 0.10 && < 0.12,

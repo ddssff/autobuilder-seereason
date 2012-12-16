@@ -1,0 +1,20 @@
+--- old/ghc-7.4.1/debian/control	2012-03-10 10:38:09.000000000 -0800
++++ new/ghc-7.4.1/debian/control	2012-03-22 17:18:51.548720165 -0700
+@@ -6,7 +6,7 @@
+ Standards-Version: 3.9.2
+ Build-Depends:
+   debhelper (>= 7),
+-  libgmp-dev,
++  libgmp-dev | libgmp3-dev,
+   devscripts,
+   ghc,
+   grep-dctrl,
+@@ -31,7 +31,7 @@
+ 
+ Package: ghc
+ Architecture: any
+-Depends: gcc (>= 4:4.2), llvm-3.0 [armel armhf], libgmp-dev, libffi-dev, libbsd-dev, libc6-dev, ${shlibs:Depends}, ${misc:Depends}
++Depends: gcc (>= 4:4.2), llvm-3.0 [armel armhf], libgmp-dev | libgmp3-dev, libffi-dev, libbsd-dev, libc6-dev, ${shlibs:Depends}, ${misc:Depends}
+ Provides: haskell-compiler, ${provided-devs}, ${haskell:Provides}, ${ghci}
+ Replaces: ghc6 (<< 7)
+ Conflicts: ghc6 (<< 7), ${provided-devs}

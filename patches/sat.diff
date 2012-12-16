@@ -1,0 +1,11 @@
+--- sat/sat.cabal.orig	2011-09-10 10:16:05.000000000 -0700
++++ sat/sat.cabal	2011-09-10 14:14:46.784184607 -0700
+@@ -13,7 +13,7 @@
+ description: CNF(Clausal Normal Form) SATisfiability Solver and Generator
+ category: algorithms
+ -- tested-with: ghc-6.4.2
+-build-depends: base
++build-depends: base, random
+ 
+ executable: SATSolve
+ main-is: "SATSolver.hs"

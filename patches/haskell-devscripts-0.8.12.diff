@@ -1,0 +1,45 @@
+--- old/dh_haskell_depends	2012-03-10 09:07:37.000000000 -0800
++++ new/dh_haskell_depends	2012-06-28 11:30:04.266489732 -0700
+@@ -102,6 +102,12 @@
+                     dev=`echo $pkg | sed -e 's/-prof$/-dev/'`
+                     version='(=${binary:Version})'
+                     depends="$dev ${version}, `depends_for_ghc_prof $cfiles`"
++                    # If there is a doc package, add it to the
++                    # Haskell:depends list of the prof package.
++                    doc=`echo $pkg | sed -e 's/-prof$/-doc/'`
++                    for p in `dh_listpackages $args`; do
++                        if [ "$p" = "$doc" ]; then depends="$doc ${version}, $depends"; fi
++                    done
+ 		    echo "haskell:Depends=$depends" >> $sfile.tmp
+                     echo "haskell:Recommends=" >> $sfile.tmp
+                     echo "haskell:Suggests=" >> $sfile.tmp
+--- old/hlibrary.mk	2012-01-04 11:06:45.000000000 -0800
++++ new/hlibrary.mk	2012-07-18 08:50:59.485188897 -0700
+@@ -135,15 +135,15 @@
+ 	$(DEB_SETUP_BIN_NAME) copy --builddir=dist-ghc --destdir=debian/tmp-inst-ghc
+ 
+ debian/extra-depends: debian/tmp-inst-ghc
+-	pkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | sed -r 's,.*: ,,'` ; \
++	pkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | tr -d ' \n' | sed -r 's,^.*:,,'`; \
+ 		dh_haskell_extra_depends $$pkg_config ; \
+ 		rm $$pkg_config
+ 
+ install/libghc-$(CABAL_PACKAGE)-dev:: debian/tmp-inst-ghc debian/extra-depends
+ 	cd debian/tmp-inst-ghc ; find usr/lib/haskell-packages/ghc/lib/ \
+-		\( ! -name "*_p.a" ! -name "*.p_hi" \) \
++		! -type d \( ! -name "*_p.a" ! -name "*.p_hi" \) \
+ 		-exec install -Dm 644 '{}' ../$(notdir $@)/'{}' ';'
+-	pkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | sed -r 's,.*: ,,'`; \
++	pkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | tr -d ' \n' | sed -r 's,^.*:,,'`; \
+ 		$(if $(HASKELL_HIDE_PACKAGES),sed -i 's/^exposed: True$$/exposed: False/' $$pkg_config;) \
+ 		install -Dm 644 $$pkg_config debian/$(notdir $@)/var/lib/ghc/package.conf.d/$$pkg_config; \
+ 		rm -f $$pkg_config
+@@ -156,7 +156,7 @@
+ 
+ install/libghc-$(CABAL_PACKAGE)-prof:: debian/tmp-inst-ghc install/libghc-$(CABAL_PACKAGE)-dev debian/extra-depends
+ 	cd debian/tmp-inst-ghc ; find usr/lib/haskell-packages/ghc/lib/ \
+-		! \( ! -name "*_p.a" ! -name "*.p_hi" \) \
++		! -type d ! \( ! -name "*_p.a" ! -name "*.p_hi" \) \
+ 		-exec install -Dm 644 '{}' ../$(notdir $@)/'{}' ';'
+ 	dh_haskell_provides -p$(notdir $@)
+ 	dh_haskell_depends -p$(notdir $@)

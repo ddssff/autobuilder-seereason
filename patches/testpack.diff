@@ -1,0 +1,30 @@
+--- old/src/Test/HUnit/Tools.hs	2012-10-05 04:45:37.000000000 -0700
++++ new/src/Test/HUnit/Tools.hs	2012-10-05 05:02:50.779290231 -0700
+@@ -99,7 +99,7 @@
+ tests :: Args -> Gen Result -> StdGen -> Int -> Int -> [[String]] -> IO ()
+ tests config gen rnd0 ntest nfail stamps
+   | ntest == maxSuccess config = return ()
+-  | nfail == maxDiscard config = assertFailure $ "Arguments exhausted after " ++ show ntest ++ " tests."
++  | nfail == maxDiscardRatio config = assertFailure $ "Arguments exhausted after " ++ show ntest ++ " tests."
+   | otherwise               =
+       do putStr (configEvery config ntest (arguments result))
+          case ok result of
+@@ -128,7 +128,7 @@
+ >        q "Integer -> Int (safe bounds)" prop_integer_to_int_pass]
+ -}
+ qc2hu :: QC.Testable a => Int -> String -> a -> HU.Test
+-qc2hu maxTest = qccheck (stdArgs {maxSuccess = maxTest, maxDiscard = 20000})
++qc2hu maxTest = qccheck (stdArgs {maxSuccess = maxTest, maxDiscardRatio = 20000})
+ 
+ {- | Run verbose tests.  Example:
+ 
+@@ -174,7 +174,7 @@
+               Just (rnd,_) -> return rnd
+      test MkState{ terminal          = tm
+                  , maxSuccessTests   = maxSuccess args
+-                 , maxDiscardedTests = maxDiscard args
++                 , maxDiscardedTests = maxDiscardRatio args
+                  , computeSize       = case replay args of
+                                          Nothing    -> 
+ d -> (n * maxSize args)
+                                                          `div` maxSuccess args

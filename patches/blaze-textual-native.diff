@@ -1,0 +1,22 @@
+--- x/blaze-textual-native.cabal.orig	2012-01-01 12:22:11.676481147 -0800
++++ x/blaze-textual-native.cabal	2012-01-01 12:22:21.716482151 -0800
+@@ -66,7 +66,7 @@
+ 
+   if impl(ghc >= 6.11)
+     cpp-options: -DINTEGER_GMP
+-    build-depends: integer-gmp >= 0.2 && < 0.4
++    build-depends: integer-gmp >= 0.2
+ 
+   if impl(ghc >= 6.9) && impl(ghc < 6.11)
+     cpp-options: -DINTEGER_GMP
+--- x/Blaze/Text/Int.hs.orig	2012-01-01 12:45:05.136482154 -0800
++++ x/Blaze/Text/Int.hs	2012-01-01 12:45:26.016482025 -0800
+@@ -40,7 +40,7 @@
+ # define PAIR(a,b) (a,b)
+ #endif
+ 
+-integral :: Integral a => a -> Builder
++integral :: (Integral a, Show a) => a -> Builder
+ {-# RULES "integral/Int" integral = bounded :: Int -> Builder #-}
+ {-# RULES "integral/Int8" integral = bounded :: Int8 -> Builder #-}
+ {-# RULES "integral/Int16" integral = bounded :: Int16 -> Builder #-}

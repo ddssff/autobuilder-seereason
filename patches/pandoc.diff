@@ -1,0 +1,69 @@
+--- old/Setup.hs	2012-11-22 06:10:25.000000000 -0800
++++ new/Setup.hs	2012-11-23 06:02:06.600907904 -0800
+@@ -33,10 +33,10 @@
+ 
+ -- | Build man pages from markdown sources in man/
+ makeManPages :: Args -> BuildFlags -> PackageDescription -> LocalBuildInfo -> IO ()
+-makeManPages _ flags _ _ = do
++makeManPages _ flags _ lbi = do
+   let verbosity = fromFlag $ buildVerbosity flags
+   let args = ["--verbose" | verbosity /= silent]
+-  rawSystem ("dist" </> "build" </> "make-pandoc-man-pages" </> "make-pandoc-man-pages")
++  rawSystem (buildDir lbi </> "make-pandoc-man-pages" </> "make-pandoc-man-pages")
+       args >>= exitWith
+ 
+ manpages :: [FilePath]
+--- old/pandoc.cabal	2012-11-22 05:21:28.000000000 -0800
++++ new/pandoc.cabal	2012-11-22 05:26:16.569050073 -0800
+@@ -189,7 +189,7 @@
+   Default:       True
+ Flag blaze_html_0_5
+   Description:   Use blaze-html 0.5 and blaze-markup 0.5
+-  Default:       False
++  Default:       True
+ 
+ Library
+   -- Note: the following is duplicated in all stanzas.
+--- old/src/Text/Pandoc/Readers/Markdown.hs	2012-12-05 20:20:58.459944135 -0800
++++ new/src/Text/Pandoc/Readers/Markdown.hs	2012-12-06 12:44:30.744793336 -0800
+@@ -183,7 +183,7 @@
+   st <- getState
+   let firstPassParser = referenceKey
+                      <|> (if stateStrict st then pzero else noteBlock)
+-                     <|> liftM snd (withRaw codeBlockDelimited)
++                     -- <|> liftM snd (withRaw codeBlockDelimited)
+                      <|> lineClump
+   docMinusKeys <- liftM concat $ manyTill firstPassParser eof
+   setInput docMinusKeys
+@@ -299,13 +299,11 @@
+                    , blockQuote
+                    , hrule
+                    , bulletList
+-                   , orderedList
+                    , htmlBlock
+                    , para
+                    , plain
+                    , nullBlock ]
+-              else [ codeBlockDelimited
+-                   , macro
++              else [ macro
+                    , header 
+                    , table
+                    , codeBlockIndented
+@@ -313,7 +311,6 @@
+                    , blockQuote
+                    , hrule
+                    , bulletList
+-                   , orderedList
+                    , definitionList
+                    , rawTeXBlock
+                    , para
+@@ -922,7 +919,7 @@
+ inlineParsers = [ whitespace
+                 , str
+                 , endline
+-                , code
++                -- , code
+                 , fours
+                 , strong
+                 , emph

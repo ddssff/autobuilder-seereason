@@ -1,0 +1,11 @@
+--- old/happstack-fay.cabal	2012-11-24 06:12:24.000000000 -0800
++++ new/happstack-fay.cabal	2012-11-24 06:33:36.694192699 -0800
+@@ -23,7 +23,7 @@
+                        Happstack.Fay,
+                        Paths_happstack_fay
+   build-depends:       base             > 4 && <5,
+-                       fay              == 0.9.*,
++                       fay              >= 0.9,
+                        fay-jquery       == 0.1.*,
+                        aeson            == 0.6.*,
+                        happstack-server >= 7.0 && <7.2

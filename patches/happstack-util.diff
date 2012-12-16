@@ -1,0 +1,11 @@
+--- old/happstack-util.cabal	2012-04-17 05:38:25.000000000 -0700
++++ new/happstack-util.cabal	2012-04-17 05:53:09.430600945 -0700
+@@ -29,7 +29,7 @@
+                        directory,
+                        extensible-exceptions, 
+                        hslogger >= 1.0.2,
+-                       mtl >= 1.1 && < 2.1,
++                       mtl >= 1.1,
+                        old-locale,
+                        old-time,
+                        parsec < 4,

@@ -1,0 +1,11 @@
+--- old/hslogger.cabal	2011-03-07 07:22:05.000000000 -0800
++++ new/hslogger.cabal	2012-09-17 20:54:27.381422435 -0700
+@@ -42,7 +42,7 @@
+         System.Log.Handler.Growl, System.Log.Handler.Log4jXML,
+         System.Log.Logger
+     Extensions: CPP, ExistentialQuantification
+-    Build-Depends: network < 2.4, mtl
++    Build-Depends: network < 2.5, mtl
+     if !os(windows)
+         Build-Depends: unix
+     if flag(small_base)

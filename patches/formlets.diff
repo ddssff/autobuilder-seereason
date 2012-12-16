@@ -1,0 +1,148 @@
+diff -ru formlets-0.8.orig/formlets.cabal formlets-0.8/formlets.cabal
+--- old/formlets.cabal	2010-12-21 19:08:34.000000000 -0800
++++ new/formlets.cabal	2012-05-21 17:32:06.863265531 -0700
+@@ -21,12 +21,12 @@
+     Description: Choose the even newer, even smaller, split-up base package.
+ 
+ Library
+-  Build-Depends:   haskell98, 
+-                   xhtml, 
++  Build-Depends:   xhtml, 
+                    applicative-extras >= 0.1.7, 
+                    bytestring,
+-                   blaze-html >= 0.2,
+-                   transformers == 0.2.2.0
++                   blaze-html >= 0.5,
++                   blaze-markup,
++                   transformers >= 0.2.2.0
+   if flag(base4)
+     Build-Depends: base >= 4 && < 5, syb
+   else
+diff -ru formlets-0.8.orig/Text/Blaze/Html5/Formlets.hs formlets-0.8/Text/Blaze/Html5/Formlets.hs
+--- old/Text/Blaze/Html5/Formlets.hs	2010-12-21 19:08:34.000000000 -0800
++++ new/Text/Blaze/Html5/Formlets.hs	2012-05-21 17:30:10.513955542 -0700
+@@ -35,34 +35,34 @@
+ --
+ input :: Monad m => Html5Formlet m String
+ input = input' $ \n v -> H.input ! A.type_ "text"
+-                                 ! A.name (H.stringValue n)
+-                                 ! A.id (H.stringValue n)
+-                                 ! A.value (H.stringValue v)
++                                 ! A.name (H.toValue n)
++                                 ! A.id (H.toValue n)
++                                 ! A.value (H.toValue v)
+ 
+ -- | A textarea with optional rows and columns, and an optional value
+ --
+ textarea :: Monad m => Maybe Int -> Maybe Int -> Html5Formlet m String
+-textarea r c = input' $ \n v -> (applyAttrs n H.textarea) (H.string v)
++textarea r c = input' $ \n v -> (applyAttrs n H.textarea) (H.toHtml v)
+   where
+-    applyAttrs n = (! A.name (H.stringValue n)) . rows r . cols c
+-    rows = maybe id $ \x -> (! A.rows (H.stringValue $ show x))
+-    cols = maybe id $ \x -> (! A.cols (H.stringValue $ show x))
++    applyAttrs n = (! A.name (H.toValue n)) . rows r . cols c
++    rows = maybe id $ \x -> (! A.rows (H.toValue $ show x))
++    cols = maybe id $ \x -> (! A.cols (H.toValue $ show x))
+ 
+ -- | A password field with an optional value
+ --
+ password :: Monad m => Html5Formlet m String
+ password = input' $ \n v -> H.input ! A.type_ "password"
+-                                    ! A.name (H.stringValue n)
+-                                    ! A.id (H.stringValue n)
+-                                    ! A.value (H.stringValue v)
++                                    ! A.name (H.toValue n)
++                                    ! A.id (H.toValue n)
++                                    ! A.value (H.toValue v)
+ 
+ -- | A hidden input field
+ --
+ hidden :: Monad m => Html5Formlet m String
+ hidden = input' $ \n v -> H.input ! A.type_ "hidden"
+-                                  ! A.name (H.stringValue n)
+-                                  ! A.id (H.stringValue n)
+-                                  ! A.value (H.stringValue v)
++                                  ! A.name (H.toValue n)
++                                  ! A.id (H.toValue n)
++                                  ! A.value (H.toValue v)
+ 
+ -- | A validated integer component
+ --
+@@ -73,8 +73,8 @@
+ --
+ file :: Monad m => Html5Form m File
+ file = inputFile $ \n -> H.input ! A.type_ "file"
+-                                 ! A.name (H.stringValue n)
+-                                 ! A.id (H.stringValue n)
++                                 ! A.name (H.toValue n)
++                                 ! A.id (H.toValue n)
+ 
+ -- | A checkbox with an optional default value
+ --
+@@ -84,13 +84,13 @@
+     asBool (Just _) = Success True
+     asBool Nothing = Success False
+     html (Just True) n = H.input ! A.type_ "checkbox" 
+-                                 ! A.name (H.stringValue n)
+-                                 ! A.id (H.stringValue n)
++                                 ! A.name (H.toValue n)
++                                 ! A.id (H.toValue n)
+                                  ! A.value "on"
+                                  ! A.checked "checked"
+     html _ n = H.input ! A.type_ "checkbox"
+-                       ! A.name (H.stringValue n)
+-                       ! A.id (H.stringValue n)
++                       ! A.name (H.toValue n)
++                       ! A.id (H.toValue n)
+                        ! A.value "on"
+ 
+ -- | A radio choice
+@@ -102,19 +102,19 @@
+   where
+     makeRadio name selected ((value, label'), idx) = do
+         applyAttrs (radio' name value id')
+-        H.label ! A.for (H.stringValue id')
++        H.label ! A.for (H.toValue id')
+                 ! A.class_ "radio"
+-                $ H.string label'
++                $ H.toHtml label'
+       where
+         applyAttrs | selected == value = (! A.checked "checked")
+                    | otherwise = id
+         id' = name ++ "_" ++ show idx
+ 
+     radio' n v i = H.input ! A.type_ "radio"
+-                           ! A.name (H.stringValue n)
+-                           ! A.id (H.stringValue i)
++                           ! A.name (H.toValue n)
++                           ! A.id (H.toValue i)
+                            ! A.class_ "radio"
+-                           ! A.value (H.stringValue v)
++                           ! A.value (H.toValue v)
+ 
+ -- | An radio choice for Enums
+ --
+@@ -129,7 +129,7 @@
+ -- | A label
+ --
+ label :: Monad m => String -> Form H.Html m ()
+-label = xml . H.label . H.string
++label = xml . H.label . H.toHtml
+ 
+ -- | This is a helper function to generate select boxes
+ --
+@@ -138,11 +138,11 @@
+            -> String              -- ^ The value that is selected
+            -> H.Html
+ selectHtml choices name selected =
+-    H.select ! A.name (H.stringValue name)
++    H.select ! A.name (H.toValue name)
+              $ mconcat $ map makeChoice choices
+   where
+     makeChoice (value, label') = applyAttrs $
+-        H.option ! A.value (H.stringValue value) $ label'
++        H.option ! A.value (H.toValue value) $ label'
+       where
+         applyAttrs | selected == value = (! A.selected "selected")
+                    | otherwise = id

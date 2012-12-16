@@ -1,0 +1,11 @@
+--- old/happstack-dot-com.cabal	2012-12-06 08:32:56.000000000 -0800
++++ new/happstack-dot-com.cabal	2012-12-06 08:40:39.773574517 -0800
+@@ -18,7 +18,7 @@
+ 
+ Flag backups
+      Description: enable the backups executable (currently disabled by default do to wacky dependencies not on hackage)
+-     Default: False
++     Default: True
+ 
+ Executable happstack-dot-com-server
+   Main-is: Main.hs
