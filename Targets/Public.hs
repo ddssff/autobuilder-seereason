@@ -159,6 +159,7 @@ main _home release =
                 , P.spec = Debianize (Patch (Hackage "attoparsec-text") $(embedFile "patches/attoparsec-text.diff"))
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
     , debianize "attoparsec-text-enumerator" []
+    , debianize "base16-bytestring" []
     , debianize "base-unicode-symbols" []
     , debianize "bimap" [P.DebVersion "0.2.4-1~hackage1"]
     , debianize "data-default" []
