@@ -1,6 +1,6 @@
 --- old/mastermind.cabal	2012-11-26 12:11:40.277002455 -0800
 +++ new/mastermind.cabal	2012-11-26 12:11:32.241002885 -0800
-@@ -22,7 +22,7 @@
+@@ -22,10 +22,10 @@
                       acid-state       == 0.8.*,
                       aeson            == 0.6.*,
                       containers       == 0.4.*,
@@ -9,6 +9,10 @@
                       fay-jquery       == 0.1.*,
                       happstack-fay    == 0.1.*,
                       happstack-server == 7.0.*,
+                      mtl              >= 2.0 && < 2.2,
+                      random           == 1.0.*,
+-                     safecopy         == 0.7.*
++                     safecopy         >= 0.7 
 --- old/Setup.hs	2012-11-26 11:17:28.000000000 -0800
 +++ new/Setup.hs	2012-11-26 19:33:40.367586489 -0800
 @@ -8,6 +8,7 @@
