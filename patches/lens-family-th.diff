@@ -1,0 +1,11 @@
+--- old/lens-family-th.cabal	2012-12-16 09:51:52.000000000 -0800
++++ new/lens-family-th.cabal	2012-12-16 10:01:56.075736246 -0800
+@@ -27,7 +27,7 @@
+ 
+ library
+   exposed-modules:     Lens.Family.TH, Lens.Family2.TH, Lens.Family.THCore
+-  build-depends:       base ==4.*, template-haskell >= 2.5 && < 2.8
++  build-depends:       base ==4.*, template-haskell >= 2.5
+ 
+ 
+ source-repository head

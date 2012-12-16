@@ -517,20 +517,7 @@ main _home release =
     , debianize "tagsoup" []
     , debianize "tar" []
     , debianize "terminfo" [P.ExtraDep "libncurses5-dev", P.ExtraDevDep "libncurses5-dev"]
-    , debianize "test-framework"
-                    [ {- P.Patch . B.pack. unlines $
-                      [ "--- old/Test/Framework/Runners/Console/Run.hs\t2012-01-20 11:09:22.000000000 -0800"
-                      , "+++ new/Test/Framework/Runners/Console/Run.hs\t2012-01-20 11:34:42.187163011 -0800"
-                      , "@@ -18,7 +18,7 @@"
-                      , " "
-                      , " import Text.PrettyPrint.ANSI.Leijen"
-                      , " "
-                      , "-import Data.Monoid"
-                      , "+import Data.Monoid (Monoid(..))"
-                      , " "
-                      , " import Control.Arrow (second, (&&&))"
-                      , " import Control.Monad (unless)" ]
-                    , P.ExtraDep "libghc-random-prof" -} ]
+    , debianize "test-framework" []
     , debianize "test-framework-hunit" []
     , debianize "test-framework-quickcheck" []
     , debianize "test-framework-quickcheck2" []
@@ -850,7 +837,7 @@ happstack release =
                 , P.flags = [] }
 
     , P.Package { P.name = "haskell-happstack-jmacro"
-                , P.spec = Debianize (Hackage "happstack-jmacro")
+                , P.spec = Debianize (Patch (Hackage "happstack-jmacro") (asciiToString $(embedFile "patches/happstack-jmacro.diff")))
                 , P.flags = [] }
     , debianize "jmacro-rpc-happstack" []
     , debianize "jmacro-rpc" []
@@ -870,15 +857,14 @@ happstack release =
                 , P.spec = Debianize (Hackage "happstack-static-routing")
                 , P.flags = [P.DebVersion "0.3.1-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-util"
-                , P.spec = Debianize (Patch
-                                      (Hackage "happstack-util") (asciiToString $(embedFile "patches/happstack-util.diff")))
+                , P.spec = Debianize (Patch (Hackage "happstack-util") (asciiToString $(embedFile "patches/happstack-util.diff")))
                 , P.flags = [P.DebVersion "6.0.3-1"] }
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
     , P.Package { P.name = "haskell-hsp"
                 , P.spec = Debianize (Hackage "hsp")
-                , P.flags = quantal release [CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] [CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] }
+                , P.flags = quantal release [P.DebVersion "0.7.1-1~hackage1", CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] [CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] }
     , P.Package { P.name = "haskell-hsx"
                 , P.spec = Debianize (Hackage "hsx")
                 , P.flags = [P.DebVersion "0.10.4-1~hackage1"] }
@@ -1174,7 +1160,9 @@ algebra release = P.Packages (singleton "algebra")
     , debianize "lens" []
     , debianize "lens-family-core" []
     , debianize "lens-family" []
-    , debianize "lens-family-th" []
+    , P.Package { P.name = "haskell-lens-family-th"
+                , P.spec = Debianize (Patch (Hackage "lens-family-th") (asciiToString $(embedFile "patches/lens-family-th.diff")))
+                , P.flags = [] }
     , P.Package { P.name = "haskell-linear"
                 , P.spec = Debianize (Hackage "linear")
                 , P.flags = [] }
