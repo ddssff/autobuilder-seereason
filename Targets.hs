@@ -101,10 +101,13 @@ applyDepMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
       mappings = [P.MapDep "cryptopp" (deb "libcrypto++-dev"),
+                  P.MapDep "crypto" (deb "libcrypto++-dev"),
                   P.MapDep "crypt" (deb "libc6-dev"),
                   P.MapDep "GL" (deb "libgl1-mesa-dev"),
                   P.MapDep "GLU" (deb "libglu1-mesa-dev"),
-                  P.MapDep "glut" (deb "freeglut3-dev")]
+                  P.MapDep "glut" (deb "freeglut3-dev"),
+                  P.MapDep "m" (deb "libc6-dev"),
+                  P.MapDep "freetype" (deb "libfreetype6-dev")]
       deb = BinPkgName
 
 applyEpochMap :: P.Packages -> P.Packages

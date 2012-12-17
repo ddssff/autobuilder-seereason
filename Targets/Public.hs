@@ -228,7 +228,9 @@ main _home release =
     , debianize "data-accessor" []
     , debianize "data-accessor-template" []
     , debianize "data-default" []
-    , patch (debianize "data-object" []) $(embedFile "patches/data-object.diff")
+    , P.Package { P.name = "haskell-data-object"
+                , P.spec = Debianize (Patch (Hackage "data-object") $(embedFile "patches/data-object.diff"))
+                , P.flags = [] }
     , debianize "dataenc" []
     , debianize "Diff" []
     , apt (quantal release "sid" "quantal") "haskell-digest" []
@@ -325,11 +327,14 @@ main _home release =
                 , P.flags = [] }
 -}
     , debianize "file-embed" []
+    , debianize "indents" []
+    , debianize "either" []
     , P.Package { P.name = "haskell-formlets"
                 , P.spec = Debianize (Patch (Hackage "formlets") $(embedFile "patches/formlets.diff"))
                 , P.flags = [P.DebVersion "0.8-1~hackage1"] }
-    , patch (debianize "gd"  [ P.ExtraDevDep "libgd-dev", P.ExtraDevDep "libm-dev", P.ExtraDevDep "libfreetype-dev" ])
-                    $(embedFile "patches/gd.diff")
+    , P.Package { P.name = "haskell-gd"
+                , P.spec = Debianize (Patch (Hackage "gd") $(embedFile "patches/gd.diff"))
+                , P.flags = [ P.ExtraDevDep "libgd-dev", P.ExtraDevDep "libm-dev", P.ExtraDevDep "libfreetype-dev" ] }
     -- , debianize "gd" [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
     , debianize "cabal-macosx" []
     , apt (quantal release "sid" "quantal") "haskell-ghc-paths" [] -- for leksah
@@ -377,8 +382,9 @@ main _home release =
     , debianize "HPDF" []
     , debianize "hs-bibutils" []
     , apt "sid" "haskell-hsemail" (quantal release [] [P.DebVersion "1.7.1-2build2"])
-    , patch (debianize "HsOpenSSL" [ P.ExtraDevDep "libssl-dev", P.ExtraDevDep "libcrypto++-dev" ])
-                    $(embedFile "patches/HsOpenSSL.diff")
+    , P.Package { P.name = "haskell-hsopenssl"
+                , P.spec = Debianize (Patch (Hackage "HsOpenSSL") $(embedFile "patches/HsOpenSSL.diff"))
+                , P.flags = [ P.ExtraDevDep "libssl-dev", P.ExtraDevDep "libcrypto++-dev" ] }
     , debianize "HsSyck" (quantal release [P.DebVersion "0.50-2"] [P.DebVersion "0.50-2build2"])
     , debianize "HStringTemplate" []
     , P.Package { P.name = "haskell-html-entities"
@@ -406,8 +412,9 @@ main _home release =
     , P.Package { P.name = "haskell-pointed"
                 , P.spec = Debianize (Hackage "pointed")
                 , P.flags = [] }
-    , patch (debianize "logic-TPTP" [ P.ExtraDep "alex", P.ExtraDep "happy" ])
-                           $(embedFile "patches/logic-TPTP.diff")
+    , P.Package { P.name = "haskell-logic-tptp"
+                , P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff"))
+                , P.flags = [ P.ExtraDep "alex", P.ExtraDep "happy" ] }
     , apt "sid" "haskell-maybet" []
     , P.Package { P.name = "haskell-mime"
                 , P.spec = Darcs "http://src.seereason.com/haskell-mime"
@@ -434,9 +441,12 @@ main _home release =
     , apt (quantal release "sid" "quantal") "haskell-monoid-transformer" []
     , debianize "murmur-hash" []
     , quantal release (apt "sid" "haskell-mwc-random" []) (debianize "mwc-random" [])
-    , patch (debianize "nano-hmac" (quantal release [P.DebVersion "0.2.0ubuntu1"] []))
-                            $(embedFile "patches/nano-hmac.diff")
-    , patch (debianize "openid" []) $(embedFile "patches/openid.diff")
+    , P.Package { P.name = "haskell-nano-hmac"
+                , P.spec = Debianize (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff"))
+                , P.flags = quantal release [P.DebVersion "0.2.0ubuntu1"] [] }
+    , P.Package { P.name = "haskell-openid"
+                , P.spec = Debianize (Patch (Hackage "openid") $(embedFile "patches/openid.diff"))
+                , P.flags = [] }
     , P.Package { P.name = "haskell-operational"
                 , P.spec = Debianize (Hackage "operational")
                 , P.flags = [P.OmitLTDeps] }
@@ -482,7 +492,9 @@ main _home release =
     , debianize "RJson" []
     , debianize "safe" [P.DebVersion "0.3.3-2"]
     , debianize "safecopy" []
-    , patch (debianize "sat" [ P.DebVersion "1.1.1-1~hackage1" ]) $(embedFile "patches/sat.diff")
+    , P.Package { P.name = "haskell-sat"
+                , P.spec = Debianize (Patch (Hackage "sat") $(embedFile "patches/sat.diff"))
+                , P.flags = [ P.DebVersion "1.1.1-1~hackage1" ] }
     , debianize "semigroups" []
     , debianize "sendfile" []
     , P.Package { P.name = "haskell-set-extra"
@@ -493,7 +505,7 @@ main _home release =
     , debianize "shakespeare" []
     , debianize "shakespeare-css" []
     , P.Package { P.name = "haskell-simple-css",
-                  P.spec = Patch (Debianize (Hackage "simple-css")) $(embedFile "patches/simple-css.diff")
+                  P.spec = Debianize (Patch (Hackage "simple-css") $(embedFile "patches/simple-css.diff"))
                 , P.flags = [P.DebVersion "0.0.4-1~hackage1"] }
     , debianize "SMTPClient" [P.DebVersion "1.0.4-3"]
     , debianize "socks" []
@@ -530,12 +542,14 @@ main _home release =
     , debianize "th-lift" []
     , debianize "transformers-base" (quantal release [P.DebVersion "0.4.1-2"] [P.DebVersion "0.4.1-2build2"])
     , debianize "unicode-names" [P.DebVersion "3.2.0.0-1~hackage1"]
-    , patch (debianize "unicode-properties" [ P.DebVersion "3.2.0.0-1~hackage1" ]) $(embedFile "patches/unicode-properties.diff")
+    , P.Package { P.name = "haskell-unicode-properties"
+                , P.spec = Debianize (Patch (Hackage "unicode-properties") $(embedFile "patches/unicode-properties.diff"))
+                , P.flags = [ P.DebVersion "3.2.0.0-1~hackage1" ] }
     , debianize "uniplate" []
     -- , apt "sid" "haskell-unix-compat" []
     , debianize "cmdargs" []
     , P.Package { P.name = "haskell-language-javascript",
-                  P.spec = Patch (Debianize (Hackage "language-javascript")) $(embedFile "patches/language-javascript.diff"),
+                  P.spec = Debianize (Patch (Hackage "language-javascript") $(embedFile "patches/language-javascript.diff")),
                    P.flags = []
                  }
     , debianize "utf8-light" (quantal release [P.DebVersion "0.4.0.1-2build1"] [P.DebVersion "0.4.0.1-2build3"])
@@ -570,18 +584,24 @@ main _home release =
     -- remove this pin when a new hackage version comes out to trump it.
     , debianize "vector" []
     , debianize "vector-algorithms" []
-    , patch (debianize "virthualenv" []) $(embedFile "patches/virthualenv.diff")
+    , P.Package { P.name = "haskell-virthualenv"
+                , P.spec = Debianize (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff"))
+                , P.flags =  [] }
     , debianize "vault" []
     , P.Package { P.name = "haskell-wai"
                 , P.spec = Debianize (Hackage "wai")
                 , P.flags = [] }
-    , patch (debianize "web-encodings" []) $(embedFile "patches/web-encodings.diff")
+    , P.Package { P.name = "haskell-web-encodings"
+                , P.spec = Debianize (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff"))
+                , P.flags = [] }
     , debianize "boomerang" []
     , apt (quantal release "sid" "quantal") "haskell-xml" []
     , debianize "cookie" []
     , debianize "lifted-base" []
     , debianize "system-filepath" []
-    , patch (debianize "xml-enumerator" []) $(embedFile "patches/xml-enumerator.diff")
+    , P.Package { P.name = "haskell-xml-enumerator"
+                , P.spec = Debianize (Patch (Hackage "xml-enumerator") $(embedFile "patches/xml-enumerator.diff"))
+                , P.flags = [] }
     , debianize "xml-types" []
     , debianize "xss-sanitize" (quantal release [] [P.DebVersion "0.3.2-1build1"])
     , debianize "yaml-light" (quantal release [P.DebVersion "0.1.4-2"] [P.DebVersion "0.1.4-2build1"])
@@ -1027,7 +1047,7 @@ jsonb = P.Packages (singleton "jsonb") $
 opengl release = P.Packages (singleton "opengl") $
     [ debianize "OpenGL" []
 {-  , P.Package { P.name = "haskell-vacuum-opengl"
-                , P.spec = Patch (Debianize (Hackage "vacuum-opengl"))
+                , P.spec =  Debianize (Patch (Hackage "vacuum-opengl"))
                                  (unlines
                                   [ "--- old/System/Vacuum/OpenGL/Server.hs\t2012-03-25 14:26:14.000000000 -0700"
                                   , "+++ new/System/Vacuum/OpenGL/Server.hs\t2012-03-25 14:32:17.027953252 -0700"
@@ -1183,7 +1203,9 @@ agda _release =
 
 other _release =
     [ apt "sid" "darcs" []
-    , patch (debianize "aeson-native" []) $(embedFile "patches/aeson-native.diff")
+    , P.Package { P.name = "haskell-aeson-native"
+                , P.spec = Debianize (Patch (Hackage "aeson-native") $(embedFile "patches/aeson-native.diff"))
+                , P.flags = [] }
     , apt "sid" "haskell-binary-shared" [] -- for leksah
     , debianize "cairo" [P.ExtraDep "haskell-gtk2hs-buildtools-utils"] -- for leksah
     , debianize "cabal-dev" [] -- build-env for cabal
