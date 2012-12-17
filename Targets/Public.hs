@@ -328,6 +328,7 @@ main _home release =
 -}
     , debianize "file-embed" []
     , debianize "indents" []
+    , debianize "concatenative" []
     , debianize "either" []
     , P.Package { P.name = "haskell-formlets"
                 , P.spec = Debianize (Patch (Hackage "formlets") $(embedFile "patches/formlets.diff"))
