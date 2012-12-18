@@ -9,3 +9,20 @@
  
  Executable             clckwrks-dot-com-server
    main-is:             Main.hs
+--- old/clckwrks-dot-com.cabal	2012-12-11 07:42:24.000000000 -0800
++++ new/clckwrks-dot-com.cabal	2012-12-18 08:34:20.391694821 -0800
+@@ -22,12 +22,12 @@
+ Executable             clckwrks-dot-com-server
+   main-is:             Main.hs
+   ghc-options:         -threaded -O2
+-  build-depends:       base                     > 4 && <5,
++  build-depends:       base                     >= 4,
+                        clckwrks                 == 0.13.*,
+                        clckwrks-theme-clckwrks  == 0.2.*,
+                        clckwrks-plugin-bugs     == 0.3.*,
+                        clckwrks-plugin-media    == 0.3.*,
+-                       containers               == 0.4.*,
++                       containers               >= 0.4,
+                        happstack-server         >= 7.0 && < 7.2,
+                        hsp                      == 0.7.*,
+                        mtl                      >= 2.0 && < 2.2,

@@ -104,7 +104,7 @@ digestiveFunctors =
     [ debianize "digestive-functors" [P.CabalPin "0.2.1.0"]  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
     -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
     , P.Package { P.name = "haskell-digestive-functors-happstack"
-                , P.spec = Debianize (Hackage "digestive-functors-happstack")
+                , P.spec = Debianize (Patch (Hackage "digestive-functors-happstack") $(embedFile "patches/digestive-functors-happstack.diff"))
                 , P.flags = [P.CabalPin "0.1.1.5", P.DebVersion "0.1.1.5-1~hackage1"] }
     , P.Package { P.name = "haskell-digestive-functors-hsp"
                 , P.spec = Debianize (Darcs (repo ++ "/digestive-functors-hsp"))
@@ -163,7 +163,10 @@ main _home release =
     , debianize "base-unicode-symbols" []
     , debianize "bimap" [P.DebVersion "0.2.4-1~hackage1"]
     , debianize "data-default" []
-    , debianize "template-default" []
+    , P.Package { P.name = "haskell-template-default"
+                , P.spec = Debianize (quantal release (Hackage "template-default")
+                                                      (Patch (Hackage "template-default") $(embedFile "patches/template-default.diff")))
+                , P.flags = [] }
     , debianize "bitmap" []
     , debianize "bitset" [P.DebVersion "1.1-1~hackage1"]
     , apt (quantal release "sid" "quantal") "haskell-bytestring-nums" []
@@ -335,7 +338,7 @@ main _home release =
                 , P.flags = [P.DebVersion "0.8-1~hackage1"] }
     , P.Package { P.name = "haskell-gd"
                 , P.spec = Debianize (Patch (Hackage "gd") $(embedFile "patches/gd.diff"))
-                , P.flags = [ P.ExtraDevDep "libgd-dev", P.ExtraDevDep "libm-dev", P.ExtraDevDep "libfreetype-dev" ] }
+                , P.flags = [ P.ExtraDevDep "libgd-dev", P.ExtraDevDep "libc6-dev", P.ExtraDevDep "libfreetype6-dev" ] ++ quantal release [] [P.DebVersion "3000.7.3-1build2"] }
     -- , debianize "gd" [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
     , debianize "cabal-macosx" []
     , apt (quantal release "sid" "quantal") "haskell-ghc-paths" [] -- for leksah
@@ -369,7 +372,7 @@ main _home release =
     , debianize "directory-tree" []
     , debianize "MonadCatchIO-transformers" (quantal release [] [P.DebVersion "0.3.0.0-2build2"])
     , debianize "MonadCatchIO-mtl" []
-    , debianize "haskell-lexer" []
+    , debianize "haskell-lexer" [P.DebVersion "1.0-3build2"]
     , debianize "hinotify" []
     , P.Package { P.name = "haskell-hjavascript"
                 , P.spec = Quilt (Apt "sid" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
@@ -382,7 +385,7 @@ main _home release =
     -- up with sid's version.
     , debianize "HPDF" []
     , debianize "hs-bibutils" []
-    , apt "sid" "haskell-hsemail" (quantal release [] [P.DebVersion "1.7.1-2build2"])
+    , quantal release (apt "sid" "haskell-hsemail" []) (debianize "hsemail" []) -- (quantal release [] [P.DebVersion "1.7.1-2build2"])
     , P.Package { P.name = "haskell-hsopenssl"
                 , P.spec = Debianize (Patch (Hackage "HsOpenSSL") $(embedFile "patches/HsOpenSSL.diff"))
                 , P.flags = [ P.ExtraDevDep "libssl-dev", P.ExtraDevDep "libcrypto++-dev" ] }
@@ -444,9 +447,10 @@ main _home release =
     , quantal release (apt "sid" "haskell-mwc-random" []) (debianize "mwc-random" [])
     , P.Package { P.name = "haskell-nano-hmac"
                 , P.spec = Debianize (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff"))
-                , P.flags = quantal release [P.DebVersion "0.2.0ubuntu1"] [] }
+                , P.flags = [P.DebVersion "0.2.0ubuntu1"] }
     , P.Package { P.name = "haskell-openid"
-                , P.spec = Debianize (Patch (Hackage "openid") $(embedFile "patches/openid.diff"))
+                , P.spec = Debianize (Patch (Hackage "openid") (quantal release $(embedFile "patches/openid.diff")
+                                                                                $(embedFile "patches/openid-ghc76.diff")))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-operational"
                 , P.spec = Debianize (Hackage "operational")
@@ -501,6 +505,9 @@ main _home release =
     , P.Package { P.name = "haskell-set-extra"
                 , P.spec = Darcs "http://src.seereason.com/set-extra"
                 , P.flags = [] }
+    , P.Package { P.name = "haskell-old-exception"
+                , P.spec = Debianize (Darcs (repo ++ "/old-exception"))
+                , P.flags = [] }
     , apt (quantal release "sid" "quantal") "haskell-sha" []
     , debianize "shake" []
     , debianize "shakespeare" []
@@ -508,7 +515,7 @@ main _home release =
     , P.Package { P.name = "haskell-simple-css",
                   P.spec = Debianize (Patch (Hackage "simple-css") $(embedFile "patches/simple-css.diff"))
                 , P.flags = [P.DebVersion "0.0.4-1~hackage1"] }
-    , debianize "SMTPClient" [P.DebVersion "1.0.4-3"]
+    , debianize "SMTPClient" (quantal release [P.DebVersion "1.0.4-3"] [P.DebVersion "1.0.4-3build2"])
     , debianize "socks" []
     , debianize "split" []
     -- This package becomes the debian package "haskell-haskell-src-exts".
@@ -520,7 +527,11 @@ main _home release =
     , debianize "haskell-src-exts" [P.ExtraDep "happy"]
     , debianize "stb-image" []
     , apt (quantal release "sid" "quantal") "haskell-strict" [] -- for leksah
-    , debianize "strict-concurrency" [P.DebVersion "0.2.4.1-3"]
+    , P.Package { P.name = "haskell-strict-concurrency"
+                , P.spec = Debianize (quantal release (Hackage "strict-concurrency")
+                                                      (Patch (Hackage "strict-concurrency")
+                                                                 $(embedFile "patches/strict-concurrency.diff")))
+                , P.flags = quantal release [P.DebVersion "0.2.4.1-3"] [P.DebVersion "0.2.4.1-2build3"] }
     , debianize "strict-io" [] -- for GenI
     , debianize "smallcheck" []
     -- Because 0.3.3-1 is both in sid and hackage, we need to keep the debianize
@@ -549,10 +560,9 @@ main _home release =
     , debianize "uniplate" []
     -- , apt "sid" "haskell-unix-compat" []
     , debianize "cmdargs" []
-    , P.Package { P.name = "haskell-language-javascript",
-                  P.spec = Debianize (Patch (Hackage "language-javascript") $(embedFile "patches/language-javascript.diff")),
-                   P.flags = []
-                 }
+    , P.Package { P.name = "haskell-language-javascript"
+                , P.spec = Debianize ((Hackage "language-javascript") {- `Patch` $(embedFile "patches/language-javascript.diff") -})
+                , P.flags = [P.ExtraDep "happy"] }
     , debianize "utf8-light" (quantal release [P.DebVersion "0.4.0.1-2build1"] [P.DebVersion "0.4.0.1-2build3"])
     , debianize "language-haskell-extract" []
     , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
@@ -608,7 +618,8 @@ main _home release =
     , debianize "yaml-light" (quantal release [P.DebVersion "0.1.4-2"] [P.DebVersion "0.1.4-2build1"])
     , quantal release (apt "sid" "haskell-zip-archive" []) (debianize "zip-archive" [])
     , debianize "regex-pcre-builtin" [P.MapDep "pcre" (BinPkgName "libpcre3-dev") {-, P.ExtraDevDep "libpcre3-dev"-}]
-    , apt (quantal release "sid" "quantal") "hscolour" [P.RelaxDep "hscolour"]
+    , quantal release (apt "sid" "hscolour" [P.RelaxDep "hscolour"])
+                      (debianize "hscolour" [P.RelaxDep "hscolour"])
     , quantal release
         (P.Package { P.name = "haskell-hslogger"
                    , P.spec = Patch (Apt "sid" "hslogger") $(embedFile "patches/hslogger.diff")
@@ -654,7 +665,7 @@ main _home release =
                 , P.spec = Debianize (Hackage "hlatex")
                 , P.flags = [] }
     , P.Package { P.name = "latex"
-                , P.spec = Debianize (Hackage "latex")
+                , P.spec = Debianize (Patch (Hackage "latex") $(embedFile "patches/latex.diff"))
                 , P.flags = [] }
     , debianize "texmath" []
     , P.Package { P.name = "derive"
@@ -735,7 +746,7 @@ platform release =
     , debianize "fgl" (quantal release [P.DebVersion "5.4.2.4-2"] [P.DebVersion "5.4.2.4-2build2"])
     , debianize "text" []
     , P.Package { P.name = "alex"
-                , P.spec = Apt "sid" "alex"
+                , P.spec = quantal release (Apt "sid" "alex") (Debianize (Hackage "alex"))
                 , P.flags = [P.RelaxDep "alex"] }
     , opengl release
     -- , haddock release
@@ -788,7 +799,7 @@ clckwrks _home release =
                     , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
-                    , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
+                    , P.spec = Debianize (Patch (Cd "clckwrks-plugin-media" (Darcs repo)) $(embedFile "patches/clckwrks-plugin-media.diff"))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
                     , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
@@ -797,11 +808,10 @@ clckwrks _home release =
                     , P.spec = Debianize (Cd "clckwrks-theme-bootstrap" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "clckwrks-dot-com"
-                    , P.spec = Debianize (Patch
-                                          (Cd "clckwrks-dot-com" (Darcs repo)) $(embedFile "patches/clckwrks-dot-com.diff"))
+                    , P.spec = Debianize (Patch (Cd "clckwrks-dot-com" (Darcs repo)) $(embedFile "patches/clckwrks-dot-com.diff"))
                     , P.flags = [] }
         , P.Package { P.name = "clckwrks-theme-clckwrks"
-                    , P.spec = Debianize (Cd "clckwrks-theme-clckwrks" (Darcs repo))
+                    , P.spec = Debianize (Patch (Cd "clckwrks-theme-clckwrks" (Darcs repo)) $(embedFile "patches/clckwrks-theme-clckwrks.diff"))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , debianize "jmacro" []
         , debianize "hsx-jmacro" []
@@ -867,7 +877,8 @@ happstack release =
                 , P.flags = [] }
     -- Current happstack-server requires directory >= 1.2, which comes with ghc-7.6.
     , P.Package { P.name = "haskell-happstack-server"
-                , P.spec = Debianize (Hackage "happstack-server")
+                , P.spec = Debianize (quantal release (Hackage "happstack-server")
+                                                      (Patch (Hackage "happstack-server") $(embedFile "patches/happstack-server.diff")))
                 , P.flags = [P.CabalPin "7.0.7", P.DebVersion "7.0.7-1"] }
     , debianize "base64-bytestring" []
     , debianize "threads" []
@@ -878,13 +889,14 @@ happstack release =
                 , P.spec = Debianize (Hackage "happstack-static-routing")
                 , P.flags = [P.DebVersion "0.3.1-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-util"
-                , P.spec = Debianize (Patch (Hackage "happstack-util") $(embedFile "patches/happstack-util.diff"))
+                , P.spec = Debianize (Patch (Hackage "happstack-util") (quantal release $(embedFile "patches/happstack-util.diff")
+                                                                                        $(embedFile "patches/happstack-util-ghc76.diff")))
                 , P.flags = [P.DebVersion "6.0.3-1"] }
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
     , P.Package { P.name = "haskell-hsp"
-                , P.spec = Debianize (Hackage "hsp")
+                , P.spec = Debianize (Patch (Hackage "hsp") $(embedFile "patches/hsp.diff"))
                 , P.flags = quantal release [P.DebVersion "0.7.1-1~hackage1", CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] [CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] }
     , P.Package { P.name = "haskell-hsx"
                 , P.spec = Debianize (Hackage "hsx")
@@ -932,7 +944,8 @@ happstack release =
                 , P.spec = Debianize (Cd "reform-blaze" (Darcs (patchTag ++ "/reform")))
                 , P.flags = [P.DebVersion "0.1-1~hackage1"] }
     , P.Package { P.name = "reform-happstack"
-                , P.spec = Debianize (Cd "reform-happstack" (Darcs (patchTag ++ "/reform")))
+                , P.spec = Debianize (Patch (Cd "reform-happstack" (Darcs (patchTag ++ "/reform")))
+                                            $(embedFile "patches/reform-happstack.diff"))
                 , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
 {-  , P.Package { P.name = "reform-heist"
                 , P.spec = Debianize (Cd "reform-heist" (Darcs patchTag ++ "/reform"))
@@ -1106,7 +1119,8 @@ plugins = P.Packages (singleton "plugins") $
     , debianize "happstack-plugins" []
     , debianize "plugins-auto" []
     , P.Package { P.name = "haskell-web-plugins"
-                , P.spec = Debianize (Cd "web-plugins" (Darcs "http://hub.darcs.net/stepcut/web-plugins"))
+                , P.spec = Debianize (Cd "web-plugins" (Patch (Darcs "http://hub.darcs.net/stepcut/web-plugins")
+                                                              $(embedFile "patches/web-plugins.diff")))
                 , P.flags = [] }
     ]
 

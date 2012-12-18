@@ -1,0 +1,11 @@
+--- old/clckwrks-plugin-media.cabal.orig	2012-12-11 07:42:24.000000000 -0800
++++ new/clckwrks-plugin-media.cabal	2012-12-18 08:30:19.311689125 -0800
+@@ -47,7 +47,7 @@
+     containers             >= 0.4 && < 0.6,
+     directory              >= 1.1 && < 1.3,
+     filepath               >= 1.2 && < 1.4,
+-    gd                     == 3000.*,
++    gd                     >= 3000,
+     happstack-server       >= 7.0 && < 7.2,
+     hsp                    == 0.7.*,
+     ixset                  == 1.0.*,

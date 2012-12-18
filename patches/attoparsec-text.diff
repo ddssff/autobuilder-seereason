@@ -1,15 +1,16 @@
---- x/attoparsec-text.cabal.orig	2012-01-01 12:43:48.746481982 -0800
-+++ x/attoparsec-text.cabal	2012-01-01 12:20:22.226482130 -0800
-@@ -59,10 +59,10 @@
+--- old/attoparsec-text.cabal	2012-12-18 06:34:47.000000000 -0800
++++ new/attoparsec-text.cabal	2012-12-18 06:45:54.363541104 -0800
+@@ -37,10 +37,10 @@
  
  library
    build-depends: base       >= 3       && < 5,
 -                 attoparsec >= 0.7     && < 0.10,
 +                 attoparsec >= 0.7,
                   text       >= 0.10    && < 0.12,
-                  containers >= 0.1.0.1 && < 0.5,
+-                 containers >= 0.1.0.1 && < 0.5,
 -                 array      >= 0.1     && < 0.4
-+                 array      >= 0.1     && < 0.5
++                 containers >= 0.1.0.1,
++                 array      >= 0.1
    extensions:      CPP
    exposed-modules: Data.Attoparsec.Text
                     Data.Attoparsec.Text.FastSet

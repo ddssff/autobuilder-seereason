@@ -1,0 +1,19 @@
+--- old/template-default.cabal	2012-12-18 08:09:25.000000000 -0800
++++ new/template-default.cabal	2012-12-18 08:24:33.835680965 -0800
+@@ -25,4 +25,4 @@
+ 
+ library
+   exposed-modules:     Data.Default.TH
+-  build-depends:       base >= 3 && < 6, data-default, template-haskell >= 2.4 && < 2.8
++  build-depends:       base >= 3 && < 6, data-default, template-haskell >= 2.4
+--- old/Data/Default/TH.hs	2012-12-18 08:50:53.000000000 -0800
++++ new/Data/Default/TH.hs	2012-12-18 08:54:09.835722927 -0800
+@@ -19,7 +19,7 @@
+ constraint :: Name -> Type -> Q [Pred]
+ constraint tcn t@(VarT n)       = return [ClassP ''Default [t]]
+ constraint tcn t@(ConT n)       = return [ClassP ''Default [t]]
+-constraint tcn   (SigT t StarK) = constraint tcn t
++constraint tcn   (SigT t StarT) = constraint tcn t
+ constraint tcn t@(AppT _ _)     = case normalize t of
+ 	(ArrowT, [_, r])        -> constraint tcn r
+ 	(ListT, [t])            -> return []

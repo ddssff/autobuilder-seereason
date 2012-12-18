@@ -1,0 +1,11 @@
+--- old/reform-happstack.cabal	2012-11-02 16:27:34.000000000 -0700
++++ new/reform-happstack.cabal	2012-12-18 07:46:06.251626445 -0800
+@@ -20,7 +20,7 @@
+ Library
+   Exposed-modules:     Text.Reform.Happstack
+   Build-depends:       base >4 && <5,
+-                       bytestring       == 0.9.*,
++                       bytestring       >= 0.9,
+                        happstack-server == 7.0.*,
+                        mtl              >= 2.0 && <2.2,
+                        random           == 1.0.*,

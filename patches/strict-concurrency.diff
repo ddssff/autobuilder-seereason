@@ -1,0 +1,11 @@
+--- old/strict-concurrency.cabal	2012-12-17 11:04:38.000000000 -0800
++++ new/strict-concurrency.cabal	2012-12-17 12:00:57.077946343 -0800
+@@ -15,7 +15,7 @@
+ Maintainer:     Don Stewart <dons@galois.com>
+ Copyright:      (c) 2007-10 Don Stewart
+ Homepage:       http://code.haskell.org/~dons/code/strict-concurrency
+-build-depends:  base >= 4 && < 5, deepseq >= 1
++build-depends:  base >= 4 && < 5, deepseq >= 1, old-exception
+ ghc-options:    -Wall -fglasgow-exts
+ extensions:     CPP, BangPatterns
+ build-type:     Simple

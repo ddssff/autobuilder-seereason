@@ -1,5 +1,5 @@
---- old/happstack-util.cabal	2012-04-17 05:38:25.000000000 -0700
-+++ new/happstack-util.cabal	2012-04-17 05:53:09.430600945 -0700
+--- old/happstack-util.cabal	2012-12-18 06:49:52.507546733 -0800
++++ new/happstack-util.cabal	2012-12-18 07:05:49.411569340 -0800
 @@ -29,7 +29,7 @@
                         directory,
                         extensible-exceptions, 

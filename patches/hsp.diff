@@ -1,0 +1,23 @@
+--- old/hsp.cabal	2012-12-16 07:49:12.000000000 -0800
++++ new/hsp.cabal	2012-12-18 06:21:45.887506883 -0800
+@@ -29,6 +29,8 @@
+ 
+ Flag base4
+ 
++Flag ghc76
++
+ Library
+   Build-Depends:        base >3 && < 5, mtl, harp, hsx>=0.10.2 && < 0.11, HJScript>=0.6.1, text
+   if flag(base4)
+@@ -36,6 +38,11 @@
+     cpp-options:        -DBASE4
+   else
+     Build-depends:      base >= 3 && < 4
++  if flag(ghc76)
++    Build-depends:      ghc >= 7.6, old-exception
++    cpp-options:        -DGHC76
++  else
++    Build-depends:      ghc < 7.6
+   Hs-Source-Dirs:       src
+   Exposed-Modules:      HSP.XML, HSP.XML.PCDATA, HSP.HTML, HSP.Env, HSP.Env.Request, HSP.Env.NumberGen, HSP.HJScript, HSP
+   Other-Modules:        HSP.Exception, HSP.Monad, HSP.XMLGenerator

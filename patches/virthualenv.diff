@@ -1,15 +1,63 @@
 --- old/virthualenv.cabal	2012-09-05 22:50:47.809090845 -0700
 +++ new/virthualenv.cabal	2012-09-05 22:49:55.521089609 -0700
-@@ -103,10 +103,10 @@
+@@ -98,15 +98,15 @@
+ 
+   Ghc-options: -threaded -Wall
+ 
+-  Build-depends: base >= 4.2.0.0 && < 4.6
++  Build-depends: base >= 4.2.0.0
+                , process >= 1.0.1.2 && < 1.2
                 , filepath >= 1.1.0.3 && < 1.4
-                , directory >= 1.0.1.0 && < 1.2
-                , Cabal >= 1.8.0.6 && < 1.15
+-               , directory >= 1.0.1.0 && < 1.2
+-               , Cabal >= 1.8.0.6 && < 1.15
 -               , mtl >= 1.1.0.2 && < 2.1
+-               , bytestring >= 0.9.1.7 && < 0.10
++               , directory >= 1.0.1.0
++               , Cabal >= 1.8.0.6
 +               , mtl >= 1.1.0.2
-                , bytestring >= 0.9.1.7 && < 0.10
++               , bytestring >= 0.9.1.7
                 , file-embed >= 0.0.4.1 && < 0.1
 -               , split >= 0.1.4 && < 0.2
 +               , split >= 0.1.4
                 , safe >= 0.3 && < 0.4
  
    Other-modules: Util.Cabal
+--- old/src/Util/IO.hs.orig	2012-12-18 08:09:26.000000000 -0800
++++ new/src/Util/IO.hs	2012-12-18 08:23:14.447679088 -0800
+@@ -7,7 +7,7 @@
+                ) where
+ 
+ import System.Environment (getEnv)
+-import System.IO.Error (isDoesNotExistError)
++import System.IO.Error (isDoesNotExistError, catchIOError)
+ import System.Directory (getPermissions, setPermissions, executable, removeFile, createDirectory, doesFileExist)
+ import Control.Concurrent (forkIO, putMVar, takeMVar, newEmptyMVar)
+ import Control.Exception (evaluate)
+@@ -21,7 +21,7 @@
+ -- Computation getEnvVar var returns Just the value of the environment variable var,
+ -- or Nothing if the environment variable does not exist
+ getEnvVar :: String -> IO (Maybe String)
+-getEnvVar var = Just `fmap` getEnv var `catch` noValueHandler
++getEnvVar var = Just `fmap` getEnv var `catchIOError` noValueHandler
+     where noValueHandler e | isDoesNotExistError e = return Nothing
+                            | otherwise             = ioError e
+ 
+--- old/src/MyMonad.hs	2012-12-18 08:36:47.000000000 -0800
++++ new/src/MyMonad.hs	2012-12-18 08:46:36.099712206 -0800
+@@ -25,6 +25,7 @@
+ import Control.Monad.Error (ErrorT, MonadError, runErrorT, throwError, catchError)
+ import Control.Monad (when)
+ import System.IO (stderr, hPutStrLn)
++import System.IO.Error (catchIOError)
+ 
+ import Prelude hiding (log)
+ 
+@@ -33,7 +34,7 @@
+ 
+ instance MonadIO MyMonad where
+     liftIO m = MyMonad $ do
+-                 x <- liftIO $ (Right `fmap` m) `catch` (return . Left)
++                 x <- liftIO $ (Right `fmap` m) `catchIOError` (return . Left)
+                  case x of
+                    Left e  -> throwError $ MyException $ "IO error: " ++ show e
+                    Right y -> return y
