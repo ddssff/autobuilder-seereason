@@ -244,10 +244,10 @@ main _home release =
     , apt "sid" "haskell-dummy" []
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
-    , quantal release (P.Package { P.name = "haskell-edison-api"
-                                 , P.spec = Apt "sid" "haskell-edison-api"
-                                 , P.flags = [] })
-                      (debianize "EdisonAPI" [P.DebVersion "1.2.1-18build2"])
+    , P.Package { P.name = "haskell-edison-api"
+                , P.spec = quantal release (Apt "sid" "haskell-edison-api") (Debianize (Patch (Hackage "EdisonAPI")
+                                                                                              $(embedFile "patches/EdisonAPI.diff")))
+                , P.flags = quantal release [] [P.DebVersion "1.2.1-18build2"] }
     , quantal release (apt "sid" "haskell-edison-core" []) (debianize "EdisonCore" [P.DebVersion "1.2.1.3-9build2"])
     , apt (quantal release "sid" "quantal") "haskell-entropy" []
     , debianize "enumerator" (quantal release [] [P.DebVersion "0.4.19-1build2"])
@@ -494,7 +494,9 @@ main _home release =
     , P.Package { P.name = "haskell-revision"
                 , P.spec = Darcs "http://src.seereason.com/haskell-revision"
                 , P.flags = [] }
-    , debianize "RJson" []
+    , P.Package { P.name = "haskell-rjson"
+                , P.spec = Debianize (Patch (Hackage "RJson") $(embedFile "patches/RJson.diff"))
+                , P.flags = [] }
     , debianize "safe" [P.DebVersion "0.3.3-2"]
     , debianize "safecopy" []
     , P.Package { P.name = "haskell-sat"
