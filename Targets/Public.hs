@@ -882,9 +882,9 @@ happstack release =
                 , P.spec = Debianize (Patch
                                       (Darcs "http://hub.darcs.net/stepcut/mastermind") $(embedFile "patches/mastermind.diff"))
                 , P.flags = [P.CabalDebian ["--build-dep=haskell-fay-utils", "--build-dep=haskell-fay-jquery-utils", "--build-dep=haskell-happstack-fay-utils"]] }
-    , P.Package { P.name = "haskell-happstack-data"
-                , P.spec = Debianize (Patch (Hackage "happstack-data") $(embedFile "patches/happstack-data.diff"))
-                , P.flags = [P.DebVersion "6.0.1-1build1"] }
+    , ghc release (P.Package { P.name = "haskell-happstack-data"
+                             , P.spec = Debianize (Patch (Hackage "happstack-data") $(embedFile "patches/happstack-data.diff"))
+                             , P.flags = [P.DebVersion "6.0.1-1build1"] }) P.NoPackage
     , P.Package { P.name = "haskell-happstack-extra"
                 , P.spec = Darcs (repo ++ "/happstack-extra")
                 , P.flags = [] }
@@ -900,9 +900,9 @@ happstack release =
     -- Version 6.1.0, which is just a wrapper around the non-happstack
     -- ixset package, has not yet been uploaded to hackage.
     -- , debianize "happstack-ixset" []
-    , P.Package { P.name = "haskell-happstack-ixset"
-                , P.spec = DebDir (Cd "happstack-ixset" (Darcs happstackRepo)) (Darcs (repo ++ "/happstack-ixset-debian"))
-                , P.flags = [] }
+    , ghc release (P.Package { P.name = "haskell-happstack-ixset"
+                             , P.spec = DebDir (Cd "happstack-ixset" (Darcs happstackRepo)) (Darcs (repo ++ "/happstack-ixset-debian"))
+                             , P.flags = [] }) P.NoPackage
 
     , P.Package { P.name = "haskell-happstack-jmacro"
                 , P.spec = Debianize (Hackage "happstack-jmacro")
