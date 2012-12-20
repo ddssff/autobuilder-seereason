@@ -44,11 +44,18 @@ targets _home release =
     -- , other
     ]
 
-quantal :: String -> a -> a -> a
-quantal release p q =
+ghc :: String -> a -> a -> a
+ghc release ghc74 ghc76 =
     case release of
-      "quantal-seereason" -> q
-      _ -> p
+      "quantal-seereason" -> ghc76
+      "precise-seereason" -> ghc76 -- ghc74
+      _ -> ghc74
+
+rel :: String -> a -> a -> a
+rel release precise quantal =
+    case release of
+      "quantal-seereason" -> quantal
+      _ -> precise
 
 fixme =
     P.Packages (singleton "fixme") $
@@ -113,7 +120,7 @@ digestiveFunctors =
 
 main _home release =
     P.Packages (singleton "main") $
-    [ ghc release
+    [ compiler release
     , platform release
     , debianize "hashtables" []
     , P.Package { P.name = "bugzilla"
@@ -125,7 +132,7 @@ main _home release =
     , P.Package { P.name = "haskell-listlike-instances"
                 , P.spec = Debianize (Hackage "listlike-instances")
                 , P.flags = [] }
-    , apt (quantal release "sid" "quantal") "cpphs" []
+    , apt (rel release "sid" "quantal") "cpphs" []
     , P.Package { P.name = "debootstrap"
                 , P.spec = Apt "sid" "debootstrap"
                 , P.flags = [P.UDeb "debootstrap-udeb"] }
@@ -144,16 +151,16 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/haskell-agi"
                 , P.flags = [] }
     , debianize "ansi-terminal" []
-    , debianize "ansi-wl-pprint" (quantal release [P.DebVersion "0.6.4-1"] [P.DebVersion "0.6.4-1build2"])
+    , debianize "ansi-wl-pprint" (rel release [P.DebVersion "0.6.4-1"] [P.DebVersion "0.6.4-1build2"])
     , debianize "wl-pprint-text" []
     -- Our applicative-extras repository has several important patches.
     , P.Package { P.name = "haskell-applicative-extras",
                   P.spec = Debianize (Hackage "applicative-extras"),
                   P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.DebVersion "0.1.8-1"] }
     , debianize "asn1-data" []
-    , debianize "attempt" (quantal release [P.DebVersion "0.4.0-1"] [P.DebVersion "0.4.0-1build2"])
+    , debianize "attempt" (rel release [P.DebVersion "0.4.0-1"] [P.DebVersion "0.4.0-1build2"])
     , debianize "errors" []
-    , debianize "failure" (quantal release [] [P.DebVersion "0.2.0.1-1build2"])
+    , debianize "failure" (rel release [] [P.DebVersion "0.2.0.1-1build2"])
     , debianize "attoparsec" []
     , debianize "attoparsec-enumerator" []
     , P.Package { P.name = "haskell-attoparsec-text"
@@ -165,21 +172,21 @@ main _home release =
     , debianize "bimap" [P.DebVersion "0.2.4-1~hackage1"]
     , debianize "data-default" []
     , P.Package { P.name = "haskell-template-default"
-                , P.spec = Debianize (quantal release (Hackage "template-default")
+                , P.spec = Debianize (ghc release (Hackage "template-default")
                                                       (Patch (Hackage "template-default") $(embedFile "patches/template-default.diff")))
                 , P.flags = [] }
     , debianize "bitmap" []
     , debianize "bitset" [P.DebVersion "1.1-1~hackage1"]
-    , apt (quantal release "sid" "quantal") "haskell-bytestring-nums" []
+    , apt (rel release "sid" "quantal") "haskell-bytestring-nums" []
     , debianize "bytestring-trie" []
-    , quantal release (P.Package { P.name = "haskell-bzlib"
+    , ghc release (P.Package { P.name = "haskell-bzlib"
                                  , P.spec = Quilt (Apt "sid" "haskell-bzlib") (Darcs "http://src.seereason.com/haskell-bzlib-quilt")
                                  , P.flags = [] })
                       (debianize "bzlib" [])
     -- , debianize "cairo-pdf" []
     , debianize "case-insensitive" []
     , debianize "CC-delcont" [P.DebVersion "0.2-1~hackage1"]
-    , apt (quantal release "sid" "quantal") "haskell-cereal" []
+    , apt (rel release "sid" "quantal") "haskell-cereal" []
     , debianize "citeproc-hs" []
     , P.Package {P.name = "haskell-hexpat",
                  P.spec = Debianize (Hackage "hexpat"),
@@ -187,7 +194,7 @@ main _home release =
     , debianize "List" []
     , debianize "uuid" []
     , debianize "maccatcher" [P.DebVersion "2.1.5-3"]
-    , debianize "colour" (quantal release [P.DebVersion "2.3.3-1build1"] [P.DebVersion "2.3.3-1build3"])
+    , debianize "colour" [P.DebVersion "2.3.3-1build1"]
     -- , apt "sid" "haskell-configfile" []
     , debianize "ConfigFile" []
     , P.Package { P.name = "haskell-consumer"
@@ -221,14 +228,14 @@ main _home release =
                       , "   toOctets (Hash8 x0 x1 x2 x3 x4 x5 x6 x7) = bitsToOctets =<< [x0, x1, x2, x3, x4, x5, x6, x7]"
                       , " "
                       , " instance Hash Hash384 where" ]) -}
-    , debianize "crypto-api" (quantal release [] [P.DebVersion "0.10.2-1build3"])
+    , debianize "crypto-api" (rel release [] [P.DebVersion "0.10.2-1build3"])
     , debianize "crypto-pubkey-types" []
     , debianize "cryptocipher" []
     , debianize "cryptohash" []
-    , debianize "cpu" (quantal release [] [P.DebVersion "0.1.1-1build1"])
+    , debianize "cpu" (rel release [] [P.DebVersion "0.1.1-1build1"])
     , debianize "css" [P.DebVersion "0.1-1~hackage1"]
-    , debianize "css-text" (quantal release [P.DebVersion "0.1.1-3"] [P.DebVersion "0.1.1-3build1"])
-    , apt (quantal release "sid" "quantal") "haskell-curl" []
+    , debianize "css-text" (rel release [P.DebVersion "0.1.1-3"] [P.DebVersion "0.1.1-3build1"])
+    , apt (rel release "sid" "quantal") "haskell-curl" []
     , debianize "data-accessor" []
     , debianize "data-accessor-template" []
     , debianize "data-default" []
@@ -237,8 +244,8 @@ main _home release =
                 , P.flags = [] }
     , debianize "dataenc" []
     , debianize "Diff" []
-    , apt (quantal release "sid" "quantal") "haskell-digest" []
-    , apt (quantal release "sid" "quantal") "haskell-dlist" []
+    , apt (rel release "sid" "quantal") "haskell-digest" []
+    , apt (rel release "sid" "quantal") "haskell-dlist" []
     -- Natty only(?)
     , debianize "double-conversion" []
     , debianize "groom" []
@@ -246,18 +253,20 @@ main _home release =
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
     , P.Package { P.name = "haskell-edison-api"
-                , P.spec = quantal release (Apt "sid" "haskell-edison-api") (Debianize (Patch (Hackage "EdisonAPI")
+                , P.spec = ghc release (Apt "sid" "haskell-edison-api") (Debianize (Patch (Hackage "EdisonAPI")
                                                                                               $(embedFile "patches/EdisonAPI.diff")))
-                , P.flags = quantal release [] [P.DebVersion "1.2.1-18build2"] }
-    , quantal release (apt "sid" "haskell-edison-core" []) (debianize "EdisonCore" [P.DebVersion "1.2.1.3-9build2"])
-    , apt (quantal release "sid" "quantal") "haskell-entropy" []
-    , debianize "enumerator" (quantal release [] [P.DebVersion "0.4.19-1build2"])
+                , P.flags = rel release [] [P.DebVersion "1.2.1-18build2"] }
+    , ghc release (apt "sid" "haskell-edison-core" (rel release [] [P.DebVersion "1.2.1.3-9build2"]))
+                  (debianize "EdisonCore" (rel release [] [P.DebVersion "1.2.1.3-9build2"]))
+    , apt (rel release "sid" "quantal") "haskell-entropy" []
+    , debianize "enumerator" (rel release [] [P.DebVersion "0.4.19-1build2"])
     , P.Package { P.name = "haskell-hdaemonize"
                 , P.spec = Debianize (Patch (Hackage "hdaemonize") $(embedFile "patches/hdaemonize.diff"))
                 , P.flags = [P.DebVersion "0.4.4.1-1~hackage1"] }
     , debianize "hsyslog" []
     , debianize "erf" [P.DebVersion "2.0.0.0-3"]
-    , quantal release (apt "sid" "haskell-feed" []) (debianize "feed" [P.DebVersion "0.3.8-3build2"])
+    , ghc release (apt "sid" "haskell-feed" (rel release [] [P.DebVersion "0.3.8-3build2"]))
+                  (debianize "feed" (rel release [] [P.DebVersion "0.3.8-3build2"]))
     -- Darcs 2.8.1 won't build with the current version of haskeline.
 {-
     , P.Package { P.name = "darcs"
@@ -339,10 +348,10 @@ main _home release =
                 , P.flags = [P.DebVersion "0.8-1~hackage1"] }
     , P.Package { P.name = "haskell-gd"
                 , P.spec = Debianize (Patch (Hackage "gd") $(embedFile "patches/gd.diff"))
-                , P.flags = [ P.ExtraDevDep "libgd-dev", P.ExtraDevDep "libc6-dev", P.ExtraDevDep "libfreetype6-dev" ] ++ quantal release [] [P.DebVersion "3000.7.3-1build2"] }
+                , P.flags = [ P.ExtraDevDep "libgd-dev", P.ExtraDevDep "libc6-dev", P.ExtraDevDep "libfreetype6-dev" ] ++ rel release [] [P.DebVersion "3000.7.3-1build2"] }
     -- , debianize "gd" [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"]
     , debianize "cabal-macosx" []
-    , apt (quantal release "sid" "quantal") "haskell-ghc-paths" [] -- for leksah
+    , apt (rel release "sid" "quantal") "haskell-ghc-paths" [] -- for leksah
     -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
     -- dpkg: error processing /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb (--unpack):
     --  trying to overwrite '/usr/bin/gtk2hsTypeGen', which is also in package gtk2hs-buildtools 0:0.12.0-3+seereason1~lucid3
@@ -350,7 +359,7 @@ main _home release =
     -- Errors were encountered while processing:
     --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
-    , apt (quantal release "sid" "quantal") "haskell-harp" []
+    , apt (rel release "sid" "quantal") "haskell-harp" []
     , debianize "hashable" [CabalPin "1.1.2.5"]
     , debianize "hashed-storage" []
     , P.Package { P.name = "haskell-haskeline"
@@ -371,7 +380,7 @@ main _home release =
                 , P.flags = [] }
     , debianize "xmlhtml" []
     , debianize "directory-tree" []
-    , debianize "MonadCatchIO-transformers" (quantal release [] [P.DebVersion "0.3.0.0-2build2"])
+    , debianize "MonadCatchIO-transformers" (rel release [] [P.DebVersion "0.3.0.0-2build2"])
     , debianize "MonadCatchIO-mtl" []
     , debianize "haskell-lexer" [P.DebVersion "1.0-3build2"]
     , debianize "hinotify" []
@@ -380,17 +389,17 @@ main _home release =
                 , P.flags = [] }
     -- Not used, and not building.
     -- , debianize "hoauth" []
-    , debianize "hostname" [P.DebVersion (quantal release "1.0-4build1" "1.0-4build3")]
+    , debianize "hostname" [P.DebVersion (rel release "1.0-4build1" "1.0-4build3")]
     -- The Sid package has no profiling libraries, so dependent packages
     -- won't build.  Use our debianization instead.  This means keeping
     -- up with sid's version.
     , debianize "HPDF" []
     , debianize "hs-bibutils" []
-    , quantal release (apt "sid" "haskell-hsemail" []) (debianize "hsemail" []) -- (quantal release [] [P.DebVersion "1.7.1-2build2"])
+    , ghc release (apt "sid" "haskell-hsemail" []) (debianize "hsemail" []) -- (rel release [] [P.DebVersion "1.7.1-2build2"])
     , P.Package { P.name = "haskell-hsopenssl"
                 , P.spec = Debianize (Patch (Hackage "HsOpenSSL") $(embedFile "patches/HsOpenSSL.diff"))
                 , P.flags = [ P.ExtraDevDep "libssl-dev", P.ExtraDevDep "libcrypto++-dev" ] }
-    , debianize "HsSyck" (quantal release [P.DebVersion "0.50-2"] [P.DebVersion "0.50-2build2"])
+    , debianize "HsSyck" (rel release [P.DebVersion "0.50-2"] [P.DebVersion "0.50-2build2"])
     , debianize "HStringTemplate" []
     , P.Package { P.name = "haskell-html-entities"
                 , P.spec = Darcs "http://src.seereason.com/html-entities"
@@ -401,6 +410,9 @@ main _home release =
     , P.Package { P.name = "haskell-incremental-sat-solver"
                 , P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs "http://src.seereason.com/haskell-incremental-sat-solver-debian")
                 , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
+    , P.Package { P.name = "haskell-instant-generics"
+                , P.spec = Debianize (Hackage "instant-generics")
+                , P.flags = [] }
     , debianize "generic-deriving" []
     , debianize "irc" []
     , debianize "ixset" []
@@ -424,7 +436,7 @@ main _home release =
     , P.Package { P.name = "haskell-mime"
                 , P.spec = Darcs "http://src.seereason.com/haskell-mime"
                 , P.flags = [] }
-    , quantal release (apt "sid" "haskell-mmap" []) (debianize "mmap" [])
+    , ghc release (apt "sid" "haskell-mmap" []) (debianize "mmap" [])
     , debianize "monad-control" []
     , P.Package { P.name = "haskell-monad-par-extras"
                 , P.spec = Debianize (Hackage "monad-par-extras")
@@ -443,14 +455,14 @@ main _home release =
     -- other hand, without monads-tf we lose this dependency chain:
     -- monads-tf -> options -> fay.
     -- , debianize "monads-tf" []
-    , apt (quantal release "sid" "quantal") "haskell-monoid-transformer" []
+    , apt (rel release "sid" "quantal") "haskell-monoid-transformer" []
     , debianize "murmur-hash" []
-    , quantal release (apt "sid" "haskell-mwc-random" []) (debianize "mwc-random" [])
+    , ghc release (apt "sid" "haskell-mwc-random" []) (debianize "mwc-random" [])
     , P.Package { P.name = "haskell-nano-hmac"
                 , P.spec = Debianize (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff"))
                 , P.flags = [P.DebVersion "0.2.0ubuntu1"] }
     , P.Package { P.name = "haskell-openid"
-                , P.spec = Debianize (Patch (Hackage "openid") (quantal release $(embedFile "patches/openid.diff")
+                , P.spec = Debianize (Patch (Hackage "openid") (ghc release $(embedFile "patches/openid.diff")
                                                                                 $(embedFile "patches/openid-ghc76.diff")))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-operational"
@@ -459,16 +471,16 @@ main _home release =
 --    , debianize "options" []
     , debianize "optparse-applicative" []
     , debianize "ordered" []
-    , debianize "multiset" (quantal release [P.CabalPin "0.2.1"] []) -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
+    , debianize "multiset" (ghc release [P.CabalPin "0.2.1"] []) -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize "temporary" []
-    , debianize "pandoc-types" (quantal release [P.DebVersion "1.9.1-1"] [P.DebVersion "1.9.1-1build2"])
+    , debianize "pandoc-types" (rel release [P.DebVersion "1.9.1-1"] [P.DebVersion "1.9.1-1build2"])
     , debianize "parse-dimacs" []
     , debianize "parseargs" []
-    , apt (quantal release "sid" "quantal") "haskell-parsec2" []
+    , apt (rel release "sid" "quantal") "haskell-parsec2" []
     , P.Package { P.name = "haskell-pbkdf2",
                   P.spec = DebDir (Hackage "PBKDF2") (Darcs "http://src.seereason.com/pbkdf2-debian"),
                   P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"]}
-    , apt (quantal release "sid" "quantal") "haskell-pcre-light" []
+    , apt (rel release "sid" "quantal") "haskell-pcre-light" []
     , debianize "permutation" [P.DebVersion "0.4.1-1~hackage1"]
     , debianize "pipes" []
     , debianize "polyparse" []
@@ -480,7 +492,7 @@ main _home release =
     {- , P.Package { P.name = "haskell-propositional-classes"
                 , P.spec = Darcs (repo ++ "/propositional-classes")
                 , P.flags = [] } -}
-    , debianize "PSQueue" (quantal release [P.DebVersion "1.1-2"] [P.DebVersion "1.1-2build2"])
+    , debianize "PSQueue" (rel release [P.DebVersion "1.1-2"] [P.DebVersion "1.1-2build2"])
     , P.Package { P.name = "haskell-pwstore-purehaskell"
                 , P.spec = Debianize (Patch (Hackage "pwstore-purehaskell") $(embedFile "patches/pwstore-purehaskell.diff"))
                 , P.flags = [P.DebVersion "2.1-1~hackage1"] }
@@ -488,10 +500,10 @@ main _home release =
     -- but our debianize target becomes haskell-quickcheck2.  So we need to fiddle
     -- with the order here relative to haskell-quickcheck1.
     -- lucidNatty [apt "haskell-quickcheck"] [] ++
-    , apt (quantal release "sid" "quantal") "haskell-quickcheck1" []
+    , apt (rel release "sid" "quantal") "haskell-quickcheck1" []
     -- lucidNatty [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"]] [debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"] ] ++
     -- , apt "sid" "haskell-regex-tdfa" []
-    , debianize "regex-tdfa" (quantal release [P.DebVersion "1.1.8-1"] [P.DebVersion "1.1.8-2build2"])
+    , debianize "regex-tdfa" (rel release [P.DebVersion "1.1.8-1"] [P.DebVersion "1.1.8-2build2"])
     , P.Package { P.name = "haskell-revision"
                 , P.spec = Darcs "http://src.seereason.com/haskell-revision"
                 , P.flags = [] }
@@ -511,14 +523,14 @@ main _home release =
     , P.Package { P.name = "haskell-old-exception"
                 , P.spec = Debianize (Darcs (repo ++ "/old-exception"))
                 , P.flags = [] }
-    , apt (quantal release "sid" "quantal") "haskell-sha" []
+    , apt (rel release "sid" "quantal") "haskell-sha" []
     , debianize "shake" []
     , debianize "shakespeare" []
     , debianize "shakespeare-css" []
     , P.Package { P.name = "haskell-simple-css",
                   P.spec = Debianize (Patch (Hackage "simple-css") $(embedFile "patches/simple-css.diff"))
                 , P.flags = [P.DebVersion "0.0.4-1~hackage1"] }
-    , debianize "SMTPClient" (quantal release [P.DebVersion "1.0.4-3"] [P.DebVersion "1.0.4-3build2"])
+    , debianize "SMTPClient" (rel release [P.DebVersion "1.0.4-3"] [P.DebVersion "1.0.4-3build2"])
     , debianize "socks" []
     , debianize "split" []
     -- This package becomes the debian package "haskell-haskell-src-exts".
@@ -529,18 +541,18 @@ main _home release =
     -- , lucidNatty (hackage release "haskell-src-exts" [NP]) (debianize "haskell-src-exts" [])
     , debianize "haskell-src-exts" [P.ExtraDep "happy"]
     , debianize "stb-image" []
-    , apt (quantal release "sid" "quantal") "haskell-strict" [] -- for leksah
+    , apt (rel release "sid" "quantal") "haskell-strict" [] -- for leksah
     , P.Package { P.name = "haskell-strict-concurrency"
-                , P.spec = Debianize (quantal release (Hackage "strict-concurrency")
+                , P.spec = Debianize (ghc release (Hackage "strict-concurrency")
                                                       (Patch (Hackage "strict-concurrency")
                                                                  $(embedFile "patches/strict-concurrency.diff")))
-                , P.flags = quantal release [P.DebVersion "0.2.4.1-3"] [P.DebVersion "0.2.4.1-2build3"] }
+                , P.flags = rel release [P.DebVersion "0.2.4.1-3"] [P.DebVersion "0.2.4.1-2build3"] }
     , debianize "strict-io" [] -- for GenI
     , debianize "smallcheck" []
     -- Because 0.3.3-1 is both in sid and hackage, we need to keep the debianize
     -- code from using version 0.3.3-1~hackage1 which looks older.
     , debianize "syb-with-class" []
-    , apt (quantal release "sid" "quantal") "haskell-syb-with-class-instances-text" []
+    , apt (rel release "sid" "quantal") "haskell-syb-with-class-instances-text" []
     , debianize "tagged" []
     , debianize "tagsoup" []
     , debianize "tar" []
@@ -555,7 +567,7 @@ main _home release =
                 , P.flags = [] }
     , debianize "th-expand-syns" []
     , debianize "th-lift" []
-    , debianize "transformers-base" (quantal release [P.DebVersion "0.4.1-2"] [P.DebVersion "0.4.1-2build2"])
+    , debianize "transformers-base" (rel release [P.DebVersion "0.4.1-2"] [P.DebVersion "0.4.1-2build2"])
     , debianize "unicode-names" [P.DebVersion "3.2.0.0-1~hackage1"]
     , P.Package { P.name = "haskell-unicode-properties"
                 , P.spec = Debianize (Patch (Hackage "unicode-properties") $(embedFile "patches/unicode-properties.diff"))
@@ -566,7 +578,7 @@ main _home release =
     , P.Package { P.name = "haskell-language-javascript"
                 , P.spec = Debianize ((Hackage "language-javascript") {- `Patch` $(embedFile "patches/language-javascript.diff") -})
                 , P.flags = [P.ExtraDep "happy"] }
-    , debianize "utf8-light" (quantal release [P.DebVersion "0.4.0.1-2build1"] [P.DebVersion "0.4.0.1-2build3"])
+    , debianize "utf8-light" (rel release [P.DebVersion "0.4.0.1-2build1"] [P.DebVersion "0.4.0.1-2build3"])
     , debianize "language-haskell-extract" []
     , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
     , P.Package { P.name = "haskell-language-ecmascript"
@@ -584,13 +596,13 @@ main _home release =
     , debianize "unordered-containers" []
     , debianize "utf8-prelude" [P.DebVersion "0.1.6-1~hackage1"]
     , P.Package { P.name = "haskell-utf8-string"
-                , P.spec = Apt (quantal release "sid" "quantal") "haskell-utf8-string"
+                , P.spec = Apt (rel release "sid" "quantal") "haskell-utf8-string"
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize "unification-fd" []
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
                 , P.flags = [P.DebVersion "0.5.0.2-1~hackage1"] }
-    , quantal release (apt "sid" "haskell-utility-ht" []) (debianize "utility-ht" [])
+    , ghc release (apt "sid" "haskell-utility-ht" []) (debianize "utility-ht" [])
     , debianize "vacuum" []
     -- Requires devscripts 0.8.9, restore when that gets built
     -- apt "sid" "haskell-vector" []
@@ -609,7 +621,7 @@ main _home release =
                 , P.spec = Debianize (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff"))
                 , P.flags = [] }
     , debianize "boomerang" []
-    , apt (quantal release "sid" "quantal") "haskell-xml" []
+    , apt (rel release "sid" "quantal") "haskell-xml" []
     , debianize "cookie" []
     , debianize "lifted-base" []
     , debianize "system-filepath" []
@@ -617,18 +629,18 @@ main _home release =
                 , P.spec = Debianize (Patch (Hackage "xml-enumerator") $(embedFile "patches/xml-enumerator.diff"))
                 , P.flags = [] }
     , debianize "xml-types" []
-    , debianize "xss-sanitize" (quantal release [] [P.DebVersion "0.3.2-1build1"])
-    , debianize "yaml-light" (quantal release [P.DebVersion "0.1.4-2"] [P.DebVersion "0.1.4-2build1"])
-    , quantal release (apt "sid" "haskell-zip-archive" []) (debianize "zip-archive" [])
+    , debianize "xss-sanitize" (rel release [] [P.DebVersion "0.3.2-1build1"])
+    , debianize "yaml-light" (rel release [P.DebVersion "0.1.4-2"] [P.DebVersion "0.1.4-2build1"])
+    , ghc release (apt "sid" "haskell-zip-archive" []) (debianize "zip-archive" [])
     , debianize "regex-pcre-builtin" [P.MapDep "pcre" (BinPkgName "libpcre3-dev") {-, P.ExtraDevDep "libpcre3-dev"-}]
-    , quantal release (apt "sid" "hscolour" [P.RelaxDep "hscolour"])
+    , ghc release (apt "sid" "hscolour" [P.RelaxDep "hscolour"])
                       (debianize "hscolour" [P.RelaxDep "hscolour"])
-    , quantal release
+    , ghc release
         (P.Package { P.name = "haskell-hslogger"
                    , P.spec = Patch (Apt "sid" "hslogger") $(embedFile "patches/hslogger.diff")
                    , P.flags = [] })
         (debianize "hslogger" [])
-    , quantal release P.NoPackage (debianize "extensible-exceptions" []) -- required for ghc-7.6, not just quantal
+    , ghc release P.NoPackage (debianize "extensible-exceptions" []) -- required for ghc-7.6, not just quantal
     , case release of
       "quantal-seereason" -> P.NoPackage -- This build hangs when performing tests
       _ -> apt "sid" "html-xml-utils" []
@@ -695,7 +707,10 @@ main _home release =
                 , P.flags = [] }
     , P.Package { P.name = "csv"
                 , P.spec = Debianize (Hackage "csv")
-                , P.flags = (quantal release [P.DebVersion "0.1.2-2"] [P.DebVersion "0.1.2-2build2"]) }
+                , P.flags = (rel release [P.DebVersion "0.1.2-2"] [P.DebVersion "0.1.2-2build2"]) }
+    , P.Package { P.name = "xmobar"
+                , P.spec = Debianize (Hackage "xmobar")
+                , P.flags = [] }
 {-
     -- Fails in lucid due to build deps
     , P.Package { P.name = "jbigkit"
@@ -704,9 +719,9 @@ main _home release =
 -}
     ]
 
-ghc release =
+compiler release =
   P.Packages (singleton "ghc") $
-  quantal release [devscripts] [ghc76, devscripts]
+  ghc release [devscripts] [ghc76, devscripts]
     where
       ghc76 = P.Package { P.name = "ghc"
                         , P.spec = Apt "experimental" "ghc"
@@ -717,9 +732,9 @@ ghc release =
       relax = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"]
       devscripts =
         P.Package { P.name = "haskell-devscripts"
-                  , P.spec = quantal release (Patch (Apt "precise" "haskell-devscripts") $(embedFile "patches/haskell-devscripts-0.8.12.diff")) -- Apt "sid" "haskell-devscripts"
-                                             (Apt "experimental" "haskell-devscripts")
-                  , P.flags = quantal release [P.RelaxDep "python-minimal", P.DebVersion "0.8.12ubuntu1"] [P.RelaxDep "python-minimal"] }
+                  , P.spec = ghc release (Patch (Apt "precise" "haskell-devscripts") $(embedFile "patches/haskell-devscripts-0.8.12.diff")) -- Apt "sid" "haskell-devscripts"
+                                             (Patch (Apt "experimental" "haskell-devscripts") $(embedFile "patches/haskell-devscripts-0.8.13.diff"))
+                  , P.flags = ghc release [P.RelaxDep "python-minimal", P.DebVersion "0.8.12ubuntu1"] [P.RelaxDep "python-minimal"] }
       -- haskell-devscripts-0.8.13 is for ghc-7.6 only
 
 platform release =
@@ -740,13 +755,13 @@ platform release =
     -- can't build this unless we modify the ghc package first.
     -- debianize "directory" []
     , debianize "stm" []
-    , quantal release (apt "sid" "haskell-zlib" [])
+    , ghc release (apt "sid" "haskell-zlib" [])
                       (debianize "zlib" [])
     , debianize "mtl" []
-    , debianize "transformers" (quantal release [] [P.DebVersion "0.3.0.0-1build3" {- version in ubuntu repo -}])
+    , debianize "transformers" (rel release [] [P.DebVersion "0.3.0.0-1build3" {- version in ubuntu repo -}])
     , debianize "parallel" []
     , debianize "syb" []
-    , debianize "fgl" (quantal release [P.DebVersion "5.4.2.4-2"] [P.DebVersion "5.4.2.4-2build2"])
+    , debianize "fgl" (rel release [P.DebVersion "5.4.2.4-2"] [P.DebVersion "5.4.2.4-2build2"])
     , debianize "text" []
     , P.Package { P.name = "alex"
                 , P.spec = Debianize (Hackage "alex")
@@ -754,6 +769,7 @@ platform release =
                   -- an installed alex binary to build
                 , P.flags = [P.ExtraDep "alex",
                              P.CabalDebian ["--executable", "alex"],
+                             P.DebVersion "3.0.2-1~hackage1",
                              P.ModifyAtoms (\ atoms -> map (\ name -> DHInstallData (BinPkgName "alex") name name)
                                                            [ "AlexTemplate"
                                                            , "AlexTemplate-debug"
@@ -771,9 +787,9 @@ platform release =
                                                            , "AlexWrapper-strict-bytestring"] ++ atoms) ] }
     , opengl release
     -- , haddock release
-    , debianize "haskell-src" (quantal release [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1" ] [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1build2" ])
+    , debianize "haskell-src" (rel release [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1" ] [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1build2" ])
     , debianize "network" []
-    , debianize "HTTP" (quantal release [P.DebVersion "1:4000.2.3-1~hackage1"] [P.DebVersion "1:4000.2.3-1build2"])
+    , debianize "HTTP" (rel release [P.DebVersion "1:4000.2.3-1~hackage1"] [P.DebVersion "1:4000.2.3-1build2"])
     , P.Package { P.name = "haskell-cgi"
                 , P.spec = Debianize (Hackage "cgi")
                 -- , P.spec = DebDir (Uri "http://hackage.haskell.org/packages/archive/cgi/3001.1.8.2/cgi-3001.1.8.2.tar.gz" "4092efaf00ac329b9771879f57a95323") (Darcs "http://src.seereason.com/haskell-cgi-debian")
@@ -782,15 +798,15 @@ platform release =
     -- , debianize "process" []
     -- Random is built into 7.0, but not into 7.2, and the version
     -- in hackage is incompatible with the version shipped with 7.0.
-    , debianize "random" (quantal release [P.DebVersion "1.0.1.1-1"] [P.DebVersion "1.0.1.1-1build2"])
+    , debianize "random" (rel release [P.DebVersion "1.0.1.1-1"] [P.DebVersion "1.0.1.1-1build2"])
     , debianize "HUnit" []
     , debianize "QuickCheck" [P.ExtraDep "libghc-random-prof"]
-    , quantal release (apt "sid" "haskell-parsec" []) (debianize "parsec" [])
-    , apt (quantal release "sid" "quantal") "haskell-html" []
-    , apt (quantal release "sid" "quantal") "haskell-regex-compat" []
-    , apt (quantal release "sid" "quantal") "haskell-regex-base" []
-    , quantal release (apt "sid" "haskell-regex-posix" []) (debianize "regex-posix" [])
-    , debianize "xhtml" (quantal release [] [P.DebVersion "3000.2.1-1build2"])
+    , ghc release (apt "sid" "haskell-parsec" []) (debianize "parsec" [])
+    , apt (rel release "sid" "quantal") "haskell-html" []
+    , apt (rel release "sid" "quantal") "haskell-regex-compat" []
+    , apt (rel release "sid" "quantal") "haskell-regex-base" []
+    , ghc release (apt "sid" "haskell-regex-posix" []) (debianize "regex-posix" [])
+    , debianize "xhtml" (rel release [] [P.DebVersion "3000.2.1-1build2"])
     ]
 
 clckwrks _home release =
@@ -898,7 +914,7 @@ happstack release =
                 , P.flags = [] }
     -- Current happstack-server requires directory >= 1.2, which comes with ghc-7.6.
     , P.Package { P.name = "haskell-happstack-server"
-                , P.spec = Debianize (quantal release (Hackage "happstack-server")
+                , P.spec = Debianize (ghc release (Hackage "happstack-server")
                                                       (Patch (Hackage "happstack-server") $(embedFile "patches/happstack-server.diff")))
                 , P.flags = [P.CabalPin "7.0.7", P.DebVersion "7.0.7-1"] }
     , debianize "base64-bytestring" []
@@ -910,7 +926,7 @@ happstack release =
                 , P.spec = Debianize (Hackage "happstack-static-routing")
                 , P.flags = [P.DebVersion "0.3.1-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-util"
-                , P.spec = Debianize (Patch (Hackage "happstack-util") (quantal release $(embedFile "patches/happstack-util.diff")
+                , P.spec = Debianize (Patch (Hackage "happstack-util") (ghc release $(embedFile "patches/happstack-util.diff")
                                                                                         $(embedFile "patches/happstack-util-ghc76.diff")))
                 , P.flags = [P.DebVersion "6.0.3-1"] }
     -- This target puts the trhsx binary in its own package, while the
@@ -918,10 +934,14 @@ happstack release =
     -- use debianize for natty and apt:sid for lucid.
     , P.Package { P.name = "haskell-hsp"
                 , P.spec = Debianize (Patch (Hackage "hsp") $(embedFile "patches/hsp.diff"))
-                , P.flags = quantal release [P.DebVersion "0.7.1-1~hackage1", CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] [CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] }
+                , P.flags = rel release [P.DebVersion "0.7.1-1~hackage1", CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] [CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] }
     , P.Package { P.name = "haskell-hsx"
                 , P.spec = Debianize (Hackage "hsx")
-                , P.flags = [P.DebVersion "0.10.4-1~hackage1", P.CabalDebian ["--executable", "trhsx"]] }
+                , P.flags = [ P.DebVersion "0.10.4-1~hackage1"
+                            -- Putting trhsx into a package called trhsx is problematic,
+                            -- because the official debian package puts it into libghc-hsx-utils.
+                            -- , P.CabalDebian ["--executable", "trhsx"]
+                            ] }
     , P.Package { P.name = "haskell-pandoc"
                 , P.spec = Debianize (Patch (Hackage "pandoc") $(embedFile "patches/pandoc.diff"))
                 , P.flags = [P.RelaxDep "libghc-pandoc-doc"]
@@ -974,7 +994,7 @@ happstack release =
                 , P.spec = Debianize (Cd "reform-hsp" (Darcs (darcsHub ++ "/reform")))
                 , P.flags = [] }
     , debianize "blaze-markup" []
-    , apt (quantal release "sid" "quantal") "haskell-blaze-builder" []
+    , apt (rel release "sid" "quantal") "haskell-blaze-builder" []
     , P.Package { P.name = "haskell-blaze-builder-enumerator"
                 , P.spec = Debianize (Hackage "blaze-builder-enumerator")
                 , P.flags = [P.DebVersion "0.2.0.5-1~hackage1"] }
@@ -1019,7 +1039,7 @@ conduit =
 authenticate _home release =
   P.Packages (singleton "authenticate") $
     [ conduit
-    , quantal release (apt "sid" "haskell-puremd5" []) (debianize "pureMD5" [])
+    , ghc release (apt "sid" "haskell-puremd5" []) (debianize "pureMD5" [])
     , debianize "monadcryptorandom" []
     , debianize "RSA" []
     , P.Package { P.name = "haskell-resourcet"
@@ -1099,7 +1119,7 @@ opengl release = P.Packages (singleton "opengl") $
                 , P.spec = Debianize (Hackage "bitmap-opengl")
                 , P.flags = [P.ExtraDep "libglu1-mesa-dev"] }
     , debianize "GLUT" []
-    , debianize "StateVar" (quantal release [P.DebVersion "1.0.0.0-2build1"] [P.DebVersion "1.0.0.0-2build3"])
+    , debianize "StateVar" (rel release [P.DebVersion "1.0.0.0-2build1"] [P.DebVersion "1.0.0.0-2build3"])
     , debianize "Tensor" []
     , debianize "GLURaw" []
     , debianize "ObjectName" []
@@ -1206,8 +1226,8 @@ algebra release = P.Packages (singleton "algebra")
     , debianize "comonad-transformers" []
     , debianize "control-monad-free" []
     , debianize "transformers-free" []
-    , debianize "contravariant" (quantal release [] [P.DebVersion "0.2.0.2-1build2"])
-    , debianize "distributive" (quantal release [] [P.DebVersion "0.2.2-1build2"])
+    , debianize "contravariant" (rel release [] [P.DebVersion "0.2.0.2-1build2"])
+    , debianize "distributive" (rel release [] [P.DebVersion "0.2.2-1build2"])
     , P.Package { P.name = "free"
                 , P.spec = Debianize (Hackage "free")
                 , P.flags = [P.DebVersion "3.2-1~hackage1"] }

@@ -1,5 +1,5 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# OPTIONS -Wall -Werror -fno-warn-missing-signatures -fno-warn-unused-imports #-}
+{-# OPTIONS -Wall -Werror -fno-warn-missing-signatures -fno-warn-unused-imports -fno-warn-orphans #-}
 #!/usr/bin/env runhaskell -package=base-3.0.3.0
 -- Currently this will not run as a script even with the line above.
 -- The reason is unclear.  Either use the wrapper script in
@@ -128,6 +128,17 @@ getParams home args =
             -- FIXME - make myTargets a set
             knownTargets = mappend (myTargets home (const True) (relName (buildRelease params)))
                                    (if testWithPrivate params then private home else NoPackage)
+
+{-
+instance Eq Packages where
+    (Package {name = n1, spec = s1}) == (Package {name = n2, spec = s2}) = n1 == n2 && s1 == s2
+    (Packages {group = g1, list = l1}) == (Packages {group = g2, list = l2}) = g1 == g2 && l1 == l2
+    NoPackage == NoPackage = True
+    _ == _ = False
+
+instance Show Packages where
+    show _ = "<Packages>"
+-}
 
 -- |Each option is defined as a function transforming the parameter record.
 optSpecs :: [OptDescr (Either String (ParamRec -> ParamRec))]

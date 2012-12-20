@@ -1,0 +1,11 @@
+--- old/hlibrary.mk	2012-10-08 12:11:35.000000000 -0700
++++ new/hlibrary.mk	2012-12-20 09:14:00.501000193 -0800
+@@ -175,7 +175,7 @@
+ 		cp -r debian/tmp-inst-ghc/$(DEB_HADDOCK_DIR)/*.haddock \
+ 		debian/$(notdir $@)/$(DEB_HADDOCK_DIR)
+ 	find debian/$(notdir $@)/$(DEB_HADDOCK_HTML_DIR) -name "*.txt" \
+-		-printf "%p $(DEB_HOOGLE_TXT_DIR)/%f\n" >> debian/libghc-$(CABAL_PACKAGE)-doc.links
++		-printf "%p $(DEB_HOOGLE_TXT_DIR)/$(DEB_CABAL_PACKAGE).txt\n" >> debian/libghc-$(CABAL_PACKAGE)-doc.links
+ 	sed -i s,^debian/libghc-$(CABAL_PACKAGE)-doc,, debian/libghc-$(CABAL_PACKAGE)-doc.links
+ 	dh_haskell_depends -p$(notdir $@)
+ 
