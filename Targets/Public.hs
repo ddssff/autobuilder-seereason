@@ -732,7 +732,7 @@ platform release =
       -- autobuilder.
       P.Package { P.name = "happy",
                   P.spec = DebDir (Hackage "happy") (Darcs "http://src.seereason.com/happy-debian"),
-                  P.flags = [P.RelaxDep "happy",
+                  P.flags = [P.RelaxDep "happy", P.CabalDebian ["--executable", "happy"],
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     {- , debianize "happy" [] -}
     -- There are newer versions in hackage, but it will trigger a huge
@@ -749,8 +749,26 @@ platform release =
     , debianize "fgl" (quantal release [P.DebVersion "5.4.2.4-2"] [P.DebVersion "5.4.2.4-2build2"])
     , debianize "text" []
     , P.Package { P.name = "alex"
-                , P.spec = quantal release (Apt "sid" "alex") (Debianize (Hackage "alex"))
-                , P.flags = [P.RelaxDep "alex"] }
+                , P.spec = Debianize (Hackage "alex")
+                  -- alex shouldn't rebuild just because alex seems newer, but alex does require
+                  -- an installed alex binary to build
+                , P.flags = [P.ExtraDep "alex",
+                             P.CabalDebian ["--executable", "alex"],
+                             P.ModifyAtoms (\ atoms -> map (\ name -> DHInstallData (BinPkgName "alex") name name)
+                                                           [ "AlexTemplate"
+                                                           , "AlexTemplate-debug"
+                                                           , "AlexTemplate-ghc"
+                                                           , "AlexTemplate-ghc-debug"
+                                                           , "AlexWrapper-basic"
+                                                           , "AlexWrapper-basic-bytestring"
+                                                           , "AlexWrapper-gscan"
+                                                           , "AlexWrapper-monad"
+                                                           , "AlexWrapper-monad-bytestring"
+                                                           , "AlexWrapper-monadUserState"
+                                                           , "AlexWrapper-monadUserState-bytestring"
+                                                           , "AlexWrapper-posn"
+                                                           , "AlexWrapper-posn-bytestring"
+                                                           , "AlexWrapper-strict-bytestring"] ++ atoms) ] }
     , opengl release
     -- , haddock release
     , debianize "haskell-src" (quantal release [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1" ] [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1build2" ])
@@ -903,7 +921,7 @@ happstack release =
                 , P.flags = quantal release [P.DebVersion "0.7.1-1~hackage1", CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] [CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] }
     , P.Package { P.name = "haskell-hsx"
                 , P.spec = Debianize (Hackage "hsx")
-                , P.flags = [P.DebVersion "0.10.4-1~hackage1"] }
+                , P.flags = [P.DebVersion "0.10.4-1~hackage1", P.CabalDebian ["--executable", "trhsx"]] }
     , P.Package { P.name = "haskell-pandoc"
                 , P.spec = Debianize (Patch (Hackage "pandoc") $(embedFile "patches/pandoc.diff"))
                 , P.flags = [P.RelaxDep "libghc-pandoc-doc"]
