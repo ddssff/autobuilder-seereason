@@ -941,21 +941,20 @@ happstack release =
                 , P.flags = [] }
     , debianize "HJScript" []
     , P.Package { P.name = "reform"
-                , P.spec = Debianize (Cd "reform" (Darcs (patchTag ++ "/reform")))
+                , P.spec = Debianize (Cd "reform" (Darcs (darcsHub ++ "/reform")))
                 , P.flags = [P.DebVersion "0.1.2-1~hackage1"] }
     , P.Package { P.name = "reform-blaze"
-                , P.spec = Debianize (Cd "reform-blaze" (Darcs (patchTag ++ "/reform")))
-                , P.flags = [P.DebVersion "0.1-1~hackage1"] }
+                , P.spec = Debianize (Cd "reform-blaze" (Darcs (darcsHub ++ "/reform")))
+                , P.flags = [] }
     , P.Package { P.name = "reform-happstack"
-                , P.spec = Debianize (Patch (Cd "reform-happstack" (Darcs (patchTag ++ "/reform")))
-                                            $(embedFile "patches/reform-happstack.diff"))
-                , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
+                , P.spec = Debianize (Cd "reform-happstack" (Darcs (darcsHub ++ "/reform")))
+                , P.flags = [] }
 {-  , P.Package { P.name = "reform-heist"
-                , P.spec = Debianize (Cd "reform-heist" (Darcs patchTag ++ "/reform"))
+                , P.spec = Debianize (Cd "reform-heist" (Darcs darcsHub ++ "/reform"))
                 , P.flags = [] } -}
     , P.Package { P.name = "reform-hsp"
-                , P.spec = Debianize (Cd "reform-hsp" (Darcs (patchTag ++ "/reform")))
-                , P.flags = [P.DebVersion "0.1.1-1~hackage1"] }
+                , P.spec = Debianize (Cd "reform-hsp" (Darcs (darcsHub ++ "/reform")))
+                , P.flags = [] }
     , debianize "blaze-markup" []
     , apt (quantal release "sid" "quantal") "haskell-blaze-builder" []
     , P.Package { P.name = "haskell-blaze-builder-enumerator"
