@@ -141,8 +141,7 @@ main _home release =
     , P.Package { P.name = "gtk2hs-buildtools"
                 , P.spec = Debianize (Hackage "gtk2hs-buildtools")
                 , P.flags =
-                    [ P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"
-                    , P.ExtraDep "alex"
+                    [ P.ExtraDep "alex"
                     , P.ExtraDep "happy"
                     , P.Revision "" ] }
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
@@ -156,7 +155,7 @@ main _home release =
     -- Our applicative-extras repository has several important patches.
     , P.Package { P.name = "haskell-applicative-extras",
                   P.spec = Debianize (Hackage "applicative-extras"),
-                  P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.DebVersion "0.1.8-1"] }
+                  P.flags = [P.DebVersion "0.1.8-1"] }
     , debianize "asn1-data" []
     , debianize "attempt" (rel release [P.DebVersion "0.4.0-1"] [P.DebVersion "0.4.0-1build2"])
     , debianize "errors" []
@@ -165,7 +164,7 @@ main _home release =
     , debianize "attoparsec-enumerator" []
     , P.Package { P.name = "haskell-attoparsec-text"
                 , P.spec = Debianize (Patch (Hackage "attoparsec-text") $(embedFile "patches/attoparsec-text.diff"))
-                , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
+                , P.flags = [P.Revision ""] }
     , debianize "attoparsec-text-enumerator" []
     , debianize "base16-bytestring" []
     , debianize "base-unicode-symbols" []
@@ -409,7 +408,7 @@ main _home release =
     , debianize "iconv" []
     , P.Package { P.name = "haskell-incremental-sat-solver"
                 , P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs "http://src.seereason.com/haskell-incremental-sat-solver-debian")
-                , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
+                , P.flags = [] }
     , P.Package { P.name = "haskell-instant-generics"
                 , P.spec = Debianize (Hackage "instant-generics")
                 , P.flags = [] }
@@ -479,7 +478,7 @@ main _home release =
     , apt (rel release "sid" "quantal") "haskell-parsec2" []
     , P.Package { P.name = "haskell-pbkdf2",
                   P.spec = DebDir (Hackage "PBKDF2") (Darcs "http://src.seereason.com/pbkdf2-debian"),
-                  P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"]}
+                  P.flags = []}
     , apt (rel release "sid" "quantal") "haskell-pcre-light" []
     , debianize "permutation" [P.DebVersion "0.4.1-1~hackage1"]
     , debianize "pipes" []
@@ -665,7 +664,7 @@ main _home release =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-missingh"
                 , P.spec = Debianize (Hackage "MissingH")
-                , P.flags = [P.Maintainer "SeeReason Autobuilder <logic@seereason.com>", P.Revision ""] }
+                , P.flags = [P.Revision ""] }
     , P.Package { P.name = "seereason-keyring"
                 , P.spec = Darcs "http://src.seereason.com/seereason-keyring"
                 , P.flags = [P.UDeb "seereason-keyring-udeb"] }
@@ -1004,7 +1003,7 @@ happstack release =
     , P.Package { P.name = "haskell-blaze-textual-native"
                 , P.spec = Debianize (Patch
                                       (Hackage "blaze-textual-native") $(embedFile "patches/blaze-textual-native.diff"))
-                , P.flags = [P.Maintainer "SeeReason Autobuilder <partners@seereason.com>", P.Revision ""] }
+                , P.flags = [P.Revision ""] }
     , P.Package { P.name = "clckwrks-theme-happstack"
                 , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (repo ++ "/happstack-clckwrks")))
                 , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
