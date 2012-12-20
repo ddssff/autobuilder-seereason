@@ -44,18 +44,18 @@ main =
 -- | Look for the doHelp flag in any parameter set, if given output
 -- help message and exit.  If --help was given it will appear in all
 -- the parameter sets, so we only examine the first.
-help :: [(ParamRec, Packages)] -> IO [(ParamRec, Packages)]
-help pairs =
-    case (any (doHelp . fst) pairs) of
+help :: [ParamRec] -> IO [ParamRec]
+help recs =
+    case (any doHelp recs) of
       True -> hPutStr stderr (usage "Usage: " optSpecs) >> return []
-      False -> return pairs
+      False -> return recs
 
 -- |given a list of strings as they would be returned from getArgs,
 -- build the list of ParamRec which defines the build.
 -- 
 -- Example: getParams ["lucid-seereason" "--all-targets"] >>= return . map buildRelease
 --            -> [ReleaseName {relName = "lucid-seereason"}]
-getParams :: String -> [String] -> [(ParamRec, Packages)]
+getParams :: String -> [String] -> [ParamRec]
 getParams home args =
     doParams (getOpt' (ReturnInOrder Left) optSpecs args)
     where
@@ -66,9 +66,9 @@ getParams home args =
                    [String],               -- non-options
                    [String],               -- unrecognized options
                    [String])               -- error messages
-               -> [(ParamRec, Packages)]
+               -> [ParamRec]
       doParams (fns, [], [], []) =
-          map (\ params -> (params, finalizeTargets params)) . reverse $ f [] fns
+          map (\ params -> params {packages = finalizeTargets params}) . reverse $ f [] fns
           where
             f recs [] = recs
             f recs (Left rel : xs) = f (defParams home rel : recs) xs
@@ -80,11 +80,9 @@ getParams home args =
       finalizeTargets :: ParamRec -> Packages
       finalizeTargets params =
           Packages { group = Set.empty
-                   , packages = Map.elems $ if allTargets (targets params)
-                                            then collectAll knownTargets Map.empty
-                                            else Set.fold collectName Map.empty (targetNames (targets params))
-                                            -- else Set.fold (collectByName knownTargets) Map.empty (targetNames (targets params))
-                   }
+                   , list = Map.elems $ if allTargets (targets params)
+                                        then collectAll knownTargets Map.empty
+                                        else Set.fold collectName Map.empty (targetNames (targets params)) }
           where
             collectName n collected =
               case findByName n knownTargets of
@@ -98,8 +96,8 @@ getParams home args =
                 NoPackage -> []
                 ps@(Packages {}) ->
                   if Set.member n (group ps)
-                  then concatMap findAll (packages ps)
-                  else concatMap (findByName n) (packages ps)
+                  then concatMap findAll (list ps)
+                  else concatMap (findByName n) (list ps)
                 p@(Package {}) ->
                   if name p == n
                   then [p]
@@ -107,7 +105,7 @@ getParams home args =
             findAll known =
               case known of
                 NoPackage -> []
-                ps@(Packages {}) -> concatMap findAll (packages ps)
+                ps@(Packages {}) -> concatMap findAll (list ps)
                 p@(Package {}) -> [p]
 {-
             collectByName known n collected =
@@ -125,7 +123,7 @@ getParams home args =
                 case p of
                   NoPackage -> collected
                   Package {} -> Map.insertWith check (name p) p collected
-                  Packages {} -> foldr collectAll collected (packages p)
+                  Packages {} -> foldr collectAll collected (list p)
             check old new = if old /= new then error ("Multiple packages with same name: " ++ show old ++ ", " ++ show new) else old
             -- FIXME - make myTargets a set
             knownTargets = mappend (myTargets home (const True) (relName (buildRelease params)))
@@ -263,7 +261,7 @@ defParams _home myBuildRelease =
     -- 6.15 changes Epoch parameter arity to 2
     -- 6.18 renames type Spec -> RetrieveMethod
     -- 6.35 added the CabalDebian flag
-    , requiredVersion = [(parseDebianVersion "6.47", Nothing)]
+    , requiredVersion = [(parseDebianVersion "6.48", Nothing)]
     , hackageServer = myHackageServer
     -- Things that are probably obsolete
     , debug = False
@@ -275,4 +273,5 @@ defParams _home myBuildRelease =
     , noClean = False
     , cleanUp = False
     , ifSourcesChanged = SourcesChangedError
+    , packages = NoPackage
     }

@@ -9,6 +9,7 @@ import Data.Set (empty, singleton)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
 import Debian.Relation (BinPkgName(..))
+import Distribution.Debian (DebAtom(..))
 import System.FilePath((</>))
 import Targets.Common (repo, localRepo, happstackRepo)
 
@@ -1285,7 +1286,7 @@ debianize s flags =
 -- FIXME: make generic
 patch :: P.Packages -> B.ByteString -> P.Packages
 patch package@(P.Package {}) s = package {P.spec = Patch (P.spec package) s}
-patch p@(P.Packages {}) s = p {P.packages = map (`patch` s) (P.packages p)}
+patch p@(P.Packages {}) s = p {P.list = map (`patch` s) (P.list p)}
 patch P.NoPackage _ = P.NoPackage
 
 asciiToString :: B.ByteString -> String
