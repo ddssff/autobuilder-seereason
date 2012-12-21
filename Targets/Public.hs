@@ -264,8 +264,8 @@ main _home release =
                 , P.flags = [P.DebVersion "0.4.4.1-1~hackage1"] }
     , debianize "hsyslog" []
     , debianize "erf" [P.DebVersion "2.0.0.0-3"]
-    , ghc release (apt "sid" "haskell-feed" (rel release [] [P.DebVersion "0.3.8-3build2"]))
-                  (debianize "feed" (rel release [] [P.DebVersion "0.3.8-3build2"]))
+    , ghc release (apt "sid" "haskell-feed" (rel release [P.DebVersion "0.3.8-3"] [P.DebVersion "0.3.8-3build2"]))
+                  (debianize "feed" (rel release [P.DebVersion "0.3.8-3"] [P.DebVersion "0.3.8-3build2"]))
     -- Darcs 2.8.1 won't build with the current version of haskeline.
 {-
     , P.Package { P.name = "darcs"
@@ -575,7 +575,7 @@ main _home release =
     -- , apt "sid" "haskell-unix-compat" []
     , debianize "cmdargs" []
     , P.Package { P.name = "haskell-language-javascript"
-                , P.spec = Debianize ((Hackage "language-javascript") {- `Patch` $(embedFile "patches/language-javascript.diff") -})
+                , P.spec = Debianize (Hackage "language-javascript")
                 , P.flags = [P.ExtraDep "happy"] }
     , debianize "utf8-light" (rel release [P.DebVersion "0.4.0.1-2build1"] [P.DebVersion "0.4.0.1-2build3"])
     , debianize "language-haskell-extract" []
