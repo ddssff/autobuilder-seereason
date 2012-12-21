@@ -1156,7 +1156,9 @@ glib _release = P.Packages (singleton "glib") $
 plugins = P.Packages (singleton "plugins") $
     [ debianize "plugins" []
     , debianize "happstack-plugins" []
-    , debianize "plugins-auto" []
+    , P.Package { P.name = "haskell-plugins-auto"
+                , P.spec = Debianize (Patch (Hackage "plugins-auto") $(embedFile "patches/plugins-auto.diff"))
+                , P.flags = [] }
     , P.Package { P.name = "haskell-web-plugins"
                 , P.spec = Debianize (Cd "web-plugins" (Patch (Darcs "http://hub.darcs.net/stepcut/web-plugins")
                                                               $(embedFile "patches/web-plugins.diff")))
