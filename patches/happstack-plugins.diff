@@ -1,0 +1,11 @@
+--- old/happstack-plugins.cabal	2012-12-21 13:35:31.000000000 -0800
++++ new/happstack-plugins.cabal	2012-12-21 13:37:24.121262174 -0800
+@@ -31,7 +31,7 @@
+                        plugins-auto     == 0.0.*,
+                        mtl              >= 2.0 && <2.2,
+                        happstack-server >= 6   && <7.2,
+-                       template-haskell >= 2.6 && <2.8,
++                       template-haskell >= 2.6,
+                        th-lift          == 0.5.*
+ 
+   ghc-options:      -Wall
