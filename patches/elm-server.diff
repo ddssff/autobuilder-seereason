@@ -1,11 +1,11 @@
---- old/elm-server.cabal	2012-10-26 05:14:32.000000000 -0700
-+++ new/elm-server.cabal	2012-10-26 05:15:15.811759457 -0700
+--- old/elm-server.cabal	2013-01-08 16:12:40.000000000 -0800
++++ new/elm-server.cabal	2013-01-08 16:17:42.282234177 -0800
 @@ -32,7 +32,7 @@
                         parsec >= 3.1.1,
                         blaze-html >= 0.5.1,
                         HTTP >= 4000,
--                       happstack-server == 7.0.2,
+-                       happstack-server == 7.1.1 || == 7.0.2,
 +                       happstack-server >= 7.0.2,
                         deepseq,
-                        directory,
-                        Elm >= 0.5.0
+                        filepath,
+                        Elm >= 0.7

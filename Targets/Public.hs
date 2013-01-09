@@ -468,7 +468,7 @@ main _home release =
                 , P.spec = Debianize (Hackage "operational")
                 , P.flags = [P.OmitLTDeps] }
 --    , debianize "options" []
-    , debianize "optparse-applicative" []
+    , debianize "optparse-applicative" [P.CabalPin "0.4.3"] -- fay requires optparse-applicative < 0.5.
     , debianize "ordered" []
     , debianize "multiset" (ghc release [P.CabalPin "0.2.1"] []) -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize "temporary" []
@@ -515,6 +515,7 @@ main _home release =
                 , P.spec = Debianize (Patch (Hackage "sat") $(embedFile "patches/sat.diff"))
                 , P.flags = [ P.DebVersion "1.1.1-1~hackage1" ] }
     , debianize "semigroups" []
+    , debianize "nats" []
     , debianize "sendfile" []
     , P.Package { P.name = "haskell-set-extra"
                 , P.spec = Darcs "http://src.seereason.com/set-extra"
@@ -679,7 +680,7 @@ main _home release =
                 , P.spec = Debianize (Hackage "hlatex")
                 , P.flags = [] }
     , P.Package { P.name = "latex"
-                , P.spec = Debianize (Patch (Hackage "latex") $(embedFile "patches/latex.diff"))
+                , P.spec = Debianize (Hackage "latex")
                 , P.flags = [] }
     , debianize "texmath" []
     , P.Package { P.name = "derive"
@@ -847,7 +848,7 @@ clckwrks _home release =
                     , P.spec = Debianize (Patch (Cd "clckwrks-dot-com" (Darcs repo)) $(embedFile "patches/clckwrks-dot-com.diff"))
                     , P.flags = [] }
         , P.Package { P.name = "clckwrks-theme-clckwrks"
-                    , P.spec = Debianize (Patch (Cd "clckwrks-theme-clckwrks" (Darcs repo)) $(embedFile "patches/clckwrks-theme-clckwrks.diff"))
+                    , P.spec = Debianize (Cd "clckwrks-theme-clckwrks" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , debianize "jmacro" []
         , debianize "hsx-jmacro" []
@@ -1230,12 +1231,20 @@ algebra release = P.Packages (singleton "algebra")
     , debianize "control-monad-free" []
     , debianize "transformers-free" []
     , debianize "contravariant" (rel release [] [P.DebVersion "0.2.0.2-1build2"])
-    , debianize "distributive" (rel release [] [P.DebVersion "0.2.2-1build2"])
+    , P.Package { P.name = "haskell-distributive"
+                , P.spec = Debianize (Patch (Hackage "distributive") $(embedFile "patches/distributive.diff"))
+                , P.flags = rel release [] [P.DebVersion "0.2.2-1build2"] }
+    -- This package fails to build in several different ways because it has no modules.
+    -- I am just going to patch the packages that use it to require transformers >= 0.3.
+    -- Specifically, distributive.
+    -- , debianize "transformers-compat" [{-P.NoDoc-}]
     , P.Package { P.name = "free"
                 , P.spec = Debianize (Hackage "free")
-                , P.flags = [P.DebVersion "3.2-1~hackage1"] }
+                , P.flags = [] }
     , debianize "keys" []
-    , debianize "lens" []
+    , P.Package { P.name = "haskell-lens"
+                , P.spec = Debianize (Patch (Hackage "lens") $(embedFile "patches/lens.diff"))
+                , P.flags = [] }
     , debianize "lens-family-core" []
     , debianize "lens-family" []
     , P.Package { P.name = "haskell-lens-family-th"
