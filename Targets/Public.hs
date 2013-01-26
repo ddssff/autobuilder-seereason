@@ -468,7 +468,7 @@ main _home release =
                 , P.spec = Debianize (Hackage "operational")
                 , P.flags = [P.OmitLTDeps] }
 --    , debianize "options" []
-    , debianize "optparse-applicative" [P.CabalPin "0.4.3"] -- fay requires optparse-applicative < 0.5.
+    , debianize "optparse-applicative" [] -- [P.CabalPin "0.4.3"] -- fay requires optparse-applicative < 0.5.
     , debianize "ordered" []
     , debianize "multiset" (ghc release [P.CabalPin "0.2.1"] []) -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize "temporary" []
