@@ -856,6 +856,7 @@ clckwrks _home release =
         , debianize "jmacro" []
         , debianize "hsx-jmacro" []
         , debianize "monadlist" []
+        , debianize "fay-base" []
         , debianize "fay" []
         ]
 
@@ -880,7 +881,8 @@ happstack release =
                 , P.flags = [] }
     , debianize "fay-base" []
     , P.Package { P.name = "haskell-fay-jquery"
-                , P.spec = Debianize (Git "https://github.com/faylang/fay-jquery.git")
+                , P.spec = Debianize (Git "http://src.seereason.com/fay-jquery")
+--                , P.spec = Debianize (Git "https://github.com/faylang/fay-jquery.git")
                 , P.flags = [] }
     , P.Package { P.name = "mastermind"
                 , P.spec = Debianize (Darcs "http://hub.darcs.net/stepcut/mastermind")
