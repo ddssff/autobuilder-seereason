@@ -150,7 +150,7 @@ main _home release =
                 , P.spec = Darcs "http://src.seereason.com/haskell-agi"
                 , P.flags = [] }
     , debianize "ansi-terminal" []
-    , debianize "ansi-wl-pprint" (rel release [P.DebVersion "0.6.4-1"] [P.DebVersion "0.6.4-1build2"])
+    , debianize "ansi-wl-pprint" []
     , debianize "wl-pprint-text" []
     -- Our applicative-extras repository has several important patches.
     , P.Package { P.name = "haskell-applicative-extras",
@@ -252,8 +252,7 @@ main _home release =
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
     , P.Package { P.name = "haskell-edison-api"
-                , P.spec = ghc release (Apt "sid" "haskell-edison-api") (Debianize (Patch (Hackage "EdisonAPI")
-                                                                                              $(embedFile "patches/EdisonAPI.diff")))
+                , P.spec = ghc release (Apt "sid" "haskell-edison-api") (Debianize (Hackage "EdisonAPI"))
                 , P.flags = rel release [] [P.DebVersion "1.2.1-18build2"] }
     , ghc release (apt "sid" "haskell-edison-core" (rel release [] [P.DebVersion "1.2.1.3-9build2"]))
                   (debianize "EdisonCore" (rel release [] [P.DebVersion "1.2.1.3-9build2"]))
@@ -342,6 +341,7 @@ main _home release =
     , debianize "indents" []
     , debianize "concatenative" []
     , debianize "either" []
+    , debianize "MonadRandom" []
     , P.Package { P.name = "haskell-formlets"
                 , P.spec = Debianize (Patch (Hackage "formlets") $(embedFile "patches/formlets.diff"))
                 , P.flags = [P.DebVersion "0.8-1~hackage1"] }
@@ -472,12 +472,12 @@ main _home release =
     , debianize "ordered" []
     , debianize "multiset" (ghc release [P.CabalPin "0.2.1"] []) -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize "temporary" []
-    , debianize "pandoc-types" (rel release [P.DebVersion "1.9.1-1"] [P.DebVersion "1.9.1-1build2"])
+    , debianize "pandoc-types" []
     , debianize "parse-dimacs" []
     , debianize "parseargs" []
     , apt (rel release "sid" "quantal") "haskell-parsec2" []
     , P.Package { P.name = "haskell-pbkdf2",
-                  P.spec = DebDir (Hackage "PBKDF2") (Darcs "http://src.seereason.com/pbkdf2-debian"),
+                  P.spec = Debianize (Hackage "PBKDF2"), -- DebDir (Hackage "PBKDF2") (Darcs "http://src.seereason.com/pbkdf2-debian")
                   P.flags = []}
     , apt (rel release "sid" "quantal") "haskell-pcre-light" []
     , debianize "permutation" [P.DebVersion "0.4.1-1~hackage1"]
@@ -601,7 +601,7 @@ main _home release =
     , debianize "unification-fd" []
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
-                , P.flags = [P.DebVersion "0.5.0.2-1~hackage1"] }
+                , P.flags = [] }
     , ghc release (apt "sid" "haskell-utility-ht" []) (debianize "utility-ht" [])
     , debianize "vacuum" []
     -- Requires devscripts 0.8.9, restore when that gets built
@@ -708,9 +708,12 @@ main _home release =
     , P.Package { P.name = "csv"
                 , P.spec = Debianize (Hackage "csv")
                 , P.flags = (rel release [P.DebVersion "0.1.2-2"] [P.DebVersion "0.1.2-2build2"]) }
+{-
+    -- Needs a build dependency on libXrandr-dev and the cabal package x11.
     , P.Package { P.name = "xmobar"
                 , P.spec = Debianize (Hackage "xmobar")
                 , P.flags = [] }
+-}
 {-
     -- Fails in lucid due to build deps
     , P.Package { P.name = "jbigkit"
@@ -875,12 +878,12 @@ happstack release =
     , P.Package { P.name = "haskell-happstack-fay"
                 , P.spec = Debianize (Patch (Hackage "happstack-fay") $(embedFile "patches/happstack-fay.diff"))
                 , P.flags = [] }
+    , debianize "fay-base" []
     , P.Package { P.name = "haskell-fay-jquery"
                 , P.spec = Debianize (Git "https://github.com/faylang/fay-jquery.git")
                 , P.flags = [] }
     , P.Package { P.name = "mastermind"
-                , P.spec = Debianize (Patch
-                                      (Darcs "http://hub.darcs.net/stepcut/mastermind") $(embedFile "patches/mastermind.diff"))
+                , P.spec = Debianize (Darcs "http://hub.darcs.net/stepcut/mastermind")
                 , P.flags = [P.CabalDebian ["--build-dep=haskell-fay-utils", "--build-dep=haskell-fay-jquery-utils", "--build-dep=haskell-happstack-fay-utils"]] }
     , ghc release (P.Package { P.name = "haskell-happstack-data"
                              , P.spec = Debianize (Patch (Hackage "happstack-data") $(embedFile "patches/happstack-data.diff"))
@@ -914,9 +917,12 @@ happstack release =
                 , P.flags = [] }
     -- Current happstack-server requires directory >= 1.2, which comes with ghc-7.6.
     , P.Package { P.name = "haskell-happstack-server"
-                , P.spec = Debianize (ghc release (Hackage "happstack-server")
-                                                      (Patch (Hackage "happstack-server") $(embedFile "patches/happstack-server.diff")))
-                , P.flags = [P.CabalPin "7.0.7", P.DebVersion "7.0.7-1"] }
+                , P.spec = Debianize (Hackage "happstack-server")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-happstack-server-tls"
+                , P.spec = Debianize (Hackage "happstack-server-tls")
+                , P.flags = [] }
+    , debianize "time-compat" []
     , debianize "base64-bytestring" []
     , debianize "threads" []
     , P.Package { P.name = "haskell-list-tries"
@@ -943,7 +949,7 @@ happstack release =
                             -- , P.CabalDebian ["--executable", "trhsx"]
                             ] }
     , P.Package { P.name = "haskell-pandoc"
-                , P.spec = Debianize (Patch (Hackage "pandoc") $(embedFile "patches/pandoc.diff"))
+                , P.spec = Debianize (Hackage "pandoc")
                 , P.flags = [P.RelaxDep "libghc-pandoc-doc"]
                 }
     , P.Package { P.name = "markdown"
@@ -1033,6 +1039,7 @@ conduit =
     , P.Package { P.name = "haskell-xml-conduit"
                 , P.spec = Debianize (Hackage "xml-conduit")
                 , P.flags = [] }
+    , debianize "mime-types" []
     ]
 
 -- | Packages pinned pending update of happstack-authenticate (in one possible build order.)
@@ -1052,6 +1059,9 @@ authenticate _home release =
     , debianize "zlib-bindings" []
     , debianize "tls" []
     , debianize "tls-extra" []
+    , debianize "cipher-rc4" []
+    , debianize "crypto-pubkey" []
+    , debianize "crypto-numbers" []
     , P.Package { P.name = "haskell-authenticate"
                 , P.spec = Debianize (Hackage "authenticate")
                 , P.flags = [] }
@@ -1059,7 +1069,8 @@ authenticate _home release =
                 , P.spec = Debianize (Hackage "zlib-enum")
                 , P.flags = [P.DebVersion "0.2.3-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-authenticate"
-                , P.spec = Debianize (Darcs (darcsHub ++ "/happstack-authenticate"))
+                , P.spec = Debianize (Patch (Darcs (darcsHub ++ "/happstack-authenticate"))
+                                            $(embedFile "patches/happstack-authenticate.diff"))
                 , P.flags = [] }
     , digestiveFunctors
     , P.Package { P.name = "haskell-fb"
@@ -1236,8 +1247,13 @@ algebra release = P.Packages (singleton "algebra")
                 , P.flags = rel release [] [P.DebVersion "0.2.2-1build2"] }
     -- This package fails to build in several different ways because it has no modules.
     -- I am just going to patch the packages that use it to require transformers >= 0.3.
-    -- Specifically, distributive.
+    -- Specifically, distributive and lens.
     -- , debianize "transformers-compat" [{-P.NoDoc-}]
+    , debianize "profunctor-extras" []
+    , debianize "semigroupoid-extras" []
+    , debianize "groupoids" []
+    , debianize "profunctors" []
+    , debianize "reflection" []
     , P.Package { P.name = "free"
                 , P.spec = Debianize (Hackage "free")
                 , P.flags = [] }

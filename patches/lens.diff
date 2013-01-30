@@ -1,12 +1,12 @@
---- old/lens.cabal	2013-01-08 16:12:43.000000000 -0800
-+++ new/lens.cabal	2013-01-08 16:24:23.694243663 -0800
-@@ -174,8 +174,7 @@
-     mtl                  >= 2.0.1    && < 2.2,
-     split                == 0.2.*,
-     text                 >= 0.11     && < 0.12,
--    transformers         >= 0.2      && < 0.4,
--    transformers-compat  >= 0.1,
-+    transformers         >= 0.3      && < 0.4,
-     unordered-containers >= 0.2      && < 0.3,
-     vector               >= 0.9      && < 0.11
+--- old/lens.cabal	2013-01-29 16:51:54.000000000 -0800
++++ new/lens.cabal	2013-01-29 17:04:39.462476653 -0800
+@@ -186,8 +186,7 @@
+     tagged                    >= 0.4.4    && < 1,
+     template-haskell          >= 2.4      && < 2.10,
+     text                      >= 0.11     && < 0.12,
+-    transformers              >= 0.2      && < 0.4,
+-    transformers-compat       >= 0.1      && < 1,
++    transformers              >= 0.3      && < 0.4,
+     unordered-containers      >= 0.2      && < 0.3,
+     vector                    >= 0.9      && < 0.11
  

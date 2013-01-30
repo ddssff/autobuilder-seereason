@@ -1,3 +1,18 @@
+--- old/dh_haskell_shlibdeps	2012-09-01 10:51:45.000000000 -0700
++++ new/dh_haskell_shlibdeps	2013-01-26 20:57:57.874536902 -0800
+@@ -65,7 +65,11 @@
+             sfile=debian/$pkg.substvars
+             pkgname=`basename debian/$pkg/usr/lib/haskell-packages/ghc/lib/* | sed -e 's/-[^-]\+$//'`
+             touch $sfile
+-            echo "module Main where main = return ()" > $T_DIR/a.hs
++            echo "{-# LANGUAGE NoImplicitPrelude #-}" >$T_DIR/a.hs
++            echo "{-# LANGUAGE PackageImports #-}" >>$T_DIR/a.hs
++            echo "module Main where" >> $T_DIR/a.hs
++            echo "import \"base\" Prelude" >> $T_DIR/a.hs
++            echo "main = return ()" >> $T_DIR/a.hs
+             ghc --make $T_DIR/a.hs -o $T_DIR/a.out -package-conf \
+                 $T_DIR/package.conf -package $pkgname
+             dpkg-shlibdeps -Tdebian/$pkg.substvars $T_DIR/a.out
 --- old/hlibrary.mk	2012-10-08 12:11:35.000000000 -0700
 +++ new/hlibrary.mk	2012-12-20 09:14:00.501000193 -0800
 @@ -175,7 +175,7 @@
