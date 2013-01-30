@@ -51,6 +51,7 @@ applications _home =
     , P.Package { P.name = "seereason-darcs-backups"
                 , P.spec = Darcs (repo ++ "/autobuilder-config")
                 , P.flags = [] }
+{-
     , P.Package { P.name = "clcksmith"
                 , P.spec = Debianize (Darcs (privateRepo ++ "/clcksmith"))
                 , P.flags = [P.ExtraDep "haskell-hsx-utils", P.CabalDebian ["--missing-dependency", "libghc-clckwrks-theme-clcksmith-doc"]] }
@@ -58,6 +59,7 @@ applications _home =
                 , P.spec = Debianize (Cd "clckwrks-theme-clcksmith" (Darcs (privateRepo ++ "/clcksmith")))
                 -- Haddock gets upset about the HSX.QQ modules.  Not sure why.
                 , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc] }
+-}
     , P.Package { P.name = "seereasonpartners-dot-com"
                 , P.spec = Debianize (Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks")))
                 , P.flags = [] }
