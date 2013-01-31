@@ -724,7 +724,7 @@ main _home release =
 
 compiler release =
   P.Packages (singleton "ghc") $
-  ghc release [devscripts] [ghc76, devscripts]
+  ghc release [{-ghc74,-} devscripts] [{-ghc76,-} devscripts]
     where
       ghc76 = P.Package { P.name = "ghc"
                         , P.spec = Apt "experimental" "ghc"
