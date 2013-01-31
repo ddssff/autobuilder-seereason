@@ -770,7 +770,8 @@ platform release =
                 , P.spec = Debianize (Hackage "alex")
                   -- alex shouldn't rebuild just because alex seems newer, but alex does require
                   -- an installed alex binary to build
-                , P.flags = [P.ExtraDep "alex",
+                , P.flags = [P.RelaxDep "alex",
+                             P.ExtraDep "alex",
                              P.CabalDebian ["--executable", "alex"],
                              P.DebVersion "3.0.2-1~hackage1",
                              P.ModifyAtoms (\ atoms -> map (\ name -> DHInstallData (BinPkgName "alex") name name)
