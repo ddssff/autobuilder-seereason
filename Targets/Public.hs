@@ -82,10 +82,10 @@ autobuilder home =
     P.Packages (singleton "autobuilder-group") $
     [ unixutils home
     , P.Package { P.name = "autobuilder"
-                , P.spec = Cd "autobuilder" (Darcs (repo </> "debian-tools"))
+                , P.spec = Cd "autobuilder" (Darcs (repo </> "debian-tools-stable"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-cabal-debian"
-                , P.spec = Cd "cabal-debian" (Darcs (repo </> "debian-tools"))
+                , P.spec = Cd "cabal-debian" (Darcs (repo </> "debian-tools-stable"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-debian"
                 , P.spec = Darcs (repo ++ "/haskell-debian")
@@ -94,7 +94,7 @@ autobuilder home =
                 , P.spec = Darcs "http://src.seereason.com/mirror"
                 , P.flags = [] }
     , P.Package { P.name = "haskell-debian-repo"
-                , P.spec = Cd "debian-repo" (Darcs (repo </> "debian-tools"))
+                , P.spec = Cd "debian-repo" (Darcs (repo </> "debian-tools-stable"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-archive"
                 , P.spec = Darcs "http://src.seereason.com/archive"
@@ -103,7 +103,7 @@ autobuilder home =
                 , P.spec = Debianize (Darcs "http://src.seereason.com/process-extras")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-process-progress"
-                , P.spec = Cd "process-progress" (Darcs (repo </> "debian-tools"))
+                , P.spec = Cd "process-progress" (Darcs (repo </> "debian-tools-stable"))
                 , P.flags = [] }
     ]
 
