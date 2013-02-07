@@ -887,7 +887,7 @@ happstack release =
                 , P.flags = [] }
     , debianize "fay-base" []
     , P.Package { P.name = "haskell-fay-jquery"
-                , P.spec = Debianize (Git "https://github.com/cliffordbeshers/fay-jquery")
+                , P.spec = Debianize (Git "https://github.com/faylang/fay-jquery")
                 , P.flags = [] }
     , P.Package { P.name = "mastermind"
                 , P.spec = Debianize (Patch (Darcs "http://hub.darcs.net/stepcut/mastermind")
