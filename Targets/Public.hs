@@ -5,11 +5,14 @@ module Targets.Public ( targets ) where
 import qualified Data.ByteString as B
 import Data.Char (toLower, chr)
 import Data.FileEmbed (embedFile)
-import Data.Set (empty, singleton)
+import Data.Lens.Lazy (setL, modL)
+import Data.Map as Map (insertWith)
+import Data.Set as Set (empty, singleton, union)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
+import Debian.Debianize (compat)
 import Debian.Relation (BinPkgName(..))
-import Distribution.Debian (DebAtom(..))
+import Debian.Debianize (installData)
 import System.FilePath((</>))
 import Targets.Common (repo, localRepo, happstackRepo)
 
@@ -774,7 +777,9 @@ platform release =
                              P.ExtraDep "alex",
                              P.CabalDebian ["--executable", "alex"],
                              P.DebVersion "3.0.2-1~hackage1",
-                             P.ModifyAtoms (\ atoms -> map (\ name -> DHInstallData (BinPkgName "alex") name name)
+                             P.ModifyAtoms (\ atoms -> setL compat (Just 9) $
+                                                       foldr (\ name atoms -> modL installData (insertWith union (BinPkgName "alex") (singleton (name, name))) atoms)
+                                                           atoms
                                                            [ "AlexTemplate"
                                                            , "AlexTemplate-debug"
                                                            , "AlexTemplate-ghc"
@@ -788,7 +793,7 @@ platform release =
                                                            , "AlexWrapper-monadUserState-bytestring"
                                                            , "AlexWrapper-posn"
                                                            , "AlexWrapper-posn-bytestring"
-                                                           , "AlexWrapper-strict-bytestring"] ++ atoms) ] }
+                                                           , "AlexWrapper-strict-bytestring"]) ] }
     , opengl release
     -- , haddock release
     , debianize "haskell-src" (rel release [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1" ] [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1build2" ])

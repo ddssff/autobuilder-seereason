@@ -73,9 +73,9 @@ ubuntuReleases = [Oneiric, Natty, Maverick, Lucid, Karmic, Jaunty, Intrepid, Har
 -}
 
 deriving instance Typeable PackageFlag
-deriving instance Typeable BinPkgName
+-- deriving instance Typeable BinPkgName
 -- deriving instance Data PackageFlag
-deriving instance Data BinPkgName
+-- deriving instance Data BinPkgName
 
 -- |Each of theses lists can be built on their own as a group,
 -- and any sequence of groups can be built together as long as
