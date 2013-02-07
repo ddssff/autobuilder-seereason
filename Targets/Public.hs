@@ -85,10 +85,10 @@ autobuilder home =
     P.Packages (singleton "autobuilder-group") $
     [ unixutils home
     , P.Package { P.name = "autobuilder"
-                , P.spec = Cd "autobuilder" (Darcs (repo </> "debian-tools-stable"))
+                , P.spec = Cd "autobuilder" (Darcs (repo </> "debian-tools"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-cabal-debian"
-                , P.spec = Cd "cabal-debian" (Darcs (repo </> "debian-tools-stable"))
+                , P.spec = Cd "cabal-debian" (Darcs (repo </> "debian-tools"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-debian"
                 , P.spec = Darcs (repo ++ "/haskell-debian")
@@ -1023,8 +1023,7 @@ happstack release =
                 , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (repo ++ "/happstack-clckwrks")))
                 , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     , P.Package { P.name = "happstack-dot-com"
-                , P.spec = Debianize (Patch
-                                      (Cd "happstack-dot-com" (Darcs (repo ++ "/happstack-clckwrks"))) $(embedFile "patches/happstack-dot-com.diff"))
+                , P.spec = Debianize (Patch (Cd "happstack-dot-com" (Darcs (repo ++ "/happstack-clckwrks"))) $(embedFile "patches/happstack-dot-com.diff"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-acid-state"
                 , P.spec = Debianize (Hackage "acid-state")
@@ -1249,7 +1248,9 @@ algebra release = P.Packages (singleton "algebra")
     , debianize "comonad-transformers" []
     , debianize "control-monad-free" []
     , debianize "transformers-free" []
-    , debianize "contravariant" (rel release [] [P.DebVersion "0.2.0.2-1build2"])
+    , P.Package { P.name = "haskell-contravariant"
+                , P.spec = Debianize (Patch (Hackage "contravariant") $(embedFile "patches/contravariant.diff"))
+                , P.flags = rel release [] [P.DebVersion "0.2.0.2-1build2"] }
     , P.Package { P.name = "haskell-distributive"
                 , P.spec = Debianize (Patch (Hackage "distributive") $(embedFile "patches/distributive.diff"))
                 , P.flags = rel release [] [P.DebVersion "0.2.2-1build2"] }

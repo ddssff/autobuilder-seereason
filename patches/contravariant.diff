@@ -1,0 +1,12 @@
+--- old/contravariant.cabal	2013-02-05 15:34:34.000000000 -0800
++++ new/contravariant.cabal	2013-02-05 15:42:14.328763060 -0800
+@@ -25,8 +25,7 @@
+   build-depends:
+     base                            < 5,
+     tagged              >= 0.4.4 && < 1,
+-    transformers        >= 0.2   && < 0.4,
+-    transformers-compat >= 0.1   && < 1
++    transformers        >= 0.3   && < 0.4
+   exposed-modules:
+     Data.Functor.Contravariant
+     Data.Functor.Contravariant.Compose
