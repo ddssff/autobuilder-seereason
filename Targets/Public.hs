@@ -862,8 +862,6 @@ clckwrks _home release =
         , debianize "jmacro" []
         , debianize "hsx-jmacro" []
         , debianize "monadlist" []
-        , debianize "fay-base" []
-        , debianize "fay" []
         ]
 
 happstack release =
@@ -885,6 +883,7 @@ happstack release =
     , P.Package { P.name = "haskell-happstack-fay"
                 , P.spec = Debianize (Patch (Hackage "happstack-fay") $(embedFile "patches/happstack-fay.diff"))
                 , P.flags = [] }
+    , debianize "fay" []
     , debianize "fay-base" []
     , P.Package { P.name = "haskell-fay-jquery"
                 , P.spec = Debianize (Git "https://github.com/faylang/fay-jquery")
