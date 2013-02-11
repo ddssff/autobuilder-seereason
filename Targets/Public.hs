@@ -378,7 +378,7 @@ main _home release =
     , debianize "HaXml" [P.DebVersion "1:1.22.5-2"]
     , debianize "heap" [P.DebVersion "1.0.0-1~hackage1"]
     , P.Package { P.name = "haskell-heist"
-                , P.spec = Debianize (Hackage "heist")
+                , P.spec = Debianize (Patch (Hackage "heist") $(embedFile "patches/heist.diff"))
                 , P.flags = [] }
     , debianize "xmlhtml" []
     , debianize "directory-tree" []
