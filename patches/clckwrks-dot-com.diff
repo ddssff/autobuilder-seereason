@@ -10,9 +10,9 @@
  Executable             clckwrks-dot-com-server
    main-is:             Main.hs
 @@ -27,7 +27,7 @@
-                        clckwrks-theme-clckwrks  == 0.2.*,
-                        clckwrks-plugin-bugs     == 0.3.*,
-                        clckwrks-plugin-media    == 0.3.*,
+                        clckwrks-plugin-bugs     == 0.4.*,
+                        clckwrks-plugin-media    == 0.4.*,
+                        clckwrks-plugin-page     == 0.1.*,
 -                       containers               == 0.4.*,
 +                       containers               >= 0.4,
                         happstack-server         >= 7.0 && < 7.2,

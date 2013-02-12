@@ -853,6 +853,9 @@ clckwrks _home release =
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
                     , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+        , P.Package { P.name = "haskell-clckwrks-plugin-page"
+                    , P.spec = Debianize (Cd "clckwrks-plugin-page" (Darcs repo))
+                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-theme-bootstrap"
                     , P.spec = Debianize (Cd "clckwrks-theme-bootstrap" (Darcs repo))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
@@ -1078,8 +1081,7 @@ authenticate _home release =
                 , P.spec = Debianize (Hackage "zlib-enum")
                 , P.flags = [P.DebVersion "0.2.3-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-authenticate"
-                , P.spec = Debianize (Patch (Darcs (darcsHub ++ "/happstack-authenticate"))
-                                            $(embedFile "patches/happstack-authenticate.diff"))
+                , P.spec = Debianize (Darcs (darcsHub ++ "/happstack-authenticate"))
                 , P.flags = [] }
     , digestiveFunctors
     , P.Package { P.name = "haskell-fb"
