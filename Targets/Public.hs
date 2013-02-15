@@ -187,6 +187,7 @@ main _home release =
                       (debianize "bzlib" [])
     -- , debianize "cairo-pdf" []
     , debianize "case-insensitive" []
+    , debianize "cabal-install" []
     , debianize "CC-delcont" [P.DebVersion "0.2-1~hackage1"]
     , apt (rel release "sid" "quantal") "haskell-cereal" []
     , debianize "citeproc-hs" []
