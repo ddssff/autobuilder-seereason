@@ -381,7 +381,7 @@ main _home release =
     , debianize "HaXml" [P.DebVersion "1:1.22.5-2"]
     , debianize "heap" [P.DebVersion "1.0.0-1~hackage1"]
     , P.Package { P.name = "haskell-heist"
-                , P.spec = Debianize (Patch (Hackage "heist") $(embedFile "patches/heist.diff"))
+                , P.spec = Debianize (Hackage "heist")
                 , P.flags = [] }
     , debianize "xmlhtml" []
     , debianize "directory-tree" []
@@ -536,7 +536,7 @@ main _home release =
     , P.Package { P.name = "haskell-simple-css",
                   P.spec = Debianize (Patch (Hackage "simple-css") $(embedFile "patches/simple-css.diff"))
                 , P.flags = [P.DebVersion "0.0.4-1~hackage1"] }
-    , debianize "SMTPClient" (rel release [P.DebVersion "1.0.4-3"] [P.DebVersion "1.0.4-3build2"])
+    , debianize "SMTPClient" []
     , debianize "socks" []
     , debianize "split" []
     -- This package becomes the debian package "haskell-haskell-src-exts".
