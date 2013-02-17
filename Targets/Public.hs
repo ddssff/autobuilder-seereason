@@ -187,7 +187,9 @@ main _home release =
                       (debianize "bzlib" [])
     -- , debianize "cairo-pdf" []
     , debianize "case-insensitive" []
-    , debianize "cabal-install" []
+    , P.Package { P.name = "haskell-cabal-install"
+                , P.spec = Debianize (Patch (Hackage "cabal-install") $(embedFile "patches/cabal-install.diff"))
+                , P.flags = [] }
     , debianize "CC-delcont" [P.DebVersion "0.2-1~hackage1"]
     , apt (rel release "sid" "quantal") "haskell-cereal" []
     , debianize "citeproc-hs" []
