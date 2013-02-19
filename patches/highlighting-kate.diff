@@ -1,0 +1,20 @@
+--- old/highlighting-kate.cabal	2013-02-19 11:38:10.000000000 -0800
++++ new/highlighting-kate.cabal	2013-02-19 12:23:18.124213368 -0800
+@@ -147,7 +147,7 @@
+     cpp-options:     -D_PCRE_LIGHT
+   else
+     Build-depends:   regex-pcre-builtin
+-  Build-Depends:     parsec, mtl, blaze-html >= 0.4.2 && < 0.6
++  Build-Depends:     parsec, mtl, blaze-html >= 0.4.2
+   Exposed-Modules:   Text.Highlighting.Kate
+                      Text.Highlighting.Kate.Syntax
+                      Text.Highlighting.Kate.Types
+@@ -261,7 +261,7 @@
+ 
+ Executable Highlight
+   Main-Is:          Highlight.hs
+-  Build-Depends:    base, containers, blaze-html >= 0.4.2 && < 0.6, filepath,
++  Build-Depends:    base, containers, blaze-html >= 0.4.2, filepath,
+                     highlighting-kate
+   Hs-Source-Dirs:   extra
+   Default-Language:    Haskell98

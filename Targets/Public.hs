@@ -381,7 +381,7 @@ main _home release =
     , debianize "HaXml" [P.DebVersion "1:1.22.5-2"]
     , debianize "heap" [P.DebVersion "1.0.0-1~hackage1"]
     , P.Package { P.name = "haskell-heist"
-                , P.spec = Debianize (Hackage "heist")
+                , P.spec = Debianize (Patch (Hackage "heist") $(embedFile "patches/heist.diff"))
                 , P.flags = [] }
     , debianize "xmlhtml" []
     , debianize "directory-tree" []
@@ -590,8 +590,9 @@ main _home release =
     , P.Package { P.name = "haskell-language-ecmascript"
                 , P.spec = Debianize (Hackage "language-ecmascript")
                 , P.flags = [] }
+    , debianize "charset" []
     , P.Package { P.name = "haskell-elm"
-                , P.spec = Debianize (Hackage "Elm")
+                , P.spec = Debianize (Patch (Hackage "Elm") $(embedFile "patches/elm.diff"))
                 , P.flags = [] }
     , P.Package { P.name = "elm-server"
                 , P.spec = Debianize (Patch (Hackage "elm-server") $(embedFile "patches/elm-server.diff"))
@@ -779,7 +780,6 @@ platform release =
                 , P.flags = [P.RelaxDep "alex",
                              P.ExtraDep "alex",
                              P.CabalDebian ["--executable", "alex"],
-                             P.DebVersion "3.0.2-1~hackage1",
                              P.ModifyAtoms (\ atoms -> setL compat (Just 9) $
                                                        foldr (\ name atoms -> modL installData (insertWith union (BinPkgName "alex") (singleton (name, name))) atoms)
                                                            atoms
@@ -822,7 +822,12 @@ platform release =
     ]
 
 clckwrks _home release =
-    let repo = "http://hub.darcs.net/stepcut/clckwrks" {- localRepo _home ++ "/clckwrks" -} in
+    let useDevRepo = True
+        repo = if useDevRepo
+               then "http://hub.darcs.net/stepcut/clckwrks-dev"
+               else "http://hub.darcs.net/stepcut/clckwrks"
+               -- localRepo _home ++ "/clckwrks"
+    in
     P.Packages (singleton "clckwrks") $
         [ happstack release
         , authenticate _home release
@@ -842,7 +847,7 @@ clckwrks _home release =
                                           $(embedFile "patches/clckwrks.diff"))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
-                    , P.spec = Debianize (Cd "clckwrks-cli" (Darcs repo))
+                    , P.spec = Debianize (Patch (Cd "clckwrks-cli" (Darcs repo)) $(embedFile "patches/clckwrks-cli.diff"))
                     , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-bugs"
                     , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
@@ -851,10 +856,7 @@ clckwrks _home release =
                     , P.spec = Debianize (Patch (Cd "clckwrks-plugin-media" (Darcs repo)) $(embedFile "patches/clckwrks-plugin-media.diff"))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
-                    , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
-        , P.Package { P.name = "haskell-clckwrks-plugin-page"
-                    , P.spec = Debianize (Cd "clckwrks-plugin-page" (Darcs repo))
+                    , P.spec = Debianize (Patch (Cd "clckwrks-plugin-ircbot" (Darcs repo)) $(embedFile "patches/clckwrks-plugin-ircbot.diff"))
                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-theme-bootstrap"
                     , P.spec = Debianize (Cd "clckwrks-theme-bootstrap" (Darcs repo))
@@ -868,7 +870,13 @@ clckwrks _home release =
         , debianize "jmacro" []
         , debianize "hsx-jmacro" []
         , debianize "monadlist" []
-        ]
+        ] ++
+    if useDevRepo
+    then [ P.Package { P.name = "haskell-clckwrks-plugin-page"
+                     , P.spec = Debianize (Cd "clckwrks-plugin-page" (Darcs repo))
+                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] } ]
+    else []
+
 
 happstack release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" in
@@ -930,7 +938,7 @@ happstack release =
                 , P.flags = [] }
     -- Current happstack-server requires directory >= 1.2, which comes with ghc-7.6.
     , P.Package { P.name = "haskell-happstack-server"
-                , P.spec = Debianize (Hackage "happstack-server")
+                , P.spec = Debianize (Patch (Hackage "happstack-server") $(embedFile "patches/happstack-server.diff"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-server-tls"
                 , P.spec = Debianize (Hackage "happstack-server-tls")
@@ -962,14 +970,14 @@ happstack release =
                             -- , P.CabalDebian ["--executable", "trhsx"]
                             ] }
     , P.Package { P.name = "haskell-pandoc"
-                , P.spec = Debianize (Hackage "pandoc")
+                , P.spec = Debianize (Patch (Hackage "pandoc") $(embedFile "patches/pandoc.diff"))
                 , P.flags = [P.RelaxDep "libghc-pandoc-doc"]
                 }
     , P.Package { P.name = "markdown"
                 , P.spec = Debianize (Hackage "markdown")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-highlighting-kate"
-                , P.spec = Debianize (Hackage "highlighting-kate")
+                , P.spec = Debianize (Patch (Hackage "highlighting-kate") $(embedFile "patches/highlighting-kate.diff"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-web-routes"
                 , P.spec = Debianize (Hackage "web-routes")
@@ -1001,7 +1009,7 @@ happstack release =
                 , P.spec = Debianize (Cd "reform" (Darcs (darcsHub ++ "/reform")))
                 , P.flags = [P.DebVersion "0.1.2-1~hackage1"] }
     , P.Package { P.name = "reform-blaze"
-                , P.spec = Debianize (Cd "reform-blaze" (Darcs (darcsHub ++ "/reform")))
+                , P.spec = Debianize (Patch (Cd "reform-blaze" (Darcs (darcsHub ++ "/reform"))) $(embedFile "patches/reform-blaze.diff"))
                 , P.flags = [] }
     , P.Package { P.name = "reform-happstack"
                 , P.spec = Debianize (Cd "reform-happstack" (Darcs (darcsHub ++ "/reform")))
@@ -1025,7 +1033,7 @@ happstack release =
                                       (Hackage "blaze-textual-native") $(embedFile "patches/blaze-textual-native.diff"))
                 , P.flags = [P.Revision ""] }
     , P.Package { P.name = "clckwrks-theme-happstack"
-                , P.spec = Debianize (Cd "clckwrks-theme-happstack" (Darcs (repo ++ "/happstack-clckwrks")))
+                , P.spec = Debianize (Patch (Cd "clckwrks-theme-happstack" (Darcs (repo ++ "/happstack-clckwrks"))) $(embedFile "patches/clckwrks-theme-happstack.diff"))
                 , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     , P.Package { P.name = "happstack-dot-com"
                 , P.spec = Debianize (Patch (Cd "happstack-dot-com" (Darcs (repo ++ "/happstack-clckwrks"))) $(embedFile "patches/happstack-dot-com.diff"))
@@ -1081,11 +1089,11 @@ authenticate _home release =
                 , P.spec = Debianize (Hackage "zlib-enum")
                 , P.flags = [P.DebVersion "0.2.3-1~hackage1"] }
     , P.Package { P.name = "haskell-happstack-authenticate"
-                , P.spec = Debianize (Darcs (darcsHub ++ "/happstack-authenticate"))
+                , P.spec = Debianize (Patch (Darcs (darcsHub ++ "/happstack-authenticate")) $(embedFile "patches/happstack-authenticate.diff"))
                 , P.flags = [] }
     , digestiveFunctors
     , P.Package { P.name = "haskell-fb"
-                , P.spec = Debianize (Hackage "fb")
+                , P.spec = Debianize (Patch (Hackage "fb") $(embedFile "patches/fb.diff"))
                 , P.flags = [] }
     ]
 
@@ -1185,8 +1193,7 @@ plugins = P.Packages (singleton "plugins") $
                 , P.spec = Debianize (Patch (Hackage "happstack-plugins") $(embedFile "patches/happstack-plugins.diff"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-web-plugins"
-                , P.spec = Debianize (Cd "web-plugins" (Patch (Darcs "http://hub.darcs.net/stepcut/web-plugins")
-                                                              $(embedFile "patches/web-plugins.diff")))
+                , P.spec = Debianize (Cd "web-plugins" (Darcs "http://hub.darcs.net/stepcut/web-plugins"))
                 , P.flags = [] }
     ]
 

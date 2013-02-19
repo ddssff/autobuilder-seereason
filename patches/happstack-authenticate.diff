@@ -1,30 +1,11 @@
---- old/happstack-authenticate.cabal	2013-01-17 11:15:10.000000000 -0800
-+++ new/happstack-authenticate.cabal	2013-01-29 15:59:03.698383662 -0800
-@@ -38,7 +38,7 @@
+--- old/happstack-authenticate.cabal	2013-02-12 11:24:50.000000000 -0800
++++ new/happstack-authenticate.cabal	2013-02-19 13:33:09.311989592 -0800
+@@ -32,7 +32,7 @@
+                        acid-state                   >= 0.6,
+                        aeson                        >= 0.4 && < 0.7,
+                        authenticate                 == 1.3.*,
+-                       blaze-html                   == 0.5.*,
++                       blaze-html                   >= 0.5,
+                        bytestring                   >= 0.9 && < 0.11,
+                        containers                   >= 0.4 && < 0.6,
                         ixset                        >= 1.0 && < 1.1,
-                        happstack-server             >= 6.0 && < 7.2,
-                        http-conduit                 >= 1.4 && < 1.9,
--                       http-types                   >= 0.6 && < 0.8,
-+                       http-types                   >= 0.6,
-                        fb                           == 0.13.*,
-                        safecopy                     >= 0.6,
-                        mtl                          >= 2.0,<
---- old/Happstack/Auth/Core/Auth.hs	2012-11-23 06:33:55.000000000 -0800
-+++ new/Happstack/Auth/Core/Auth.hs	2013-01-29 16:08:00.102396336 -0800
-@@ -68,7 +68,6 @@
- import qualified Data.Text.Encoding  as Text
- import           Data.Text           (Text)
- import Facebook                      (UserId, Id(..))
--import Network.HTTP.Types            (Ascii)
- import Web.Authenticate.OpenId       (Identifier)
- import Web.Routes                    (PathInfo(..))
- import Happstack.Server              (CookieLife(..), Happstack, addCookie, expireCookie, lookCookieValue, mkCookie)
-@@ -134,7 +133,7 @@
- newtype FacebookId_001 = FacebookId_001 { unFacebookId_001 :: Text }
-     deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy)
- 
--newtype FacebookId_002 = FacebookId_002 { unFacebookId_002 :: Ascii }
-+newtype FacebookId_002 = FacebookId_002 { unFacebookId_002 :: ByteString }
-     deriving (Eq, Ord, Read, Show, Data, Typeable)
- $(deriveSafeCopy 2 'extension ''FacebookId_002)
-   

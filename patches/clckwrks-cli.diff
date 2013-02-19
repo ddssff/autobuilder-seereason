@@ -1,0 +1,11 @@
+--- old/clckwrks-cli.cabal	2013-02-12 12:45:39.000000000 -0800
++++ new/clckwrks-cli.cabal	2013-02-19 15:14:10.495665971 -0800
+@@ -24,7 +24,7 @@
+   Build-depends:
+      acid-state >= 0.7 && < 0.9,
+      base        < 5,
+-     clckwrks   >= 0.12 && < 0.16,
++     clckwrks   >= 0.12,
+      haskeline  == 0.7.*,
+      mtl        >= 2.0 && < 2.2,
+      network    >= 2.3 && < 2.5,

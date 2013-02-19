@@ -1,0 +1,20 @@
+--- old/Elm.cabal	2013-02-19 13:22:17.000000000 -0800
++++ new/Elm.cabal	2013-02-19 13:35:02.487983548 -0800
+@@ -65,7 +65,7 @@
+                        transformers >= 0.2,
+                        mtl >= 2,
+                        parsec >= 3.1.1,
+-                       blaze-html == 0.5.*,
++                       blaze-html >= 0.5,
+                        blaze-markup == 0.5.1.*,
+                        deepseq,
+                        text,
+@@ -112,7 +112,7 @@
+                        transformers >= 0.2,
+                        mtl >= 2,
+                        parsec >= 3.1.1,
+-                       blaze-html == 0.5.*,
++                       blaze-html >= 0.5,
+                        blaze-markup == 0.5.1.*,
+                        deepseq,
+                        cmdargs,
