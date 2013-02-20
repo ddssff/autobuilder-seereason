@@ -20,18 +20,21 @@
                         mtl                      >= 2.0 && < 2.2,
 --- old/debian/Debianize.hs	2013-02-08 15:08:22.609455152 -0800
 +++ new/debian/Debianize.hs	2013-02-06 18:58:44.705868129 -0800
-@@ -2,6 +2,7 @@
+@@ -2,6 +2,8 @@
  import Data.Lens.Lazy (setL, modL)
  import Data.List as List (map, isPrefixOf, concat, foldr)
  import Data.Maybe (fromMaybe)
-+import Data.Set as Set (insert)
++import Data.Map as Map (insertWith)
++import Data.Set as Set (insert, singleton, union)
  import Data.Text as T
  import Debian.Changes (ChangeLog)
  import Debian.Debianize
-@@ -13,21 +14,22 @@
+@@ -13,21 +14,24 @@
  main =
-     do jstreePath <- Clckwrks.getDataFileName "jstree"
-        json2Path  <- Clckwrks.getDataFileName "json2"
+-    do jstreePath <- Clckwrks.getDataFileName "jstree"
+-       json2Path  <- Clckwrks.getDataFileName "json2"
++    do let jstreePath = "$CLCKWRKS/jstree"
++           json2Path  = "$CLCKWRKS/json2"
 +
         log <- inputChangeLog "debian"
 -       getSimplePackageDescription' "." defaultAtoms >>= cabalToDebianization "." . customize jstreePath json2Path log >>= writeDebianization
@@ -41,6 +44,8 @@
  customize jstreePath json2Path log =
 -    modControl (\ y -> y {homepage = Just "http://www.clckwrks.com/"}) .
 +    modL control  (\ y -> y {homepage = Just "http://www.clckwrks.com/"}) .
++    modL rulesFragments (insert (pack (Prelude.unlines ["build/clckwrks-dot-com-production::", "\techo CLCKWRKS=`ghc-pkg field clckwrks version | sed 's/version: //'` > debian/default"]))) .
++    modL installTo (Map.insertWith Set.union (BinPkgName "clckwrks-dot-com-production") (Set.singleton ("debian/default", "/etc/default/clckwrks-dot-com-production"))) .
 +    modL control (\ x -> x {standardsVersion = Just (StandardsVersion 3 9 4 Nothing)}) .
      setL sourceFormat (Just Native3) .
 -    missingDependency (BinPkgName "libghc-clckwrks-theme-clckwrks-doc") .
