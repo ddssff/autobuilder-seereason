@@ -76,3 +76,22 @@
                       ]
                   , installFile =
                       InstallFile { execName   = "clckwrks-dot-com-server"
+--- old/Backups.hs	2013-02-23 11:52:14.221627383 -0800
++++ new/Backups.hs	2013-02-23 11:50:34.049621938 -0800
+@@ -1,5 +1,6 @@
+ module Main where
+ 
+ import System.Archive.Site (BackupTarget(..), backup)
++import Names (live, domain)
+ 
+-main = backup (BackupTarget {app = "clckwrks-dot-com-production", user = "upload", host = "seereason.com", keep = 50})
++main = backup (BackupTarget {app = live, user = "upload", host = domain, keep = 50})
+--- old/Names.hs	1969-12-31 16:00:00.000000000 -0800
++++ new/Names.hs	2013-02-23 11:51:21.997624540 -0800
+@@ -0,0 +1,6 @@
++{-# OPTIONS -fno-warn-missing-signatures #-}
++module Names where
++
++domain = "seereason.com"
++site = "clckwrks-dot-com"
++live = site ++ "-production"
