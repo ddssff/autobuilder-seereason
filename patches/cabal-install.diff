@@ -1,12 +1,11 @@
 --- old/debian/Debianize.hs	1969-12-31 16:00:00.000000000 -0800
 +++ new/debian/Debianize.hs	2013-02-17 07:40:21.664777934 -0800
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,8 @@
 +import Data.Lens.Lazy (setL, modL)
 +import Data.Map (insert)
-+import Debian.Debianize (debianization, utilsPackageName, defaultAtoms, writeDebianization, epochMap)
++import Debian.Debianize (Top(Top), debianize, utilsPackageName, defaultAtoms, writeDebianization, epochMap)
 +import Debian.Relation (BinPkgName(..))
 +import Distribution.Package (PackageName(..))
 +
 +main =
-+    debianization "." (modL epochMap (insert (PackageName "HTTP") 1) $ setL utilsPackageName (Just (BinPkgName "cabal-install")) $ defaultAtoms) >>=
-+    writeDebianization "."
++    debianize (Top ".") (return . setL utilsPackageName (Just (BinPkgName "cabal-install")))
