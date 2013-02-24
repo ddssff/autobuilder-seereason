@@ -737,6 +737,7 @@ platform release =
     -- , haddock release
     , debianize "haskell-src" (rel release [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1" ] [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1build2" ])
     , debianize "network" []
+    , debianize "publicsuffixlist" []
     , debianize "HTTP" (rel release [P.DebVersion "1:4000.2.3-1~hackage1"] [P.DebVersion "1:4000.2.3-1build2"])
     , P.Package { P.name = "haskell-cgi"
                 , P.spec = Debianize (Hackage "cgi")
