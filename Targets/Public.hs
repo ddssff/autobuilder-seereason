@@ -978,7 +978,8 @@ conduit =
     , debianize "blaze-builder-conduit" []
     , P.Package { P.name = "haskell-http-conduit"
                 , P.spec = Debianize (Hackage "http-conduit")
-                , P.flags = [] }
+                -- Version 1.9.0 is too new for fb 0.13.4.2.
+                , P.flags = [P.CabalPin "1.8.9"] }
     , debianize "zlib-conduit" []
     , P.Package { P.name = "haskell-xml-conduit"
                 , P.spec = Debianize (Hackage "xml-conduit")
