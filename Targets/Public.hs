@@ -17,7 +17,9 @@ import Debian.Debianize (installData)
 import System.FilePath((</>))
 import Targets.Common (repo, localRepo, happstackRepo)
 
+patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"
+darcsHub :: String
 darcsHub = "http://hub.darcs.net/stepcut"
 
 -- |the _home parameter has an underscore because normally it is unused, but when
@@ -815,7 +817,7 @@ clckwrks _home release =
 
 
 happstack release =
-    let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" in
+    let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String in
     P.Packages (singleton "happstack")
     [ plugins
     , P.Package { P.name = "happstack-debianization"
