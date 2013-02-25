@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Targets.Private (libraries, applications) where
 

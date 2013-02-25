@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings, TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-unused-imports -fno-warn-name-shadowing #-}
 module Targets.Public ( targets ) where
 
@@ -8,6 +8,7 @@ import Data.FileEmbed (embedFile)
 import Data.Lens.Lazy (setL, modL)
 import Data.Map as Map (insertWith)
 import Data.Set as Set (empty, singleton, union)
+import Data.String (fromString)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
 import Debian.Debianize (compat)
@@ -1239,11 +1240,11 @@ other _release =
     , apt "sid" "bash-completion" []
     ]
 
-apt :: String -> String -> [P.PackageFlag] -> P.Packages
+apt :: String -> TargetName -> [P.PackageFlag] -> P.Packages
 apt dist name flags =
           P.Package
                { P.name = name
-               , P.spec = Apt dist name
+               , P.spec = Apt dist (P.unTargetName name)
                , P.flags = flags }
 
 {-
@@ -1274,7 +1275,7 @@ main =
 -- debian when it debianizes a package.
 debianize :: String -> [P.PackageFlag] -> P.Packages
 debianize s flags =
-    P.Package { P.name = debianName s
+    P.Package { P.name = fromString (debianName s)
               , P.spec = Debianize (Hackage s)
               , P.flags = flags}
     where

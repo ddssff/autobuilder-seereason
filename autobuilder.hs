@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 {-# OPTIONS -Wall -Werror -fno-warn-missing-signatures -fno-warn-unused-imports -fno-warn-orphans #-}
 #!/usr/bin/env runhaskell -package=base-3.0.3.0
 -- Currently this will not run as a script even with the line above.
@@ -13,11 +13,11 @@
 
 -- Import the symbols we use below.
 import Control.Exception (SomeException, try, throw)
-import Data.List (isSuffixOf, isPrefixOf, find)
-import qualified Data.Map as Map
+import Data.List as List (isSuffixOf, isPrefixOf, find, map)
+import Data.Map as Map (Map, elems, empty, insertWith)
 import Data.Maybe
 import Data.Monoid (mappend)
-import qualified Data.Set as Set
+import Data.Set as Set (Set, empty, fold, member, insert, map)
 import qualified Debian.AutoBuilder.Main as M
 import Debian.AutoBuilder.Types.ParamRec
 import Debian.AutoBuilder.Types.Packages
@@ -25,6 +25,7 @@ import Debian.Release (ReleaseName(ReleaseName, relName), Arch(Binary))
 import Debian.Repo.Cache (SourcesChangedAction(SourcesChangedError))
 import Debian.URI
 import Debian.Version (parseDebianVersion)
+import Prelude hiding (map)
 import System.Console.GetOpt
 import System.Environment (getArgs, getEnv)
 import System.Exit
@@ -68,7 +69,7 @@ getParams home args =
                    [String])               -- error messages
                -> [ParamRec]
       doParams (fns, [], [], []) =
-          map (\ params -> params {packages = finalizeTargets params}) . reverse $ f [] fns
+          List.map (\ params -> params {packages = finalizeTargets params}) . reverse $ f [] fns
           where
             f recs [] = recs
             f recs (Left rel : xs) = f (defParams home rel : recs) xs
@@ -82,8 +83,9 @@ getParams home args =
           Packages { group = Set.empty
                    , list = Map.elems $ if allTargets (targets params)
                                         then collectAll knownTargets Map.empty
-                                        else Set.fold collectName Map.empty (targetNames (targets params)) }
+                                        else Set.fold collectName Map.empty (targetNames (targets params) :: Set TargetName) }
           where
+            collectName :: TargetName -> Map.Map TargetName Packages -> Map.Map TargetName Packages
             collectName n collected =
               case findByName n knownTargets of
                 [] -> error $ "Unknown target name: " ++ show n
@@ -118,7 +120,7 @@ getParams home args =
                       else foldr (collect' n) collected (packages ps)
             collect' n known collected = collectByName known n collected
 -}
-            collectAll :: Packages -> Map.Map String Packages -> Map.Map String Packages
+            collectAll :: Packages -> Map.Map TargetName Packages -> Map.Map TargetName Packages
             collectAll p collected =
                 case p of
                   NoPackage -> collected
@@ -177,16 +179,16 @@ optSpecs =
                , "previous build.  This option relaxes that assumption, in case the"
                , "newer version of the dependency was withdrawn from the repository,"
                , "or was flushed from the local repository without being uploaded."])
-    , Option [] ["target"] (ReqArg (\ s -> (Right (\ p -> p {targets = addTarget s p}))) "PACKAGE")
+    , Option [] ["target"] (ReqArg (\ s -> (Right (\ p -> p {targets = addTarget (TargetName s) p}))) "PACKAGE")
       "Add a target to the target list."
-    , Option [] ["discard"] (ReqArg (\ s -> (Right (\ p -> p {discard = Set.insert s (discard p)}))) "PACKAGE")
+    , Option [] ["discard"] (ReqArg (\ s -> (Right (\ p -> p {discard = Set.insert (TargetName s) (discard p)}))) "PACKAGE")
       (unlines [ "Add a target to the discard list, packages which we discard as soon"
                , "as they are ready to build, along with any packages that depend on them." ])
     , Option [] ["test-with-private"] (NoArg (Right (\ p -> p {testWithPrivate = True})))
       (unlines [ "Build everything required to build the private targets, but don't"
                , "actually build the private targets.  This is to avoid the risk of"
                , "uploading private targets to the public repository" ])
-    , Option [] ["goal"] (ReqArg (\ s -> (Right (\ p -> p { goals = goals p ++ [s]
+    , Option [] ["goal"] (ReqArg (\ s -> (Right (\ p -> p { goals = goals p ++ [TargetName s]
                                                           -- , targets = TargetSet (myTargets home (const True) (relName (buildRelease p)))
                                                           }))) "PACKAGE")
       (unlines [ "If one or more goal package names are given the autobuilder"
@@ -195,11 +197,11 @@ optSpecs =
                , "targets will be built.  (As of version 5.2 there are known bugs with"
                , "this this option which may cause the autobuilder to exit before the"
                , "goal package is built.)"])
-    , Option [] ["force"] (ReqArg (\ s -> (Right (\ p -> p {forceBuild = forceBuild p ++ [s], targets = addTarget s p}))) "PACKAGE")
+    , Option [] ["force"] (ReqArg (\ s -> (Right (\ p -> p {forceBuild = forceBuild p ++ [TargetName s], targets = addTarget (TargetName s) p}))) "PACKAGE")
       ("Build the specified source package even if it doesn't seem to need it.")
     , Option [] ["strict"] (NoArg (Right (\ p -> p {strictness = Strict})))
       "Use the lax build environment, where dependencies are not removed between package builds."
-    , Option [] ["build-trumped"] (ReqArg (\ s -> (Right (\ p -> p {buildTrumped = buildTrumped p ++ [s]}))) "PACKAGE")
+    , Option [] ["build-trumped"] (ReqArg (\ s -> (Right (\ p -> p {buildTrumped = buildTrumped p ++ [TargetName s]}))) "PACKAGE")
       ("Build the specified source package even if it seems older than the uploaded version.")
     , Option [] ["report"] (NoArg (Right (\ p -> p {report = True})))
       "Output a report of packages that are pinned or patched."
@@ -272,11 +274,11 @@ defParams _home myBuildRelease =
     -- 6.15 changes Epoch parameter arity to 2
     -- 6.18 renames type Spec -> RetrieveMethod
     -- 6.35 added the CabalDebian flag
-    , requiredVersion = [(parseDebianVersion "6.48", Nothing)]
+    , requiredVersion = [(parseDebianVersion ("6.50" :: String), Nothing)]
     , hackageServer = myHackageServer
     -- Things that are probably obsolete
     , debug = False
-    , discard = myDiscards
+    , discard = Set.map TargetName myDiscards
     , testWithPrivate = False
     , extraReleaseTag = Nothing
     , preferred = []
