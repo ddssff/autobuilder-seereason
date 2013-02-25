@@ -723,6 +723,7 @@ platform release =
                                                            , "AlexTemplate-debug"
                                                            , "AlexTemplate-ghc"
                                                            , "AlexTemplate-ghc-debug"
+                                                           , "AlexTemplate-ghc-nopred"
                                                            , "AlexWrapper-basic"
                                                            , "AlexWrapper-basic-bytestring"
                                                            , "AlexWrapper-gscan"
