@@ -612,9 +612,10 @@ main _home release =
     , P.Package { P.name = "jquery-goodies"
                 , P.spec = Proc (Apt "sid" "jquery-goodies")
                 , P.flags = [] }
-    , P.Package { P.name = "jqueryui"
+-- We want to stick with 1.8 for now.
+{-  , P.Package { P.name = "jqueryui"
                 , P.spec = Proc (Apt "sid" "jqueryui")
-                , P.flags = [] }
+                , P.flags = [] } -}
     , P.Package { P.name = "jcrop"
                 , P.spec = DebDir (Uri "http://src.seereason.com/jcrop/Jcrop.tar.gz" "028feeb9b6415af3b7fd7d9471c92469") (Darcs (repo ++ "/jcrop-debian"))
                 , P.flags = [] }
