@@ -3,8 +3,14 @@
 module Targets.Private (libraries, applications) where
 
 import Data.Set (singleton)
+import Data.Lens.Lazy (modL, setL)
+import Data.Map as Map (insert)
+import Data.Version (Version(Version))
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
+import Debian.Debianize (Atoms, debianNameMap, sourcePackageName, VersionSplits(..))
+import Debian.Relation (SrcPkgName(..))
+import Distribution.Package (PackageName(PackageName))
 import Targets.Common
 
 libraries _home =
@@ -18,7 +24,7 @@ libraries _home =
     , P.Package { P.name = "haskell-ontology"
                 , P.spec = Darcs (privateRepo ++ "/haskell-ontology")
                 , P.flags = [] }
-    ]
+    ] ++ clckwrks14
 
 applications _home =
     P.Packages (singleton "applications") $
@@ -55,7 +61,9 @@ applications _home =
 {-
     , P.Package { P.name = "clcksmith"
                 , P.spec = Debianize (Darcs (privateRepo ++ "/clcksmith"))
-                , P.flags = [P.ExtraDep "haskell-hsx-utils", P.CabalDebian ["--missing-dependency", "libghc-clckwrks-theme-clcksmith-doc"]] }
+                , P.flags = [P.ExtraDep "haskell-hsx-utils",
+                             P.CabalDebian ["--missing-dependency", "libghc-clckwrks-theme-clcksmith-doc"],
+                             P.ModifyAtoms extraSplits] }
     , P.Package { P.name = "clckwrks-theme-clcksmith"
                 , P.spec = Debianize (Cd "clckwrks-theme-clcksmith" (Darcs (privateRepo ++ "/clcksmith")))
                 -- Haddock gets upset about the HSX.QQ modules.  Not sure why.
@@ -74,3 +82,40 @@ applications _home =
                 , P.spec = Debianize (Cd "clckwrks-theme-appraisalreportonline" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks")))
                 , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
     ]
+
+extraSplits =
+    extraSplit "clckwrks" [0, 15] .
+    extraSplit "blaze-html" [0, 6] .
+    extraSplit "happstack-authenticate" [0, 10] .
+    extraSplit "http-types" [0, 8] .
+    extraSplit "case-insensitive" [1]
+    where
+      extraSplit :: String -> [Int] -> Atoms -> Atoms
+      extraSplit base ver =
+          modL debianNameMap (Map.insert
+                                 (PackageName base)
+                                 (VersionSplits {oldestPackage = base ++ "-" ++ show (last ver - 1),
+                                                 splits = [(Version ver [], base)]}))
+
+clckwrks14 =
+      [ P.Package { P.name = "clckwrks-14"
+                  , P.spec = Debianize (Hackage "clckwrks")
+                  , P.flags = [P.CabalPin "0.14.2",
+                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-clckwrks-14")) . extraSplits) ] }
+      , P.Package { P.name = "blaze-html-5"
+                  , P.spec = Debianize (Hackage "blaze-html")
+                  , P.flags = [P.CabalPin "0.5.1.3",
+                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-blaze-html-5")) . extraSplits) ] }
+      , P.Package { P.name = "happstack-authenticate-9"
+                  , P.spec = Debianize (Hackage "happstack-authenticate")
+                  , P.flags = [P.CabalPin "0.9.8",
+                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-happstack-authenticate-9")) . extraSplits) ] }
+      , P.Package { P.name = "http-types-7"
+                  , P.spec = Debianize (Hackage "http-types")
+                  , P.flags = [P.CabalPin "0.7.3.0.1",
+                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-http-types-7")) . extraSplits) ] }
+      , P.Package { P.name = "case-insensitive-0"
+                  , P.spec = Debianize (Hackage "case-insensitive")
+                  , P.flags = [P.CabalPin "0.4.0.4",
+                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "case-insensitive-0")) . extraSplits) ] }
+      ]
