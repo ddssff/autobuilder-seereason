@@ -741,7 +741,9 @@ platform release =
     , opengl release
     -- , haddock release
     , debianize "haskell-src" (rel release [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1" ] [ P.ExtraDep "happy", P.DebVersion "1.0.1.5-1build2" ])
-    , debianize "network" []
+    -- Versions 2.4.1.1 and 2.4.1.2 change unEscapeString in a way
+    -- that breaks our apps: https://github.com/haskell/network/issues/86
+    , debianize "network" [P.CabalPin "2.4.1.0"]
     , debianize "publicsuffixlist" []
     , debianize "HTTP" (rel release [P.DebVersion "1:4000.2.3-1~hackage1"] [P.DebVersion "1:4000.2.3-1build2"])
     , P.Package { P.name = "haskell-cgi"
