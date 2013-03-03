@@ -1,14 +1,15 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Targets.Private (libraries, applications) where
 
-import Data.Set (singleton)
+import Data.FileEmbed (embedFile)
 import Data.Lens.Lazy (modL, setL)
-import Data.Map as Map (insert)
+import Data.Map as Map (alter)
+import Data.Set (singleton)
 import Data.Version (Version(Version))
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
-import Debian.Debianize (Atoms, debianNameMap, sourcePackageName, VersionSplits(..))
+import Debian.Debianize (Atoms, debianNameMap, sourcePackageName, VersionSplits(..), insertSplit)
 import Debian.Relation (SrcPkgName(..))
 import Distribution.Package (PackageName(PackageName))
 import Targets.Common
@@ -55,19 +56,22 @@ applications _home =
                    `flag` P.ExtraDep "haskell-hsx-utils")
     ]
 
+-- | All packages that want to use the older packages in clckwrks14
+-- need to apply extraSplits to their debianization.
+extraSplits :: Atoms -> Atoms
 extraSplits =
-    extraSplit "clckwrks" [0, 15] .
-    extraSplit "blaze-html" [0, 6] .
-    extraSplit "happstack-authenticate" [0, 10] .
-    extraSplit "http-types" [0, 8] .
-    extraSplit "case-insensitive" [1]
+    extraSplit "clckwrks" (Version [0, 15] []) .
+    extraSplit "clckwrks" (Version [0, 14] []) .
+    extraSplit "blaze-html" (Version [0, 6] []) .
+    extraSplit "happstack-authenticate" (Version [0, 10] []) .
+    extraSplit "http-types" (Version [0, 8] []) .
+    extraSplit "case-insensitive" (Version [1] [])
     where
-      extraSplit :: String -> [Int] -> Atoms -> Atoms
       extraSplit base ver =
-          modL debianNameMap (Map.insert
-                                 (PackageName base)
-                                 (VersionSplits {oldestPackage = base ++ "-" ++ show (last ver - 1),
-                                                 splits = [(Version ver [], base)]}))
+          modL debianNameMap (Map.alter (Just . f) (PackageName base))
+          where
+            f Nothing = insertSplit base ver (VersionSplits {oldestPackage = base, splits = []})
+            f (Just sp) = insertSplit base ver sp
 
 clckwrks14 =
       [ P.Package { P.name = "clckwrks-14"
@@ -91,3 +95,6 @@ clckwrks14 =
                   , P.flags = [P.CabalPin "0.4.0.4",
                                P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "case-insensitive-0")) . extraSplits) ] }
       ]
+
+rename :: P.Packages -> TargetName -> P.Packages
+rename p s = p {P.name = s}
