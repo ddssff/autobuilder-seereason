@@ -78,6 +78,11 @@ clckwrks14 =
                   , P.spec = Debianize (Hackage "clckwrks")
                   , P.flags = [P.CabalPin "0.14.2",
                                P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-clckwrks-14")) . extraSplits) ] }
+      , debianize (hackage "clckwrks"
+                     `rename` "clckwrks-13"
+                     `flag` P.CabalPin "0.13.2"
+                     `flag` P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-clckwrks-13")) . extraSplits)
+                     `patch` $(embedFile "patches/clckwrks-13.diff"))
       , P.Package { P.name = "blaze-html-5"
                   , P.spec = Debianize (Hackage "blaze-html")
                   , P.flags = [P.CabalPin "0.5.1.3",
