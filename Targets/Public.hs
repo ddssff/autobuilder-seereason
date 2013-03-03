@@ -677,6 +677,17 @@ main _home release =
                 , P.spec = Debianize (Hackage "xmobar")
                 , P.flags = [] }
 -}
+    -- Needs update for current http-conduit
+    -- , debianize $ (hackage "dropbox-sdk") `patch` $(embedFile "patches/dropbox-sdk.diff")
+    , debianize (darcs "haskell-hs3" (repo ++ "/hS3"))
+                `flag` P.DebVersion "0.5.6-2"
+                `flag` P.ModifyAtoms (doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
+    , debianize (hackage "urlencoded")
+    , debianize (hackage "resourcet")
+    , debianize (hackage "hxt")
+    , debianize (hackage "hxt-charproperties") `flag` P.DebVersion "9.1.1-2build1"
+    , debianize (hackage "hxt-regex-xmlschema")
+    , debianize (hackage "hxt-unicode") `flag` P.DebVersion "9.0.2-2"
     ]
 
 compiler release =

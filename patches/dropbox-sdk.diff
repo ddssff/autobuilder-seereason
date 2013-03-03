@@ -1,0 +1,37 @@
+--- old/dropbox-sdk.cabal	2013-02-27 06:10:05.000000000 -0800
++++ new/dropbox-sdk.cabal	2013-02-27 06:12:17.298856850 -0800
+@@ -17,24 +17,24 @@
+ Library
+     Build-Depends:
+         base         == 4.*,
+-        bytestring   == 0.9.*,
++        bytestring   >= 0.9,
+         HTTP         == 4000.*,
+         utf8-string  == 0.3.*,
+-        urlencoded   == 0.3.*,
++        urlencoded   >= 0.3,
+         json         >= 0.4 && < 0.6,
+         transformers == 0.3.*,
+         time         == 1.4.*,
+         old-locale   == 1.0.*,
+-        network      == 2.3.*,
+-        conduit      == 0.5.*,
+-        resourcet    == 0.3.3.*,
+-        case-insensitive >= 0.2 && < 0.5,
+-        http-types   == 0.7.*,
+-        http-conduit == 1.5.*,
++        network      >= 2.3,
++        conduit      >= 0.5,
++        resourcet    >= 0.3.3,
++        case-insensitive >= 0.2,
++        http-types   >= 0.7,
++        http-conduit >= 1.5,
+         monad-control == 0.3.1.*,
+         blaze-builder == 0.3.*,
+-        tls          == 0.9.*,
+-        tls-extra    == 0.4.*,
++        tls          >= 0.9,
++        tls-extra    >= 0.4,
+         certificate  == 1.*,
+         pem          == 0.1.*,
+         template-haskell

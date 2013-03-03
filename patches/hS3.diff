@@ -1,0 +1,292 @@
+--- old/Network/AWS/Authentication.hs	2013-02-27 06:40:40.510765912 -0800
++++ new/Network/AWS/Authentication.hs	2013-02-27 09:55:40.434141226 -0800
+@@ -19,18 +19,18 @@
+    mimeEncodeQP, mimeDecode
+    ) where
+ 
+-import Network.AWS.AWSResult
+-import Network.AWS.AWSConnection
+-import Network.AWS.ArrowUtils
++import Network.AWS.AWSResult (AWSResult, ReqError(AWSError, NetworkError), AWSError(TemporaryRedirect, NotFound, NoErrorInMsg, Unexpected))
++import Network.AWS.AWSConnection (AWSConnection(awsSecretKey, awsHost, awsPort, awsAccessKey), AWSAccessKey(unAWSAccessKey), AWSSecretKey(unAWSSecretKey))
++import Network.AWS.ArrowUtils (split, text, atTag, unsplit)
+ import Network.HTTP as HTTP hiding (simpleHTTP_)
+ import Network.HTTP.HandleStream (simpleHTTP_)
+ import Network.Stream (Result)
+-import Network.URI as URI
++import Network.URI as URI (URI(URI, uriScheme, uriAuthority, uriPath, uriQuery, uriFragment), URIAuth(URIAuth, uriRegName), parseURI)
+ import qualified Data.ByteString.Lazy.Char8 as L
+ 
+ import Data.ByteString.Char8 (pack, unpack)
+ 
+-import Data.HMAC
++import Data.HMAC (hmac_sha1)
+ import Codec.Binary.Base64 (encode, decode)
+ import Codec.Utils (Octet)
+ 
+@@ -39,20 +39,21 @@
+ import qualified Codec.Binary.UTF8.String as US
+ 
+ import Data.List (sortBy, groupBy, intersperse, isInfixOf)
+-import Data.Maybe
++import Data.Maybe (fromMaybe)
+ 
+-import System.Time
+-import System.Locale
++import System.Time (getClockTime, toUTCTime, ctTZName, formatCalendarTime)
++import System.Locale (defaultTimeLocale, rfc822DateFormat)
+ 
+-import Text.Regex
++import Text.Read (readMaybe)
++import Text.Regex (mkRegex, subRegex)
+ 
+-import Control.Arrow
+-import Control.Arrow.ArrowTree
+-import Text.XML.HXT.Arrow.XmlArrow
+-import Text.XML.HXT.Arrow.XmlOptions
+-import Text.XML.HXT.DOM.XmlKeywords
+-import Text.XML.HXT.Arrow.XmlState
+-import Text.XML.HXT.Arrow.ReadDocument
++import Control.Arrow ((>>>), (<<<), first, second)
++import Control.Arrow.ArrowTree (deep)
++import Text.XML.HXT.Arrow.XmlArrow (isElem, hasName)
++--import Text.XML.HXT.Arrow.XmlOptions ()
++--import Text.XML.HXT.DOM.XmlKeywords ()
++import Text.XML.HXT.Arrow.XmlState (runX, withValidate, no)
++import Text.XML.HXT.Arrow.ReadDocument (readString)
+ 
+ -- | An action to be performed using S3.
+ data S3Action =
+@@ -111,7 +112,7 @@
+                         -> HTTP.HTTPRequest L.ByteString -- ^ Request to transform
+                         -> HTTP.HTTPRequest L.ByteString -- ^ Authenticated request
+ addAuthenticationHeader act req = insertHeader HdrAuthorization auth_string req
+-    where auth_string = "AWS " ++ awsAccessKey conn ++ ":" ++ signature
++    where auth_string = "AWS " ++ unAWSAccessKey (awsAccessKey conn) ++ ":" ++ signature
+           signature = (makeSignature conn (stringToSign act req))
+           conn = s3conn act
+ 
+@@ -121,7 +122,7 @@
+               -> String -- ^ Base-64 encoded signature
+ makeSignature c s =
+         encode (hmac_sha1 keyOctets msgOctets)
+-        where keyOctets = string2words (awsSecretKey c)
++        where keyOctets = string2words (unAWSSecretKey (awsSecretKey c))
+               msgOctets = string2words s
+ 
+ -- | Generate text that will be signed and subsequently added to the
+@@ -298,7 +299,7 @@
+     let c = (s3conn a)
+         srv = (awsHost c)
+         pt = (show (awsPort c))
+-        accessKeyQuery = "AWSAccessKeyId=" ++ awsAccessKey c
++        accessKeyQuery = "AWSAccessKeyId=" ++ unAWSAccessKey (awsAccessKey c)
+         beginQuery = case (s3query a) of
+                   "" -> "?"
+                   x -> x ++ "&"
+@@ -326,8 +327,8 @@
+                               -- temporary redirect
+                               (3,0,7) -> case (findHeader HdrLocation s) of
+                                                 Just l -> runAction' a (getHostname l)
+-                                                Nothing -> return (Left $ AWSError "Temporary Redirect" "Redirect without location header")  -- not good
+-                              (4,0,4) -> return (Left $ AWSError "NotFound" "404 Not Found")  -- no body, so no XML to parse
++                                                Nothing -> return (Left $ AWSError TemporaryRedirect "Redirect without location header")  -- not good
++                              (4,0,4) -> return (Left $ AWSError NotFound "404 Not Found")  -- no body, so no XML to parse
+                               otherwise -> do e <- parseRestErrorXML (L.unpack (rspBody s))
+                                               return (Left e)
+           -- Get hostname part from http url.
+@@ -343,7 +344,7 @@
+     do e <- runX (readString [withValidate no] x
+                                  >>> processRestError)
+        case e of
+-         [] -> return (AWSError "NoErrorInMsg"
++         [] -> return (AWSError NoErrorInMsg
+                        ("HTTP Error condition, but message body"
+                         ++ "did not contain error code."))
+          x:xs -> return x
+@@ -354,7 +355,7 @@
+ processRestError = deep (isElem >>> hasName "Error") >>>
+                    split >>> first (text <<< atTag "Code") >>>
+                    second (text <<< atTag "Message") >>>
+-                   unsplit (\x y -> AWSError x y)
++                   unsplit (\x y -> AWSError (fromMaybe (Unexpected x) (readMaybe x)) y)
+ 
+ --- mime header encoding
+ mimeEncodeQP, mimeDecode :: String -> String
+--- old/Network/AWS/AWSConnection.hs	2013-02-27 06:40:40.510765912 -0800
++++ new/Network/AWS/AWSConnection.hs	2013-02-27 09:50:05.490159109 -0800
+@@ -12,18 +12,24 @@
+    -- * Function Types
+    amazonS3Connection, amazonS3ConnectionFromEnv,
+    -- * Data Types
+-   AWSConnection(..)
++   AWSConnection(..),
++   AWSAccessKey(..),
++   AWSSecretKey(..),
+    ) where
+ 
++import Control.Exception (SomeException, catch)
+ import System.Environment
+ 
++newtype AWSAccessKey = AWSAccessKey {unAWSAccessKey :: String} deriving (Show)
++newtype AWSSecretKey = AWSSecretKey {unAWSSecretKey :: String} deriving (Show)
++
+ -- | An Amazon Web Services connection.  Everything needed to connect
+ --   and authenticate requests.
+ data AWSConnection =
+     AWSConnection { awsHost :: String, -- ^ Service provider hostname
+                     awsPort :: Int,    -- ^ Service provider port number
+-                    awsAccessKey :: String, -- ^ Access Key ID
+-                    awsSecretKey :: String  -- ^ Secret Access Key
++                    awsAccessKey :: AWSAccessKey, -- ^ Access Key ID
++                    awsSecretKey :: AWSSecretKey  -- ^ Secret Access Key
+                   } deriving (Show)
+ 
+ -- | Hostname used for connecting to Amazon's production S3 service (@s3.amazonaws.com@).
+@@ -36,8 +42,8 @@
+ 
+ -- | Create an AWSConnection to Amazon from credentials.  Uses the
+ --   production service.
+-amazonS3Connection :: String -- ^ Access Key ID
+-                   -> String -- ^ Secret Access Key
++amazonS3Connection :: AWSAccessKey -- ^ Access Key ID
++                   -> AWSSecretKey -- ^ Secret Access Key
+                    -> AWSConnection -- ^ Connection to Amazon S3
+ amazonS3Connection = AWSConnection defaultAmazonS3Host defaultAmazonS3Port
+ 
+@@ -47,13 +53,15 @@
+ --   'Nothing'.
+ amazonS3ConnectionFromEnv :: IO (Maybe AWSConnection)
+ amazonS3ConnectionFromEnv =
+-    do ak <- getEnvKey "AWS_ACCESS_KEY_ID"
+-       sk0 <- getEnvKey "AWS_ACCESS_KEY_SECRET"
+-       sk1 <- getEnvKey "AWS_SECRET_ACCESS_KEY"
++    do ak <- getEnvKey "AWS_ACCESS_KEY_ID" >>= return . AWSAccessKey
++       sk0 <- getEnvKey "AWS_ACCESS_KEY_SECRET" >>= return . AWSSecretKey
++       sk1 <- getEnvKey "AWS_SECRET_ACCESS_KEY" >>= return . AWSSecretKey
+        return $ case (ak, sk0, sk1) of
+-                  ("",  _,  _) -> Nothing
+-                  ( _, "", "") -> Nothing
+-                  ( _, "",  _) -> Just (amazonS3Connection ak sk1)
++                  (AWSAccessKey "",  _,  _) -> Nothing
++                  ( _, AWSSecretKey "", AWSSecretKey "") -> Nothing
++                  ( _, AWSSecretKey "",  _) -> Just (amazonS3Connection ak sk1)
+                   ( _,  _,  _) -> Just (amazonS3Connection ak sk0)
+-    where getEnvKey s = catch (getEnv s) (const $ return "")
++    where getEnvKey s = catch (getEnv s) handle
++          handle :: SomeException -> IO String
++          handle _ = return ""
+ 
+--- old/Network/AWS/AWSResult.hs	2013-02-27 06:40:40.510765912 -0800
++++ new/Network/AWS/AWSResult.hs	2013-02-27 09:55:18.566142394 -0800
+@@ -12,6 +12,7 @@
+ module Network.AWS.AWSResult (
+                   -- * Data Types
+                   AWSResult,
++                  AWSError(..),
+                   ReqError(..),
+                   prettyReqError
+                  ) where
+@@ -29,13 +30,97 @@
+     NetworkError Stream.ConnError |
+     -- | @AWSError code message@ constructs an error message from S3
+     --   itself.  See
+-    --   <http://docs.amazonwebservices.com/AmazonS3/2006-03-01/ErrorCodeList.html>
++    --   <http://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#ErrorCodeList>
+     --   for a detailed list of possible codes.
+-    AWSError String String
++    AWSError AWSError String
+              deriving (Show, Eq)
+ 
+ -- | Pretty print an error message.
+ prettyReqError :: ReqError -> String
+ prettyReqError r = case r of
+                      AWSError a b -> b
+-                     NetworkError c -> show c
+\ No newline at end of file
++                     NetworkError c -> show c
++
++data AWSError
++    = AccessDenied	-- ^ Access Denied (403 Forbidden, Client)
++    | AccountProblem	-- ^ There is a problem with your AWS account that prevents the operation from completing successfully. Please use Contact Us. (403 Forbidden, Client)
++    | AmbiguousGrantByEmailAddress	-- ^ The e-mail address you provided is associated with more than one account. (400 Bad Request, Client)
++    | BadDigest	-- ^ The Content-MD5 you specified did not match what we received. (400 Bad Request, Client)
++    | BucketAlreadyExists	-- ^ The requested bucket name is not available. The bucket namespace is shared by all users of the system. Please select a different name and try again. (409 Conflict, Client)
++    | BucketAlreadyOwnedByYou	-- ^ Your previous request to create the named bucket succeeded and you already own it. (409 Conflict, Client)
++    | BucketNotEmpty	-- ^ The bucket you tried to delete is not empty. (409 Conflict, Client)
++    | CredentialsNotSupported	-- ^ This request does not support credentials. (400 Bad Request, Client)
++    | CrossLocationLoggingProhibited	-- ^ Cross location logging not allowed. Buckets in one geographic location cannot log information to a bucket in another location. (403 Forbidden, Client)
++    | EntityTooSmall	-- ^ Your proposed upload is smaller than the minimum allowed object size. (400 Bad Request, Client)
++    | EntityTooLarge	-- ^ Your proposed upload exceeds the maximum allowed object size. (400 Bad Request, Client)
++    | ExpiredToken	-- ^ The provided token has expired. (400 Bad Request, Client)
++    | IllegalVersioningConfigurationException	-- ^ Indicates that the Versioning configuration specified in the request is invalid. (400 Bad Request, Client)
++    | IncompleteBody	-- ^ You did not provide the number of bytes specified by the Content-Length HTTP header (400 Bad Request, Client)
++    | IncorrectNumberOfFilesInPostRequest	-- ^ POST requires exactly one file upload per request. (400 Bad Request, Client)
++    | InlineDataTooLarge	-- ^ Inline data exceeds the maximum allowed size. (400 Bad Request, Client)
++    | InternalError	-- ^ We encountered an internal error. Please try again. (500 Internal Server Error, Server)
++    | InvalidAccessKeyId	-- ^ The AWS Access Key Id you provided does not exist in our records. (403 Forbidden, Client)
++    | InvalidAddressingHeader	-- ^ You must specify the Anonymous role. (N/A, Client)
++    | InvalidArgument	-- ^ Invalid Argument (400 Bad Request, Client)
++    | InvalidBucketName	-- ^ The specified bucket is not valid. (400 Bad Request, Client)
++    | InvalidBucketState	-- ^ The request is not valid with the current state of the bucket. (409 Conflict, Client)
++    | InvalidDigest	-- ^ The Content-MD5 you specified was an invalid. (400 Bad Request, Client)
++    | InvalidLocationConstraint	-- ^ The specified location constraint is not valid. For more information about Regions, see How to Select a Region for Your Buckets. (400 Bad Request, Client)
++    | InvalidObjectState	-- ^ The operation is not valid for the current state of the object. (403 Forbidden, Client)
++    | InvalidPart	-- ^ One or more of the specified parts could not be found. The part might not have been uploaded, or the specified entity tag might not have matched the part's entity tag. (400 Bad Request, Client)
++    | InvalidPartOrder	-- ^ The list of parts was not in ascending order.Parts list must specified in order by part number. (400 Bad Request, Client)
++    | InvalidPayer	-- ^ All access to this object has been disabled. (403 Forbidden, Client)
++    | InvalidPolicyDocument	-- ^ The content of the form does not meet the conditions specified in the policy document. (400 Bad Request, Client)
++    | InvalidRange	-- ^ The requested range cannot be satisfied. (416 Requested Range Not Satisfiable, Client)
++    | InvalidRequest	-- ^ SOAP requests must be made over an HTTPS connection. (400 Bad Request, Client)
++    | InvalidSecurity	-- ^ The provided security credentials are not valid. (403 Forbidden, Client)
++    | InvalidSOAPRequest	-- ^ The SOAP request body is invalid. (400 Bad Request, Client)
++    | InvalidStorageClass	-- ^ The storage class you specified is not valid. (400 Bad Request, Client)
++    | InvalidTargetBucketForLogging	-- ^ The target bucket for logging does not exist, is not owned by you, or does not have the appropriate grants for the log-delivery group. (400 Bad Request, Client)
++    | InvalidToken	-- ^ The provided token is malformed or otherwise invalid. (400 Bad Request, Client)
++    | InvalidURI	-- ^ Couldn't parse the specified URI. (400 Bad Request, Client)
++    | KeyTooLong	-- ^ Your key is too long. (400 Bad Request, Client)
++    | MalformedACLError	-- ^ The XML you provided was not well-formed or did not validate against our published schema. (400 Bad Request, Client)
++    | MalformedPOSTRequest	-- ^ The body of your POST request is not well-formed multipart/form-data. (400 Bad Request, Client)
++    | MalformedXML	-- ^ This happens when the user sends a malformed xml (xml that doesn't conform to the published xsd) for the configuration. The error message is, "The XML you provided was not well-formed or did not validate against our published schema." (400 Bad Request, Client)
++    | MaxMessageLengthExceeded	-- ^ Your request was too big. (400 Bad Request, Client)
++    | MaxPostPreDataLengthExceededError	-- ^ Your POST request fields preceding the upload file were too large. (400 Bad Request, Client)
++    | MetadataTooLarge	-- ^ Your metadata headers exceed the maximum allowed metadata size. (400 Bad Request, Client)
++    | MethodNotAllowed	-- ^ The specified method is not allowed against this resource. (405 Method Not Allowed, Client)
++    | MissingAttachment	-- ^ A SOAP attachment was expected, but none were found. (N/A, Client)
++    | MissingContentLength	-- ^ You must provide the Content-Length HTTP header. (411 Length Required, Client)
++    | MissingRequestBodyError	-- ^ This happens when the user sends an empty xml document as a request. The error message is, "Request body is empty." (400 Bad Request, Client)
++    | MissingSecurityElement	-- ^ The SOAP 1.1 request is missing a security element. (400 Bad Request, Client)
++    | MissingSecurityHeader	-- ^ Your request was missing a required header. (400 Bad Request, Client)
++    | NoLoggingStatusForKey	-- ^ There is no such thing as a logging status sub-resource for a key. (400 Bad Request, Client)
++    | NoSuchBucket		-- ^ The specified bucket does not exist. (404 Not Found, Client)
++    | NoSuchKey			-- ^ The specified key does not exist. (404 Not Found, Client)
++    | NoSuchLifecycleConfiguration	-- ^ The lifecycle configuration does not exist. (404 Not Found, Client)
++    | NoSuchUpload		-- ^ The specified multipart upload does not exist. The upload ID might be invalid, or the multipart upload might have been aborted or completed. (404 Not Found, Client)
++    | NoSuchVersion		-- ^ Indicates that the version ID specified in the request does not match an existing version. (404 Not Found, Client)
++    | NotImplemented	-- ^ A header you provided implies functionality that is not implemented. (501 Not Implemented, Server)
++    | NotSignedUp	-- ^ Your account is not signed up for the Amazon S3 service. You must sign up before you can use Amazon S3. You can sign up at the following URL: http://aws.amazon.com/s3 (403 Forbidden, Client)
++    | NotSuchBucketPolicy	-- ^ The specified bucket does not have a bucket policy. (404 Not Found, Client)
++    | OperationAborted	-- ^ A conflicting conditional operation is currently in progress against this resource. Please try again. (409 Conflict, Client)
++    | PermanentRedirect	-- ^ The bucket you are attempting to access must be addressed using the specified endpoint. Please send all future requests to this endpoint. (301 Moved Permanently, Client)
++    | PreconditionFailed	-- ^ At least one of the preconditions you specified did not hold. (412 Precondition Failed, Client)
++    | Redirect	-- ^ Temporary redirect. (307 Moved Temporarily, Client)
++    | RestoreAlreadyInProgress	-- ^ Object restore is already in progress. (409 Conflict, Client)
++    | RequestIsNotMultiPartContent	-- ^ Bucket POST must be of the enclosure-type multipart/form-data. (400 Bad Request, Client)
++    | RequestTimeout	-- ^ Your socket connection to the server was not read from or written to within the timeout period. (400 Bad Request, Client)
++    | RequestTimeTooSkewed	-- ^ The difference between the request time and the server's time is too large. (403 Forbidden, Client)
++    | RequestTorrentOfBucketError	-- ^ Requesting the torrent file of a bucket is not permitted. (400 Bad Request, Client)
++    | SignatureDoesNotMatch	-- ^ The request signature we calculated does not match the signature you provided. Check your AWS Secret Access Key and signing method. For more information, see REST Authentication and SOAP Authentication for details. (403 Forbidden, Client)
++    | ServiceUnavailable	-- ^ Please reduce your request rate. (503 Service Unavailable, Server)
++    | SlowDown	-- ^ Please reduce your request rate. (503 Slow Down, Server)
++    | TemporaryRedirect	-- ^ You are being redirected to the bucket while DNS updates. (307 Moved Temporarily, Client)
++    | TokenRefreshRequired	-- ^ The provided token must be refreshed. (400 Bad Request, Client)
++    | TooManyBuckets	-- ^ You have attempted to create more buckets than allowed. (400 Bad Request, Client)
++    | UnexpectedContent			-- ^ This request does not support content. (400 Bad Request, Client)
++    | UnresolvableGrantByEmailAddress	-- ^ The e-mail address you provided does not match any account on record. (400 Bad Request, Client)
++    | UserKeyMustBeSpecified		-- ^ The bucket POST must contain the specified field name. If it is specified, please check the order of the fields. (400 Bad Request, Client)
++    -- Added codes found in haskell source code
++    | NotFound		-- ^ 404 Not Found
++    | NoErrorInMsg	-- ^ HTTP Error condition, but message body did not contain error code.
++    | Unexpected String	-- ^ Some error received from the service not listed above
++    deriving (Read, Show, Eq)
+\ No newline at end of file
