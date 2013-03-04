@@ -11,7 +11,6 @@ import Debian.Debianize (sourcePackageName)
 import Debian.Relation (SrcPkgName(..))
 import System.FilePath ((</>))
 import Targets.Common
-import Targets.SeeReason (configure)
 
 libraries _home =
     P.Packages (singleton "libraries") $
@@ -48,41 +47,51 @@ clckwrks14 =
       [ P.Package { P.name = "clckwrks-14"
                   , P.spec = Debianize (Hackage "clckwrks")
                   , P.flags = [P.CabalPin "0.14.2",
-                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-clckwrks-14")) . configure) ] }
+                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-clckwrks-14"))) ] }
       , debianize (hackage "clckwrks"
                      `rename` "clckwrks-13"
                      `flag` P.CabalPin "0.13.2"
-                     `flag` P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-clckwrks-13")) . configure)
+                     `flag` P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-clckwrks-13")))
                      `patch` $(embedFile "patches/clckwrks-13.diff"))
       , P.Package { P.name = "blaze-html-5"
                   , P.spec = Debianize (Hackage "blaze-html")
                   , P.flags = [P.CabalPin "0.5.1.3",
-                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-blaze-html-5")) . configure) ] }
+                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-blaze-html-5"))) ] }
       , P.Package { P.name = "happstack-authenticate-9"
                   , P.spec = Debianize (Hackage "happstack-authenticate")
                   , P.flags = [P.CabalPin "0.9.8",
-                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-happstack-authenticate-9")) . configure) ] }
+                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-happstack-authenticate-9"))) ] }
       , P.Package { P.name = "http-types-7"
                   , P.spec = Debianize (Hackage "http-types")
                   , P.flags = [P.CabalPin "0.7.3.0.1",
-                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-http-types-7")) . configure) ] }
+                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-http-types-7"))) ] }
+      , debianize (hackage "web-plugins"
+                     `patch` $(embedFile "patches/web-plugins.diff")
+                     `rename` "web-plugins-1"
+                     `flag` P.CabalPin "0.1.2"
+                     `flag` P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "haskell-web-plugins-1"))))
       , P.Package { P.name = "case-insensitive-0"
                   , P.spec = Debianize (Hackage "case-insensitive")
                   , P.flags = [P.CabalPin "0.4.0.4",
-                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "case-insensitive-0")) . configure) ] }
+                               P.ModifyAtoms (setL sourcePackageName (Just (SrcPkgName "case-insensitive-0"))) ] }
       -- Because this target has a debian/Debianize.hs script, the
       -- debianization will be performed by running that rather than
       -- calling callDebianize directly.  That means that the
       -- ModifyAtoms flag here (won't work.  So now what?)
       , P.Package { P.name = "clckwrks-theme-clcksmith"
-                  , P.spec = Debianize (Cd "clckwrks-theme-clcksmith" (Darcs (privateRepo ++ "/clcksmith")))
+                  , P.spec = Debianize (Cd "clckwrks-theme-clcksmith" (Dir (home </> "darcs" {-privateRepo-} ++ "/clcksmith")))
                   -- Haddock gets upset about the HSX.QQ modules.  Not sure why.
                   , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc] }
-      , P.Package { P.name = "clcksmith"
-                  , P.spec = Debianize (Darcs (privateRepo ++ "/clcksmith"))
-                  , P.flags = [P.ExtraDep "haskell-hsx-utils",
-                               P.CabalDebian ["--missing-dependency", "libghc-clckwrks-theme-clcksmith-doc"]] }
+      , debianize (P.Package
+                        { P.name = "clcksmith"
+                        , P.spec = Dir (home </> "darcs" {-privateRepo-} ++ "/clcksmith")
+                        , P.flags = [] }
+                    `patch` $(embedFile "patches/clcksmith.diff")
+                    `flag` P.ExtraDep "haskell-hsx-utils"
+                    `flag` P.CabalDebian ["--missing-dependency", "libghc-clckwrks-theme-clcksmith-doc"])
       ]
+
+home = "/home/dsf"
 
 rename :: P.Packages -> TargetName -> P.Packages
 rename p s = p {P.name = s}

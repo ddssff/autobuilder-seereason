@@ -33,13 +33,14 @@ import System.IO (hPutStr, hPutStrLn, hFlush, stderr)
 
 import Config
 import Targets (private)
+import Targets.SeeReason (defaultAtoms)
 import Usage
 
 main =
     hPutStrLn stderr "Autobuilder starting..." >>
     getArgs >>= \ args ->
     getEnv "HOME" >>= \ home ->
-    try (help (getParams home args) >>= M.main) >>=
+    try (help (getParams home args) >>= M.main defaultAtoms) >>=
     either (\ (e :: SomeException) -> hPutStrLn stderr ("Exception: " ++ show e) >> throw e) return
 
 -- | Look for the doHelp flag in any parameter set, if given output

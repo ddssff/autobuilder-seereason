@@ -1,0 +1,8 @@
+--- old/web-plugins.cabal	2013-03-04 15:12:34.000000000 -0800
++++ new/web-plugins.cabal	2013-03-04 15:19:52.806037169 -0800
+@@ -21,4 +21,4 @@
+                        stm        == 2.4.*,
+                        mtl        == 2.1.*,
+                        text       == 0.11.*,
+-                       containers == 0.4.*
++                       containers >= 0.4
