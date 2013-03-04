@@ -1,0 +1,11 @@
+--- old/clckwrks.cabal	2013-03-03 07:52:30.000000000 -0800
++++ new/clckwrks.cabal	2013-03-03 07:54:28.076077153 -0800
+@@ -109,7 +109,7 @@
+      unordered-containers         >= 0.1 && < 0.3,
+      utf8-string                  == 0.3.*,
+      vector                       >= 0.9,
+-     web-plugins                  == 0.1.*,
++     web-plugins                  >= 0.1,
+      web-routes,
+      web-routes-happstack,
+      web-routes-hsp,
