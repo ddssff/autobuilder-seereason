@@ -723,7 +723,7 @@ platform release =
                   P.flags = [P.RelaxDep "happy", P.CabalDebian ["--executable", "happy"],
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     , debianize (hackage "stm")
-    , ghc release (apt "sid" "haskell-zlib") (debianize (hackage "zlib"))
+    , ghc release (apt "sid" "haskell-zlib") (debianize (hackage "zlib" `flag` P.ExtraDevDep "zlib1g-dev"))
     , debianize (hackage "mtl")
     , debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
     , debianize (hackage "parallel")
