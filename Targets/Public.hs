@@ -870,8 +870,7 @@ happstack release =
                 , P.spec = Debianize (Git "https://github.com/faylang/fay-jquery")
                 , P.flags = [] }
     , P.Package { P.name = "mastermind"
-                , P.spec = Debianize (Patch (Darcs "http://hub.darcs.net/stepcut/mastermind")
-                                            $(embedFile "patches/mastermind.diff"))
+                , P.spec = Debianize (Darcs "http://hub.darcs.net/stepcut/mastermind")
                 , P.flags = [P.CabalDebian ["--build-dep=haskell-fay-utils", "--build-dep=haskell-fay-jquery-utils", "--build-dep=haskell-happstack-fay-utils"]] }
     , ghc release (P.Package { P.name = "haskell-happstack-data"
                              , P.spec = Debianize (Patch (Hackage "happstack-data") $(embedFile "patches/happstack-data.diff"))
