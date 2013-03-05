@@ -11,7 +11,12 @@
    main-is:             Main.hs
 --- old/debian/Debianize.hs	2013-02-21 17:48:04.000000000 -0800
 +++ new/debian/Debianize.hs	2013-02-23 10:39:32.117390461 -0800
-@@ -13,14 +13,13 @@
+@@ -9,18 +9,18 @@
+ import Debian.Debianize
+ import Debian.Relation (Relation(..), VersionReq(..), SrcPkgName(..), BinPkgName(..))
+ import qualified Paths_clckwrks as Clckwrks
++import Targets.SeeReason (defaultAtoms)
+ import Text.PrettyPrint.ANSI.Leijen (Pretty, pretty, text)
  
  main :: IO ()
  main =
@@ -21,7 +26,7 @@
 -       log <- inputChangeLog "debian"
 -       inputCabalization "." defaultAtoms >>= debianization "." . customize jstreePath json2Path log >>= writeDebianization "."
 +    do log <- inputChangeLog top
-+       debianize top (return . customize . setL changelog (Just log))
++       debianize top (return . customize . setL changelog (Just log)) defaultAtoms
 +    where
 +      top = Top "."
  
@@ -32,7 +37,7 @@
      modL control  (\ y -> y {homepage = Just "http://www.clckwrks.com/"}) .
      modL rulesFragments (insert (pack (Prelude.unlines ["build/clckwrks-dot-com-production::", "\techo CLCKWRKS=`ghc-pkg field clckwrks version | sed 's/version: //'` > debian/default"]))) .
      modL installTo (Map.insertWith Set.union (BinPkgName "clckwrks-dot-com-production") (Set.singleton ("debian/default", "/etc/default/clckwrks-dot-com-production"))) .
-@@ -28,11 +27,10 @@
+@@ -28,11 +28,10 @@
      setL sourceFormat (Just Native3) .
      modL missingDependencies (insert (BinPkgName "libghc-clckwrks-theme-clckwrks-doc")) .
      setL revision (Just "") .
@@ -45,7 +50,7 @@
      setL compat (Just 7)
  
  serverNames = List.map BinPkgName ["clckwrks-dot-com-production" {- , "clckwrks-dot-com-staging", "clckwrks-dot-com-development" -}]
-@@ -55,14 +53,14 @@
+@@ -55,14 +54,14 @@
                            (BinPkgName "libghc-clckwrks-plugin-bugs-dev", BinPkgName "haskell-clckwrks-plugin-bugs-utils"),
                            (BinPkgName "libghc-clckwrks-dev", BinPkgName "haskell-clckwrks-utils")]) deb serverNames
  
@@ -65,7 +70,7 @@
            Server { hostname =
                         case deb of
                           BinPkgName "clckwrks-dot-com-production" -> hostname'
-@@ -78,8 +76,8 @@
+@@ -78,8 +77,8 @@
                       , "--enable-analytics"
                       , "--jquery-path", "/usr/share/javascript/jquery/"
                       , "--jqueryui-path", "/usr/share/javascript/jquery-ui/"

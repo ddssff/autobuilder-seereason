@@ -25,7 +25,8 @@ applications _home =
     , debianize (darcs "haskell-artvaluereport-data" (privateRepo ++ "/artvaluereport-data"))
     , darcs "haskell-seereason" (privateRepo ++ "/seereason")
     , darcs "haskell-happstack-ontology" (privateRepo ++ "/happstack-ontology")
-    , darcs "haskell-creativeprompts" (privateRepo ++ "/creativeprompts")
+    -- Obsolete
+    -- , darcs "haskell-creativeprompts" (privateRepo ++ "/creativeprompts")
     -- There is a debianization in the repo that contains this file
     -- (Targets.hs), and it creates a package named seereason-darcs-backups,
     -- which performs backups on the darcs repo.
