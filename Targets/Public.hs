@@ -856,7 +856,13 @@ happstack release =
                 , P.spec = Debianize (Hackage "happstack")
                 , P.flags = [] }
     , P.Package { P.name = "haskell-happstack-fay"
-                , P.spec = Debianize (Patch (Hackage "happstack-fay") $(embedFile "patches/happstack-fay.diff"))
+                , P.spec = Debianize (Hackage "happstack-fay")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-happstack-fay-ajax"
+                , P.spec = Debianize (Hackage "happstack-fay-ajax")
+                , P.flags = [] }
+    , P.Package { P.name = "haskell-fay-hsx"
+                , P.spec = Debianize (Hackage "fay-hsx")
                 , P.flags = [] }
     , debianize (hackage "fay")
     , debianize (hackage "fay-base")
