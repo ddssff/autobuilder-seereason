@@ -74,56 +74,34 @@ fixme =
 
 unixutils _home =
     P.Packages (singleton "Unixutils")
-    [ P.Package { P.name = "haskell-unixutils"
-                , P.spec = Darcs (repo ++ "/haskell-unixutils")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-extra"
-                , P.spec = Darcs "http://src.seereason.com/haskell-extra"
-                , P.flags = [P.RelaxDep "cabal-debian"] }
-    , P.Package { P.name = "haskell-help"
-                , P.spec = Darcs "http://src.seereason.com/haskell-help"
-                , P.flags = [] } ]
+    [ darcs "haskell-unixutils" (repo ++ "/haskell-unixutils")
+    , darcs "haskell-extra" "http://src.seereason.com/haskell-extra" `flag` P.RelaxDep "cabal-debian"
+    , darcs "haskell-help" "http://src.seereason.com/haskell-help" ]
 
 autobuilder home =
     -- let repo = localRepo home in
     P.Packages (singleton "autobuilder-group") $
     [ unixutils home
-    , P.Package { P.name = "autobuilder"
-                , P.spec = Cd "autobuilder" (Darcs (repo </> "debian-tools"))
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-cabal-debian"
-                , P.spec = Cd "cabal-debian" (Darcs (repo </> "debian-tools"))
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-debian"
-                , P.spec = Darcs (repo ++ "/haskell-debian")
-                , P.flags = [P.RelaxDep "cabal-debian"] }
-    , P.Package { P.name = "haskell-debian-mirror"
-                , P.spec = Darcs "http://src.seereason.com/mirror"
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-debian-repo"
-                , P.spec = Cd "debian-repo" (Darcs (repo </> "debian-tools"))
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-archive"
-                , P.spec = Darcs "http://src.seereason.com/archive"
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-process-extras"
-                , P.spec = Debianize (Darcs "http://src.seereason.com/process-extras")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-process-progress"
-                , P.spec = Cd "process-progress" (Darcs (repo </> "debian-tools-stable"))
-                , P.flags = [] }
+    , darcs "autobuilder" (repo </> "debian-tools") `cd` "autobuilder"
+    , darcs "haskell-cabal-debian" (repo </> "debian-tools") `cd` "cabal-debian"
+    , darcs "haskell-debian" (repo ++ "/haskell-debian") `flag` P.RelaxDep "cabal-debian"
+    , darcs "haskell-debian-mirror" "http://src.seereason.com/mirror"
+    , darcs "haskell-debian-repo" (repo </> "debian-tools") `cd` "debian-repo"
+    , darcs "haskell-archive" "http://src.seereason.com/archive"
+    , debianize (darcs "haskell-process-extras" "http://src.seereason.com/process-extras")
+    , darcs "haskell-process-progress" (repo </> "debian-tools-stable") `cd` "process-progress"
     ]
 
 digestiveFunctors =
     P.Packages (singleton "digestive-functors")
     [ debianize (hackage "digestive-functors" `flag` P.CabalPin "0.2.1.0")  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
     -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
-    , P.Package { P.name = "haskell-digestive-functors-happstack"
-                , P.spec = Debianize (Patch (Hackage "digestive-functors-happstack") $(embedFile "patches/digestive-functors-happstack.diff"))
-                , P.flags = [P.CabalPin "0.1.1.5", P.DebVersion "0.1.1.5-1~hackage1"] }
-    , P.Package { P.name = "haskell-digestive-functors-hsp"
-                , P.spec = Debianize (Darcs (repo ++ "/digestive-functors-hsp"))
-                , P.flags = [P.DebVersion "0.5.0-1~hackage1"] } ]
+    , debianize (hackage "digestive-functors-happstack"
+                   `patch` $(embedFile "patches/digestive-functors-happstack.diff")
+                   `flag` P.CabalPin "0.1.1.5"
+                   `flag` P.DebVersion "0.1.1.5-1~hackage1")
+    , debianize (darcs "haskell-digestive-functors-hsp" (repo ++ "/digestive-functors-hsp")
+                   `flag` P.DebVersion "0.5.0-1~hackage1") ]
 
 main _home release =
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
@@ -148,68 +126,54 @@ main _home release =
                    `flag` P.Revision "")
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
     , debianize (hackage "aeson")
-    , P.Package { P.name = "haskell-agi"
-                , P.spec = Darcs "http://src.seereason.com/haskell-agi"
-                , P.flags = [] }
+    , darcs "haskell-agi" "http://src.seereason.com/haskell-agi"
     , debianize (hackage "ansi-terminal")
     , debianize (hackage "ansi-wl-pprint")
     , debianize (hackage "wl-pprint-text")
     -- Our applicative-extras repository has several important patches.
-    , P.Package { P.name = "haskell-applicative-extras",
-                  P.spec = Debianize (Hackage "applicative-extras"),
-                  P.flags = [P.DebVersion "0.1.8-1"] }
+    , debianize (hackage "applicative-extras" `flag` P.DebVersion "0.1.8-1")
     , debianize (hackage "asn1-data")
     , debianize (hackage "attempt" `pflag` P.DebVersion "0.4.0-1" `qflag` P.DebVersion "0.4.0-1build2")
     , debianize (hackage "errors")
     , debianize (hackage "failure" `qflag` P.DebVersion "0.2.0.1-1build2")
     , debianize (hackage "attoparsec")
     , debianize (hackage "attoparsec-enumerator")
-    , P.Package { P.name = "haskell-attoparsec-text"
-                , P.spec = Debianize (Patch (Hackage "attoparsec-text") $(embedFile "patches/attoparsec-text.diff"))
-                , P.flags = [P.Revision ""] }
+    , debianize (hackage "attoparsec-text"
+                   `patch` $(embedFile "patches/attoparsec-text.diff")
+                   `flag` P.Revision "")
     , debianize (hackage "attoparsec-text-enumerator")
     , debianize (hackage "base16-bytestring")
     , debianize (hackage "base-unicode-symbols")
     , debianize (hackage "bimap" `flag` P.DebVersion "0.2.4-1~hackage1")
     , debianize (hackage "data-default")
-    , P.Package { P.name = "haskell-template-default"
-                , P.spec = Debianize (ghc release (Hackage "template-default")
-                                                      (Patch (Hackage "template-default") $(embedFile "patches/template-default.diff")))
-                , P.flags = [] }
+    , debianize (ghc release
+                     (hackage "template-default")
+                     (hackage "template-default"
+                        `patch` $(embedFile "patches/template-default.diff")))
     , debianize (hackage "bitmap")
     , debianize (hackage "bitset" `flag` P.DebVersion "1.1-1~hackage1")
     , apt (rel release "sid" "quantal") "haskell-bytestring-nums"
     , debianize (hackage "bytestring-trie")
-    , ghc release (P.Package { P.name = "haskell-bzlib"
-                                 , P.spec = Quilt (Apt "sid" "haskell-bzlib") (Darcs "http://src.seereason.com/haskell-bzlib-quilt")
-                                 , P.flags = [] })
-                      (debianize (hackage "bzlib"))
+    , debianize (hackage "bzlib")
     -- , debianize (hackage "cairo-pdf")
     , debianize (hackage "case-insensitive")
-    , P.Package { P.name = "haskell-cabal-install"
-                , P.spec = Debianize (Patch (Hackage "cabal-install") $(embedFile "patches/cabal-install.diff"))
-                , P.flags = [] }
+    , debianize (hackage "cabal-install"
+                   `patch` $(embedFile "patches/cabal-install.diff"))
     , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
     , apt (rel release "sid" "quantal") "haskell-cereal"
     , debianize (hackage "citeproc-hs")
-    , P.Package {P.name = "haskell-hexpat",
-                 P.spec = Debianize (Hackage "hexpat"),
-                 P.flags = []}
+    , debianize (hackage "hexpat")
     , debianize (hackage "List")
     , debianize (hackage "uuid")
     , debianize (hackage "maccatcher" `flag` P.DebVersion "2.1.5-3")
     , debianize (hackage "colour" `flag` P.DebVersion "2.3.3-1build1")
     -- , apt "sid" "haskell-configfile"
     , debianize (hackage "ConfigFile")
-    , P.Package { P.name = "haskell-consumer"
-                , P.spec = Darcs "http://src.seereason.com/haskell-consumer"
-                , P.flags = [] }
+    , darcs "haskell-consumer" "http://src.seereason.com/haskell-consumer"
     , debianize (hackage "cipher-aes")
     , debianize (hackage "cprng-aes")
     , debianize (hackage "crypto-random-api")
-    , P.Package { P.name = "haskell-crypto"
-                , P.spec = Debianize (Hackage "Crypto")
-                , P.flags = [] }
+    , debianize (hackage "Crypto")
     , debianize (hackage "crypto-api" `qflag` P.DebVersion "0.10.2-1build3")
     , debianize (hackage "crypto-pubkey-types")
     , debianize (hackage "cryptocipher")
@@ -221,9 +185,8 @@ main _home release =
     , debianize (hackage "data-accessor")
     , debianize (hackage "data-accessor-template")
     , debianize (hackage "data-default")
-    , P.Package { P.name = "haskell-data-object"
-                , P.spec = Debianize (Patch (Hackage "data-object") $(embedFile "patches/data-object.diff"))
-                , P.flags = [] }
+    , debianize (hackage "data-object"
+                   `patch` $(embedFile "patches/data-object.diff"))
     , debianize (hackage "dataenc")
     , debianize (hackage "Diff")
     , apt (rel release "sid" "quantal") "haskell-digest"
