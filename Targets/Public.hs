@@ -746,6 +746,8 @@ happstack release =
                    -- `patch` $(embedFile "patches/mastermind.diff")
                    `flag` P.CabalDebian ["--build-dep=hsx2hs",
                                          "--build-dep=haskell-fay-utils",
+                                         "--build-dep=haskell-fay-base-utils",
+                                         "--build-dep=haskell-fay-hsx-utils",
                                          "--build-dep=haskell-fay-jquery-utils",
                                          "--build-dep=haskell-happstack-fay-ajax-utils"])
     , ghc release (debianize (hackage "happstack-data"
