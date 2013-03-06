@@ -243,7 +243,8 @@ main _home release =
     , P.Package { P.name = "haskell-th-orphans"
                 , P.spec = Debianize (Patch (Hackage "th-orphans") $(embedFile "patches/th-orphans.diff"))
                 , P.flags = [P.DebVersion "0.6-1~hackage1"] }
-    , debianize (hackage "haskell-src-meta")
+    , debianize (hackage "haskell-src-meta"
+                   `patch` $(embedFile "patches/haskell-src-meta.diff"))
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -752,7 +753,9 @@ happstack release =
                                 `flag` P.DebVersion "6.0.1-1build1"))
                   P.NoPackage
     , darcs "haskell-happstack-extra" (repo ++ "/happstack-extra")
-    , debianize (hackage "happstack-hsp" `flag` P.ExtraDep "haskell-hsx-utils")
+    , debianize (hackage "happstack-hsp"
+                   `patch` $(embedFile "patches/happstack-hsp.diff")
+                   `flag` P.ExtraDep "haskell-hsx-utils")
     , ghc release (darcs "haskell-happstack-ixset" happstackRepo
                      `cd` "happstack-ixset"
                      `debdir` Darcs (repo ++ "/happstack-ixset-debian"))
