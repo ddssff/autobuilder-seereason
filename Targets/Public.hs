@@ -783,7 +783,7 @@ happstack release =
                    `flag` P.CabalDebian ["--build-dep=hsx2hs",
                                          "--build-dep=haskell-fay-utils",
                                          "--build-dep=haskell-fay-jquery-utils",
-                                         "--build-dep=haskell-happstack-fay-utils"])
+                                         "--build-dep=haskell-happstack-fay-ajax-utils"])
     , ghc release (debianize (hackage "happstack-data"
                                 `patch` $(embedFile "patches/happstack-data.diff")
                                 `flag` P.DebVersion "6.0.1-1build1"))
