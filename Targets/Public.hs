@@ -773,13 +773,15 @@ happstack release =
                    -- `patch` $(embedFile "patches/happstack-fay.diff")
                 )
     , debianize (hackage "happstack-fay-ajax")
+    , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs"])
     , debianize (hackage "fay-hsx")
     , debianize (hackage "fay")
     , debianize (hackage "fay-base")
     , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
     , debianize (darcs "mastermind" "http://hub.darcs.net/stepcut/mastermind"
                    -- `patch` $(embedFile "patches/mastermind.diff")
-                   `flag` P.CabalDebian ["--build-dep=haskell-fay-utils",
+                   `flag` P.CabalDebian ["--build-dep=hsx2hs",
+                                         "--build-dep=haskell-fay-utils",
                                          "--build-dep=haskell-fay-jquery-utils",
                                          "--build-dep=haskell-happstack-fay-utils"])
     , ghc release (debianize (hackage "happstack-data"
