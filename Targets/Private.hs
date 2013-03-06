@@ -5,8 +5,7 @@ module Targets.Private (libraries, applications) where
 import Data.FileEmbed (embedFile)
 import Data.Lens.Lazy (setL)
 import Data.Set (singleton)
-import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages
+import Debian.AutoBuilder.Types.Packages as P
 import Debian.Debianize (sourcePackageName)
 import Debian.Relation (SrcPkgName(..))
 import System.FilePath ((</>))
@@ -93,6 +92,3 @@ clckwrks14 =
       ]
 
 home = "/home/dsf"
-
-rename :: P.Packages -> TargetName -> P.Packages
-rename p s = p {P.name = s}

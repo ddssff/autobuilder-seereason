@@ -7,8 +7,8 @@ import Data.Lens.Lazy (setL, modL)
 import Data.Map as Map (insertWith)
 import Data.Set as Set (empty, singleton, union)
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages (RetrieveMethod(..), PackageFlag(CabalPin),
-                                          hackage, debianize, flag, patch, darcs, apt)
+import Debian.AutoBuilder.Types.Packages (RetrieveMethod(..), PackageFlag(CabalPin), rename,
+                                          hackage, debianize, flag, patch, darcs, apt, git, debdir, mflag, cd)
 import Debian.Debianize (compat)
 import Debian.Relation (BinPkgName(..))
 import Debian.Debianize (installData, doExecutable, InstallFile(..))
@@ -135,24 +135,17 @@ main _home release =
     , P.Package { P.name = "bugzilla"
                 , P.spec = Apt "squeeze" "bugzilla"
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-listlike"
-                , P.spec = Debianize (Hackage "ListLike")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-listlike-instances"
-                , P.spec = Debianize (Hackage "listlike-instances")
-                , P.flags = [] }
+    , debianize (hackage "ListLike")
+    , debianize (hackage "listlike-instances")
     , apt (rel release "sid" "quantal") "cpphs"
-    , P.Package { P.name = "debootstrap"
-                , P.spec = Apt "sid" "debootstrap"
-                , P.flags = [P.UDeb "debootstrap-udeb"] }
--- Build fails due to some debianization issue
---    , apt "sid" "geneweb"
-    , P.Package { P.name = "gtk2hs-buildtools"
-                , P.spec = Debianize (Hackage "gtk2hs-buildtools")
-                , P.flags =
-                    [ P.ExtraDep "alex"
-                    , P.ExtraDep "happy"
-                    , P.Revision "" ] }
+    , apt "sid" "debootstrap" `flag` P.UDeb "debootstrap-udeb"
+    -- Build fails due to some debianization issue
+    -- , apt "sid" "geneweb"
+    , debianize (hackage "gtk2hs-buildtools"
+                   `rename` "gtk2hs-buildtools"
+                   `flag` P.ExtraDep "alex"
+                   `flag` P.ExtraDep "happy"
+                   `flag` P.Revision "")
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
     , debianize (hackage "aeson")
     , P.Package { P.name = "haskell-agi"
@@ -256,77 +249,7 @@ main _home release =
     , ghc release (apt "sid" "haskell-feed" `pflag` P.DebVersion "0.3.8-3" `qflag` P.DebVersion "0.3.8-3build2")
                   (debianize (hackage "feed") `flag` (rel release (P.DebVersion "0.3.8-3") (P.DebVersion "0.3.8-3build2")))
     -- Darcs 2.8.1 won't build with the current version of haskeline.
-{-
-    , P.Package { P.name = "darcs"
-                , P.spec = Patch
-                             (Apt "sid" "darcs")
-                             (unlines
-                              [ "--- old/darcs.cabal\t2012-05-14 04:10:13.000000000 -0700"
-                              , "+++ new/darcs.cabal\t2012-10-15 20:53:28.742634352 -0700"
-                              , "@@ -368,10 +368,10 @@"
-                              , "                      parsec       >= 2.0 && < 3.2,"
-                              , "                      html         == 1.0.*,"
-                              , "                      filepath     >= 1.1.0.0 && < 1.5.0.0,"
-                              , "-                     haskeline    >= 0.6.3 && < 0.7,"
-                              , "+                     haskeline    >= 0.6.3,"
-                              , "                      hashed-storage >= 0.5.6 && < 0.6,"
-                              , "                      vector       >= 0.7,"
-                              , "-                     tar          == 0.3.*"
-                              , "+                     tar          >= 0.3"
-                              , " "
-                              , "     if !os(windows)"
-                              , "       build-depends: unix >= 1.0 && < 2.6"
-                              , "@@ -529,10 +529,10 @@"
-                              , "                    parsec       >= 2.0 && < 3.2,"
-                              , "                    html         == 1.0.*,"
-                              , "                    filepath     >= 1.1.0.0 && < 1.5.0.0,"
-                              , "-                   haskeline    >= 0.6.3 && < 0.7,"
-                              , "+                   haskeline    >= 0.6.3,"
-                              , "                    hashed-storage >= 0.5.6 && < 0.6,"
-                              , "                    vector       >= 0.7,"
-                              , "-                   tar          == 0.3.*"
-                              , "+                   tar          >= 0.3"
-                              , " "
-                              , "   if !os(windows)"
-                              , "     build-depends: unix >= 1.0 && < 2.6"
-                              , "@@ -720,7 +720,7 @@"
-                              , "       build-depends: unix >= 1.0 && < 2.6"
-                              , " "
-                              , "     build-depends: bytestring >= 0.9.0 && < 0.10,"
-                              , "-                   haskeline    >= 0.6.3 && < 0.7,"
-                              , "+                   haskeline    >= 0.6.3,"
-                              , "                    text       >= 0.11.0.6 && < 0.12.0.0,"
-                              , "                    old-time   >= 1.0 && < 1.2,"
-                              , "                    directory  >= 1.0.0.0 && < 1.2.0.0,"
-                              , "@@ -729,7 +729,7 @@"
-                              , "                    array      >= 0.1 && < 0.5,"
-                              , "                    hashed-storage >= 0.5.6 && < 0.6,"
-                              , "                    vector       >= 0.7,"
-                              , "-                   tar        == 0.3.*,"
-                              , "+                   tar        >= 0.3,"
-                              , "                    random     == 1.0.*"
-                              , " "
-                              , "     if flag(mmap) && !os(windows)"
-                              , "--- old/debian/control\t2012-05-15 14:30:36.000000000 -0700"
-                              , "+++ new/debian/control\t2012-10-15 21:30:24.386686701 -0700"
-                              , "@@ -13,7 +13,6 @@"
-                              , "  libghc-hashed-storage-dev (>= 0.5.6),"
-                              , "  libghc-hashed-storage-dev (<< 0.6),"
-                              , "  libghc-haskeline-dev (>= 0.6.3),"
-                              , "- libghc-haskeline-dev (<< 0.7),"
-                              , "  libghc-html-dev (>= 1.0),"
-                              , "  libghc-html-dev (<< 1.1),"
-                              , "  libghc-http-dev,"
-                              , "@@ -28,7 +27,6 @@"
-                              , "  libghc-random-dev (<< 1.1),"
-                              , "  libghc-regex-compat-dev (>= 0.95.1),"
-                              , "  libghc-tar-dev (>= 0.3),"
-                              , "- libghc-tar-dev (<< 0.4),"
-                              , "  libghc-terminfo-dev (>= 0.3),"
-                              , "  libghc-terminfo-dev (<< 0.4),"
-                              , "  libghc-text-dev (>= 0.11.0.6)," ])
-                , P.flags = [] }
--}
+    -- , apt "sid" "darcs" `patch` $(embedFile "patches/darcs.diff")
     , debianize (hackage "file-embed")
     , debianize (hackage "indents")
     , debianize (hackage "concatenative")
@@ -843,179 +766,111 @@ happstack release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String in
     P.Packages (singleton "happstack")
     [ plugins
-    , P.Package { P.name = "happstack-debianization"
-                , P.spec = Darcs "http://src.seereason.com/happstack-debianization"
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-debian-packaging"
-                , P.spec = Debianize (Darcs "http://src.seereason.com/debian-packaging")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-seereason-base"
-                , P.spec = Darcs (repo ++ "/seereason-base")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack"
-                , P.spec = Debianize (Hackage "happstack")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-fay"
-                , P.spec = Debianize (Hackage "happstack-fay")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-fay-ajax"
-                , P.spec = Debianize (Hackage "happstack-fay-ajax")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-fay-hsx"
-                , P.spec = Debianize (Hackage "fay-hsx")
-                , P.flags = [] }
+    , debianize (darcs "haskell-debian-packaging" "http://src.seereason.com/debian-packaging")
+    , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
+    , debianize (hackage "happstack")
+    , debianize (hackage "happstack-fay"
+                   -- `patch` $(embedFile "patches/happstack-fay.diff")
+                )
+    , debianize (hackage "happstack-fay-ajax")
+    , debianize (hackage "fay-hsx")
     , debianize (hackage "fay")
     , debianize (hackage "fay-base")
-    , P.Package { P.name = "haskell-fay-jquery"
-                , P.spec = Debianize (Git "https://github.com/faylang/fay-jquery")
-                , P.flags = [] }
-    , P.Package { P.name = "mastermind"
-                , P.spec = Debianize (Darcs "http://hub.darcs.net/stepcut/mastermind")
-                , P.flags = [P.CabalDebian ["--build-dep=haskell-fay-utils", "--build-dep=haskell-fay-jquery-utils", "--build-dep=haskell-happstack-fay-utils"]] }
-    , ghc release (P.Package { P.name = "haskell-happstack-data"
-                             , P.spec = Debianize (Patch (Hackage "happstack-data") $(embedFile "patches/happstack-data.diff"))
-                             , P.flags = [P.DebVersion "6.0.1-1build1"] }) P.NoPackage
-    , P.Package { P.name = "haskell-happstack-extra"
-                , P.spec = Darcs (repo ++ "/happstack-extra")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-hsp"
-                , P.spec = Debianize (Hackage "happstack-hsp")
-                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
-    , ghc release (P.Package { P.name = "haskell-happstack-ixset"
-                             , P.spec = DebDir (Cd "happstack-ixset" (Darcs happstackRepo)) (Darcs (repo ++ "/happstack-ixset-debian"))
-                             , P.flags = [] }) P.NoPackage
-
-    , P.Package { P.name = "haskell-happstack-jmacro"
-                , P.spec = Debianize (Hackage "happstack-jmacro")
-                , P.flags = [] }
+    , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
+    , debianize (darcs "mastermind" "http://hub.darcs.net/stepcut/mastermind"
+                   -- `patch` $(embedFile "patches/mastermind.diff")
+                   `flag` P.CabalDebian ["--build-dep=haskell-fay-utils",
+                                         "--build-dep=haskell-fay-jquery-utils",
+                                         "--build-dep=haskell-happstack-fay-utils"])
+    , ghc release (debianize (hackage "happstack-data"
+                                `patch` $(embedFile "patches/happstack-data.diff")
+                                `flag` P.DebVersion "6.0.1-1build1"))
+                  P.NoPackage
+    , darcs "haskell-happstack-extra" (repo ++ "/happstack-extra")
+    , debianize (hackage "happstack-hsp" `flag` P.ExtraDep "haskell-hsx-utils")
+    , ghc release (darcs "haskell-happstack-ixset" happstackRepo
+                     `cd` "happstack-ixset"
+                     `debdir` Darcs (repo ++ "/happstack-ixset-debian"))
+                  P.NoPackage
+    , debianize (hackage "happstack-jmacro")
     , debianize (hackage "jmacro-rpc-happstack")
     , debianize (hackage "jmacro-rpc")
-    , P.Package { P.name = "haskell-happstack-search"
-                , P.spec = Darcs (repo ++ "/happstack-search")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-server"
-                , P.spec = Debianize (Hackage "happstack-server")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-server-tls"
-                , P.spec = Debianize (Hackage "happstack-server-tls")
-                , P.flags = [] }
+    , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
+    , debianize (hackage "happstack-server")
+    , debianize (hackage "happstack-server-tls")
     , debianize (hackage "time-compat")
     , debianize (hackage "base64-bytestring")
     , debianize (hackage "threads")
-    , P.Package { P.name = "haskell-list-tries"
-                , P.spec = Debianize (Hackage "list-tries")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-static-routing"
-                , P.spec = Debianize (Hackage "happstack-static-routing")
-                , P.flags = [P.DebVersion "0.3.1-1~hackage1"] }
-    , P.Package { P.name = "haskell-happstack-util"
-                , P.spec = Debianize (Patch (Hackage "happstack-util") (ghc release $(embedFile "patches/happstack-util.diff")
-                                                                                        $(embedFile "patches/happstack-util-ghc76.diff")))
-                , P.flags = [P.DebVersion "6.0.3-1"] }
+    , debianize (hackage "list-tries")
+    , debianize (hackage "happstack-static-routing" `flag` P.DebVersion "0.3.1-1~hackage1")
+    , debianize (hackage "happstack-util"
+                   `patch` (ghc release $(embedFile "patches/happstack-util.diff")
+                                        $(embedFile "patches/happstack-util-ghc76.diff"))
+                   `flag` P.DebVersion "6.0.3-1")
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
-    , P.Package { P.name = "haskell-hsp"
-                , P.spec = Debianize (Patch (Hackage "hsp") $(embedFile "patches/hsp.diff"))
-                , P.flags = rel release [P.DebVersion "0.7.1-1~hackage1", CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] [CabalPin "0.7.1", P.ExtraDep "haskell-hsx-utils"] }
-    , P.Package { P.name = "haskell-hsx"
-                , P.spec = Debianize (Hackage "hsx")
-                , P.flags = [ P.DebVersion "0.10.4-1~hackage1"
-                            -- Putting trhsx into a package called trhsx is problematic,
-                            -- because the official debian package puts it into libghc-hsx-utils.
-                            -- , P.CabalDebian ["--executable", "trhsx"]
-                            ] }
-    , P.Package { P.name = "haskell-pandoc"
-                , P.spec = Debianize (Patch (Hackage "pandoc") $(embedFile "patches/pandoc.diff"))
-                , P.flags = [P.RelaxDep "libghc-pandoc-doc"]
-                }
-    , P.Package { P.name = "markdown"
-                , P.spec = Debianize (Hackage "markdown")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-highlighting-kate"
-                , P.spec = Debianize (Hackage "highlighting-kate")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-web-routes"
-                , P.spec = Debianize (Hackage "web-routes")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-web-routes-boomerang"
-                , P.spec = Debianize (Hackage "web-routes-boomerang")
-                , P.flags = [P.DebVersion "0.27.0-1~hackage1"] }
-    , P.Package { P.name = "haskell-web-routes-happstack"
-                , P.spec = Debianize (Hackage "web-routes-happstack")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-web-routes-hsp"
-                , P.spec = Debianize (Hackage "web-routes-hsp")
-                , P.flags = [P.DebVersion "0.23.0-1~hackage1"] }
-    , P.Package { P.name = "haskell-web-routes-mtl"
-                , P.spec = Debianize (Hackage "web-routes-mtl")
-                , P.flags = [P.DebVersion "0.20.1-1~hackage1"] }
-    , P.Package { P.name = "haskell-web-routes-th"
-                , P.spec = Debianize (Hackage "web-routes-th")
-                , P.flags = [P.DebVersion "0.22.1-1~hackage1"] }
-    , P.Package { P.name = "haskell-formlets-hsp"
-                , P.spec = Darcs (repo ++ "/formlets-hsp")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-scaffolding"
-                , P.spec = Darcs (repo ++ "/happstack-scaffolding")
-                           -- Don't use Debianize here, it restores the doc package which crashes the build
-                , P.flags = [] }
+    , debianize (hackage "hsp"
+                   `patch` $(embedFile "patches/hsp.diff")
+                   `flag` P.ExtraDep "haskell-hsx-utils"
+                   `flag` CabalPin "0.7.1"
+                   `mflag` (rel release (Just (P.DebVersion "0.7.1-1~hackage1")) Nothing))
+    , debianize (hackage "hsx"
+                   `flag` P.DebVersion "0.10.4-1~hackage1"
+                   -- Putting trhsx into a package called trhsx is problematic,
+                   -- because the official debian package puts it into libghc-hsx-utils.
+                   -- `flag` P.CabalDebian ["--executable", "trhsx"]
+                )
+    , debianize (hackage "pandoc"
+                   `patch` $(embedFile "patches/pandoc.diff")
+                   `flag` P.RelaxDep "libghc-pandoc-doc")
+    , debianize (hackage "markdown" `rename` "markdown")
+    , debianize (hackage "highlighting-kate")
+    , debianize (hackage "web-routes")
+    , debianize (hackage "web-routes-boomerang" `flag` P.DebVersion "0.27.0-1~hackage1")
+    , debianize (hackage "web-routes-happstack")
+    , debianize (hackage "web-routes-hsp" `flag` P.DebVersion "0.23.0-1~hackage1")
+    , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
+    , debianize (hackage "web-routes-th" `flag` P.DebVersion "0.22.1-1~hackage1")
+    , darcs "haskell-formlets-hsp" (repo ++ "/formlets-hsp")
+    , darcs "haskell-happstack-scaffolding" (repo ++ "/happstack-scaffolding") -- Don't use Debianize here, it restores the doc package which crashes the build
     , debianize (hackage "HJScript")
-    , P.Package { P.name = "reform"
-                , P.spec = Debianize (Cd "reform" (Darcs (darcsHub ++ "/reform")))
-                , P.flags = [P.DebVersion "0.1.2-1~hackage1"] }
-    , P.Package { P.name = "reform-blaze"
-                , P.spec = Debianize (Cd "reform-blaze" (Darcs (darcsHub ++ "/reform")))
-                , P.flags = [] }
-    , P.Package { P.name = "reform-happstack"
-                , P.spec = Debianize (Cd "reform-happstack" (Darcs (darcsHub ++ "/reform")))
-                , P.flags = [] }
-{-  , P.Package { P.name = "reform-heist"
-                , P.spec = Debianize (Cd "reform-heist" (Darcs darcsHub ++ "/reform"))
-                , P.flags = [] } -}
-    , P.Package { P.name = "reform-hsp"
-                , P.spec = Debianize (Cd "reform-hsp" (Darcs (darcsHub ++ "/reform")))
-                , P.flags = [] }
+    , debianize (darcs "reform" (darcsHub ++ "/reform")
+                   `cd` "reform"
+                   `flag` P.DebVersion "0.1.2-1~hackage1")
+    , debianize (darcs "reform-blaze" (darcsHub ++ "/reform") `cd` "reform-blaze")
+    , debianize (darcs "reform-happstack" (darcsHub ++ "/reform") `cd` "reform-happstack")
+    -- , debianize (darcs "reform-heist" (darcsHub ++ "/reform") `cd` "reform-heist")
+    , debianize (darcs "reform-hsp" (darcsHub ++ "/reform") `cd` "reform-hsp")
     , debianize (hackage "blaze-markup")
     , apt (rel release "sid" "quantal") "haskell-blaze-builder"
-    , P.Package { P.name = "haskell-blaze-builder-enumerator"
-                , P.spec = Debianize (Hackage "blaze-builder-enumerator")
-                , P.flags = [P.DebVersion "0.2.0.5-1~hackage1"] }
+    , debianize (hackage "blaze-builder-enumerator" `flag` P.DebVersion "0.2.0.5-1~hackage1")
     , debianize (hackage "blaze-from-html")
     , debianize (hackage "blaze-html")
     , debianize (hackage "blaze-textual")
-    , P.Package { P.name = "haskell-blaze-textual-native"
-                , P.spec = Debianize (Patch
-                                      (Hackage "blaze-textual-native") $(embedFile "patches/blaze-textual-native.diff"))
-                , P.flags = [P.Revision ""] }
-    , P.Package { P.name = "clckwrks-theme-happstack"
-                , P.spec = Debianize (Patch (Cd "clckwrks-theme-happstack" (Darcs (repo ++ "/happstack-clckwrks"))) $(embedFile "patches/clckwrks-theme-happstack.diff"))
-                , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
-    , P.Package { P.name = "happstack-dot-com"
-                , P.spec = Debianize (Patch (Cd "happstack-dot-com" (Darcs (repo ++ "/happstack-clckwrks"))) $(embedFile "patches/happstack-dot-com.diff"))
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-acid-state"
-                , P.spec = Debianize (Hackage "acid-state")
-                , P.flags = [] }
+    , debianize (hackage "blaze-textual-native"
+                   `patch` $(embedFile "patches/blaze-textual-native.diff")
+                   `flag` P.Revision "")
+    , debianize (darcs "clckwrks-theme-happstack" (repo ++ "/happstack-clckwrks")
+                   `cd` "clckwrks-theme-happstack"
+                   `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
+                   `flag` P.ExtraDep "haskell-hsx-utils")
+    , debianize (darcs "happstack-dot-com" (repo ++ "/happstack-clckwrks")
+                   `cd` "happstack-dot-com"
+                   `patch` $(embedFile "patches/happstack-dot-com.diff"))
+    , debianize (hackage "acid-state")
     ]
 
 -- | We need new releases of all the conduit packages before we can move
 -- from conduit 0.4.2 to 0.5.
 conduit =
   P.Packages (singleton "conduit")
-    [ P.Package { P.name = "haskell-conduit"
-                , P.spec = Debianize (Hackage "conduit")
-                , P.flags = [] }
+    [ debianize (hackage "conduit")
     , debianize (hackage "attoparsec-conduit")
     , debianize (hackage "blaze-builder-conduit")
-    , P.Package { P.name = "haskell-http-conduit"
-                , P.spec = Debianize (Hackage "http-conduit")
-                -- Version 1.9.0 is too new for fb 0.13.4.2.
-                , P.flags = [P.CabalPin "1.8.9"] }
+    , debianize (hackage "http-conduit" `flag` P.CabalPin "1.8.9") -- Version 1.9.0 is too new for fb 0.13.4.2.
     , debianize (hackage "zlib-conduit")
-    , P.Package { P.name = "haskell-xml-conduit"
-                , P.spec = Debianize (Hackage "xml-conduit")
-                , P.flags = [] }
+    , debianize (hackage "xml-conduit")
     , debianize (hackage "mime-types")
     ]
 
@@ -1026,9 +881,7 @@ authenticate _home release =
     , ghc release (apt "sid" "haskell-puremd5") (debianize (hackage "pureMD5"))
     , debianize (hackage "monadcryptorandom")
     , debianize (hackage "RSA")
-    , P.Package { P.name = "haskell-resourcet"
-                , P.spec = Debianize (Hackage "resourcet")
-                , P.flags = [] }
+    , debianize (hackage "resourcet")
     , debianize (hackage "void")
     -- Version 1.3.1 may be too new for tls 0.9.11
     , debianize (hackage "certificate")
@@ -1039,30 +892,18 @@ authenticate _home release =
     , debianize (hackage "cipher-rc4")
     , debianize (hackage "crypto-pubkey")
     , debianize (hackage "crypto-numbers")
-    , P.Package { P.name = "haskell-authenticate"
-                , P.spec = Debianize (Hackage "authenticate")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-zlib-enum"
-                , P.spec = Debianize (Hackage "zlib-enum")
-                , P.flags = [P.DebVersion "0.2.3-1~hackage1"] }
-    , P.Package { P.name = "haskell-happstack-authenticate"
-                , P.spec = Debianize (Darcs (darcsHub ++ "/happstack-authenticate"))
-                , P.flags = [] }
+    , debianize (hackage "authenticate")
+    , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
+    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate"))
     , digestiveFunctors
-    , P.Package { P.name = "haskell-fb"
-                , P.spec = Debianize (Patch (Hackage "fb") $(embedFile "patches/fb.diff"))
-                , P.flags = [] }
+    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
     ]
 
 -- ircbot needs a dependency on containers
 happstackdotcom _home =
     P.Packages (singleton "happstackdotcom") $
-    [ P.Package { P.name = "haskell-ircbot"
-                , P.spec = Debianize (Hackage "ircbot")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstackdotcom-doc"
-                , P.spec = Darcs "http://src.seereason.com/happstackDotCom-doc"
-                , P.flags = [] } ]
+    [ debianize (hackage "ircbot")
+    , darcs "haskell-happstackdotcom-doc" "http://src.seereason.com/happstackDotCom-doc" ]
 
 -- Broken targets:
 --
@@ -1101,9 +942,8 @@ opengl release = P.Packages (singleton "opengl") $
                                   , " "
                                   , " --------------------------------------------------------------------------------" ])
                 , P.flags = [ P.DebVersion "0.0.3-1~hackage2" ] } -}
-    , P.Package { P.name = "haskell-bitmap-opengl"
-                , P.spec = Debianize (Hackage "bitmap-opengl")
-                , P.flags = [P.ExtraDep "libglu1-mesa-dev"] }
+    , debianize (hackage "bitmap-opengl"
+                   `flag` P.ExtraDep "libglu1-mesa-dev")
     , debianize (hackage "GLUT")
     , debianize (hackage "StateVar" `pflag` P.DebVersion "1.0.0.0-2build1" `qflag` P.DebVersion "1.0.0.0-2build3")
     , debianize (hackage "Tensor")
@@ -1143,15 +983,9 @@ glib _release = P.Packages (singleton "glib") $
 --  make: *** [build-ghc-stamp] Error 1
 plugins = P.Packages (singleton "plugins") $
     [ debianize (hackage "plugins")
-    , P.Package { P.name = "haskell-plugins-auto"
-                , P.spec = Debianize (Patch (Hackage "plugins-auto") $(embedFile "patches/plugins-auto.diff"))
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-happstack-plugins"
-                , P.spec = Debianize (Patch (Hackage "happstack-plugins") $(embedFile "patches/happstack-plugins.diff"))
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-web-plugins"
-                , P.spec = Debianize (Cd "web-plugins" (Darcs "http://hub.darcs.net/stepcut/web-plugins"))
-                , P.flags = [] }
+    , debianize (hackage "plugins-auto" `patch` $(embedFile "patches/plugins-auto.diff"))
+    , debianize (hackage "happstack-plugins" `patch` $(embedFile "patches/happstack-plugins.diff"))
+    , debianize (darcs "haskell-web-plugins" "http://hub.darcs.net/stepcut/web-plugins" `cd` "web-plugins")
     ]
 
 -- Control/Monad/Unpack.hs:33:3:
@@ -1162,12 +996,10 @@ higgsset = P.Packages (singleton "higgsset") $
     , debianize (hackage "TrieMap" `flag` P.DebVersion "4.0.1-1~hackage1") ]
 
 frisby = P.Packages (singleton "frisby")
-    [ P.Package { P.name = "haskell-frisby"
-                , P.spec = DebDir (Cd "frisby" (Darcs "http://src.seereason.com/frisby")) (Darcs "http://src.seereason.com/frisby-debian")
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-decimal"
-                , P.spec = Darcs "http://src.seereason.com/decimal"
-                , P.flags = [] } ]
+    [ darcs "haskell-frisby" "http://src.seereason.com/frisby"
+        `debdir` (Darcs "http://src.seereason.com/frisby-debian")
+        `cd` "frisby"
+    , darcs "haskell-decimal" "http://src.seereason.com/decimal" ]
 
 haddock _release =
     -- For leksah.  Version 2.9.2 specifies ghc < 7.2 and base ==

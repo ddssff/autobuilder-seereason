@@ -1,14 +1,7 @@
 module Targets.Common where
 
 import qualified Data.ByteString as B
-import Data.Char (chr, toLower)
-import Data.Function (on)
-import Data.List (sortBy)
-import Data.String (fromString)
-import qualified Data.Map as Map
-import Debian.AutoBuilder.Types.Packages (Packages, RetrieveMethod(Debianize, Patch, Hackage, Darcs))
-import qualified Debian.AutoBuilder.Params as P
-import qualified Debian.AutoBuilder.Types.Packages as P
+import Data.Char (chr)
 
 data Build = Production | Testing
 build = Production
