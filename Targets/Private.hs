@@ -8,7 +8,6 @@ import Data.Set (singleton)
 import Debian.AutoBuilder.Types.Packages as P
 import Debian.Debianize (sourcePackageName)
 import Debian.Relation (SrcPkgName(..))
-import System.FilePath ((</>))
 import Targets.Common
 
 libraries _home =
@@ -16,7 +15,7 @@ libraries _home =
     [ darcs "haskell-generic-formlets3" (privateRepo ++ "/generic-formlets3")
     -- , darcs "haskell-document" (privateRepo ++ "/haskell-document")
     , darcs "haskell-ontology" (privateRepo ++ "/haskell-ontology")
-    ] ++ clckwrks14
+    ] {- ++ clckwrks14 -}
 
 applications _home =
     P.Packages (singleton "applications") $
@@ -43,7 +42,7 @@ applications _home =
                    `flag` P.ExtraDep "haskell-hsx-utils")
     ]
 
-clckwrks14 =
+_clckwrks14 =
       [ P.Package { P.name = "clckwrks-14"
                   , P.spec = Debianize (Hackage "clckwrks")
                   , P.flags = [P.CabalPin "0.14.2",
