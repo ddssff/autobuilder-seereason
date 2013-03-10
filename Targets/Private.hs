@@ -78,17 +78,17 @@ clckwrks14 =
       -- debianization will be performed by running that rather than
       -- calling callDebianize directly.  That means that the
       -- ModifyAtoms flag here (won't work.  So now what?)
+{-
       , P.Package { P.name = "clckwrks-theme-clcksmith"
-                  , P.spec = Debianize (Cd "clckwrks-theme-clcksmith" (Dir (home </> "darcs" {-privateRepo-} ++ "/clcksmith")))
+                  , P.spec = Debianize (Cd "clckwrks-theme-clcksmith" (Darcs (privateRepo ++ "/clcksmith")))
                   -- Haddock gets upset about the HSX.QQ modules.  Not sure why.
                   , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc] }
       , debianize (P.Package
                         { P.name = "clcksmith"
-                        , P.spec = Dir (home </> "darcs" {-privateRepo-} ++ "/clcksmith")
+                        , P.spec = Darcs (privateRepo ++ "/clcksmith")
                         , P.flags = [] }
                     `patch` $(embedFile "patches/clcksmith.diff")
                     `flag` P.ExtraDep "haskell-hsx-utils"
                     `flag` P.CabalDebian ["--missing-dependency", "libghc-clckwrks-theme-clcksmith-doc"])
+-}
       ]
-
-home = "/home/dsf"
