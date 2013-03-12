@@ -89,7 +89,7 @@ myParams home myBuildRelease =
     , cleanUp = False
     , ifSourcesChanged = SourcesChangedError
     , knownPackages = NoPackage
-    , packages = NoPackage
+    , buildPackages = NoPackage
     }
 
 -- This section has all the definitions relating to the particular
