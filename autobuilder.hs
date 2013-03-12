@@ -40,7 +40,7 @@ main =
     hPutStrLn stderr "Autobuilder starting..." >>
     getArgs >>= \ args ->
     getEnv "HOME" >>= \ home ->
-    try (help (getParams home args) >>= M.main defaultAtoms) >>=
+    try (help (getParams home args) >>= M.main seereasonDefaultAtoms) >>=
     either (\ (e :: SomeException) -> hPutStrLn stderr ("Exception: " ++ show e) >> throw e) return
 
 -- | Look for the doHelp flag in any parameter set, if given output
