@@ -29,7 +29,7 @@ myParams home myBuildRelease =
     ParamRec
     { vendorTag = myVendorTag
     , oldVendorTags = ["seereason"]
-    , autobuilderEmail = "SeeReason Autobuilder <autobuilder@seereason.org>"
+    , autobuilderEmail = "SeeReason Autobuilder <autobuilder@seereason.com>"
     , releaseSuffixes = myReleaseSuffixes
     , buildRelease = ReleaseName {relName = myBuildRelease}
     , uploadURI = myUploadURI myBuildRelease
