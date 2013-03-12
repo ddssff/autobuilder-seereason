@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable, StandaloneDeriving #-}
 -- |This module defines how we obtain and assemble the source code for
 -- the packages we want to build.
-module Targets 
+module Debian.AutoBuilder.Details.Targets 
     ( public
     , private
     ) where
@@ -16,8 +16,8 @@ import qualified Debian.AutoBuilder.Types.CacheRec as P
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
 import Debian.Relation (BinPkgName(..))
-import qualified Targets.Public as Public
-import qualified Targets.Private as Private
+import qualified Debian.AutoBuilder.Details.Public as Public
+import qualified Debian.AutoBuilder.Details.Private as Private
 
 {-
 data OSVendor

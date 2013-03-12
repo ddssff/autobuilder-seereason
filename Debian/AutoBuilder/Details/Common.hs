@@ -1,4 +1,4 @@
-module Targets.Common where
+module Debian.AutoBuilder.Details.Common where
 
 import qualified Data.ByteString as B
 import Data.Char (chr)

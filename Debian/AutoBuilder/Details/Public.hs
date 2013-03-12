@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings, TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
-module Targets.Public ( targets ) where
+module Debian.AutoBuilder.Details.Public ( targets ) where
 
 import Data.FileEmbed (embedFile)
 import Data.Lens.Lazy (setL, modL)
@@ -13,7 +13,7 @@ import Debian.Debianize (compat)
 import Debian.Relation (BinPkgName(..))
 import Debian.Debianize (installData, doExecutable, InstallFile(..))
 import System.FilePath((</>))
-import Targets.Common (repo, {-localRepo,-} happstackRepo)
+import Debian.AutoBuilder.Details.Common (repo, {-localRepo,-} happstackRepo)
 
 patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"

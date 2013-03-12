@@ -5,43 +5,91 @@
 -- to hear about it.
 
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
-module Config 
-    ( myBuildURI
-    , myDebianMirrorHost
-    , myDevelopmentReleaseNames
-    , myDiscards
-    , myDoNewDist
-    , myDoSSHExport
-    , myDoUpload
-    , myIncludePackages
-    , myExcludePackages
-    , myComponents
-    , myCompilerVersion
-    , myFlushPool
-    , myForceBuild
-    , myBuildTrumped
-    , myGlobalRelaxInfo
-    , myGoals
-    , myReleaseAliases
-    , myReleaseSuffixes
-    , mySources
-    , myTargets
-    , myUbuntuMirrorHost
-    , myUploadURI
-    , myVendorTag
-    , myVerbosity
-    , myHackageServer
+module Debian.AutoBuilder.Details
+    ( myParams
+    , myKnownTargets
     ) where
 
--- Import the symbols we use below.
-import Data.List (isSuffixOf, isPrefixOf)
+import Data.List as List (isSuffixOf, isPrefixOf, map)
 import Data.Maybe
 import Data.Monoid (mappend)
-import qualified Data.Set as Set
+import Data.Set as Set (Set, empty, map)
 import qualified Debian.AutoBuilder.Types.Packages as P
+import Debian.AutoBuilder.Types.Packages (Packages(NoPackage), TargetName(TargetName))
+import Debian.AutoBuilder.Types.ParamRec (ParamRec(..), Strictness(..), TargetSpec(..))
+import Debian.Release (ReleaseName(ReleaseName, relName), Arch(Binary))
+import Debian.Repo.Cache (SourcesChangedAction(SourcesChangedError))
 import Debian.URI
+import Debian.Version (parseDebianVersion)
+import qualified Debian.AutoBuilder.Details.Targets as Targets
+import Prelude hiding (map)
 
-import qualified Targets
+myParams :: FilePath -> String -> ParamRec
+myParams _home myBuildRelease =
+    ParamRec
+    { vendorTag = myVendorTag
+    , oldVendorTags = ["seereason"]
+    , autobuilderEmail = "SeeReason Autobuilder <autobuilder@seereason.org>"
+    , releaseSuffixes = myReleaseSuffixes
+    , buildRelease = ReleaseName {relName = myBuildRelease}
+    , uploadURI = myUploadURI myBuildRelease
+    , buildURI = myBuildURI myBuildRelease
+    -- What we plan to build
+    , targets = TargetSpec {allTargets = False, targetNames = Set.empty}
+    , doUpload = myDoUpload
+    , doNewDist = myDoNewDist
+    , flushPool = myFlushPool
+    , useRepoCache = True
+    , forceBuild = myForceBuild
+    , buildTrumped = myBuildTrumped
+    , doSSHExport = myDoSSHExport
+    , report = False
+    , doHelp = False
+    -- Things that are occasionally useful
+    , goals = myGoals
+    , dryRun = False
+    , allowBuildDependencyRegressions = False
+    , setEnv = []
+    , showSources = False
+    , showParams = False
+    , flushAll = False
+    , flushSource = False
+    , flushRoot = False
+    , verbosity = myVerbosity
+    , topDirParam = Nothing
+    , createRelease = []
+    , doNotChangeVersion = False
+    -- Things that rarely change
+    , sources = mySources myBuildRelease myDebianMirrorHost myUbuntuMirrorHost
+    , globalRelaxInfo = myGlobalRelaxInfo
+    , strictness = Lax
+    , flushDepends = False
+    , includePackages = myIncludePackages myBuildRelease
+    , excludePackages = myExcludePackages myBuildRelease
+    , components = myComponents myBuildRelease
+    , ghcVersion = {- trace ("ghcVersion: " ++ show (myCompilerVersion myBuildRelease)) $ -} myCompilerVersion myBuildRelease
+    , developmentReleaseNames = myDevelopmentReleaseNames
+    , releaseAliases = myReleaseAliases myBuildRelease
+    , archList = [Binary "i386",Binary "amd64"]
+    , newDistProgram = "newdist -v"
+    -- 6.14 adds the ExtraDevDep parameter.
+    -- 6.15 changes Epoch parameter arity to 2
+    -- 6.18 renames type Spec -> RetrieveMethod
+    -- 6.35 added the CabalDebian flag
+    , requiredVersion = [(parseDebianVersion ("6.51" :: String), Nothing)]
+    , hackageServer = myHackageServer
+    -- Things that are probably obsolete
+    , debug = False
+    , discard = Set.map TargetName myDiscards
+    , testWithPrivate = False
+    , extraReleaseTag = Nothing
+    , preferred = []
+    , buildDepends = []
+    , noClean = False
+    , cleanUp = False
+    , ifSourcesChanged = SourcesChangedError
+    , packages = NoPackage
+    }
 
 -- This section has all the definitions relating to the particular
 -- suffixes we will use on our build releases.
@@ -134,15 +182,13 @@ myDiscards = Set.empty
 -- actually build are chosen from these.  The myBuildRelease argument
 -- comes from the autobuilder argument list.
 --
-myTargets :: FilePath -> (P.Packages -> Bool) -> String -> P.Packages
-myTargets home p myBuildRelease =
-    filterPackages p $
-           if isPrivateRelease myBuildRelease
-           then Targets.private home
-           else Targets.public home myBuildRelease
-
-filterPackages :: (P.Packages -> Bool) -> P.Packages -> P.Packages
-filterPackages p xs = P.foldPackages (\ name spec flags xs' -> if p (P.Package name spec flags) then mappend (P.Package name spec flags) xs' else xs') P.NoPackage xs
+myKnownTargets :: FilePath -> ParamRec -> P.Packages
+myKnownTargets home params =
+    if isPrivateRelease rel
+    then Targets.private home
+    else mappend (Targets.public home rel) (if testWithPrivate params then Targets.private home else NoPackage)
+    where
+      rel = relName (buildRelease params)
 
 -- If you are not interested in building everything, put one or more
 -- source package names you want to build in this list.  Only these
@@ -189,7 +235,7 @@ myReleaseAliases myBuildRelease =
     [("etch", "bpo40+"),
      ("lenny", "bpo50+"),
      ("squeeze", "bpo51+")] ++	-- Hopefully the actual version number when assigned will be greater
-    concatMap (\ rel -> map (\ der -> (der, rel)) (derivedReleaseNames myBuildRelease rel)) ubuntuReleases
+    concatMap (\ rel -> List.map (\ der -> (der, rel)) (derivedReleaseNames myBuildRelease rel)) ubuntuReleases
 
 -- Additional packages to include in the clean build environment.
 -- Adding packages here can speed things up when you are building many
@@ -329,7 +375,7 @@ dropSuffix suff x = take (length x - length suff) x
 --
 mySources :: String -> String -> String -> [(String, String)]
 mySources myBuildRelease debianMirrorHost ubuntuMirrorHost =
-    map releaseSources
+    List.map releaseSources
             (debianReleases ++ ubuntuReleases ++
              concatMap (derivedReleaseNames myBuildRelease) (debianReleases ++ ubuntuReleases)) ++
     [("debian-experimental", unlines (debianSourceLines debianMirrorHost "experimental")),
@@ -389,10 +435,10 @@ myGlobalRelaxInfo =
 -- Given a release name, return the subdirectory of myUploadURI which
 -- contains the repository.
 --
-releaseRepoName name
-    | elem name (debianReleases ++ oldDebianReleases) = "debian"
-    | elem name (ubuntuReleases ++ oldUbuntuReleases) = "ubuntu"
-    | True = case filter (`isSuffixOf` name) myReleaseSuffixes of
-               [suffix] -> releaseRepoName (dropSuffix suffix name)
-               [] -> error $ "Release name has unknown suffix: " ++ show name
+releaseRepoName rname
+    | elem rname (debianReleases ++ oldDebianReleases) = "debian"
+    | elem rname (ubuntuReleases ++ oldUbuntuReleases) = "ubuntu"
+    | True = case filter (`isSuffixOf` rname) myReleaseSuffixes of
+               [suffix] -> releaseRepoName (dropSuffix suffix rname)
+               [] -> error $ "Release name has unknown suffix: " ++ show rname
                suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings, TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
-module Targets.Private (libraries, applications) where
+module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
 import Data.FileEmbed (embedFile)
 import Data.Lens.Lazy (setL)
@@ -8,7 +8,7 @@ import Data.Set (singleton)
 import Debian.AutoBuilder.Types.Packages as P
 import Debian.Debianize (sourcePackageName)
 import Debian.Relation (SrcPkgName(..))
-import Targets.Common
+import Debian.AutoBuilder.Details.Common (repo, privateRepo)
 
 libraries _home =
     P.Packages (singleton "libraries") $
