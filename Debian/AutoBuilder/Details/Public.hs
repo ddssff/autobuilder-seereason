@@ -243,8 +243,7 @@ main _home release =
     , P.Package { P.name = "haskell-th-orphans"
                 , P.spec = Debianize (Patch (Hackage "th-orphans") $(embedFile "patches/th-orphans.diff"))
                 , P.flags = [P.DebVersion "0.6-1~hackage1"] }
-    , debianize (hackage "haskell-src-meta"
-                   `patch` $(embedFile "patches/haskell-src-meta.diff"))
+    , debianize (hackage "haskell-src-meta" {-`patch` $(embedFile "patches/haskell-src-meta.diff")-})
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -792,7 +791,7 @@ happstack release =
                    -- `flag` P.CabalDebian ["--executable", "trhsx"]
                 )
     , debianize (hackage "pandoc"
-                   `patch` $(embedFile "patches/pandoc.diff")
+                   -- `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc")
     , debianize (hackage "markdown" `rename` "markdown")
     , debianize (hackage "highlighting-kate")
@@ -866,7 +865,7 @@ authenticate _home release =
     , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate"))
     , digestiveFunctors
-    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
+    , debianize (hackage "fb" {-`patch` $(embedFile "patches/fb.diff")-})
     ]
 
 -- ircbot needs a dependency on containers

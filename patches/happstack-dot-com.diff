@@ -9,3 +9,21 @@
  
  Executable happstack-dot-com-server
    Main-is: Main.hs
+--- old/debian/Debianize.hs	2013-03-04 16:53:55.000000000 -0800
++++ old/debian/Debianize.hs	2013-03-12 11:00:34.613942359 -0700
+@@ -9,13 +9,13 @@
+ import Debian.Debianize
+ import Debian.Relation (Relation(..), VersionReq(..), SrcPkgName(..), BinPkgName(..))
+ import qualified Paths_clckwrks as Clckwrks
+-import Targets.SeeReason (defaultAtoms)
++import Debian.Debianize.Details (seereasonDefaultAtoms)
+ import Text.PrettyPrint.ANSI.Leijen (Pretty, pretty, text)
+ 
+ main :: IO ()
+ main =
+     do log <- inputChangeLog top
+-       debianize top (return . customize . setL changelog (Just log)) defaultAtoms
++       debianize top (return . customize . setL changelog (Just log)) seereasonDefaultAtoms
+     where
+       top = Top "."
+ 

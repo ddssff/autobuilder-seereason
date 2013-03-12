@@ -15,7 +15,7 @@
  import Debian.Debianize
  import Debian.Relation (Relation(..), VersionReq(..), SrcPkgName(..), BinPkgName(..))
  import qualified Paths_clckwrks as Clckwrks
-+import Targets.SeeReason (defaultAtoms)
++import Debian.Debianize.Details (seereasonDefaultAtoms)
  import Text.PrettyPrint.ANSI.Leijen (Pretty, pretty, text)
  
  main :: IO ()
@@ -26,7 +26,7 @@
 -       log <- inputChangeLog "debian"
 -       inputCabalization "." defaultAtoms >>= debianization "." . customize jstreePath json2Path log >>= writeDebianization "."
 +    do log <- inputChangeLog top
-+       debianize top (return . customize . setL changelog (Just log)) defaultAtoms
++       debianize top (return . customize . setL changelog (Just log)) seereasonDefaultAtoms
 +    where
 +      top = Top "."
  

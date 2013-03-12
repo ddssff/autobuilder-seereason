@@ -6,7 +6,7 @@
 +import Debian.Debianize (Top(Top), debianize, utilsPackageName, writeDebianization, epochMap)
 +import Debian.Relation (BinPkgName(..))
 +import Distribution.Package (PackageName(..))
-+import Targets.SeeReason (defaultAtoms)
++import Debian.Debianize.Details (seereasonDefaultAtoms)
 +
 +main =
-+    debianize (Top ".") (return . setL utilsPackageName (Just (BinPkgName "cabal-install"))) defaultAtoms
++    debianize (Top ".") (return . setL utilsPackageName (Just (BinPkgName "cabal-install"))) seereasonDefaultAtoms
