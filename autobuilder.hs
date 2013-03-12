@@ -33,7 +33,7 @@ import System.IO (hPutStr, hPutStrLn, hFlush, stderr)
 
 import Config
 import Targets (private)
-import Targets.SeeReason (defaultAtoms)
+import Debian.Debianize.Details (seereasonDefaultAtoms)
 import Usage
 
 main =
