@@ -12,7 +12,7 @@
 -- This may run very slowly.
 
 import qualified Debian.AutoBuilder.Main as M
-import Debian.AutoBuilder.Details (myParams, myKnownTargets)
+import Debian.AutoBuilder.Details (myParams)
 import Debian.Debianize.Details (seereasonDefaultAtoms)
 
-main = M.main seereasonDefaultAtoms myParams myKnownTargets
+main = M.main seereasonDefaultAtoms myParams

@@ -7,7 +7,6 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Debian.AutoBuilder.Details
     ( myParams
-    , myKnownTargets
     ) where
 
 import Data.List as List (isSuffixOf, isPrefixOf, map)
@@ -25,7 +24,8 @@ import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
 
 myParams :: FilePath -> String -> ParamRec
-myParams _home myBuildRelease =
+myParams home myBuildRelease =
+    (\ params -> params {knownPackages = myKnownTargets home params}) $
     ParamRec
     { vendorTag = myVendorTag
     , oldVendorTags = ["seereason"]
@@ -88,6 +88,7 @@ myParams _home myBuildRelease =
     , noClean = False
     , cleanUp = False
     , ifSourcesChanged = SourcesChangedError
+    , knownPackages = NoPackage
     , packages = NoPackage
     }
 
