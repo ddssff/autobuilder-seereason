@@ -39,3 +39,14 @@
                                           Nothing    -> 
  d -> (n * maxSize args)
                                                           `div` maxSuccess args
+--- old/src/Test/QuickCheck/Tools.hs	2013-03-12 21:20:09.000000000 -0700
++++ new/src/Test/QuickCheck/Tools.hs	2013-03-13 08:22:01.081837218 -0700
+@@ -23,7 +23,7 @@
+                               
+                              )
+ where
+-import Test.QuickCheck hiding (Result, reason)
++import Test.QuickCheck hiding (Result, reason, interrupted)
+ import Test.QuickCheck.Property
+ 
+ {- | Compare two values.  If same, the test passes.  If different, the result indicates

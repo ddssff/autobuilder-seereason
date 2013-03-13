@@ -1,0 +1,11 @@
+--- old/happstack-authenticate.cabal	2013-03-03 05:46:09.000000000 -0800
++++ new/happstack-authenticate.cabal	2013-03-12 21:02:49.892013015 -0700
+@@ -39,7 +39,7 @@
+                        happstack-server             >= 6.0 && < 7.2,
+                        http-conduit                 >= 1.4 && < 1.10,
+                        http-types                   >= 0.6 && < 0.9,
+-                       fb                           == 0.13.*,
++                       fb                           >= 0.13,
+                        safecopy                     >= 0.6,
+                        mtl                          >= 2.0,
+                        pwstore-purehaskell          == 2.1.*,

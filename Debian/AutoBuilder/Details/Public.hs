@@ -243,7 +243,7 @@ main _home release =
     , P.Package { P.name = "haskell-th-orphans"
                 , P.spec = Debianize (Patch (Hackage "th-orphans") $(embedFile "patches/th-orphans.diff"))
                 , P.flags = [P.DebVersion "0.6-1~hackage1"] }
-    , debianize (hackage "haskell-src-meta" {-`patch` $(embedFile "patches/haskell-src-meta.diff")-})
+    , debianize (hackage "haskell-src-meta")
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -416,7 +416,7 @@ main _home release =
     , debianize (hackage "test-framework")
     , debianize (hackage "test-framework-hunit")
     , debianize (hackage "test-framework-quickcheck")
-    , debianize (hackage "test-framework-quickcheck2")
+    , debianize (hackage "test-framework-quickcheck2" `patch` $(embedFile "patches/test-framework-quickcheck2.diff"))
     , debianize (hackage "test-framework-th")
     , P.Package { P.name = "haskell-testpack"
                 , P.spec = Debianize (Patch (Hackage "testpack") $(embedFile "patches/testpack.diff"))
@@ -863,9 +863,10 @@ authenticate _home release =
     , debianize (hackage "crypto-numbers")
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
-    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate"))
+    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate")
+                   `patch` $(embedFile "patches/happstack-authenticate.diff"))
     , digestiveFunctors
-    , debianize (hackage "fb" {-`patch` $(embedFile "patches/fb.diff")-})
+    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
     ]
 
 -- ircbot needs a dependency on containers
