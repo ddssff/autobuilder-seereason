@@ -866,7 +866,7 @@ authenticate _home release =
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate")
                    `patch` $(embedFile "patches/happstack-authenticate.diff"))
     , digestiveFunctors
-    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
+    , debianize (hackage "fb")
     ]
 
 -- ircbot needs a dependency on containers
