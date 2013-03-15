@@ -837,7 +837,7 @@ conduit =
     [ debianize (hackage "conduit")
     , debianize (hackage "attoparsec-conduit")
     , debianize (hackage "blaze-builder-conduit")
-    , debianize (hackage "http-conduit" `flag` P.CabalPin "1.8.9") -- Version 1.9.0 is too new for fb 0.13.4.2.
+    , debianize (hackage "http-conduit")
     , debianize (hackage "zlib-conduit")
     , debianize (hackage "xml-conduit")
     , debianize (hackage "mime-types")

@@ -29,6 +29,15 @@
  
  {- | Run verbose tests.  Example:
  
+@@ -165,7 +165,7 @@
+ localquickCheckWithResult args p =
+   do 
+ #if MIN_VERSION_QuickCheck(2,3,0)
+-     tm  <- if chatty args then newStdioTerminal else newNullTerminal
++     tm  <- if chatty args then withStdioTerminal else withNullTerminal
+ #else
+      tm  <- newTerminal
+ #endif
 @@ -174,7 +174,7 @@
                Just (rnd,_) -> return rnd
       test MkState{ terminal          = tm
