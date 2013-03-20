@@ -766,6 +766,7 @@ happstack release =
     , debianize (hackage "jmacro-rpc")
     , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
     , debianize (hackage "happstack-server")
+    , debianize (hackage "happstack-lite")
     , debianize (hackage "happstack-server-tls")
     , debianize (hackage "time-compat")
     , debianize (hackage "base64-bytestring")
@@ -851,6 +852,7 @@ authenticate _home release =
     , debianize (hackage "monadcryptorandom")
     , debianize (hackage "RSA")
     , debianize (hackage "resourcet")
+    , debianize (hackage "mmorph")
     , debianize (hackage "void")
     -- Version 1.3.1 may be too new for tls 0.9.11
     , debianize (hackage "certificate")
