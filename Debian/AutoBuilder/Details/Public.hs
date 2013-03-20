@@ -455,6 +455,7 @@ main _home release =
                 , P.spec = Apt (rel release "sid" "quantal") "haskell-utf8-string"
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize (hackage "unification-fd")
+    , debianize (hackage "newtype")
     , debianize (hackage "universe")
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
