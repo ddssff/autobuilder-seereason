@@ -149,9 +149,9 @@ main _home release =
     , debianize (ghc release
                      (hackage "template-default")
                      (hackage "template-default"
-                        `patch` $(embedFile "patches/template-default.diff")))
+                        {- `patch` $(embedFile "patches/template-default.diff") -}))
     , debianize (hackage "bitmap")
-    , debianize (hackage "bitset" `flag` P.DebVersion "1.1-1~hackage1")
+    , debianize (hackage "bitset")
     , apt (rel release "sid" "quantal") "haskell-bytestring-nums"
     , debianize (hackage "bytestring-trie")
     , debianize (hackage "bzlib")
@@ -794,7 +794,7 @@ happstack release =
                    -- `flag` P.CabalDebian ["--executable", "trhsx"]
                 )
     , debianize (hackage "pandoc"
-                   -- `patch` $(embedFile "patches/pandoc.diff")
+                   `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc")
     , debianize (hackage "markdown" `rename` "markdown")
     , debianize (hackage "highlighting-kate")
