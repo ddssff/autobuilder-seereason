@@ -15,6 +15,13 @@ libraries _home =
     [ darcs "haskell-generic-formlets3" (privateRepo ++ "/generic-formlets3")
     -- , darcs "haskell-document" (privateRepo ++ "/haskell-document")
     , darcs "haskell-ontology" (privateRepo ++ "/haskell-ontology")
+    , debianize (method "haskell-stripe-core"
+                        (Cd "stripe-core" (Darcs (privateRepo ++ "/stripe"))))
+    , debianize (method "haskell-stripe-http-conduit"
+                        (Cd "stripe-http-conduit" (Darcs (privateRepo ++ "/stripe"))))
+    , debianize (method "haskell-clckwrks-plugin-stripe"
+                        (Darcs (privateRepo ++ "/clckwrks-plugin-stripe")))
+
     ] {- ++ clckwrks14 -}
 
 applications _home =

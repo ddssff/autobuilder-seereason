@@ -825,7 +825,6 @@ happstack release =
                    `flag` P.Revision "")
     , debianize (darcs "clckwrks-theme-happstack" (repo ++ "/happstack-clckwrks")
                    `cd` "clckwrks-theme-happstack"
-                   `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
                    `flag` P.ExtraDep "haskell-hsx-utils")
     , debianize (darcs "happstack-dot-com" (repo ++ "/happstack-clckwrks")
                    `cd` "happstack-dot-com"
@@ -867,8 +866,7 @@ authenticate _home release =
     , debianize (hackage "crypto-numbers")
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
-    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate")
-                   `patch` $(embedFile "patches/happstack-authenticate.diff"))
+    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate"))
     , digestiveFunctors
     , debianize (hackage "fb")
     ]
