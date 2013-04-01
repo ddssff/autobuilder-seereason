@@ -204,9 +204,7 @@ main _home release =
                   (debianize (hackage "EdisonCore" `qflag` P.DebVersion "1.2.1.3-9build2"))
     , apt (rel release "sid" "quantal") "haskell-entropy"
     , debianize (hackage "enumerator" `qflag` P.DebVersion "0.4.19-1build2")
-    , P.Package { P.name = "haskell-hdaemonize"
-                , P.spec = Debianize (Patch (Hackage "hdaemonize") $(embedFile "patches/hdaemonize.diff"))
-                , P.flags = [P.DebVersion "0.4.4.1-1~hackage1"] }
+    , debianize (hackage "hdaemonize" `patch` $(embedFile "patches/hdaemonize.diff"))
     , debianize (hackage "hsyslog")
     , debianize (hackage "erf" `flag` P.DebVersion "2.0.0.0-3")
     , ghc release (apt "sid" "haskell-feed" `pflag` P.DebVersion "0.3.8-3" `qflag` P.DebVersion "0.3.8-3build2")
@@ -418,9 +416,8 @@ main _home release =
     , debianize (hackage "test-framework-quickcheck")
     , debianize (hackage "test-framework-quickcheck2" `patch` $(embedFile "patches/test-framework-quickcheck2.diff"))
     , debianize (hackage "test-framework-th")
-    , P.Package { P.name = "haskell-testpack"
-                , P.spec = Debianize (Patch (Hackage "testpack") $(embedFile "patches/testpack.diff"))
-                , P.flags = [] }
+    --
+    -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
     , debianize (hackage "th-expand-syns")
     , debianize (hackage "th-lift")
     , debianize (hackage "transformers-base" `pflag` P.DebVersion "0.4.1-2" `qflag` P.DebVersion "0.4.1-2build2")
@@ -456,7 +453,7 @@ main _home release =
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize (hackage "unification-fd")
     , debianize (hackage "newtype")
-    , debianize (hackage "universe")
+    , debianize (hackage "universe" `patch` $(embedFile "patches/universe.diff"))
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
                 , P.flags = [] }
@@ -527,6 +524,7 @@ main _home release =
     , P.Package { P.name = "hatex"
                 , P.spec = Debianize (Hackage "HaTeX")
                 , P.flags = [] }
+    , debianize (hackage "matrix")
     , P.Package { P.name = "hlatex"
                 , P.spec = Debianize (Hackage "hlatex")
                 , P.flags = [] }
@@ -898,7 +896,9 @@ jsonb = P.Packages (singleton "jsonb") $
 opengl release = P.Packages (singleton "opengl") $
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
-    [ debianize (hackage "OpenGL")
+    [ debianize (hackage "OpenGL"
+                   `flag` P.ExtraDep "libglu1-mesa-dev"
+                   `flag` P.ExtraDevDep "libglu1-mesa-dev")
 {-  , P.Package { P.name = "haskell-vacuum-opengl"
                 , P.spec =  Debianize (Patch (Hackage "vacuum-opengl"))
                                  (unlines
@@ -915,13 +915,16 @@ opengl release = P.Packages (singleton "opengl") $
                                   , " --------------------------------------------------------------------------------" ])
                 , P.flags = [ P.DebVersion "0.0.3-1~hackage2" ] } -}
     , debianize (hackage "bitmap-opengl"
-                   `flag` P.ExtraDep "libglu1-mesa-dev")
+                   `flag` P.ExtraDep "libglu1-mesa-dev"
+                   `flag` P.ExtraDevDep "libglu1-mesa-dev")
     , debianize (hackage "GLUT")
     , debianize (hackage "StateVar" `pflag` P.DebVersion "1.0.0.0-2build1" `qflag` P.DebVersion "1.0.0.0-2build3")
     , debianize (hackage "Tensor")
     , debianize (hackage "GLURaw")
     , debianize (hackage "ObjectName")
-    , debianize (hackage "OpenGLRaw" `flag` P.ExtraDep "libgl1-mesa-dev")
+    , debianize (hackage "OpenGLRaw"
+                   `flag` P.ExtraDep "libgl1-mesa-dev"
+                   `flag` P.ExtraDevDep "libgl1-mesa-dev")
     ]
 
 -- Problem compiling C code in glib:
