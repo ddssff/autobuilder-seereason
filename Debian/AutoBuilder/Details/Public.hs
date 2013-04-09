@@ -149,7 +149,7 @@ main _home release =
     , debianize (ghc release
                      (hackage "template-default")
                      (hackage "template-default"
-                        {- `patch` $(embedFile "patches/template-default.diff") -}))
+                        `patch` $(embedFile "patches/template-default.diff")))
     , debianize (hackage "bitmap")
     , debianize (hackage "bitset")
     , apt (rel release "sid" "quantal") "haskell-bytestring-nums"
@@ -176,6 +176,7 @@ main _home release =
     , debianize (hackage "Crypto")
     , debianize (hackage "crypto-api" `qflag` P.DebVersion "0.10.2-1build3")
     , debianize (hackage "crypto-pubkey-types")
+    , debianize (hackage "asn1-types")
     , debianize (hackage "cryptocipher")
     , debianize (hackage "cryptohash")
     , debianize (hackage "cpu" `qflag` P.DebVersion "0.1.1-1build1")
@@ -185,6 +186,11 @@ main _home release =
     , debianize (hackage "data-accessor")
     , debianize (hackage "data-accessor-template")
     , debianize (hackage "data-default")
+    , debianize (hackage "data-default-class")
+    , debianize (hackage "data-default-instances-base")
+    , debianize (hackage "data-default-instances-containers")
+    , debianize (hackage "data-default-instances-dlist")
+    , debianize (hackage "data-default-instances-old-locale")
     , debianize (hackage "data-object"
                    `patch` $(embedFile "patches/data-object.diff"))
     , debianize (hackage "dataenc")
@@ -204,7 +210,9 @@ main _home release =
                   (debianize (hackage "EdisonCore" `qflag` P.DebVersion "1.2.1.3-9build2"))
     , apt (rel release "sid" "quantal") "haskell-entropy"
     , debianize (hackage "enumerator" `qflag` P.DebVersion "0.4.19-1build2")
-    , debianize (hackage "hdaemonize" `patch` $(embedFile "patches/hdaemonize.diff"))
+    , P.Package { P.name = "haskell-hdaemonize"
+                , P.spec = Debianize (Patch (Hackage "hdaemonize") $(embedFile "patches/hdaemonize.diff"))
+                , P.flags = [P.DebVersion "0.4.4.1-1~hackage1"] }
     , debianize (hackage "hsyslog")
     , debianize (hackage "erf" `flag` P.DebVersion "2.0.0.0-3")
     , ghc release (apt "sid" "haskell-feed" `pflag` P.DebVersion "0.3.8-3" `qflag` P.DebVersion "0.3.8-3build2")
@@ -524,7 +532,6 @@ main _home release =
     , P.Package { P.name = "hatex"
                 , P.spec = Debianize (Hackage "HaTeX")
                 , P.flags = [] }
-    , debianize (hackage "matrix")
     , P.Package { P.name = "hlatex"
                 , P.spec = Debianize (Hackage "hlatex")
                 , P.flags = [] }
@@ -532,12 +539,8 @@ main _home release =
                 , P.spec = Debianize (Hackage "latex")
                 , P.flags = [] }
     , debianize (hackage "texmath")
-    , P.Package { P.name = "derive"
-                , P.spec = Debianize (Hackage "derive")
-                , P.flags = [] }
-    , P.Package { P.name = "frquotes"
-                , P.spec = Debianize (Hackage "frquotes")
-                , P.flags = [] }
+    , debianize (hackage "derive")
+    , debianize (hackage "frquotes")
     , P.Package { P.name = "foo2zjs"
                 , P.spec = Apt "quantal" "foo2zjs"
                 , P.flags = [] }
@@ -545,15 +548,9 @@ main _home release =
     , P.Package { P.name = "hackage"
                 , P.spec = Debianize (Darcs "http://code.haskell.org/hackage-server")
                 , P.flags = [] } -}
-    , P.Package { P.name = "stringsearch"
-                , P.spec = Debianize (Hackage "stringsearch")
-                , P.flags = [] }
-    , P.Package { P.name = "rss"
-                , P.spec = Debianize (Hackage "rss")
-                , P.flags = [] }
-    , P.Package { P.name = "async"
-                , P.spec = Debianize (Hackage "async")
-                , P.flags = [] }
+    , debianize (hackage "stringsearch")
+    , debianize (hackage "rss")
+    , debianize (hackage "async")
     , P.Package { P.name = "csv"
                 , P.spec = Debianize (Hackage "csv")
                 , P.flags = (rel release [P.DebVersion "0.1.2-2"] [P.DebVersion "0.1.2-2build2"]) }
@@ -578,7 +575,7 @@ main _home release =
 
 compiler release =
   P.Packages (singleton "ghc") $
-  ghc release [{-ghc74,-} devscripts] [{-ghc76,-} devscripts]
+  ghc release [{-ghc74,-} devscripts] [ghc76, devscripts]
     where
       ghc76 = P.Package { P.name = "ghc"
                         , P.spec = Apt "experimental" "ghc"
@@ -729,7 +726,7 @@ happstack release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String in
     P.Packages (singleton "happstack")
     [ plugins
-    , debianize (darcs "haskell-debian-packaging" "http://src.seereason.com/debian-packaging")
+    -- , debianize (darcs "haskell-debian-packaging" "http://src.seereason.com/debian-packaging")
     , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
     , debianize (hackage "happstack")
     , debianize (hackage "happstack-fay"
@@ -823,6 +820,7 @@ happstack release =
                    `flag` P.Revision "")
     , debianize (darcs "clckwrks-theme-happstack" (repo ++ "/happstack-clckwrks")
                    `cd` "clckwrks-theme-happstack"
+                   `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
                    `flag` P.ExtraDep "haskell-hsx-utils")
     , debianize (darcs "happstack-dot-com" (repo ++ "/happstack-clckwrks")
                    `cd` "happstack-dot-com"
@@ -864,7 +862,8 @@ authenticate _home release =
     , debianize (hackage "crypto-numbers")
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
-    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate"))
+    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate")
+                   `patch` $(embedFile "patches/happstack-authenticate.diff"))
     , digestiveFunctors
     , debianize (hackage "fb")
     ]
