@@ -40,13 +40,13 @@ applications _home =
                       (Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks"))))
     , debianize (method "haskell-clckwrks-theme-seereasonpartners"
                       (Cd "clckwrks-theme-seereasonpartners" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks")))
-                   `flag` P.ExtraDep "haskell-hsx-utils"
+                   `flag` P.BuildDep "haskell-hsx-utils"
                    `flag` P.NoDoc)
     , debianize (method "appraisalreportonline-dot-com"
                       (Cd "appraisalreportonline-dot-com" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks"))))
     , debianize (method "haskell-clckwrks-theme-appraisalreportonline"
                       (Cd "clckwrks-theme-appraisalreportonline" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks")))
-                   `flag` P.ExtraDep "haskell-hsx-utils")
+                   `flag` P.BuildDep "haskell-hsx-utils")
     ]
 
 _clckwrks14 =
@@ -88,13 +88,13 @@ _clckwrks14 =
       , P.Package { P.name = "clckwrks-theme-clcksmith"
                   , P.spec = Debianize (Cd "clckwrks-theme-clcksmith" (Darcs (privateRepo ++ "/clcksmith")))
                   -- Haddock gets upset about the HSX.QQ modules.  Not sure why.
-                  , P.flags = [P.ExtraDep "haskell-hsx-utils", P.NoDoc] }
+                  , P.flags = [P.BuildDep "haskell-hsx-utils", P.NoDoc] }
       , debianize (P.Package
                         { P.name = "clcksmith"
                         , P.spec = Darcs (privateRepo ++ "/clcksmith")
                         , P.flags = [] }
                     `patch` $(embedFile "patches/clcksmith.diff")
-                    `flag` P.ExtraDep "haskell-hsx-utils"
+                    `flag` P.BuildDep "haskell-hsx-utils"
                     `flag` P.CabalDebian ["--missing-dependency", "libghc-clckwrks-theme-clcksmith-doc"])
 -}
       ]

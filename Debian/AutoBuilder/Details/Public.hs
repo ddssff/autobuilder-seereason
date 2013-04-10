@@ -52,7 +52,7 @@ ghc release ghc74 ghc76 =
     case release of
       "quantal-seereason" -> ghc76
       "precise-seereason" -> ghc76
-      _ -> ghc74
+      _ -> ghc76
 
 rel :: String -> a -> a -> a
 rel release precise quantal =
@@ -121,8 +121,8 @@ main _home release =
     -- , apt "sid" "geneweb"
     , debianize (hackage "gtk2hs-buildtools"
                    `rename` "gtk2hs-buildtools"
-                   `flag` P.ExtraDep "alex"
-                   `flag` P.ExtraDep "happy"
+                   `flag` P.BuildDep "alex"
+                   `flag` P.BuildDep "happy"
                    `flag` P.Revision "")
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
     , debianize (hackage "aeson")
@@ -155,7 +155,7 @@ main _home release =
     , debianize (hackage "bitset")
     , apt (rel release "sid" "quantal") "haskell-bytestring-nums"
     , debianize (hackage "bytestring-trie")
-    , debianize (hackage "bzlib")
+    , debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
     -- , debianize (hackage "cairo-pdf")
     , debianize (hackage "case-insensitive")
     , debianize (hackage "cabal-install"
@@ -228,8 +228,8 @@ main _home release =
                 , P.flags = [P.DebVersion "0.8-1~hackage1"] }
     , P.Package { P.name = "haskell-gd"
                 , P.spec = Debianize (Patch (Hackage "gd") $(embedFile "patches/gd.diff"))
-                , P.flags = [ P.ExtraDevDep "libgd-dev", P.ExtraDevDep "libc6-dev", P.ExtraDevDep "libfreetype6-dev" ] ++ rel release [] [P.DebVersion "3000.7.3-1build2"] }
-    -- , debianize (flags [P.ExtraDep "libm-dev", P.ExtraDep "libfreetype-dev"] (hackage "gd"))
+                , P.flags = [ P.DevelDep "libgd-dev", P.DevelDep "libc6-dev", P.DevelDep "libfreetype6-dev" ] ++ rel release [] [P.DebVersion "3000.7.3-1build2"] }
+    -- , debianize (flags [P.BuildDep "libm-dev", P.BuildDep "libfreetype-dev"] (hackage "gd"))
     , debianize (hackage "cabal-macosx")
     , apt (rel release "sid" "quantal") "haskell-ghc-paths" -- for leksah
     -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
@@ -278,7 +278,7 @@ main _home release =
     , ghc release (apt "sid" "haskell-hsemail") (debianize (hackage "hsemail")) -- (rel release [] [P.DebVersion "1.7.1-2build2"])
     , P.Package { P.name = "haskell-hsopenssl"
                 , P.spec = Debianize (Patch (Hackage "HsOpenSSL") $(embedFile "patches/HsOpenSSL.diff"))
-                , P.flags = [ P.ExtraDevDep "libssl-dev", P.ExtraDevDep "libcrypto++-dev" ] }
+                , P.flags = [ P.DevelDep "libssl-dev", P.DevelDep "libcrypto++-dev" ] }
     , debianize (hackage "HsSyck" `pflag` P.DebVersion "0.50-2" `qflag` P.DebVersion "0.50-2build2")
     , debianize (hackage "HStringTemplate")
     , P.Package { P.name = "haskell-html-entities"
@@ -311,7 +311,7 @@ main _home release =
                 , P.flags = [] }
     , P.Package { P.name = "haskell-logic-tptp"
                 , P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff"))
-                , P.flags = [ P.ExtraDep "alex", P.ExtraDep "happy" ] }
+                , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
     , apt "sid" "haskell-maybet"
     , P.Package { P.name = "haskell-mime"
                 , P.spec = Darcs "http://src.seereason.com/haskell-mime"
@@ -402,7 +402,7 @@ main _home release =
     , debianize (hackage "SMTPClient")
     , debianize (hackage "socks")
     , debianize (hackage "split")
-    , debianize (hackage "haskell-src-exts" `flag` P.ExtraDep "happy")
+    , debianize (hackage "haskell-src-exts" `flag` P.BuildDep "happy")
     , debianize (hackage "stb-image")
     , apt (rel release "sid" "quantal") "haskell-strict" -- for leksah
     , P.Package { P.name = "haskell-strict-concurrency"
@@ -417,7 +417,7 @@ main _home release =
     , debianize (hackage "tagged")
     , debianize (hackage "tagsoup")
     , debianize (hackage "tar")
-    , debianize (hackage "terminfo" `flag` P.ExtraDep "libncurses5-dev" `flag` P.ExtraDevDep "libncurses5-dev")
+    , debianize (hackage "terminfo" `flag` P.BuildDep "libncurses5-dev" `flag` P.DevelDep "libncurses5-dev")
     , debianize (hackage "test-framework")
     , debianize (hackage "test-framework-hunit")
     , debianize (hackage "test-framework-quickcheck")
@@ -436,7 +436,7 @@ main _home release =
     , debianize (hackage "cmdargs")
     , P.Package { P.name = "haskell-language-javascript"
                 , P.spec = Debianize (Hackage "language-javascript")
-                , P.flags = [P.ExtraDep "happy"] }
+                , P.flags = [P.BuildDep "happy"] }
     , debianize (hackage "utf8-light" `pflag` P.DebVersion "0.4.0.1-2build1" `qflag` P.DebVersion "0.4.0.1-2build3")
     , debianize (hackage "language-haskell-extract")
     , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
@@ -600,7 +600,7 @@ platform release =
                   P.flags = [P.RelaxDep "happy", P.CabalDebian ["--executable", "happy"],
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     , debianize (hackage "stm")
-    , ghc release (apt "sid" "haskell-zlib") (debianize (hackage "zlib" `flag` P.ExtraDevDep "zlib1g-dev"))
+    , ghc release (apt "sid" "haskell-zlib") (debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev"))
     , debianize (hackage "mtl")
     , debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
     , debianize (hackage "parallel")
@@ -612,7 +612,7 @@ platform release =
                   -- alex shouldn't rebuild just because alex seems newer, but alex does require
                   -- an installed alex binary to build
                 , P.flags = [P.RelaxDep "alex",
-                             P.ExtraDep "alex",
+                             P.BuildDep "alex",
                              P.CabalDebian ["--executable", "alex"],
                              P.ModifyAtoms (\ atoms -> setL compat (Just 9) $
                                                        foldr (\ name atoms -> modL installData (insertWith union (BinPkgName "alex") (singleton (name, name))) atoms)
@@ -635,7 +635,7 @@ platform release =
     , opengl release
     -- , haddock release
     , debianize (hackage "haskell-src"
-                             `flag` P.ExtraDep "happy"
+                             `flag` P.BuildDep "happy"
                              `pflag` P.DebVersion "1.0.1.5-1"
                              `qflag` P.DebVersion "1.0.1.5-1build2")
     -- Versions 2.4.1.1 and 2.4.1.2 change unEscapeString in a way
@@ -650,7 +650,7 @@ platform release =
     -- , debianize (hackage "process")
     , debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2")
     , debianize (hackage "HUnit")
-    , debianize (hackage "QuickCheck" `flag` P.ExtraDep "libghc-random-prof")
+    , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
     , ghc release (apt "sid" "haskell-parsec") (debianize (hackage "parsec"))
     , apt (rel release "sid" "quantal") "haskell-html"
     , apt (rel release "sid" "quantal") "haskell-regex-compat"
@@ -683,28 +683,28 @@ clckwrks _home release =
                                                 "2ae07a68fc44f0ef8d92cce25620bd5f")
                                            "json2")
                                           $(embedFile "patches/clckwrks.diff"))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Cd "clckwrks-cli" (Darcs repo))
                     , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-bugs"
                     , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
                     , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
                     , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-theme-bootstrap"
                     , P.spec = Debianize (Cd "clckwrks-theme-bootstrap" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
         , P.Package { P.name = "clckwrks-dot-com"
                     , P.spec = Debianize (Patch (Cd "clckwrks-dot-com" (Darcs repo)) $(embedFile "patches/clckwrks-dot-com.diff"))
                     , P.flags = [] }
         , P.Package { P.name = "clckwrks-theme-clckwrks"
                     , P.spec = Debianize (Cd "clckwrks-theme-clckwrks" (Darcs repo))
-                    , P.flags = [P.ExtraDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
         , debianize (hackage "jmacro")
         , debianize (hackage "hsx-jmacro")
         , debianize (hackage "monadlist")
@@ -712,7 +712,7 @@ clckwrks _home release =
     if useDevRepo
     then [ P.Package { P.name = "haskell-clckwrks-plugin-page"
                      , P.spec = Debianize (Cd "clckwrks-plugin-page" (Darcs repo))
-                     , P.flags = [P.ExtraDep "haskell-hsx-utils"] } ]
+                     , P.flags = [P.BuildDep "haskell-hsx-utils"] } ]
     else []
 
 
@@ -747,11 +747,13 @@ happstack release =
     , darcs "haskell-happstack-extra" (repo ++ "/happstack-extra")
     , debianize (hackage "happstack-hsp"
                    `patch` $(embedFile "patches/happstack-hsp.diff")
-                   `flag` P.ExtraDep "haskell-hsx-utils")
+                   `flag` P.BuildDep "haskell-hsx-utils")
+{-
     , ghc release (darcs "haskell-happstack-ixset" happstackRepo
                      `cd` "happstack-ixset"
                      `debdir` Darcs (repo ++ "/happstack-ixset-debian"))
                   P.NoPackage
+-}
     , debianize (hackage "happstack-jmacro")
     , debianize (hackage "jmacro-rpc-happstack")
     , debianize (hackage "jmacro-rpc")
@@ -773,7 +775,7 @@ happstack release =
     -- use debianize for natty and apt:sid for lucid.
     , debianize (hackage "hsp"
                    `patch` $(embedFile "patches/hsp.diff")
-                   `flag` P.ExtraDep "haskell-hsx-utils"
+                   `flag` P.BuildDep "haskell-hsx-utils"
                    `flag` CabalPin "0.7.1"
                    `mflag` (rel release (Just (P.DebVersion "0.7.1-1~hackage1")) Nothing))
     , debianize (hackage "hsx"
@@ -815,7 +817,7 @@ happstack release =
     , debianize (darcs "clckwrks-theme-happstack" (repo ++ "/happstack-clckwrks")
                    `cd` "clckwrks-theme-happstack"
                    -- `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
-                   `flag` P.ExtraDep "haskell-hsx-utils")
+                   `flag` P.BuildDep "haskell-hsx-utils")
     , debianize (darcs "happstack-dot-com" (repo ++ "/happstack-clckwrks")
                    `cd` "happstack-dot-com"
                    `patch` $(embedFile "patches/happstack-dot-com.diff"))
@@ -890,8 +892,7 @@ opengl release = P.Packages (singleton "opengl") $
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
     [ debianize (hackage "OpenGL"
-                   `flag` P.ExtraDep "libglu1-mesa-dev"
-                   `flag` P.ExtraDevDep "libglu1-mesa-dev")
+                   `flag` P.DevelDep "libglu1-mesa-dev")
 {-  , P.Package { P.name = "haskell-vacuum-opengl"
                 , P.spec =  Debianize (Patch (Hackage "vacuum-opengl"))
                                  (unlines
@@ -908,16 +909,14 @@ opengl release = P.Packages (singleton "opengl") $
                                   , " --------------------------------------------------------------------------------" ])
                 , P.flags = [ P.DebVersion "0.0.3-1~hackage2" ] } -}
     , debianize (hackage "bitmap-opengl"
-                   `flag` P.ExtraDep "libglu1-mesa-dev"
-                   `flag` P.ExtraDevDep "libglu1-mesa-dev")
+                   `flag` P.DevelDep "libglu1-mesa-dev")
     , debianize (hackage "GLUT")
     , debianize (hackage "StateVar" `pflag` P.DebVersion "1.0.0.0-2build1" `qflag` P.DebVersion "1.0.0.0-2build3")
     , debianize (hackage "Tensor")
     , debianize (hackage "GLURaw")
     , debianize (hackage "ObjectName")
     , debianize (hackage "OpenGLRaw"
-                   `flag` P.ExtraDep "libgl1-mesa-dev"
-                   `flag` P.ExtraDevDep "libgl1-mesa-dev")
+                   `flag` P.DevelDep "libgl1-mesa-dev")
     ]
 
 -- Problem compiling C code in glib:
@@ -925,8 +924,8 @@ opengl release = P.Packages (singleton "opengl") $
 --       error: void value not ignored as it ought to be
 glib _release = P.Packages (singleton "glib") $
     [ debianize (hackage "glib")
-                    `flag` P.ExtraDep "haskell-gtk2hs-buildtools-utils"
-                    `flag` P.ExtraDep "libglib2.0-dev"
+                    `flag` P.BuildDep "haskell-gtk2hs-buildtools-utils"
+                    `flag` P.BuildDep "libglib2.0-dev"
     , apt "sid" "haskell-criterion"
     , apt "sid" "haskell-ltk"
     , apt "sid" "haskell-chart"
@@ -1063,7 +1062,7 @@ other _release =
     [ apt "sid" "darcs"
     , debianize (hackage "aeson-native" `patch` $(embedFile "patches/aeson-native.diff"))
     , apt "sid" "haskell-binary-shared" -- for leksah
-    , debianize (hackage "cairo" `flag` P.ExtraDep "haskell-gtk2hs-buildtools-utils") -- for leksah
+    , debianize (hackage "cairo" `flag` P.BuildDep "haskell-gtk2hs-buildtools-utils") -- for leksah
     , debianize (hackage "cabal-dev") -- build-env for cabal
     , debianize (hackage "gnuplot" `flag` P.DebVersion "0.4.2-1~hackage1")
     , apt "sid" "bash-completion"
