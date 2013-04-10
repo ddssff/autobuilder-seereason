@@ -1,0 +1,31 @@
+--- old/cryptocipher.cabal	2013-04-09 12:54:21.000000000 -0700
++++ new/cryptocipher.cabal	2013-04-09 14:21:47.279348208 -0700
+@@ -28,7 +28,7 @@
+                    , cipher-aes
+                    , cipher-rc4
+                    , crypto-api >= 0.5
+-                   , crypto-pubkey-types >= 0.2 && < 0.3
++                   , crypto-pubkey-types >= 0.3
+                    , tagged
+                    , cereal
+   Exposed-modules:   Crypto.Cipher.RC4
+--- old/Crypto/Cipher/DSA.hs	2013-04-09 14:29:47.000000000 -0700
++++ new/Crypto/Cipher/DSA.hs	2013-04-09 14:35:40.919367906 -0700
+@@ -43,7 +43,7 @@
+ 				then sign rng' hash pk m
+ 				else Right ((r, s), rng')
+ 	where
+-		(p,g,q)   = private_params pk
++		Params p g q = private_params pk
+ 		x         = private_x pk
+ 		hm        = os2ip $ hash m
+ 
+@@ -54,7 +54,7 @@
+ 	| r <= 0 || r >= q || s <= 0 || s >= q = Left InvalidSignature
+ 	| otherwise                            = Right $ v == r
+ 	where
+-		(p,g,q) = public_params pk
++		Params p g q = public_params pk
+ 		y       = public_y pk
+ 		hm      = os2ip $ hash m
+ 

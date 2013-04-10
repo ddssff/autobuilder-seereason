@@ -149,7 +149,8 @@ main _home release =
     , debianize (ghc release
                      (hackage "template-default")
                      (hackage "template-default"
-                        `patch` $(embedFile "patches/template-default.diff")))
+                        -- `patch` $(embedFile "patches/template-default.diff")
+                     ))
     , debianize (hackage "bitmap")
     , debianize (hackage "bitset")
     , apt (rel release "sid" "quantal") "haskell-bytestring-nums"
@@ -177,7 +178,6 @@ main _home release =
     , debianize (hackage "crypto-api" `qflag` P.DebVersion "0.10.2-1build3")
     , debianize (hackage "crypto-pubkey-types")
     , debianize (hackage "asn1-types")
-    , debianize (hackage "cryptocipher")
     , debianize (hackage "cryptohash")
     , debianize (hackage "cpu" `qflag` P.DebVersion "0.1.1-1build1")
     , debianize (hackage "css" `flag` P.DebVersion "0.1-1~hackage1")
@@ -210,9 +210,8 @@ main _home release =
                   (debianize (hackage "EdisonCore" `qflag` P.DebVersion "1.2.1.3-9build2"))
     , apt (rel release "sid" "quantal") "haskell-entropy"
     , debianize (hackage "enumerator" `qflag` P.DebVersion "0.4.19-1build2")
-    , P.Package { P.name = "haskell-hdaemonize"
-                , P.spec = Debianize (Patch (Hackage "hdaemonize") $(embedFile "patches/hdaemonize.diff"))
-                , P.flags = [P.DebVersion "0.4.4.1-1~hackage1"] }
+    , debianize (hackage "hdaemonize"
+                   `patch` $(embedFile "patches/hdaemonize.diff"))
     , debianize (hackage "hsyslog")
     , debianize (hackage "erf" `flag` P.DebVersion "2.0.0.0-3")
     , ghc release (apt "sid" "haskell-feed" `pflag` P.DebVersion "0.3.8-3" `qflag` P.DebVersion "0.3.8-3build2")
@@ -529,15 +528,10 @@ main _home release =
     , P.Package { P.name = "vc-darcs"
                 , P.spec = Darcs "http://src.seereason.com/vc-darcs"
                 , P.flags = [] }
-    , P.Package { P.name = "hatex"
-                , P.spec = Debianize (Hackage "HaTeX")
-                , P.flags = [] }
-    , P.Package { P.name = "hlatex"
-                , P.spec = Debianize (Hackage "hlatex")
-                , P.flags = [] }
-    , P.Package { P.name = "latex"
-                , P.spec = Debianize (Hackage "latex")
-                , P.flags = [] }
+    , debianize (hackage "HaTeX")
+    , debianize (hackage "matrix")
+    , debianize (hackage "hlatex")
+    , debianize (hackage "latex")
     , debianize (hackage "texmath")
     , debianize (hackage "derive")
     , debianize (hackage "frquotes")
@@ -820,7 +814,7 @@ happstack release =
                    `flag` P.Revision "")
     , debianize (darcs "clckwrks-theme-happstack" (repo ++ "/happstack-clckwrks")
                    `cd` "clckwrks-theme-happstack"
-                   `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
+                   -- `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
                    `flag` P.ExtraDep "haskell-hsx-utils")
     , debianize (darcs "happstack-dot-com" (repo ++ "/happstack-clckwrks")
                    `cd` "happstack-dot-com"
@@ -852,7 +846,8 @@ authenticate _home release =
     , debianize (hackage "mmorph")
     , debianize (hackage "void")
     -- Version 1.3.1 may be too new for tls 0.9.11
-    , debianize (hackage "certificate")
+    , debianize (hackage "certificate"
+                   `patch` $(embedFile "patches/certificate.diff"))
     , debianize (hackage "pem")
     , debianize (hackage "zlib-bindings")
     , debianize (hackage "tls")
@@ -862,8 +857,7 @@ authenticate _home release =
     , debianize (hackage "crypto-numbers")
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
-    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate")
-                   `patch` $(embedFile "patches/happstack-authenticate.diff"))
+    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate"))
     , digestiveFunctors
     , debianize (hackage "fb")
     ]
@@ -985,7 +979,10 @@ haddock _release =
 -- These have been failing for some time, and I don't think we've missed them.
 failing _release =
     [ debianize (hackage "funsat")
-    , apt "sid" "haskell-statistics" ]
+    , apt "sid" "haskell-statistics"
+    , debianize (hackage "cryptocipher"
+                   `patch`  $(embedFile "patches/cryptocipher.diff"))
+    ]
 
 diagrams = P.Packages (singleton "diagrams")
     [ debianize (hackage "diagrams")
