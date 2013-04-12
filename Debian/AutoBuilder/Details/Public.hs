@@ -5,6 +5,7 @@ module Debian.AutoBuilder.Details.Public ( targets ) where
 import Data.FileEmbed (embedFile)
 import Data.Lens.Lazy (setL, modL)
 import Data.Map as Map (insertWith)
+import Data.Monoid ((<>))
 import Data.Set as Set (empty, singleton, union)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages (RetrieveMethod(..), PackageFlag(CabalPin), rename,
@@ -105,7 +106,8 @@ digestiveFunctors =
 
 main _home release =
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
-        pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
+        pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p
+        sflag = case release of "squeeze-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "main") $
     [ compiler release
     , platform release
@@ -269,7 +271,7 @@ main _home release =
                 , P.flags = [] }
     -- Not used, and not building.
     -- , debianize (hackage "hoauth")
-    , debianize (hackage "hostname" `pflag` P.DebVersion "1.0-4build1" `qflag` P.DebVersion "1.0-4build3")
+    , debianize (hackage "hostname" `pflag` P.DebVersion "1.0-4build1" `qflag` P.DebVersion "1.0-4build3" `sflag` P.DebVersion "1.0-1~hackage1")
     -- The Sid package has no profiling libraries, so dependent packages
     -- won't build.  Use our debianization instead.  This means keeping
     -- up with sid's version.
@@ -567,27 +569,44 @@ main _home release =
     , debianize (hackage "hxt-unicode") `flag` P.DebVersion "9.0.2-2"
     ]
 
+relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
+
 compiler release =
   P.Packages (singleton "ghc") $
   ghc release [{-ghc74,-} devscripts] [ghc76, devscripts]
     where
-      ghc76 = P.Package { P.name = "ghc"
-                        , P.spec = Apt "experimental" "ghc"
-                        , P.flags = relax }
-      ghc74 = P.Package { P.name = "ghc"
-                        , P.spec = Apt "sid" "ghc"
-                        , P.flags = relax }
-      relax = map P.RelaxDep ["ghc","happy","alex","xsltproc","debhelper","quilt","python-minimal","libgmp-dev"]
+      ghc76 = apt "experimental" "ghc"
+                `rename` "ghc"
+                `relax` "ghc"
+                `relax` "happy"
+                `relax` "alex"
+                `relax` "xsltproc"
+                `relax` "debhelper"
+                `relax` "quilt"
+                `relax` "python-minimal"
+                `relax` "libgmp-dev"
+                `squeezeRelax` "libgmp3-dev"
+                `squeezePatch` $(embedFile "patches/ghc.diff") <>
+              case release of
+                "squeeze-seereason" -> apt "sid" "po4a" <>
+                                       apt "sid" "debhelper" `patch` $(embedFile "patches/debhelper.diff") <>
+                                       apt "sid" "dpkg" `patch` $(embedFile "patches/dpkg.diff") <>
+                                       apt "sid" "makedev"
+                _ -> P.NoPackage
+
       devscripts =
         P.Package { P.name = "haskell-devscripts"
                   , P.spec = ghc release (Patch (Apt "precise" "haskell-devscripts") $(embedFile "patches/haskell-devscripts-0.8.12.diff"))
                                              (Patch (Apt "experimental" "haskell-devscripts") $(embedFile "patches/haskell-devscripts-0.8.13.diff"))
                   , P.flags = ghc release [P.RelaxDep "python-minimal", P.DebVersion "0.8.12ubuntu1"] [P.RelaxDep "python-minimal"] }
       -- haskell-devscripts-0.8.13 is for ghc-7.6 only
+      squeezeRelax = case release of "squeeze-seereason" -> relax; "squeeze-seereason-private" -> relax; _ -> \ p _ -> p
+      squeezePatch = case release of "squeeze-seereason" -> patch; "squeeze-seereason-private" -> patch; _ -> \ p _ -> p
 
 platform release =
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
-        pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
+        pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p
+        sflag = case release of "squeeze-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "platform") $
     [ -- Our automatic debianization code produces a package which is
       -- missing the template files required for happy to work properly,
@@ -605,7 +624,7 @@ platform release =
     , debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
     , debianize (hackage "parallel")
     , debianize (hackage "syb")
-    , debianize (hackage "fgl" `pflag` P.DebVersion "5.4.2.4-2" `qflag` P.DebVersion "5.4.2.4-2build2")
+    , debianize (hackage "fgl" `pflag` P.DebVersion "5.4.2.4-2" `qflag` P.DebVersion "5.4.2.4-2build2" `sflag` P.DebVersion "5.4.2.4-1")
     , debianize (hackage "text")
     , P.Package { P.name = "alex"
                 , P.spec = Debianize (Hackage "alex")

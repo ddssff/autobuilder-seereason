@@ -22,6 +22,7 @@ import Debian.URI
 import Debian.Version (parseDebianVersion)
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
+import System.FilePath ((</>))
 
 myParams :: FilePath -> String -> ParamRec
 myParams home myBuildRelease =
@@ -71,7 +72,7 @@ myParams home myBuildRelease =
     , developmentReleaseNames = myDevelopmentReleaseNames
     , releaseAliases = myReleaseAliases myBuildRelease
     , archList = [Binary "i386",Binary "amd64"]
-    , newDistProgram = "newdist -v"
+    , newDistProgram = "./newdist -v"
     -- 6.14 adds the ExtraDevDep parameter.
     -- 6.15 changes Epoch parameter arity to 2
     -- 6.18 renames type Spec -> RetrieveMethod
@@ -120,8 +121,8 @@ derivedReleaseNames myBuildRelease baseRelease =
 myUploadURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateUploadURI else myPublicUploadURI)
     where
-      myPrivateUploadURI = "ssh://upload@deb.seereason.com/srv/deb-private/" ++ releaseRepoName myBuildRelease
-      myPublicUploadURI = "ssh://upload@deb.seereason.com/srv/deb/" ++ releaseRepoName myBuildRelease
+      myPrivateUploadURI = myPrivateURIPrefix </> "deb-private" </> releaseRepoName myBuildRelease
+      myPublicUploadURI = myPrivateURIPrefix </> "deb" </> releaseRepoName myBuildRelease
 
 
 -- An alternate url for the same repository the upload-uri points to,
@@ -131,8 +132,11 @@ myUploadURI myBuildRelease =
 myBuildURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI)
     where
-      myPrivateBuildURI = "ssh://upload@deb.seereason.com/srv/deb-private/" ++ releaseRepoName myBuildRelease
+      myPrivateBuildURI = myPrivateURIPrefix </> "deb-private" </> releaseRepoName myBuildRelease
       myPublicBuildURI = "http://deb.seereason.com/" ++ releaseRepoName myBuildRelease
+
+-- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
+myPrivateURIPrefix = "ssh://autobuilder@deb.seereason.com/home/autobuilder"
 
 --
 -- End of release suffix section.
