@@ -239,7 +239,7 @@ myDoSSHExport = True
 myReleaseAliases myBuildRelease =
     [("etch", "bpo40+"),
      ("lenny", "bpo50+"),
-     ("squeeze", "bpo51+")] ++	-- Hopefully the actual version number when assigned will be greater
+     ("squeeze", "bpo60+")] ++
     concatMap (\ rel -> List.map (\ der -> (der, rel)) (derivedReleaseNames myBuildRelease rel)) ubuntuReleases
 
 -- Additional packages to include in the clean build environment.
