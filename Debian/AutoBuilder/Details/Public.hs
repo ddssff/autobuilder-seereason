@@ -169,7 +169,10 @@ main _home release =
     , debianize (hackage "List")
     , debianize (hackage "uuid")
     , debianize (hackage "maccatcher" `flag` P.DebVersion "2.1.5-3")
-    , debianize (hackage "colour" `flag` P.DebVersion "2.3.3-1build1")
+    , debianize (hackage "colour"
+                   `pflag` P.DebVersion "2.3.3-1build1"
+                   `qflag` P.DebVersion "2.3.3-1build1"
+                   `sflag` P.DebVersion "2.3.3-1")
     -- , apt "sid" "haskell-configfile"
     , debianize (hackage "ConfigFile")
     , darcs "haskell-consumer" "http://src.seereason.com/haskell-consumer"
@@ -255,7 +258,7 @@ main _home release =
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
     -- sound right...
-    , debianize (hackage "HaXml" `flag` P.DebVersion "1:1.22.5-2")
+    , debianize (hackage "HaXml")
     , debianize (hackage "heap" `flag` P.DebVersion "1.0.0-1~hackage1")
     , P.Package { P.name = "haskell-heist"
                 , P.spec = Debianize (Hackage "heist")
@@ -368,7 +371,10 @@ main _home release =
     , debianize (hackage "polyparse")
     , debianize (hackage "primitive")
     , debianize (hackage "PropLogic")
-    , debianize (hackage "PSQueue" `pflag` P.DebVersion "1.1-2" `qflag` P.DebVersion "1.1-2build2")
+    , debianize (hackage "PSQueue"
+                   `pflag` P.DebVersion "1.1-2"
+                   `qflag` P.DebVersion "1.1-2build2"
+                   `sflag` P.DebVersion "1.1-1")
     , P.Package { P.name = "haskell-pwstore-purehaskell"
                 , P.spec = Debianize (Patch (Hackage "pwstore-purehaskell") $(embedFile "patches/pwstore-purehaskell.diff"))
                 , P.flags = [P.DebVersion "2.1-1~hackage1"] }

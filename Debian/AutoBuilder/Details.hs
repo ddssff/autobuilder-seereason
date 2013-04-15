@@ -13,11 +13,13 @@ import Data.List as List (isSuffixOf, isPrefixOf, map)
 import Data.Maybe
 import Data.Monoid (mappend)
 import Data.Set as Set (Set, empty, map)
+import Debian.Arch (Arch(Binary), ArchCPU(ArchCPU), ArchOS(ArchOS))
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages (Packages(NoPackage), TargetName(TargetName))
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..), Strictness(..), TargetSpec(..))
-import Debian.Release (ReleaseName(ReleaseName, relName), Arch(Binary))
+import Debian.Release (ReleaseName(ReleaseName, relName))
 import Debian.Repo.Cache (SourcesChangedAction(SourcesChangedError))
+import Debian.Sources (DebSource, parseSourceLine)
 import Debian.URI
 import Debian.Version (parseDebianVersion)
 import qualified Debian.AutoBuilder.Details.Targets as Targets
@@ -71,7 +73,7 @@ myParams home myBuildRelease =
     , ghcVersion = {- trace ("ghcVersion: " ++ show (myCompilerVersion myBuildRelease)) $ -} myCompilerVersion myBuildRelease
     , developmentReleaseNames = myDevelopmentReleaseNames
     , releaseAliases = myReleaseAliases myBuildRelease
-    , archList = [Binary "i386",Binary "amd64"]
+    , archList = [Binary (ArchOS "linux") (ArchCPU "i386"), Binary (ArchOS "linux") (ArchCPU "amd64")]
     , newDistProgram = "./newdist -v"
     -- 6.14 adds the ExtraDevDep parameter.
     -- 6.15 changes Epoch parameter arity to 2
@@ -260,6 +262,8 @@ myIncludePackages myBuildRelease =
     [ "debian-archive-keyring"
     , "build-essential"         -- This is required by autobuilder code that opens the essential-packages list
     , "pkg-config"              -- Some packages now depend on this package via new cabal options.
+    , "debian-keyring"
+    , "seereason-keyring"
     -- , "perl-base"
     -- , "gnupg"
     -- , "dpkg"
@@ -330,14 +334,14 @@ releaseSuffix release =
 
 -- Build a sources.list for one of our build relases.
 --
-releaseSourceLines :: String -> String -> String -> [String]
+releaseSourceLines :: String -> String -> String -> [DebSource]
 releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     case releaseSuffix release of
       Nothing -> baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost
       Just suff ->
           releaseSourceLines (dropSuffix suff release) debianMirrorHost ubuntuMirrorHost ++
-          [ "deb " ++ uri ++ " " ++ release ++ " main"
-          , "deb-src " ++ uri ++ " " ++ release ++ " main" ]
+          List.map parseSourceLine [ "deb " ++ uri ++ " " ++ release ++ " main"
+                                   , "deb-src " ++ uri ++ " " ++ release ++ " main" ]
     where
       uri = show (fromJust (myBuildURI release))
 
@@ -348,10 +352,12 @@ baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
       x -> error $ "Unknown release repository: " ++ show x
 
 debianSourceLines debianMirrorHost release =
+    List.map parseSourceLine $
     [ "deb http://" ++ debianMirrorHost ++ "/debian " ++ release ++ " main contrib non-free"
     , "deb-src http://" ++ debianMirrorHost ++ "/debian " ++ release ++ " main contrib non-free" ]
 
 ubuntuSourceLines ubuntuMirrorHost release =
+    List.map parseSourceLine $
     [ "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ " main restricted universe multiverse"
     , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ " main restricted universe multiverse"
     , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-updates main restricted universe multiverse"
@@ -378,20 +384,22 @@ dropSuffix suff x = take (length x - length suff) x
 -- that we can use any base release or build release name to look up a
 -- sources.list.
 --
-mySources :: String -> String -> String -> [(String, String)]
+mySources :: String -> String -> String -> [(String, [DebSource])]
 mySources myBuildRelease debianMirrorHost ubuntuMirrorHost =
     List.map releaseSources
             (debianReleases ++ ubuntuReleases ++
              concatMap (derivedReleaseNames myBuildRelease) (debianReleases ++ ubuntuReleases)) ++
-    [("debian-experimental", unlines (debianSourceLines debianMirrorHost "experimental")),
+    [("debian-experimental", debianSourceLines debianMirrorHost "experimental"),
 {-   ("debian-multimedia",
       (unlines ["deb http://mirror.home-dn.net/debian-multimedia stable main",
                 "deb-src http://mirror.home-dn.net/debian-multimedia stable main"])), -}
       ("kanotix",
-       (unlines ["deb http://kanotix.com/files/debian sid main contrib non-free vdr",
+       (List.map parseSourceLine
+                ["deb http://kanotix.com/files/debian sid main contrib non-free vdr",
                  "  deb-src http://kanotix.com/files/debian sid main contrib non-free vdr"]))]
     where
-      releaseSources release = (release, unlines (releaseSourceLines release debianMirrorHost ubuntuMirrorHost))
+      releaseSources release =
+          (release, releaseSourceLines release debianMirrorHost ubuntuMirrorHost)
 
 -- Any package listed here will not trigger rebuilds when updated.
 --
