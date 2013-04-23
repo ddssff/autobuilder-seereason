@@ -241,8 +241,10 @@ myDoSSHExport = True
 myReleaseAliases myBuildRelease =
     [("etch", "bpo40+"),
      ("lenny", "bpo50+"),
-     ("squeeze", "bpo60+")] ++
-    concatMap (\ rel -> List.map (\ der -> (der, rel)) (derivedReleaseNames myBuildRelease rel)) ubuntuReleases
+     ("squeeze", "bpo60+"),
+     ("squeeze-seereason", "bpo60+"),
+     ("squeeze-seereason-private", "bpo60+")] ++
+    concatMap (\ rel -> List.map (\ der -> (der, rel)) (derivedReleaseNames myBuildRelease rel)) (ubuntuReleases ++ debianReleases)
 
 -- Additional packages to include in the clean build environment.
 -- Adding packages here can speed things up when you are building many
