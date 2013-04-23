@@ -76,7 +76,7 @@ autobuilder home =
     -- let repo = localRepo home in
     P.Packages (singleton "autobuilder-group") $
     [ unixutils home
-    , darcs "autobuilder" (repo </> "debian-tools") `cd` "autobuilder"
+    , debianize (darcs "autobuilder" (repo </> "debian-tools") `cd` "autobuilder")
     , darcs "haskell-cabal-debian" (repo </> "debian-tools") `cd` "cabal-debian"
     , darcs "haskell-debian" (repo ++ "/haskell-debian") `flag` P.RelaxDep "cabal-debian"
     , darcs "haskell-debian-mirror" (repo </> "mirror")
