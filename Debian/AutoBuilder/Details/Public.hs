@@ -408,7 +408,7 @@ main _home release =
     , debianize (hackage "smallcheck")
     , debianize (hackage "syb-with-class")
     , apt (rel release "sid" "quantal") "haskell-syb-with-class-instances-text"
-    , debianize (hackage "tagged")
+    , debianize (hackage "tagged" `flag` P.CabalPin "0.4.5") -- Pinned to avoid a big rebuild
     , debianize (hackage "tagsoup")
     , debianize (hackage "tar")
     , debianize (hackage "terminfo" `flag` P.BuildDep "libncurses5-dev" `flag` P.DevelDep "libncurses5-dev")
@@ -558,6 +558,8 @@ main _home release =
 
 relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
 
+compiler "precise-seereason" = P.NoPackage -- Omitted to avoid a big rebuild
+compiler "squeeze-seereason" = P.NoPackage -- Omitted to avoid a big rebuild
 compiler release =
   P.Packages (singleton "ghc") $
   [ghc76, devscripts]
