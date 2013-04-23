@@ -749,7 +749,7 @@ happstack release =
                                          "--build-dep=haskell-happstack-fay-ajax-utils"])
     , darcs "haskell-happstack-extra" (repo ++ "/happstack-extra")
     , debianize (hackage "happstack-hsp"
-                   `patch` $(embedFile "patches/happstack-hsp.diff")
+                   -- `patch` $(embedFile "patches/happstack-hsp.diff")
                    `flag` P.BuildDep "haskell-hsx-utils")
     , debianize (hackage "happstack-jmacro")
     , debianize (hackage "jmacro-rpc-happstack")
