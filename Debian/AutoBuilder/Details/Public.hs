@@ -819,7 +819,8 @@ authenticate _home release =
     , debianize (hackage "void")
     -- Version 1.3.1 may be too new for tls 0.9.11
     , debianize (hackage "certificate"
-                   `patch` $(embedFile "patches/certificate.diff"))
+                   -- `patch` $(embedFile "patches/certificate.diff")
+                )
     , debianize (hackage "pem")
     , debianize (hackage "zlib-bindings")
     , debianize (hackage "tls")
