@@ -69,8 +69,8 @@ fixme =
 unixutils _home =
     P.Packages (singleton "Unixutils")
     [ darcs "haskell-unixutils" (repo ++ "/haskell-unixutils")
-    , darcs "haskell-extra" "http://src.seereason.com/haskell-extra" `flag` P.RelaxDep "cabal-debian"
-    , darcs "haskell-help" "http://src.seereason.com/haskell-help" ]
+    , darcs "haskell-extra" (repo </> "haskell-extra") `flag` P.RelaxDep "cabal-debian"
+    , darcs "haskell-help" (repo </> "haskell-help") ]
 
 autobuilder home =
     -- let repo = localRepo home in
@@ -79,10 +79,10 @@ autobuilder home =
     , darcs "autobuilder" (repo </> "debian-tools") `cd` "autobuilder"
     , darcs "haskell-cabal-debian" (repo </> "debian-tools") `cd` "cabal-debian"
     , darcs "haskell-debian" (repo ++ "/haskell-debian") `flag` P.RelaxDep "cabal-debian"
-    , darcs "haskell-debian-mirror" "http://src.seereason.com/mirror"
+    , darcs "haskell-debian-mirror" (repo </> "mirror")
     , darcs "haskell-debian-repo" (repo </> "debian-tools") `cd` "debian-repo"
-    , darcs "haskell-archive" "http://src.seereason.com/archive"
-    , debianize (darcs "haskell-process-extras" "http://src.seereason.com/process-extras")
+    , darcs "haskell-archive" (repo </> "archive")
+    , debianize (darcs "haskell-process-extras" (repo </> "process-extras"))
     , darcs "haskell-process-progress" (repo </> "debian-tools-stable") `cd` "process-progress"
     ]
 
@@ -105,9 +105,7 @@ main _home release =
     [ compiler release
     , platform release
     , debianize (hackage "hashtables")
-    , P.Package { P.name = "bugzilla"
-                , P.spec = Apt "squeeze" "bugzilla"
-                , P.flags = [] }
+    , apt "squeeze" "bugzilla"
     , debianize (hackage "ListLike")
     , debianize (hackage "listlike-instances")
     , apt (rel release "sid" "quantal") "cpphs"
@@ -121,7 +119,7 @@ main _home release =
                    `flag` P.Revision "")
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
     , debianize (hackage "aeson")
-    , darcs "haskell-agi" "http://src.seereason.com/haskell-agi"
+    , darcs "haskell-agi" (repo </> "haskell-agi")
     , debianize (hackage "ansi-terminal")
     , debianize (hackage "ansi-wl-pprint")
     , debianize (hackage "wl-pprint-text")
@@ -166,7 +164,7 @@ main _home release =
                    `sflag` P.DebVersion "2.3.3-1")
     -- , apt "sid" "haskell-configfile"
     , debianize (hackage "ConfigFile")
-    , darcs "haskell-consumer" "http://src.seereason.com/haskell-consumer"
+    , darcs "haskell-consumer" (repo </> "haskell-consumer")
     , debianize (hackage "cipher-aes")
     , debianize (hackage "cprng-aes")
     , debianize (hackage "crypto-random-api")
@@ -236,12 +234,10 @@ main _home release =
     , apt (rel release "sid" "quantal") "haskell-harp"
     , debianize (hackage "hashable" `flag` CabalPin "1.1.2.5")
     , debianize (hackage "hashed-storage")
-    , P.Package { P.name = "haskell-haskeline"
-                , P.spec = Debianize (Hackage "haskeline")
-                , P.flags = [P.DebVersion "0.7.0.3-1~hackage1"] }
-    , P.Package { P.name = "haskell-th-orphans"
-                , P.spec = Debianize (Patch (Hackage "th-orphans") $(embedFile "patches/th-orphans.diff"))
-                , P.flags = [P.DebVersion "0.6-1~hackage1"] }
+    , debianize (hackage "haskeline" `flag` P.DebVersion "0.7.0.3-1~hackage1")
+    , debianize (hackage "th-orphans"
+                   `patch` $(embedFile "patches/th-orphans.diff")
+                   `flag` P.DebVersion "0.6-1~hackage1")
     , debianize (hackage "haskell-src-meta")
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
@@ -249,9 +245,7 @@ main _home release =
     -- sound right...
     , debianize (hackage "HaXml")
     , debianize (hackage "heap" `flag` P.DebVersion "1.0.0-1~hackage1")
-    , P.Package { P.name = "haskell-heist"
-                , P.spec = Debianize (Hackage "heist")
-                , P.flags = [] }
+    , debianize (hackage "heist")
     , debianize (hackage "xmlhtml")
     , debianize (hackage "directory-tree")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
@@ -275,24 +269,18 @@ main _home release =
                 , P.flags = [ P.DevelDep "libssl-dev", P.DevelDep "libcrypto++-dev" ] }
     , debianize (hackage "HsSyck" `pflag` P.DebVersion "0.50-2" `qflag` P.DebVersion "0.50-2build2")
     , debianize (hackage "HStringTemplate")
-    , P.Package { P.name = "haskell-html-entities"
-                , P.spec = Darcs "http://src.seereason.com/html-entities"
-                , P.flags = [] }
+    , darcs "haskell-html-entities" (repo </> "html-entities")
     , debianize (hackage "http-types")
     , debianize (hackage "i18n" `flag` P.DebVersion "0.3-1~hackage1")
     , debianize (hackage "iconv")
     , P.Package { P.name = "haskell-incremental-sat-solver"
-                , P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs "http://src.seereason.com/haskell-incremental-sat-solver-debian")
+                , P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs (repo </> "haskell-incremental-sat-solver-debian"))
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-instant-generics"
-                , P.spec = Debianize (Hackage "instant-generics")
-                , P.flags = [] }
+    , debianize (hackage "instant-generics")
     , debianize (hackage "generic-deriving")
     , debianize (hackage "irc")
     , debianize (hackage "ixset")
-    , P.Package { P.name = "haskell-json"
-                , P.spec = Darcs (repo ++ "/haskell-json")
-                , P.flags = [] }
+    , darcs "haskell-json" (repo ++ "/haskell-json")
     , debianize (hackage "language-css" `flag` P.DebVersion "0.0.4.1-1~hackage1")
     , debianize (hackage "largeword")
 {-  , apt "sid" "haskell-leksah"
@@ -307,14 +295,10 @@ main _home release =
                 , P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff"))
                 , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
     , apt "sid" "haskell-maybet"
-    , P.Package { P.name = "haskell-mime"
-                , P.spec = Darcs "http://src.seereason.com/haskell-mime"
-                , P.flags = [] }
+    , darcs "haskell-mime" (repo </> "haskell-mime")
     , debianize (hackage "mmap")
     , debianize (hackage "monad-control")
-    , P.Package { P.name = "haskell-monad-par-extras"
-                , P.spec = Debianize (Hackage "monad-par-extras")
-                , P.flags = [P.DebVersion "0.3.2-1~hackage1"] }
+    , debianize (hackage "monad-par-extras" `flag` P.DebVersion "0.3.2-1~hackage1")
     , debianize (hackage "abstract-deque")
     , debianize (hackage "abstract-par")
     , debianize (hackage "monad-par")
@@ -350,9 +334,7 @@ main _home release =
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
     , apt (rel release "sid" "quantal") "haskell-parsec2"
-    , P.Package { P.name = "haskell-pbkdf2",
-                  P.spec = Debianize (Hackage "PBKDF2"), -- DebDir (Hackage "PBKDF2") (Darcs "http://src.seereason.com/pbkdf2-debian")
-                  P.flags = []}
+    , debianize (hackage "PBKDF2")
     , apt (rel release "sid" "quantal") "haskell-pcre-light"
     , debianize (hackage "permutation" `flag` P.DebVersion "0.4.1-1~hackage1")
     , debianize (hackage "pipes")
@@ -363,38 +345,30 @@ main _home release =
                    `pflag` P.DebVersion "1.1-2"
                    `qflag` P.DebVersion "1.1-2build2"
                    `sflag` P.DebVersion "1.1-1")
-    , P.Package { P.name = "haskell-pwstore-purehaskell"
-                , P.spec = Debianize (Patch (Hackage "pwstore-purehaskell") $(embedFile "patches/pwstore-purehaskell.diff"))
-                , P.flags = [P.DebVersion "2.1-1~hackage1"] }
+    , debianize (hackage "pwstore-purehaskell"
+                   `patch` $(embedFile "patches/pwstore-purehaskell.diff")
+                   `flag` P.DebVersion "2.1-1~hackage1")
     , apt (rel release "sid" "quantal") "haskell-quickcheck1"
     , debianize (hackage "regex-tdfa" `pflag` P.DebVersion "1.1.8-1" `qflag` P.DebVersion "1.1.8-2build2")
-    , P.Package { P.name = "haskell-revision"
-                , P.spec = Darcs "http://src.seereason.com/haskell-revision"
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-rjson"
-                , P.spec = Debianize (Patch (Hackage "RJson") $(embedFile "patches/RJson.diff"))
-                , P.flags = [] }
+    , darcs "haskell-revision" (repo </> "haskell-revision")
+    , debianize (hackage "RJson" `patch` $(embedFile "patches/RJson.diff"))
     , debianize (hackage "safe" `flag` P.DebVersion "0.3.3-2")
     , debianize (hackage "safecopy")
-    , P.Package { P.name = "haskell-sat"
-                , P.spec = Debianize (Patch (Hackage "sat") $(embedFile "patches/sat.diff"))
-                , P.flags = [ P.DebVersion "1.1.1-1~hackage1" ] }
+    , debianize (hackage "sat"
+                   `patch` $(embedFile "patches/sat.diff")
+                   `flag` P.DebVersion "1.1.1-1~hackage1")
     , debianize (hackage "semigroups")
     , debianize (hackage "nats")
     , debianize (hackage "sendfile")
-    , P.Package { P.name = "haskell-set-extra"
-                , P.spec = Darcs "http://src.seereason.com/set-extra"
-                , P.flags = [] }
-    , P.Package { P.name = "haskell-old-exception"
-                , P.spec = Debianize (Darcs (repo ++ "/old-exception"))
-                , P.flags = [] }
+    , darcs "haskell-set-extra" (repo </> "set-extra")
+    , debianize (darcs "haskell-old-exception" (repo ++ "/old-exception"))
     , apt (rel release "sid" "quantal") "haskell-sha"
     , debianize (hackage "shake")
     , debianize (hackage "shakespeare")
     , debianize (hackage "shakespeare-css")
-    , P.Package { P.name = "haskell-simple-css",
-                  P.spec = Debianize (Patch (Hackage "simple-css") $(embedFile "patches/simple-css.diff"))
-                , P.flags = [P.DebVersion "0.0.4-1~hackage1"] }
+    , debianize (hackage "simple-css"
+                   `patch` $(embedFile "patches/simple-css.diff")
+                   `flag` P.DebVersion "0.0.4-1~hackage1")
     , debianize (hackage "SMTPClient")
     , debianize (hackage "socks")
     , debianize (hackage "split")
@@ -423,9 +397,9 @@ main _home release =
     , debianize (hackage "th-lift")
     , debianize (hackage "transformers-base" `pflag` P.DebVersion "0.4.1-2" `qflag` P.DebVersion "0.4.1-2build2")
     , debianize (hackage "unicode-names" `flag` P.DebVersion "3.2.0.0-1~hackage1")
-    , P.Package { P.name = "haskell-unicode-properties"
-                , P.spec = Debianize (Patch (Hackage "unicode-properties") $(embedFile "patches/unicode-properties.diff"))
-                , P.flags = [ P.DebVersion "3.2.0.0-1~hackage1" ] }
+    , debianize (hackage "unicode-properties"
+                   `patch` $(embedFile "patches/unicode-properties.diff")
+                   `flag` P.DebVersion "3.2.0.0-1~hackage1")
     , debianize (hackage "uniplate")
     , debianize (hackage "cmdargs")
     , P.Package { P.name = "haskell-language-javascript"
@@ -502,7 +476,7 @@ main _home release =
                 , P.spec = Proc (Apt "sid" "jqueryui")
                 , P.flags = [] } -}
     , P.Package { P.name = "jcrop"
-                , P.spec = DebDir (Uri "http://src.seereason.com/jcrop/Jcrop.tar.gz" "028feeb9b6415af3b7fd7d9471c92469") (Darcs (repo ++ "/jcrop-debian"))
+                , P.spec = DebDir (Uri (repo </> "jcrop/Jcrop.tar.gz") "028feeb9b6415af3b7fd7d9471c92469") (Darcs (repo ++ "/jcrop-debian"))
                 , P.flags = [] }
     , P.Package { P.name = "magic-haskell"
                 , P.spec = Quilt (Apt "sid" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
@@ -511,11 +485,11 @@ main _home release =
                 , P.spec = Debianize (Hackage "MissingH")
                 , P.flags = [P.Revision ""] }
     , P.Package { P.name = "seereason-keyring"
-                , P.spec = Darcs "http://src.seereason.com/seereason-keyring"
+                , P.spec = Darcs (repo </> "seereason-keyring")
                 , P.flags = [P.UDeb "seereason-keyring-udeb"] }
     , apt "sid" "tinymce"
     , P.Package { P.name = "vc-darcs"
-                , P.spec = Darcs "http://src.seereason.com/vc-darcs"
+                , P.spec = Darcs (repo </> "vc-darcs")
                 , P.flags = [] }
     , debianize (hackage "HaTeX")
     , debianize (hackage "matrix")
@@ -603,7 +577,7 @@ platform release =
       -- to require the new "install orig.tar.gz file" code in the
       -- autobuilder.
       P.Package { P.name = "happy",
-                  P.spec = DebDir (Hackage "happy") (Darcs "http://src.seereason.com/happy-debian"),
+                  P.spec = DebDir (Hackage "happy") (Darcs (repo </> "happy-debian")),
                   P.flags = [P.RelaxDep "happy", P.CabalDebian ["--executable", "happy"],
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     , debianize (hackage "stm")
@@ -727,7 +701,7 @@ happstack release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String in
     P.Packages (singleton "happstack")
     [ plugins
-    -- , debianize (darcs "haskell-debian-packaging" "http://src.seereason.com/debian-packaging")
+    -- , debianize (darcs "haskell-debian-packaging" (repo </> "debian-packaging"))
     , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
     , debianize (hackage "happstack")
     , debianize (hackage "happstack-fay"
@@ -864,7 +838,7 @@ authenticate _home release =
 happstackdotcom _home =
     P.Packages (singleton "happstackdotcom") $
     [ debianize (hackage "ircbot")
-    , darcs "haskell-happstackdotcom-doc" "http://src.seereason.com/happstackDotCom-doc" ]
+    , darcs "haskell-happstackdotcom-doc" (repo </> "happstackDotCom-doc") ]
 
 -- Broken targets:
 --
@@ -959,10 +933,10 @@ higgsset = P.Packages (singleton "higgsset") $
     , debianize (hackage "TrieMap" `flag` P.DebVersion "4.0.1-1~hackage1") ]
 
 frisby = P.Packages (singleton "frisby")
-    [ darcs "haskell-frisby" "http://src.seereason.com/frisby"
-        `debdir` (Darcs "http://src.seereason.com/frisby-debian")
+    [ darcs "haskell-frisby" (repo </> "frisby")
+        `debdir` (Darcs (repo </> "frisby-debian"))
         `cd` "frisby"
-    , darcs "haskell-decimal" "http://src.seereason.com/decimal" ]
+    , darcs "haskell-decimal" (repo </> "decimal") ]
 
 haddock _release =
     -- For leksah.  Version 2.9.2 specifies ghc < 7.2 and base ==
