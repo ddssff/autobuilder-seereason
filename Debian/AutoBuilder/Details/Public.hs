@@ -366,6 +366,7 @@ main _home release =
     , debianize (hackage "shake")
     , debianize (hackage "shakespeare")
     , debianize (hackage "shakespeare-css")
+    , debianize (hackage "haskell-system-fileio")
     , debianize (hackage "simple-css"
                    `patch` $(embedFile "patches/simple-css.diff")
                    `flag` P.DebVersion "0.0.4-1~hackage1")
@@ -707,6 +708,7 @@ happstack release =
     , debianize (hackage "happstack-fay"
                    -- `patch` $(embedFile "patches/happstack-fay.diff")
                 )
+    , debianize (hackage "cryptohash-cryptoapi")
     , debianize (hackage "happstack-fay-ajax")
     , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs"])
     , debianize (hackage "fay-hsx")
