@@ -366,7 +366,7 @@ main _home release =
     , debianize (hackage "shake")
     , debianize (hackage "shakespeare")
     , debianize (hackage "shakespeare-css")
-    , debianize (hackage "haskell-system-fileio")
+    , debianize (hackage "system-fileio")
     , debianize (hackage "simple-css"
                    `patch` $(embedFile "patches/simple-css.diff")
                    `flag` P.DebVersion "0.0.4-1~hackage1")
