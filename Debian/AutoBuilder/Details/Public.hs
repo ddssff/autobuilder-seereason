@@ -386,7 +386,9 @@ main _home release =
     , debianize (hackage "tagged" `flag` P.CabalPin "0.4.5") -- Pinned to avoid a big rebuild
     , debianize (hackage "tagsoup")
     , debianize (hackage "tar")
-    , debianize (hackage "terminfo" `flag` P.BuildDep "libncurses5-dev" `flag` P.DevelDep "libncurses5-dev")
+    , debianize (hackage "terminfo"
+                             `flag` P.DevelDep "libncurses5-dev"
+                             `flag` P.DevelDep "libncursesw5-dev")
     , debianize (hackage "test-framework")
     , debianize (hackage "test-framework-hunit")
     , debianize (hackage "test-framework-quickcheck")
@@ -588,7 +590,7 @@ platform release =
     , debianize (hackage "parallel")
     , debianize (hackage "syb")
     , debianize (hackage "fgl" `pflag` P.DebVersion "5.4.2.4-2" `qflag` P.DebVersion "5.4.2.4-2build2" `sflag` P.DebVersion "5.4.2.4-1")
-    , debianize (hackage "text")
+    , debianize (hackage "text" `flag` P.CabalPin "0.11.3.0")
     , P.Package { P.name = "alex"
                 , P.spec = Debianize (Hackage "alex")
                   -- alex shouldn't rebuild just because alex seems newer, but alex does require

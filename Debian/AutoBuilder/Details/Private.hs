@@ -35,7 +35,8 @@ applications _home =
     -- There is a debianization in the repo that contains this file
     -- (Targets.hs), and it creates a package named seereason-darcs-backups,
     -- which performs backups on the darcs repo.
-    , darcs "seereason-darcs-backups" (repo ++ "/autobuilder-config")
+    , debianize (darcs "seereason-darcs-backups" (repo ++ "/autobuilder-config")
+                  `rename` "seereason-darcs-backups")
     , debianize (method "seereasonpartners-dot-com"
                       (Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks"))))
     , debianize (method "haskell-clckwrks-theme-seereasonpartners"
