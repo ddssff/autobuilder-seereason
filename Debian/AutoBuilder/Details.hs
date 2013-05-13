@@ -74,7 +74,7 @@ myParams home myBuildRelease =
     , developmentReleaseNames = myDevelopmentReleaseNames
     , releaseAliases = myReleaseAliases myBuildRelease
     , archList = [Binary (ArchOS "linux") (ArchCPU "i386"), Binary (ArchOS "linux") (ArchCPU "amd64")]
-    , newDistProgram = "./newdist -v"
+    , newDistProgram = "newdist"
     -- 6.14 adds the ExtraDevDep parameter.
     -- 6.15 changes Epoch parameter arity to 2
     -- 6.18 renames type Spec -> RetrieveMethod
@@ -138,7 +138,7 @@ myBuildURI myBuildRelease =
       myPublicBuildURI = "http://deb.seereason.com/" ++ releaseRepoName myBuildRelease
 
 -- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
-myPrivateURIPrefix = "ssh://autobuilder@deb.seereason.com/home/autobuilder"
+myPrivateURIPrefix = "ssh://upload@deb.seereason.com/srv"
 
 --
 -- End of release suffix section.

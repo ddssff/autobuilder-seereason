@@ -76,11 +76,11 @@ autobuilder home =
     -- let repo = localRepo home in
     P.Packages (singleton "autobuilder-group") $
     [ unixutils home
-    , debianize (darcs "autobuilder" (repo </> "debian-tools") `cd` "autobuilder")
-    , darcs "haskell-cabal-debian" (repo </> "debian-tools") `cd` "cabal-debian"
+    , debianize (darcs "autobuilder" (repo </> "debian-tools-revert") `cd` "autobuilder")
+    , darcs "haskell-cabal-debian" (repo </> "debian-tools-revert") `cd` "cabal-debian"
     , darcs "haskell-debian" (repo ++ "/haskell-debian") `flag` P.RelaxDep "cabal-debian"
     , darcs "haskell-debian-mirror" (repo </> "mirror")
-    , darcs "haskell-debian-repo" (repo </> "debian-tools") `cd` "debian-repo"
+    , darcs "haskell-debian-repo" (repo </> "debian-tools-revert") `cd` "debian-repo"
     , darcs "haskell-archive" (repo </> "archive")
     , debianize (darcs "haskell-process-extras" (repo </> "process-extras"))
     , darcs "haskell-process-progress" (repo </> "debian-tools-stable") `cd` "process-progress"
