@@ -9,4 +9,6 @@ main = backup (BackupTarget { app = "darcs"
                                              , uriPort = "" }
                             , localTop = "/home/autobuilder/backups"
                             , remoteTop = "/srv"
-                            , keep = 50 })
+                            , keep = 50
+                            , nice = 10
+                            , delay = 0 })
