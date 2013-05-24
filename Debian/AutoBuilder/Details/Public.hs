@@ -108,10 +108,10 @@ main _home release =
     , apt "squeeze" "bugzilla"
     , debianize (hackage "ListLike")
     , debianize (hackage "listlike-instances")
-    , apt (rel release "sid" "quantal") "cpphs"
+    , apt (rel release "wheezy" "quantal") "cpphs"
     , apt "sid" "debootstrap" `flag` P.UDeb "debootstrap-udeb"
     -- Build fails due to some debianization issue
-    -- , apt "sid" "geneweb"
+    -- , apt "wheezy" "geneweb"
     , debianize (hackage "gtk2hs-buildtools"
                    `rename` "gtk2hs-buildtools"
                    `flag` P.BuildDep "alex"
@@ -144,7 +144,7 @@ main _home release =
                 )
     , debianize (hackage "bitmap")
     , debianize (hackage "bitset")
-    , apt (rel release "sid" "quantal") "haskell-bytestring-nums"
+    , apt (rel release "wheezy" "quantal") "haskell-bytestring-nums"
     , debianize (hackage "bytestring-trie")
     , debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
     -- , debianize (hackage "cairo-pdf")
@@ -152,7 +152,7 @@ main _home release =
     , debianize (hackage "cabal-install"
                    `patch` $(embedFile "patches/cabal-install.diff"))
     , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
-    , apt (rel release "sid" "quantal") "haskell-cereal"
+    , apt (rel release "wheezy" "quantal") "haskell-cereal"
     , debianize (hackage "citeproc-hs")
     -- , debianize (hackage "process-listlike")
     , debianize (darcs "haskell-process-listlike" (repo </> "process-listlike"))
@@ -164,7 +164,7 @@ main _home release =
                    `pflag` P.DebVersion "2.3.3-1build1"
                    `qflag` P.DebVersion "2.3.3-1build1"
                    `sflag` P.DebVersion "2.3.3-1")
-    -- , apt "sid" "haskell-configfile"
+    -- , apt "wheezy" "haskell-configfile"
     , debianize (hackage "ConfigFile")
     , darcs "haskell-consumer" (repo </> "haskell-consumer")
     , darcs "haskell-consumer" (repo </> "haskell-consumer")
@@ -180,7 +180,7 @@ main _home release =
     , debianize (hackage "cpu" `qflag` P.DebVersion "0.1.1-1build1")
     , debianize (hackage "css" `flag` P.DebVersion "0.1-1~hackage1")
     , debianize (hackage "css-text" `pflag` P.DebVersion "0.1.1-3" `qflag` P.DebVersion "0.1.1-3build1")
-    , apt (rel release "sid" "quantal") "haskell-curl"
+    , apt (rel release "wheezy" "quantal") "haskell-curl"
     , debianize (hackage "data-accessor")
     , debianize (hackage "data-accessor-template")
     , debianize (hackage "data-default")
@@ -193,19 +193,19 @@ main _home release =
                    `patch` $(embedFile "patches/data-object.diff"))
     , debianize (hackage "dataenc")
     , debianize (hackage "Diff")
-    , apt (rel release "sid" "quantal") "haskell-digest"
-    , apt (rel release "sid" "quantal") "haskell-dlist"
+    , apt (rel release "wheezy" "quantal") "haskell-digest"
+    , apt (rel release "wheezy" "quantal") "haskell-dlist"
     -- Natty only(?)
     , debianize (hackage "double-conversion")
     , debianize (hackage "groom")
-    , apt "sid" "haskell-dummy"
+    , apt "wheezy" "haskell-dummy"
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
     , P.Package { P.name = "haskell-edison-api"
                 , P.spec = Debianize (Hackage "EdisonAPI")
                 , P.flags = rel release [] [P.DebVersion "1.2.1-18build2"] }
     , (debianize (hackage "EdisonCore" `qflag` P.DebVersion "1.2.1.3-9build2"))
-    , apt (rel release "sid" "quantal") "haskell-entropy"
+    , apt (rel release "wheezy" "quantal") "haskell-entropy"
     , debianize (hackage "enumerator" `qflag` P.DebVersion "0.4.19-1build2")
     , debianize (hackage "hdaemonize"
                    `patch` $(embedFile "patches/hdaemonize.diff"))
@@ -213,7 +213,7 @@ main _home release =
     , debianize (hackage "erf" `flag` P.DebVersion "2.0.0.0-3")
     , debianize (hackage "feed") `flag` (rel release (P.DebVersion "0.3.8-3") (P.DebVersion "0.3.8-3build2"))
     -- Darcs 2.8.1 won't build with the current version of haskeline.
-    -- , apt "sid" "darcs" `patch` $(embedFile "patches/darcs.diff")
+    -- , apt "wheezy" "darcs" `patch` $(embedFile "patches/darcs.diff")
     , debianize (hackage "file-embed")
     , debianize (hackage "indents")
     , debianize (hackage "concatenative")
@@ -227,7 +227,7 @@ main _home release =
                 , P.flags = [ P.DevelDep "libgd-dev", P.DevelDep "libc6-dev", P.DevelDep "libfreetype6-dev" ] ++ rel release [] [P.DebVersion "3000.7.3-1build2"] }
     -- , debianize (flags [P.BuildDep "libm-dev", P.BuildDep "libfreetype-dev"] (hackage "gd"))
     , debianize (hackage "cabal-macosx")
-    , apt (rel release "sid" "quantal") "haskell-ghc-paths" -- for leksah
+    , apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah
     -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
     -- dpkg: error processing /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb (--unpack):
     --  trying to overwrite '/usr/bin/gtk2hsTypeGen', which is also in package gtk2hs-buildtools 0:0.12.0-3+seereason1~lucid3
@@ -235,7 +235,7 @@ main _home release =
     -- Errors were encountered while processing:
     --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
-    , apt (rel release "sid" "quantal") "haskell-harp"
+    , apt (rel release "wheezy" "quantal") "haskell-harp"
     , debianize (hackage "hashable" `flag` CabalPin "1.1.2.5")
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline" `flag` P.DebVersion "0.7.0.3-1~hackage1")
@@ -257,7 +257,7 @@ main _home release =
     , debianize (hackage "haskell-lexer" `flag` P.DebVersion "1.0-3build2")
     , debianize (hackage "hinotify")
     , P.Package { P.name = "haskell-hjavascript"
-                , P.spec = Quilt (Apt "sid" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
+                , P.spec = Quilt (Apt "wheezy" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
                 , P.flags = [] }
     -- Not used, and not building.
     -- , debianize (hackage "hoauth")
@@ -287,8 +287,8 @@ main _home release =
     , darcs "haskell-json" (repo ++ "/haskell-json")
     , debianize (hackage "language-css" `flag` P.DebVersion "0.0.4.1-1~hackage1")
     , debianize (hackage "largeword")
-{-  , apt "sid" "haskell-leksah"
-    , apt "sid" "haskell-leksah-server" -- for leksah -}
+{-  , apt "wheezy" "haskell-leksah"
+    , apt "wheezy" "haskell-leksah-server" -- for leksah -}
     , P.Package { P.name = "haskell-logic-classes"
                 , P.spec = Darcs (repo ++ "/haskell-logic")
                 , P.flags = [] }
@@ -298,7 +298,7 @@ main _home release =
     , P.Package { P.name = "haskell-logic-tptp"
                 , P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff"))
                 , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
-    , apt "sid" "haskell-maybet"
+    , apt "wheezy" "haskell-maybet"
     , darcs "haskell-mime" (repo </> "haskell-mime")
     , debianize (hackage "mmap")
     , debianize (hackage "monad-control")
@@ -317,7 +317,7 @@ main _home release =
     -- other hand, without monads-tf we lose this dependency chain:
     -- monads-tf -> options -> fay.
     -- , debianize (hackage "monads-tf")
-    , apt (rel release "sid" "quantal") "haskell-monoid-transformer"
+    , apt (rel release "wheezy" "quantal") "haskell-monoid-transformer"
     , debianize (hackage "murmur-hash")
     , debianize (hackage "mwc-random")
     , P.Package { P.name = "haskell-nano-hmac"
@@ -337,9 +337,9 @@ main _home release =
     , debianize (hackage "pandoc-types")
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
-    , apt (rel release "sid" "quantal") "haskell-parsec2"
+    , apt (rel release "wheezy" "quantal") "haskell-parsec2"
     , debianize (hackage "PBKDF2")
-    , apt (rel release "sid" "quantal") "haskell-pcre-light"
+    , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
     , debianize (hackage "permutation" `flag` P.DebVersion "0.4.1-1~hackage1")
     , debianize (hackage "pipes")
     , debianize (hackage "polyparse")
@@ -352,7 +352,7 @@ main _home release =
     , debianize (hackage "pwstore-purehaskell"
                    `patch` $(embedFile "patches/pwstore-purehaskell.diff")
                    `flag` P.DebVersion "2.1-1~hackage1")
-    , apt (rel release "sid" "quantal") "haskell-quickcheck1"
+    , apt (rel release "wheezy" "quantal") "haskell-quickcheck1"
     , debianize (hackage "regex-tdfa" `pflag` P.DebVersion "1.1.8-1" `qflag` P.DebVersion "1.1.8-2build2")
     , darcs "haskell-revision" (repo </> "haskell-revision")
     , debianize (hackage "RJson" `patch` $(embedFile "patches/RJson.diff"))
@@ -366,7 +366,7 @@ main _home release =
     , debianize (hackage "sendfile")
     , darcs "haskell-set-extra" (repo </> "set-extra")
     , debianize (darcs "haskell-old-exception" (repo ++ "/old-exception"))
-    , apt (rel release "sid" "quantal") "haskell-sha"
+    , apt (rel release "wheezy" "quantal") "haskell-sha"
     , debianize (hackage "shake")
     , debianize (hackage "shakespeare")
     , debianize (hackage "shakespeare-css")
@@ -382,14 +382,14 @@ main _home release =
                     `patch` $(embedFile "patches/haskell-src-exts.diff")
                     `flag` P.BuildDep "happy")
     , debianize (hackage "stb-image")
-    , apt (rel release "sid" "quantal") "haskell-strict" -- for leksah
+    , apt (rel release "wheezy" "quantal") "haskell-strict" -- for leksah
     , P.Package { P.name = "haskell-strict-concurrency"
                 , P.spec = Debianize (Patch (Hackage "strict-concurrency") $(embedFile "patches/strict-concurrency.diff"))
                 , P.flags = rel release [P.DebVersion "0.2.4.1-3"] [P.DebVersion "0.2.4.1-2build3"] }
     , debianize (hackage "strict-io") -- for GenI
     , debianize (hackage "smallcheck")
     , debianize (hackage "syb-with-class")
-    , apt (rel release "sid" "quantal") "haskell-syb-with-class-instances-text"
+    , apt (rel release "wheezy" "quantal") "haskell-syb-with-class-instances-text"
     , debianize (hackage "tagged" `flag` P.CabalPin "0.4.5") -- Pinned to avoid a big rebuild
     , debianize (hackage "tagsoup")
     , debianize (hackage "tar")
@@ -434,7 +434,7 @@ main _home release =
     , debianize (hackage "unordered-containers")
     , debianize (hackage "utf8-prelude" `flag` P.DebVersion "0.1.6-1~hackage1")
     , P.Package { P.name = "haskell-utf8-string"
-                , P.spec = Apt (rel release "sid" "quantal") "haskell-utf8-string"
+                , P.spec = Apt (rel release "wheezy" "quantal") "haskell-utf8-string"
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize (hackage "unification-fd")
     , debianize (hackage "newtype")
@@ -457,7 +457,7 @@ main _home release =
                 , P.spec = Debianize (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff"))
                 , P.flags = [] }
     , debianize (hackage "boomerang")
-    , apt (rel release "sid" "quantal") "haskell-xml"
+    , apt (rel release "wheezy" "quantal") "haskell-xml"
     , debianize (hackage "cookie")
     , debianize (hackage "lifted-base")
     , debianize (hackage "system-filepath")
@@ -474,22 +474,22 @@ main _home release =
     , debianize (hackage "extensible-exceptions") -- required for ghc-7.6, not just quantal
     , case release of
       "quantal-seereason" -> P.NoPackage -- This build hangs when performing tests
-      _ -> apt "sid" "html-xml-utils"
+      _ -> apt "wheezy" "html-xml-utils"
     , P.Package { P.name = "jquery"
-                , P.spec = Proc (Apt "sid" "jquery")
+                , P.spec = Proc (Apt "wheezy" "jquery")
                 , P.flags = [] }
     , P.Package { P.name = "jquery-goodies"
-                , P.spec = Proc (Apt "sid" "jquery-goodies")
+                , P.spec = Proc (Apt "wheezy" "jquery-goodies")
                 , P.flags = [] }
 -- We want to stick with 1.8 for now.
 {-  , P.Package { P.name = "jqueryui"
-                , P.spec = Proc (Apt "sid" "jqueryui")
+                , P.spec = Proc (Apt "wheezy" "jqueryui")
                 , P.flags = [] } -}
     , P.Package { P.name = "jcrop"
                 , P.spec = DebDir (Uri (repo </> "jcrop/Jcrop.tar.gz") "028feeb9b6415af3b7fd7d9471c92469") (Darcs (repo ++ "/jcrop-debian"))
                 , P.flags = [] }
     , P.Package { P.name = "magic-haskell"
-                , P.spec = Quilt (Apt "sid" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
+                , P.spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
                 , P.flags = [] }
     , P.Package { P.name = "haskell-missingh"
                 , P.spec = Debianize (Hackage "MissingH")
@@ -497,7 +497,7 @@ main _home release =
     , P.Package { P.name = "seereason-keyring"
                 , P.spec = Darcs (repo </> "seereason-keyring")
                 , P.flags = [P.UDeb "seereason-keyring-udeb"] }
-    , apt "sid" "tinymce"
+    , apt "wheezy" "tinymce"
     , P.Package { P.name = "vc-darcs"
                 , P.spec = Darcs (repo </> "vc-darcs")
                 , P.flags = [] }
@@ -561,10 +561,10 @@ compiler release =
                 `squeezeRelax` "libgmp3-dev"
                 `squeezePatch` $(embedFile "patches/ghc.diff") <>
               case release of
-                "squeeze-seereason" -> apt "sid" "po4a" <>
-                                       apt "sid" "debhelper" `patch` $(embedFile "patches/debhelper.diff") <>
-                                       apt "sid" "dpkg" `patch` $(embedFile "patches/dpkg.diff") <>
-                                       apt "sid" "makedev"
+                "squeeze-seereason" -> apt "wheezy" "po4a" <>
+                                       apt "wheezy" "debhelper" `patch` $(embedFile "patches/debhelper.diff") <>
+                                       apt "wheezy" "dpkg" `patch` $(embedFile "patches/dpkg.diff") <>
+                                       apt "wheezy" "makedev"
                 _ -> P.NoPackage
 
       devscripts =
@@ -643,9 +643,9 @@ platform release =
     , debianize (hackage "HUnit")
     , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
     , debianize (hackage "parsec")
-    , apt (rel release "sid" "quantal") "haskell-html"
-    , apt (rel release "sid" "quantal") "haskell-regex-compat"
-    , apt (rel release "sid" "quantal") "haskell-regex-base"
+    , apt (rel release "wheezy" "quantal") "haskell-html"
+    , apt (rel release "wheezy" "quantal") "haskell-regex-compat"
+    , apt (rel release "wheezy" "quantal") "haskell-regex-base"
     , debianize (hackage "regex-posix")
     , debianize (hackage "xhtml" `qflag` P.DebVersion "3000.2.1-1build2")
     ]
@@ -787,7 +787,7 @@ happstack release =
     -- , debianize (darcs "reform-heist" (darcsHub ++ "/reform") `cd` "reform-heist")
     , debianize (darcs "reform-hsp" (darcsHub ++ "/reform") `cd` "reform-hsp")
     , debianize (hackage "blaze-markup")
-    , apt (rel release "sid" "quantal") "haskell-blaze-builder"
+    , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
     , debianize (hackage "blaze-builder-enumerator" `flag` P.DebVersion "0.2.0.5-1~hackage1")
     , debianize (hackage "blaze-from-html")
     , debianize (hackage "blaze-html")
@@ -908,13 +908,13 @@ glib _release = P.Packages (singleton "glib") $
     [ debianize (hackage "glib")
                     `flag` P.BuildDep "haskell-gtk2hs-buildtools-utils"
                     `flag` P.BuildDep "libglib2.0-dev"
-    , apt "sid" "haskell-criterion"
-    , apt "sid" "haskell-ltk"
-    , apt "sid" "haskell-chart"
-    , apt "sid" "haskell-gio"
-    , apt "sid" "haskell-gtk"
-    , apt "sid" "haskell-gtksourceview2"
-    , apt "sid" "haskell-pango" ]
+    , apt "wheezy" "haskell-criterion"
+    , apt "wheezy" "haskell-ltk"
+    , apt "wheezy" "haskell-chart"
+    , apt "wheezy" "haskell-gio"
+    , apt "wheezy" "haskell-gtk"
+    , apt "wheezy" "haskell-gtksourceview2"
+    , apt "wheezy" "haskell-pango" ]
 
 --  Using pkg-config version 0.25 found on system at: /usr/bin/ 2>
 --  <interactive>:2:1:
@@ -955,12 +955,12 @@ haddock _release =
     -- 4.3.* so we can't use "debianize "haddock" []".  I don't think
     -- we really need this, or the hackage version.  Version 2.10.0 is
     -- included with ghc 7.4.0.
-    [ apt "sid" "haskell-haddock" ]
+    [ apt "wheezy" "haskell-haddock" ]
 
 -- These have been failing for some time, and I don't think we've missed them.
 failing _release =
     [ debianize (hackage "funsat")
-    , apt "sid" "haskell-statistics"
+    , apt "wheezy" "haskell-statistics"
     , debianize (hackage "cryptocipher"
                    `patch`  $(embedFile "patches/cryptocipher.diff"))
     ]
@@ -1036,18 +1036,18 @@ algebra release =
 -- means we try to pull in bogus debs for libghc-binary-* and
 -- dependency problems ensue.
 agda _release =
-    [ apt "sid" "agda"
-    , apt "sid" "agda-bin"
-    , apt "sid" "agda-stdlib" ]
+    [ apt "wheezy" "agda"
+    , apt "wheezy" "agda-bin"
+    , apt "wheezy" "agda-stdlib" ]
 
 other _release =
-    [ apt "sid" "darcs"
+    [ apt "wheezy" "darcs"
     , debianize (hackage "aeson-native" `patch` $(embedFile "patches/aeson-native.diff"))
-    , apt "sid" "haskell-binary-shared" -- for leksah
+    , apt "wheezy" "haskell-binary-shared" -- for leksah
     , debianize (hackage "cairo" `flag` P.BuildDep "haskell-gtk2hs-buildtools-utils") -- for leksah
     , debianize (hackage "cabal-dev") -- build-env for cabal
     , debianize (hackage "gnuplot" `flag` P.DebVersion "0.4.2-1~hackage1")
-    , apt "sid" "bash-completion"
+    , apt "wheezy" "bash-completion"
     ]
 
 {-
