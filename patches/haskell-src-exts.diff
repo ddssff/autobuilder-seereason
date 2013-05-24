@@ -1,0 +1,14 @@
+diff -rN -u old-haskell-src-exts/src/Language/Haskell/Exts/Pretty.hs new-haskell-src-exts/src/Language/Haskell/Exts/Pretty.hs
+--- old-haskell-src-exts/src/Language/Haskell/Exts/Pretty.hs	2013-05-24 13:03:36.037896671 -0700
++++ new-haskell-src-exts/src/Language/Haskell/Exts/Pretty.hs	2013-05-24 13:03:36.097896668 -0700
+@@ -284,8 +284,8 @@
+         text "where"]
+ 
+ ppWarnTxt :: WarningText -> Doc
+-ppWarnTxt (DeprText s) = mySep [text "{-# DEPRECATED", text s, text "#-}"]
+-ppWarnTxt (WarnText s) = mySep [text "{-# WARNING",    text s, text "#-}"]
++ppWarnTxt (DeprText s) = mySep [text "{-# DEPRECATED", show (text s), text "#-}"]
++ppWarnTxt (WarnText s) = mySep [text "{-# WARNING",    show (text s), text "#-}"]
+ 
+ instance Pretty ModuleName where
+         pretty (ModuleName modName) = text modName
