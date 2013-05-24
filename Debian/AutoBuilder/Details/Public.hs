@@ -423,7 +423,7 @@ main _home release =
                 , P.flags = [] }
     , debianize (hackage "charset")
     , P.Package { P.name = "haskell-elm"
-                , P.spec = Debianize (Patch (Hackage "Elm") $(embedFile "patches/elm.diff"))
+                , P.spec = Debianize (Hackage "Elm")
                 , P.flags = [] }
     , P.Package { P.name = "elm-server"
                 , P.spec = Debianize (Hackage "elm-server")
