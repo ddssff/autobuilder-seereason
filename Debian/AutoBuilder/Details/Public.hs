@@ -154,6 +154,8 @@ main _home release =
     , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
     , apt (rel release "sid" "quantal") "haskell-cereal"
     , debianize (hackage "citeproc-hs")
+    -- , debianize (hackage "process-listlike")
+    , debianize (darcs "haskell-process-listlike" (repo </> "process-listlike"))
     , debianize (hackage "hexpat")
     , debianize (hackage "List")
     , debianize (hackage "uuid")
