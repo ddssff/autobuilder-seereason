@@ -167,6 +167,8 @@ main _home release =
     -- , apt "sid" "haskell-configfile"
     , debianize (hackage "ConfigFile")
     , darcs "haskell-consumer" (repo </> "haskell-consumer")
+    , darcs "haskell-consumer" (repo </> "haskell-consumer")
+    , darcs "haskell-import-management" (repo </> "import-management")
     , debianize (hackage "cipher-aes")
     , debianize (hackage "cprng-aes")
     , debianize (hackage "crypto-random-api")
