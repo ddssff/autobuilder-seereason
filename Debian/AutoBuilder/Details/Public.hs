@@ -377,7 +377,10 @@ main _home release =
     , debianize (hackage "SMTPClient")
     , debianize (hackage "socks")
     , debianize (hackage "split")
-    , debianize (hackage "haskell-src-exts" `flag` P.BuildDep "happy")
+    -- , debianize (hackage "haskell-src-exts" `flag` P.BuildDep "happy")
+    , debianize (darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
+                    `patch` $(embedFile "patches/haskell-src-exts.diff")
+                    `flag` P.BuildDep "happy")
     , debianize (hackage "stb-image")
     , apt (rel release "sid" "quantal") "haskell-strict" -- for leksah
     , P.Package { P.name = "haskell-strict-concurrency"
