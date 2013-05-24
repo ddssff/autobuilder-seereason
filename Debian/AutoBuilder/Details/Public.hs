@@ -426,7 +426,7 @@ main _home release =
                 , P.spec = Debianize (Patch (Hackage "Elm") $(embedFile "patches/elm.diff"))
                 , P.flags = [] }
     , P.Package { P.name = "elm-server"
-                , P.spec = Debianize (Patch (Hackage "elm-server") $(embedFile "patches/elm-server.diff"))
+                , P.spec = Debianize (Hackage "elm-server")
                 , P.flags = [] }
     , debianize (hackage "hjsmin")
     , debianize (hackage "unix-compat")
