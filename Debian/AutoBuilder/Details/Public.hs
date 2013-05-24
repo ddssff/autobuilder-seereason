@@ -168,7 +168,7 @@ main _home release =
     , debianize (hackage "ConfigFile")
     , darcs "haskell-consumer" (repo </> "haskell-consumer")
     , darcs "haskell-consumer" (repo </> "haskell-consumer")
-    , darcs "haskell-import-management" (repo </> "import-management")
+    , debianize (darcs "haskell-import-management" (repo </> "import-management"))
     , debianize (hackage "cipher-aes")
     , debianize (hackage "cprng-aes")
     , debianize (hackage "crypto-random-api")
@@ -634,9 +634,7 @@ platform release =
     , debianize (hackage "network" `flag` P.CabalPin "2.4.1.0")
     , debianize (hackage "publicsuffixlist")
     , debianize (hackage "HTTP" `pflag` P.DebVersion "1:4000.2.3-1~hackage1" `qflag` P.DebVersion "1:4000.2.3-1build2")
-    , P.Package { P.name = "haskell-cgi"
-                , P.spec = Debianize (Hackage "cgi")
-                , P.flags = [P.DebVersion "3001.1.8.3-1~hackage1"] }
+    , debianize (hackage "cgi")
     -- This is bundled with the compiler
     -- , debianize (hackage "process")
     , debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2")
