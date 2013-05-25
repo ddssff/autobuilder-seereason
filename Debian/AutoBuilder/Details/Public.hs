@@ -82,7 +82,9 @@ autobuilder home =
     , darcs "haskell-debian-mirror" (repo </> "mirror")
     , darcs "haskell-debian-repo" (repo </> "debian-tools-revert") `cd` "debian-repo"
     , darcs "haskell-archive" (repo </> "archive")
-    , debianize (darcs "haskell-process-extras" (repo </> "process-extras"))
+    -- , debianize (darcs "haskell-process-extras" (repo </> "process-extras"))
+    -- , debianize (hackage "process-listlike")
+    , debianize (darcs "haskell-process-listlike" (repo </> "process-listlike"))
     , darcs "haskell-process-progress" (repo </> "debian-tools-stable") `cd` "process-progress"
     ]
 
@@ -154,8 +156,6 @@ main _home release =
     , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
     , apt (rel release "wheezy" "quantal") "haskell-cereal"
     , debianize (hackage "citeproc-hs")
-    -- , debianize (hackage "process-listlike")
-    , debianize (darcs "haskell-process-listlike" (repo </> "process-listlike"))
     , debianize (hackage "hexpat")
     , debianize (hackage "List")
     , debianize (hackage "uuid")

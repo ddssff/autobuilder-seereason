@@ -9,6 +9,32 @@
  
  Executable happstack-dot-com-server
    Main-is: Main.hs
+@@ -47,6 +47,7 @@
+    GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
+    Build-depends: base > 4 && < 5,
+                   archive >= 1.2.9,
+-                  Extra
++                  Extra,
++                  network
+  else
+   Buildable: False
+--- old/Backups.hs	2012-11-02 16:25:16.000000000 -0700
++++ new/Backups.hs	2013-05-25 08:36:02.194092928 -0700
+@@ -1,5 +1,13 @@
+ module Main where
+ 
++import Network.URI (URIAuth(..))
+ import System.Archive.Site (BackupTarget(..), backup)
+ 
+-main = backup (BackupTarget {app = "happstack-dot-com-production", user = "upload", host = "happstack.com", keep = 50})
++main = backup (BackupTarget
++               { app = "happstack-dot-com-production"
++               , auth = URIAuth { uriUserInfo = "upload@"
++                                , uriRegName = "happstack.com"
++                                , uriPort = "" }
++               , keep = 50
++               , localTop = "/srv/backups"
++               , remoteTop = "/srv" })
 --- old/debian/Debianize.hs	2013-03-04 16:53:55.000000000 -0800
 +++ old/debian/Debianize.hs	2013-03-12 11:00:34.613942359 -0700
 @@ -9,13 +9,13 @@

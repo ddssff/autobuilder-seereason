@@ -18,6 +18,15 @@
   else
     Buildable: False
  
+--- old/Backups.hs	2013-05-03 07:44:29.000000000 -0700
++++ new/Backups.hs	2013-05-25 08:37:43.498094728 -0700
+@@ -9,5 +9,5 @@
+                                 , uriRegName = "clckwrks.com"
+                                 , uriPort = ""}
+                , keep = 50
+-               , localTop = "/home/autobuilder/backups"
++               , localTop = "/srv/backups"
+                , remoteTop = "/srv" })
 --- old/debian/Debianize.hs	2013-02-21 17:48:04.000000000 -0800
 +++ new/debian/Debianize.hs	2013-02-23 10:39:32.117390461 -0800
 @@ -9,18 +9,18 @@
