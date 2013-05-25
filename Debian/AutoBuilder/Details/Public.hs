@@ -174,8 +174,13 @@ main _home release =
     , debianize (hackage "crypto-random-api")
     , debianize (hackage "Crypto")
     , debianize (hackage "crypto-api" `qflag` P.DebVersion "0.10.2-1build3")
-    , debianize (hackage "crypto-pubkey-types")
-    , debianize (hackage "asn1-types")
+    -- The certificate package may need to be updated for version 0.4
+    , debianize (hackage "crypto-pubkey-types"
+                             -- `flag` CabalPin "0.3.2"
+                             -- `patch` $(embedFile "patches/crypto-pubkey-types.diff")
+                )
+    -- crypto-pubkey-types-0.3.2 depends on older asn1-types
+    , debianize (hackage "asn1-types" {- `flag` CabalPin "0.1.3" -})
     , debianize (hackage "cryptohash")
     , debianize (hackage "cpu" `qflag` P.DebVersion "0.1.1-1build1")
     , debianize (hackage "css" `flag` P.DebVersion "0.1-1~hackage1")
@@ -298,7 +303,7 @@ main _home release =
     , P.Package { P.name = "haskell-logic-tptp"
                 , P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff"))
                 , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
-    , apt "wheezy" "haskell-maybet"
+    , apt "sid" "haskell-maybet"
     , darcs "haskell-mime" (repo </> "haskell-mime")
     , debianize (hackage "mmap")
     , debianize (hackage "monad-control")
@@ -377,10 +382,11 @@ main _home release =
     , debianize (hackage "SMTPClient")
     , debianize (hackage "socks")
     , debianize (hackage "split")
-    -- , debianize (hackage "haskell-src-exts" `flag` P.BuildDep "happy")
-    , debianize (darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
-                    `patch` $(embedFile "patches/haskell-src-exts.diff")
-                    `flag` P.BuildDep "happy")
+    -- Version 1.14, which is in darcs, is too new for the current haskell-src-meta and haskell-derive
+    , debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
+                 hackage "haskell-src-exts"
+                   `patch` $(embedFile "patches/haskell-src-exts.diff")
+                   `flag` P.BuildDep "happy")
     , debianize (hackage "stb-image")
     , apt (rel release "wheezy" "quantal") "haskell-strict" -- for leksah
     , P.Package { P.name = "haskell-strict-concurrency"
@@ -474,12 +480,12 @@ main _home release =
     , debianize (hackage "extensible-exceptions") -- required for ghc-7.6, not just quantal
     , case release of
       "quantal-seereason" -> P.NoPackage -- This build hangs when performing tests
-      _ -> apt "wheezy" "html-xml-utils"
+      _ -> apt "sid" "html-xml-utils"
     , P.Package { P.name = "jquery"
-                , P.spec = Proc (Apt "wheezy" "jquery")
+                , P.spec = Proc (Apt "sid" "jquery")
                 , P.flags = [] }
     , P.Package { P.name = "jquery-goodies"
-                , P.spec = Proc (Apt "wheezy" "jquery-goodies")
+                , P.spec = Proc (Apt "sid" "jquery-goodies")
                 , P.flags = [] }
 -- We want to stick with 1.8 for now.
 {-  , P.Package { P.name = "jqueryui"
@@ -828,7 +834,7 @@ authenticate _home release =
     , debianize (hackage "void")
     -- Version 1.3.1 may be too new for tls 0.9.11
     , debianize (hackage "certificate"
-                   -- `patch` $(embedFile "patches/certificate.diff")
+                   `patch` $(embedFile "patches/certificate.diff")
                 )
     , debianize (hackage "pem")
     , debianize (hackage "zlib-bindings")

@@ -1,48 +1,11 @@
---- old/certificate.cabal	2013-04-09 12:01:51.000000000 -0700
-+++ new/certificate.cabal	2013-04-09 12:51:38.507220416 -0700
+--- old/certificate.cabal	2013-05-24 23:13:24.000000000 -0700
++++ new/certificate.cabal	2013-05-24 23:16:55.677299558 -0700
 @@ -31,7 +31,7 @@
                     , mtl
                     , pem >= 0.1 && < 0.2
                     , asn1-data >= 0.7.1 && < 0.8.0
--                   , crypto-pubkey-types >= 0.2 && < 0.3
+-                   , crypto-pubkey-types >= 0.3 && < 0.4
 +                   , crypto-pubkey-types >= 0.3
                     , cryptohash
                     , containers
                     , directory
---- old/Data/Certificate/KeyDSA.hs	2013-04-09 12:54:13.000000000 -0700
-+++ new/Data/Certificate/KeyDSA.hs	2013-04-09 14:20:14.679346022 -0700
-@@ -27,7 +27,7 @@
-     where
-         privkey = DSA.PrivateKey { DSA.private_params = params, DSA.private_x = priv }
-         pubkey  = DSA.PublicKey { DSA.public_params = params, DSA.public_y = pub }
--        params  = (p,g,q)
-+        params  = DSA.Params p g q
- 
- parsePrivate (Start Sequence : IntVal n : _)
-         | n == 0    = Left "DSA key format: not recognized"
-@@ -49,4 +49,4 @@
-                 , IntVal $ DSA.private_x privkey
-                 , End Sequence
-                 ]
--              (p,g,q) = DSA.private_params privkey
-+              DSA.Params p g q = DSA.private_params privkey
---- old/Data/Certificate/X509/Cert.hs	2013-04-09 14:23:46.000000000 -0700
-+++ new/Data/Certificate/X509/Cert.hs	2013-04-09 14:28:09.563357242 -0700
-@@ -256,7 +256,7 @@
-           toKey PubKeyALG_DSA [Start Sequence,IntVal p,IntVal q,IntVal g,End Sequence] bits = do
-                 case decodeASN1 BER bits of
-                      Right [IntVal dsapub] -> return $ PubKeyDSA $ DSA.PublicKey
--                                                                     { DSA.public_params = (p, q, g)
-+                                                                     { DSA.public_params = DSA.Params p q g
-                                                                      , DSA.public_y = dsapub }
-                      _                     -> return $ PubKeyUnknown (pubkeyalgOID PubKeyALG_DSA) $ L.unpack bits
-           toKey (PubKeyALG_Unknown oid) _ bits = return $ PubKeyUnknown oid $ L.unpack bits
-@@ -341,7 +341,7 @@
-         where
-                 pkalg   = OID $ pubkeyalgOID $ pubkeyToAlg k
-                 dsaseq  = asn1Container Sequence [IntVal p,IntVal q,IntVal g]
--                (p,q,g) = DSA.public_params pubkey
-+                DSA.Params p q g = DSA.public_params pubkey
-                 bits    = encodeASN1 DER [IntVal $ DSA.public_y pubkey]
- 
- encodePK k@(PubKeyUnknown _ l) =
