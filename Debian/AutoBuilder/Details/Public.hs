@@ -85,7 +85,7 @@ autobuilder home =
     -- , debianize (darcs "haskell-process-extras" (repo </> "process-extras"))
     -- , debianize (hackage "process-listlike")
     , debianize (darcs "haskell-process-listlike" (repo </> "process-listlike"))
-    , darcs "haskell-process-progress" (repo </> "debian-tools-stable") `cd` "process-progress"
+    , darcs "haskell-process-progress" (repo </> "debian-tools") `cd` "process-progress"
     ]
 
 digestiveFunctors =
