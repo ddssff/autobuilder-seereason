@@ -548,11 +548,11 @@ main _home release =
 
 relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
 
-compiler "precise-seereason" = P.NoPackage -- Omitted to avoid a big rebuild
-compiler "squeeze-seereason" = P.NoPackage -- Omitted to avoid a big rebuild
 compiler release =
-  P.Packages (singleton "ghc") $
-  [ghc76, devscripts]
+    case release of
+      "precise-seereason" -> P.Packages (singleton "ghc") [devscripts]
+      "squeeze-seereason" -> P.NoPackage -- Omitted to avoid a big rebuild
+      _ -> P.Packages (singleton "ghc") [ghc76, devscripts]
     where
       ghc76 = apt "experimental" "ghc"
                 `rename` "ghc"
@@ -575,8 +575,11 @@ compiler release =
 
       devscripts =
         P.Package { P.name = "haskell-devscripts"
-                  , P.spec = Patch (Apt "experimental" "haskell-devscripts") $(embedFile "patches/haskell-devscripts-0.8.13.diff")
+                  , P.spec = Apt "sid" "haskell-devscripts"
                   , P.flags = [P.RelaxDep "python-minimal"] }
+{-      P.Package { P.name = "haskell-devscripts"
+                  , P.spec = Patch (Apt "experimental" "haskell-devscripts") $(embedFile "patches/haskell-devscripts-0.8.13.diff")
+                  , P.flags = [P.RelaxDep "python-minimal"] } -}
       -- haskell-devscripts-0.8.13 is for ghc-7.6 only
       squeezeRelax = case release of "squeeze-seereason" -> relax; "squeeze-seereason-private" -> relax; _ -> \ p _ -> p
       squeezePatch = case release of "squeeze-seereason" -> patch; "squeeze-seereason-private" -> patch; _ -> \ p _ -> p
