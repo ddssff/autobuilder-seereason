@@ -109,7 +109,8 @@ main _home release =
     , debianize (hackage "hashtables")
     , apt "squeeze" "bugzilla"
     , debianize (hackage "ListLike")
-    , debianize (hackage "listlike-instances")
+    -- Merged into ListLike-4.0
+    -- , debianize (hackage "listlike-instances")
     , apt (rel release "wheezy" "quantal") "cpphs"
     , apt "sid" "debootstrap" `flag` P.UDeb "debootstrap-udeb"
     -- Build fails due to some debianization issue
