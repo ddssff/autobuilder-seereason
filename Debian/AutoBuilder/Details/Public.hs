@@ -433,10 +433,7 @@ main _home release =
     , P.Package { P.name = "haskell-elm"
                 , P.spec = Debianize (Hackage "Elm")
                 , P.flags = [] }
-    , P.Package { P.name = "elm-server"
-                , P.spec = Debianize (Hackage "elm-server"
-                                       `patch` $(embedFile "patches/elm-server.diff"))
-                , P.flags = [] }
+    , debianize (hackage "elm-server" `patch` $(embedFile "patches/elm-server.diff"))
     , debianize (hackage "hjsmin")
     , debianize (hackage "unix-compat")
     , debianize (hackage "Unixutils-shadow")
