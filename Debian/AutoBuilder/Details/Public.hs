@@ -168,7 +168,7 @@ main _home release =
     , debianize (hackage "ConfigFile")
     , darcs "haskell-consumer" (repo </> "haskell-consumer")
     , darcs "haskell-consumer" (repo </> "haskell-consumer")
-    , debianize (darcs "haskell-import-management" (repo </> "import-management")
+    , debianize (darcs "haskell-module-management" (repo </> "module-management")
                    `flag` P.BuildDep "rsync")
     , debianize (hackage "cipher-aes")
     , debianize (hackage "cprng-aes")
