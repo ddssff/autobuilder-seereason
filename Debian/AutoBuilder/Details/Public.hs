@@ -522,7 +522,7 @@ main _home release =
                 , P.spec = Debianize (Darcs "http://code.haskell.org/hackage-server")
                 , P.flags = [] } -}
     , debianize (hackage "stringsearch")
-    , debianize (hackage "rss")
+    , debianize (hackage "rss" `patch` $(embedFile "patches/rss.diff"))
     , debianize (hackage "async")
     , P.Package { P.name = "csv"
                 , P.spec = Debianize (Hackage "csv")
