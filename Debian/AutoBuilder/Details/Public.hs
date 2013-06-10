@@ -344,7 +344,7 @@ main _home release =
     , debianize (hackage "pandoc-types")
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
-    , apt (rel release "wheezy" "quantal") "haskell-parsec2"
+    , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
     , debianize (hackage "PBKDF2")
     , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
     , debianize (hackage "permutation" `flag` P.DebVersion "0.4.1-1~hackage1")
@@ -649,7 +649,9 @@ platform release =
     , debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2")
     , debianize (hackage "HUnit")
     , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
-    , debianize (hackage "parsec")
+    , debianize (hackage "parsec" `flag` P.CabalDebian ["--conflicts", "libghc-parsec3-dev:libghc-parsec2-dev,libghc-parsec3-prof:libghc-parsec2-prof,libghc-parsec3-doc:libghc-parsec2-doc",
+                                                        "--provides", "libghc-parsec3-dev:libghc-parsec2-dev,libghc-parsec3-prof:libghc-parsec2-prof,libghc-parsec3-doc:libghc-parsec2-doc",
+                                                        "--replaces", "libghc-parsec3-dev:libghc-parsec2-dev,libghc-parsec3-prof:libghc-parsec2-prof,libghc-parsec3-doc:libghc-parsec2-doc"])
     , apt (rel release "wheezy" "quantal") "haskell-html"
     , apt (rel release "wheezy" "quantal") "haskell-regex-compat"
     , apt (rel release "wheezy" "quantal") "haskell-regex-base"
