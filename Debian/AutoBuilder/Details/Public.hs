@@ -550,11 +550,11 @@ relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
 
 compiler release =
     case release of
-      "precise-seereason" -> P.Packages (singleton "ghc") [devscripts]
+      -- "precise-seereason" -> P.Packages (singleton "ghc") [devscripts]
       "squeeze-seereason" -> P.NoPackage -- Omitted to avoid a big rebuild
       _ -> P.Packages (singleton "ghc") [ghc76, devscripts]
     where
-      ghc76 = apt "experimental" "ghc"
+      ghc76 = apt "sid" "ghc" -- As of 8 Jun 2013 this contains 7.6.3-3
                 `rename` "ghc"
                 `relax` "ghc"
                 `relax` "happy"
