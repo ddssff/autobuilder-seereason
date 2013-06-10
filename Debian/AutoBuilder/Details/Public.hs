@@ -724,7 +724,7 @@ happstack release =
     , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
     , debianize (hackage "happstack")
     , debianize (hackage "happstack-fay"
-                   -- `patch` $(embedFile "patches/happstack-fay.diff")
+                   `patch` $(embedFile "patches/happstack-fay.diff")
                 )
     , debianize (hackage "cryptohash-cryptoapi")
     , debianize (hackage "happstack-fay-ajax")
@@ -734,7 +734,7 @@ happstack release =
     , debianize (hackage "fay-base")
     , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
     , debianize (darcs "mastermind" "http://hub.darcs.net/stepcut/mastermind"
-                   -- `patch` $(embedFile "patches/mastermind.diff")
+                   `patch` $(embedFile "patches/mastermind.diff")
                    `flag` P.CabalDebian ["--build-dep=hsx2hs",
                                          "--build-dep=haskell-fay-utils",
                                          "--build-dep=haskell-fay-base-utils",

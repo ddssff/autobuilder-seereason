@@ -1,15 +1,11 @@
---- old/mastermind.cabal	2013-01-17 12:16:00.000000000 -0800
-+++ new/mastermind.cabal	2013-01-31 08:52:46.129862092 -0800
-@@ -22,10 +22,10 @@
-                      acid-state       == 0.8.*,
-                      aeson            == 0.6.*,
-                      containers       == 0.4.*,
--                     fay              == 0.9.*,
-+                     fay              >= 0.9,
-                      fay-jquery       == 0.1.*,
-                      happstack-fay    == 0.1.*,
-                      happstack-server >= 7.0 && < 7.2,
-                      mtl              >= 2.0 && < 2.2,
-                      random           == 1.0.*,
--                     safecopy         == 0.7.*
-+                     safecopy         >= 0.7
+--- old/mastermind.cabal	2013-03-05 11:35:34.000000000 -0800
++++ new/mastermind.cabal	2013-06-09 09:05:48.687651040 -0700
+@@ -31,7 +31,7 @@
+                      acid-state         == 0.8.*,
+                      aeson              == 0.6.*,
+                      containers         >= 0.4 && < 0.6,
+-                     fay                == 0.14.*,
++                     fay                >= 0.14,
+                      happstack-fay      == 0.2.*,
+                      happstack-fay-ajax == 0.2.*,
+                      happstack-server   >= 7.0 && < 7.2,
