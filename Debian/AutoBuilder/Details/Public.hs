@@ -37,7 +37,7 @@ targets _home release =
 
     , algebra release
     -- , diagrams
-    -- , fixme
+    , fixme
     -- , higgsset
     -- , jsonb
     -- , glib
@@ -61,16 +61,8 @@ ghc74flag p _ = p
 fixme =
     P.Packages (singleton "fixme") $
     [ debianize (hackage "test-framework-smallcheck")
-    , P.Package { P.name = "haskell-geni"
-                , P.spec = DebDir (Darcs "http://code.haskell.org/GenI") (Darcs (repo ++ "/haskell-geni-debian"))
-                , P.flags = [] }
+    , debianize (darcs "haskell-geni" "http://hub.darcs.net/kowey/GenI" `patch` $(embedFile "patches/GenI.diff"))
     ]
-
-unixutils _home =
-    P.Packages (singleton "Unixutils")
-    [ darcs "haskell-unixutils" (repo ++ "/haskell-unixutils")
-    , darcs "haskell-extra" (repo </> "haskell-extra") `flag` P.RelaxDep "cabal-debian"
-    , darcs "haskell-help" (repo </> "haskell-help") ]
 
 autobuilder home =
     -- let repo = localRepo home in
@@ -88,16 +80,11 @@ autobuilder home =
     , darcs "haskell-process-progress" (repo </> "debian-tools") `cd` "process-progress"
     ]
 
-digestiveFunctors =
-    P.Packages (singleton "digestive-functors")
-    [ debianize (hackage "digestive-functors" `flag` P.CabalPin "0.2.1.0")  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
-    -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
-    , debianize (hackage "digestive-functors-happstack"
-                   `patch` $(embedFile "patches/digestive-functors-happstack.diff")
-                   `flag` P.CabalPin "0.1.1.5"
-                   `flag` P.DebVersion "0.1.1.5-1~hackage1")
-    , debianize (darcs "haskell-digestive-functors-hsp" (repo ++ "/digestive-functors-hsp")
-                   `flag` P.DebVersion "0.5.0-1~hackage1") ]
+unixutils _home =
+    P.Packages (singleton "Unixutils")
+    [ darcs "haskell-unixutils" (repo ++ "/haskell-unixutils")
+    , darcs "haskell-extra" (repo </> "haskell-extra") `flag` P.RelaxDep "cabal-debian"
+    , darcs "haskell-help" (repo </> "haskell-help") ]
 
 main _home release =
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
@@ -178,10 +165,7 @@ main _home release =
     , debianize (hackage "Crypto")
     , debianize (hackage "crypto-api" `qflag` P.DebVersion "0.10.2-1build3")
     -- The certificate package may need to be updated for version 0.4
-    , debianize (hackage "crypto-pubkey-types"
-                             -- `flag` CabalPin "0.3.2"
-                             -- `patch` $(embedFile "patches/crypto-pubkey-types.diff")
-                )
+    , debianize (hackage "crypto-pubkey-types")
     -- crypto-pubkey-types-0.3.2 depends on older asn1-types
     , debianize (hackage "asn1-types" {- `flag` CabalPin "0.1.3" -})
     , debianize (hackage "cryptohash")
@@ -206,7 +190,7 @@ main _home release =
     -- Natty only(?)
     , debianize (hackage "double-conversion")
     , debianize (hackage "groom")
-    , apt "wheezy" "haskell-dummy"
+    -- , apt "wheezy" "haskell-dummy"
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
     , P.Package { P.name = "haskell-edison-api"
@@ -716,7 +700,6 @@ clckwrks _home release =
                      , P.flags = [P.BuildDep "haskell-hsx-utils"] } ]
     else []
 
-
 happstack release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String in
     P.Packages (singleton "happstack")
@@ -815,19 +798,6 @@ happstack release =
     , debianize (hackage "acid-state")
     ]
 
--- | We need new releases of all the conduit packages before we can move
--- from conduit 0.4.2 to 0.5.
-conduit =
-  P.Packages (singleton "conduit")
-    [ debianize (hackage "conduit")
-    , debianize (hackage "attoparsec-conduit")
-    , debianize (hackage "blaze-builder-conduit")
-    , debianize (hackage "http-conduit")
-    , debianize (hackage "zlib-conduit")
-    , debianize (hackage "xml-conduit")
-    , debianize (hackage "mime-types")
-    ]
-
 -- | Packages pinned pending update of happstack-authenticate (in one possible build order.)
 authenticate _home release =
   P.Packages (singleton "authenticate") $
@@ -856,28 +826,35 @@ authenticate _home release =
     , debianize (hackage "fb")
     ]
 
+digestiveFunctors =
+    P.Packages (singleton "digestive-functors")
+    [ debianize (hackage "digestive-functors" `flag` P.CabalPin "0.2.1.0")  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
+    -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
+    , debianize (hackage "digestive-functors-happstack"
+                   `patch` $(embedFile "patches/digestive-functors-happstack.diff")
+                   `flag` P.CabalPin "0.1.1.5"
+                   `flag` P.DebVersion "0.1.1.5-1~hackage1")
+    , debianize (darcs "haskell-digestive-functors-hsp" (repo ++ "/digestive-functors-hsp")
+                   `flag` P.DebVersion "0.5.0-1~hackage1") ]
+
+-- | We need new releases of all the conduit packages before we can move
+-- from conduit 0.4.2 to 0.5.
+conduit =
+  P.Packages (singleton "conduit")
+    [ debianize (hackage "conduit")
+    , debianize (hackage "attoparsec-conduit")
+    , debianize (hackage "blaze-builder-conduit")
+    , debianize (hackage "http-conduit")
+    , debianize (hackage "zlib-conduit")
+    , debianize (hackage "xml-conduit")
+    , debianize (hackage "mime-types")
+    ]
+
 -- ircbot needs a dependency on containers
 happstackdotcom _home =
     P.Packages (singleton "happstackdotcom") $
     [ debianize (hackage "ircbot")
     , darcs "haskell-happstackdotcom-doc" (repo </> "happstackDotCom-doc") ]
-
--- Broken targets:
---
--- Text/JSONb/Decode.hs:48:3:
---     Not in scope: data constructor `Done'
---     Perhaps you meant `Attoparsec.Done' (imported from Data.Attoparsec.Char8)
---
--- Text/JSONb/Decode.hs:49:3:
---     Not in scope: data constructor `Fail'
---     Perhaps you meant `Attoparsec.Fail' (imported from Data.Attoparsec.Char8)
---
--- Text/JSONb/Decode.hs:50:3:
---     Not in scope: data constructor `Partial'
---     Perhaps you meant `Attoparsec.Partial' (imported from Data.Attoparsec.Char8)
-jsonb = P.Packages (singleton "jsonb") $
-    [ debianize (hackage "JSONb" `flag` P.DebVersion "1.0.7-1~hackage1")
-    , debianize (hackage "data-object-json") ]
 
 -- May work with these added dependencies (statevar thru openglraw)
 opengl release = P.Packages (singleton "opengl") $
@@ -911,21 +888,6 @@ opengl release = P.Packages (singleton "opengl") $
                    `flag` P.DevelDep "libgl1-mesa-dev")
     ]
 
--- Problem compiling C code in glib:
---  System/Glib/hsgclosure.c:110:8:
---       error: void value not ignored as it ought to be
-glib _release = P.Packages (singleton "glib") $
-    [ debianize (hackage "glib")
-                    `flag` P.BuildDep "haskell-gtk2hs-buildtools-utils"
-                    `flag` P.BuildDep "libglib2.0-dev"
-    , apt "wheezy" "haskell-criterion"
-    , apt "wheezy" "haskell-ltk"
-    , apt "wheezy" "haskell-chart"
-    , apt "wheezy" "haskell-gio"
-    , apt "wheezy" "haskell-gtk"
-    , apt "wheezy" "haskell-gtksourceview2"
-    , apt "wheezy" "haskell-pango" ]
-
 --  Using pkg-config version 0.25 found on system at: /usr/bin/ 2>
 --  <interactive>:2:1:
 --      Failed to load interface for `Directory'
@@ -945,58 +907,6 @@ plugins = P.Packages (singleton "plugins") $
     , debianize (hackage "plugins-auto" `patch` $(embedFile "patches/plugins-auto.diff"))
     , debianize (hackage "happstack-plugins" `patch` $(embedFile "patches/happstack-plugins.diff"))
     , debianize (darcs "haskell-web-plugins" "http://hub.darcs.net/stepcut/web-plugins" `cd` "web-plugins")
-    ]
-
--- Control/Monad/Unpack.hs:33:3:
---      Illegal repeated type variable `a_a4L6'
-higgsset = P.Packages (singleton "higgsset") $
-    [ debianize (hackage "unpack-funcs")
-    , debianize (hackage "HiggsSet")
-    , debianize (hackage "TrieMap" `flag` P.DebVersion "4.0.1-1~hackage1") ]
-
-frisby = P.Packages (singleton "frisby")
-    [ darcs "haskell-frisby" (repo </> "frisby")
-        `debdir` (Darcs (repo </> "frisby-debian"))
-        `cd` "frisby"
-    , darcs "haskell-decimal" (repo </> "decimal") ]
-
-haddock _release =
-    -- For leksah.  Version 2.9.2 specifies ghc < 7.2 and base ==
-    -- 4.3.* so we can't use "debianize "haddock" []".  I don't think
-    -- we really need this, or the hackage version.  Version 2.10.0 is
-    -- included with ghc 7.4.0.
-    [ apt "wheezy" "haskell-haddock" ]
-
--- These have been failing for some time, and I don't think we've missed them.
-failing _release =
-    [ debianize (hackage "funsat")
-    , apt "wheezy" "haskell-statistics"
-    , debianize (hackage "cryptocipher"
-                   `patch`  $(embedFile "patches/cryptocipher.diff"))
-    ]
-
-diagrams = P.Packages (singleton "diagrams")
-    [ debianize (hackage "diagrams")
-    , debianize (hackage "diagrams-lib")
-    , debianize (hackage "diagrams-builder")
-    , debianize (hackage "diagrams-core")
-    , debianize (hackage "diagrams-contrib")
-    , debianize (hackage "diagrams-gtk")
-    , debianize (hackage "diagrams-cairo")
-    , debianize (hackage "diagrams-svg")
-    , debianize (hackage "dual-tree")
-    , debianize (hackage "monoid-extras")
-    , debianize (hackage "newtype")
-    , debianize (hackage "active")
-    , debianize (hackage "Boolean")
-    , debianize (hackage "MemoTrie")
-    , debianize (hackage "blaze-svg")
-    , debianize (hackage "force-layout")
-    , debianize (hackage "cairo")
-    , debianize (hackage "hint")
-    , debianize (hackage "vector-space")
-    , debianize (hackage "vector-space-points")
-    , debianize (hackage "MonadCatchIO-mtl")
     ]
 
 algebra release =
@@ -1039,44 +949,3 @@ algebra release =
     , debianize (hackage "representable-tries")
     , debianize (hackage "semigroupoids")
     , debianize (hackage "spine") ]
-
--- Debian package has versioned dependencies on binary, but the
--- virtual binary package provided with ghc 7.4 (0.5.1.0) is
--- newer than the version of binary in hackage (0.5.0.2.)  This
--- means we try to pull in bogus debs for libghc-binary-* and
--- dependency problems ensue.
-agda _release =
-    [ apt "wheezy" "agda"
-    , apt "wheezy" "agda-bin"
-    , apt "wheezy" "agda-stdlib" ]
-
-other _release =
-    [ apt "wheezy" "darcs"
-    , debianize (hackage "aeson-native" `patch` $(embedFile "patches/aeson-native.diff"))
-    , apt "wheezy" "haskell-binary-shared" -- for leksah
-    , debianize (hackage "cairo" `flag` P.BuildDep "haskell-gtk2hs-buildtools-utils") -- for leksah
-    , debianize (hackage "cabal-dev") -- build-env for cabal
-    , debianize (hackage "gnuplot" `flag` P.DebVersion "0.4.2-1~hackage1")
-    , apt "wheezy" "bash-completion"
-    ]
-
-{-
--- |Here is a program to generate a list of all the packages in sid that have ghc for a build dependency.
-
-#!/usr/bin/env runghc
-
-import Data.Maybe (catMaybes)
-import Debian.Control (Control'(unControl), parseControlFromFile, fieldValue)
-import Debian.Relation (Relation(Rel), parseRelations)
-
-main =
-    parseControlFromFile "/home/dsf/.autobuilder/dists/sid/aptEnv/var/lib/apt/lists/mirrors.usc.edu_pub_linux_distributions_debian_dists_sid_main_source_Sources" >>=
-    either (error "parse") (mapM_ putStrLn . catMaybes . map checkPackage . unControl)
-    where
-      checkPackage p =
-          if any (\ (Rel name _ _) -> name == "ghc") rels then fieldValue "Package" p else Nothing
-          where
-            rels = either (const []) concat $
-                       maybe (Left undefined) parseRelations $
-                           fieldValue "Build-Depends" p
--}

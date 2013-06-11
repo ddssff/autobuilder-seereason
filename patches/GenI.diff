@@ -1,0 +1,56 @@
+--- old/GenI.cabal	2013-06-11 05:57:45.000000000 -0700
++++ new/GenI.cabal	2013-06-11 06:22:58.111502942 -0700
+@@ -59,7 +59,7 @@
+ Library
+   Build-depends: base >= 4 && < 5
+                , binary >= 0.5.0.2
+-               , bytestring  == 0.9.*
++               , bytestring  >= 0.9
+                , cabal-macosx  >= 0.1.2 && < 0.3
+                , containers >= 0.1
+                , deepseq
+@@ -73,7 +73,7 @@
+                , ordered == 0.1.*
+                , parsec >= 2
+                , process > 1
+-               , split >= 0.1.1 && < 0.2
++               , split >= 0.1.1
+                , syb
+                , text
+                , time >= 1.1
+@@ -146,7 +146,7 @@
+               , json        >= 0.4 && < 0.6
+               , mtl         > 1.0
+               , process     > 1
+-              , split       == 0.1.*
++              , split       >= 0.1
+ 
+ Test-Suite geni-test
+  Type:          exitcode-stdio-1.0
+--- old/src/NLP/GenI/General.hs	2013-06-11 06:33:21.000000000 -0700
++++ new/src/NLP/GenI/General.hs	2013-06-11 06:33:02.000000000 -0700
+@@ -412,11 +412,3 @@
+ showBitVector :: Int -> BitVector -> String
+ showBitVector min_ 0 = replicate min_ '0'
+ showBitVector min_ x = showBitVector (min_ - 1) (shiftR x 1) ++ (show $ x .&. 1)
+-
+--- ----------------------------------------------------------------------
+--- JSON
+--- ----------------------------------------------------------------------
+-
+-instance JSON Text where
+-    readJSON = fmap T.pack . readJSON
+-    showJSON = showJSON . T.unpack
+--- old/src/NLP/GenI/Simple/SimpleBuilder.hs	2013-06-11 05:58:31.000000000 -0700
++++ new/src/NLP/GenI/Simple/SimpleBuilder.hs	2013-06-11 06:48:05.695538563 -0700
+@@ -1000,9 +1000,7 @@
+ coverage sem it = countBits (sem .&. siSemantics it)
+ 
+ countBits :: Bits a => a -> Int
+-countBits 0  = 0
+-countBits bs = if testBit bs 0 then 1 + next else next
+-  where next = countBits (shiftR bs 1)
++countBits = popCount
+ 
+ -- --------------------------------------------------------------------
+ -- Performance
