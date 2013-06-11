@@ -80,3 +80,32 @@
  
  Library
    Build-tools:     trhsx
+@@ -138,7 +138,7 @@
+                    Paths_clckwrks
+ 
+   Build-depends:
+-     acid-state                   >= 0.7 && < 0.9,
++     acid-state                   >= 0.7,
+      aeson                        >= 0.5 && < 0.7,
+      attoparsec                   == 0.10.*,
+      base                           < 5,
+--- old/Clckwrks/Acid.hs	2013-02-23 15:23:28.000000000 -0800
++++ new/Clckwrks/Acid.hs	2013-06-10 22:52:47.438864759 -0700
+@@ -12,7 +12,7 @@
+ import Control.Monad.State         (modify)
+ import Data.Acid                   (AcidState, Query, Update, makeAcidic)
+ import Data.Acid.Local             (openLocalStateFrom, createArchive, createCheckpointAndClose)
+-import Data.Acid.Remote            (acidServer)
++import Data.Acid.Remote            (acidServer, skipAuthenticationCheck)
+ import Data.Data                   (Data, Typeable)
+ import Data.Maybe                  (fromMaybe)
+ import Data.SafeCopy               (base, deriveSafeCopy)
+@@ -84,7 +84,7 @@
+     bracket (openLocalStateFrom (basePath </> "profileData") initialProfileDataState) (createArchiveCheckpointAndClose) $ \profileData ->
+     bracket (openLocalStateFrom (basePath </> "core")        initialCoreState)        (createArchiveCheckpointAndClose) $ \core ->
+     bracket (openLocalStateFrom (basePath </> "navBar")      initialNavBarState)      (createArchiveCheckpointAndClose) $ \navBar ->
+-    bracket (forkIO (tryRemoveFile (basePath </> "profileData_socket") >> acidServer profileData (UnixSocket $ basePath </> "profileData_socket")))
++    bracket (forkIO (tryRemoveFile (basePath </> "profileData_socket") >> acidServer skipAuthenticationCheck (UnixSocket $ basePath </> "profileData_socket") profileData))
+             (\tid -> killThread tid >> tryRemoveFile (basePath </> "profileData_socket"))
+             (const $ f (Acid auth profile profileData core navBar))
+     where

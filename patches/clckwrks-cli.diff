@@ -1,0 +1,31 @@
+--- old/clckwrks-cli.cabal	2013-04-07 09:32:27.000000000 -0700
++++ new/clckwrks-cli.cabal	2013-06-10 22:42:14.014849794 -0700
+@@ -22,7 +22,7 @@
+      Main.hs
+ 
+   Build-depends:
+-     acid-state >= 0.7 && < 0.9,
++     acid-state >= 0.7,
+      base        < 5,
+      clckwrks   >= 0.12 && < 0.18,
+      haskeline  == 0.7.*,
+--- old/Main.hs	2013-02-23 15:23:29.000000000 -0800
++++ new/Main.hs	2013-06-10 22:54:59.190867874 -0700
+@@ -7,7 +7,7 @@
+ import Control.Monad.Reader
+ import Data.Acid (AcidState)
+ import Data.Acid.Advanced (query', update')
+-import Data.Acid.Remote (openRemoteState)
++import Data.Acid.Remote (openRemoteState, skipAuthenticationPerform)
+ import Network (PortID(UnixSocket))
+ import System.Environment
+ import System.Console.Haskeline
+@@ -31,7 +31,7 @@
+     do args <- getArgs
+        case args of
+          [socket] ->
+-             do acid <- openRemoteState "localhost" (UnixSocket socket)
++             do acid <- openRemoteState (const (return ())) "localhost" (UnixSocket socket)
+                 putStrLn "type 'help' for a list of commands."
+                 runReaderT (runInputT defaultSettings loop) acid
+          _ -> putStrLn "Usage: clckwrks-cli path/to/profileData_socket"

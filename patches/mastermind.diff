@@ -1,7 +1,11 @@
 --- old/mastermind.cabal	2013-03-05 11:35:34.000000000 -0800
 +++ new/mastermind.cabal	2013-06-09 09:05:48.687651040 -0700
-@@ -31,7 +31,7 @@
-                      acid-state         == 0.8.*,
+@@ -28,10 +28,10 @@
+ executable mastermind
+   Main-is:           Main.hs
+   build-depends:     base               >= 4 && <5,
+-                     acid-state         == 0.8.*,
++                     acid-state         >= 0.8,
                       aeson              == 0.6.*,
                       containers         >= 0.4 && < 0.6,
 -                     fay                == 0.14.*,

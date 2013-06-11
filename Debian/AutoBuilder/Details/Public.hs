@@ -686,7 +686,7 @@ clckwrks _home release =
                                           $(embedFile "patches/clckwrks.diff"))
                     , P.flags = [P.BuildDep "haskell-hsx-utils"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
-                    , P.spec = Debianize (Cd "clckwrks-cli" (Darcs repo))
+                    , P.spec = Debianize (Patch (Cd "clckwrks-cli" (Darcs repo)) $(embedFile "patches/clckwrks-cli.diff"))
                     , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-bugs"
                     , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
@@ -712,7 +712,7 @@ clckwrks _home release =
         ] ++
     if useDevRepo
     then [ P.Package { P.name = "haskell-clckwrks-plugin-page"
-                     , P.spec = Debianize (Cd "clckwrks-plugin-page" (Darcs repo))
+                     , P.spec = Debianize (Patch (Cd "clckwrks-plugin-page" (Darcs repo)) $(embedFile "patches/clckwrks-plugin-page.diff"))
                      , P.flags = [P.BuildDep "haskell-hsx-utils"] } ]
     else []
 
