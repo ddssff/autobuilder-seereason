@@ -970,6 +970,7 @@ algebra release =
     , debianize (hackage "reflection")
     , debianize (hackage "free")
     , debianize (hackage "keys")
+    , debianize (hackage "intervals")
     , debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff"))
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
