@@ -415,10 +415,9 @@ main _home release =
                 , P.spec = Debianize (Hackage "language-ecmascript")
                 , P.flags = [] }
     , debianize (hackage "charset")
-    , P.Package { P.name = "haskell-elm"
-                , P.spec = Debianize (Hackage "Elm")
-                , P.flags = [] }
+    , debianize (hackage "Elm")
     , debianize (hackage "elm-server" `patch` $(embedFile "patches/elm-server.diff"))
+    , debianize (hackage "gdiff")
     , debianize (hackage "hjsmin")
     , debianize (hackage "unix-compat")
     , debianize (hackage "Unixutils-shadow")
