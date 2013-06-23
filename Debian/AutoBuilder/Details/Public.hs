@@ -121,10 +121,10 @@ main _home release =
     , debianize (hackage "failure" `qflag` P.DebVersion "0.2.0.1-1build2")
     , debianize (hackage "attoparsec")
     , debianize (hackage "attoparsec-enumerator")
-    , debianize (hackage "attoparsec-text"
-                   `patch` $(embedFile "patches/attoparsec-text.diff")
-                   `flag` P.Revision "")
-    , debianize (hackage "attoparsec-text-enumerator")
+    -- This was merged into attoparsec
+    -- , debianize (hackage "attoparsec-text" `patch` $(embedFile "patches/attoparsec-text.diff") `flag` P.Revision "")
+    -- Deprecated
+    -- , debianize (hackage "attoparsec-text-enumerator")
     , debianize (hackage "base16-bytestring")
     , debianize (hackage "base-unicode-symbols")
     , debianize (hackage "bimap" `flag` P.DebVersion "0.2.4-1~hackage1")
