@@ -128,7 +128,7 @@ main _home release =
     , debianize (hackage "base16-bytestring")
     , debianize (hackage "base-unicode-symbols")
     , debianize (hackage "bimap" `flag` P.DebVersion "0.2.4-1~hackage1")
-    , debianize (hackage "Validation")
+    , debianize (hackage "Validation" `patch` $(embedFile "patches/validation.diff"))
     , debianize (hackage "data-default")
     , debianize (hackage "template-default"
                 -- `patch` $(embedFile "patches/template-default.diff")
