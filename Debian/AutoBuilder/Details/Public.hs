@@ -881,7 +881,8 @@ opengl release = P.Packages (singleton "opengl") $
                 , P.flags = [ P.DebVersion "0.0.3-1~hackage2" ] } -}
     , debianize (hackage "bitmap-opengl"
                    `flag` P.DevelDep "libglu1-mesa-dev")
-    , debianize (hackage "GLUT")
+    , debianize (hackage "GLUT"
+                   `flag` P.DevelDep "freeglut3-dev")
     , debianize (hackage "StateVar" `pflag` P.DebVersion "1.0.0.0-2build1" `qflag` P.DebVersion "1.0.0.0-2build3")
     , debianize (hackage "Tensor")
     , debianize (hackage "GLURaw")
