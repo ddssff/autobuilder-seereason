@@ -458,7 +458,10 @@ main _home release =
     , debianize (hackage "xss-sanitize" `qflag` P.DebVersion "0.3.2-1build1")
     , debianize (hackage "yaml-light" `pflag` P.DebVersion "0.1.4-2" `qflag` P.DebVersion "0.1.4-2build1")
     , debianize (hackage "zip-archive")
-    , debianize (hackage "regex-pcre-builtin" `flag` P.MapDep "pcre" (BinPkgName "libpcre3-dev"))
+    , debianize (hackage "regex-pcre-builtin"
+                   -- Need to email Audrey Tang <audreyt@audreyt.org> about this.
+                   `patch` $(embedFile "patches/regex-pcre-builtin.diff")
+                   `flag` P.DevelDep "libpcre3-dev")
     , debianize (hackage "hscolour") `flag` P.RelaxDep "hscolour"
     , debianize (hackage "hslogger")
     , debianize (hackage "extensible-exceptions") -- required for ghc-7.6, not just quantal
