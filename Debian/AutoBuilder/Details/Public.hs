@@ -282,6 +282,8 @@ main _home release =
     , darcs "haskell-json" (repo ++ "/haskell-json")
     , debianize (hackage "language-css" `flag` P.DebVersion "0.0.4.1-1~hackage1")
     , debianize (hackage "largeword")
+    -- No cabal file
+    -- , debianize (git "haskell-logic-hs" "https://github.com/smichal/hs-logic")
 {-  , apt "wheezy" "haskell-leksah"
     , apt "wheezy" "haskell-leksah-server" -- for leksah -}
     , P.Package { P.name = "haskell-logic-classes"
