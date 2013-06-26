@@ -142,6 +142,9 @@ main _home release =
     , debianize (hackage "case-insensitive")
     , debianize (hackage "cabal-install"
                    `patch` $(embedFile "patches/cabal-install.diff"))
+    -- , debianize (git "haskell-cabal-install" "https://github.com/haskell/cabal"
+    --                      `cd` "cabal-install"
+    --                      `patch` $(embedFile "patches/cabal-install.diff")) -}
     , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
     , apt (rel release "wheezy" "quantal") "haskell-cereal"
     , debianize (hackage "citeproc-hs")
