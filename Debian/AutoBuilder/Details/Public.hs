@@ -731,6 +731,16 @@ happstack release =
                                          "--build-dep=haskell-fay-jquery-utils",
                                          "--build-dep=haskell-happstack-fay-ajax-utils"])
     , darcs "haskell-happstack-extra" (repo ++ "/happstack-extra")
+{-  , debianize (git "haskell-haskell-names" "https://github.com/haskell-suite/haskell-names")
+    , debianize (git "haskell-haskell-packages" "https://github.com/haskell-suite/haskell-packages")
+    , debianize (git "haskell-hse-cpp" "https://github.com/haskell-suite/hse-cpp")
+      -- These will break everything
+    , debianize (git "haskell-haskell-src-exts" "https://github.com/haskell-suite/haskell-src-exts")
+    , debianize (git "haskell-cabal" "https://github.com/haskell/cabal" `cd` "Cabal") -}
+    -- , debianize (hackage "cabal-install" `patch` $(embedFile "patches/cabal-install.diff"))
+    , debianize (hackage "EitherT")
+    , debianize (hackage "type-eq")
+    , debianize (hackage "traverse-with-class")
     , debianize (hackage "happstack-hsp"
                    -- `patch` $(embedFile "patches/happstack-hsp.diff")
                    `flag` P.BuildDep "haskell-hsx-utils")
@@ -920,6 +930,7 @@ algebra release =
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "algebra")
     [ debianize (hackage "data-lens")
+    , debianize (hackage "data-lens-template")
     , debianize (hackage "adjunctions")
     , debianize (hackage "algebra")
     , debianize (hackage "bifunctors")
