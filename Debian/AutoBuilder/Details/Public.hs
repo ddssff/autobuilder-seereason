@@ -188,6 +188,7 @@ main _home release =
                    `patch` $(embedFile "patches/data-object.diff"))
     , debianize (hackage "dataenc")
     , debianize (hackage "Diff")
+    , debianize (hackage "executable-path")
     , apt (rel release "wheezy" "quantal") "haskell-digest"
     , apt (rel release "wheezy" "quantal") "haskell-dlist"
     -- Natty only(?)
