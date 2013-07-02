@@ -171,6 +171,7 @@ main _home release =
     , debianize (hackage "crypto-pubkey-types")
     -- crypto-pubkey-types-0.3.2 depends on older asn1-types
     , debianize (hackage "asn1-types" {- `flag` CabalPin "0.1.3" -})
+    , debianize (hackage "byteable")
     , debianize (hackage "cryptohash")
     , debianize (hackage "cpu" `qflag` P.DebVersion "0.1.1-1build1")
     , debianize (hackage "css" `flag` P.DebVersion "0.1-1~hackage1")
@@ -348,8 +349,9 @@ main _home release =
                    `qflag` P.DebVersion "1.1-2build2"
                    `sflag` P.DebVersion "1.1-1")
     , debianize (hackage "pwstore-purehaskell"
-                   `patch` $(embedFile "patches/pwstore-purehaskell.diff")
-                   `flag` P.DebVersion "2.1-1~hackage1")
+                   -- `patch` $(embedFile "patches/pwstore-purehaskell.diff")
+                   -- `flag` P.DebVersion "2.1-1~hackage1"
+                )
     , apt (rel release "wheezy" "quantal") "haskell-quickcheck1"
     , debianize (hackage "regex-tdfa" `pflag` P.DebVersion "1.1.8-1" `qflag` P.DebVersion "1.1.8-2build2")
     , darcs "haskell-revision" (repo </> "haskell-revision")
@@ -842,6 +844,10 @@ authenticate _home release =
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate"))
     , digestiveFunctors
     , debianize (hackage "fb")
+    , debianize (hackage "monad-logger")
+    , debianize (hackage "fast-logger")
+    , debianize (hackage "date-cache")
+    , debianize (hackage "unix-time")
     ]
 
 digestiveFunctors =
