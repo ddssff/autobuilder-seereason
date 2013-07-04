@@ -909,6 +909,7 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "Tensor")
     , debianize (hackage "GLURaw")
     , debianize (hackage "ObjectName")
+    , debianize (hackage "monad-task")
     , debianize (hackage "GLFW")
     , debianize (hackage "GLFW-b")
     , debianize (hackage "GLFW-b-demo")
