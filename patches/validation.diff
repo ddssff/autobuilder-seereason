@@ -1,0 +1,15 @@
+--- old/Validation.cabal	2013-06-24 11:35:15.000000000 -0700
++++ new/Validation.cabal	2013-06-24 11:58:18.874516231 -0700
+@@ -22,9 +22,9 @@
+ Library
+   Build-Depends:
+                     base < 5 && >= 3
+-                    , semigroups >= 0.8 && < 0.9
+-                    , semigroupoids == 3.0
+-                    , bifunctors == 3.0
++                    , semigroups >= 0.8
++                    , semigroupoids >= 3.0
++                    , bifunctors >= 3.0
+ 
+   GHC-Options:
+                     -Wall

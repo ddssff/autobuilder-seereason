@@ -1,0 +1,11 @@
+--- regex-pcre-builtin-0.94.4.6.8.31/pcre/pcre_printint.c	2013-06-24 21:43:34.943345919 -0700
++++ regex-pcre-builtin-0.94.4.6.8.31/pcre/pcre_printint.c	2013-06-25 06:40:54.920107656 -0700
+@@ -56,7 +56,7 @@
+ #endif
+ 
+ /* For pcretest program. */
+-#define PRIV(name) name
++/* #define PRIV(name) name */
+ 
+ /* We have to include pcre_internal.h because we need the internal info for
+ displaying the results of pcre_study() and we also need to know about the
