@@ -909,6 +909,10 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "Tensor")
     , debianize (hackage "GLURaw")
     , debianize (hackage "ObjectName")
+    , debianize (hackage "GLFW")
+    , debianize (hackage "GLFW-b")
+    , debianize (hackage "GLFW-b-demo")
+    , debianize (hackage "GLFW-task")
     , debianize (hackage "OpenGLRaw"
                    `flag` P.DevelDep "libgl1-mesa-dev")
     ]
