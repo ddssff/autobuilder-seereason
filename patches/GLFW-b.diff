@@ -1,0 +1,11 @@
+--- old/GLFW-b.cabal	2013-07-04 10:04:12.000000000 -0700
++++ new/GLFW-b.cabal	2013-07-04 10:10:29.312959014 -0700
+@@ -107,7 +107,7 @@
+       GL
+       GLU
+       X11
+-      Xrandr
++      Xrandr_ltsq
+   else
+     if os(darwin)
+       extra-libraries: glfw

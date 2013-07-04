@@ -910,10 +910,9 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "GLURaw")
     , debianize (hackage "ObjectName")
     , debianize (hackage "monad-task")
-    -- , darcs "haskell-glfw" ("http://src.seereason.com/haskell-GLFW")
-    , debianize (hackage "GLFW" `pflag` P.DevelDep "libglu1-mesa-dev")
-    , debianize (hackage "GLFW-b")
-    , debianize (hackage "GLFW-b-demo")
+    , debianize (hackage "GLFW" `flag` P.DevelDep "libglu1-mesa-dev")
+    , debianize (hackage "GLFW-b" `patch` $(embedFile "patches/GLFW-b.diff") `flag` P.DevelDep "libxrandr-dev-lts-quantal")
+    , debianize (hackage "GLFW-b-demo" `patch` $(embedFile "patches/GLFW-b-demo.diff"))
     , debianize (hackage "GLFW-task")
     , debianize (hackage "OpenGLRaw"
                    `flag` P.DevelDep "libgl1-mesa-dev")

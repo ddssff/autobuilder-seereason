@@ -108,8 +108,6 @@ isDebianizeSpec (P.Debianize _) = True
 isDebianizeSpec _ = False
 
 -- | Supply some special cases to map cabal library names to debian.
--- The prefix "lib" and the suffix "-dev" will be added later by
--- cabal-debian.
 applyDepMap :: P.Packages -> P.Packages
 applyDepMap P.NoPackage = P.NoPackage
 applyDepMap (P.Packages n s) = P.Packages n (map applyDepMap s)
@@ -123,6 +121,8 @@ applyDepMap x@(P.Package {}) =
                   P.MapDep "GLU" (deb "libglu1-mesa-dev"),
                   P.MapDep "glut" (deb "freeglut3-dev"),
                   P.MapDep "m" (deb "libc6-dev"),
+                  P.MapDep "X11" (deb "libx11-dev"),
+                  P.MapDep "Xrandr_ltsq" (deb "libxrandr-dev-lts-quantal"),
                   P.MapDep "freetype" (deb "libfreetype6-dev")]
       deb = BinPkgName
 
