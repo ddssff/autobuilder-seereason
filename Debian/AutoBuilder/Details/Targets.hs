@@ -122,6 +122,7 @@ applyDepMap x@(P.Package {}) =
                   P.MapDep "glut" (deb "freeglut3-dev"),
                   P.MapDep "m" (deb "libc6-dev"),
                   P.MapDep "X11" (deb "libx11-dev"),
+                  P.MapDep "Xrandr" (deb "libxrandr-dev"),
                   P.MapDep "Xrandr_ltsq" (deb "libxrandr-dev-lts-quantal"),
                   P.MapDep "freetype" (deb "libfreetype6-dev")]
       deb = BinPkgName
