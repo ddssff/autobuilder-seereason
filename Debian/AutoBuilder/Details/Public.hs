@@ -914,6 +914,9 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "GLFW-b" `patch` $(embedFile "patches/GLFW-b.diff") `flag` P.DevelDep "libxrandr-dev-lts-quantal")
     , debianize (hackage "GLFW-b-demo" `patch` $(embedFile "patches/GLFW-b-demo.diff"))
     , debianize (hackage "GLFW-task")
+--    , debianize (hackage "freetype2")
+--    , debianize (hackage "FreeTypeGL") -- Does not build because (freetype2 > 0.1.2) but the lib (haskell, at least) is at 0.1.1.
+    , debianize (hackage "FTGL")
     , debianize (hackage "OpenGLRaw"
                    `flag` P.DevelDep "libgl1-mesa-dev")
     ]
