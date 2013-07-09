@@ -916,7 +916,7 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "GLFW-task")
 --    , debianize (hackage "freetype2")
 --    , debianize (hackage "FreeTypeGL") -- Does not build because (freetype2 > 0.1.2) but the lib (haskell, at least) is at 0.1.1.
-    , debianize (hackage "FTGL")
+    , debianize (hackage "FTGL" `flag` P.DevelDep "libftgl-dev" `flag` P.DevelDep "libfreetype6-dev")
     , debianize (hackage "OpenGLRaw"
                    `flag` P.DevelDep "libgl1-mesa-dev")
     ]
