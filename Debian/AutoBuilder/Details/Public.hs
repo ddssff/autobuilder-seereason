@@ -144,7 +144,7 @@ main _home release =
                    `patch` $(embedFile "patches/cabal-install.diff"))
     -- , debianize (git "haskell-cabal-install" "https://github.com/haskell/cabal"
     --                      `cd` "cabal-install"
-    --                      `patch` $(embedFile "patches/cabal-install.diff")) -}
+    --                      `patch` $(embedFile "patches/cabal-install.diff"))
     , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
     , apt (rel release "wheezy" "quantal") "haskell-cereal"
     , debianize (hackage "citeproc-hs")
@@ -848,6 +848,8 @@ authenticate _home release =
     , debianize (hackage "fast-logger")
     , debianize (hackage "date-cache")
     , debianize (hackage "unix-time")
+    -- Seems to have disappeared
+    -- , debianize (hackage "memoizable")
     ]
 
 digestiveFunctors =
