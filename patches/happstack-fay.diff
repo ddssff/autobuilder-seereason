@@ -1,6 +1,6 @@
---- old/happstack-fay.cabal	2013-06-08 09:47:10.000000000 -0700
-+++ new/happstack-fay.cabal	2013-06-09 06:40:58.107445707 -0700
-@@ -19,7 +19,7 @@
+--- old/happstack-fay.cabal	2013-07-16 12:30:59.403682305 -0700
++++ new/happstack-fay.cabal	2013-07-16 12:29:58.875680875 -0700
+@@ -19,8 +19,8 @@
    exposed-modules:     Happstack.Fay
  
    build-depends:       base                 > 4.5 && <5,
@@ -9,3 +9,5 @@
                         happstack-fay-ajax   == 0.2.*,
                         aeson                == 0.6.*,
                         mtl                  >= 2.0 && < 2.2,
+-                       happstack-server     >= 7.0 && <7.2
++                       happstack-server     >= 7.0

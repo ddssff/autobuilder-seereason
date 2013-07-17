@@ -1,6 +1,6 @@
 --- old/clckwrks.cabal	2012-08-22 10:37:00.000000000 -0700
 +++ new/clckwrks.cabal	2012-08-22 10:37:50.000000000 -0700
-@@ -15,6 +15,79 @@
+@@ -23,6 +23,79 @@
  Cabal-version:       >=1.6
  Data-Files:
      static/admin.css
@@ -78,9 +78,9 @@
 +    jstree/themes/classic/throbber.gif
 +    json2/json2.js
  
- Library
-   Build-tools:     trhsx
-@@ -138,7 +138,7 @@
+ source-repository head
+     type:     darcs
+@@ -74,7 +147,7 @@
                     Paths_clckwrks
  
    Build-depends:

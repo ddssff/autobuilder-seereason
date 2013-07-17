@@ -1,11 +1,25 @@
---- old/happstack-authenticate.cabal	2013-03-03 05:46:09.000000000 -0800
-+++ new/happstack-authenticate.cabal	2013-03-12 21:02:49.892013015 -0700
-@@ -39,7 +39,7 @@
-                        happstack-server             >= 6.0 && < 7.2,
+--- old/happstack-authenticate.cabal	2013-04-07 09:38:26.000000000 -0700
++++ new/happstack-authenticate.cabal	2013-07-16 11:49:02.667622842 -0700
+@@ -36,7 +36,7 @@
+                        bytestring                   >= 0.9 && < 0.11,
+                        containers                   >= 0.4 && < 0.6,
+                        ixset                        >= 1.0 && < 1.1,
+-                       happstack-server             >= 6.0 && < 7.2,
++                       happstack-server             >= 6.0,
                         http-conduit                 >= 1.4 && < 1.10,
                         http-types                   >= 0.6 && < 0.9,
--                       fb                           == 0.13.*,
-+                       fb                           >= 0.13,
-                        safecopy                     >= 0.6,
-                        mtl                          >= 2.0,
-                        pwstore-purehaskell          == 2.1.*,
+                        fb                           >= 0.13 && < 0.15,
+@@ -46,9 +46,9 @@
+                        QuickCheck                   >= 2,
+                        text                         == 0.11.*,
+                        time                         >= 1.2 && < 1.5,
+-                       reform                       == 0.1.*,
+-                       reform-blaze                 == 0.1.*,
+-                       reform-happstack             == 0.1.*,
++                       reform                       >= 0.1,
++                       reform-blaze                 >= 0.1,
++                       reform-happstack             >= 0.1,
+                        unordered-containers         == 0.2.*,
+                        web-routes                   >= 0.26 && < 0.28,
+                        web-routes-happstack         == 0.23.*
+\ No newline at end of file

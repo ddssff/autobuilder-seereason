@@ -1,0 +1,11 @@
+--- old/happstack.cabal	2013-07-16 10:54:25.000000000 -0700
++++ new/happstack.cabal	2013-07-16 11:39:55.395609912 -0700
+@@ -29,7 +29,7 @@
+   other-modules:       Paths_happstack
+ 
+   build-depends:       base >= 3 && <5,
+-                       happstack-server >= 7.0 && < 7.2
++                       happstack-server >= 7.0
+ 
+   if flag(tests)
+     hs-source-dirs:    tests

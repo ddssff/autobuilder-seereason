@@ -1,11 +1,11 @@
---- old/haskell-src-meta.cabal	2013-03-06 09:02:29.000000000 -0800
-+++ new/haskell-src-meta.cabal	2013-03-06 10:22:23.537764001 -0800
-@@ -21,7 +21,7 @@
-   build-depends:   base >= 4.2 && < 4.7,
+--- old/haskell-src-meta.cabal.orig	2013-07-15 22:14:28.000000000 -0700
++++ old/haskell-src-meta.cabal	2013-07-15 22:40:20.954504770 -0700
+@@ -23,7 +23,7 @@
                     haskell-src-exts >= 1.8 && < 1.14,
                     pretty >= 1.0 && < 1.2,
--                   syb >= 0.1 && < 0.4,
-+                   syb >= 0.1,
-                    th-orphans >= 0.5 && < 0.7
+                    syb >= 0.1 && < 0.5,
+-                   th-orphans >= 0.5 && < 0.7
++                   th-orphans >= 0.5
  
    if impl(ghc >= 7.4)
+     Build-depends: template-haskell >= 2.7 && < 2.9

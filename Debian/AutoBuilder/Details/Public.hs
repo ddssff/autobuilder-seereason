@@ -236,10 +236,8 @@ main _home release =
     , debianize (hackage "hashable" `flag` CabalPin "1.1.2.5")
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline" `flag` P.DebVersion "0.7.0.3-1~hackage1")
-    , debianize (hackage "th-orphans"
-                   `patch` $(embedFile "patches/th-orphans.diff")
-                   `flag` P.DebVersion "0.6-1~hackage1")
-    , debianize (hackage "haskell-src-meta")
+    , debianize (hackage "th-orphans")
+    , debianize (hackage "haskell-src-meta" `patch` $(embedFile "patches/haskell-src-meta.diff"))
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -301,7 +299,7 @@ main _home release =
     , darcs "haskell-mime" (repo </> "haskell-mime")
     , debianize (hackage "mmap")
     , debianize (hackage "monad-control")
-    , debianize (hackage "monad-par-extras" `flag` P.DebVersion "0.3.2-1~hackage1")
+    , debianize (hackage "monad-par-extras")
     , debianize (hackage "abstract-deque")
     , debianize (hackage "abstract-par")
     , debianize (hackage "monad-par")
@@ -436,7 +434,7 @@ main _home release =
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize (hackage "unification-fd")
     , debianize (hackage "newtype")
-    , debianize (hackage "universe" `patch` $(embedFile "patches/universe.diff"))
+    , debianize (hackage "universe")
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
                 , P.flags = [] }
@@ -665,7 +663,7 @@ clckwrks _home release =
                -- localRepo _home ++ "/clckwrks"
     in
     P.Packages (singleton "clckwrks") $
-        [ happstack release
+        [ happstack _home release
         , authenticate _home release
         , happstackdotcom _home
         , plugins
@@ -681,48 +679,46 @@ clckwrks _home release =
                                                 "2ae07a68fc44f0ef8d92cce25620bd5f")
                                            "json2")
                                           $(embedFile "patches/clckwrks.diff"))
-                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "hsx2hs"] }
         , P.Package { P.name = "haskell-clckwrks-cli"
                     , P.spec = Debianize (Patch (Cd "clckwrks-cli" (Darcs repo)) $(embedFile "patches/clckwrks-cli.diff"))
                     , P.flags = [] }
         , P.Package { P.name = "haskell-clckwrks-plugin-bugs"
                     , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
-                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "hsx2hs"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-media"
                     , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
-                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "hsx2hs"] }
         , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
                     , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
-                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "hsx2hs"] }
         , P.Package { P.name = "haskell-clckwrks-theme-bootstrap"
                     , P.spec = Debianize (Cd "clckwrks-theme-bootstrap" (Darcs repo))
-                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "hsx2hs"] }
         , P.Package { P.name = "clckwrks-dot-com"
                     , P.spec = Debianize (Patch (Cd "clckwrks-dot-com" (Darcs repo)) $(embedFile "patches/clckwrks-dot-com.diff"))
                     , P.flags = [] }
         , P.Package { P.name = "clckwrks-theme-clckwrks"
                     , P.spec = Debianize (Cd "clckwrks-theme-clckwrks" (Darcs repo))
-                    , P.flags = [P.BuildDep "haskell-hsx-utils"] }
+                    , P.flags = [P.BuildDep "hsx2hs"] }
         , debianize (hackage "jmacro")
         , debianize (hackage "hsx-jmacro")
         , debianize (hackage "monadlist")
         ] ++
     if useDevRepo
     then [ P.Package { P.name = "haskell-clckwrks-plugin-page"
-                     , P.spec = Debianize (Patch (Cd "clckwrks-plugin-page" (Darcs repo)) $(embedFile "patches/clckwrks-plugin-page.diff"))
-                     , P.flags = [P.BuildDep "haskell-hsx-utils"] } ]
+                     , P.spec = Debianize (Cd "clckwrks-plugin-page" (Darcs repo))
+                     , P.flags = [P.BuildDep "hsx2hs"] } ]
     else []
 
-happstack release =
+happstack _home release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String in
     P.Packages (singleton "happstack")
     [ plugins
     -- , debianize (darcs "haskell-debian-packaging" (repo </> "debian-packaging"))
     , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
-    , debianize (hackage "happstack")
-    , debianize (hackage "happstack-fay"
-                   `patch` $(embedFile "patches/happstack-fay.diff")
-                )
+    , debianize (hackage "happstack" `patch` $(embedFile "patches/happstack.diff"))
+    , debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
     , debianize (hackage "cryptohash-cryptoapi")
     , debianize (hackage "happstack-fay-ajax")
     , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs"])
@@ -751,7 +747,7 @@ happstack release =
     , debianize (hackage "traverse-with-class")
     , debianize (hackage "happstack-hsp"
                    -- `patch` $(embedFile "patches/happstack-hsp.diff")
-                   `flag` P.BuildDep "haskell-hsx-utils")
+                   `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "happstack-jmacro")
     , debianize (hackage "jmacro-rpc-happstack")
     , debianize (hackage "jmacro-rpc")
@@ -770,11 +766,7 @@ happstack release =
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
-    , debianize (hackage "hsp"
-                   `patch` $(embedFile "patches/hsp.diff")
-                   `flag` P.BuildDep "haskell-hsx-utils"
-                   `flag` CabalPin "0.7.1"
-                   `mflag` (rel release (Just (P.DebVersion "0.7.1-1~hackage1")) Nothing))
+    , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs"])
     , debianize (hackage "hsx"
                    `flag` P.DebVersion "0.10.4-1~hackage1"
                    -- Putting trhsx into a package called trhsx is problematic,
@@ -789,15 +781,13 @@ happstack release =
     , debianize (hackage "web-routes")
     , debianize (hackage "web-routes-boomerang" `flag` P.DebVersion "0.27.0-1~hackage1")
     , debianize (hackage "web-routes-happstack")
-    , debianize (hackage "web-routes-hsp" `flag` P.DebVersion "0.23.0-1~hackage1")
+    , debianize (hackage "web-routes-hsp")
     , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
     , debianize (hackage "web-routes-th" `flag` P.DebVersion "0.22.1-1~hackage1")
     , darcs "haskell-formlets-hsp" (repo ++ "/formlets-hsp")
     , darcs "haskell-happstack-scaffolding" (repo ++ "/happstack-scaffolding") -- Don't use Debianize here, it restores the doc package which crashes the build
     , debianize (hackage "HJScript")
-    , debianize (darcs "reform" (darcsHub ++ "/reform")
-                   `cd` "reform"
-                   `flag` P.DebVersion "0.1.2-1~hackage1")
+    , debianize (darcs "reform" (darcsHub ++ "/reform") `cd` "reform")
     , debianize (darcs "reform-blaze" (darcsHub ++ "/reform") `cd` "reform-blaze")
     , debianize (darcs "reform-happstack" (darcsHub ++ "/reform") `cd` "reform-happstack")
     -- , debianize (darcs "reform-heist" (darcsHub ++ "/reform") `cd` "reform-heist")
@@ -814,7 +804,7 @@ happstack release =
     , debianize (darcs "clckwrks-theme-happstack" (repo ++ "/happstack-clckwrks")
                    `cd` "clckwrks-theme-happstack"
                    -- `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
-                   `flag` P.BuildDep "haskell-hsx-utils")
+                   `flag` P.BuildDep "hsx2hs")
     , debianize (darcs "happstack-dot-com" (repo ++ "/happstack-clckwrks")
                    `cd` "happstack-dot-com"
                    `patch` $(embedFile "patches/happstack-dot-com.diff"))
@@ -844,7 +834,7 @@ authenticate _home release =
     , debianize (hackage "crypto-numbers")
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
-    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate"))
+    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate") `patch` $(embedFile "patches/happstack-authenticate.diff"))
     , digestiveFunctors
     , debianize (hackage "fb")
     , debianize (hackage "monad-logger")
@@ -863,8 +853,7 @@ digestiveFunctors =
                    `patch` $(embedFile "patches/digestive-functors-happstack.diff")
                    `flag` P.CabalPin "0.1.1.5"
                    `flag` P.DebVersion "0.1.1.5-1~hackage1")
-    , debianize (darcs "haskell-digestive-functors-hsp" (repo ++ "/digestive-functors-hsp")
-                   `flag` P.DebVersion "0.5.0-1~hackage1") ]
+    , debianize (darcs "haskell-digestive-functors-hsp" (repo ++ "/digestive-functors-hsp")) ]
 
 -- | We need new releases of all the conduit packages before we can move
 -- from conduit 0.4.2 to 0.5.
@@ -951,7 +940,7 @@ algebra release =
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "algebra")
-    [ debianize (hackage "data-lens")
+    [ debianize (hackage "data-lens" `patch` $(embedFile "patches/data-lens.diff"))
     , debianize (hackage "data-lens-template")
     , debianize (hackage "adjunctions")
     , debianize (hackage "algebra")
