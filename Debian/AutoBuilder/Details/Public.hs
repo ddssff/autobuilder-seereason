@@ -539,6 +539,9 @@ main _home release =
     , debianize (hackage "hxt-charproperties") `flag` P.DebVersion "9.1.1-2build1"
     , debianize (hackage "hxt-regex-xmlschema")
     , debianize (hackage "hxt-unicode") `flag` P.DebVersion "9.0.2-2"
+    , case release of
+        "wheezy-seereason" -> debianize (hackage "network")
+        _ -> P.NoPackage
     ]
 
 relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
