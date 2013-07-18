@@ -12,15 +12,17 @@ import Debian.AutoBuilder.Details.Common (repo, privateRepo)
 
 libraries _home =
     P.Packages (singleton "libraries") $
-    [ darcs "haskell-generic-formlets3" (privateRepo ++ "/generic-formlets3")
+    [ -- Retired, should be withdrawn from repos
+      -- darcs "haskell-generic-formlets3" (privateRepo ++ "/generic-formlets3")
     -- , darcs "haskell-document" (privateRepo ++ "/haskell-document")
-    , darcs "haskell-ontology" (privateRepo ++ "/haskell-ontology")
+      darcs "haskell-ontology" (privateRepo ++ "/haskell-ontology")
     , debianize (method "haskell-stripe-core"
                         (Cd "stripe-core" (Darcs (privateRepo ++ "/stripe"))))
     , debianize (method "haskell-stripe-http-conduit"
                         (Cd "stripe-http-conduit" (Darcs (privateRepo ++ "/stripe"))))
     , debianize (method "haskell-clckwrks-plugin-stripe"
-                        (Darcs (privateRepo ++ "/clckwrks-plugin-stripe")))
+                        (Darcs (privateRepo ++ "/clckwrks-plugin-stripe"))
+                   `flag` P.BuildDep "hsx2hs")
 
     ] {- ++ clckwrks14 -}
 
@@ -41,13 +43,13 @@ applications _home =
                       (Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks"))))
     , debianize (method "haskell-clckwrks-theme-seereasonpartners"
                       (Cd "clckwrks-theme-seereasonpartners" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks")))
-                   `flag` P.BuildDep "haskell-hsx-utils"
+                   `flag` P.BuildDep "hsx2hs"
                    `flag` P.NoDoc)
     , debianize (method "appraisalreportonline-dot-com"
                       (Cd "appraisalreportonline-dot-com" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks"))))
     , debianize (method "haskell-clckwrks-theme-appraisalreportonline"
                       (Cd "clckwrks-theme-appraisalreportonline" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks")))
-                   `flag` P.BuildDep "haskell-hsx-utils")
+                   `flag` P.BuildDep "hsx2hs")
     ]
 
 _clckwrks14 =
