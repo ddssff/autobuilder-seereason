@@ -718,6 +718,7 @@ happstack _home release =
     -- , debianize (darcs "haskell-debian-packaging" (repo </> "debian-packaging"))
     , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
     , debianize (hackage "happstack" `patch` $(embedFile "patches/happstack.diff"))
+    , debianize (hackage "happstack-foundation")
     , debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
     , debianize (hackage "cryptohash-cryptoapi")
     , debianize (hackage "happstack-fay-ajax")
