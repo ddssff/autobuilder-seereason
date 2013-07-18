@@ -766,7 +766,7 @@ happstack _home release =
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
-    , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs"])
+    , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hsx"
                    `flag` P.DebVersion "0.10.4-1~hackage1"
                    -- Putting trhsx into a package called trhsx is problematic,
