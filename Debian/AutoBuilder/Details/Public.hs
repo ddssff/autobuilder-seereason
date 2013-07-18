@@ -744,7 +744,7 @@ happstack _home release =
     , debianize (git "haskell-cabal" "https://github.com/haskell/cabal" `cd` "Cabal") -}
     -- , debianize (hackage "cabal-install" `patch` $(embedFile "patches/cabal-install.diff"))
     , debianize (hackage "EitherT")
-    , debianize (hackage "type-eq")
+    , debianize (hackage "type-eq" `patch` $(embedFile "patches/type-eq.diff"))
     , debianize (hackage "traverse-with-class")
     , debianize (hackage "happstack-hsp"
                    -- `patch` $(embedFile "patches/happstack-hsp.diff")
