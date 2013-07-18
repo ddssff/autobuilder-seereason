@@ -785,7 +785,8 @@ happstack _home release =
     , debianize (hackage "web-routes-hsp")
     , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
     , debianize (hackage "web-routes-th" `flag` P.DebVersion "0.22.1-1~hackage1")
-    , darcs "haskell-formlets-hsp" (repo ++ "/formlets-hsp")
+    -- Retired, should be withdrawn from repos
+    -- , darcs "haskell-formlets-hsp" (repo ++ "/formlets-hsp")
     , darcs "haskell-happstack-scaffolding" (repo ++ "/happstack-scaffolding") -- Don't use Debianize here, it restores the doc package which crashes the build
     , debianize (hackage "HJScript")
     , debianize (darcs "reform" (darcsHub ++ "/reform") `cd` "reform")
