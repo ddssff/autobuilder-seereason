@@ -1,5 +1,7 @@
 --- old/clckwrks.cabal	2012-08-22 10:37:00.000000000 -0700
 +++ new/clckwrks.cabal	2012-08-22 10:37:50.000000000 -0700
+--- old/clckwrks.cabal	2013-07-15 21:13:34.000000000 -0700
++++ new/clckwrks.cabal	2013-07-18 07:19:49.903323953 -0700
 @@ -23,6 +23,79 @@
  Cabal-version:       >=1.6
  Data-Files:
@@ -80,23 +82,3 @@
  
  source-repository head
      type:     darcs
---- old/Clckwrks/Acid.hs	2013-02-23 15:23:28.000000000 -0800
-+++ new/Clckwrks/Acid.hs	2013-06-10 22:52:47.438864759 -0700
-@@ -12,7 +12,7 @@
- import Control.Monad.State         (modify)
- import Data.Acid                   (AcidState, Query, Update, makeAcidic)
- import Data.Acid.Local             (openLocalStateFrom, createArchive, createCheckpointAndClose)
--import Data.Acid.Remote            (acidServer)
-+import Data.Acid.Remote            (acidServer, skipAuthenticationCheck)
- import Data.Data                   (Data, Typeable)
- import Data.Maybe                  (fromMaybe)
- import Data.SafeCopy               (base, deriveSafeCopy)
-@@ -84,7 +84,7 @@
-     bracket (openLocalStateFrom (basePath </> "profileData") initialProfileDataState) (createArchiveCheckpointAndClose) $ \profileData ->
-     bracket (openLocalStateFrom (basePath </> "core")        initialCoreState)        (createArchiveCheckpointAndClose) $ \core ->
-     bracket (openLocalStateFrom (basePath </> "navBar")      initialNavBarState)      (createArchiveCheckpointAndClose) $ \navBar ->
--    bracket (forkIO (tryRemoveFile (basePath </> "profileData_socket") >> acidServer profileData (UnixSocket $ basePath </> "profileData_socket")))
-+    bracket (forkIO (tryRemoveFile (basePath </> "profileData_socket") >> acidServer skipAuthenticationCheck (UnixSocket $ basePath </> "profileData_socket") profileData))
-             (\tid -> killThread tid >> tryRemoveFile (basePath </> "profileData_socket"))
-             (const $ f (Acid auth profile profileData core navBar))
-     where
