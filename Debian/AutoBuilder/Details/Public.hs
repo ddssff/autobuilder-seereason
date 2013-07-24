@@ -793,7 +793,7 @@ happstack _home release =
     , debianize (darcs "reform-blaze" (darcsHub ++ "/reform") `cd` "reform-blaze")
     , debianize (darcs "reform-happstack" (darcsHub ++ "/reform") `cd` "reform-happstack")
     -- , debianize (darcs "reform-heist" (darcsHub ++ "/reform") `cd` "reform-heist")
-    , debianize (darcs "reform-hsp" (darcsHub ++ "/reform") `cd` "reform-hsp")
+    , debianize (darcs "reform-hsp" (darcsHub ++ "/reform") `cd` "reform-hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "blaze-markup")
     , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
     , debianize (hackage "blaze-builder-enumerator" `flag` P.DebVersion "0.2.0.5-1~hackage1")
@@ -855,7 +855,7 @@ digestiveFunctors =
                    `patch` $(embedFile "patches/digestive-functors-happstack.diff")
                    `flag` P.CabalPin "0.1.1.5"
                    `flag` P.DebVersion "0.1.1.5-1~hackage1")
-    , debianize (darcs "haskell-digestive-functors-hsp" (repo ++ "/digestive-functors-hsp")) ]
+    , debianize (darcs "haskell-digestive-functors-hsp" (repo ++ "/digestive-functors-hsp") `flag` P.BuildDep "hsx2hs") ]
 
 -- | We need new releases of all the conduit packages before we can move
 -- from conduit 0.4.2 to 0.5.
