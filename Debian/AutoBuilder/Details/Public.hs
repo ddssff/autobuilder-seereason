@@ -460,7 +460,7 @@ main _home release =
     , P.Package { P.name = "haskell-xml-enumerator"
                 , P.spec = Debianize (Patch (Hackage "xml-enumerator") $(embedFile "patches/xml-enumerator.diff"))
                 , P.flags = [] }
-    , debianize (hackage "xml-types")
+    , debianize (hackage "xml-types" `flag` P.CabalPin "0.3.3")
     , debianize (hackage "xss-sanitize" `qflag` P.DebVersion "0.3.2-1build1")
     , debianize (hackage "yaml-light" `pflag` P.DebVersion "0.1.4-2" `qflag` P.DebVersion "0.1.4-2build1")
     , debianize (hackage "zip-archive")
@@ -840,9 +840,9 @@ authenticate _home release =
     , digestiveFunctors
     , debianize (hackage "fb")
     , debianize (hackage "monad-logger")
-    , debianize (hackage "fast-logger")
+    , debianize (hackage "fast-logger" `flag` P.CabalPin "0.3.1")
     , debianize (hackage "date-cache")
-    , debianize (hackage "unix-time")
+    , debianize (hackage "unix-time" `flag` P.CabalPin "0.1.9")
     -- Seems to have disappeared
     -- , debianize (hackage "memoizable")
     ]
@@ -950,11 +950,12 @@ algebra release =
     , debianize (hackage "categories")
     , debianize (hackage "comonad")
     , debianize (hackage "comonads-fd")
-    , debianize (hackage "comonad-transformers")
+    , debianize (hackage "comonad-transformers" `flag` P.CabalPin "3.0.3")
     , debianize (hackage "control-monad-free")
     , debianize (hackage "transformers-free")
     , debianize (hackage "contravariant"
                              `patch` $(embedFile "patches/contravariant.diff")
+                             `flag` P.CabalPin "0.4.1"
                              `qflag` P.DebVersion "0.2.0.2-1build2")
     , debianize (hackage "distributive"
                              `patch` $(embedFile "patches/distributive.diff")
