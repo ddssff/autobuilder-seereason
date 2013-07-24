@@ -216,12 +216,15 @@ main _home release =
     , debianize (hackage "concatenative")
     , debianize (hackage "either")
     , debianize (hackage "MonadRandom")
-    , P.Package { P.name = "haskell-formlets"
-                , P.spec = Debianize (Patch (Hackage "formlets") $(embedFile "patches/formlets.diff"))
-                , P.flags = [P.DebVersion "0.8-1~hackage1"] }
-    , P.Package { P.name = "haskell-gd"
-                , P.spec = Debianize (Patch (Hackage "gd") $(embedFile "patches/gd.diff"))
-                , P.flags = [ P.DevelDep "libgd-dev", P.DevelDep "libc6-dev", P.DevelDep "libfreetype6-dev" ] ++ rel release [] [P.DebVersion "3000.7.3-1build2"] }
+    , debianize (hackage "formlets"
+                    `patch` $(embedFile "patches/formlets.diff")
+                    `flag` P.DebVersion "0.8-1~hackage1")
+    , debianize (hackage "gd"
+                    `patch` $(embedFile "patches/gd.diff")
+                    `flag` P.DevelDep "libgd-dev"
+                    `flag` P.DevelDep "libc6-dev"
+                    `flag` P.DevelDep "libfreetype6-dev"
+                    `qflag` P.DebVersion "3000.7.3-1build2")
     -- , debianize (flags [P.BuildDep "libm-dev", P.BuildDep "libfreetype-dev"] (hackage "gd"))
     , debianize (hackage "cabal-macosx")
     , apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah
