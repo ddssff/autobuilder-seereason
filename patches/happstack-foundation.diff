@@ -1,0 +1,11 @@
+--- old/Happstack/Foundation.hs	2013-07-18 15:42:58.000000000 -0700
++++ new/Happstack/Foundation.hs	2013-07-21 09:28:26.941630413 -0700
+@@ -30,6 +30,8 @@
+       AcidConfig(..)
+     , FoundationConf(..)
+     , defaultConf
++      -- * Type Class
++    , HasAcidState(..)
+       -- * Type Aliases
+     , FoundationT
+     , FoundationT'

@@ -543,6 +543,7 @@ main _home release =
     , case release of
         "wheezy-seereason" -> debianize (hackage "network")
         _ -> P.NoPackage
+    , debianize (darcs "haskell-tiny-server" (repo </> "tiny-server"))
     ]
 
 relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
@@ -721,7 +722,7 @@ happstack _home release =
     -- , debianize (darcs "haskell-debian-packaging" (repo </> "debian-packaging"))
     , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
     , debianize (hackage "happstack" `patch` $(embedFile "patches/happstack.diff"))
-    , debianize (hackage "happstack-foundation")
+    , debianize (hackage "happstack-foundation" `patch` $(embedFile "patches/happstack-foundation.diff"))
     , debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
     , debianize (hackage "cryptohash-cryptoapi")
     , debianize (hackage "happstack-fay-ajax")
