@@ -195,6 +195,7 @@ main _home release =
     -- Natty only(?)
     , debianize (hackage "double-conversion")
     , debianize (hackage "groom")
+    -- Retired
     -- , apt "wheezy" "haskell-dummy"
     -- Need this when we upgrade blaze-textual to 0.2.0.0
     -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
@@ -353,7 +354,8 @@ main _home release =
                    -- `patch` $(embedFile "patches/pwstore-purehaskell.diff")
                    -- `flag` P.DebVersion "2.1-1~hackage1"
                 )
-    , apt (rel release "wheezy" "quantal") "haskell-quickcheck1"
+    -- Retired
+    -- , apt (rel release "wheezy" "quantal") "haskell-quickcheck1"
     , debianize (hackage "regex-tdfa" `pflag` P.DebVersion "1.1.8-1" `qflag` P.DebVersion "1.1.8-2build2")
     , darcs "haskell-revision" (repo </> "haskell-revision")
     , debianize (hackage "RJson" `patch` $(embedFile "patches/RJson.diff"))
@@ -400,7 +402,8 @@ main _home release =
                              `flag` P.DevelDep "libncursesw5-dev")
     , debianize (hackage "test-framework")
     , debianize (hackage "test-framework-hunit")
-    , debianize (hackage "test-framework-quickcheck")
+    -- Retired
+    -- , debianize (hackage "test-framework-quickcheck")
     , debianize (hackage "test-framework-quickcheck2" `patch` $(embedFile "patches/test-framework-quickcheck2.diff"))
     , debianize (hackage "test-framework-th")
     --
