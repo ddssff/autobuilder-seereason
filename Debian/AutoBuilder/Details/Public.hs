@@ -170,7 +170,7 @@ main _home release =
     -- The certificate package may need to be updated for version 0.4
     , debianize (hackage "crypto-pubkey-types")
     -- crypto-pubkey-types-0.3.2 depends on older asn1-types
-    , debianize (hackage "asn1-types" {- `flag` CabalPin "0.1.3" -})
+    , debianize (hackage "asn1-types")
     , debianize (hackage "byteable")
     , debianize (hackage "cryptohash")
     , debianize (hackage "cpu" `qflag` P.DebVersion "0.1.1-1build1")
@@ -236,7 +236,7 @@ main _home release =
     --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
     , apt (rel release "wheezy" "quantal") "haskell-harp"
-    , debianize (hackage "hashable" `flag` CabalPin "1.1.2.5")
+    , debianize (hackage "hashable")
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline" `flag` P.DebVersion "0.7.0.3-1~hackage1")
     , debianize (hackage "th-orphans")
@@ -330,7 +330,7 @@ main _home release =
                 , P.spec = Debianize (Hackage "operational")
                 , P.flags = [P.OmitLTDeps] }
 --    , debianize (hackage "options")
-    , debianize (hackage "optparse-applicative") -- [P.CabalPin "0.4.3"] -- fay requires optparse-applicative < 0.5.
+    , debianize (hackage "optparse-applicative")
     , debianize (hackage "ordered")
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize (hackage "temporary")
@@ -392,7 +392,7 @@ main _home release =
     , debianize (hackage "smallcheck")
     , debianize (hackage "syb-with-class")
     , apt (rel release "wheezy" "quantal") "haskell-syb-with-class-instances-text"
-    , debianize (hackage "tagged" `flag` P.CabalPin "0.4.5") -- Pinned to avoid a big rebuild
+    , debianize (hackage "tagged")
     , debianize (hackage "tagsoup")
     , debianize (hackage "tar")
     , debianize (hackage "terminfo"
@@ -463,7 +463,7 @@ main _home release =
     , P.Package { P.name = "haskell-xml-enumerator"
                 , P.spec = Debianize (Patch (Hackage "xml-enumerator") $(embedFile "patches/xml-enumerator.diff"))
                 , P.flags = [] }
-    , debianize (hackage "xml-types" `flag` P.CabalPin "0.3.3")
+    , debianize (hackage "xml-types")
     , debianize (hackage "xss-sanitize" `qflag` P.DebVersion "0.3.2-1build1")
     , debianize (hackage "yaml-light" `pflag` P.DebVersion "0.1.4-2" `qflag` P.DebVersion "0.1.4-2build1")
     , debianize (hackage "zip-archive")
@@ -606,7 +606,7 @@ platform release =
     , debianize (hackage "parallel")
     , debianize (hackage "syb")
     , debianize (hackage "fgl" `pflag` P.DebVersion "5.4.2.4-2" `qflag` P.DebVersion "5.4.2.4-2build2" `sflag` P.DebVersion "5.4.2.4-1")
-    , debianize (hackage "text" `flag` P.CabalPin "0.11.3.0")
+    , debianize (hackage "text")
     , P.Package { P.name = "alex"
                 , P.spec = Debianize (Hackage "alex")
                   -- alex shouldn't rebuild just because alex seems newer, but alex does require
@@ -640,7 +640,7 @@ platform release =
                              `qflag` P.DebVersion "1.0.1.5-1build2")
     -- Versions 2.4.1.1 and 2.4.1.2 change unEscapeString in a way
     -- that breaks our apps: https://github.com/haskell/network/issues/86
-    , debianize (hackage "network" `flag` P.CabalPin "2.4.1.0")
+    , debianize (hackage "network")
     , debianize (hackage "publicsuffixlist")
     , debianize (hackage "HTTP" `pflag` P.DebVersion "1:4000.2.3-1~hackage1" `qflag` P.DebVersion "1:4000.2.3-1build2")
     , debianize (hackage "cgi")
@@ -784,7 +784,7 @@ happstack _home release =
     , debianize (hackage "markdown" `rename` "markdown")
     , debianize (hackage "highlighting-kate")
     , debianize (hackage "web-routes")
-    , debianize (hackage "web-routes-boomerang" `flag` P.DebVersion "0.27.0-1~hackage1")
+    , debianize (hackage "web-routes-boomerang")
     , debianize (hackage "web-routes-happstack")
     , debianize (hackage "web-routes-hsp")
     , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
@@ -844,9 +844,9 @@ authenticate _home release =
     , digestiveFunctors
     , debianize (hackage "fb")
     , debianize (hackage "monad-logger")
-    , debianize (hackage "fast-logger" `flag` P.CabalPin "0.3.1")
+    , debianize (hackage "fast-logger")
     , debianize (hackage "date-cache")
-    , debianize (hackage "unix-time" `flag` P.CabalPin "0.1.9")
+    , debianize (hackage "unix-time")
     -- Seems to have disappeared
     -- , debianize (hackage "memoizable")
     ]
@@ -954,12 +954,11 @@ algebra release =
     , debianize (hackage "categories")
     , debianize (hackage "comonad")
     , debianize (hackage "comonads-fd")
-    , debianize (hackage "comonad-transformers" `flag` P.CabalPin "3.0.3")
+    , debianize (hackage "comonad-transformers")
     , debianize (hackage "control-monad-free")
     , debianize (hackage "transformers-free")
     , debianize (hackage "contravariant"
                              `patch` $(embedFile "patches/contravariant.diff")
-                             `flag` P.CabalPin "0.4.1"
                              `qflag` P.DebVersion "0.2.0.2-1build2")
     , debianize (hackage "distributive"
                              `patch` $(embedFile "patches/distributive.diff")
