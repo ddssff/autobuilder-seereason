@@ -546,7 +546,8 @@ main _home release =
     , case release of
         "wheezy-seereason" -> debianize (hackage "network")
         _ -> P.NoPackage
-    , debianize (darcs "haskell-tiny-server" (repo </> "tiny-server"))
+    , debianize (darcs "haskell-tiny-server" (repo </> "tiny-server")
+                   `flag` P.BuildDep "hsx2hs")
     ]
 
 relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
@@ -735,7 +736,7 @@ happstack _home release =
     , debianize (hackage "fay-base")
     , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
     , debianize (darcs "mastermind" "http://hub.darcs.net/stepcut/mastermind"
-                   `patch` $(embedFile "patches/mastermind.diff")
+                   -- `patch` $(embedFile "patches/mastermind.diff")
                    `flag` P.CabalDebian ["--build-dep=hsx2hs",
                                          "--build-dep=haskell-fay-utils",
                                          "--build-dep=haskell-fay-base-utils",
