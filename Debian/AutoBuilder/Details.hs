@@ -441,6 +441,7 @@ myGlobalRelaxInfo =
      "ncurses-bin",
      "perl",
      "perl-base",
+     "python-minimal",
      "tar",
      "sysvinit",
      "libc6-dev",
