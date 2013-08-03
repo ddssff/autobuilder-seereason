@@ -209,7 +209,7 @@ main _home release =
                    `patch` $(embedFile "patches/hdaemonize.diff"))
     , debianize (hackage "hsyslog")
     , debianize (hackage "erf" `flag` P.DebVersion "2.0.0.0-3")
-    , debianize (hackage "feed") `flag` (rel release (P.DebVersion "0.3.8-3") (P.DebVersion "0.3.8-3build2"))
+    , debianize (hackage "feed")
     -- Darcs 2.8.1 won't build with the current version of haskeline.
     -- , apt "wheezy" "darcs" `patch` $(embedFile "patches/darcs.diff")
     , debianize (hackage "file-embed")
@@ -241,7 +241,7 @@ main _home release =
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline" `flag` P.DebVersion "0.7.0.3-1~hackage1")
     , debianize (hackage "th-orphans")
-    , debianize (hackage "haskell-src-meta" `patch` $(embedFile "patches/haskell-src-meta.diff"))
+    , debianize (hackage "haskell-src-meta")
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -666,8 +666,8 @@ platform release =
 clckwrks _home release =
     let useDevRepo = True
         repo = if useDevRepo
-               then "http://hub.darcs.net/stepcut/clckwrks-dev"
-               else "http://hub.darcs.net/stepcut/clckwrks"
+               then (darcsHub ++ "/clckwrks-dev")
+               else (darcsHub ++ "/clckwrks")
                -- localRepo _home ++ "/clckwrks"
     in
     P.Packages (singleton "clckwrks") $
@@ -735,7 +735,7 @@ happstack _home release =
     , debianize (hackage "fay")
     , debianize (hackage "fay-base")
     , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
-    , debianize (darcs "mastermind" "http://hub.darcs.net/stepcut/mastermind"
+    , debianize (darcs "mastermind" (darcsHub ++ "/mastermind")
                    -- `patch` $(embedFile "patches/mastermind.diff")
                    `flag` P.CabalDebian ["--build-dep=hsx2hs",
                                          "--build-dep=haskell-fay-utils",
@@ -943,7 +943,7 @@ plugins = P.Packages (singleton "plugins") $
     [ debianize (hackage "plugins")
     , debianize (hackage "plugins-auto" `patch` $(embedFile "patches/plugins-auto.diff"))
     , debianize (hackage "happstack-plugins" `patch` $(embedFile "patches/happstack-plugins.diff"))
-    , debianize (darcs "haskell-web-plugins" "http://hub.darcs.net/stepcut/web-plugins" `cd` "web-plugins")
+    , debianize (darcs "haskell-web-plugins" (darcsHub ++ "/web-plugins") `cd` "web-plugins")
     ]
 
 algebra release =
