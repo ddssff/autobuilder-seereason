@@ -689,45 +689,28 @@ clckwrks _home release =
                                            "json2")
                                           $(embedFile "patches/clckwrks.diff"))
                     , P.flags = [P.BuildDep "hsx2hs"] }
-        , P.Package { P.name = "haskell-clckwrks-cli"
-                    , P.spec = Debianize (Patch (Cd "clckwrks-cli" (Darcs repo)) $(embedFile "patches/clckwrks-cli.diff"))
-                    , P.flags = [] }
-        , P.Package { P.name = "haskell-clckwrks-plugin-bugs"
-                    , P.spec = Debianize (Cd "clckwrks-plugin-bugs" (Darcs repo))
-                    , P.flags = [P.BuildDep "hsx2hs"] }
-        , P.Package { P.name = "haskell-clckwrks-plugin-media"
-                    , P.spec = Debianize (Cd "clckwrks-plugin-media" (Darcs repo))
-                    , P.flags = [P.BuildDep "hsx2hs"] }
-        , P.Package { P.name = "haskell-clckwrks-plugin-ircbot"
-                    , P.spec = Debianize (Cd "clckwrks-plugin-ircbot" (Darcs repo))
-                    , P.flags = [P.BuildDep "hsx2hs"] }
-        , P.Package { P.name = "haskell-clckwrks-theme-bootstrap"
-                    , P.spec = Debianize (Cd "clckwrks-theme-bootstrap" (Darcs repo))
-                    , P.flags = [P.BuildDep "hsx2hs"] }
-        , P.Package { P.name = "clckwrks-dot-com"
-                    , P.spec = Debianize (Patch (Cd "clckwrks-dot-com" (Darcs repo)) $(embedFile "patches/clckwrks-dot-com.diff"))
-                    , P.flags = [] }
-        , P.Package { P.name = "clckwrks-theme-clckwrks"
-                    , P.spec = Debianize (Cd "clckwrks-theme-clckwrks" (Darcs repo))
-                    , P.flags = [P.BuildDep "hsx2hs"] }
+        , debianize (darcs "haskell-clckwrks-cli" repo `cd` "clckwrks-cli" {- `patch` $(embedFile "patches/clckwrks-cli.diff") -})
+        , debianize (darcs "haskell-clckwrks-plugin-bugs" repo `cd` "clckwrks-plugin-bugs" `flag` P.BuildDep "hsx2hs")
+        , debianize (darcs "haskell-clckwrks-plugin-media" repo `cd` "clckwrks-plugin-media" `flag` P.BuildDep "hsx2hs")
+        , debianize (darcs "haskell-clckwrks-plugin-ircbot" repo `cd` "clckwrks-plugin-ircbot" `flag` P.BuildDep "hsx2hs")
+        , debianize (darcs "haskell-clckwrks-theme-bootstrap" repo `cd` "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
+        , debianize (darcs "clckwrks-dot-com" repo `cd` "clckwrks-dot-com" `patch` $(embedFile "patches/clckwrks-dot-com.diff"))
+        , debianize (darcs "haskell-clckwrks-theme-clckwrks" repo `cd` "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
         , debianize (hackage "jmacro")
         , debianize (hackage "hsx-jmacro")
         , debianize (hackage "monadlist")
         ] ++
     if useDevRepo
-    then [ P.Package { P.name = "haskell-clckwrks-plugin-page"
-                     , P.spec = Debianize (Cd "clckwrks-plugin-page" (Darcs repo))
-                     , P.flags = [P.BuildDep "hsx2hs"] } ]
+    then [ debianize (darcs "haskell-clckwrks-plugin-page" repo `cd` "clckwrks-plugin-page" `flag` P.BuildDep "hsx2hs") ]
     else []
 
 happstack _home release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String in
     P.Packages (singleton "happstack")
     [ plugins
-    -- , debianize (darcs "haskell-debian-packaging" (repo </> "debian-packaging"))
     , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
     , debianize (hackage "happstack" `patch` $(embedFile "patches/happstack.diff"))
-    , debianize (hackage "happstack-foundation" `patch` $(embedFile "patches/happstack-foundation.diff"))
+    , debianize (darcs "haskell-happstack-foundation" (darcsHub ++ "/happstack") `cd` "happstack-foundation")
     , debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
     , debianize (hackage "cryptohash-cryptoapi")
     , debianize (hackage "happstack-fay-ajax")
@@ -737,7 +720,6 @@ happstack _home release =
     , debianize (hackage "fay-base")
     , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
     , debianize (darcs "mastermind" (darcsHub ++ "/mastermind")
-                   -- `patch` $(embedFile "patches/mastermind.diff")
                    `flag` P.CabalDebian ["--build-dep=hsx2hs",
                                          "--build-dep=haskell-fay-utils",
                                          "--build-dep=haskell-fay-base-utils",
@@ -822,7 +804,6 @@ happstack _home release =
     , debianize (hackage "acid-state")
     ]
 
--- | Packages pinned pending update of happstack-authenticate (in one possible build order.)
 authenticate _home release =
   P.Packages (singleton "authenticate") $
     [ conduit
@@ -832,10 +813,7 @@ authenticate _home release =
     , debianize (hackage "resourcet")
     , debianize (hackage "mmorph")
     , debianize (hackage "void")
-    -- Version 1.3.1 may be too new for tls 0.9.11
-    , debianize (hackage "certificate"
-                   -- `patch` $(embedFile "patches/certificate.diff")
-                )
+    , debianize (hackage "certificate")
     , debianize (hackage "pem")
     , debianize (hackage "zlib-bindings")
     , debianize (hackage "tls")
@@ -846,15 +824,13 @@ authenticate _home release =
     , debianize (hackage "crypto-cipher-types")
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
-    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate") `patch` $(embedFile "patches/happstack-authenticate.diff"))
+    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
     , digestiveFunctors
     , debianize (hackage "fb")
     , debianize (hackage "monad-logger")
     , debianize (hackage "fast-logger")
     , debianize (hackage "date-cache")
     , debianize (hackage "unix-time")
-    -- Seems to have disappeared
-    -- , debianize (hackage "memoizable")
     ]
 
 digestiveFunctors =
