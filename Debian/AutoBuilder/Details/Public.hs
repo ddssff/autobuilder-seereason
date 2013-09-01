@@ -898,7 +898,6 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "GLFW-task")
     , debianize (hackage "bindings-GLFW"
                              -- `patch` $(embedFile "patches/bindings-GLFW.diff")
-                             `flag` P.DevelDep "libxrandr-dev = 2:1.3.2-2ubuntu0.2"
                              -- `flag` P.DevelDep "libxrandr2"
                              `flag` P.DevelDep "libx11-dev"
                              `flag` P.DevelDep "libgl1-mesa-dev"

@@ -15,7 +15,8 @@ import qualified Debian.AutoBuilder.Params as P
 import qualified Debian.AutoBuilder.Types.CacheRec as P
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
-import Debian.Relation (BinPkgName(..))
+import Debian.Relation (Relation(..), BinPkgName(..))
+import Debian.Relation.String (parseRelations)
 import qualified Debian.AutoBuilder.Details.Public as Public
 import qualified Debian.AutoBuilder.Details.Private as Private
 
@@ -125,12 +126,13 @@ applyDepMap x@(P.Package {}) =
                   P.MapDep "Xi" (deb "libxi-dev"),
                   P.MapDep "Xxf86vm" (deb "libxxf86vm-dev"),
                   P.MapDep "pthread" (deb "libc6-dev"),
-                  P.MapDep "Xrandr" (deb "libxrandr-dev"),
+                  P.MapDep "Xrandr" (rel "libxrandr-dev (= 2:1.3.2-2ubuntu0.2)"),
                   -- the libxrandr-dev-lts-quantal package installs
                   -- /usr/lib/x86_64-linux-gnu/libXrandr_ltsq.so.
                   -- P.MapDep "Xrandr_ltsq" (deb "libxrandr-dev-lts-quantal"),
                   P.MapDep "freetype" (deb "libfreetype6-dev")]
-      deb = BinPkgName
+      deb s = [[Rel (BinPkgName s) Nothing Nothing]]
+      rel s = either (error $ "Parse error in debian relations: " ++ show s) id (parseRelations s)
 
 applyEpochMap :: P.Packages -> P.Packages
 applyEpochMap P.NoPackage = P.NoPackage
