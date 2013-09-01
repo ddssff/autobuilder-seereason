@@ -129,7 +129,6 @@ main _home release =
     , debianize (hackage "base-unicode-symbols")
     , debianize (hackage "bimap" `flag` P.DebVersion "0.2.4-1~hackage1")
     , debianize (hackage "Validation" `patch` $(embedFile "patches/validation.diff"))
-    , debianize (hackage "data-default")
     , debianize (hackage "template-default"
                 -- `patch` $(embedFile "patches/template-default.diff")
                 )
@@ -150,7 +149,7 @@ main _home release =
     , debianize (hackage "citeproc-hs")
     , debianize (hackage "hexpat")
     , debianize (hackage "List")
-    , debianize (hackage "uuid")
+    , debianize (hackage "uuid" `patch` $(embedFile "patches/uuid.diff"))
     , debianize (hackage "maccatcher" `flag` P.DebVersion "2.1.5-3")
     , debianize (hackage "colour"
                    `pflag` P.DebVersion "2.3.3-1build1"
@@ -162,8 +161,10 @@ main _home release =
     , darcs "haskell-consumer" (repo </> "haskell-consumer")
     , debianize (darcs "haskell-module-management" (repo </> "module-management")
                    `flag` P.BuildDep "rsync")
+    , debianize (hackage "securemem")
     , debianize (hackage "cipher-aes")
     , debianize (hackage "cprng-aes")
+    , debianize (hackage "crypto-random")
     , debianize (hackage "crypto-random-api")
     , debianize (hackage "Crypto")
     , debianize (hackage "crypto-api" `qflag` P.DebVersion "0.10.2-1build3")
@@ -241,7 +242,7 @@ main _home release =
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline" `flag` P.DebVersion "0.7.0.3-1~hackage1")
     , debianize (hackage "th-orphans")
-    , debianize (hackage "haskell-src-meta")
+    , debianize (hackage "haskell-src-meta" `patch` $(embedFile "patches/haskell-src-meta.diff"))
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -324,9 +325,10 @@ main _home release =
     , P.Package { P.name = "haskell-nano-hmac"
                 , P.spec = Debianize (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff"))
                 , P.flags = [P.DebVersion "0.2.0ubuntu1"] }
-    , P.Package { P.name = "haskell-openid"
+    , debianize (hackage "openid")
+{-  , P.Package { P.name = "haskell-openid"
                 , P.spec = Debianize (Patch (Hackage "openid") $(embedFile "patches/openid-ghc76.diff"))
-                , P.flags = [] }
+                , P.flags = [] } -}
     , P.Package { P.name = "haskell-operational"
                 , P.spec = Debianize (Hackage "operational")
                 , P.flags = [P.OmitLTDeps] }
@@ -383,7 +385,7 @@ main _home release =
     -- Version 1.14, which is in darcs, is too new for the current haskell-src-meta and haskell-derive
     , debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
                  hackage "haskell-src-exts"
-                   `patch` $(embedFile "patches/haskell-src-exts.diff")
+                   `flag` P.CabalPin "1.13.5" -- Waiting for haskell-src-meta > 0.6.0.3 and haskell-hsx > 0.10.4
                    `flag` P.BuildDep "happy")
     , debianize (hackage "stb-image")
     , apt (rel release "wheezy" "quantal") "haskell-strict" -- for leksah
@@ -395,7 +397,7 @@ main _home release =
     , debianize (hackage "syb-with-class")
     , apt (rel release "wheezy" "quantal") "haskell-syb-with-class-instances-text"
     , debianize (hackage "tagged")
-    , debianize (hackage "tagsoup")
+    , debianize (hackage "tagsoup" `flag` P.CabalPin "0.12.8") -- waiting for pandoc > 1.11.1
     , debianize (hackage "tar")
     , debianize (hackage "terminfo"
                              `flag` P.DevelDep "libncurses5-dev"
@@ -427,8 +429,9 @@ main _home release =
                 , P.spec = Debianize (Hackage "language-ecmascript")
                 , P.flags = [] }
     , debianize (hackage "charset")
+    , debianize (hackage "union-find")
     , debianize (hackage "Elm")
-    , debianize (hackage "elm-server" `patch` $(embedFile "patches/elm-server.diff"))
+    , debianize (hackage "elm-server" {- `patch` $(embedFile "patches/elm-server.diff") -})
     , debianize (hackage "gdiff")
     , debianize (hackage "hjsmin")
     , debianize (hackage "unix-compat")
@@ -452,9 +455,7 @@ main _home release =
                 , P.spec = Debianize (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff"))
                 , P.flags =  [] }
     , debianize (hackage "vault")
-    , P.Package { P.name = "haskell-wai"
-                , P.spec = Debianize (Hackage "wai")
-                , P.flags = [] }
+    , debianize (hackage "wai" `patch` $(embedFile "patches/wai.diff"))
     , P.Package { P.name = "haskell-web-encodings"
                 , P.spec = Debianize (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff"))
                 , P.flags = [] }
@@ -511,7 +512,7 @@ main _home release =
     , debianize (hackage "hlatex")
     , debianize (hackage "latex")
     , debianize (hackage "texmath")
-    , debianize (hackage "derive")
+    , debianize (hackage "derive" `flag` P.CabalPin "2.5.11") -- Waiting for haskell-src-exts >= 1.14
     , debianize (hackage "frquotes")
     , P.Package { P.name = "foo2zjs"
                 , P.spec = Apt "quantal" "foo2zjs"
@@ -540,9 +541,9 @@ main _home release =
     , debianize (hackage "urlencoded")
     , debianize (hackage "resourcet")
     , debianize (hackage "hxt")
-    , debianize (hackage "hxt-charproperties") `flag` P.DebVersion "9.1.1-2build1"
+    , debianize (hackage "hxt-charproperties")
     , debianize (hackage "hxt-regex-xmlschema")
-    , debianize (hackage "hxt-unicode") `flag` P.DebVersion "9.0.2-2"
+    , debianize (hackage "hxt-unicode")
     , case release of
         "wheezy-seereason" -> debianize (hackage "network")
         _ -> P.NoPackage
@@ -558,7 +559,7 @@ compiler release =
       "squeeze-seereason" -> P.NoPackage -- Omitted to avoid a big rebuild
       _ -> P.Packages (singleton "ghc") [ghc76, devscripts]
     where
-      ghc76 = apt "sid" "ghc" -- As of 8 Jun 2013 this contains 7.6.3-3
+      ghc76 = apt "sid" "ghc" -- As of 8 Jun 2013 this contains 7.6.3-3.  As of 30 Aug 2013 it contains 7.6.3-4.
                 `rename` "ghc"
                 `relax` "ghc"
                 `relax` "happy"
@@ -732,7 +733,7 @@ happstack _home release =
     , debianize (hackage "happstack-fay-ajax")
     , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs"])
     , debianize (hackage "fay-hsx")
-    , debianize (hackage "fay")
+    , debianize (hackage "fay" `flag` P.CabalPin "0.15.0.0") -- Waiting for haskell-src-exts >= 1.14
     , debianize (hackage "fay-base")
     , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
     , debianize (darcs "mastermind" (darcsHub ++ "/mastermind")
@@ -841,7 +842,8 @@ authenticate _home release =
     , debianize (hackage "tls-extra")
     , debianize (hackage "cipher-rc4")
     , debianize (hackage "crypto-pubkey")
-    , debianize (hackage "crypto-numbers")
+    , debianize (hackage "crypto-numbers" `patch` $(embedFile "patches/crypto-numbers.diff"))
+    , debianize (hackage "crypto-cipher-types")
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack-authenticate") `patch` $(embedFile "patches/happstack-authenticate.diff"))

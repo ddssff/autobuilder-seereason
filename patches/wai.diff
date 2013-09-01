@@ -1,0 +1,10 @@
+--- old/wai.cabal	2013-08-02 18:48:24.000000000 -0700
++++ new/wai.cabal	2013-08-02 20:30:34.173078086 -0700
+@@ -25,6 +25,6 @@
+                    , http-types                >= 0.7
+                    , text                      >= 0.7
+                    , transformers              >= 0.2.2
+-                   , vault                     >= 0.1      && < 0.3
++                   , vault                     >= 0.1
+   Exposed-modules:   Network.Wai
+   ghc-options:       -Wall
