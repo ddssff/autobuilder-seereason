@@ -107,7 +107,7 @@ isDebianizeSpec  :: P.RetrieveMethod -> Bool
 isDebianizeSpec (P.Debianize _) = True
 isDebianizeSpec _ = False
 
--- | Supply some special cases to map cabal library names to debian.
+-- | Add MapDep and DevelDep flags Supply some special cases to map cabal library names to debian.
 applyDepMap :: P.Packages -> P.Packages
 applyDepMap P.NoPackage = P.NoPackage
 applyDepMap (P.Packages n s) = P.Packages n (map applyDepMap s)
@@ -122,8 +122,13 @@ applyDepMap x@(P.Package {}) =
                   P.MapDep "glut" (deb "freeglut3-dev"),
                   P.MapDep "m" (deb "libc6-dev"),
                   P.MapDep "X11" (deb "libx11-dev"),
+                  P.MapDep "Xi" (deb "libxi-dev"),
+                  P.MapDep "Xxf86vm" (deb "libxxf86vm-dev"),
+                  P.MapDep "pthread" (deb "libc6-dev"),
                   P.MapDep "Xrandr" (deb "libxrandr-dev"),
-                  P.MapDep "Xrandr_ltsq" (deb "libxrandr-dev-lts-quantal"),
+                  -- the libxrandr-dev-lts-quantal package installs
+                  -- /usr/lib/x86_64-linux-gnu/libXrandr_ltsq.so.
+                  -- P.MapDep "Xrandr_ltsq" (deb "libxrandr-dev-lts-quantal"),
                   P.MapDep "freetype" (deb "libfreetype6-dev")]
       deb = BinPkgName
 
