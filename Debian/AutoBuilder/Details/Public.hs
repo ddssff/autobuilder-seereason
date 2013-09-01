@@ -893,9 +893,18 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "ObjectName")
     , debianize (hackage "monad-task")
     , debianize (hackage "GLFW" `flag` P.DevelDep "libglu1-mesa-dev")
-    , debianize (hackage "GLFW-b" `patch` $(embedFile "patches/GLFW-b.diff") `flag` P.DevelDep "libxrandr-dev-lts-quantal")
-    , debianize (hackage "GLFW-b-demo" `patch` $(embedFile "patches/GLFW-b-demo.diff"))
+    , debianize (hackage "GLFW-b")
+    , debianize (hackage "GLFW-b-demo")
     , debianize (hackage "GLFW-task")
+    , debianize (hackage "bindings-GLFW"
+                             -- `patch` $(embedFile "patches/bindings-GLFW.diff")
+                             `flag` P.DevelDep "libxrandr-dev = 2:1.3.2-2ubuntu0.2"
+                             -- `flag` P.DevelDep "libxrandr2"
+                             `flag` P.DevelDep "libx11-dev"
+                             `flag` P.DevelDep "libgl1-mesa-dev"
+                             `flag` P.DevelDep "libxi-dev"
+                             `flag` P.DevelDep "libxxf86vm-dev")
+    , debianize (hackage "bindings-DSL")
 --    , debianize (hackage "freetype2")
 --    , debianize (hackage "FreeTypeGL") -- Does not build because (freetype2 > 0.1.2) but the lib (haskell, at least) is at 0.1.1.
     , debianize (hackage "FTGL" `flag` P.DevelDep "libftgl-dev" `flag` P.DevelDep "libfreetype6-dev")
