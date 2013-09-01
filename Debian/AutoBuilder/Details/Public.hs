@@ -716,8 +716,9 @@ happstack _home release =
     , debianize (hackage "happstack-fay-ajax")
     , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs"])
     , debianize (hackage "fay-hsx")
-    , debianize (hackage "fay" `flag` P.CabalPin "0.15.0.0") -- Waiting for haskell-src-exts >= 1.14
+    , debianize (hackage "fay" `flag` P.CabalPin "0.16.0.1") -- Waiting for haskell-src-exts >= 1.14
     , debianize (hackage "fay-base")
+    , debianize (hackage "fay-text")
     , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
     , debianize (darcs "mastermind" (darcsHub ++ "/mastermind")
                    `flag` P.CabalDebian ["--build-dep=hsx2hs",
