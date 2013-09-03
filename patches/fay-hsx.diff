@@ -1,0 +1,30 @@
+--- old/fay-hsx.cabal	2013-09-03 00:16:58.000000000 -0700
++++ new/fay-hsx.cabal	2013-09-03 00:19:43.230724501 -0700
+@@ -19,5 +19,6 @@
+   hs-source-dirs: src
+   exposed-modules:     HTML
+ 
+-  build-depends:       fay-base         == 0.14.*,
+-                       fay-jquery       == 0.3.*
++  build-depends:       fay-base         >= 0.14,
++                       fay-jquery       >= 0.3,
++                       fay-text
+--- old/src/HTML.hs	2013-09-03 00:21:05.000000000 -0700
++++ new/src/HTML.hs	2013-09-03 00:25:08.058729166 -0700
+@@ -6,6 +6,7 @@
+ -}
+ module HTML where
+ 
++import Fay.Text (pack)
+ import Prelude
+ import JQuery
+ import FFI
+@@ -57,7 +58,7 @@
+            -> Fay JQuery
+ renderHTML (Element n attrs children) =
+     do elem <- selectElement =<< createElement n
+-       mapM_ (\(n, v) -> setAttr n v elem) attrs
++       mapM_ (\(n, v) -> setAttr (pack n) (pack v) elem) attrs
+        mapM_ (\child ->
+                   do cElem <- renderHTML child
+                      append cElem elem) children

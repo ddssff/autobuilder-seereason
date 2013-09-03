@@ -385,7 +385,7 @@ main _home release =
     -- Version 1.14, which is in darcs, is too new for the current haskell-src-meta and haskell-derive
     , debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
                  hackage "haskell-src-exts"
-                   `flag` P.CabalPin "1.13.5" -- Waiting for haskell-src-meta > 0.6.0.3 and haskell-hsx > 0.10.4
+                   {- `flag` P.CabalPin "1.13.5" -} -- Waiting for haskell-src-meta > 0.6.0.3 and haskell-hsx > 0.10.4
                    `flag` P.BuildDep "happy")
     , debianize (hackage "stb-image")
     , apt (rel release "wheezy" "quantal") "haskell-strict" -- for leksah
@@ -512,7 +512,7 @@ main _home release =
     , debianize (hackage "hlatex")
     , debianize (hackage "latex")
     , debianize (hackage "texmath")
-    , debianize (hackage "derive" `flag` P.CabalPin "2.5.11") -- Waiting for haskell-src-exts >= 1.14
+    , debianize (hackage "derive" {- `flag` P.CabalPin "2.5.11" -}) -- Waiting for haskell-src-exts >= 1.14
     , debianize (hackage "frquotes")
     , P.Package { P.name = "foo2zjs"
                 , P.spec = Apt "quantal" "foo2zjs"
@@ -713,14 +713,14 @@ happstack _home release =
     , debianize (darcs "haskell-happstack-foundation" (darcsHub ++ "/happstack") `cd` "happstack-foundation")
     , debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
     , debianize (hackage "cryptohash-cryptoapi")
-    , debianize (hackage "happstack-fay-ajax")
-    , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs"])
-    , debianize (hackage "fay-hsx")
-    , debianize (hackage "fay" `flag` P.CabalPin "0.16.0.1") -- Waiting for haskell-src-exts >= 1.14
-    , debianize (hackage "fay-base" `flag` P.CabalPin "0.14.3.2") -- Waiting for happstack-fay-ajax > 0.2.0
-    -- , debianize (hackage "fay-text") -- Waiting for fay-0.17
-    -- , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery") -- waiting for fay-text
-    , debianize (hackage "fay-jquery" `flag` P.CabalPin "0.3.0.0")
+    , debianize (hackage "happstack-fay-ajax" `patch` $(embedFile "patches/happstack-fay-ajax.diff"))
+    , debianize (hackage "hsx2hs" `patch` $(embedFile "patches/hsx2hs.diff") `flag` P.CabalDebian ["--executable", "hsx2hs"])
+    , debianize (hackage "fay-hsx" `patch` $(embedFile "patches/fay-hsx.diff"))
+    , debianize (hackage "fay" {- `flag` P.CabalPin "0.16.0.1" -}) -- Waiting for haskell-src-exts >= 1.14
+    , debianize (hackage "fay-base" {- `flag` P.CabalPin "0.14.3.2" -}) -- Waiting for happstack-fay-ajax > 0.2.0
+    , debianize (hackage "fay-text") -- Waiting for fay-0.17
+    , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery") -- waiting for fay-text
+    -- , debianize (hackage "fay-jquery" `flag` P.CabalPin "0.3.0.0")
     , debianize (darcs "mastermind" (darcsHub ++ "/mastermind")
                    `flag` P.CabalDebian ["--build-dep=hsx2hs",
                                          "--build-dep=haskell-fay-utils",
@@ -762,6 +762,7 @@ happstack _home release =
     -- use debianize for natty and apt:sid for lucid.
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hsx"
+                   `patch` $(embedFile "patches/hsx.diff")
                    `flag` P.DebVersion "0.10.4-1~hackage1"
                    -- Putting trhsx into a package called trhsx is problematic,
                    -- because the official debian package puts it into libghc-hsx-utils.

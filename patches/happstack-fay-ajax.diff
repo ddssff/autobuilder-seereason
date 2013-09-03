@@ -1,0 +1,10 @@
+--- old/happstack-fay-ajax.cabal	2013-09-03 00:01:11.000000000 -0700
++++ new/happstack-fay-ajax.cabal	2013-09-03 00:06:58.282713518 -0700
+@@ -23,5 +23,5 @@
+   exposed-modules:     AJAX,
+                        ResponseType
+ 
+-  build-depends:       fay-base         == 0.14.*,
+-                       fay-jquery       == 0.3.*
++  build-depends:       fay-base         >= 0.14,
++                       fay-jquery       >= 0.3

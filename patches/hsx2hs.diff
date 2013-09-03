@@ -1,0 +1,96 @@
+--- old/hsx2hs.cabal	2013-09-03 00:43:20.000000000 -0700
++++ new/hsx2hs.cabal	2013-09-03 00:48:14.586749074 -0700
+@@ -42,8 +42,8 @@
+ 
+ Library
+   Build-depends:	mtl              >= 2.0 && < 2.2,
+-                        haskell-src-exts >= 1.13,
+-                        haskell-src-meta >= 0.6 && < 0.7,
++                        haskell-src-exts >= 1.14,
++                        haskell-src-meta >= 0.6,
+                         template-haskell >= 2.7 && < 2.9,
+                         utf8-string      == 0.3.*
+ 
+--- old/src/hsx2hs.hs	2013-09-03 00:38:20.000000000 -0700
++++ new/src/hsx2hs.hs	2013-09-03 00:41:52.282743585 -0700
+@@ -64,14 +64,15 @@
+                  transform $ checkParse $ parse fp fc
+ 
+ parse :: String -> String -> ParseResult Module
+-parse fn fc = parseModuleWithMode (ParseMode fn allExtensions False True (Just baseFixities)) fcuc
++parse fn fc = parseModuleWithMode (ParseMode fn Haskell2010 allExtensions False True (Just baseFixities)) fcuc
+   where fcuc= unlines $ filter (not . isPrefixOf "#") $ lines fc
+ 
+ usageString :: String
+ usageString = "Usage: hsx2hs <infile> [<outfile>]"
+ 
+ allExtensions :: [Extension]
+-allExtensions = [RecursiveDo,ParallelListComp,MultiParamTypeClasses,FunctionalDependencies,RankNTypes,ExistentialQuantification,
++allExtensions = map EnableExtension
++                   [RecursiveDo,ParallelListComp,MultiParamTypeClasses,FunctionalDependencies,RankNTypes,ExistentialQuantification,
+                     ScopedTypeVariables,ImplicitParams,FlexibleContexts,FlexibleInstances,EmptyDataDecls,KindSignatures,
+                     BangPatterns,TemplateHaskell,ForeignFunctionInterface,Arrows,Generics,NamedFieldPuns,PatternGuards,
+                     MagicHash,TypeFamilies,StandaloneDeriving,TypeOperators,RecordWildCards,GADTs,UnboxedTuples,
+--- old/src/Language/Haskell/HSX/QQ.hs	2013-09-03 00:01:13.000000000 -0700
++++ new/src/Language/Haskell/HSX/QQ.hs	2013-09-03 00:04:56.346711767 -0700
+@@ -66,10 +66,10 @@
+ parseHsExp = either Left (Right . transformExp) . parseResultToEither . parseExpWithMode parseMode
+ 
+ parseMode :: ParseMode
+-parseMode = ParseMode "" allExtensions False True (Just baseFixities)
++parseMode = ParseMode "" Haskell2010 allExtensions False True (Just baseFixities)
+ 
+-allExtensions :: [Extension]
+-allExtensions =
++allExtensions :: [Extension]
++allExtensions = map EnableExtension
+     [RecursiveDo,ParallelListComp,MultiParamTypeClasses,FunctionalDependencies,RankNTypes,ExistentialQuantification,
+      ScopedTypeVariables,ImplicitParams,FlexibleContexts,FlexibleInstances,EmptyDataDecls,KindSignatures,
+      BangPatterns,TemplateHaskell,ForeignFunctionInterface,Arrows,Generics,NamedFieldPuns,PatternGuards,
+--- old/src/Language/Haskell/HSX/Transform.hs	2013-09-02 22:53:14.000000000 -0700
++++ new/src/Language/Haskell/HSX/Transform.hs	2013-09-02 23:53:47.674702166 -0700
+@@ -349,7 +349,7 @@
+     App e1 e2         -> transform2exp e1 e2 App
+     NegApp e          -> fmap NegApp $ transformExpM e
+     If e1 e2 e3       -> transform3exp e1 e2 e3 If
+-    Tuple es          -> fmap Tuple $ mapM transformExpM es
++    Tuple bx es       -> fmap (Tuple bx) $ mapM transformExpM es
+     List es           -> fmap List $ mapM transformExpM es
+     Paren e           -> fmap Paren $ transformExpM e
+     LeftSection e op  -> do e' <- transformExpM e
+@@ -694,7 +694,7 @@
+                                 (\p1 p2 -> PInfixApp p1 n p2)
+                                 renameRP
+     PApp n ps         -> renameNpat ps (PApp n) renameRP
+-    PTuple ps         -> renameNpat ps PTuple renameRP
++    PTuple bx ps      -> renameNpat ps (PTuple bx) renameRP
+     PList ps          -> renameNpat ps PList renameRP
+     PParen p          -> rename1pat p PParen renameRP
+     PRec n pfs        -> renameNpat pfs (PRec n) renameRPf
+@@ -758,7 +758,7 @@
+                                 (\p1 p2 -> PInfixApp p1 n p2)
+                                 renameIrrP
+     PApp n ps         -> renameNpat ps (PApp n) renameIrrP
+-    PTuple ps         -> renameNpat ps PTuple renameIrrP
++    PTuple bx ps      -> renameNpat ps (PTuple bx) renameIrrP
+     PList ps          -> renameNpat ps PList renameIrrP
+     PParen p          -> rename1pat p PParen renameIrrP
+     PRec n pfs        -> renameNpat pfs (PRec n) renameIrrPf
+@@ -986,7 +986,7 @@
+     PNeg q             -> tr1pat q PNeg (trPattern s)
+     PInfixApp p1 op p2 -> tr2pat p1 p2 (\p1 p2 -> PInfixApp p1 op p2) (trPattern s)
+     PApp n ps          -> trNpat ps (PApp n) (trPattern s)
+-    PTuple ps          -> trNpat ps PTuple (trPattern s)
++    PTuple bx ps       -> trNpat ps (PTuple bx) (trPattern s)
+     PList ps           -> trNpat ps PList (trPattern s)
+     PParen p           -> tr1pat p PParen (trPattern s)
+     PRec n pfs         -> trNpat pfs (PRec n) (trPatternField s)
+@@ -1483,7 +1483,7 @@
+             PInfixApp p1 _ p2  -> gatherPVars p1 ++
+                                          gatherPVars p2
+             PApp _ ps          -> concatMap gatherPVars ps
+-            PTuple ps          -> concatMap gatherPVars ps
++            PTuple _ ps        -> concatMap gatherPVars ps
+             PList ps           -> concatMap gatherPVars ps
+             PParen p           -> gatherPVars p
+             PRec _ pfs         -> concatMap help pfs
