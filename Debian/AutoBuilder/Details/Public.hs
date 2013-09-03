@@ -606,7 +606,7 @@ platform release =
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     , debianize (hackage "stm")
     , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
-    , debianize (hackage "mtl")
+    , debianize (hackage "mtl" `relax` "hsx2hs")
     , debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
     , debianize (hackage "parallel")
     , debianize (hackage "syb")
