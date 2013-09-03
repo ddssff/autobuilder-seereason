@@ -149,7 +149,7 @@ main _home release =
     , debianize (hackage "citeproc-hs")
     , debianize (hackage "hexpat")
     , debianize (hackage "List")
-    , debianize (hackage "uuid" `patch` $(embedFile "patches/uuid.diff"))
+    , debianize (hackage "uuid" {- `patch` $(embedFile "patches/uuid.diff") -})
     , debianize (hackage "maccatcher" `flag` P.DebVersion "2.1.5-3")
     , debianize (hackage "colour"
                    `pflag` P.DebVersion "2.3.3-1build1"
@@ -455,7 +455,7 @@ main _home release =
                 , P.spec = Debianize (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff"))
                 , P.flags =  [] }
     , debianize (hackage "vault")
-    , debianize (hackage "wai" `patch` $(embedFile "patches/wai.diff"))
+    , debianize (hackage "wai" {- `patch` $(embedFile "patches/wai.diff") -})
     , P.Package { P.name = "haskell-web-encodings"
                 , P.spec = Debianize (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff"))
                 , P.flags = [] }
@@ -717,9 +717,10 @@ happstack _home release =
     , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs"])
     , debianize (hackage "fay-hsx")
     , debianize (hackage "fay" `flag` P.CabalPin "0.16.0.1") -- Waiting for haskell-src-exts >= 1.14
-    , debianize (hackage "fay-base")
-    , debianize (hackage "fay-text")
-    , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
+    , debianize (hackage "fay-base" `flag` P.CabalPin "0.14.3.2") -- Waiting for happstack-fay-ajax > 0.2.0
+    -- , debianize (hackage "fay-text") -- Waiting for fay-0.17
+    -- , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery") -- waiting for fay-text
+    , debianize (hackage "fay-jquery" `flag` P.CabalPin "0.3.0.0")
     , debianize (darcs "mastermind" (darcsHub ++ "/mastermind")
                    `flag` P.CabalDebian ["--build-dep=hsx2hs",
                                          "--build-dep=haskell-fay-utils",
