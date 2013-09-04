@@ -710,7 +710,10 @@ happstack _home release =
     , debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
     , debianize (hackage "cryptohash-cryptoapi")
     , debianize (hackage "happstack-fay-ajax" `patch` $(embedFile "patches/happstack-fay-ajax.diff"))
-    , debianize (hackage "hsx2hs" `patch` $(embedFile "patches/hsx2hs.diff") `flag` P.CabalDebian ["--executable", "hsx2hs"])
+    , debianize (hackage "hsx2hs" `patch` $(embedFile "patches/hsx2hs.diff") `flag` P.CabalDebian ["--executable", "hsx2hs",
+                                                                                                   "--conflicts=hsx2hs:haskell-hsx-utils",
+                                                                                                   "--replaces=hsx2hs:haskell-hsx-utils",
+                                                                                                   "--provides=hsx2hs:haskell-hsx-utils"])
     , debianize (hackage "fay-hsx" `patch` $(embedFile "patches/fay-hsx.diff"))
     , debianize (hackage "fay")
     , debianize (hackage "fay-base")
