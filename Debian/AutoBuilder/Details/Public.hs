@@ -376,9 +376,6 @@ main _home release =
     , debianize (hackage "shakespeare")
     , debianize (hackage "shakespeare-css")
     , debianize (hackage "system-fileio")
-    , debianize (hackage "simple-css"
-                   `patch` $(embedFile "patches/simple-css.diff")
-                   `flag` P.DebVersion "0.0.4-1~hackage1")
     , debianize (hackage "SMTPClient")
     , debianize (hackage "socks")
     , debianize (hackage "split")
