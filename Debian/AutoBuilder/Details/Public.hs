@@ -760,13 +760,7 @@ happstack _home release =
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
-    , debianize (hackage "hsx"
-                   `patch` $(embedFile "patches/hsx.diff")
-                   `flag` P.DebVersion "0.10.4-1~hackage1"
-                   -- Putting trhsx into a package called trhsx is problematic,
-                   -- because the official debian package puts it into libghc-hsx-utils.
-                   -- `flag` P.CabalDebian ["--executable", "trhsx"]
-                )
+    , debianize (hackage "hsx" `patch` $(embedFile "patches/hsx.diff"))
     , debianize (hackage "pandoc"
                    `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc")
