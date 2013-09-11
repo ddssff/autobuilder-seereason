@@ -146,7 +146,7 @@ main _home release =
     --                      `patch` $(embedFile "patches/cabal-install.diff"))
     , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
     , apt (rel release "wheezy" "quantal") "haskell-cereal"
-    , debianize (hackage "citeproc-hs")
+    , debianize (hackage "citeproc-hs" `patch` $(embedFile "patches/citeproc-hs.diff"))
     , debianize (hackage "hexpat")
     , debianize (hackage "List")
     , debianize (hackage "uuid" {- `patch` $(embedFile "patches/uuid.diff") -})
@@ -268,9 +268,9 @@ main _home release =
     , debianize (hackage "HPDF")
     , debianize (hackage "hs-bibutils")
     , debianize (hackage "hsemail") -- (rel release [] [P.DebVersion "1.7.1-2build2"])
-    , P.Package { P.name = "haskell-hsopenssl"
-                , P.spec = Debianize (Patch (Hackage "HsOpenSSL") $(embedFile "patches/HsOpenSSL.diff"))
-                , P.flags = [ P.DevelDep "libssl-dev", P.DevelDep "libcrypto++-dev" ] }
+    , debianize (hackage "HsOpenSSL"
+                   `flag` P.DevelDep "libssl-dev"
+                   `flag` P.DevelDep "libcrypto++-dev")
     , debianize (hackage "HsSyck" `pflag` P.DebVersion "0.50-2" `qflag` P.DebVersion "0.50-2build2")
     , debianize (hackage "HStringTemplate")
     , darcs "haskell-html-entities" (repo </> "html-entities")
@@ -337,7 +337,7 @@ main _home release =
     , debianize (hackage "ordered")
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize (hackage "temporary")
-    , debianize (hackage "pandoc-types")
+    , debianize (hackage "pandoc-types" `flag` P.CabalPin "1.10") -- waiting for pandoc-1.12
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
     , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
@@ -426,8 +426,8 @@ main _home release =
                 , P.flags = [] }
     , debianize (hackage "charset")
     , debianize (hackage "union-find")
-    , debianize (hackage "Elm")
-    , debianize (hackage "elm-server" {- `patch` $(embedFile "patches/elm-server.diff") -})
+    -- , debianize (hackage "Elm")
+    -- , debianize (hackage "elm-server" {- `patch` $(embedFile "patches/elm-server.diff") -})
     , debianize (hackage "gdiff")
     , debianize (hackage "hjsmin")
     , debianize (hackage "unix-compat")
@@ -720,13 +720,13 @@ happstack _home release =
     , debianize (hackage "fay-text")
     , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
     -- , debianize (hackage "fay-jquery" `flag` P.CabalPin "0.3.0.0")
-    , debianize (darcs "mastermind" (darcsHub ++ "/mastermind")
+{-  , debianize (darcs "mastermind" (darcsHub ++ "/mastermind")
                    `flag` P.CabalDebian ["--build-dep=hsx2hs",
                                          "--build-dep=haskell-fay-utils",
                                          "--build-dep=haskell-fay-base-utils",
                                          "--build-dep=haskell-fay-hsx-utils",
                                          "--build-dep=haskell-fay-jquery-utils",
-                                         "--build-dep=haskell-happstack-fay-ajax-utils"])
+                                         "--build-dep=haskell-happstack-fay-ajax-utils"]) -} -- waiting for a fix
     , darcs "haskell-happstack-extra" (repo ++ "/happstack-extra")
 {-  , debianize (git "haskell-haskell-names" "https://github.com/haskell-suite/haskell-names")
     , debianize (git "haskell-haskell-packages" "https://github.com/haskell-suite/haskell-packages")
@@ -846,7 +846,7 @@ conduit =
     [ debianize (hackage "conduit")
     , debianize (hackage "attoparsec-conduit")
     , debianize (hackage "blaze-builder-conduit")
-    , debianize (hackage "http-conduit")
+    , debianize (hackage "http-conduit" `flag` P.CabalPin "1.9.4.4") -- I just wanted to avoid a rebuild
     , debianize (hackage "zlib-conduit")
     , debianize (hackage "xml-conduit")
     , debianize (hackage "mime-types")

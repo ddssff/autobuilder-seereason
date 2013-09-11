@@ -1,0 +1,11 @@
+--- old/citeproc-hs.cabal	2013-09-07 05:24:57.000000000 -0700
++++ new/citeproc-hs.cabal	2013-09-07 06:50:26.668023513 -0700
+@@ -111,7 +111,7 @@
+     ghc-prof-options: -prof -auto-all
+     hs-source-dirs:   src
+     build-depends:    containers, directory, mtl, json, utf8-string,
+-                      bytestring, filepath, pandoc-types >= 1.8 && < 1.11
++                      bytestring, filepath, pandoc-types >= 1.8
+ 
+     if flag(bibutils)
+        build-depends:   hs-bibutils >= 0.3
