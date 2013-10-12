@@ -28,7 +28,7 @@ libraries _home =
 
 applications _home =
     P.Packages (singleton "applications") $
-    [ debianize (darcs "haskell-artvaluereport2" (privateRepo ++ "/artvaluereport2"))
+    [ debianize (darcs "haskell-artvaluereport2" (privateRepo ++ "/artvaluereport2-clckwrks"))
     , debianize (darcs "haskell-artvaluereport-data" (privateRepo ++ "/artvaluereport-data"))
     , darcs "haskell-seereason" (privateRepo ++ "/seereason")
     , darcs "haskell-happstack-ontology" (privateRepo ++ "/happstack-ontology")
