@@ -68,14 +68,13 @@ autobuilder home =
     -- let repo = localRepo home in
     P.Packages (singleton "autobuilder-group") $
     [ unixutils home
-    , debianize (darcs "autobuilder" (repo </> "debian-tools-revert") `cd` "autobuilder")
-    , darcs "haskell-cabal-debian" (repo </> "debian-tools-revert") `cd` "cabal-debian"
+    , debianize (darcs "autobuilder" (repo </> "debian-tools") `cd` "autobuilder")
+    , darcs "haskell-cabal-debian" (repo </> "debian-tools") `cd` "cabal-debian"
     , darcs "haskell-debian" (repo ++ "/haskell-debian") `flag` P.RelaxDep "cabal-debian"
     , darcs "haskell-debian-mirror" (repo </> "mirror")
-    , darcs "haskell-debian-repo" (repo </> "debian-tools-revert") `cd` "debian-repo"
+    , darcs "haskell-debian-repo" (repo </> "debian-tools") `cd` "debian-repo"
     , darcs "haskell-archive" (repo </> "archive")
-    -- , debianize (darcs "haskell-process-extras" (repo </> "process-extras"))
-    -- , debianize (hackage "process-listlike")
+    , debianize (hackage "process-extras")
     , debianize (darcs "haskell-process-listlike" (repo </> "process-listlike"))
     , darcs "haskell-process-progress" (repo </> "debian-tools") `cd` "process-progress"
     ]
@@ -140,13 +139,14 @@ main _home release =
     -- , debianize (hackage "cairo-pdf")
     , debianize (hackage "case-insensitive")
     , debianize (hackage "cabal-install"
+                   `flag` P.CabalPin "1.16.0.2" -- Waiting for Cabal 1.18.0
                    `patch` $(embedFile "patches/cabal-install.diff"))
     -- , debianize (git "haskell-cabal-install" "https://github.com/haskell/cabal"
     --                      `cd` "cabal-install"
     --                      `patch` $(embedFile "patches/cabal-install.diff"))
     , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
     , apt (rel release "wheezy" "quantal") "haskell-cereal"
-    , debianize (hackage "citeproc-hs" `patch` $(embedFile "patches/citeproc-hs.diff"))
+    , debianize (hackage "citeproc-hs")
     , debianize (hackage "hexpat")
     , debianize (hackage "List")
     , debianize (hackage "uuid" {- `patch` $(embedFile "patches/uuid.diff") -})
@@ -242,7 +242,7 @@ main _home release =
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline" `flag` P.DebVersion "0.7.0.3-1~hackage1")
     , debianize (hackage "th-orphans")
-    , debianize (hackage "haskell-src-meta" `patch` $(embedFile "patches/haskell-src-meta.diff"))
+    , debianize (hackage "haskell-src-meta")
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -402,7 +402,7 @@ main _home release =
     , debianize (hackage "test-framework-hunit")
     -- Retired
     -- , debianize (hackage "test-framework-quickcheck")
-    , debianize (hackage "test-framework-quickcheck2" `patch` $(embedFile "patches/test-framework-quickcheck2.diff"))
+    , debianize (hackage "test-framework-quickcheck2")
     , debianize (hackage "test-framework-th")
     --
     -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
@@ -496,9 +496,8 @@ main _home release =
     , P.Package { P.name = "haskell-missingh"
                 , P.spec = Debianize (Hackage "MissingH")
                 , P.flags = [P.Revision ""] }
-    , P.Package { P.name = "seereason-keyring"
-                , P.spec = Darcs (repo </> "seereason-keyring")
-                , P.flags = [P.UDeb "seereason-keyring-udeb"] }
+    , darcs "seereason-keyring" (repo </> "seereason-keyring") `flag` P.UDeb "seereason-keyring-udeb"
+    , debianize (darcs "seereason-ports" (repo </> "seereason-ports"))
     , apt "wheezy" "tinymce"
     , P.Package { P.name = "vc-darcs"
                 , P.spec = Darcs (repo </> "vc-darcs")
@@ -710,10 +709,10 @@ happstack _home release =
     , debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
     , debianize (hackage "cryptohash-cryptoapi")
     , debianize (hackage "happstack-fay-ajax" `patch` $(embedFile "patches/happstack-fay-ajax.diff"))
-    , debianize (hackage "hsx2hs" `patch` $(embedFile "patches/hsx2hs.diff") `flag` P.CabalDebian ["--executable", "hsx2hs",
-                                                                                                   "--conflicts=hsx2hs:haskell-hsx-utils",
-                                                                                                   "--replaces=hsx2hs:haskell-hsx-utils",
-                                                                                                   "--provides=hsx2hs:haskell-hsx-utils"])
+    , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs",
+                                                        "--conflicts=hsx2hs:haskell-hsx-utils",
+                                                        "--replaces=hsx2hs:haskell-hsx-utils",
+                                                        "--provides=hsx2hs:haskell-hsx-utils"])
     , debianize (hackage "fay-hsx" `patch` $(embedFile "patches/fay-hsx.diff"))
     , debianize (hackage "fay") `flag` P.CabalDebian [ "--depends=cpphs:haskell-fay-utils" ]
     , debianize (hackage "fay-base")
@@ -736,7 +735,7 @@ happstack _home release =
     , debianize (git "haskell-cabal" "https://github.com/haskell/cabal" `cd` "Cabal") -}
     -- , debianize (hackage "cabal-install" `patch` $(embedFile "patches/cabal-install.diff"))
     , debianize (hackage "EitherT")
-    , debianize (hackage "type-eq" `patch` $(embedFile "patches/type-eq.diff"))
+    , debianize (hackage "type-eq")
     , debianize (hackage "traverse-with-class")
     , debianize (hackage "happstack-hsp"
                    -- `patch` $(embedFile "patches/happstack-hsp.diff")
@@ -761,9 +760,7 @@ happstack _home release =
     -- use debianize for natty and apt:sid for lucid.
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hsx" `patch` $(embedFile "patches/hsx.diff"))
-    , debianize (hackage "pandoc"
-                   `patch` $(embedFile "patches/pandoc.diff")
-                   `flag` P.RelaxDep "libghc-pandoc-doc")
+    , debianize (hackage "pandoc" `flag` P.RelaxDep "libghc-pandoc-doc")
     , debianize (hackage "markdown" `rename` "markdown")
     , debianize (hackage "highlighting-kate")
     , debianize (hackage "web-routes")
@@ -932,7 +929,7 @@ algebra release =
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "algebra")
-    [ debianize (hackage "data-lens" `patch` $(embedFile "patches/data-lens.diff"))
+    [ debianize (hackage "data-lens")
     , debianize (hackage "data-lens-template")
     , debianize (hackage "adjunctions")
     , debianize (hackage "algebra")
@@ -962,7 +959,7 @@ algebra release =
     , debianize (hackage "keys")
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras")
-    , debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff"))
+    , debianize (hackage "lens")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
     , debianize (hackage "lens-family-th" `patch` $(embedFile "patches/lens-family-th.diff"))

@@ -1,14 +1,3 @@
---- old/haskell-src-meta.cabal	2013-08-31 05:22:20.000000000 -0700
-+++ new/haskell-src-meta.cabal	2013-08-31 06:30:03.271321760 -0700
-@@ -20,7 +20,7 @@
- 
- library
-   build-depends:   base >= 4.2 && < 4.8,
--                   haskell-src-exts >= 1.8 && < 1.14,
-+                   haskell-src-exts >= 1.14,
-                    pretty >= 1.0 && < 1.2,
-                    syb >= 0.1 && < 0.5,
-                    th-orphans >= 0.5 && < 0.8
 --- old/src/Language/Haskell/Meta/Syntax/Translate.hs	2013-09-02 21:37:50.000000000 -0700
 +++ new/src/Language/Haskell/Meta/Syntax/Translate.hs	2013-09-02 22:14:11.598616356 -0700
 @@ -186,7 +186,8 @@
