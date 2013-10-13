@@ -1,3 +1,14 @@
+--- old/happstack-foundation.cabal	2013-08-02 21:16:16.000000000 -0700
++++ new/happstack-foundation.cabal	2013-10-12 15:17:26.558658832 -0700
+@@ -26,7 +26,7 @@
+   Exposed-modules:   Happstack.Foundation
+   Build-Depends:
+                      base                  < 5,
+-                     acid-state            >= 0.7 && < 0.12,
++                     acid-state            >= 0.7,
+                      happstack-hsp         == 7.2.*,
+                      happstack-server      >= 7.0 && < 7.4,
+                      hsp                   == 0.9.*,
 --- old/Happstack/Foundation.hs	2013-07-24 13:46:06.000000000 -0700
 +++ new/Happstack/Foundation.hs	2013-07-25 06:16:37.649523988 -0700
 @@ -27,8 +27,7 @@

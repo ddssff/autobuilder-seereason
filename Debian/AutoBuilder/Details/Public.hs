@@ -147,11 +147,12 @@ main _home release =
     --                      `cd` "cabal-install"
     --                      `patch` $(embedFile "patches/cabal-install.diff"))
     , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
-    , apt (rel release "wheezy" "quantal") "haskell-cereal"
+    -- , apt (rel release "wheezy" "quantal") "haskell-cereal"
+    , debianize (hackage "cereal")
     , debianize (hackage "citeproc-hs")
     , debianize (hackage "hexpat")
     , debianize (hackage "List")
-    , debianize (hackage "uuid" {- `patch` $(embedFile "patches/uuid.diff") -})
+    , debianize (hackage "uuid" `patch` $(embedFile "patches/uuid.diff"))
     , debianize (hackage "maccatcher" `flag` P.DebVersion "2.1.5-3")
     , debianize (hackage "colour"
                    `pflag` P.DebVersion "2.3.3-1build1"
@@ -339,7 +340,7 @@ main _home release =
     , debianize (hackage "ordered")
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize (hackage "temporary")
-    , debianize (hackage "pandoc-types" `flag` P.CabalPin "1.10") -- waiting for pandoc-1.12
+    , debianize (hackage "pandoc-types")
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
     , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
@@ -395,7 +396,7 @@ main _home release =
     , debianize (hackage "syb-with-class")
     , apt (rel release "wheezy" "quantal") "haskell-syb-with-class-instances-text"
     , debianize (hackage "tagged")
-    , debianize (hackage "tagsoup" `flag` P.CabalPin "0.12.8") -- waiting for pandoc > 1.11.1
+    , debianize (hackage "tagsoup")
     , debianize (hackage "tar")
     , debianize (hackage "terminfo"
                              `flag` P.DevelDep "libncurses5-dev"
@@ -441,7 +442,7 @@ main _home release =
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize (hackage "unification-fd")
     , debianize (hackage "newtype")
-    , debianize (hackage "universe")
+    , debianize (hackage "universe" `patch` $(embedFile "patches/universe.diff"))
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
                 , P.flags = [] }
@@ -467,6 +468,7 @@ main _home release =
                 , P.flags = [] }
     , debianize (hackage "xml-types")
     , debianize (hackage "xss-sanitize" `qflag` P.DebVersion "0.3.2-1build1")
+    , debianize (hackage "yaml")
     , debianize (hackage "yaml-light" `pflag` P.DebVersion "0.1.4-2" `qflag` P.DebVersion "0.1.4-2build1")
     , debianize (hackage "zip-archive")
     , debianize (hackage "regex-pcre-builtin"
@@ -602,6 +604,7 @@ platform release =
                   P.flags = [P.RelaxDep "happy", P.CabalDebian ["--executable", "happy"],
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     , debianize (hackage "stm")
+    , debianize (hackage "stm-chans")
     , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
     , debianize (hackage "mtl" `relax` "hsx2hs")
     , debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
@@ -719,6 +722,9 @@ happstack _home release =
     , debianize (hackage "fay") `flag` P.CabalDebian [ "--depends=cpphs:haskell-fay-utils" ]
     , debianize (hackage "fay-base")
     , debianize (hackage "fay-text")
+    , debianize (hackage "haskell-names")
+    , debianize (hackage "haskell-packages")
+    , debianize (hackage "hse-cpp")
     , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
     -- , debianize (hackage "fay-jquery" `flag` P.CabalPin "0.3.0.0")
 {-  , debianize (darcs "mastermind" (darcsHub ++ "/mastermind")
@@ -742,7 +748,7 @@ happstack _home release =
     , debianize (hackage "happstack-hsp"
                    -- `patch` $(embedFile "patches/happstack-hsp.diff")
                    `flag` P.BuildDep "hsx2hs")
-    , debianize (hackage "happstack-jmacro")
+    , debianize (hackage "happstack-jmacro" `patch` $(embedFile "patches/happstack-jmacro.diff"))
     , debianize (hackage "jmacro-rpc-happstack")
     , debianize (hackage "jmacro-rpc")
     , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
@@ -762,6 +768,7 @@ happstack _home release =
     -- use debianize for natty and apt:sid for lucid.
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hsx" `patch` $(embedFile "patches/hsx.diff"))
+    , debianize (hackage "hslua")
     , debianize (hackage "pandoc" `flag` P.RelaxDep "libghc-pandoc-doc")
     , debianize (hackage "markdown" `rename` "markdown")
     , debianize (hackage "highlighting-kate")
@@ -823,6 +830,7 @@ authenticate _home release =
     , digestiveFunctors
     , debianize (hackage "fb")
     , debianize (hackage "monad-logger")
+    , debianize (hackage "monad-loops")
     , debianize (hackage "fast-logger")
     , debianize (hackage "date-cache")
     , debianize (hackage "unix-time")
@@ -845,7 +853,7 @@ conduit =
     [ debianize (hackage "conduit")
     , debianize (hackage "attoparsec-conduit")
     , debianize (hackage "blaze-builder-conduit")
-    , debianize (hackage "http-conduit" `flag` P.CabalPin "1.9.4.4") -- I just wanted to avoid a rebuild
+    , debianize (hackage "http-conduit")
     , debianize (hackage "zlib-conduit")
     , debianize (hackage "xml-conduit")
     , debianize (hackage "mime-types")
@@ -961,7 +969,7 @@ algebra release =
     , debianize (hackage "keys")
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras")
-    , debianize (hackage "lens")
+    , debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff"))
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
     , debianize (hackage "lens-family-th" `patch` $(embedFile "patches/lens-family-th.diff"))

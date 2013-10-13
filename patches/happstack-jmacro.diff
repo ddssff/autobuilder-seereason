@@ -1,0 +1,11 @@
+--- old/happstack-jmacro.cabal	2013-10-13 05:46:28.000000000 -0700
++++ new/happstack-jmacro.cabal	2013-10-13 06:40:49.675454353 -0700
+@@ -19,7 +19,7 @@
+      base              >4 && <5,
+      base64-bytestring >= 0.1 && < 1.1,
+      bytestring        >= 0.9 && < 0.11,
+-     cereal            == 0.3.*,
++     cereal            >= 0.3,
+      digest            == 0.0.*,
+      happstack-server  >= 6.4 && <7.4,
+      jmacro            == 0.6.*,
