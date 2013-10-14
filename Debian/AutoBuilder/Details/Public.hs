@@ -297,9 +297,7 @@ main _home release =
     , P.Package { P.name = "haskell-logic-classes"
                 , P.spec = Darcs (repo ++ "/haskell-logic")
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-pointed"
-                , P.spec = Debianize (Hackage "pointed")
-                , P.flags = [] }
+    , debianize (hackage "pointed" `flag` P.CabalPin "3.1")
     , P.Package { P.name = "haskell-logic-tptp"
                 , P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff"))
                 , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
@@ -618,6 +616,7 @@ platform release =
                   -- an installed alex binary to build
                 , P.flags = [P.RelaxDep "alex",
                              P.BuildDep "alex",
+                             P.BuildDep "happy",
                              P.CabalDebian ["--executable", "alex"],
                              P.ModifyAtoms (\ atoms -> setL compat (Just 9) $
                                                        foldr (\ name atoms -> modL installData (insertWith union (BinPkgName "alex") (singleton (name, name))) atoms)
@@ -748,7 +747,7 @@ happstack _home release =
     , debianize (hackage "happstack-hsp"
                    -- `patch` $(embedFile "patches/happstack-hsp.diff")
                    `flag` P.BuildDep "hsx2hs")
-    , debianize (hackage "happstack-jmacro" `patch` $(embedFile "patches/happstack-jmacro.diff"))
+    , debianize (hackage "happstack-jmacro")
     , debianize (hackage "jmacro-rpc-happstack")
     , debianize (hackage "jmacro-rpc")
     , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
@@ -769,7 +768,7 @@ happstack _home release =
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hsx" `patch` $(embedFile "patches/hsx.diff"))
     , debianize (hackage "hslua")
-    , debianize (hackage "pandoc" `flag` P.RelaxDep "libghc-pandoc-doc")
+    , debianize (hackage "pandoc" `flag` P.RelaxDep "libghc-pandoc-doc" `flag` P.BuildDep "alex")
     , debianize (hackage "markdown" `rename` "markdown")
     , debianize (hackage "highlighting-kate")
     , debianize (hackage "web-routes")
@@ -943,11 +942,11 @@ algebra release =
     , debianize (hackage "data-lens-template")
     , debianize (hackage "adjunctions")
     , debianize (hackage "algebra")
-    , debianize (hackage "bifunctors")
+    , debianize (hackage "bifunctors" `flag` P.CabalPin "3.2.0.1")
     , debianize (hackage "categories")
-    , debianize (hackage "comonad")
-    , debianize (hackage "comonads-fd")
-    , debianize (hackage "comonad-transformers")
+    , debianize (hackage "comonad" `flag` P.CabalPin "3.1") -- Pinned waiting for lens and data-lens, perhaps others
+    , debianize (hackage "comonads-fd" `flag` P.CabalPin "3.0.3")
+    , debianize (hackage "comonad-transformers" `flag` P.CabalPin "3.1")
     , debianize (hackage "control-monad-free")
     , debianize (hackage "transformers-free")
     , debianize (hackage "contravariant"
@@ -960,23 +959,23 @@ algebra release =
     -- I am just going to patch the packages that use it to require transformers >= 0.3.
     -- Specifically, distributive and lens.
     -- , debianize (hackage "transformers-compat" {-`flag` P.NoDoc-})
-    , debianize (hackage "profunctor-extras")
-    , debianize (hackage "semigroupoid-extras")
-    , debianize (hackage "groupoids")
-    , debianize (hackage "profunctors")
+    , debianize (hackage "profunctor-extras" `flag` P.CabalPin "3.3.3.1")
+    , debianize (hackage "semigroupoid-extras" `flag` P.CabalPin "3.0.1")
+    , debianize (hackage "groupoids" `flag` P.CabalPin "3.0.1.1") -- compatible with comonad 4.0
+    , debianize (hackage "profunctors" `flag` P.CabalPin "3.3.0.1") -- compatible with comonad 4.0
     , debianize (hackage "reflection")
-    , debianize (hackage "free")
+    , debianize (hackage "free" `flag` P.CabalPin "3.4.2")
     , debianize (hackage "keys")
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras")
     , debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff"))
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
-    , debianize (hackage "lens-family-th" `patch` $(embedFile "patches/lens-family-th.diff"))
+    , debianize (hackage "lens-family-th")
     , debianize (hackage "linear")
     , debianize (hackage "representable-functors")
     , debianize (hackage "representable-tries")
-    , debianize (hackage "semigroupoids")
+    , debianize (hackage "semigroupoids" `flag` P.CabalPin "3.1") -- Compatible with comonad-3.1
     , debianize (hackage "spine") ]
     
 -- CB I was after units, but it requires ghc 7.8
