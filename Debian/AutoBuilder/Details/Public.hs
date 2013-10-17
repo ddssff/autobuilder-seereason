@@ -36,6 +36,7 @@ targets _home release =
     , digestiveFunctors
 
     , algebra release
+    -- , units
     -- , diagrams
     , fixme
     -- , higgsset
@@ -970,3 +971,11 @@ algebra release =
     , debianize (hackage "representable-tries")
     , debianize (hackage "semigroupoids")
     , debianize (hackage "spine") ]
+    
+-- CB I was after units, but it requires ghc 7.8
+units = P.Packages (singleton "additions")
+    [ debianize (hackage "quickcheck-instances")
+    , debianize (hackage "mainland-pretty")
+    , debianize (hackage "srcloc")
+    , debianize (hackage "processing")
+    , debianize (hackage "units") ]
