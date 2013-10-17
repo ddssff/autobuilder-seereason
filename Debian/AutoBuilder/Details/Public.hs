@@ -108,7 +108,8 @@ main _home release =
                    `flag` P.Revision "")
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
     , debianize (hackage "aeson")
-    , debianize (hackage "sunroof-compiler")
+--    , debianize (hackage "sunroof-compiler")
+    , debianize (git "haskell-sunroof-compiler" "http://github.com/ku-fpg/sunroof-compiler/")
     , darcs "haskell-agi" (repo </> "haskell-agi")
     , debianize (hackage "ansi-terminal")
     , debianize (hackage "ansi-wl-pprint")
