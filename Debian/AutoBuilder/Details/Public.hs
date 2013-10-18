@@ -719,7 +719,7 @@ happstack _home release =
                                                         "--replaces=hsx2hs:haskell-hsx-utils",
                                                         "--provides=hsx2hs:haskell-hsx-utils"])
     , debianize (hackage "fay-hsx" `patch` $(embedFile "patches/fay-hsx.diff"))
-    , debianize (hackage "fay") `flag` P.CabalDebian [ "--depends=cpphs:haskell-fay-utils" ]
+    , debianize (hackage "fay" `patch` $(embedFile "patches/fay.diff")) `flag` P.CabalDebian [ "--depends=cpphs:haskell-fay-utils" ]
     , debianize (hackage "fay-base")
     , debianize (hackage "fay-text")
     , debianize (hackage "haskell-names")

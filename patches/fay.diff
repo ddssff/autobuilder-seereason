@@ -1,0 +1,30 @@
+--- old/fay.cabal	2013-10-13 21:16:23.000000000 -0700
++++ new/fay.cabal	2013-10-14 06:42:33.552696442 -0700
+@@ -413,7 +413,7 @@
+                    , filepath
+                    , ghc-paths
+                    , haskell-packages
+-                   , haskell-names >= 0.3 && < 0.4
++                   , haskell-names >= 0.3
+                    , haskell-src-exts >= 1.14
+                    , language-ecmascript >= 0.15 && < 1.0
+                    , mtl
+--- old/src/main/Main.hs	2013-10-14 06:48:24.000000000 -0700
++++ new/src/main/Main.hs	2013-10-14 10:26:53.172889706 -0700
+@@ -15,6 +15,7 @@
+ import           Data.Maybe
+ import           Data.Version        (showVersion)
+ import           Options.Applicative
++import           Options.Applicative.Types (ReadM(ReadM))
+ import           System.Environment
+ 
+ -- | Options and help.
+@@ -120,7 +120,7 @@
+   <*> optional (strOption $ long "runtime-path" <> help "Custom path to the runtime so you don't have to reinstall fay when modifying it")
+ 
+   where strsOption m =
+-          nullOption (m <> reader (Right . wordsBy (== ',')) <> value [])
++          nullOption (m <> reader (ReadM . Right . wordsBy (== ',')) <> value [])
+ 
+ 
+ -- | Make incompatible options.
