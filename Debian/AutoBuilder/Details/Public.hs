@@ -7,9 +7,10 @@ import Data.Lens.Lazy (setL, modL)
 import Data.Map as Map (insertWith)
 import Data.Monoid ((<>))
 import Data.Set as Set (empty, singleton, union)
-import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages (RetrieveMethod(..), PackageFlag(CabalPin), rename,
-                                          hackage, debianize, flag, patch, darcs, apt, git, debdir, mflag, cd)
+import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Quilt, Proc),
+                                               PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer, ModifyAtoms, UDeb, OmitLTDeps),
+                                               Packages(Package, Packages, NoPackage), flags, name, spec,
+                                               rename, hackage, debianize, flag, patch, darcs, apt, git, debdir, mflag, cd)
 import Debian.Debianize (compat)
 import Debian.Relation (BinPkgName(..))
 import Debian.Debianize (installData, doExecutable, InstallFile(..))
