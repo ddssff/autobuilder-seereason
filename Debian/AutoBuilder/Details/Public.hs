@@ -30,6 +30,7 @@ targets _home release =
     [ main _home release
     , autobuilder _home
     , clckwrks _home release
+    , sunroof
     -- , authenticate _home release
     -- , happstackdotcom _home
     -- , happstack release
@@ -109,8 +110,6 @@ main _home release =
                    `flag` P.Revision "")
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
     , debianize (hackage "aeson")
---    , debianize (hackage "sunroof-compiler")
-    , debianize (git "haskell-sunroof-compiler" "http://github.com/ku-fpg/sunroof-compiler/")
     , darcs "haskell-agi" (repo </> "haskell-agi")
     , debianize (hackage "ansi-terminal")
     , debianize (hackage "ansi-wl-pprint")
@@ -973,9 +972,17 @@ algebra release =
     , debianize (hackage "spine") ]
     
 -- CB I was after units, but it requires ghc 7.8
-units = P.Packages (singleton "additions")
+units = P.Packages (singleton "units")
     [ debianize (hackage "quickcheck-instances")
     , debianize (hackage "mainland-pretty")
     , debianize (hackage "srcloc")
     , debianize (hackage "processing")
     , debianize (hackage "units") ]
+
+sunroof = P.Packages (singleton "sunroof")
+  [ debianize (hackage "sunroof-compiler")
+  --  , debianize (git "haskell-sunroof-compiler" "http://github.com/ku-fpg/sunroof-compiler/")
+  ,  debianize (hackage "boolean")
+  ,  debianize (hackage "vector-space")
+  ,  debianize (hackage "MemoTrie")
+  ]
