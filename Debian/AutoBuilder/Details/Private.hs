@@ -41,6 +41,9 @@ applications _home =
     -- which performs backups on the darcs repo.
     , debianize (darcs "seereason-darcs-backups" (repo ++ "/autobuilder-config")
                   `rename` "seereason-darcs-backups")
+    , debianize (darcs "seereasonpartners-clckwrks" (privateRepo ++ "/seereasonpartners-clckwrks")
+                   `cd` "seereasonpartners-dot-com"
+                   `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
     , debianize (method "seereasonpartners-dot-com"
                       (Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks"))))
     , debianize (method "haskell-clckwrks-theme-seereasonpartners"
