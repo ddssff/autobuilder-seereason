@@ -555,7 +555,7 @@ compiler release =
     case release of
       -- "precise-seereason" -> P.Packages (singleton "ghc") [devscripts]
       "squeeze-seereason" -> P.NoPackage -- Omitted to avoid a big rebuild
-      _ -> P.Packages (singleton "ghc") [ghc76, devscripts]
+      _ -> P.Packages (singleton "ghc") [{-ghc76,-} devscripts]
     where
       ghc76 = apt "sid" "ghc" -- As of 8 Jun 2013 this contains 7.6.3-3.  As of 30 Aug 2013 it contains 7.6.3-4.
                 `rename` "ghc"
