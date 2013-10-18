@@ -567,6 +567,7 @@ compiler release =
                 `relax` "quilt"
                 `relax` "python-minimal"
                 `relax` "libgmp-dev"
+                `flag` P.DebVersion "7.6.3-3" -- pin to avoid massive rebuild
                 `squeezeRelax` "libgmp3-dev"
                 `squeezePatch` $(embedFile "patches/ghc.diff") <>
               case release of
