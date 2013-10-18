@@ -1,0 +1,5 @@
+--- old/Setup.hs	2013-10-18 10:37:45.869861470 -0700
++++ new/Setup.hs	2013-10-18 10:37:39.469861378 -0700
+@@ -0,0 +1,2 @@
++import Distribution.Simple
++main = defaultMain

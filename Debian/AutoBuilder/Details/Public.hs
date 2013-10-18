@@ -989,9 +989,12 @@ units = P.Packages (singleton "units")
     , debianize (hackage "units") ]
 
 sunroof = P.Packages (singleton "sunroof")
-  [ debianize (hackage "sunroof-compiler")
-  --  , debianize (git "haskell-sunroof-compiler" "http://github.com/ku-fpg/sunroof-compiler/")
-  ,  debianize (hackage "boolean")
-  ,  debianize (hackage "vector-space")
-  ,  debianize (hackage "MemoTrie")
+  [ debianize (git "haskell-sunroof-compiler" "http://github.com/ku-fpg/sunroof-compiler"
+                 `patch` $(embedFile "patches/sunroof-compiler.diff"))
+  -- , debianize (hackage "sunroof-compiler")
+  , debianize (hackage "data-reify")
+  , debianize (hackage "Boolean")
+  , debianize (hackage "vector-space")
+  , debianize (hackage "NumInstances")
+  , debianize (hackage "MemoTrie")
   ]
