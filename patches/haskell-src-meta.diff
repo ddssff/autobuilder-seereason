@@ -1,43 +1,11 @@
---- old/src/Language/Haskell/Meta/Syntax/Translate.hs	2013-09-02 21:37:50.000000000 -0700
-+++ new/src/Language/Haskell/Meta/Syntax/Translate.hs	2013-09-02 22:14:11.598616356 -0700
-@@ -186,7 +186,8 @@
-   toPat (Hs.PInfixApp p n q)= InfixP (toPat p) (toName n) (toPat q)
- #endif
-   toPat (Hs.PApp n ps) = ConP (toName n) (fmap toPat ps)
--  toPat (Hs.PTuple ps) = TupP (fmap toPat ps)
-+  toPat (Hs.PTuple Hs.Boxed ps) = TupP (fmap toPat ps)
-+  toPat p@(Hs.PTuple _ ps) = todo "toPat" p
-   toPat (Hs.PList ps) = ListP (fmap toPat ps)
- #if MIN_VERSION_template_haskell(2,7,0)  
-   toPat (Hs.PParen p) = ParensP (toPat p)  
-@@ -246,7 +247,8 @@
-   toExp (Hs.If a b c)              = CondE (toExp a) (toExp b) (toExp c)
-   toExp (Hs.Do ss)                 = DoE (map toStmt ss)
-   toExp e@(Hs.MDo _)               = noTH "toExp" e
--  toExp (Hs.Tuple xs)              = TupE (fmap toExp xs)
-+  toExp (Hs.Tuple Hs.Boxed xs)     = TupE (fmap toExp xs)
-+  toExp e@(Hs.Tuple _ xs)          = todo "toExp" e
-   toExp (Hs.List xs)               = ListE (fmap toExp xs)
- #if MIN_VERSION_template_haskell(2,7,0)
-   toExp (Hs.Paren e)               = ParensE (toExp e)
---- old/src/Language/Haskell/Meta/Parse.hs	2013-09-02 22:31:15.000000000 -0700
-+++ new/src/Language/Haskell/Meta/Parse.hs	2013-09-02 22:37:46.566636674 -0700
-@@ -57,7 +57,8 @@
- myDefaultParseMode :: ParseMode
- myDefaultParseMode = ParseMode
-   {parseFilename = []
--  ,extensions = myDefaultExtensions
-+  ,baseLanguage = Haskell2010
-+  ,extensions = map EnableExtension myDefaultExtensions
-   ,ignoreLinePragmas = False
-   ,ignoreLanguagePragmas = False
-   ,fixities = defaultFixities}
-@@ -86,7 +86,7 @@
- instance DefaultFixities a => DefaultFixities (Maybe a) where
-   defaultFixities = Just defaultFixities
+--- old/haskell-src-meta.cabal	2013-10-20 13:39:18.000000000 -0700
++++ new/haskell-src-meta.cabal	2013-10-20 14:49:17.696559366 -0700
+@@ -22,7 +22,7 @@
+                    haskell-src-exts == 1.14.*,
+                    pretty >= 1.0 && < 1.2,
+                    syb >= 0.1 && < 0.5,
+-                   th-orphans >= 0.5 && < 0.8
++                   th-orphans >= 0.5
  
--myDefaultExtensions :: [Extension]
-+myDefaultExtensions :: [KnownExtension]
- myDefaultExtensions = [PostfixOperators
-                       ,QuasiQuotes
-                       ,UnicodeSyntax
+   if impl(ghc >= 7.4)
+     Build-depends: template-haskell >= 2.7 && < 2.10

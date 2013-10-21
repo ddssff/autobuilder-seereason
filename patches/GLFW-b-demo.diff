@@ -1,13 +1,13 @@
---- old/GLFW-b-demo.cabal	2013-07-04 10:16:40.000000000 -0700
-+++ new/GLFW-b-demo.cabal	2013-07-04 10:20:18.400972932 -0700
-@@ -34,8 +34,8 @@
-   main-is: Main.hs
+--- old/GLFW-b-demo.cabal	2013-10-20 13:38:51.000000000 -0700
++++ new/GLFW-b-demo.cabal	2013-10-20 14:52:35.824562211 -0700
+@@ -37,8 +37,8 @@
+     Gear
  
    build-depends:
--    GLFW-b       == 1.1.*,
+-    GLFW-b       == 1.2.*,
 -    OpenGL       == 2.8.*,
-+    GLFW-b       >= 1.1,
-+    OpenGL       >= 2.8.*,
++    GLFW-b       >= 1.2,
++    OpenGL       >= 2.8,
      base          < 5,
      mtl          == 2.1.*,
      pretty       == 1.1.*,

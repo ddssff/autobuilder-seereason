@@ -153,7 +153,8 @@ main _home release =
     , debianize (hackage "citeproc-hs")
     , debianize (hackage "hexpat")
     , debianize (hackage "List")
-    , debianize (hackage "uuid" `patch` $(embedFile "patches/uuid.diff"))
+    , debianize (hackage "network-info")
+    , debianize (hackage "uuid")
     , debianize (hackage "maccatcher" `flag` P.DebVersion "2.1.5-3")
     , debianize (hackage "colour"
                    `pflag` P.DebVersion "2.3.3-1build1"
@@ -246,7 +247,7 @@ main _home release =
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline" `flag` P.DebVersion "0.7.0.3-1~hackage1")
     , debianize (hackage "th-orphans")
-    , debianize (hackage "haskell-src-meta")
+    , debianize (hackage "haskell-src-meta" `patch` $(embedFile "patches/haskell-src-meta.diff"))
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -298,7 +299,7 @@ main _home release =
     , P.Package { P.name = "haskell-logic-classes"
                 , P.spec = Darcs (repo ++ "/haskell-logic")
                 , P.flags = [] }
-    , debianize (hackage "pointed" `flag` P.CabalPin "3.1")
+    , debianize (hackage "pointed")
     , P.Package { P.name = "haskell-logic-tptp"
                 , P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff"))
                 , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
@@ -420,7 +421,7 @@ main _home release =
     , P.Package { P.name = "haskell-language-javascript"
                 , P.spec = Debianize (Hackage "language-javascript")
                 , P.flags = [P.BuildDep "happy"] }
-    , debianize (hackage "utf8-light" `pflag` P.DebVersion "0.4.0.1-2build1" `qflag` P.DebVersion "0.4.0.1-2build3")
+    , debianize (hackage "utf8-light")
     , debianize (hackage "language-haskell-extract")
     , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
     , P.Package { P.name = "haskell-language-ecmascript"
@@ -702,7 +703,7 @@ clckwrks _home release =
         , debianize (hackage "monadlist")
         ] ++
     if useDevRepo
-    then [ debianize (darcs "haskell-clckwrks-plugin-page" repo `cd` "clckwrks-plugin-page" `flag` P.BuildDep "hsx2hs") ]
+    then [ debianize (darcs "haskell-clckwrks-plugin-page" repo `cd` "clckwrks-plugin-page" `patch` $(embedFile "patches/clckwrks-plugin-page.diff") `flag` P.BuildDep "hsx2hs") ]
     else []
 
 happstack _home release =
@@ -721,6 +722,7 @@ happstack _home release =
                                                         "--provides=hsx2hs:haskell-hsx-utils"])
     , debianize (hackage "fay-hsx" `patch` $(embedFile "patches/fay-hsx.diff"))
     , debianize (hackage "fay" `patch` $(embedFile "patches/fay.diff")) `flag` P.CabalDebian [ "--depends=cpphs:haskell-fay-utils" ]
+    , debianize (hackage "sourcemap")
     , debianize (hackage "fay-base")
     , debianize (hackage "fay-text")
     , debianize (hackage "haskell-names")
@@ -898,7 +900,7 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "monad-task")
     , debianize (hackage "GLFW" `flag` P.DevelDep "libglu1-mesa-dev")
     , debianize (hackage "GLFW-b")
-    , debianize (hackage "GLFW-b-demo")
+    , debianize (hackage "GLFW-b-demo" `patch` $(embedFile "patches/GLFW-b-demo.diff"))
     , debianize (hackage "GLFW-task")
     , debianize (hackage "bindings-GLFW"
                              -- `patch` $(embedFile "patches/bindings-GLFW.diff")
@@ -940,15 +942,22 @@ algebra release =
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "algebra")
-    [ debianize (hackage "data-lens")
+    [ debianize (hackage "data-lens" `patch` $(embedFile "patches/data-lens.diff"))
     , debianize (hackage "data-lens-template")
     , debianize (hackage "adjunctions")
     , debianize (hackage "algebra")
-    , debianize (hackage "bifunctors" `flag` P.CabalPin "3.2.0.1")
+    , debianize (hackage "bifunctors")
     , debianize (hackage "categories")
-    , debianize (hackage "comonad" `flag` P.CabalPin "3.1") -- Pinned waiting for lens and data-lens, perhaps others
-    , debianize (hackage "comonads-fd" `flag` P.CabalPin "3.0.3")
-    , debianize (hackage "comonad-transformers" `flag` P.CabalPin "3.1")
+    , debianize (hackage "comonad"
+                   `flag`  P.CabalDebian [ "--conflicts=libghc-comonad-dev:libghc-comonad-transformers-dev"
+                                         , "--replaces=libghc-comonad-dev:libghc-comonad-transformers-dev"
+                                         , "--provides=libghc-comonad-dev:libghc-comonad-transformers-dev"
+                                         , "--conflicts=libghc-comonad-dev:libghc-comonads-fd-dev"
+                                         , "--replaces=libghc-comonad-dev:libghc-comonads-fd-dev"
+                                         , "--provides=libghc-comonad-dev:libghc-comonads-fd-dev"
+                                         , "--conflicts=libghc-comonad-dev:libghc-profunctor-extras-dev"
+                                         , "--replaces=libghc-comonad-dev:libghc-profunctor-extras-dev"
+                                         , "--provides=libghc-comonad-dev:libghc-profunctor-extras-dev" ])
     , debianize (hackage "control-monad-free")
     , debianize (hackage "transformers-free")
     , debianize (hackage "contravariant"
@@ -961,12 +970,9 @@ algebra release =
     -- I am just going to patch the packages that use it to require transformers >= 0.3.
     -- Specifically, distributive and lens.
     -- , debianize (hackage "transformers-compat" {-`flag` P.NoDoc-})
-    , debianize (hackage "profunctor-extras" `flag` P.CabalPin "3.3.3.1")
-    , debianize (hackage "semigroupoid-extras" `flag` P.CabalPin "3.0.1")
-    , debianize (hackage "groupoids" `flag` P.CabalPin "3.0.1.1") -- compatible with comonad 4.0
-    , debianize (hackage "profunctors" `flag` P.CabalPin "3.3.0.1") -- compatible with comonad 4.0
+    , debianize (hackage "profunctors")
     , debianize (hackage "reflection")
-    , debianize (hackage "free" `flag` P.CabalPin "3.4.2")
+    , debianize (hackage "free")
     , debianize (hackage "keys")
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras")
@@ -974,12 +980,18 @@ algebra release =
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
     , debianize (hackage "lens-family-th")
-    , debianize (hackage "linear")
-    , debianize (hackage "representable-functors")
+    , debianize (hackage "linear" `patch` $(embedFile "patches/linear.diff"))
+    , debianize (hackage "representable-functors" `patch` $(embedFile "patches/representable-functors.diff"))
     , debianize (hackage "representable-tries")
-    , debianize (hackage "semigroupoids" `flag` P.CabalPin "3.1") -- Compatible with comonad-3.1
+    , debianize (hackage "semigroupoids"
+                   `flag`  P.CabalDebian [ "--conflicts=libghc-comonad-dev:libghc-semigroupoid-extras-dev"
+                                         , "--replaces=libghc-comonad-dev:libghc-semigroupoid-extras-dev"
+                                         , "--provides=libghc-comonad-dev:libghc-semigroupoid-extras-dev"
+                                         , "--conflicts=libghc-semigroupoids-dev:libghc-groupoids-dev"
+                                         , "--replaces=libghc-semigroupoids-dev:libghc-groupoids-dev"
+                                         , "--provides=libghc-semigroupoids-dev:libghc-groupoids-dev" ])
     , debianize (hackage "spine") ]
-    
+
 -- CB I was after units, but it requires ghc 7.8
 units = P.Packages (singleton "units")
     [ debianize (hackage "quickcheck-instances")
