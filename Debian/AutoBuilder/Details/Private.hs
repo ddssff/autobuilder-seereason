@@ -30,7 +30,8 @@ libraries _home =
 
 applications _home =
     P.Packages (singleton "applications") $
-    [ debianize (darcs "haskell-artvaluereport2" (privateRepo ++ "/artvaluereport2-clckwrks"))
+    [ debianize (darcs "appraisalscribe" (privateRepo ++ "/appraisalscribe"))
+    , debianize (darcs "haskell-artvaluereport2" (privateRepo ++ "/artvaluereport2"))
     , debianize (darcs "haskell-artvaluereport-data" (privateRepo ++ "/artvaluereport-data"))
     , darcs "haskell-seereason" (privateRepo ++ "/seereason")
     , darcs "haskell-happstack-ontology" (privateRepo ++ "/happstack-ontology")
@@ -42,8 +43,7 @@ applications _home =
     , debianize (darcs "seereason-darcs-backups" (repo ++ "/autobuilder-config")
                   `rename` "seereason-darcs-backups")
     , debianize (darcs "seereasonpartners-clckwrks" (privateRepo ++ "/seereasonpartners-clckwrks")
-                   `cd` "seereasonpartners-dot-com"
-                   `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
+                   `cd` "seereasonpartners-dot-com")
     , debianize (method "seereasonpartners-dot-com"
                       (Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks"))))
     , debianize (method "haskell-clckwrks-theme-seereasonpartners"
