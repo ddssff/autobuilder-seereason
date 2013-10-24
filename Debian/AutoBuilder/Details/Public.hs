@@ -90,6 +90,9 @@ unixutils _home =
 
 main _home release =
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
+        wflag = case release of "wheezy-seereason" -> flag; _ -> \ p _ -> p
+        wskip t = case release of "wheezy-seereason" -> P.NoPackage; _ -> t
+        wonly t = case release of "wheezy-seereason" -> t; _ -> P.NoPackage
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p
         sflag = case release of "squeeze-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "main") $
@@ -100,7 +103,7 @@ main _home release =
     , debianize (hackage "ListLike")
     -- Merged into ListLike-4.0
     -- , debianize (hackage "listlike-instances")
-    , apt (rel release "wheezy" "quantal") "cpphs"
+    , wskip $ apt (rel release "wheezy" "quantal") "cpphs"
     , apt "sid" "debootstrap" `flag` P.UDeb "debootstrap-udeb"
     -- Build fails due to some debianization issue
     -- , apt "wheezy" "geneweb"
@@ -118,9 +121,9 @@ main _home release =
     -- Our applicative-extras repository has several important patches.
     , debianize (hackage "applicative-extras" `flag` P.DebVersion "0.1.8-1")
     , debianize (hackage "asn1-data")
-    , debianize (hackage "attempt" `pflag` P.DebVersion "0.4.0-1" `qflag` P.DebVersion "0.4.0-1build2")
+    , wskip $ debianize (hackage "attempt" `pflag` P.DebVersion "0.4.0-1" `qflag` P.DebVersion "0.4.0-1build2")
     , debianize (hackage "errors")
-    , debianize (hackage "failure" `qflag` P.DebVersion "0.2.0.1-1build2")
+    , wskip $ debianize (hackage "failure" `qflag` P.DebVersion "0.2.0.1-1build2")
     , debianize (hackage "attoparsec")
     , debianize (hackage "attoparsec-enumerator")
     -- This was merged into attoparsec
@@ -156,7 +159,8 @@ main _home release =
     , debianize (hackage "network-info")
     , debianize (hackage "uuid")
     , debianize (hackage "maccatcher" `flag` P.DebVersion "2.1.5-3")
-    , debianize (hackage "colour"
+    , wskip $
+      debianize (hackage "colour"
                    `pflag` P.DebVersion "2.3.3-1build1"
                    `qflag` P.DebVersion "2.3.3-1build1"
                    `sflag` P.DebVersion "2.3.3-1")
@@ -179,7 +183,7 @@ main _home release =
     , debianize (hackage "asn1-types")
     , debianize (hackage "byteable")
     , debianize (hackage "cryptohash")
-    , debianize (hackage "cpu" `qflag` P.DebVersion "0.1.1-1build1")
+    , wskip $ debianize (hackage "cpu" `qflag` P.DebVersion "0.1.1-1build1")
     , debianize (hackage "css" `flag` P.DebVersion "0.1-1~hackage1")
     , debianize (hackage "css-text" `pflag` P.DebVersion "0.1.1-3" `qflag` P.DebVersion "0.1.1-3build1")
     , apt (rel release "wheezy" "quantal") "haskell-curl"
@@ -226,7 +230,8 @@ main _home release =
     , debianize (hackage "formlets"
                     `patch` $(embedFile "patches/formlets.diff")
                     `flag` P.DebVersion "0.8-1~hackage1")
-    , debianize (hackage "gd"
+    , wskip $
+      debianize (hackage "gd"
                     `patch` $(embedFile "patches/gd.diff")
                     `flag` P.DevelDep "libgd-dev"
                     `flag` P.DevelDep "libc6-dev"
@@ -266,7 +271,8 @@ main _home release =
                 , P.flags = [] }
     -- Not used, and not building.
     -- , debianize (hackage "hoauth")
-    , debianize (hackage "hostname" `pflag` P.DebVersion "1.0-4build1" `qflag` P.DebVersion "1.0-4build3" `sflag` P.DebVersion "1.0-1~hackage1")
+    , wskip $
+      debianize (hackage "hostname" `pflag` P.DebVersion "1.0-4build1" `qflag` P.DebVersion "1.0-4build3" `sflag` P.DebVersion "1.0-1~hackage1")
     -- The Sid package has no profiling libraries, so dependent packages
     -- won't build.  Use our debianization instead.  This means keeping
     -- up with sid's version.
@@ -276,7 +282,7 @@ main _home release =
     , debianize (hackage "HsOpenSSL"
                    `flag` P.DevelDep "libssl-dev"
                    `flag` P.DevelDep "libcrypto++-dev")
-    , debianize (hackage "HsSyck" `pflag` P.DebVersion "0.50-2" `qflag` P.DebVersion "0.50-2build2")
+    , wskip $ debianize (hackage "HsSyck" `pflag` P.DebVersion "0.50-2" `qflag` P.DebVersion "0.50-2build2")
     , debianize (hackage "HStringTemplate")
     , darcs "haskell-html-entities" (repo </> "html-entities")
     , debianize (hackage "http-types")
@@ -351,7 +357,8 @@ main _home release =
     , debianize (hackage "polyparse")
     , debianize (hackage "primitive")
     , debianize (hackage "PropLogic")
-    , debianize (hackage "PSQueue"
+    , wskip $
+      debianize (hackage "PSQueue"
                    `pflag` P.DebVersion "1.1-2"
                    `qflag` P.DebVersion "1.1-2build2"
                    `sflag` P.DebVersion "1.1-1")
@@ -437,11 +444,14 @@ main _home release =
     , debianize (hackage "Unixutils-shadow")
     , debianize (hackage "unordered-containers")
     , debianize (hackage "utf8-prelude" `flag` P.DebVersion "0.1.6-1~hackage1")
-    , P.Package { P.name = "haskell-utf8-string"
+    -- The GHC in wheezy conflicts with libghc-containers-dev, so we can't build this.
+    -- , wonly $ debianize (hackage "containers")
+    , wskip $
+      P.Package { P.name = "haskell-utf8-string"
                 , P.spec = Apt (rel release "wheezy" "quantal") "haskell-utf8-string"
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize (hackage "unification-fd")
-    , debianize (hackage "newtype")
+    , wskip $ debianize (hackage "newtype")
     , debianize (hackage "universe" `patch` $(embedFile "patches/universe.diff"))
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
@@ -477,21 +487,25 @@ main _home release =
                    `flag` P.DevelDep "libpcre3-dev")
     , debianize (hackage "hscolour") `flag` P.RelaxDep "hscolour"
     , debianize (hackage "hslogger")
-    , debianize (hackage "extensible-exceptions") -- required for ghc-7.6, not just quantal
+    , wskip $ debianize (hackage "extensible-exceptions") -- required for ghc-7.6.  Conflicts with ghc-7.4 in wheezy.
     , case release of
-      "quantal-seereason" -> P.NoPackage -- This build hangs when performing tests
-      _ -> apt "sid" "html-xml-utils"
-    , P.Package { P.name = "jquery"
+        "quantal-seereason" -> P.NoPackage -- This build hangs when performing tests
+        "wheezy-seereason" -> P.NoPackage -- This build hangs when performing tests
+        _ -> apt "sid" "html-xml-utils"
+    , wskip $
+      P.Package { P.name = "jquery"
                 , P.spec = Proc (Apt "sid" "jquery")
                 , P.flags = [] }
-    , P.Package { P.name = "jquery-goodies"
+    , wskip $
+      P.Package { P.name = "jquery-goodies"
                 , P.spec = Proc (Apt "sid" "jquery-goodies")
                 , P.flags = [] }
 -- We want to stick with 1.8 for now.
 {-  , P.Package { P.name = "jqueryui"
                 , P.spec = Proc (Apt "wheezy" "jqueryui")
                 , P.flags = [] } -}
-    , P.Package { P.name = "jcrop"
+    , wskip $
+      P.Package { P.name = "jcrop"
                 , P.spec = DebDir (Uri (repo </> "jcrop/Jcrop.tar.gz") "028feeb9b6415af3b7fd7d9471c92469") (Darcs (repo ++ "/jcrop-debian"))
                 , P.flags = [] }
     , P.Package { P.name = "magic-haskell"
@@ -513,7 +527,8 @@ main _home release =
     , debianize (hackage "texmath")
     , debianize (hackage "derive")
     , debianize (hackage "frquotes")
-    , P.Package { P.name = "foo2zjs"
+    , wskip $
+      P.Package { P.name = "foo2zjs"
                 , P.spec = Apt "quantal" "foo2zjs"
                 , P.flags = [] }
 {-  -- Has no Setup.hs file, not sure how to build this.
@@ -579,18 +594,18 @@ compiler release =
                 _ -> P.NoPackage
 
       devscripts =
-        P.Package { P.name = "haskell-devscripts"
-                  , P.spec = Apt "sid" "haskell-devscripts"
-                  , P.flags = [P.RelaxDep "python-minimal"] }
-{-      P.Package { P.name = "haskell-devscripts"
-                  , P.spec = Patch (Apt "experimental" "haskell-devscripts") $(embedFile "patches/haskell-devscripts-0.8.13.diff")
-                  , P.flags = [P.RelaxDep "python-minimal"] } -}
+          wskip $ P.Package { P.name = "haskell-devscripts"
+                            , P.spec = Apt "sid" "haskell-devscripts"
+                            , P.flags = [P.RelaxDep "python-minimal"] }
       -- haskell-devscripts-0.8.13 is for ghc-7.6 only
       squeezeRelax = case release of "squeeze-seereason" -> relax; "squeeze-seereason-private" -> relax; _ -> \ p _ -> p
       squeezePatch = case release of "squeeze-seereason" -> patch; "squeeze-seereason-private" -> patch; _ -> \ p _ -> p
+      wskip t = case release of "wheezy-seereason" -> P.NoPackage; _ -> t
 
 platform release =
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
+        wflag = case release of "wheezy-seereason" -> flag; _ -> \ p _ -> p
+        wskip t = case release of "wheezy-seereason" -> P.NoPackage; _ -> t
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p
         sflag = case release of "squeeze-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "platform") $
@@ -608,10 +623,10 @@ platform release =
     , debianize (hackage "stm-chans")
     , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
     , debianize (hackage "mtl" `relax` "hsx2hs")
-    , debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
+    , wskip $ debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
     , debianize (hackage "parallel")
-    , debianize (hackage "syb")
-    , debianize (hackage "fgl" `pflag` P.DebVersion "5.4.2.4-2" `qflag` P.DebVersion "5.4.2.4-2build2" `sflag` P.DebVersion "5.4.2.4-1")
+    , wskip $ debianize (hackage "syb")
+    , wskip $ debianize (hackage "fgl" `pflag` P.DebVersion "5.4.2.4-2" `qflag` P.DebVersion "5.4.2.4-2build2" `sflag` P.DebVersion "5.4.2.4-1")
     , debianize (hackage "text")
     , P.Package { P.name = "alex"
                 , P.spec = Debianize (Hackage "alex")
@@ -641,7 +656,8 @@ platform release =
                                                            , "AlexWrapper-strict-bytestring"]) ] }
     , opengl release
     -- , haddock release
-    , debianize (hackage "haskell-src"
+    , wskip $
+      debianize (hackage "haskell-src"
                              `flag` P.BuildDep "happy"
                              `pflag` P.DebVersion "1.0.1.5-1"
                              `qflag` P.DebVersion "1.0.1.5-1build2")
@@ -653,7 +669,7 @@ platform release =
     , debianize (hackage "cgi")
     -- This is bundled with the compiler
     -- , debianize (hackage "process")
-    , debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2")
+    , wskip (debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2"))
     , debianize (hackage "HUnit")
     , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
     , debianize (hackage "parsec" `flag` P.CabalDebian ["--conflicts", "libghc-parsec3-dev:libghc-parsec2-dev,libghc-parsec3-prof:libghc-parsec2-prof,libghc-parsec3-doc:libghc-parsec2-doc",
@@ -871,6 +887,7 @@ happstackdotcom _home =
 -- May work with these added dependencies (statevar thru openglraw)
 opengl release = P.Packages (singleton "opengl") $
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
+        wskip t = case release of "wheezy-seereason" -> P.NoPackage; _ -> t
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
     [ debianize (hackage "OpenGL"
                    `flag` P.DevelDep "libglu1-mesa-dev")
@@ -893,7 +910,7 @@ opengl release = P.Packages (singleton "opengl") $
                    `flag` P.DevelDep "libglu1-mesa-dev")
     , debianize (hackage "GLUT"
                    `flag` P.DevelDep "freeglut3-dev")
-    , debianize (hackage "StateVar" `pflag` P.DebVersion "1.0.0.0-2build1" `qflag` P.DebVersion "1.0.0.0-2build3")
+    , wskip $ debianize (hackage "StateVar" `pflag` P.DebVersion "1.0.0.0-2build1" `qflag` P.DebVersion "1.0.0.0-2build3")
     , debianize (hackage "Tensor")
     , debianize (hackage "GLURaw")
     , debianize (hackage "ObjectName")
