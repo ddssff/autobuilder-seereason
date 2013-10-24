@@ -1,5 +1,5 @@
---- old/OpenGL.hs	2013-10-13 05:17:41.000000000 -0700
-+++ new/OpenGL.hs	2013-10-13 05:28:13.667391806 -0700
+--- old/Data/Bitmap/OpenGL.hs	2013-10-20 18:20:03.000000000 -0700
++++ new/Data/Bitmap/OpenGL.hs	2013-10-20 18:45:24.272762781 -0700
 @@ -55,7 +55,7 @@
  -- | Creates a new OpenGL texture from a bitmap
  makeTextureFromBitmap 
