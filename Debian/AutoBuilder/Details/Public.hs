@@ -561,8 +561,10 @@ main _home release =
     , case release of
         "wheezy-seereason" -> debianize (hackage "network")
         _ -> P.NoPackage
-    , debianize (darcs "haskell-tiny-server" (repo </> "tiny-server")
-                   `flag` P.BuildDep "hsx2hs")
+    , debianize (darcs "haskell-tiny-server" (repo </> "tiny-server") `flag` P.BuildDep "hsx2hs")
+    , debianize (hackage "stringable") -- this can be done with listlike-instances
+    , debianize (hackage "currency")
+    , debianize (hackage "iso3166-country-codes")
     ]
 
 relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
@@ -737,7 +739,7 @@ happstack _home release =
                                                         "--replaces=hsx2hs:haskell-hsx-utils",
                                                         "--provides=hsx2hs:haskell-hsx-utils"])
     , debianize (hackage "fay-hsx" `patch` $(embedFile "patches/fay-hsx.diff"))
-    , debianize (hackage "fay" `patch` $(embedFile "patches/fay.diff")) `flag` P.CabalDebian [ "--depends=cpphs:haskell-fay-utils" ]
+    , debianize (hackage "fay" {- `patch` $(embedFile "patches/fay.diff") -}) `flag` P.CabalDebian [ "--depends=cpphs:haskell-fay-utils" ]
     , debianize (hackage "sourcemap")
     , debianize (hackage "fay-base")
     , debianize (hackage "fay-text")
@@ -788,7 +790,7 @@ happstack _home release =
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hsx" `patch` $(embedFile "patches/hsx.diff"))
     , debianize (hackage "hslua")
-    , debianize (hackage "pandoc" `flag` P.RelaxDep "libghc-pandoc-doc" `flag` P.BuildDep "alex")
+    , debianize (hackage "pandoc" `flag` P.RelaxDep "libghc-pandoc-doc" `flag` P.BuildDep "alex" `flag` P.BuildDep "happy")
     , debianize (hackage "markdown" `rename` "markdown")
     , debianize (hackage "highlighting-kate")
     , debianize (hackage "web-routes")
@@ -907,6 +909,7 @@ opengl release = P.Packages (singleton "opengl") $
                                   , " --------------------------------------------------------------------------------" ])
                 , P.flags = [ P.DebVersion "0.0.3-1~hackage2" ] } -}
     , debianize (hackage "bitmap-opengl"
+                   -- This applies, but the build fails - maybe its no longer needed?  Maybe a newer version will appear.
                    `patch` $(embedFile "patches/bitmap-opengl.diff")
                    `flag` P.DevelDep "libglu1-mesa-dev")
     , debianize (hackage "GLUT"
@@ -918,7 +921,7 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "monad-task")
     , debianize (hackage "GLFW" `flag` P.DevelDep "libglu1-mesa-dev")
     , debianize (hackage "GLFW-b")
-    , debianize (hackage "GLFW-b-demo" `patch` $(embedFile "patches/GLFW-b-demo.diff"))
+    , debianize (hackage "GLFW-b-demo" {- `patch` $(embedFile "patches/GLFW-b-demo.diff") -})
     , debianize (hackage "GLFW-task")
     , debianize (hackage "bindings-GLFW"
                              -- `patch` $(embedFile "patches/bindings-GLFW.diff")
@@ -960,7 +963,7 @@ algebra release =
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "algebra")
-    [ debianize (hackage "data-lens" `patch` $(embedFile "patches/data-lens.diff"))
+    [ debianize (hackage "data-lens" {- `patch` $(embedFile "patches/data-lens.diff") -})
     , debianize (hackage "data-lens-template")
     , debianize (hackage "adjunctions")
     , debianize (hackage "algebra")
@@ -998,8 +1001,8 @@ algebra release =
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
     , debianize (hackage "lens-family-th")
-    , debianize (hackage "linear" `patch` $(embedFile "patches/linear.diff"))
-    , debianize (hackage "representable-functors" `patch` $(embedFile "patches/representable-functors.diff"))
+    , debianize (hackage "linear" {- `patch` $(embedFile "patches/linear.diff") -})
+    , debianize (hackage "representable-functors" {- `patch` $(embedFile "patches/representable-functors.diff") -})
     , debianize (hackage "representable-tries")
     , debianize (hackage "semigroupoids"
                    `flag`  P.CabalDebian [ "--conflicts=libghc-comonad-dev:libghc-semigroupoid-extras-dev"
