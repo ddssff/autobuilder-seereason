@@ -9,4 +9,4 @@
 +import Debian.Debianize.Details (seereasonDefaultAtoms)
 +
 +main =
-+    debianize (Top ".") (return . setL utilsPackageName (Just (BinPkgName "cabal-install"))) seereasonDefaultAtoms
++    debianize (Top ".") (return . setL utilsPackageNames [BinPkgName "cabal-install"]) seereasonDefaultAtoms
