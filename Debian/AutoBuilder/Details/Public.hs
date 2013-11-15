@@ -146,7 +146,7 @@ main _home release =
     , debianize (hackage "case-insensitive")
     , debianize (hackage "cabal-install"
                    `flag` P.CabalPin "1.16.0.2" -- Waiting for Cabal 1.18.0
-                   `patch` $(embedFile "patches/cabal-install.diff"))
+                   `flag` P.CabalDebian ["--executable", "cabal-debian"])
     -- , debianize (git "haskell-cabal-install" "https://github.com/haskell/cabal"
     --                      `cd` "cabal-install"
     --                      `patch` $(embedFile "patches/cabal-install.diff"))
@@ -282,7 +282,7 @@ main _home release =
     , debianize (hackage "HsOpenSSL"
                    `flag` P.DevelDep "libssl-dev"
                    `flag` P.DevelDep "libcrypto++-dev")
-    , wskip $ debianize (hackage "HsSyck" `pflag` P.DebVersion "0.50-2" `qflag` P.DebVersion "0.50-2build2")
+    , wskip $ debianize (hackage "HsSyck")
     , debianize (hackage "HStringTemplate")
     , darcs "haskell-html-entities" (repo </> "html-entities")
     , debianize (hackage "http-types")
@@ -721,7 +721,9 @@ clckwrks _home release =
         , debianize (hackage "monadlist")
         ] ++
     if useDevRepo
-    then [ debianize (darcs "haskell-clckwrks-plugin-page" repo `cd` "clckwrks-plugin-page" `patch` $(embedFile "patches/clckwrks-plugin-page.diff") `flag` P.BuildDep "hsx2hs") ]
+    then [ debianize (darcs "haskell-clckwrks-plugin-page" repo
+                                `cd` "clckwrks-plugin-page"
+                                `flag` P.BuildDep "hsx2hs") ]
     else []
 
 happstack _home release =

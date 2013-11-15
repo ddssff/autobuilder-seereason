@@ -3,7 +3,7 @@
 @@ -0,0 +1,9 @@
 +import Data.Lens.Lazy (setL, modL)
 +import Data.Map (insert)
-+import Debian.Debianize (Top(Top), debianize, utilsPackageName, writeDebianization, epochMap)
++import Debian.Debianize (Top(Top), debianize, utilsPackageNames, writeDebianization, epochMap)
 +import Debian.Relation (BinPkgName(..))
 +import Distribution.Package (PackageName(..))
 +import Debian.Debianize.Details (seereasonDefaultAtoms)
