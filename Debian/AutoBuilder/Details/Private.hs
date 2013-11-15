@@ -31,8 +31,8 @@ libraries _home =
 applications _home =
     P.Packages (singleton "applications") $
     [ debianize (darcs "appraisalscribe" (privateRepo ++ "/appraisalscribe"))
-    , debianize (darcs "haskell-artvaluereport2" (privateRepo ++ "/artvaluereport2"))
-    , debianize (darcs "haskell-artvaluereport-data" (privateRepo ++ "/artvaluereport-data"))
+    -- , debianize (darcs "haskell-artvaluereport2" (privateRepo ++ "/artvaluereport2"))
+    , debianize (darcs "haskell-appraisalscribe-data" (privateRepo ++ "/appraisalscribe-data"))
     , darcs "haskell-seereason" (privateRepo ++ "/seereason")
     , darcs "haskell-happstack-ontology" (privateRepo ++ "/happstack-ontology")
     -- Obsolete
