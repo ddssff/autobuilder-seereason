@@ -3,19 +3,18 @@
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
 import Data.FileEmbed (embedFile)
-import Data.Lens.Lazy (setL, modL)
-import Data.Map as Map (insertWith)
 import Data.Monoid ((<>))
-import Data.Set as Set (empty, singleton, union)
+import Data.Set as Set (empty, singleton)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Quilt, Proc),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer, ModifyAtoms, UDeb, OmitLTDeps),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
-                                               rename, hackage, debianize, flag, patch, darcs, apt, git, debdir, mflag, cd)
+                                               rename, hackage, debianize, flag, patch, darcs, apt, git, cd)
 import Debian.Debianize (compat)
 import Debian.Relation (BinPkgName(..))
 import Debian.Debianize (installData, doExecutable, InstallFile(..))
+import Debian.DebT (execDeb)
 import System.FilePath((</>))
-import Debian.AutoBuilder.Details.Common (repo, {-localRepo,-} happstackRepo)
+import Debian.AutoBuilder.Details.Common (repo)
 
 patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"
@@ -77,7 +76,7 @@ autobuilder home =
     , darcs "haskell-debian-mirror" (repo </> "mirror")
     , darcs "haskell-debian-repo" (repo </> "debian-tools") `cd` "debian-repo"
     , darcs "haskell-archive" (repo </> "archive")
-    , debianize (hackage "process-extras")
+    -- , debianize (hackage "process-extras")
     , debianize (darcs "haskell-process-listlike" (repo </> "process-listlike"))
     , darcs "haskell-process-progress" (repo </> "debian-tools") `cd` "process-progress"
     ]
@@ -551,7 +550,7 @@ main _home release =
     -- , debianize $ (hackage "dropbox-sdk") `patch` $(embedFile "patches/dropbox-sdk.diff")
     , debianize (darcs "haskell-hs3" (repo ++ "/hS3"))
                 `flag` P.DebVersion "0.5.6-2"
-                `flag` P.ModifyAtoms (doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
+                `flag` P.ModifyAtoms (execDeb $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
     , debianize (hackage "urlencoded")
     , debianize (hackage "resourcet")
     , debianize (hackage "hxt")
@@ -638,24 +637,23 @@ platform release =
                              P.BuildDep "alex",
                              P.BuildDep "happy",
                              P.CabalDebian ["--executable", "alex"],
-                             P.ModifyAtoms (\ atoms -> setL compat (Just 9) $
-                                                       foldr (\ name atoms -> modL installData (insertWith union (BinPkgName "alex") (singleton (name, name))) atoms)
-                                                           atoms
-                                                           [ "AlexTemplate"
-                                                           , "AlexTemplate-debug"
-                                                           , "AlexTemplate-ghc"
-                                                           , "AlexTemplate-ghc-debug"
-                                                           , "AlexTemplate-ghc-nopred"
-                                                           , "AlexWrapper-basic"
-                                                           , "AlexWrapper-basic-bytestring"
-                                                           , "AlexWrapper-gscan"
-                                                           , "AlexWrapper-monad"
-                                                           , "AlexWrapper-monad-bytestring"
-                                                           , "AlexWrapper-monadUserState"
-                                                           , "AlexWrapper-monadUserState-bytestring"
-                                                           , "AlexWrapper-posn"
-                                                           , "AlexWrapper-posn-bytestring"
-                                                           , "AlexWrapper-strict-bytestring"]) ] }
+                             P.ModifyAtoms (execDeb $ do compat 9
+                                                         mapM_ (\ name -> installData (BinPkgName "alex") (name, name))
+                                                               [ "AlexTemplate"
+                                                               , "AlexTemplate-debug"
+                                                               , "AlexTemplate-ghc"
+                                                               , "AlexTemplate-ghc-debug"
+                                                               , "AlexTemplate-ghc-nopred"
+                                                               , "AlexWrapper-basic"
+                                                               , "AlexWrapper-basic-bytestring"
+                                                               , "AlexWrapper-gscan"
+                                                               , "AlexWrapper-monad"
+                                                               , "AlexWrapper-monad-bytestring"
+                                                               , "AlexWrapper-monadUserState"
+                                                               , "AlexWrapper-monadUserState-bytestring"
+                                                               , "AlexWrapper-posn"
+                                                               , "AlexWrapper-posn-bytestring"
+                                                               , "AlexWrapper-strict-bytestring"]) ] }
     , opengl release
     -- , haddock release
     , wskip $
