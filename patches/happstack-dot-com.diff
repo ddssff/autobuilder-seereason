@@ -13,7 +13,7 @@ diff -ru happstack-dot-com.orig/Backups.hs happstack-dot-com/Backups.hs
 +               , auth = URIAuth { uriUserInfo = "upload@"
 +                                , uriRegName = "happstack.com"
 +                                , uriPort = "" }
-+               , keep = 50
++               , keep = 50, delay = 0
 +               , localTop = "/srv/backups"
 +               , remoteTop = "/srv"
 +               , nice = 10

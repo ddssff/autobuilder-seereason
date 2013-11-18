@@ -7,7 +7,7 @@ diff -ru clckwrks-dot-com.orig/Backups.hs clckwrks-dot-com/Backups.hs
                 , keep = 50
 -               , localTop = "/home/autobuilder/backups"
 +               , localTop = "/srv/backups"
-+               , nice = 10
++               , nice = 10, delay = 0
 +               , bwLimit = Just 20
                 , remoteTop = "/srv" })
 diff -ru clckwrks-dot-com.orig/clckwrks-dot-com.cabal clckwrks-dot-com/clckwrks-dot-com.cabal
