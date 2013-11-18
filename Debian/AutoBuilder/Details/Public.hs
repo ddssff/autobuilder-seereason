@@ -249,7 +249,7 @@ main _home release =
     , apt (rel release "wheezy" "quantal") "haskell-harp"
     , debianize (hackage "hashable")
     , debianize (hackage "hashed-storage")
-    , debianize (hackage "haskeline" `flag` P.DebVersion "0.7.0.3-1~hackage1")
+    , debianize (hackage "haskeline")
     , debianize (hackage "th-orphans")
     , debianize (hackage "haskell-src-meta" `patch` $(embedFile "patches/haskell-src-meta.diff"))
     -- Because we specify an exact debian version here, this package
@@ -537,6 +537,7 @@ main _home release =
     , debianize (hackage "stringsearch")
     , debianize (hackage "rss" `patch` $(embedFile "patches/rss.diff"))
     , debianize (hackage "async")
+    , debianize (hackage "units" `flag` P.CabalPin "1.0.0" {- `patch` $(embedFile "patches/units.diff") -})
     , P.Package { P.name = "csv"
                 , P.spec = Debianize (Hackage "csv")
                 , P.flags = (rel release [P.DebVersion "0.1.2-2"] [P.DebVersion "0.1.2-2build2"]) }
