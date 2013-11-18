@@ -11,5 +11,4 @@ main = backup (BackupTarget { app = "darcs"
                             , remoteTop = "/srv"
                             , keep = 50
                             , nice = 10
-                            , bwLimit = Just 20
                             , delay = 0 })
