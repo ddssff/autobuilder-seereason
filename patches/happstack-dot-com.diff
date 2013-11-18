@@ -1,26 +1,7 @@
---- old/happstack-dot-com.cabal	2012-12-06 08:32:56.000000000 -0800
-+++ new/happstack-dot-com.cabal	2012-12-06 08:40:39.773574517 -0800
-@@ -18,7 +18,7 @@
- 
- Flag backups
-      Description: enable the backups executable (currently disabled by default do to wacky dependencies not on hackage)
--     Default: False
-+     Default: True
- 
- Executable happstack-dot-com-server
-   Main-is: Main.hs
-@@ -47,6 +47,7 @@
-    GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
-    Build-depends: base > 4 && < 5,
-                   archive >= 1.2.9,
--                  Extra
-+                  Extra,
-+                  network
-  else
-   Buildable: False
---- old/Backups.hs	2012-11-02 16:25:16.000000000 -0700
-+++ new/Backups.hs	2013-05-25 08:36:02.194092928 -0700
-@@ -1,5 +1,13 @@
+diff -ru happstack-dot-com.orig/Backups.hs happstack-dot-com/Backups.hs
+--- happstack-dot-com.orig/Backups.hs	2013-11-17 16:00:10.056792165 -0800
++++ happstack-dot-com/Backups.hs	2013-11-17 16:01:25.800789670 -0800
+@@ -1,5 +1,15 @@
  module Main where
  
 +import Network.URI (URIAuth(..))
@@ -34,10 +15,13 @@
 +                                , uriPort = "" }
 +               , keep = 50
 +               , localTop = "/srv/backups"
-+               , remoteTop = "/srv" })
---- old/debian/Debianize.hs	2013-03-04 16:53:55.000000000 -0800
-+++ old/debian/Debianize.hs	2013-03-12 11:00:34.613942359 -0700
-@@ -9,13 +9,13 @@
++               , remoteTop = "/srv"
++               , nice = 10
++               , bwLimit = Just 20 })
+diff -ru happstack-dot-com.orig/debian/Debianize.hs happstack-dot-com/debian/Debianize.hs
+--- happstack-dot-com.orig/debian/Debianize.hs	2013-11-17 16:00:10.064792165 -0800
++++ happstack-dot-com/debian/Debianize.hs	2013-11-17 16:05:03.692782493 -0800
+@@ -9,49 +9,51 @@
  import Debian.Debianize
  import Debian.Relation (Relation(..), VersionReq(..), SrcPkgName(..), BinPkgName(..))
  import qualified Paths_clckwrks as Clckwrks
@@ -49,7 +33,74 @@
  main =
      do log <- inputChangeLog top
 -       debianize top (return . customize . setL changelog (Just log)) defaultAtoms
-+       debianize top (return . customize . setL changelog (Just log)) seereasonDefaultAtoms
++       debianize top (customize log) seereasonDefaultAtoms
      where
        top = Top "."
  
+-customize =
+-    modL control (\ y -> y {homepage = Just "http://www.happstack.com/"}) .
+-    setL sourceFormat (Just Native3) .
+-    modL missingDependencies (insert (BinPkgName "libghc-clckwrks-theme-happstack-doc")) .
+-    setL revision (Just "") .
+-    doWebsite (BinPkgName "happstack-dot-com-production") (theSite (BinPkgName "happstack-dot-com-production")) .
+-    doBackups (BinPkgName "happstack-dot-com-backups") "happstack-dot-com-backups" .
+-    modL rulesFragments (insert (pack (Prelude.unlines ["build/happstack-dot-com-production::", "\techo CLCKWRKS=`ghc-pkg field clckwrks version | sed 's/version: //'` > debian/default"]))) .
+-    modL installTo (Map.insertWith Set.union (BinPkgName "happstack-dot-com-production") (Set.singleton ("debian/default", "/etc/default/happstack-dot-com-production"))) .
+-    fixRules .
+-    tight .
+-    modL control (\ x -> x {standardsVersion = Just (StandardsVersion 3 9 4 Nothing)}) .
+-    setL compat (Just 7)
++customize log =
++    do changelog log
++       execMap "hsx2hs" [[Rel (BinPkgName "hsx2hs") Nothing Nothing]]
++       control (\ y -> y {homepage = Just "http://www.happstack.com/"})
++       sourceFormat Native3
++       missingDependency (BinPkgName "libghc-clckwrks-theme-happstack-doc")
++       revision (Just "")
++       doWebsite (BinPkgName "happstack-dot-com-production") (theSite (BinPkgName "happstack-dot-com-production"))
++       doBackups (BinPkgName "happstack-dot-com-backups") "happstack-dot-com-backups"
++       rulesFragment (pack (Prelude.unlines ["build/happstack-dot-com-production::", "\techo CLCKWRKS=`ghc-pkg field clckwrks version | sed 's/version: //'` > debian/default"]))
++       installTo (BinPkgName "happstack-dot-com-production") ("debian/default", "/etc/default/happstack-dot-com-production")
++       fixRules
++       tight
++       control (\ x -> x {standardsVersion = Just (StandardsVersion 3 9 4 Nothing)})
++       compat 7
+ 
+ serverNames = List.map BinPkgName ["happstack-dot-com-production"]
+ 
+ -- Insert a line just above the debhelper.mk include
+-fixRules deb =
+-    modL rulesHead (\ mt -> (Just . f) (fromMaybe (getRulesHead deb) mt)) deb
++fixRules =
++    getRulesHead >>= rulesHead . const . Just . f
+     where
+       f t = T.unlines $ List.concat $
+             List.map (\ line -> if line == "include /usr/share/cdbs/1/rules/debhelper.mk"
+                                 then ["DEB_SETUP_GHC_CONFIGURE_ARGS = -fbackups", "", line] :: [T.Text]
+                                 else [line] :: [T.Text]) (T.lines t)
+ 
+-tight deb = List.foldr (tightDependencyFixup
++tight = mapM_ (tightDependencyFixup
+                          -- For each pair (A, B) make sure that this package requires the
+                          -- same exact version of package B as the version of A currently
+                          -- installed during the build.
+                          [(BinPkgName "libghc-clckwrks-theme-happstack-dev", BinPkgName "haskell-clckwrks-theme-happstack-utils"),
+                           (BinPkgName "libghc-clckwrks-plugin-media-dev", BinPkgName "haskell-clckwrks-plugin-media-utils"),
+                           (BinPkgName "libghc-clckwrks-plugin-ircbot-dev", BinPkgName "haskell-clckwrks-plugin-ircbot-utils"),
+-                          (BinPkgName "libghc-clckwrks-dev", BinPkgName "haskell-clckwrks-utils")]) deb serverNames
++                          (BinPkgName "libghc-clckwrks-dev", BinPkgName "haskell-clckwrks-utils")]) serverNames
+ 
+ theSite :: BinPkgName -> Site
+ theSite deb =
+diff -ru happstack-dot-com.orig/happstack-dot-com.cabal happstack-dot-com/happstack-dot-com.cabal
+--- happstack-dot-com.orig/happstack-dot-com.cabal	2013-11-17 16:00:10.068792164 -0800
++++ happstack-dot-com/happstack-dot-com.cabal	2013-11-17 16:01:42.088789134 -0800
+@@ -48,6 +48,7 @@
+    GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
+    Build-depends: base > 4 && < 5,
+                   archive >= 1.2.9,
+-                  Extra
++                  Extra,
++                  network
+  else
+   Buildable: False

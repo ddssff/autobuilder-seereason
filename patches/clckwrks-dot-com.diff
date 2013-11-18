@@ -1,35 +1,31 @@
---- old/clckwrks-dot-com.cabal	2013-02-05 09:38:46.000000000 -0800
-+++ new/clckwrks-dot-com.cabal	2013-02-05 09:46:18.421903299 -0800
-@@ -17,7 +17,7 @@
- 
- Flag backups
-      Description: enable the backups executable (currently disabled by default do to wacky dependencies not on hackage)
--     Default: False
-+     Default: True
- 
- Executable             clckwrks-dot-com-server
-   main-is:             Main.hs
-@@ -41,7 +41,7 @@
-  if flag(backups)
-    Buildable: True
-    GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
--   Build-depends: archive >= 1.2.9, base, Extra
-+   Build-depends: archive >= 1.2.9, base, Extra, network
-  else
-    Buildable: False
- 
---- old/Backups.hs	2013-05-03 07:44:29.000000000 -0700
-+++ new/Backups.hs	2013-05-25 08:37:43.498094728 -0700
-@@ -9,5 +9,5 @@
+diff -ru clckwrks-dot-com.orig/Backups.hs clckwrks-dot-com/Backups.hs
+--- clckwrks-dot-com.orig/Backups.hs	2013-11-17 16:06:28.652779695 -0800
++++ clckwrks-dot-com/Backups.hs	2013-11-17 16:07:41.328777301 -0800
+@@ -9,5 +9,7 @@
                                  , uriRegName = "clckwrks.com"
                                  , uriPort = ""}
                 , keep = 50
 -               , localTop = "/home/autobuilder/backups"
 +               , localTop = "/srv/backups"
++               , nice = 10
++               , bwLimit = Just 20
                 , remoteTop = "/srv" })
---- old/debian/Debianize.hs	2013-02-21 17:48:04.000000000 -0800
-+++ new/debian/Debianize.hs	2013-02-23 10:39:32.117390461 -0800
-@@ -9,18 +9,18 @@
+diff -ru clckwrks-dot-com.orig/clckwrks-dot-com.cabal clckwrks-dot-com/clckwrks-dot-com.cabal
+--- clckwrks-dot-com.orig/clckwrks-dot-com.cabal	2013-11-17 16:06:28.740779692 -0800
++++ clckwrks-dot-com/clckwrks-dot-com.cabal	2013-11-17 16:08:02.416776606 -0800
+@@ -42,7 +42,7 @@
+  if flag(backups)
+    Buildable: True
+    GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
+-   Build-depends: archive >= 1.2.9, base, Extra
++   Build-depends: archive >= 1.6, base, Extra, network
+  else
+    Buildable: False
+ 
+diff -ru clckwrks-dot-com.orig/debian/Debianize.hs clckwrks-dot-com/debian/Debianize.hs
+--- clckwrks-dot-com.orig/debian/Debianize.hs	2013-11-17 16:06:28.740779692 -0800
++++ clckwrks-dot-com/debian/Debianize.hs	2013-11-17 16:15:07.652762600 -0800
+@@ -9,60 +9,60 @@
  import Debian.Debianize
  import Debian.Relation (Relation(..), VersionReq(..), SrcPkgName(..), BinPkgName(..))
  import qualified Paths_clckwrks as Clckwrks
@@ -44,33 +40,64 @@
 -       log <- inputChangeLog "debian"
 -       inputCabalization "." defaultAtoms >>= debianization "." . customize jstreePath json2Path log >>= writeDebianization "."
 +    do log <- inputChangeLog top
-+       debianize top (return . customize . setL changelog (Just log)) seereasonDefaultAtoms
++       debianize top (customize log) seereasonDefaultAtoms
 +    where
 +      top = Top "."
  
 -customize :: FilePath -> FilePath -> ChangeLog -> Atoms -> Atoms
 -customize jstreePath json2Path log =
-+customize :: Atoms -> Atoms
-+customize =
-     modL control  (\ y -> y {homepage = Just "http://www.clckwrks.com/"}) .
-     modL rulesFragments (insert (pack (Prelude.unlines ["build/clckwrks-dot-com-production::", "\techo CLCKWRKS=`ghc-pkg field clckwrks version | sed 's/version: //'` > debian/default"]))) .
-     modL installTo (Map.insertWith Set.union (BinPkgName "clckwrks-dot-com-production") (Set.singleton ("debian/default", "/etc/default/clckwrks-dot-com-production"))) .
-@@ -28,11 +28,10 @@
-     setL sourceFormat (Just Native3) .
-     modL missingDependencies (insert (BinPkgName "libghc-clckwrks-theme-clckwrks-doc")) .
-     setL revision (Just "") .
+-    modL control  (\ y -> y {homepage = Just "http://www.clckwrks.com/"}) .
+-    modL rulesFragments (insert (pack (Prelude.unlines ["build/clckwrks-dot-com-production::", "\techo CLCKWRKS=`ghc-pkg field clckwrks version | sed 's/version: //'` > debian/default"]))) .
+-    modL installTo (Map.insertWith Set.union (BinPkgName "clckwrks-dot-com-production") (Set.singleton ("debian/default", "/etc/default/clckwrks-dot-com-production"))) .
+-    modL control (\ x -> x {standardsVersion = Just (StandardsVersion 3 9 4 Nothing)}) .
+-    setL sourceFormat (Just Native3) .
+-    modL missingDependencies (insert (BinPkgName "libghc-clckwrks-theme-clckwrks-doc")) .
+-    setL revision (Just "") .
 -    doWebsite (BinPkgName "clckwrks-dot-com-production") (theSite jstreePath json2Path (BinPkgName "clckwrks-dot-com-production")) .
-+    doWebsite (BinPkgName "clckwrks-dot-com-production") (theSite (BinPkgName "clckwrks-dot-com-production")) .
-     doBackups (BinPkgName "clckwrks-dot-com-backups") "clckwrks-dot-com-backups" .
-     fixRules .
-     tight .
+-    doBackups (BinPkgName "clckwrks-dot-com-backups") "clckwrks-dot-com-backups" .
+-    fixRules .
+-    tight .
 -    setL changelog (Just log) .
-     setL compat (Just 7)
+-    setL compat (Just 7)
++customize :: ChangeLog -> DebT IO ()
++customize log =
++    do execMap "hsx2hs" [[Rel (BinPkgName "hsx2hs") Nothing Nothing]]
++       control  (\ y -> y {homepage = Just "http://www.clckwrks.com/"})
++       rulesFragment (pack (Prelude.unlines ["build/clckwrks-dot-com-production::", "\techo CLCKWRKS=`ghc-pkg field clckwrks version | sed 's/version: //'` > debian/default"]))
++       installTo (BinPkgName "clckwrks-dot-com-production") ("debian/default", "/etc/default/clckwrks-dot-com-production")
++       control (\ x -> x {standardsVersion = Just (StandardsVersion 3 9 4 Nothing)})
++       sourceFormat Native3
++       missingDependency (BinPkgName "libghc-clckwrks-theme-clckwrks-doc")
++       revision (Just "")
++       doWebsite (BinPkgName "clckwrks-dot-com-production") (theSite (BinPkgName "clckwrks-dot-com-production"))
++       doBackups (BinPkgName "clckwrks-dot-com-backups") "clckwrks-dot-com-backups"
++       fixRules
++       tight
++       compat 7
  
  serverNames = List.map BinPkgName ["clckwrks-dot-com-production" {- , "clckwrks-dot-com-staging", "clckwrks-dot-com-development" -}]
-@@ -55,14 +54,14 @@
+ 
+ -- Insert a line just above the debhelper.mk include
+-fixRules deb =
+-    modL rulesHead (\ mt -> (Just . f) (fromMaybe (getRulesHead deb) mt)) deb
++fixRules =
++    getRulesHead >>= rulesHead . const . Just . f
+     where
+       f t = T.unlines $ List.concat $
+             List.map (\ line -> if line == "include /usr/share/cdbs/1/rules/debhelper.mk"
+                                 then ["DEB_SETUP_GHC_CONFIGURE_ARGS = -fbackups", "", line] :: [T.Text]
+                                 else [line] :: [T.Text]) (T.lines t)
+ 
+-tight deb = List.foldr (tightDependencyFixup
++tight = mapM_ (tightDependencyFixup
+                          -- For each pair (A, B) make sure that this package requires the
+                          -- same exact version of package B as the version of A currently
+                          -- installed during the build.
+                          [(BinPkgName "libghc-clckwrks-theme-clckwrks-dev", BinPkgName "haskell-clckwrks-theme-clckwrks-utils"),
+                           (BinPkgName "libghc-clckwrks-plugin-media-dev", BinPkgName "haskell-clckwrks-plugin-media-utils"),
                            (BinPkgName "libghc-clckwrks-plugin-bugs-dev", BinPkgName "haskell-clckwrks-plugin-bugs-utils"),
-                           (BinPkgName "libghc-clckwrks-dev", BinPkgName "haskell-clckwrks-utils")]) deb serverNames
+-                          (BinPkgName "libghc-clckwrks-dev", BinPkgName "haskell-clckwrks-utils")]) deb serverNames
++                          (BinPkgName "libghc-clckwrks-dev", BinPkgName "haskell-clckwrks-utils")]) serverNames
  
 -theSite :: FilePath -> FilePath -> BinPkgName -> Site
 -theSite jstreePath json2Path deb =
@@ -88,23 +115,14 @@
            Server { hostname =
                         case deb of
                           BinPkgName "clckwrks-dot-com-production" -> hostname'
-@@ -78,8 +77,8 @@
+@@ -78,8 +78,8 @@
                       , "--enable-analytics"
                       , "--jquery-path", "/usr/share/javascript/jquery/"
                       , "--jqueryui-path", "/usr/share/javascript/jquery-ui/"
 -                     , "--jstree-path", jstreePath
 -                     , "--json2-path",json2Path
-+                     , "--jstree-path", "/usr/share/clckwrks-$CLCKWRKS/jstree"
-+                     , "--json2-path", "/usr/share/clckwrks-$CLCKWRKS/json2"
++                     , "--jstree-path", "/usr/share/clckwrks/jstree"
++                     , "--json2-path", "/usr/share/clckwrks/json2"
                       ]
                   , installFile =
                       InstallFile { execName   = "clckwrks-dot-com-server"
---- old/Names.hs	1969-12-31 16:00:00.000000000 -0800
-+++ new/Names.hs	2013-02-23 11:51:21.997624540 -0800
-@@ -0,0 +1,6 @@
-+{-# OPTIONS -fno-warn-missing-signatures #-}
-+module Names where
-+
-+domain = "seereason.com"
-+site = "clckwrks-dot-com"
-+live = site ++ "-production"
