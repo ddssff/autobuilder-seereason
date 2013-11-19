@@ -25,12 +25,28 @@ diff -ru clckwrks-dot-com.orig/clckwrks-dot-com.cabal clckwrks-dot-com/clckwrks-
 diff -ru clckwrks-dot-com.orig/debian/Debianize.hs clckwrks-dot-com/debian/Debianize.hs
 --- clckwrks-dot-com.orig/debian/Debianize.hs	2013-11-17 16:06:28.740779692 -0800
 +++ clckwrks-dot-com/debian/Debianize.hs	2013-11-17 16:15:07.652762600 -0800
-@@ -9,60 +9,60 @@
- import Debian.Debianize
- import Debian.Relation (Relation(..), VersionReq(..), SrcPkgName(..), BinPkgName(..))
- import qualified Paths_clckwrks as Clckwrks
-+import Debian.Debianize.Details (seereasonDefaultAtoms)
- import Text.PrettyPrint.ANSI.Leijen (Pretty, pretty, text)
+@@ -1,68 +1,66 @@
+ {-# LANGUAGE OverloadedStrings #-}
+-import Data.Lens.Lazy (setL, modL)
+-import Data.List as List (map, isPrefixOf, concat, foldr)
+-import Data.Maybe (fromMaybe)
+-import Data.Map as Map (insertWith)
+-import Data.Set as Set (insert, singleton, union)
+-import Data.Text as T
++import Data.List as List (concat, map)
++import Data.Text as T (lines, pack, Text, unlines)
+ import Debian.Changes (ChangeLog)
+-import Debian.Debianize
+-import Debian.Relation (Relation(..), VersionReq(..), SrcPkgName(..), BinPkgName(..))
+-import qualified Paths_clckwrks as Clckwrks
+-import Text.PrettyPrint.ANSI.Leijen (Pretty, pretty, text)
++import Debian.Debianize (compat, control, debianize, DebT, doBackups, doWebsite, execMap, inputChangeLog, installTo, missingDependency, revision, rulesFragment, rulesHead, seereasonDefaultAtoms, sourceFormat, tightDependencyFixup)
++import Debian.Debianize.ControlFile (SourceDebDescription(homepage, standardsVersion))
++import Debian.Debianize.Files (getRulesHead)
++import Debian.Debianize.Types (InstallFile(InstallFile, destDir, destName, execName, sourceDir), Server(..), Site(..), Top(Top))
++import Debian.Policy (databaseDirectory, SourceFormat(Native3), StandardsVersion(StandardsVersion))
++import Debian.Relation (BinPkgName(BinPkgName), Relation(Rel))
++import Text.PrettyPrint.ANSI.Leijen (Pretty(pretty))
  
  main :: IO ()
  main =
@@ -115,7 +131,7 @@ diff -ru clckwrks-dot-com.orig/debian/Debianize.hs clckwrks-dot-com/debian/Debia
            Server { hostname =
                         case deb of
                           BinPkgName "clckwrks-dot-com-production" -> hostname'
-@@ -78,8 +78,8 @@
+@@ -78,8 +76,8 @@
                       , "--enable-analytics"
                       , "--jquery-path", "/usr/share/javascript/jquery/"
                       , "--jqueryui-path", "/usr/share/javascript/jquery-ui/"

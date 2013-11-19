@@ -21,13 +21,29 @@ diff -ru happstack-dot-com.orig/Backups.hs happstack-dot-com/Backups.hs
 diff -ru happstack-dot-com.orig/debian/Debianize.hs happstack-dot-com/debian/Debianize.hs
 --- happstack-dot-com.orig/debian/Debianize.hs	2013-11-17 16:00:10.064792165 -0800
 +++ happstack-dot-com/debian/Debianize.hs	2013-11-17 16:05:03.692782493 -0800
-@@ -9,49 +9,51 @@
- import Debian.Debianize
- import Debian.Relation (Relation(..), VersionReq(..), SrcPkgName(..), BinPkgName(..))
- import qualified Paths_clckwrks as Clckwrks
+@@ -1,57 +1,56 @@
+ {-# LANGUAGE OverloadedStrings #-}
+-import Data.Lens.Lazy (setL, modL)
+-import Data.List as List (map, isPrefixOf, concat, foldr)
+-import Data.Map as Map (insertWith)
+-import Data.Maybe (fromMaybe)
+-import Data.Set as Set (insert, union, singleton)
+-import Data.Text as T
+-import Debian.Changes (ChangeLog)
+-import Debian.Debianize
+-import Debian.Relation (Relation(..), VersionReq(..), SrcPkgName(..), BinPkgName(..))
+-import qualified Paths_clckwrks as Clckwrks
 -import Targets.SeeReason (defaultAtoms)
-+import Debian.Debianize.Details (seereasonDefaultAtoms)
- import Text.PrettyPrint.ANSI.Leijen (Pretty, pretty, text)
+-import Text.PrettyPrint.ANSI.Leijen (Pretty, pretty, text)
++import Data.List as List (concat, map)
++import Data.Text as T (lines, pack, Text, unlines)
++import Debian.Debianize (changelog, compat, control, debianize, doBackups, doWebsite, execMap, inputChangeLog, installTo, missingDependency, revision, rulesFragment, rulesHead, seereasonDefaultAtoms, sourceFormat, tightDependencyFixup)
++import Debian.Debianize.ControlFile (SourceDebDescription(homepage, standardsVersion))
++import Debian.Debianize.Files (getRulesHead)
++import Debian.Debianize.Types (InstallFile(InstallFile, destDir, destName, execName, sourceDir), Server(..), Site(..), Top(Top))
++import Debian.Policy (databaseDirectory, SourceFormat(Native3), StandardsVersion(StandardsVersion))
++import Debian.Relation (BinPkgName(BinPkgName), Relation(Rel))
++import Text.PrettyPrint.ANSI.Leijen (Pretty(pretty))
  
  main :: IO ()
  main =
