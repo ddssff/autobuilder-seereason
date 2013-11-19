@@ -11,8 +11,9 @@ import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Pa
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd)
 import Debian.Debianize (compat)
 import Debian.Relation (BinPkgName(..))
-import Debian.Debianize (installData, doExecutable, InstallFile(..))
-import Debian.DebT (execDeb)
+import Debian.Debianize (doExecutable)
+import Debian.Debianize.Types (InstallFile(..))
+import Debian.Debianize.Monad (execDebM, installData)
 import System.FilePath((</>))
 import Debian.AutoBuilder.Details.Common (repo)
 
@@ -551,7 +552,7 @@ main _home release =
     -- , debianize $ (hackage "dropbox-sdk") `patch` $(embedFile "patches/dropbox-sdk.diff")
     , debianize (darcs "haskell-hs3" (repo ++ "/hS3"))
                 `flag` P.DebVersion "0.5.6-2"
-                `flag` P.ModifyAtoms (execDeb $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
+                `flag` P.ModifyAtoms (execDebM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
     , debianize (hackage "urlencoded")
     , debianize (hackage "resourcet")
     , debianize (hackage "hxt")
@@ -638,8 +639,8 @@ platform release =
                              P.BuildDep "alex",
                              P.BuildDep "happy",
                              P.CabalDebian ["--executable", "alex"],
-                             P.ModifyAtoms (execDeb $ do compat 9
-                                                         mapM_ (\ name -> installData (BinPkgName "alex") (name, name))
+                             P.ModifyAtoms (execDebM $ do compat 9
+                                                          mapM_ (\ name -> installData (BinPkgName "alex") (name, name))
                                                                [ "AlexTemplate"
                                                                , "AlexTemplate-debug"
                                                                , "AlexTemplate-ghc"
