@@ -1,6 +1,6 @@
-diff -ru clckwrks-dot-com.orig/Backups.hs clckwrks-dot-com/Backups.hs
---- clckwrks-dot-com.orig/Backups.hs	2013-11-17 16:06:28.652779695 -0800
-+++ clckwrks-dot-com/Backups.hs	2013-11-17 16:07:41.328777301 -0800
+diff -ru old/Backups.hs new/Backups.hs
+--- old/Backups.hs	2013-11-20 17:21:54.013330832 -0800
++++ new/Backups.hs	2013-11-20 17:24:07.961326420 -0800
 @@ -9,5 +9,7 @@
                                  , uriRegName = "clckwrks.com"
                                  , uriPort = ""}
@@ -10,21 +10,29 @@ diff -ru clckwrks-dot-com.orig/Backups.hs clckwrks-dot-com/Backups.hs
 +               , nice = 10, delay = 0
 +               , bwLimit = Just 20
                 , remoteTop = "/srv" })
-diff -ru clckwrks-dot-com.orig/clckwrks-dot-com.cabal clckwrks-dot-com/clckwrks-dot-com.cabal
---- clckwrks-dot-com.orig/clckwrks-dot-com.cabal	2013-11-17 16:06:28.740779692 -0800
-+++ clckwrks-dot-com/clckwrks-dot-com.cabal	2013-11-17 16:08:02.416776606 -0800
-@@ -42,7 +42,7 @@
+diff -ru old/clckwrks-dot-com.cabal new/clckwrks-dot-com.cabal
+--- old/clckwrks-dot-com.cabal	2013-11-20 17:21:54.017330832 -0800
++++ new/clckwrks-dot-com.cabal	2013-11-20 17:20:40.257333261 -0800
+@@ -24,6 +24,7 @@
+   ghc-options:         -threaded -O2 -rtsopts -with-rtsopts=-I0
+   build-tools:         hsx2hs
+   build-depends:       base                     > 4 && <5,
++                       cabal-debian             >= 3.10.2,
+                        clckwrks                 >= 0.18 && < 0.21,
+                        clckwrks-theme-clckwrks  == 0.3.*,
+                        clckwrks-plugin-bugs     == 0.6.*,
+@@ -42,7 +43,7 @@
   if flag(backups)
     Buildable: True
     GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
 -   Build-depends: archive >= 1.2.9, base, Extra
-+   Build-depends: archive >= 1.6, base, Extra, network
++   Build-depends: archive >= 1.6, base, Extra, network, cabal-debian >= 3.10.2
   else
     Buildable: False
  
-diff -ru clckwrks-dot-com.orig/debian/Debianize.hs clckwrks-dot-com/debian/Debianize.hs
---- clckwrks-dot-com.orig/debian/Debianize.hs	2013-11-17 16:06:28.740779692 -0800
-+++ clckwrks-dot-com/debian/Debianize.hs	2013-11-17 16:15:07.652762600 -0800
+diff -ru old/debian/Debianize.hs new/debian/Debianize.hs
+--- old/debian/Debianize.hs	2013-11-20 17:21:54.021330832 -0800
++++ new/debian/Debianize.hs	2013-11-20 15:06:24.229598607 -0800
 @@ -1,68 +1,66 @@
  {-# LANGUAGE OverloadedStrings #-}
 -import Data.Lens.Lazy (setL, modL)
@@ -80,7 +88,7 @@ diff -ru clckwrks-dot-com.orig/debian/Debianize.hs clckwrks-dot-com/debian/Debia
 +    do execMap "hsx2hs" [[Rel (BinPkgName "hsx2hs") Nothing Nothing]]
 +       control  (\ y -> y {homepage = Just "http://www.clckwrks.com/"})
 +       rulesFragment (pack (Prelude.unlines ["build/clckwrks-dot-com-production::", "\techo CLCKWRKS=`ghc-pkg field clckwrks version | sed 's/version: //'` > debian/default"]))
-+       installTo (BinPkgName "clckwrks-dot-com-production") ("debian/default", "/etc/default/clckwrks-dot-com-production")
++       installTo (BinPkgName "clckwrks-dot-com-production") "debian/default" "/etc/default/clckwrks-dot-com-production"
 +       control (\ x -> x {standardsVersion = Just (StandardsVersion 3 9 4 Nothing)})
 +       sourceFormat Native3
 +       missingDependency (BinPkgName "libghc-clckwrks-theme-clckwrks-doc")
