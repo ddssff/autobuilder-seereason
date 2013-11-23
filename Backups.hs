@@ -12,4 +12,6 @@ main = backup (BackupTarget { app = "darcs"
                             , keep = 50
                             , nice = 10
                             , bwLimit = Just 20
+                            , cleanHour = (== 2)
+                            , backupHour = even
                             , delay = 0 })
