@@ -4,7 +4,7 @@ module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
 import Data.FileEmbed (embedFile)
 import Data.Set (singleton)
-import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, ModifyAtoms, BuildDep, NoDoc),
+import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, ModifyAtoms, BuildDep, NoDoc, CabalDebian),
                                                Packages(Package, Packages), RetrieveMethod(Debianize, Hackage, Cd, Darcs),
                                                flag, flags, spec, name, patch, debianize, hackage, rename, method, darcs)
 import Debian.Debianize.Monad (sourcePackageName, execDebM)
@@ -40,7 +40,7 @@ applications _home =
     -- (Targets.hs), and it creates a package named seereason-darcs-backups,
     -- which performs backups on the darcs repo.
     , debianize (darcs "seereason-darcs-backups" (repo ++ "/autobuilder-config")
-                  `rename` "seereason-darcs-backups")
+                  `flag` P.CabalDebian ["--source-package-name", "seereason-darcs-backups"])
     , debianize (method "seereasonpartners-dot-com"
                       (Cd "seereasonpartners-dot-com" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks"))))
     , debianize (method "haskell-clckwrks-theme-seereasonpartners"
