@@ -47,6 +47,11 @@ applications _home =
                       (Cd "clckwrks-theme-seereasonpartners" (Darcs (privateRepo ++ "/seereasonpartners-clckwrks")))
                    `flag` P.BuildDep "hsx2hs"
                    `flag` P.NoDoc)
+    , debianize (method "haskell-clckwrks-theme-appraisalscribe"
+                      (Darcs (privateRepo ++ "/clckwrks-theme-appraisalscribe"))
+                   `flag` P.BuildDep "hsx2hs"
+                   `flag` P.NoDoc)
+
     -- Merged into appraisalscribe
     -- , debianize (method "appraisalreportonline-dot-com"
     --                   (Cd "appraisalreportonline-dot-com" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks"))))
