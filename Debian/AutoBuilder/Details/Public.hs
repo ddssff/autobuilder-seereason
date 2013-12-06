@@ -11,9 +11,9 @@ import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Pa
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd)
 import Debian.Debianize (compat)
 import Debian.Relation (BinPkgName(..))
-import Debian.Debianize (doExecutable)
+import Debian.Debianize (doExecutable, execDebM, installData)
+import Debian.Debianize.Prelude ((~=), (+++=))
 import Debian.Debianize.Types (InstallFile(..))
-import Debian.Debianize.Monad (execDebM, installData)
 import System.FilePath((</>))
 import Debian.AutoBuilder.Details.Common (repo)
 
@@ -639,8 +639,8 @@ platform release =
                              P.BuildDep "alex",
                              P.BuildDep "happy",
                              P.CabalDebian ["--executable", "alex"],
-                             P.ModifyAtoms (execDebM $ do compat 9
-                                                          mapM_ (\ name -> installData (BinPkgName "alex") name name)
+                             P.ModifyAtoms (execDebM $ do compat ~= Just 9
+                                                          mapM_ (\ name -> installData +++= (BinPkgName "alex", singleton (name, name)))
                                                                [ "AlexTemplate"
                                                                , "AlexTemplate-debug"
                                                                , "AlexTemplate-ghc"
