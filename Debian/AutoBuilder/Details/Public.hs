@@ -667,7 +667,7 @@ platform release =
     -- that breaks our apps: https://github.com/haskell/network/issues/86
     , debianize (hackage "network")
     , debianize (hackage "publicsuffixlist")
-    , debianize (hackage "HTTP" `pflag` P.DebVersion "1:4000.2.3-1~hackage1" `qflag` P.DebVersion "1:4000.2.3-1build2")
+    , debianize (hackage "HTTP")
     , debianize (hackage "cgi")
     -- This is bundled with the compiler
     -- , debianize (hackage "process")
