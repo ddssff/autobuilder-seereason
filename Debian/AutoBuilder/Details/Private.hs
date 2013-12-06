@@ -49,8 +49,7 @@ applications _home =
                    `flag` P.NoDoc)
     , debianize (method "haskell-clckwrks-theme-appraisalscribe"
                       (Darcs (privateRepo ++ "/clckwrks-theme-appraisalscribe"))
-                   `flag` P.BuildDep "hsx2hs"
-                   `flag` P.NoDoc)
+                   `flag` P.BuildDep "hsx2hs")
 
     -- Merged into appraisalscribe
     -- , debianize (method "appraisalreportonline-dot-com"
