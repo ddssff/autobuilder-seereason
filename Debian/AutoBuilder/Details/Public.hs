@@ -252,7 +252,7 @@ main _home release =
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline")
     , debianize (hackage "th-orphans")
-    , debianize (hackage "haskell-src-meta" `patch` $(embedFile "patches/haskell-src-meta.diff"))
+    , debianize (hackage "haskell-src-meta" {- `patch` $(embedFile "patches/haskell-src-meta.diff") -})
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -452,7 +452,7 @@ main _home release =
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize (hackage "unification-fd")
     , wskip $ debianize (hackage "newtype")
-    , debianize (hackage "universe" `patch` $(embedFile "patches/universe.diff"))
+    , debianize (hackage "universe" {- `patch` $(embedFile "patches/universe.diff") -})
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
                 , P.flags = [] }
@@ -714,7 +714,7 @@ clckwrks _home release =
         , debianize (darcs "haskell-clckwrks-plugin-media" repo `cd` "clckwrks-plugin-media" `flag` P.BuildDep "hsx2hs")
         , debianize (darcs "haskell-clckwrks-plugin-ircbot" repo `cd` "clckwrks-plugin-ircbot" `flag` P.BuildDep "hsx2hs")
         , debianize (darcs "haskell-clckwrks-theme-bootstrap" repo `cd` "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
-        , debianize (darcs "clckwrks-dot-com" repo `cd` "clckwrks-dot-com" `patch` $(embedFile "patches/clckwrks-dot-com.diff"))
+        , debianize (darcs "clckwrks-dot-com" repo `cd` "clckwrks-dot-com" {- `patch` $(embedFile "patches/clckwrks-dot-com.diff") -})
         , debianize (darcs "haskell-clckwrks-theme-clckwrks" repo `cd` "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
         , debianize (hackage "jmacro")
         , debianize (hackage "hsx-jmacro")
@@ -824,8 +824,7 @@ happstack _home release =
                    -- `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
                    `flag` P.BuildDep "hsx2hs")
     , debianize (darcs "happstack-dot-com" (repo ++ "/happstack-clckwrks")
-                   `cd` "happstack-dot-com"
-                   `patch` $(embedFile "patches/happstack-dot-com.diff"))
+                   `cd` "happstack-dot-com")
     , debianize (hackage "acid-state")
     ]
 
