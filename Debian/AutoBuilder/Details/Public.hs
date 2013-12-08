@@ -262,6 +262,7 @@ main _home release =
     , debianize (hackage "heist")
     , debianize (hackage "xmlhtml")
     , debianize (hackage "directory-tree")
+    , debianize (hackage "monads-tf")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
     , debianize (hackage "MonadCatchIO-mtl")
     , debianize (hackage "haskell-lexer" `flag` P.DebVersion "1.0-3build2")
@@ -430,7 +431,7 @@ main _home release =
                 , P.flags = [P.BuildDep "happy"] }
     , debianize (hackage "utf8-light")
     , debianize (hackage "language-haskell-extract")
-    , P.Package { P.name = "haskell-pretty-show", P.spec = (Debianize (Hackage "pretty-show")), P.flags = [] }
+    , debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
     , P.Package { P.name = "haskell-language-ecmascript"
                 , P.spec = Debianize (Hackage "language-ecmascript")
                 , P.flags = [] }
@@ -630,7 +631,7 @@ platform release =
     , debianize (hackage "parallel")
     , wskip $ debianize (hackage "syb")
     , wskip $ debianize (hackage "fgl" `pflag` P.DebVersion "5.4.2.4-2" `qflag` P.DebVersion "5.4.2.4-2build2" `sflag` P.DebVersion "5.4.2.4-1")
-    , debianize (hackage "text")
+    , debianize (hackage "text" `flag` P.CabalPin "0.11.3.1")
     , P.Package { P.name = "alex"
                 , P.spec = Debianize (Hackage "alex")
                   -- alex shouldn't rebuild just because alex seems newer, but alex does require
