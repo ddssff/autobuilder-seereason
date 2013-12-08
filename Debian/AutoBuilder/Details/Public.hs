@@ -686,12 +686,7 @@ platform release =
     ]
 
 clckwrks _home release =
-    let useDevRepo = True
-        repo = if useDevRepo
-               then (darcsHub ++ "/clckwrks-dev")
-               else (darcsHub ++ "/clckwrks")
-               -- localRepo _home ++ "/clckwrks"
-    in
+    let repo = "http://src.seereason.com/mirrors/clckwrks-dev" in
     P.Packages (singleton "clckwrks") $
         [ happstack _home release
         , authenticate _home release
@@ -720,12 +715,10 @@ clckwrks _home release =
         , debianize (hackage "jmacro")
         , debianize (hackage "hsx-jmacro")
         , debianize (hackage "monadlist")
-        ] ++
-    if useDevRepo
-    then [ debianize (darcs "haskell-clckwrks-plugin-page" repo
-                                `cd` "clckwrks-plugin-page"
-                                `flag` P.BuildDep "hsx2hs") ]
-    else []
+        , debianize (darcs "haskell-clckwrks-plugin-page" repo
+                               `cd` "clckwrks-plugin-page"
+                               `flag` P.BuildDep "hsx2hs")
+        ]
 
 happstack _home release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String in
