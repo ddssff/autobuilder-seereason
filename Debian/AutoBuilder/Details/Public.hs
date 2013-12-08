@@ -701,7 +701,7 @@ clckwrks _home release =
                                                  "e211065e573ea0239d6449882c9d860d")
                                             "jstree")
                                            (Uri "https://raw.github.com/douglascrockford/JSON-js/master/json2.js"
-                                                "2ae07a68fc44f0ef8d92cce25620bd5f")
+                                                "f97cd64fa7f3d3d3728786288fef56c8")
                                            "json2")
                                           $(embedFile "patches/clckwrks.diff"))
                     , P.flags = [P.BuildDep "hsx2hs"] }
