@@ -117,6 +117,7 @@ main _home release =
     , darcs "haskell-agi" (repo </> "haskell-agi")
     , debianize (hackage "ansi-terminal")
     , debianize (hackage "ansi-wl-pprint")
+    , debianize (hackage "wl-pprint")
     , debianize (hackage "wl-pprint-text")
     -- Our applicative-extras repository has several important patches.
     , debianize (hackage "applicative-extras" `flag` P.DebVersion "0.1.8-1")
@@ -867,9 +868,13 @@ digestiveFunctors =
 conduit =
   P.Packages (singleton "conduit")
     [ debianize (hackage "conduit")
+    , debianize (hackage "connection")
     , debianize (hackage "attoparsec-conduit")
     , debianize (hackage "blaze-builder-conduit")
     , debianize (hackage "http-conduit")
+    , debianize (hackage "http-client")
+    , debianize (hackage "http-client-tls")
+    , debianize (hackage "http-client-conduit")
     , debianize (hackage "zlib-conduit")
     , debianize (hackage "xml-conduit")
     , debianize (hackage "mime-types")
