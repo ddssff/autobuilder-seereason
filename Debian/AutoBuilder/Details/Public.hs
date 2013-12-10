@@ -6,6 +6,7 @@ import Data.FileEmbed (embedFile)
 import Data.List (intercalate)
 import Data.Monoid ((<>))
 import Data.Set as Set (empty, singleton)
+import Debian.AutoBuilder.Details.Common (repo)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Quilt, Proc),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer, ModifyAtoms, UDeb, OmitLTDeps),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
@@ -13,7 +14,6 @@ import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Pa
 import Debian.Debianize (compat, doExecutable, execDebM, installData, InstallFile(..), (~=), (+++=))
 import Debian.Relation (BinPkgName(..))
 import System.FilePath((</>))
-import Debian.AutoBuilder.Details.Common (repo)
 
 patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"
