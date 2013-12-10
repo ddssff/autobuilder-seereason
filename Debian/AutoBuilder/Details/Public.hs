@@ -1027,6 +1027,5 @@ sunroof = P.Packages (singleton "sunroof")
   , debianize (hackage "vector-space")
   , debianize (hackage "NumInstances")
   , debianize (hackage "MemoTrie")
-  , debianize (hackage "uniqueid")
   , debianize (hackage "value-supply")
   ]
