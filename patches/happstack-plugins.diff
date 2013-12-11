@@ -6,8 +6,9 @@
                         mtl              >= 2.0 && <2.2,
 -                       happstack-server >= 6   && <7.2,
 -                       template-haskell >= 2.6 && <2.8,
+-                       th-lift          == 0.5.*
 +                       happstack-server >= 6,
 +                       template-haskell >= 2.6,
-                        th-lift          == 0.5.*
++                       th-lift          >= 0.5
  
    ghc-options:      -Wall

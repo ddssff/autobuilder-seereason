@@ -3,17 +3,15 @@
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
 import Data.FileEmbed (embedFile)
+import Data.List (intercalate)
 import Data.Monoid ((<>))
 import Data.Set as Set (empty, singleton)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Quilt, Proc),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer, ModifyAtoms, UDeb, OmitLTDeps),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd)
-import Debian.Debianize (compat)
+import Debian.Debianize (compat, doExecutable, execDebM, installData, InstallFile(..), (~=), (+++=))
 import Debian.Relation (BinPkgName(..))
-import Debian.Debianize (doExecutable, execDebM, installData)
-import Debian.Debianize.Prelude ((~=), (+++=))
-import Debian.Debianize.Types (InstallFile(..))
 import System.FilePath((</>))
 import Debian.AutoBuilder.Details.Common (repo)
 
@@ -109,9 +107,9 @@ main _home release =
     -- , apt "wheezy" "geneweb"
     , debianize (hackage "gtk2hs-buildtools"
                    `rename` "gtk2hs-buildtools"
-                   `flag` P.BuildDep "alex"
-                   `flag` P.BuildDep "happy"
-                   `flag` P.Revision "")
+                   `flag` P.CabalDebian ["--build-dep", "alex",
+                                         "--build-dep", "happy",
+                                         "--revision", ""])
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
     , debianize (hackage "aeson")
     , darcs "haskell-agi" (repo </> "haskell-agi")
@@ -252,7 +250,7 @@ main _home release =
     , debianize (hackage "hashable")
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline")
-    , debianize (hackage "th-orphans")
+    , debianize (hackage "th-orphans" `patch` $(embedFile "patches/th-orphans.diff"))
     , debianize (hackage "haskell-src-meta" {- `patch` $(embedFile "patches/haskell-src-meta.diff") -})
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
@@ -263,7 +261,6 @@ main _home release =
     , debianize (hackage "heist")
     , debianize (hackage "xmlhtml")
     , debianize (hackage "directory-tree")
-    , debianize (hackage "monads-tf")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
     , debianize (hackage "MonadCatchIO-mtl")
     , debianize (hackage "haskell-lexer" `flag` P.DebVersion "1.0-3build2")
@@ -329,7 +326,7 @@ main _home release =
     -- some package that builds after monads-tf got installed.  On the
     -- other hand, without monads-tf we lose this dependency chain:
     -- monads-tf -> options -> fay.
-    -- , debianize (hackage "monads-tf")
+    , debianize (hackage "monads-tf")
     , apt (rel release "wheezy" "quantal") "haskell-monoid-transformer"
     , debianize (hackage "murmur-hash")
     , debianize (hackage "mwc-random")
@@ -627,7 +624,9 @@ platform release =
     , debianize (hackage "stm")
     , debianize (hackage "stm-chans")
     , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
-    , debianize (hackage "mtl" `relax` "hsx2hs")
+    , debianize (hackage "mtl"
+                   -- Something happened once and I added this, but its crazy.
+                   `relax` "hsx2hs")
     , wskip $ debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
     , debianize (hackage "parallel")
     , wskip $ debianize (hackage "syb")
@@ -676,9 +675,7 @@ platform release =
     , wskip (debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2"))
     , debianize (hackage "HUnit")
     , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
-    , debianize (hackage "parsec" `flag` P.CabalDebian ["--conflicts", "libghc-parsec3-dev:libghc-parsec2-dev,libghc-parsec3-prof:libghc-parsec2-prof,libghc-parsec3-doc:libghc-parsec2-doc",
-                                                        "--provides", "libghc-parsec3-dev:libghc-parsec2-dev,libghc-parsec3-prof:libghc-parsec2-prof,libghc-parsec3-doc:libghc-parsec2-doc",
-                                                        "--replaces", "libghc-parsec3-dev:libghc-parsec2-dev,libghc-parsec3-prof:libghc-parsec2-prof,libghc-parsec3-doc:libghc-parsec2-doc"])
+    , debianize (hackage "parsec" `flag` P.CabalDebian (replacementLibrary "parsec2" "parsec3"))
     , apt (rel release "wheezy" "quantal") "haskell-html"
     , apt (rel release "wheezy" "quantal") "haskell-regex-compat"
     , apt (rel release "wheezy" "quantal") "haskell-regex-base"
@@ -736,7 +733,7 @@ happstack _home release =
                                                         "--replaces=hsx2hs:haskell-hsx-utils",
                                                         "--provides=hsx2hs:haskell-hsx-utils"])
     , debianize (hackage "fay-hsx" `patch` $(embedFile "patches/fay-hsx.diff"))
-    , debianize (hackage "fay" {- `patch` $(embedFile "patches/fay.diff") -}) `flag` P.CabalDebian [ "--depends=cpphs:haskell-fay-utils" ]
+    , debianize (hackage "fay" {- `patch` $(embedFile "patches/fay.diff") -}) `flag` P.CabalDebian [ "--depends=haskell-fay-utils:cpphs" ]
     , debianize (hackage "sourcemap")
     , debianize (hackage "fay-base")
     , debianize (hackage "fay-text")
@@ -787,7 +784,10 @@ happstack _home release =
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hsx" `patch` $(embedFile "patches/hsx.diff"))
     , debianize (hackage "hslua")
-    , debianize (hackage "pandoc" `flag` P.RelaxDep "libghc-pandoc-doc" `flag` P.BuildDep "alex" `flag` P.BuildDep "happy")
+    , debianize (hackage "pandoc"
+                   `flag` P.RelaxDep "libghc-pandoc-doc"
+                   `flag` P.BuildDep "alex"
+                   `flag` P.BuildDep "happy")
     , debianize (hackage "markdown" `rename` "markdown")
     , debianize (hackage "highlighting-kate")
     , debianize (hackage "web-routes")
@@ -871,7 +871,7 @@ conduit =
     , debianize (hackage "connection")
     , debianize (hackage "attoparsec-conduit")
     , debianize (hackage "blaze-builder-conduit")
-    , debianize (hackage "http-conduit")
+    , debianize (hackage "http-conduit" `flag` P.CabalPin "1.9.5.2") -- Waiting for fb>0.14.11 and pandoc>1.12.2
     , debianize (hackage "http-client")
     , debianize (hackage "http-client-tls")
     , debianize (hackage "http-client-conduit")
@@ -969,16 +969,14 @@ algebra release =
     , debianize (hackage "algebra")
     , debianize (hackage "bifunctors")
     , debianize (hackage "categories")
+    -- comonad now includes comonad-transformers and comonads-fd
     , debianize (hackage "comonad"
                    `flag`  P.CabalDebian [ "--conflicts=libghc-comonad-dev:libghc-comonad-transformers-dev"
                                          , "--replaces=libghc-comonad-dev:libghc-comonad-transformers-dev"
                                          , "--provides=libghc-comonad-dev:libghc-comonad-transformers-dev"
                                          , "--conflicts=libghc-comonad-dev:libghc-comonads-fd-dev"
                                          , "--replaces=libghc-comonad-dev:libghc-comonads-fd-dev"
-                                         , "--provides=libghc-comonad-dev:libghc-comonads-fd-dev"
-                                         , "--conflicts=libghc-comonad-dev:libghc-profunctor-extras-dev"
-                                         , "--replaces=libghc-comonad-dev:libghc-profunctor-extras-dev"
-                                         , "--provides=libghc-comonad-dev:libghc-profunctor-extras-dev" ])
+                                         , "--provides=libghc-comonad-dev:libghc-comonads-fd-dev" ])
     , debianize (hackage "control-monad-free")
     , debianize (hackage "transformers-free")
     , debianize (hackage "contravariant"
@@ -991,7 +989,12 @@ algebra release =
     -- I am just going to patch the packages that use it to require transformers >= 0.3.
     -- Specifically, distributive and lens.
     -- , debianize (hackage "transformers-compat" {-`flag` P.NoDoc-})
-    , debianize (hackage "profunctors")
+
+    -- profuctors now includes profunctor-extras
+    , debianize (hackage "profunctors"
+                   `flag` P.CabalDebian [ "--conflicts=libghc-profunctor-dev:libghc-profunctor-extras-dev"
+                                        , "--replaces=libghc-profunctor-dev:libghc-profunctor-extras-dev"
+                                        , "--provides=libghc-profunctor-dev:libghc-profunctor-extras-dev"])
     , debianize (hackage "reflection")
     , debianize (hackage "free")
     , debianize (hackage "keys")
@@ -1005,12 +1008,9 @@ algebra release =
     , debianize (hackage "representable-functors" {- `patch` $(embedFile "patches/representable-functors.diff") -})
     , debianize (hackage "representable-tries")
     , debianize (hackage "semigroupoids"
-                   `flag`  P.CabalDebian [ "--conflicts=libghc-comonad-dev:libghc-semigroupoid-extras-dev"
-                                         , "--replaces=libghc-comonad-dev:libghc-semigroupoid-extras-dev"
-                                         , "--provides=libghc-comonad-dev:libghc-semigroupoid-extras-dev"
-                                         , "--conflicts=libghc-semigroupoids-dev:libghc-groupoids-dev"
-                                         , "--replaces=libghc-semigroupoids-dev:libghc-groupoids-dev"
-                                         , "--provides=libghc-semigroupoids-dev:libghc-groupoids-dev" ])
+                   `flag` P.CabalDebian [ "--conflicts=libghc-semigroupoid-dev:libghc-semigroupoid-extras-dev"
+                                        , "--replaces=libghc-semigroupoid-dev:libghc-semigroupoid-extras-dev"
+                                        , "--provides=libghc-semigroupoid-dev:libghc-semigroupoid-extras-dev"])
     , debianize (hackage "spine") ]
 
 -- CB I was after units, but it requires ghc 7.8
@@ -1034,3 +1034,17 @@ sunroof = P.Packages (singleton "sunroof")
   , debianize (hackage "MemoTrie")
   , debianize (hackage "value-supply")
   ]
+
+-- | Create a flag that tells cabal debian the package @name@ is a replacement for @orig@,
+-- so that when it is installed the @orig@ package is uninstalled.  (This may be buggy, the
+-- use in semigroupoids caused problems.)
+replacementLibrary :: String -> String -> [String]
+replacementLibrary orig name =
+    ["--conflicts", deps, "--provides", deps, "--replaces", deps]
+    where
+      deps = intercalate "," [dev name ++ ":" ++ dev orig,
+                              prof name ++ ":" ++ prof orig,
+                              doc name ++ ":" ++ prof orig]
+      dev x = "libghc-" ++ x ++ "-dev"
+      prof x = "libghc-" ++ x ++ "-dev"
+      doc x = "libghc-" ++ x ++ "-dev"
