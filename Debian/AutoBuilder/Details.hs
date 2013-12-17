@@ -18,7 +18,7 @@ import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages (Packages(NoPackage), TargetName(TargetName))
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..), Strictness(..), TargetSpec(..))
 import Debian.Release (ReleaseName(ReleaseName, relName))
-import Debian.Repo.Cache (SourcesChangedAction(SourcesChangedError))
+import Debian.Repo (SourcesChangedAction(SourcesChangedError))
 import Debian.Sources (DebSource, parseSourceLine)
 import Debian.URI
 import Debian.Version (parseDebianVersion)
