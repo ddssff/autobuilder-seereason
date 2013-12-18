@@ -68,6 +68,7 @@ myParams home myBuildRelease =
     , strictness = Lax
     , flushDepends = False
     , includePackages = myIncludePackages myBuildRelease
+    , optionalIncludePackages = myOptionalIncludePackages myBuildRelease
     , excludePackages = myExcludePackages myBuildRelease
     , components = myComponents myBuildRelease
     , ghcVersion = {- trace ("ghcVersion: " ++ show (myCompilerVersion myBuildRelease)) $ -} myCompilerVersion myBuildRelease
@@ -79,7 +80,7 @@ myParams home myBuildRelease =
     -- 6.15 changes Epoch parameter arity to 2
     -- 6.18 renames type Spec -> RetrieveMethod
     -- 6.35 added the CabalDebian flag
-    , requiredVersion = [(parseDebianVersion ("6.55" :: String), Nothing)]
+    , requiredVersion = [(parseDebianVersion ("6.57" :: String), Nothing)]
     , hackageServer = myHackageServer
     -- Things that are probably obsolete
     , debug = False
@@ -266,13 +267,11 @@ myIncludePackages myBuildRelease =
     , "pkg-config"              -- Some packages now depend on this package via new cabal options.
     , "debian-keyring"
     , "locales"
-    -- , "seereason-keyring"
     -- , "perl-base"
     -- , "gnupg"
     -- , "dpkg"
     -- , "locales"
     -- , "language-pack-en"
-    -- , "seereason-keyring"
     -- , "ghc6"
     -- , "ghc6-doc"
     -- , "ghc6-prof"
@@ -300,6 +299,11 @@ myIncludePackages myBuildRelease =
               | isPrefixOf "hardy-" myBuildRelease -> [{-"upstart-compat-sysv", "belocs-locales-bin"-}]
               | True -> [{-"belocs-locales-bin"-}]
       _ -> error $ "Invalid build release: " ++ myBuildRelease
+
+-- This will not be available when a new release is created, so we
+-- have to make due until it gets built and uploaded.
+myOptionalIncludePackages myBuildRelease =
+    [ "seereason-keyring" ]
 
 myExcludePackages _ = []
 

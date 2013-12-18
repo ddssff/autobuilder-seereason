@@ -143,9 +143,13 @@ main _home release =
     , debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
     -- , debianize (hackage "cairo-pdf")
     , debianize (hackage "case-insensitive")
+    -- Here is an example of creating a debian/Debianize.hs file with an
+    -- autobuilder patch.  The autobuilder then automatically runs this
+    -- script to create the debianization.
     , debianize (hackage "cabal-install"
                    `flag` P.CabalPin "1.16.0.2" -- Waiting for Cabal 1.18.0
-                   `flag` P.CabalDebian ["--executable", "cabal-debian"])
+                   -- `flag` P.CabalDebian ["--executable", "cabal-debian"]
+                   `patch` $(embedFile "patches/cabal-install.diff"))
     -- , debianize (git "haskell-cabal-install" "https://github.com/haskell/cabal"
     --                      `cd` "cabal-install"
     --                      `patch` $(embedFile "patches/cabal-install.diff"))
@@ -537,7 +541,8 @@ main _home release =
     , debianize (hackage "stringsearch")
     , debianize (hackage "rss" `patch` $(embedFile "patches/rss.diff"))
     , debianize (hackage "async")
-    , debianize (hackage "units" `flag` P.CabalPin "1.0.0" {- `patch` $(embedFile "patches/units.diff") -})
+    -- Waiting for a newer GHC
+    -- , debianize (hackage "units" `flag` P.CabalPin "1.0.0" {- `patch` $(embedFile "patches/units.diff") -})
     , P.Package { P.name = "csv"
                 , P.spec = Debianize (Hackage "csv")
                 , P.flags = (rel release [P.DebVersion "0.1.2-2"] [P.DebVersion "0.1.2-2build2"]) }

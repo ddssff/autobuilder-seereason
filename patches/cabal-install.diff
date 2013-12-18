@@ -1,12 +1,15 @@
+diff -ruN old/debian/Debianize.hs new/debian/Debianize.hs
 --- old/debian/Debianize.hs	1969-12-31 16:00:00.000000000 -0800
-+++ new/debian/Debianize.hs	2013-02-17 07:40:21.664777934 -0800
-@@ -0,0 +1,9 @@
-+import Data.Lens.Lazy (setL, modL)
-+import Data.Map (insert)
-+import Debian.Debianize (Top(Top), debianize, utilsPackageNames, writeDebianization, epochMap)
-+import Debian.Relation (BinPkgName(..))
-+import Distribution.Package (PackageName(..))
-+import Debian.Debianize.Details (seereasonDefaultAtoms)
++++ new/debian/Debianize.hs	2013-12-18 10:50:53.390180184 -0800
+@@ -0,0 +1,11 @@
++import Debian.Debianize ((+=), debianization, DebT, evalDebT, newAtoms, seereasonDefaultAtoms, Top(Top), utilsPackageNames, writeDebianization)
++import Debian.Relation (BinPkgName(BinPkgName))
 +
-+main =
-+    debianize (Top ".") (return . setL utilsPackageNames [BinPkgName "cabal-install"]) seereasonDefaultAtoms
++top :: Top
++top = Top "."
++
++main :: IO ()
++main = evalDebT (debianization top seereasonDefaultAtoms customize >> writeDebianization top) newAtoms
++
++customize :: DebT IO ()
++customize = utilsPackageNames += BinPkgName "cabal-install"
