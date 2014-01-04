@@ -998,9 +998,9 @@ algebra release =
 
     -- profuctors now includes profunctor-extras
     , debianize (hackage "profunctors"
-                   `flag` P.CabalDebian [ "--conflicts=libghc-profunctor-dev:libghc-profunctor-extras-dev"
-                                        , "--replaces=libghc-profunctor-dev:libghc-profunctor-extras-dev"
-                                        , "--provides=libghc-profunctor-dev:libghc-profunctor-extras-dev"])
+                   `flag` P.CabalDebian [ "--conflicts=libghc-profunctors-dev:libghc-profunctors-extras-dev"
+                                        , "--replaces=libghc-profunctors-dev:libghc-profunctors-extras-dev"
+                                        , "--provides=libghc-profunctors-dev:libghc-profunctors-extras-dev"])
     , debianize (hackage "reflection")
     , debianize (hackage "free")
     , debianize (hackage "keys")
