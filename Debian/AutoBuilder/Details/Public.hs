@@ -348,6 +348,7 @@ main _home release =
     , debianize (hackage "optparse-applicative")
     , debianize (hackage "ordered")
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
+    , debianize (hackage "exceptions")
     , debianize (hackage "temporary")
     , debianize (hackage "pandoc-types")
     , debianize (hackage "parse-dimacs")
@@ -851,7 +852,7 @@ authenticate _home release =
     , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
     , digestiveFunctors
-    , debianize (hackage "fb")
+    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
     , debianize (hackage "monad-logger")
     , debianize (hackage "monad-loops")
     , debianize (hackage "fast-logger")
