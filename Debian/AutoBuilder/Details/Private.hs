@@ -55,9 +55,10 @@ applications _home =
     -- Merged into appraisalscribe
     -- , debianize (method "appraisalreportonline-dot-com"
     --                   (Cd "appraisalreportonline-dot-com" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks"))))
-    , debianize (method "haskell-clckwrks-theme-appraisalreportonline"
-                      (Cd "clckwrks-theme-appraisalreportonline" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks")))
-                   `flag` P.BuildDep "hsx2hs")
+    -- Theme is now haskell-clckwrks-theme-appraisalscribe
+    -- , debianize (method "haskell-clckwrks-theme-appraisalreportonline"
+    --                   (Cd "clckwrks-theme-appraisalreportonline" (Darcs (privateRepo ++ "/appraisalreportonline-clckwrks")))
+    --                `flag` P.BuildDep "hsx2hs")
     ]
 
 _clckwrks14 =
