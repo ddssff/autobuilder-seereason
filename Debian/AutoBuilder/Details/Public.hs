@@ -456,7 +456,6 @@ main _home release =
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize (hackage "unification-fd")
     , wskip $ debianize (hackage "newtype")
-    , debianize (hackage "universe" {- `patch` $(embedFile "patches/universe.diff") -})
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
                 , P.flags = [] }
@@ -972,8 +971,6 @@ algebra release =
     P.Packages (singleton "algebra")
     [ debianize (hackage "data-lens" {- `patch` $(embedFile "patches/data-lens.diff") -})
     , debianize (hackage "data-lens-template")
-    , debianize (hackage "adjunctions")
-    , debianize (hackage "algebra")
     , debianize (hackage "bifunctors")
     , debianize (hackage "categories")
     -- comonad now includes comonad-transformers and comonads-fd
@@ -1012,8 +1009,17 @@ algebra release =
     , debianize (hackage "lens-family")
     , debianize (hackage "lens-family-th")
     , debianize (hackage "linear" {- `patch` $(embedFile "patches/linear.diff") -})
+
+    -- These five fail because representable-functors fails, it wasn't updated
+    -- for the consolidation of comonad
+    {-
     , debianize (hackage "representable-functors" {- `patch` $(embedFile "patches/representable-functors.diff") -})
     , debianize (hackage "representable-tries")
+    , debianize (hackage "adjunctions")
+    , debianize (hackage "algebra")
+    , debianize (hackage "universe" {- `patch` $(embedFile "patches/universe.diff") -})
+    -}
+
     , debianize (hackage "semigroupoids"
                    `flag` P.CabalDebian [ "--conflicts=libghc-semigroupoid-dev:libghc-semigroupoid-extras-dev"
                                         , "--replaces=libghc-semigroupoid-dev:libghc-semigroupoid-extras-dev"
