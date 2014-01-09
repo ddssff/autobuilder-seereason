@@ -737,7 +737,8 @@ happstack _home release =
                                                         "--conflicts=hsx2hs:haskell-hsx-utils",
                                                         "--replaces=hsx2hs:haskell-hsx-utils",
                                                         "--provides=hsx2hs:haskell-hsx-utils"])
-    , debianize (hackage "fay-hsx" `patch` $(embedFile "patches/fay-hsx.diff"))
+    -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
+    -- , debianize (hackage "fay-hsx" `patch` $(embedFile "patches/fay-hsx.diff"))
     , debianize (hackage "fay" {- `patch` $(embedFile "patches/fay.diff") -}) `flag` P.CabalDebian [ "--depends=haskell-fay-utils:cpphs" ]
     , debianize (hackage "sourcemap")
     , debianize (hackage "fay-base")
