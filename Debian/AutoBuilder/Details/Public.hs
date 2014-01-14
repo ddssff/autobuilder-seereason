@@ -124,6 +124,7 @@ main _home release =
     , debianize (hackage "errors")
     , wskip $ debianize (hackage "failure" `qflag` P.DebVersion "0.2.0.1-1build2")
     , debianize (hackage "attoparsec")
+    , debianize (hackage "scientific")
     , debianize (hackage "attoparsec-enumerator")
     -- This was merged into attoparsec
     -- , debianize (hackage "attoparsec-text" `patch` $(embedFile "patches/attoparsec-text.diff") `flag` P.Revision "")
