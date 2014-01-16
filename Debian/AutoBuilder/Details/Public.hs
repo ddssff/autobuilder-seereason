@@ -1049,6 +1049,7 @@ sunroof = P.Packages (singleton "sunroof")
   , debianize (hackage "NumInstances")
   , debianize (hackage "MemoTrie")
   , debianize (hackage "value-supply")
+  , debianize (hackage "reified-records")
   ]
 
 -- | Create a flag that tells cabal debian the package @name@ is a replacement for @orig@,
