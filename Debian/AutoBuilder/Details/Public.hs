@@ -111,7 +111,7 @@ main _home release =
                                          "--build-dep", "happy",
                                          "--revision", ""])
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
-    , debianize (hackage "aeson")
+    , debianize (hackage "aeson" `flag` P.CabalPin "0.6.2.1") -- Waiting for fixes due to new dependency "scientific", and updates fb, heist, pandoc-types
     , darcs "haskell-agi" (repo </> "haskell-agi")
     , debianize (hackage "ansi-terminal")
     , debianize (hackage "ansi-wl-pprint")
@@ -123,7 +123,7 @@ main _home release =
     , wskip $ debianize (hackage "attempt" `pflag` P.DebVersion "0.4.0-1" `qflag` P.DebVersion "0.4.0-1build2")
     , debianize (hackage "errors")
     , wskip $ debianize (hackage "failure" `qflag` P.DebVersion "0.2.0.1-1build2")
-    , debianize (hackage "attoparsec")
+    , debianize (hackage "attoparsec" `flag` P.CabalPin "0.10.4.0") -- waiting for updates to hatex, attoparsec-enumerator, heist, fb
     , debianize (hackage "scientific")
     , debianize (hackage "attoparsec-enumerator")
     -- This was merged into attoparsec
@@ -411,6 +411,7 @@ main _home release =
     , debianize (hackage "tagsoup")
     , debianize (hackage "tar")
     , debianize (hackage "terminfo"
+                             `flag` P.CabalPin "0.3.2.6" -- Waiting for update of haskeline
                              `flag` P.DevelDep "libncurses5-dev"
                              `flag` P.DevelDep "libncursesw5-dev")
     , debianize (hackage "test-framework")
@@ -675,7 +676,7 @@ platform release =
     , debianize (hackage "network")
     , debianize (hackage "publicsuffixlist")
     , debianize (hackage "HTTP")
-    , debianize (hackage "cgi")
+    , debianize (hackage "cgi" `patch` $(embedFile "patches/cgi.diff"))
     -- This is bundled with the compiler
     -- , debianize (hackage "process")
     , wskip (debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2"))
