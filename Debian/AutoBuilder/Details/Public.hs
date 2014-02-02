@@ -725,29 +725,16 @@ clckwrks _home release =
                                `flag` P.BuildDep "hsx2hs")
         ]
 
-happstack _home release =
-    let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String in
-    P.Packages (singleton "happstack")
-    [ plugins
-    , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
-    , debianize (hackage "happstack" `patch` $(embedFile "patches/happstack.diff"))
-    , debianize (darcs "haskell-happstack-foundation" (darcsHub ++ "/happstack") `cd` "happstack-foundation")
-    , debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
-    , debianize (hackage "cryptohash-cryptoapi")
+fay _home release =
+    P.Packages (singleton "fay")
+    [ debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
+    , debianize (hackage "type-eq")
+    , debianize (hackage "haskell-names")
     , debianize (hackage "happstack-fay-ajax" `patch` $(embedFile "patches/happstack-fay-ajax.diff"))
-    , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs",
-                                                        "--conflicts=hsx2hs:haskell-hsx-utils",
-                                                        "--replaces=hsx2hs:haskell-hsx-utils",
-                                                        "--provides=hsx2hs:haskell-hsx-utils"])
-    -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
     -- , debianize (hackage "fay-hsx" `patch` $(embedFile "patches/fay-hsx.diff"))
     , debianize (hackage "fay" {- `patch` $(embedFile "patches/fay.diff") -}) `flag` P.CabalDebian [ "--depends=haskell-fay-utils:cpphs" ]
-    , debianize (hackage "sourcemap")
     , debianize (hackage "fay-base")
     , debianize (hackage "fay-text")
-    , debianize (hackage "haskell-names")
-    , debianize (hackage "haskell-packages")
-    , debianize (hackage "hse-cpp")
     , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
     -- , debianize (hackage "fay-jquery" `flag` P.CabalPin "0.3.0.0")
 {-  , debianize (darcs "mastermind" (darcsHub ++ "/mastermind")
@@ -757,6 +744,24 @@ happstack _home release =
                                          "--build-dep=haskell-fay-hsx-utils",
                                          "--build-dep=haskell-fay-jquery-utils",
                                          "--build-dep=haskell-happstack-fay-ajax-utils"]) -} -- waiting for a fix
+    ]
+
+happstack _home release =
+    let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String in
+    P.Packages (singleton "happstack")
+    [ plugins
+    , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
+    , debianize (hackage "happstack" `patch` $(embedFile "patches/happstack.diff"))
+    , debianize (darcs "haskell-happstack-foundation" (darcsHub ++ "/happstack") `cd` "happstack-foundation")
+    , debianize (hackage "cryptohash-cryptoapi")
+    , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs",
+                                                        "--conflicts=hsx2hs:haskell-hsx-utils",
+                                                        "--replaces=hsx2hs:haskell-hsx-utils",
+                                                        "--provides=hsx2hs:haskell-hsx-utils"])
+    -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
+    , debianize (hackage "sourcemap")
+    , debianize (hackage "haskell-packages")
+    , debianize (hackage "hse-cpp")
     , darcs "haskell-happstack-extra" (repo ++ "/happstack-extra")
 {-  , debianize (git "haskell-haskell-names" "https://github.com/haskell-suite/haskell-names")
     , debianize (git "haskell-haskell-packages" "https://github.com/haskell-suite/haskell-packages")
@@ -766,7 +771,6 @@ happstack _home release =
     , debianize (git "haskell-cabal" "https://github.com/haskell/cabal" `cd` "Cabal") -}
     -- , debianize (hackage "cabal-install" `patch` $(embedFile "patches/cabal-install.diff"))
     , debianize (hackage "EitherT")
-    , debianize (hackage "type-eq")
     , debianize (hackage "traverse-with-class")
     , debianize (hackage "happstack-hsp"
                    -- `patch` $(embedFile "patches/happstack-hsp.diff")
