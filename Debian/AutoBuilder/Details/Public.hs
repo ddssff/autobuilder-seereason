@@ -123,7 +123,7 @@ main _home release =
     , wskip $ debianize (hackage "attempt" `pflag` P.DebVersion "0.4.0-1" `qflag` P.DebVersion "0.4.0-1build2")
     , debianize (hackage "errors")
     , wskip $ debianize (hackage "failure" `qflag` P.DebVersion "0.2.0.1-1build2")
-    , debianize (hackage "attoparsec" `flag` P.CabalPin "0.10.4.0") -- waiting for updates to hatex, attoparsec-enumerator, heist, fb
+    , debianize (hackage "attoparsec")
     , debianize (hackage "scientific")
     , debianize (hackage "attoparsec-enumerator")
     -- This was merged into attoparsec
@@ -376,7 +376,7 @@ main _home release =
     , debianize (hackage "regex-tdfa" `pflag` P.DebVersion "1.1.8-1" `qflag` P.DebVersion "1.1.8-2build2")
     , darcs "haskell-revision" (repo </> "haskell-revision")
     , debianize (hackage "RJson" `patch` $(embedFile "patches/RJson.diff"))
-    , debianize (hackage "safe" `flag` P.DebVersion "0.3.3-2")
+    , debianize (hackage "safe")
     , debianize (hackage "safecopy")
     , debianize (hackage "sat"
                    `patch` $(embedFile "patches/sat.diff")
@@ -865,7 +865,8 @@ authenticate _home release =
     , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
     , digestiveFunctors
-    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
+    -- , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
+    , debianize (git "haskell-fb" "https://github.com/stepcut/fb")
     , debianize (hackage "monad-logger")
     , debianize (hackage "monad-loops")
     , debianize (hackage "fast-logger")
@@ -891,7 +892,7 @@ conduit =
     , debianize (hackage "connection")
     , debianize (hackage "attoparsec-conduit")
     , debianize (hackage "blaze-builder-conduit")
-    , debianize (hackage "http-conduit" `flag` P.CabalPin "1.9.5.2") -- Waiting for fb>0.14.11 and pandoc>1.12.2
+    , debianize (hackage "http-conduit")
     , debianize (hackage "http-client")
     , debianize (hackage "http-client-tls")
     , debianize (hackage "http-client-conduit")
@@ -1000,9 +1001,7 @@ algebra release =
     , debianize (hackage "contravariant"
                              `patch` $(embedFile "patches/contravariant.diff")
                              `qflag` P.DebVersion "0.2.0.2-1build2")
-    , debianize (hackage "distributive"
-                             `patch` $(embedFile "patches/distributive.diff")
-                             `qflag` P.DebVersion "0.2.2-1build2")
+    , debianize (hackage "distributive" `patch` $(embedFile "patches/distributive.diff"))
     -- This package fails to build in several different ways because it has no modules.
     -- I am just going to patch the packages that use it to require transformers >= 0.3.
     -- Specifically, distributive and lens.
