@@ -1017,12 +1017,15 @@ algebra release =
     , debianize (hackage "keys")
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras")
-    , debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff"))
+    -- lens-4.0 depends on aeson >= 0.7, which is not in hackage yet.  Also, lens-3.10.2 depends on a version of
+    -- monadcatchio-transformers<0.3.1, which is older than our oldest.
+    , debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff") `flag` P.CabalPin "3.10.1")
     , debianize (hackage "constraints")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
     , debianize (hackage "lens-family-th")
-    , debianize (hackage "linear" {- `patch` $(embedFile "patches/linear.diff") -})
+    -- Version 1.6 waiting for lens-4.0
+    , debianize (hackage "linear" `flag` P.CabalPin "1.4" {- `patch` $(embedFile "patches/linear.diff") -})
 
     -- These five fail because representable-functors fails, it wasn't updated
     -- for the consolidation of comonad
