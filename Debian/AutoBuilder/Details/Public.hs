@@ -111,7 +111,7 @@ main _home release =
                                          "--build-dep", "happy",
                                          "--revision", ""])
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
-    , debianize (hackage "aeson" `flag` P.CabalPin "0.6.2.1") -- Waiting for fixes due to new dependency "scientific", and updates fb, heist, pandoc-types
+    , debianize (hackage "aeson") -- Waiting for fixes due to new dependency "scientific", and updates fb, heist, pandoc-types
     , darcs "haskell-agi" (repo </> "haskell-agi")
     , debianize (hackage "ansi-terminal")
     , debianize (hackage "ansi-wl-pprint")
@@ -373,7 +373,7 @@ main _home release =
                 )
     -- Retired
     -- , apt (rel release "wheezy" "quantal") "haskell-quickcheck1"
-    , debianize (hackage "regex-tdfa" `pflag` P.DebVersion "1.1.8-1" `qflag` P.DebVersion "1.1.8-2build2")
+    , debianize (hackage "regex-tdfa")
     , darcs "haskell-revision" (repo </> "haskell-revision")
     , debianize (hackage "RJson" `patch` $(embedFile "patches/RJson.diff"))
     , debianize (hackage "safe")
@@ -797,7 +797,7 @@ happstack _home release =
     , debianize (hackage "hsx" `patch` $(embedFile "patches/hsx.diff"))
     , debianize (hackage "hslua")
     , debianize (hackage "pandoc"
-                   -- `patch` $(embedFile "patches/pandoc.diff")
+                   `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
                    `flag` P.BuildDep "alex"
                    `flag` P.BuildDep "happy")
@@ -1018,6 +1018,7 @@ algebra release =
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras")
     , debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff"))
+    , debianize (hackage "constraints")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
     , debianize (hackage "lens-family-th")

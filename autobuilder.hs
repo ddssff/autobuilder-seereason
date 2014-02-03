@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-orphans #-}
-#!/usr/bin/env runhaskell -package=base-3.0.3.0
--- Currently this will not run as a script even with the line above.
+
+-- Currently this will not run as a script even with this: #!/usr/bin/env runhaskell -package=base-3.0.3.0
 -- The reason is unclear.  Either use the wrapper script in
 -- /usr/bin/autobuilder or run in the interpreter:
 --
