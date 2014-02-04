@@ -15,6 +15,7 @@ import Data.Monoid (mappend)
 import Data.Set as Set (Set, empty, map, fromList)
 import Debian.Arch (Arch(Binary), ArchCPU(ArchCPU), ArchOS(ArchOS))
 import qualified Debian.AutoBuilder.Types.Packages as P
+import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.Packages (Packages(NoPackage), TargetName(TargetName))
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..), Strictness(..), TargetSpec(..))
 import Debian.Release (ReleaseName(ReleaseName, relName))
@@ -28,72 +29,31 @@ import System.FilePath ((</>))
 
 myParams :: FilePath -> String -> ParamRec
 myParams home myBuildRelease =
+    let myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
+        myBuildURIPrefix = "http://deb.seereason.com" in
     (\ params -> params {knownPackages = myKnownTargets home params}) $
-    ParamRec
+    (defaultParams myBuildRelease
+                   myUploadURIPrefix
+                   myBuildURIPrefix
+                   myCompilerVersion
+                   myDevelopmentReleaseNames)
     { vendorTag = myVendorTag
     , oldVendorTags = ["seereason"]
     , autobuilderEmail = "SeeReason Autobuilder <partners@seereason.com>"
     , releaseSuffixes = myReleaseSuffixes
-    , buildRelease = ReleaseName {relName = myBuildRelease}
     , uploadURI = myUploadURI myBuildRelease
     , buildURI = myBuildURI myBuildRelease
-    -- What we plan to build
-    , targets = TargetSpec {allTargets = False, targetNames = Set.empty}
-    , doUpload = myDoUpload
-    , doNewDist = myDoNewDist
-    , flushPool = myFlushPool
-    , useRepoCache = True
-    , forceBuild = myForceBuild
-    , buildTrumped = myBuildTrumped
-    , doSSHExport = myDoSSHExport
-    , report = False
-    , doHelp = False
-    -- Things that are occasionally useful
-    , goals = myGoals
-    , dryRun = False
-    , allowBuildDependencyRegressions = False
-    , setEnv = []
-    , showSources = False
-    , showParams = False
-    , flushAll = False
-    , flushSource = False
-    , flushRoot = False
-    , verbosity = myVerbosity
-    , topDirParam = Nothing
-    , createRelease = []
-    , doNotChangeVersion = False
-    -- Things that rarely change
     , sources = mySources myBuildRelease myDebianMirrorHost myUbuntuMirrorHost
     , globalRelaxInfo = myGlobalRelaxInfo
-    , strictness = Lax
-    , flushDepends = False
     , includePackages = myIncludePackages myBuildRelease
     , optionalIncludePackages = myOptionalIncludePackages myBuildRelease
     , excludePackages = myExcludePackages myBuildRelease
     , components = myComponents myBuildRelease
-    , ghcVersion = {- trace ("ghcVersion: " ++ show (myCompilerVersion myBuildRelease)) $ -} myCompilerVersion myBuildRelease
+    , ghcVersion = myCompilerVersion myBuildRelease
     , developmentReleaseNames = myDevelopmentReleaseNames
     , releaseAliases = myReleaseAliases myBuildRelease
-    , archSet = fromList [Binary (ArchOS "linux") (ArchCPU "i386"), Binary (ArchOS "linux") (ArchCPU "amd64")]
     , newDistProgram = "newdist --sender-email=autobuilder@seereason.com --notify-email dsf@seereason.com --notify-email beshers@seereason.com --notify-email jeremy@seereason.com"
-    -- 6.14 adds the ExtraDevDep parameter.
-    -- 6.15 changes Epoch parameter arity to 2
-    -- 6.18 renames type Spec -> RetrieveMethod
-    -- 6.35 added the CabalDebian flag
-    , requiredVersion = [(parseDebianVersion ("6.57" :: String), Nothing)]
     , hackageServer = myHackageServer
-    -- Things that are probably obsolete
-    , debug = False
-    , discard = Set.map TargetName myDiscards
-    , testWithPrivate = False
-    , extraReleaseTag = Nothing
-    , preferred = []
-    , buildDepends = []
-    , noClean = False
-    , cleanUp = False
-    , ifSourcesChanged = SourcesChangedError
-    , knownPackages = NoPackage
-    , buildPackages = NoPackage
     }
 
 -- This section has all the definitions relating to the particular
@@ -156,33 +116,6 @@ myDevelopmentReleaseNames = ["sid", "quantal"]
 --
 myVendorTag = "+seereason"
 
--- Put the names of any source packages you wish to rebuild whether or
--- not they appear to need it.  If you modified the package source but
--- did not modify the version number in the changelog this will force
--- a build.  This can lead to problems if you build the package for
--- multiple release or multiple architectures - you can end up with
--- different source for seemingly identical uploaded versions.  Add
--- elements from the command line using --force <name>.
---
-myForceBuild = []
-
--- Packages we should build and upload even if their source code looks
--- older than the version already uploaded to the repository.
-
-myBuildTrumped = []
-
--- Clear all the entries in the local pool before starting build.  Use
--- this when there is stuff already in there that you don't want to
--- upload to the remote repository.  Usually set from the command line
--- using --flush-pool.
---
-myFlushPool = False
-
--- Make the output more or less chatty.  Zero is normal, -1 is
--- quieter, and so on.
---
-myVerbosity = 0 :: Int
-
 myDiscards :: Set.Set String
 myDiscards = Set.empty
 
@@ -198,13 +131,6 @@ myKnownTargets home params =
     where
       rel = relName (buildRelease params)
 
--- If you are not interested in building everything, put one or more
--- source package names you want to build in this list.  Only these
--- packages and their build dependencies will be considered for
--- building.
---
-myGoals = []
-
 -- These host names are used to construct the sources.list lines to
 -- access the Debian and Ubuntu repositories.  The anl.gov values here
 -- probably won't work outside the United States.
@@ -216,19 +142,6 @@ myUbuntuMirrorHost = "us.archive.ubuntu.com/ubuntu"
 --myUbuntuMirrorHost = "ubuntu.cs.utah.edu"
 --myDebianMirrorHost = "mirrors.usc.edu/pub/linux/distributions"
 --myUbuntuMirrorHost = "mirrors.usc.edu/pub/linux/distributions"
-
--- If true, upload the packages after a successful build
---
-myDoUpload = False
-
--- If true, run newdist on the upload repository after a successful
--- build and upload, making them available to apt-get install.
---
-myDoNewDist = False
-
--- If true, try to set up ssh access to the upload host if necessary.
---
-myDoSSHExport = True
 
 -- There is a debian standard for constructing the version numbers of
 -- packages backported to older releases.  To follow this standard we
