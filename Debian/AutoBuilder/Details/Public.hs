@@ -1051,7 +1051,8 @@ units = P.Packages (singleton "units")
     , debianize (hackage "processing")
     , debianize (hackage "units") ]
 
-sunroof = P.Packages (singleton "sunroof")
+sunroof =           
+  P.Packages (singleton "sunroof")
   [ debianize (git "haskell-sunroof-compiler" "http://github.com/ku-fpg/sunroof-compiler"
                  `patch` $(embedFile "patches/sunroof-compiler.diff"))
   -- , debianize (hackage "sunroof-compiler")
@@ -1064,7 +1065,9 @@ sunroof = P.Packages (singleton "sunroof")
   , debianize (hackage "MemoTrie")
   , debianize (hackage "value-supply")
   , debianize (hackage "reified-records")
+  , debianize (darcs "seclib" repo)
   ]
+  where repo = "http://src.seereason.com/"
 
 -- | Create a flag that tells cabal debian the package @name@ is a replacement for @orig@,
 -- so that when it is installed the @orig@ package is uninstalled.  (This may be buggy, the
