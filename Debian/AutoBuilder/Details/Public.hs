@@ -1065,7 +1065,7 @@ sunroof =
   , debianize (hackage "MemoTrie")
   , debianize (hackage "value-supply")
   , debianize (hackage "reified-records")
-  , debianize (darcs "seclib" (repo </> "seclib")
+  , debianize (darcs "seclib" (repo </> "seclib"))
   ]
   where repo = "http://src.seereason.com/"
 
