@@ -676,7 +676,7 @@ platform release =
     , debianize (hackage "network")
     , debianize (hackage "publicsuffixlist")
     , debianize (hackage "HTTP")
-    , debianize (hackage "cgi" `patch` $(embedFile "patches/cgi.diff"))
+    , debianize (hackage "cgi")
     -- This is bundled with the compiler
     -- , debianize (hackage "process")
     , wskip (debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2"))
@@ -797,7 +797,7 @@ happstack _home release =
     , debianize (hackage "hsx" `patch` $(embedFile "patches/hsx.diff"))
     , debianize (hackage "hslua")
     , debianize (hackage "pandoc"
-                   `patch` $(embedFile "patches/pandoc.diff")
+                   -- `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
                    `flag` P.BuildDep "alex"
                    `flag` P.BuildDep "happy")
