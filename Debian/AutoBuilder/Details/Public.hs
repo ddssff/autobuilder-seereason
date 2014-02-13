@@ -1038,9 +1038,9 @@ algebra release =
     -}
 
     , debianize (hackage "semigroupoids"
-                   `flag` P.CabalDebian [ "--conflicts=libghc-semigroupoid-dev:libghc-semigroupoid-extras-dev"
-                                        , "--replaces=libghc-semigroupoid-dev:libghc-semigroupoid-extras-dev"
-                                        , "--provides=libghc-semigroupoid-dev:libghc-semigroupoid-extras-dev"])
+                   `flag` P.CabalDebian [ "--conflicts=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"
+                                        , "--replaces=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"
+                                        , "--provides=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"])
     , debianize (hackage "spine") ]
 
 -- CB I was after units, but it requires ghc 7.8
