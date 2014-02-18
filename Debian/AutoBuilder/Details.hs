@@ -236,6 +236,7 @@ myCompilerVersion "quantal-seereason" = Just "7.6.1"
 myCompilerVersion "natty-seereason" = Just "7.4.1"
 myCompilerVersion "lucid-seereason" = Just "7.4.1"
 myCompilerVersion "lenny-seereason" = Just "7.4.1"
+myCompilerVersion "wheezy-seereason" = Just "7.8.1"
 myCompilerVersion _myBuildRelease = Nothing
 
 myHackageServer = "hackage.haskell.org"

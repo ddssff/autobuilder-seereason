@@ -9,7 +9,7 @@ import Data.Set as Set (empty, singleton)
 import Debian.AutoBuilder.Details.Common (repo)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Quilt, Proc),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer, ModifyAtoms, UDeb, OmitLTDeps),
-                                               Packages(Package, Packages, NoPackage), flags, name, spec,
+                                               Packages(Package, Packages, list, NoPackage), flags, name, spec,
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, InstallFile(..), (~=), (+++=))
 import Debian.Relation (BinPkgName(..))
@@ -20,12 +20,17 @@ patchTag = "http://patch-tag.com/r/stepcut"
 darcsHub :: String
 darcsHub = "http://hub.darcs.net/stepcut"
 
+proc' :: String -> P.Packages -> P.Packages
+proc' "wheezy-seereason" p@(Package {}) = p {spec = Proc (spec p)}
+proc' release@"wheezy-seereason" p@(Packages {}) = p {list = map (proc' release) (list p)}
+proc' _ p = p
+
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
 targets :: String -> String -> P.Packages
 targets _home release =
-    P.Packages empty $
+    proc' release $ P.Packages empty $
     [ main _home release
     , autobuilder _home
     , clckwrks _home release
@@ -101,7 +106,7 @@ main _home release =
     , debianize (hackage "ListLike")
     -- Merged into ListLike-4.0
     -- , debianize (hackage "listlike-instances")
-    , wskip $ apt (rel release "wheezy" "quantal") "cpphs"
+    , apt (rel release "wheezy" "quantal") "cpphs"
     , apt "sid" "debootstrap" `flag` P.UDeb "debootstrap-udeb"
     -- Build fails due to some debianization issue
     -- , apt "wheezy" "geneweb"
@@ -138,7 +143,7 @@ main _home release =
                 -- `patch` $(embedFile "patches/template-default.diff")
                 )
     , debianize (hackage "bitmap")
-    , debianize (hackage "bitset")
+    , debianize (hackage "bitset" `patch` $(embedFile "patches/bitset.diff"))
     , apt (rel release "wheezy" "quantal") "haskell-bytestring-nums"
     , debianize (hackage "bytestring-trie")
     , debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
@@ -254,7 +259,7 @@ main _home release =
     , apt (rel release "wheezy" "quantal") "haskell-harp"
     , debianize (hackage "hashable")
     , debianize (hackage "hashed-storage")
-    , debianize (hackage "haskeline")
+    , wskip $ debianize (hackage "haskeline")
     , debianize (hackage "th-orphans")
     , debianize (hackage "haskell-src-meta" {- `patch` $(embedFile "patches/haskell-src-meta.diff") -})
     -- Because we specify an exact debian version here, this package
@@ -424,7 +429,10 @@ main _home release =
     -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
     , debianize (hackage "th-expand-syns")
     , debianize (hackage "th-lift")
-    , debianize (hackage "transformers-base" `pflag` P.DebVersion "0.4.1-2" `qflag` P.DebVersion "0.4.1-2build2")
+    , debianize (hackage "transformers-base"
+                             `pflag` P.DebVersion "0.4.1-2"
+                             `qflag` P.DebVersion "0.4.1-2build2"
+                             `wflag` P.DebVersion "0.4.1-2")
     , debianize (hackage "unicode-names" `flag` P.DebVersion "3.2.0.0-1~hackage1")
     , debianize (hackage "unicode-properties"
                    `patch` $(embedFile "patches/unicode-properties.diff")
@@ -457,13 +465,13 @@ main _home release =
                 , P.spec = Apt (rel release "wheezy" "quantal") "haskell-utf8-string"
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize (hackage "unification-fd")
-    , wskip $ debianize (hackage "newtype")
+    , debianize (hackage "newtype")
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
                 , P.flags = [] }
     , debianize (hackage "utility-ht")
     , debianize (hackage "vacuum")
-    , debianize (hackage "vector")
+    , wskip $ debianize (hackage "vector")
     , debianize (hackage "vector-algorithms")
     , P.Package { P.name = "haskell-virthualenv"
                 , P.spec = Debianize (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff"))
@@ -542,7 +550,7 @@ main _home release =
                 , P.flags = [] } -}
     , debianize (hackage "stringsearch")
     , debianize (hackage "rss" `patch` $(embedFile "patches/rss.diff"))
-    , debianize (hackage "async")
+    , debianize (hackage "async" `patch` $(embedFile "patches/async.diff"))
     -- Waiting for a newer GHC
     -- , debianize (hackage "units" `flag` P.CabalPin "1.0.0" {- `patch` $(embedFile "patches/units.diff") -})
     , P.Package { P.name = "csv"
@@ -626,14 +634,14 @@ platform release =
                   P.spec = DebDir (Hackage "happy") (Darcs (repo </> "happy-debian")),
                   P.flags = [P.RelaxDep "happy", P.CabalDebian ["--executable", "happy"],
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
-    , debianize (hackage "stm")
+    , wskip $ debianize (hackage "stm")
     , debianize (hackage "stm-chans")
     , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
     , debianize (hackage "mtl"
                    -- Something happened once and I added this, but its crazy.
                    `relax` "hsx2hs")
     , wskip $ debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
-    , debianize (hackage "parallel")
+    , wskip $ debianize (hackage "parallel")
     , wskip $ debianize (hackage "syb")
     , wskip $ debianize (hackage "fgl" `pflag` P.DebVersion "5.4.2.4-2" `qflag` P.DebVersion "5.4.2.4-2build2" `sflag` P.DebVersion "5.4.2.4-1")
     , debianize (hackage "text")
@@ -677,7 +685,7 @@ platform release =
     , debianize (hackage "cgi")
     -- This is bundled with the compiler
     -- , debianize (hackage "process")
-    , wskip (debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2"))
+    , debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2" `wflag` P.DebVersion "1.0.1.1-1")
     , debianize (hackage "HUnit")
     , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
     , debianize (hackage "parsec" `flag` P.CabalDebian (replacementLibrary "parsec2" "parsec3"))
@@ -685,7 +693,7 @@ platform release =
     , apt (rel release "wheezy" "quantal") "haskell-regex-compat"
     , apt (rel release "wheezy" "quantal") "haskell-regex-base"
     , debianize (hackage "regex-posix")
-    , debianize (hackage "xhtml" `qflag` P.DebVersion "3000.2.1-1build2")
+    , wskip $ debianize (hackage "xhtml" `qflag` P.DebVersion "3000.2.1-1build2")
     ]
 
 clckwrks _home release =
