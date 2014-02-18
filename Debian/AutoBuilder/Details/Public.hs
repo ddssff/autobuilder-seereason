@@ -10,7 +10,7 @@ import Debian.AutoBuilder.Details.Common (repo)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Quilt, Proc),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer, ModifyAtoms, UDeb, OmitLTDeps),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
-                                               rename, hackage, debianize, flag, patch, darcs, apt, git, cd)
+                                               rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, InstallFile(..), (~=), (+++=))
 import Debian.Relation (BinPkgName(..))
 import System.FilePath((</>))
@@ -578,34 +578,32 @@ relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
 
 compiler release =
     case release of
-      -- "precise-seereason" -> P.Packages (singleton "ghc") [devscripts]
-      "squeeze-seereason" -> P.NoPackage -- Omitted to avoid a big rebuild
-      _ -> P.Packages (singleton "ghc") [{-ghc76,-} devscripts]
+      "precise-seereason" -> P.Packages (singleton "ghc") [devscripts]
+      _ -> P.Packages (singleton "ghc") [ghc, devscripts]
     where
-      ghc76 = apt "sid" "ghc" -- As of 8 Jun 2013 this contains 7.6.3-3.  As of 30 Aug 2013 it contains 7.6.3-4.
-                `rename` "ghc"
-                `relax` "ghc"
-                `relax` "happy"
-                `relax` "alex"
-                `relax` "xsltproc"
-                `relax` "debhelper"
-                `relax` "quilt"
-                `relax` "python-minimal"
-                `relax` "libgmp-dev"
-                `flag` P.DebVersion "7.6.3-3" -- pin to avoid massive rebuild
-                `squeezeRelax` "libgmp3-dev"
-                `squeezePatch` $(embedFile "patches/ghc.diff") <>
-              case release of
-                "squeeze-seereason" -> apt "wheezy" "po4a" <>
-                                       apt "wheezy" "debhelper" `patch` $(embedFile "patches/debhelper.diff") <>
-                                       apt "wheezy" "dpkg" `patch` $(embedFile "patches/dpkg.diff") <>
-                                       apt "wheezy" "makedev"
-                _ -> P.NoPackage
+      ghc78 = proc (apt "experimental" "ghc")
+      ghc76 = apt "sid" "ghc" -- As of 8 Jun 2013 this contains 7.6.3-3.  As of 13 Feb 2014 it contains 7.6.3-6.
+      ghcFlags p = p `relax` "ghc"
+                     `relax` "happy"
+                     `relax` "alex"
+                     `relax` "xsltproc"
+                     `relax` "debhelper"
+                     `relax` "quilt"
+                     `relax` "python-minimal"
+                     `relax` "libgmp-dev"
+      ghc = case release of
+              "precise-seereason" -> ghcFlags ghc76 `flag` P.DebVersion "7.6.3-3" -- pin to avoid massive rebuild
+              "squeeze-seereason" -> ghcFlags ghc76 `patch` $(embedFile "patches/ghc.diff") <>
+                                     apt "wheezy" "po4a" <>
+                                     apt "wheezy" "debhelper" `patch` $(embedFile "patches/debhelper.diff") <>
+                                     apt "wheezy" "dpkg" `patch` $(embedFile "patches/dpkg.diff") <>
+                                     apt "wheezy" "makedev"
+              _ -> ghcFlags ghc78
 
       devscripts =
-          wskip $ P.Package { P.name = "haskell-devscripts"
-                            , P.spec = Apt "sid" "haskell-devscripts"
-                            , P.flags = [P.RelaxDep "python-minimal"] }
+          P.Package { P.name = "haskell-devscripts"
+                    , P.spec = Apt "sid" "haskell-devscripts"
+                    , P.flags = [P.RelaxDep "python-minimal"] }
       -- haskell-devscripts-0.8.13 is for ghc-7.6 only
       squeezeRelax = case release of "squeeze-seereason" -> relax; "squeeze-seereason-private" -> relax; _ -> \ p _ -> p
       squeezePatch = case release of "squeeze-seereason" -> patch; "squeeze-seereason-private" -> patch; _ -> \ p _ -> p
@@ -889,6 +887,7 @@ digestiveFunctors =
 conduit =
   P.Packages (singleton "conduit")
     [ debianize (hackage "conduit")
+    , debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
     , debianize (hackage "connection")
     , debianize (hackage "attoparsec-conduit")
     , debianize (hackage "blaze-builder-conduit")

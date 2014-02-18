@@ -12,11 +12,10 @@ module Debian.AutoBuilder.Details
 import Data.List as List (isSuffixOf, isPrefixOf, map)
 import Data.Maybe
 import Data.Monoid (mappend)
-import Data.Set as Set (Set, empty, map, fromList)
-import Debian.Arch (Arch(Binary), ArchCPU(ArchCPU), ArchOS(ArchOS))
+import Data.Set as Set (Set, empty)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
-import Debian.AutoBuilder.Types.Packages (Packages(NoPackage), TargetName(TargetName))
+import Debian.AutoBuilder.Types.Packages (Packages(NoPackage))
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..), Strictness(..), TargetSpec(..))
 import Debian.Release (ReleaseName(ReleaseName, relName))
 import Debian.Repo (SourcesChangedAction(SourcesChangedError))

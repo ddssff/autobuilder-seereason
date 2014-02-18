@@ -1,0 +1,11 @@
+--- old/Data/Text/StreamDecoding.hs	2014-02-13 09:45:36.410114693 -0800
++++ new/Data/Text/StreamDecoding.hs	2014-02-13 13:59:55.926475230 -0800
+@@ -22,7 +22,7 @@
+ -- Fusible 'Stream'-oriented functions for converting between lazy
+ -- 'Text' and several common encodings.
+ 
+--- | Provides a stream-based approach to decoding Unicode data. Each function
++-- Provides a stream-based approach to decoding Unicode data. Each function
+ -- below works the same way: you give it a chunk of data, and it gives back a
+ -- @DecodeResult@. If the parse was a success, then you get a chunk of @Text@
+ -- (possibly empty) and a continuation parsing function. If the parse was a
