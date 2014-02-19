@@ -189,7 +189,7 @@ main _home release =
     , debianize (hackage "cryptohash")
     , wskip $ debianize (hackage "cpu" `qflag` P.DebVersion "0.1.1-1build1")
     , debianize (hackage "css" `flag` P.DebVersion "0.1-1~hackage1")
-    , debianize (hackage "css-text" `pflag` P.DebVersion "0.1.1-3" `qflag` P.DebVersion "0.1.1-3build1")
+    , debianize (hackage "css-text")
     , apt (rel release "wheezy" "quantal") "haskell-curl"
     , debianize (hackage "data-accessor")
     , debianize (hackage "data-accessor-template")
@@ -255,7 +255,7 @@ main _home release =
     , debianize (hackage "hashable")
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline")
-    , debianize (hackage "th-orphans" `patch` $(embedFile "patches/th-orphans.diff"))
+    , debianize (hackage "th-orphans")
     , debianize (hackage "haskell-src-meta" {- `patch` $(embedFile "patches/haskell-src-meta.diff") -})
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
