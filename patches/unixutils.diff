@@ -1,0 +1,22 @@
+--- old/debian/control~	2012-11-02 15:48:17.000000000 -0700
++++ old/debian/control	2014-02-19 06:04:35.190049628 -0800
+@@ -11,8 +11,8 @@
+                libghc-hunit-prof,
+                libghc-mtl-dev,
+                libghc-mtl-prof,
+-               libghc-parallel-dev (>= 2),
+-               libghc-parallel-prof (>= 2),
++               ghc (>= 7.8) | libghc-parallel-dev (>= 2),
++               ghc-prof (>= 7.8) | libghc-parallel-prof (>= 2),
+                libghc-puremd5-dev,
+                libghc-puremd5-prof,
+                libghc-regex-tdfa-dev,
+@@ -22,7 +22,7 @@
+ Build-Depends-Indep: ghc-doc,
+                      libghc-hunit-doc,
+                      libghc-mtl-doc,
+-                     libghc-parallel-doc (>= 2),
++                     ghc-doc (>= 7.8) | libghc-parallel-doc (>= 2),
+                      libghc-puremd5-doc,
+                      libghc-regex-tdfa-doc,
+                      libghc-zlib-doc
