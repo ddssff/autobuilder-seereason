@@ -1,12 +1,13 @@
 --- old/virthualenv.cabal	2012-09-05 22:50:47.809090845 -0700
 +++ new/virthualenv.cabal	2012-09-05 22:49:55.521089609 -0700
-@@ -98,15 +98,15 @@
+@@ -100,15 +100,15 @@
  
    Ghc-options: -threaded -Wall
  
 -  Build-depends: base >= 4.2.0.0 && < 4.6
+-               , process >= 1.0.1.2 && < 1.2
 +  Build-depends: base >= 4.2.0.0
-                , process >= 1.0.1.2 && < 1.2
++               , process >= 1.0.1.2
                 , filepath >= 1.1.0.3 && < 1.4
 -               , directory >= 1.0.1.0 && < 1.2
 -               , Cabal >= 1.8.0.6 && < 1.15

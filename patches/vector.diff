@@ -1,0 +1,11 @@
+--- old/vector.cabal	2014-02-18 06:47:05.000000000 -0800
++++ new/vector.cabal	2014-02-19 05:28:10.977998021 -0800
+@@ -129,7 +129,7 @@
+         vector.h
+ 
+   Build-Depends: base >= 4 && < 5
+-               , primitive >= 0.5.0.1 && < 0.6
++               , primitive >= 0.5.0.1
+                , ghc-prim
+                , deepseq >= 1.1 && < 1.4
+ 

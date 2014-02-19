@@ -1,0 +1,20 @@
+--- old/data-accessor-template.cabal	2014-02-18 21:16:16.000000000 -0800
++++ new/data-accessor-template.cabal	2014-02-19 05:44:42.690021453 -0800
+@@ -43,7 +43,7 @@
+   If impl(ghc)
+     If impl(ghc >= 6.12)
+       Hs-Source-Dirs: src-5
+-      Build-Depends:  template-haskell >=2.4 && <2.9
++      Build-Depends:  template-haskell >=2.4
+     Else
+       Hs-Source-Dirs: src-3
+       Build-Depends:  template-haskell >=2.2 && <2.4
+@@ -57,7 +57,7 @@
+   Else
+     If flag(template_2_4)
+       Hs-Source-Dirs: src-5
+-      Build-Depends:  template-haskell >=2.4 && <2.8
++      Build-Depends:  template-haskell >=2.4
+     Else
+       Hs-Source-Dirs: src-3
+       Build-Depends:  template-haskell >=2.2 && <2.4

@@ -1,0 +1,55 @@
+--- old/syb-with-class.cabal	2014-02-18 14:42:19.000000000 -0800
++++ new/syb-with-class.cabal	2014-02-18 17:05:26.200945088 -0800
+@@ -25,7 +25,7 @@
+   location: http://patch-tag.com/r/Saizan/syb-with-class/
+ 
+ Library 
+-    Build-Depends:      base >= 3 && < 5, template-haskell >= 2.4 && < 2.9, bytestring, array, containers
++    Build-Depends:      base >= 3 && < 5, template-haskell >= 2.4, bytestring, array, containers
+     Exposed-modules:
+         Data.Generics.SYB.WithClass.Basics
+         Data.Generics.SYB.WithClass.Context
+--- old/Data/Generics/SYB/WithClass/Basics.hs	2014-02-18 21:20:51.000000000 -0800
++++ new/Data/Generics/SYB/WithClass/Basics.hs	2014-02-19 05:05:29.441965852 -0800
+@@ -12,13 +12,21 @@
+ 
+ module Data.Generics.SYB.WithClass.Basics (
+ 
++#if MIN_VERSION_base(4,7,0)
++ module Data.OldTypeable,
++#else
+  module Data.Typeable,
++#endif
+  module Data.Generics.SYB.WithClass.Context,
+  module Data.Generics.SYB.WithClass.Basics
+ 
+ ) where
+ 
++#if MIN_VERSION_base(4,7,0)
++import Data.OldTypeable
++#else
+ import Data.Typeable
++#endif
+ import Data.Generics.SYB.WithClass.Context
+ 
+ #ifdef __HADDOCK__
+--- old/Data/Generics/SYB/WithClass/Instances.hs.orig	2014-02-19 06:26:16.000000000 -0800
++++ new/Data/Generics/SYB/WithClass/Instances.hs	2014-02-19 09:19:35.258326066 -0800
+@@ -523,7 +523,7 @@
+          Data ctx TypeRep where
+   toConstr _ _   = error "toConstr"
+   gunfold _ _ _  = error "gunfold TypeRep"
+-  dataTypeOf _ _ = mkNorepType "Data.Typeable.TypeRep"
++  dataTypeOf _ _ = mkNorepType "Data.OldTypeable.TypeRep"
+ 
+ 
+ ------------------------------------------------------------------------------
+@@ -533,7 +533,7 @@
+          Data ctx TyCon where
+   toConstr _ _   = error "toConstr"
+   gunfold _ _ _  = error "gunfold TyCon"
+-  dataTypeOf _ _ = mkNorepType "Data.Typeable.TyCon"
++  dataTypeOf _ _ = mkNorepType "Data.OldTypeable.TyCon"
+ 
+ 
+ ------------------------------------------------------------------------------

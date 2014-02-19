@@ -1,0 +1,11 @@
+--- old/dataenc.cabal	2014-02-18 13:05:48.000000000 -0800
++++ new/dataenc.cabal	2014-02-18 13:19:00.020624086 -0800
+@@ -21,7 +21,7 @@
+ 
+ library
+     hs-source-dirs: src
+-    build-depends: array >= 0.1.0 && < 0.5, base >= 3.0.0 && < 4.7, containers >= 0.1.0 && < 0.6
++    build-depends: array >= 0.1.0, base >= 3.0.0, containers >= 0.1.0 && < 0.6
+     exposed-modules:
+             Codec.Binary.Base16
+             Codec.Binary.Base32

@@ -1,0 +1,11 @@
+--- old/language-ecmascript.cabal	2014-02-18 21:18:39.000000000 -0800
++++ new/language-ecmascript.cabal	2014-02-19 06:14:19.510063434 -0800
+@@ -43,7 +43,7 @@
+     uniplate >= 1.6 && <1.7,
+     data-default-class >= 0.0.1 && < 0.1,
+     QuickCheck >= 2.5 && < 2.7,
+-    template-haskell >= 2.8 && < 2.9,
++    template-haskell >= 2.8,
+     Diff == 0.3.*
+   ghc-options:
+     -fwarn-incomplete-patterns

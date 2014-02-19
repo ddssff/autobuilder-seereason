@@ -1,0 +1,11 @@
+--- old/aeson.cabal	2014-02-19 06:24:46.000000000 -0800
++++ new/aeson.cabal	2014-02-19 09:25:04.514333845 -0800
+@@ -79,7 +79,7 @@
+ 
+ flag new-bytestring-builder
+   description: Use the new bytestring builder available in bytestring >= 0.10.4.0
+-  default: False
++  default: True
+ 
+ library
+   exposed-modules:

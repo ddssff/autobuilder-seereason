@@ -87,7 +87,7 @@ autobuilder home =
 
 unixutils _home =
     P.Packages (singleton "Unixutils")
-    [ darcs "haskell-unixutils" (repo ++ "/haskell-unixutils")
+    [ darcs "haskell-unixutils" (repo ++ "/haskell-unixutils") `patch` $(embedFile "patches/unixutils.diff")
     , darcs "haskell-extra" (repo </> "haskell-extra") `flag` P.RelaxDep "cabal-debian"
     , darcs "haskell-help" (repo </> "haskell-help") ]
 
@@ -103,7 +103,7 @@ main _home release =
     , platform release
     , debianize (hackage "hashtables")
     , apt "squeeze" "bugzilla"
-    , debianize (hackage "ListLike")
+    , debianize (hackage "ListLike" `patch` $(embedFile "patches/ListLike.diff"))
     -- Merged into ListLike-4.0
     -- , debianize (hackage "listlike-instances")
     , apt (rel release "wheezy" "quantal") "cpphs"
@@ -116,7 +116,7 @@ main _home release =
                                          "--build-dep", "happy",
                                          "--revision", ""])
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
-    , debianize (hackage "aeson") -- Waiting for fixes due to new dependency "scientific", and updates fb, heist, pandoc-types
+    , debianize (hackage "aeson" `patch` $(embedFile "patches/aeson.diff"))
     , darcs "haskell-agi" (repo </> "haskell-agi")
     , debianize (hackage "ansi-terminal")
     , debianize (hackage "ansi-wl-pprint")
@@ -127,7 +127,7 @@ main _home release =
     , debianize (hackage "asn1-data")
     , wskip $ debianize (hackage "attempt" `pflag` P.DebVersion "0.4.0-1" `qflag` P.DebVersion "0.4.0-1build2")
     , debianize (hackage "errors")
-    , wskip $ debianize (hackage "failure" `qflag` P.DebVersion "0.2.0.1-1build2")
+    , debianize (hackage "failure" `wflag` P.DebVersion "0.2.0.1-1" `qflag` P.DebVersion "0.2.0.1-1build2")
     , debianize (hackage "attoparsec")
     , debianize (hackage "scientific")
     , debianize (hackage "attoparsec-enumerator")
@@ -139,9 +139,7 @@ main _home release =
     , debianize (hackage "base-unicode-symbols")
     , debianize (hackage "bimap" `flag` P.DebVersion "0.2.4-1~hackage1")
     , debianize (hackage "Validation" `patch` $(embedFile "patches/validation.diff"))
-    , debianize (hackage "template-default"
-                -- `patch` $(embedFile "patches/template-default.diff")
-                )
+    , debianize (hackage "template-default" `patch` $(embedFile "patches/template-default.diff"))
     , debianize (hackage "bitmap")
     , debianize (hackage "bitset" `patch` $(embedFile "patches/bitset.diff"))
     , apt (rel release "wheezy" "quantal") "haskell-bytestring-nums"
@@ -152,10 +150,14 @@ main _home release =
     -- Here is an example of creating a debian/Debianize.hs file with an
     -- autobuilder patch.  The autobuilder then automatically runs this
     -- script to create the debianization.
-    , debianize (hackage "cabal-install"
-                   `flag` P.CabalPin "1.16.0.2" -- Waiting for Cabal 1.18.0
-                   -- `flag` P.CabalDebian ["--executable", "cabal-debian"]
-                   `patch` $(embedFile "patches/cabal-install.diff"))
+    , debianize (case release of
+                   "wheezy-seereason" ->
+                         hackage "cabal-install"
+                           `patch` $(embedFile "patches/cabal-install.diff")
+                   _ ->  hackage "cabal-install"
+                         -- Waiting for Cabal 1.18.0, shipped with ghc-7.8
+                           `flag` P.CabalPin "1.16.0.2"
+                           `patch` $(embedFile "patches/cabal-install.diff"))
     -- , debianize (git "haskell-cabal-install" "https://github.com/haskell/cabal"
     --                      `cd` "cabal-install"
     --                      `patch` $(embedFile "patches/cabal-install.diff"))
@@ -196,21 +198,22 @@ main _home release =
     , debianize (hackage "css" `flag` P.DebVersion "0.1-1~hackage1")
     , debianize (hackage "css-text")
     , apt (rel release "wheezy" "quantal") "haskell-curl"
-    , debianize (hackage "data-accessor")
-    , debianize (hackage "data-accessor-template")
+    , debianize (hackage "data-accessor" `patch` $(embedFile "patches/data-accessor.diff"))
+    , debianize (hackage "data-accessor-template" `patch` $(embedFile "patches/data-accessor-template.diff"))
     , debianize (hackage "data-default")
     , debianize (hackage "data-default-class")
     , debianize (hackage "data-default-instances-base")
     , debianize (hackage "data-default-instances-containers")
     , debianize (hackage "data-default-instances-dlist")
     , debianize (hackage "data-default-instances-old-locale")
-    , debianize (hackage "data-object"
-                   `patch` $(embedFile "patches/data-object.diff"))
-    , debianize (hackage "dataenc")
+    , debianize (hackage "data-object" `patch` $(embedFile "patches/data-object.diff"))
+    , debianize (hackage "dataenc" `patch` $(embedFile "patches/dataenc.diff"))
     , debianize (hackage "Diff")
     , debianize (hackage "executable-path" `flag` P.DebVersion "0.0.3-1")
-    , apt (rel release "wheezy" "quantal") "haskell-digest"
-    , apt (rel release "wheezy" "quantal") "haskell-dlist"
+    -- , apt (rel release "wheezy" "quantal") "haskell-digest"
+    -- , apt (rel release "wheezy" "quantal") "haskell-dlist"
+    , debianize (hackage "digest")
+    , debianize (hackage "dlist")
     -- Natty only(?)
     , debianize (hackage "double-conversion")
     , debianize (hackage "groom")
@@ -273,15 +276,18 @@ main _home release =
     , debianize (hackage "directory-tree")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
     , debianize (hackage "MonadCatchIO-mtl")
-    , debianize (hackage "haskell-lexer" `flag` P.DebVersion "1.0-3build2")
+    , debianize (hackage "haskell-lexer" `pflag` P.DebVersion "1.0-3build2" `wflag` P.DebVersion "1.0-3")
     , debianize (hackage "hinotify")
     , P.Package { P.name = "haskell-hjavascript"
                 , P.spec = Quilt (Apt "wheezy" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
                 , P.flags = [] }
     -- Not used, and not building.
     -- , debianize (hackage "hoauth")
-    , wskip $
-      debianize (hackage "hostname" `pflag` P.DebVersion "1.0-4build1" `qflag` P.DebVersion "1.0-4build3" `sflag` P.DebVersion "1.0-1~hackage1")
+    , debianize (hackage "hostname"
+                   `wflag` P.DebVersion "1.0-4"
+                   `pflag` P.DebVersion "1.0-4build1"
+                   `qflag` P.DebVersion "1.0-4build3"
+                   `sflag` P.DebVersion "1.0-1~hackage1")
     -- The Sid package has no profiling libraries, so dependent packages
     -- won't build.  Use our debianization instead.  This means keeping
     -- up with sid's version.
@@ -291,7 +297,7 @@ main _home release =
     , debianize (hackage "HsOpenSSL"
                    `flag` P.DevelDep "libssl-dev"
                    `flag` P.DevelDep "libcrypto++-dev")
-    , wskip $ debianize (hackage "HsSyck")
+    , debianize (hackage "HsSyck" `patch`  $(embedFile "patches/HsSyck.diff"))
     , debianize (hackage "HStringTemplate")
     , darcs "haskell-html-entities" (repo </> "html-entities")
     , debianize (hackage "http-types")
@@ -360,8 +366,9 @@ main _home release =
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
     , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
-    , debianize (hackage "PBKDF2")
-    , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
+    , debianize (hackage "PBKDF2" `patch` $(embedFile "patches/PBKDF2.diff"))
+    -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
+    , debianize (hackage "pcre-light" `flag` P.DevelDep "libpcre-dev")
     , debianize (hackage "permutation" `flag` P.DebVersion "0.4.1-1~hackage1")
     , debianize (hackage "pipes")
     , debianize (hackage "polyparse")
@@ -410,7 +417,7 @@ main _home release =
                 , P.flags = rel release [P.DebVersion "0.2.4.1-3"] [P.DebVersion "0.2.4.1-2build3"] }
     , debianize (hackage "strict-io") -- for GenI
     , debianize (hackage "smallcheck")
-    , debianize (hackage "syb-with-class")
+    , debianize (hackage "syb-with-class" `patch` $(embedFile "patches/syb-with-class.diff"))
     , apt (rel release "wheezy" "quantal") "haskell-syb-with-class-instances-text"
     , debianize (hackage "tagged")
     , debianize (hackage "tagsoup")
@@ -445,9 +452,7 @@ main _home release =
     , debianize (hackage "utf8-light")
     , debianize (hackage "language-haskell-extract")
     , debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
-    , P.Package { P.name = "haskell-language-ecmascript"
-                , P.spec = Debianize (Hackage "language-ecmascript")
-                , P.flags = [] }
+    , debianize (hackage "language-ecmascript" `patch` $(embedFile "patches/language-ecmascript.diff"))
     , debianize (hackage "charset")
     , debianize (hackage "union-find")
     -- , debianize (hackage "Elm")
@@ -460,18 +465,17 @@ main _home release =
     , debianize (hackage "utf8-prelude" `flag` P.DebVersion "0.1.6-1~hackage1")
     -- The GHC in wheezy conflicts with libghc-containers-dev, so we can't build this.
     -- , wonly $ debianize (hackage "containers")
-    , wskip $
-      P.Package { P.name = "haskell-utf8-string"
+    , P.Package { P.name = "haskell-utf8-string"
                 , P.spec = Apt (rel release "wheezy" "quantal") "haskell-utf8-string"
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
     , debianize (hackage "unification-fd")
-    , debianize (hackage "newtype")
+    , debianize (hackage "newtype" `wflag` P.DebVersion "0.2-1")
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
                 , P.flags = [] }
     , debianize (hackage "utility-ht")
     , debianize (hackage "vacuum")
-    , wskip $ debianize (hackage "vector")
+    , debianize (hackage "vector" `patch` $(embedFile "patches/vector.diff"))
     , debianize (hackage "vector-algorithms")
     , P.Package { P.name = "haskell-virthualenv"
                 , P.spec = Debianize (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff"))
@@ -492,7 +496,7 @@ main _home release =
     , debianize (hackage "xml-types")
     , debianize (hackage "xss-sanitize" `qflag` P.DebVersion "0.3.2-1build1")
     , debianize (hackage "yaml")
-    , debianize (hackage "yaml-light" `pflag` P.DebVersion "0.1.4-2" `qflag` P.DebVersion "0.1.4-2build1")
+    , debianize (hackage "yaml-light" `wflag` P.DebVersion "0.1.4-2" `pflag` P.DebVersion "0.1.4-2" `qflag` P.DebVersion "0.1.4-2build1")
     , debianize (hackage "zip-archive")
     , debianize (hackage "regex-pcre-builtin"
                    -- Need to email Audrey Tang <audreyt@audreyt.org> about this.
@@ -500,7 +504,7 @@ main _home release =
                    `flag` P.DevelDep "libpcre3-dev")
     , debianize (hackage "hscolour") `flag` P.RelaxDep "hscolour"
     , debianize (hackage "hslogger")
-    , wskip $ debianize (hackage "extensible-exceptions") -- required for ghc-7.6.  Conflicts with ghc-7.4 in wheezy.
+    , debianize (hackage "extensible-exceptions") -- required for ghc-7.6.  Conflicts with ghc-7.4 in wheezy.
     , case release of
         "quantal-seereason" -> P.NoPackage -- This build hangs when performing tests
         "wheezy-seereason" -> P.NoPackage -- This build hangs when performing tests
@@ -550,7 +554,7 @@ main _home release =
                 , P.flags = [] } -}
     , debianize (hackage "stringsearch")
     , debianize (hackage "rss" `patch` $(embedFile "patches/rss.diff"))
-    , debianize (hackage "async" `patch` $(embedFile "patches/async.diff"))
+    , debianize (hackage "async")
     -- Waiting for a newer GHC
     -- , debianize (hackage "units" `flag` P.CabalPin "1.0.0" {- `patch` $(embedFile "patches/units.diff") -})
     , P.Package { P.name = "csv"
@@ -642,8 +646,12 @@ platform release =
                    `relax` "hsx2hs")
     , wskip $ debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
     , wskip $ debianize (hackage "parallel")
-    , wskip $ debianize (hackage "syb")
-    , wskip $ debianize (hackage "fgl" `pflag` P.DebVersion "5.4.2.4-2" `qflag` P.DebVersion "5.4.2.4-2build2" `sflag` P.DebVersion "5.4.2.4-1")
+    , debianize (hackage "syb")
+    , debianize (hackage "fgl"
+                   `wflag` P.DebVersion "5.4.2.4-2"
+                   `pflag` P.DebVersion "5.4.2.4-2"
+                   `qflag` P.DebVersion "5.4.2.4-2build2"
+                   `sflag` P.DebVersion "5.4.2.4-1")
     , debianize (hackage "text")
     , P.Package { P.name = "alex"
                 , P.spec = Debianize (Hackage "alex")
@@ -672,9 +680,9 @@ platform release =
                                                                , "AlexWrapper-strict-bytestring"]) ] }
     , opengl release
     -- , haddock release
-    , wskip $
-      debianize (hackage "haskell-src"
+    , debianize (hackage "haskell-src"
                              `flag` P.BuildDep "happy"
+                             `wflag` P.DebVersion "1.0.1.5-1"
                              `pflag` P.DebVersion "1.0.1.5-1"
                              `qflag` P.DebVersion "1.0.1.5-1build2")
     -- Versions 2.4.1.1 and 2.4.1.2 change unEscapeString in a way
@@ -693,7 +701,9 @@ platform release =
     , apt (rel release "wheezy" "quantal") "haskell-regex-compat"
     , apt (rel release "wheezy" "quantal") "haskell-regex-base"
     , debianize (hackage "regex-posix")
-    , wskip $ debianize (hackage "xhtml" `qflag` P.DebVersion "3000.2.1-1build2")
+    , debianize (hackage "xhtml"
+                   `wflag` P.DebVersion "3000.2.1-1"
+                   `qflag` P.DebVersion "3000.2.1-1build2")
     ]
 
 clckwrks _home release =
@@ -763,7 +773,8 @@ happstack _home release =
     , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs",
                                                         "--conflicts=hsx2hs:haskell-hsx-utils",
                                                         "--replaces=hsx2hs:haskell-hsx-utils",
-                                                        "--provides=hsx2hs:haskell-hsx-utils"])
+                                                        "--provides=hsx2hs:haskell-hsx-utils"]
+                   `patch` $(embedFile "patches/hsx2hs.diff"))
     -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
     , debianize (hackage "sourcemap")
     , debianize (hackage "haskell-packages")
@@ -791,7 +802,7 @@ happstack _home release =
     , debianize (hackage "time-compat")
     , debianize (hackage "base64-bytestring")
     , debianize (hackage "threads")
-    , debianize (hackage "list-tries")
+    , debianize (hackage "list-tries" `patch` $(embedFile "patches/list-tries.diff"))
     , debianize (hackage "happstack-static-routing" `flag` P.DebVersion "0.3.1-1~hackage1")
     , debianize (hackage "happstack-util"
                    `patch` $(embedFile "patches/happstack-util-ghc76.diff")
@@ -824,8 +835,9 @@ happstack _home release =
     , debianize (darcs "reform-happstack" (darcsHub ++ "/reform") `cd` "reform-happstack")
     -- , debianize (darcs "reform-heist" (darcsHub ++ "/reform") `cd` "reform-heist")
     , debianize (darcs "reform-hsp" (darcsHub ++ "/reform") `cd` "reform-hsp" `flag` P.BuildDep "hsx2hs")
+    , debianize (hackage "blaze-builder")
     , debianize (hackage "blaze-markup")
-    , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
+    -- , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
     , debianize (hackage "blaze-builder-enumerator" `flag` P.DebVersion "0.2.0.5-1~hackage1")
     , debianize (hackage "blaze-from-html")
     , debianize (hackage "blaze-html")
@@ -911,7 +923,7 @@ conduit =
 -- ircbot needs a dependency on containers
 happstackdotcom _home =
     P.Packages (singleton "happstackdotcom") $
-    [ debianize (hackage "ircbot")
+    [ debianize (hackage "ircbot") `patch` $(embedFile "patches/ircbot.diff")
     , darcs "haskell-happstackdotcom-doc" (repo </> "happstackDotCom-doc") ]
 
 -- May work with these added dependencies (statevar thru openglraw)
@@ -992,7 +1004,7 @@ algebra release =
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "algebra")
     [ debianize (hackage "data-lens" {- `patch` $(embedFile "patches/data-lens.diff") -})
-    , debianize (hackage "data-lens-template")
+    , debianize (hackage "data-lens-template" `patch` $(embedFile "patches/data-lens-template.diff"))
     , debianize (hackage "bifunctors")
     , debianize (hackage "categories")
     -- comonad now includes comonad-transformers and comonads-fd
@@ -1071,7 +1083,7 @@ sunroof =
   , debianize (hackage "NumInstances")
   , debianize (hackage "MemoTrie")
   , debianize (hackage "value-supply")
-  , debianize (hackage "reified-records")
+  , debianize (hackage "reified-records"`patch` $(embedFile "patches/reified-records.diff"))
   , debianize (darcs "seclib" (repo </> "seclib"))
   ]
   where repo = "http://src.seereason.com/"

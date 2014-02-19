@@ -1,0 +1,11 @@
+--- old/PBKDF2.cabal	2014-02-18 21:19:38.000000000 -0800
++++ new/PBKDF2.cabal	2014-02-19 06:09:56.278057214 -0800
+@@ -17,7 +17,7 @@
+ Cabal-version:      >= 1.6
+ 
+ Library
+-  Build-Depends:    base       >= 4.3 && < 4.7
++  Build-Depends:    base       >= 4.3
+                   , bytestring >= 0.9 && < 0.11
+                   , Crypto     >= 4.2 && < 4.3
+                   , binary     >= 0.5 && < 0.8

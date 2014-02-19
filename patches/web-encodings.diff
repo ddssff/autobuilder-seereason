@@ -1,14 +1,15 @@
---- old/web-encodings.cabal	2012-01-20 06:47:07.000000000 -0800
-+++ new/web-encodings.cabal	2012-01-20 08:55:12.256222810 -0800
+--- old/web-encodings.cabal	2014-02-19 10:09:16.000000000 -0800
++++ new/web-encodings.cabal	2014-02-19 11:16:12.130491381 -0800
 @@ -20,10 +20,10 @@
      build-depends:   base >= 4 && <5,
                       time >= 1.1.2.4,
                       old-locale >= 1.0.0.1 && < 1.1,
 -                     bytestring >= 0.9.1.4 && < 0.10,
-+                     bytestring >= 0.9.1.4,
-                      text >= 0.11 && < 0.12,
+-                     text >= 0.11 && < 0.12,
 -                     failure >= 0.0.0 && < 0.2,
 -                     directory >= 1 && < 1.2
++                     bytestring >= 0.9.1.4,
++                     text >= 0.11,
 +                     failure >= 0.0.0,
 +                     directory >= 1
      exposed-modules: Web.Encodings

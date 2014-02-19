@@ -1,0 +1,11 @@
+--- old/data-accessor.cabal	2014-02-18 13:05:46.000000000 -0800
++++ new/data-accessor.cabal	2014-02-18 13:17:06.300621399 -0800
+@@ -91,7 +91,7 @@
+     transformers >=0.2 && <0.4
+   If flag(splitBase)
+     Build-Depends:
+-      array >=0.1 && <0.5,
++      array >=0.1,
+       containers >=0.1 && <0.6
+     If flag(category)
+       Hs-Source-Dirs: src-4
