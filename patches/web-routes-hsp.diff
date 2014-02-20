@@ -1,0 +1,11 @@
+--- old/web-routes-hsp.cabal	2014-02-19 14:07:04.000000000 -0800
++++ new/web-routes-hsp.cabal	2014-02-19 16:38:06.533903371 -0800
+@@ -13,7 +13,7 @@
+ Library
+         Build-Depends:    base       >= 4    && < 5,
+                           hsp        >= 0.9  && < 0.11,
+-                          text       >= 0.11 && < 1.1,
++                          text       >= 0.11,
+                           web-routes >= 0.26 && < 0.28
+ 
+         Exposed-Modules:  Web.Routes.XMLGenT

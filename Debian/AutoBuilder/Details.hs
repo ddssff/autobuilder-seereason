@@ -52,6 +52,11 @@ myParams home myBuildRelease =
     , developmentReleaseNames = myDevelopmentReleaseNames
     , releaseAliases = myReleaseAliases myBuildRelease
     , newDistProgram = "newdist --sender-email=autobuilder@seereason.com --notify-email dsf@seereason.com --notify-email beshers@seereason.com --notify-email jeremy@seereason.com"
+    -- 6.14 adds the ExtraDevDep parameter.
+    -- 6.15 changes Epoch parameter arity to 2
+    -- 6.18 renames type Spec -> RetrieveMethod
+    -- 6.35 added the CabalDebian flag
+    , requiredVersion = [(parseDebianVersion ("6.57" :: String), Nothing)]
     , hackageServer = myHackageServer
     }
 

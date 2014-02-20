@@ -368,7 +368,7 @@ main _home release =
     , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
     , debianize (hackage "PBKDF2" `patch` $(embedFile "patches/PBKDF2.diff"))
     -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
-    , debianize (hackage "pcre-light" `flag` P.DevelDep "libpcre-dev")
+    , debianize (hackage "pcre-light" `flag` P.DevelDep "libpcre-dev" `flag` P.BuildDep "libpcre-dev")
     , debianize (hackage "permutation" `flag` P.DebVersion "0.4.1-1~hackage1")
     , debianize (hackage "pipes")
     , debianize (hackage "polyparse")
@@ -823,7 +823,7 @@ happstack _home release =
     , debianize (hackage "web-routes")
     , debianize (hackage "web-routes-boomerang")
     , debianize (hackage "web-routes-happstack")
-    , debianize (hackage "web-routes-hsp")
+    , debianize (hackage "web-routes-hsp" `patch` $(embedFile "patches/web-routes-hsp.diff"))
     , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
     , debianize (hackage "web-routes-th" `flag` P.DebVersion "0.22.1-1~hackage1")
     -- Retired, should be withdrawn from repos
@@ -923,7 +923,7 @@ conduit =
 -- ircbot needs a dependency on containers
 happstackdotcom _home =
     P.Packages (singleton "happstackdotcom") $
-    [ debianize (hackage "ircbot") `patch` $(embedFile "patches/ircbot.diff")
+    [ debianize (hackage "ircbot" `patch` $(embedFile "patches/ircbot.diff"))
     , darcs "haskell-happstackdotcom-doc" (repo </> "happstackDotCom-doc") ]
 
 -- May work with these added dependencies (statevar thru openglraw)
