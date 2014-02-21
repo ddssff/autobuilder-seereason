@@ -390,6 +390,7 @@ main _home release =
     , debianize (hackage "RJson" `patch` $(embedFile "patches/RJson.diff"))
     , debianize (hackage "safe")
     , debianize (hackage "safecopy")
+    , debianize (hackage "SafeSemaphore")
     , debianize (hackage "sat"
                    `patch` $(embedFile "patches/sat.diff")
                    `flag` P.DebVersion "1.1.1-1~hackage1")
@@ -923,7 +924,7 @@ conduit =
 -- ircbot needs a dependency on containers
 happstackdotcom _home =
     P.Packages (singleton "happstackdotcom") $
-    [ debianize (hackage "ircbot" `patch` $(embedFile "patches/ircbot.diff"))
+    [ debianize (hackage "ircbot")
     , darcs "haskell-happstackdotcom-doc" (repo </> "happstackDotCom-doc") ]
 
 -- May work with these added dependencies (statevar thru openglraw)
