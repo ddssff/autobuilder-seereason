@@ -9,3 +9,55 @@
                      , deepseq                    == 1.3.*
                      , integer-gmp
                      , ghc-prim
+--- old/src/GHC/Integer/GMP/TypeExt.hs	2014-03-04 07:21:23.000000000 -0800
++++ new/src/GHC/Integer/GMP/TypeExt.hs	2014-03-04 09:57:08.473289924 -0800
+@@ -20,6 +20,9 @@
+ 
+ import GHC.Integer.GMP.PrimExt (popCountInteger#, testBitInteger#,
+                                 setBitInteger#, clearBitInteger#)
++#if MIN_VERSION_ghc(7,8,0)
++import GHC.Types (isTrue#)
++#endif
+ 
+ popCountInteger :: Integer -> Int#
+ popCountInteger (S# i)   = word2Int# (popCnt# (int2Word# i))
+@@ -28,8 +31,13 @@
+ 
+ testBitInteger :: Integer -> Int# -> Bool
+ testBitInteger (S# j) i
++#if MIN_VERSION_ghc(7,8,0)
++    | isTrue# (i <# 0#) = False
++    | isTrue# (i <# (WORD_SIZE_IN_BITS# -# 1#)) =
++#else
+     | i <# 0# = False
+     | i <# (WORD_SIZE_IN_BITS# -# 1#) =
++#endif
+         let !mask = 1# `uncheckedIShiftL#` i in
+         word2Int# (int2Word# j `and#` int2Word# mask) /=# 0#
+     | otherwise =
+@@ -39,8 +47,13 @@
+ 
+ setBitInteger :: Integer -> Int# -> Integer
+ setBitInteger (S# j) i
++#if MIN_VERSION_ghc(7,8,0)
++    | isTrue# (i <# 0# = S# j)
++    | isTrue# (i <# (WORD_SIZE_IN_BITS# -# 1#)) =
++#else
+     | i <# 0# = S# j
+     | i <# (WORD_SIZE_IN_BITS# -# 1#) =
++#endif
+         let !mask = 1# `uncheckedIShiftL#` i in
+         S# (word2Int# (int2Word# j `or#` int2Word# mask))
+     | otherwise =
+@@ -51,7 +64,11 @@
+ 
+ clearBitInteger :: Integer -> Int# -> Integer
+ clearBitInteger (S# j) i
++#if MIN_VERSION_ghc(7,8,0)
++    | isTrue# (i <# 0#) || isTrue# (i >=# (WORD_SIZE_IN_BITS# -# 1#) = S# j)
++#else
+     | i <# 0# || i >=# (WORD_SIZE_IN_BITS# -# 1#) = S# j
++#endif
+     | otherwise =
+         let !mask =
+                 int2Word# (1# `uncheckedIShiftL#` i) `xor#`

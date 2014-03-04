@@ -153,7 +153,7 @@ main _home release =
     , debianize (case release of
                    "wheezy-seereason" ->
                          hackage "cabal-install"
-                           `patch` $(embedFile "patches/cabal-install.diff")
+                           `patch` $(embedFile "patches/cabal-install-18.diff")
                    _ ->  hackage "cabal-install"
                          -- Waiting for Cabal 1.18.0, shipped with ghc-7.8
                            `flag` P.CabalPin "1.16.0.2"
@@ -262,7 +262,7 @@ main _home release =
     , apt (rel release "wheezy" "quantal") "haskell-harp"
     , debianize (hackage "hashable")
     , debianize (hackage "hashed-storage")
-    , wskip $ debianize (hackage "haskeline")
+    , debianize (hackage "haskeline")
     , debianize (hackage "th-orphans")
     , debianize (hackage "haskell-src-meta" {- `patch` $(embedFile "patches/haskell-src-meta.diff") -})
     -- Because we specify an exact debian version here, this package
@@ -276,7 +276,7 @@ main _home release =
     , debianize (hackage "directory-tree")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
     , debianize (hackage "MonadCatchIO-mtl")
-    , debianize (hackage "haskell-lexer" `pflag` P.DebVersion "1.0-3build2" `wflag` P.DebVersion "1.0-3")
+    , debianize (hackage "haskell-lexer" `pflag` P.DebVersion "1.0-3build2" `wflag` P.DebVersion "1.0-3build2")
     , debianize (hackage "hinotify")
     , P.Package { P.name = "haskell-hjavascript"
                 , P.spec = Quilt (Apt "wheezy" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
@@ -639,14 +639,14 @@ platform release =
                   P.spec = DebDir (Hackage "happy") (Darcs (repo </> "happy-debian")),
                   P.flags = [P.RelaxDep "happy", P.CabalDebian ["--executable", "happy"],
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
-    , wskip $ debianize (hackage "stm")
+    , debianize (hackage "stm")
     , debianize (hackage "stm-chans")
     , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
     , debianize (hackage "mtl"
                    -- Something happened once and I added this, but its crazy.
                    `relax` "hsx2hs")
     , wskip $ debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
-    , wskip $ debianize (hackage "parallel")
+    , debianize (hackage "parallel")
     , debianize (hackage "syb")
     , debianize (hackage "fgl"
                    `wflag` P.DebVersion "5.4.2.4-2"
