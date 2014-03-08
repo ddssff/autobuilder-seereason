@@ -1,0 +1,20 @@
+--- old/Text/Reform/HSP/Common.hs	2013-11-08 07:41:58.000000000 -0800
++++ new/Text/Reform/HSP/Common.hs	2014-03-05 12:15:52.711527978 -0800
+@@ -151,7 +151,7 @@
+              , <label for=i><% lbl %></label>
+              ]
+ 
+-inputRadio :: (Functor m, Monad m, FormError error, ErrorInputType error ~ input, FormInput input, XMLGenerator x, StringType x ~ Text, EmbedAsChild x lbl, EmbedAsAttr x (Attr Text FormId)) =>
++inputRadio :: (Num a, Functor m, Monad m, FormError error, ErrorInputType error ~ input, FormInput input, XMLGenerator x, StringType x ~ Text, EmbedAsChild x lbl, EmbedAsAttr x (Attr Text FormId)) =>
+               [(a, lbl)]  -- ^ value, label, initially checked
+            -> (a -> Bool) -- ^ isDefault
+            -> Form m input error [XMLGenT x (XMLType x)] () a
+@@ -214,7 +214,7 @@
+               </div>
+              ]
+ 
+-select :: (Functor m, Monad m, FormError error, ErrorInputType error ~ input, FormInput input, XMLGenerator x, StringType x ~ Text, EmbedAsChild x lbl, EmbedAsAttr x (Attr Text FormId)) =>
++select :: (Num a, Functor m, Monad m, FormError error, ErrorInputType error ~ input, FormInput input, XMLGenerator x, StringType x ~ Text, EmbedAsChild x lbl, EmbedAsAttr x (Attr Text FormId)) =>
+               [(a, lbl)]  -- ^ value, label
+            -> (a -> Bool) -- ^ isDefault, must match *exactly one* element in the list of choices
+            -> Form m input error [XMLGenT x (XMLType x)] () a

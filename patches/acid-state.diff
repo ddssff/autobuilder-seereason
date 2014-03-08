@@ -1,0 +1,13 @@
+--- old/src/Data/Acid/TemplateHaskell.hs	2014-03-05 10:04:23.000000000 -0800
++++ new/src/Data/Acid/TemplateHaskell.hs	2014-03-05 10:57:11.415416428 -0800
+@@ -257,8 +257,8 @@
+              structType = foldl appT (conT eventStructName) [ varT tyvar | PlainTV tyvar <- tyvars ]
+          instanceD (cxt $ [ classP classPred [varT tyvar] | PlainTV tyvar <- tyvars, classPred <- preds ] ++ map return context)
+                    (return ty)
+-                   [ tySynInstD ''MethodResult [structType] (return resultType)
+-                   , tySynInstD ''MethodState  [structType] (return stateType)
++                   [ tySynInstD ''MethodResult (tySynEqn [structType] (return resultType))
++                   , tySynInstD ''MethodState  (tySynEqn [structType] (return stateType))
+                    ]
+     where (tyvars, context, _args, stateType, resultType, _isUpdate) = analyseType eventName eventType
+           eventStructName = mkName (structName (nameBase eventName))

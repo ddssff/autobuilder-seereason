@@ -1,0 +1,20 @@
+--- old/src/System/Cmd/Utils.hs	2014-03-05 10:04:53.000000000 -0800
++++ new/src/System/Cmd/Utils.hs	2014-03-05 11:03:17.191425070 -0800
+@@ -325,7 +325,7 @@
+                 Just (Exited (ExitSuccess)) -> return ()
+                 Just (Exited (ExitFailure fc)) ->
+                     cmdfailed funcname fp args fc
+-                Just (Terminated sig) ->
++                Just (Terminated sig _core) ->
+                     warnfail fp args $ "Terminated by signal " ++ show sig
+                 Just (Stopped sig) ->
+                     warnfail fp args $ "Stopped by signal " ++ show sig
+@@ -351,7 +351,7 @@
+        case ec of
+             Exited ExitSuccess -> return ()
+             Exited (ExitFailure fc) -> cmdfailed "safeSystem" command args fc
+-            Terminated s -> cmdsignalled "safeSystem" command args s
++            Terminated s _core -> cmdsignalled "safeSystem" command args s
+             Stopped s -> cmdsignalled "safeSystem" command args s
+ #endif
+ 

@@ -1,0 +1,20 @@
+--- old/Text/Reform/Blaze/Common.hs	2013-07-15 21:22:56.000000000 -0700
++++ new/Text/Reform/Blaze/Common.hs	2014-03-05 12:33:02.603552311 -0800
+@@ -167,7 +167,7 @@
+ 
+ -- | Create a group of @\<input type=\"checkbox\"\>@ elements
+ --
+-inputCheckboxes :: (Functor m, Monad m, FormError error, ErrorInputType error ~ input, FormInput input, H.ToMarkup lbl) =>
++inputCheckboxes :: (Num a, Functor m, Monad m, FormError error, ErrorInputType error ~ input, FormInput input, H.ToMarkup lbl) =>
+                   [(a, lbl)]  -- ^ value, label, initially checked
+                 -> (a -> Bool) -- ^ function which indicates if a value should be checked initially
+                 -> Form m input error Html () [a]
+@@ -182,7 +182,7 @@
+                   ]
+ 
+ -- | Create a group of @\<input type=\"radio\"\>@ elements
+-inputRadio :: (Functor m, Monad m, FormError error, ErrorInputType error ~ input, FormInput input, H.ToMarkup lbl) =>
++inputRadio :: (Num a, Functor m, Monad m, FormError error, ErrorInputType error ~ input, FormInput input, H.ToMarkup lbl) =>
+               [(a, lbl)]  -- ^ value, label, initially checked
+            -> (a -> Bool) -- ^ isDefault
+            -> Form m input error Html () a

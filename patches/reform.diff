@@ -1,0 +1,31 @@
+--- old/Text/Reform/Generalized.hs	2013-11-08 07:41:58.000000000 -0800
++++ new/Text/Reform/Generalized.hs	2014-03-05 10:07:53.663346545 -0800
+@@ -179,7 +179,7 @@
+ 
+ 
+ -- | radio buttons, single @\<select\>@ boxes
+-inputChoice :: forall a m error input lbl view. (Functor m, FormError error, ErrorInputType error ~ input, FormInput input, Monad m) =>
++inputChoice :: forall a m error input lbl view. (Functor m, FormError error, ErrorInputType error ~ input, FormInput input, Monad m, Num a, Enum a, Eq a) =>
+                (a -> Bool)                                     -- ^ is default
+             -> [(a, lbl)]                                      -- ^ value, label
+             -> (FormId -> [(FormId, Int, lbl, Bool)] -> view)  -- ^ function which generates the view
+@@ -201,8 +201,8 @@
+ 
+                 (Found v) ->
+                     do let readDec' str = case readDec str of
+-                                            [(n,[])] -> n
+-                                            _ -> (-1) -- FIXME: should probably return an internal error?
++                                            [(n,[])] -> n :: a
++                                            _ -> (-1) :: a -- FIXME: should probably return an internal error?
+                            (Right str) = getInputString v :: Either error String -- FIXME
+                            key = readDec' str
+                            (choices', mval) =
+@@ -211,7 +211,7 @@
+                                           then ((a,lbl,True) : c, Just a)
+                                           else ((a,lbl,False): c,     v))
+                                      ([], Nothing) $
+-                                     zip [0..] choices
++                                     zip ([0..] :: [a]) choices
+                        view <- mkView i <$> augmentChoices choices'
+                        case mval of
+                          Nothing ->

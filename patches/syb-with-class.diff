@@ -35,6 +35,15 @@
  #ifdef __HADDOCK__
 --- old/Data/Generics/SYB/WithClass/Instances.hs.orig	2014-02-19 06:26:16.000000000 -0800
 +++ new/Data/Generics/SYB/WithClass/Instances.hs	2014-02-19 09:19:35.258326066 -0800
+@@ -364,7 +364,7 @@
+ eitherDataType :: DataType
+ eitherDataType = mkDataType "Prelude.Either" [leftConstr,rightConstr]
+ 
+-instance (Sat (ctx (Either a b)), Data ctx a, Data ctx b) =>
++instance (Typeable2 Either, Sat (ctx (Either a b)), Data ctx a, Data ctx b) =>
+           Data ctx (Either a b) where
+   gfoldl _ f z (Left a)   = z Left  `f` a
+   gfoldl _ f z (Right a)  = z Right `f` a
 @@ -523,7 +523,7 @@
           Data ctx TypeRep where
    toConstr _ _   = error "toConstr"
@@ -53,3 +62,52 @@
  
  
  ------------------------------------------------------------------------------
+@@ -564,7 +564,8 @@
+ ------------------------------------------------------------------------------
+ 
+ 
+-instance Sat (ctx Handle) =>
++instance (Typeable1 ForeignPtr, Typeable Handle,
++          Sat (ctx Handle)) =>
+          Data ctx Handle where
+   toConstr _ _   = error "toConstr"
+   gunfold _ _ _  = error "gunfold Handle"
+@@ -604,7 +605,8 @@
+ ------------------------------------------------------------------------------
+ 
+ 
+-instance (Sat (ctx (ForeignPtr a)), Typeable a) =>
++instance (Typeable1 ForeignPtr,
++          Sat (ctx (ForeignPtr a)), Typeable a) =>
+           Data ctx (ForeignPtr a) where
+   toConstr _ _   = error "toConstr"
+   gunfold _ _ _  = error "gunfold ForeignPtr"
+@@ -683,7 +685,8 @@
+ mapDataType :: DataType
+ mapDataType = mkDataType "Data.Map.Map" [emptyMapConstr,insertMapConstr]
+ 
+-instance (Sat (ctx (M.Map a b)), Data ctx a, Data ctx b, Ord a) =>
++instance (Typeable2 M.Map,
++          Sat (ctx (M.Map a b)), Data ctx a, Data ctx b, Ord a) =>
+           Data ctx (M.Map a b) where
+   gfoldl _ f z m = case M.minViewWithKey m of
+                      Nothing -> z M.empty
+@@ -707,7 +710,8 @@
+ setDataType :: DataType
+ setDataType = mkDataType "Data.Set.Set" [emptySetConstr,insertSetConstr]
+ 
+-instance (Sat (ctx (S.Set a)), Data ctx a, Ord a) =>
++instance (Typeable1 S.Set,
++          Sat (ctx (S.Set a)), Data ctx a, Ord a) =>
+           Data ctx (S.Set a ) where
+   gfoldl _ f z s = case S.minView s of
+                      Nothing -> z S.empty
+@@ -723,5 +727,8 @@
+ 
+ ------------------------------------------------------------------------------
+ 
++instance Typeable ByteString
++instance Typeable L.ByteString
++
+ $( deriveData [''ByteString] )
+ $( deriveData [''L.ByteString] )

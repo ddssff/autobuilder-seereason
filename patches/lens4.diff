@@ -1,0 +1,12 @@
+--- old/lens.cabal	2014-03-05 10:35:15.000000000 -0800
++++ new/lens.cabal	2014-03-05 10:36:12.943386694 -0800
+@@ -203,8 +203,7 @@
+     tagged                    >= 0.4.4    && < 1,
+     template-haskell          >= 2.4      && < 2.10,
+     text                      >= 0.11     && < 1.2,
+-    transformers              >= 0.2      && < 0.4,
+-    transformers-compat       >= 0.1      && < 1,
++    transformers              >= 0.3      && < 0.4,
+     unordered-containers      >= 0.2      && < 0.3,
+     utf8-string               >= 0.3.7    && < 0.4,
+     vector                    >= 0.9      && < 0.11,

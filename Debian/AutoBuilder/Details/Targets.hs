@@ -121,6 +121,7 @@ applyDepMap x@(P.Package {}) =
                   P.MapDep "GL" (deb "libgl1-mesa-dev"),
                   P.MapDep "GLU" (deb "libglu1-mesa-dev"),
                   P.MapDep "glut" (deb "freeglut3-dev"),
+                  P.MapDep "libpcre-dev" (deb "libpcre3-dev"),
                   P.MapDep "m" (deb "libc6-dev"),
                   P.MapDep "X11" (deb "libx11-dev"),
                   P.MapDep "Xi" (deb "libxi-dev"),

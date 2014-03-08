@@ -19,6 +19,10 @@ patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"
 darcsHub :: String
 darcsHub = "http://hub.darcs.net/stepcut"
+seereason :: String
+seereason = "http://src.seereason.com"
+localRepo :: String
+localRepo = "file:///home/dsf/darcs/"
 
 proc' :: String -> P.Packages -> P.Packages
 proc' "wheezy-seereason" p@(Package {}) = p {spec = Proc (spec p)}
@@ -276,7 +280,7 @@ main _home release =
     , debianize (hackage "directory-tree")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
     , debianize (hackage "MonadCatchIO-mtl")
-    , debianize (hackage "haskell-lexer" `pflag` P.DebVersion "1.0-3build2" `wflag` P.DebVersion "1.0-3build2")
+    , debianize (hackage "haskell-lexer" `pflag` P.DebVersion "1.0-3build2" `wflag` P.DebVersion "1.0-3+b1")
     , debianize (hackage "hinotify")
     , P.Package { P.name = "haskell-hjavascript"
                 , P.spec = Quilt (Apt "wheezy" "haskell-hjavascript") (Darcs (repo ++ "/hjavascript-quilt"))
@@ -309,7 +313,7 @@ main _home release =
     , debianize (hackage "instant-generics")
     , debianize (hackage "generic-deriving")
     , debianize (hackage "irc")
-    , debianize (hackage "ixset")
+    , debianize (hackage "ixset" `patch` $(embedFile "patches/ixset.diff"))
     , darcs "haskell-json" (repo ++ "/haskell-json")
     , debianize (hackage "language-css" `flag` P.DebVersion "0.0.4.1-1~hackage1")
     , debianize (hackage "largeword")
@@ -317,9 +321,7 @@ main _home release =
     -- , debianize (git "haskell-logic-hs" "https://github.com/smichal/hs-logic")
 {-  , apt "wheezy" "haskell-leksah"
     , apt "wheezy" "haskell-leksah-server" -- for leksah -}
-    , P.Package { P.name = "haskell-logic-classes"
-                , P.spec = Darcs (repo ++ "/haskell-logic")
-                , P.flags = [] }
+    , darcs "haskell-logic-classes" (repo ++ "/haskell-logic") `patch` $(embedFile "patches/logic-classes.diff")
     , debianize (hackage "pointed")
     , P.Package { P.name = "haskell-logic-tptp"
                 , P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff"))
@@ -368,7 +370,7 @@ main _home release =
     , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
     , debianize (hackage "PBKDF2" `patch` $(embedFile "patches/PBKDF2.diff"))
     -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
-    , debianize (hackage "pcre-light" `flag` P.DevelDep "libpcre-dev" `flag` P.BuildDep "libpcre-dev")
+    , debianize (hackage "pcre-light" `flag` P.DevelDep "libpcre3-dev")
     , debianize (hackage "permutation" `flag` P.DebVersion "0.4.1-1~hackage1")
     , debianize (hackage "pipes")
     , debianize (hackage "polyparse")
@@ -387,7 +389,9 @@ main _home release =
     -- , apt (rel release "wheezy" "quantal") "haskell-quickcheck1"
     , debianize (hackage "regex-tdfa")
     , darcs "haskell-revision" (repo </> "haskell-revision")
-    , debianize (hackage "RJson" `patch` $(embedFile "patches/RJson.diff"))
+    , debianize (hackage "RJson"
+                   `patch` $(embedFile "patches/RJson.diff")
+                   `wflag` P.DebVersion "0.3.7-1~hackage1")
     , debianize (hackage "safe")
     , debianize (hackage "safecopy")
     , debianize (hackage "SafeSemaphore")
@@ -419,7 +423,7 @@ main _home release =
     , debianize (hackage "strict-io") -- for GenI
     , debianize (hackage "smallcheck")
     , debianize (hackage "syb-with-class" `patch` $(embedFile "patches/syb-with-class.diff"))
-    , apt (rel release "wheezy" "quantal") "haskell-syb-with-class-instances-text"
+    , debianize (hackage "syb-with-class-instances-text" `wflag` P.DebVersion "0.0.1-3")
     , debianize (hackage "tagged")
     , debianize (hackage "tagsoup")
     , debianize (hackage "tar")
@@ -529,9 +533,7 @@ main _home release =
     , P.Package { P.name = "magic-haskell"
                 , P.spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
                 , P.flags = [] }
-    , P.Package { P.name = "haskell-missingh"
-                , P.spec = Debianize (Hackage "MissingH")
-                , P.flags = [P.Revision ""] }
+    , debianize (hackage "MissingH" `patch` $(embedFile "patches/missingh.diff"))
     , darcs "seereason-keyring" (repo </> "seereason-keyring") `flag` P.UDeb "seereason-keyring-udeb"
     , debianize (darcs "seereason-ports" (repo </> "seereason-ports"))
     , apt "wheezy" "tinymce"
@@ -655,7 +657,7 @@ platform release =
                    `sflag` P.DebVersion "5.4.2.4-1")
     , debianize (hackage "text")
     , P.Package { P.name = "alex"
-                , P.spec = Debianize (Hackage "alex")
+                , P.spec = Debianize (Patch (Hackage "alex") $(embedFile "patches/alex.diff"))
                   -- alex shouldn't rebuild just because alex seems newer, but alex does require
                   -- an installed alex binary to build
                 , P.flags = [P.RelaxDep "alex",
@@ -831,11 +833,11 @@ happstack _home release =
     -- , darcs "haskell-formlets-hsp" (repo ++ "/formlets-hsp")
     , darcs "haskell-happstack-scaffolding" (repo ++ "/happstack-scaffolding") -- Don't use Debianize here, it restores the doc package which crashes the build
     , debianize (hackage "HJScript")
-    , debianize (darcs "reform" (darcsHub ++ "/reform") `cd` "reform")
-    , debianize (darcs "reform-blaze" (darcsHub ++ "/reform") `cd` "reform-blaze")
+    , debianize (darcs "reform" (seereason ++ "/reform") `cd` "reform")
+    , debianize (darcs "reform-blaze" (seereason </> "reform") `cd` "reform-blaze")
     , debianize (darcs "reform-happstack" (darcsHub ++ "/reform") `cd` "reform-happstack")
     -- , debianize (darcs "reform-heist" (darcsHub ++ "/reform") `cd` "reform-heist")
-    , debianize (darcs "reform-hsp" (darcsHub ++ "/reform") `cd` "reform-hsp" `flag` P.BuildDep "hsx2hs")
+    , debianize (darcs "reform-hsp" (seereason </> "reform") `cd` "reform-hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "blaze-builder")
     , debianize (hackage "blaze-markup")
     -- , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
@@ -852,7 +854,7 @@ happstack _home release =
                    `flag` P.BuildDep "hsx2hs")
     , debianize (darcs "happstack-dot-com" (repo ++ "/happstack-clckwrks")
                    `cd` "happstack-dot-com")
-    , debianize (hackage "acid-state")
+    , debianize (hackage "acid-state" `patch` $(embedFile "patches/acid-state.diff"))
     ]
 
 authenticate _home release =
@@ -925,6 +927,7 @@ conduit =
 happstackdotcom _home =
     P.Packages (singleton "happstackdotcom") $
     [ debianize (hackage "ircbot")
+    , debianize (hackage "SafeSemaphore")
     , darcs "haskell-happstackdotcom-doc" (repo </> "happstackDotCom-doc") ]
 
 -- May work with these added dependencies (statevar thru openglraw)
@@ -1039,7 +1042,9 @@ algebra release =
     , debianize (hackage "numeric-extras")
     -- lens-4.0 depends on aeson >= 0.7, which is not in hackage yet.  Also, lens-3.10.2 depends on a version of
     -- monadcatchio-transformers<0.3.1, which is older than our oldest.
-    , debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff") `flag` P.CabalPin "3.10.1")
+    , case release of
+        "wheezy-seereason" -> debianize (hackage "lens" `patch` $(embedFile "patches/lens4.diff"))
+        _ -> debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff") `flag` P.CabalPin "3.10.1")
     , debianize (hackage "constraints")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")

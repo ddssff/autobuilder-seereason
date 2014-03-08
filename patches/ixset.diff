@@ -1,0 +1,23 @@
+--- old/src/Data/IxSet/Ix.hs	2014-03-05 10:04:43.000000000 -0800
++++ new/src/Data/IxSet/Ix.hs	2014-03-05 10:19:03.967362382 -0800
+@@ -52,7 +52,7 @@
+ ixDataType :: SYBWC.DataType
+ ixDataType = SYBWC.mkDataType "Ix" [ixConstr]
+ 
+-instance (SYBWC.Data ctx a, SYBWC.Sat (ctx (Ix a)))
++instance (SYBWC.Typeable1 Ix, SYBWC.Data ctx a, SYBWC.Sat (ctx (Ix a)))
+        => SYBWC.Data ctx (Ix a) where
+     gfoldl = error "gfoldl Ix"
+     toConstr _ (Ix _ _)    = ixConstr
+--- old/src/Data/IxSet.hs	2014-03-05 10:20:54.000000000 -0800
++++ new/src/Data/IxSet.hs	2014-03-05 10:25:02.711370858 -0800
+@@ -251,7 +251,8 @@
+     putCopy = contain . safePut . toList
+     getCopy = contain $ fmap fromList safeGet
+ 
+-instance ( SYBWC.Data ctx a
++instance ( SYBWC.Typeable1 IxSet
++         , SYBWC.Data ctx a
+          , SYBWC.Data ctx [a]
+          , SYBWC.Sat (ctx (IxSet a))
+          , SYBWC.Sat (ctx [a])
