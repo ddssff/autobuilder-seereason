@@ -1,0 +1,33 @@
+--- old/src/GHC/Integer/GMP/TypeExt.hs	2014-03-04 07:21:23.000000000 -0800
++++ new/src/GHC/Integer/GMP/TypeExt.hs	2014-03-04 09:46:37.593275018 -0800
+@@ -28,8 +28,8 @@
+ 
+ testBitInteger :: Integer -> Int# -> Bool
+ testBitInteger (S# j) i
+-    | i <# 0# = False
+-    | i <# (WORD_SIZE_IN_BITS# -# 1#) =
++    | isTrue# (i <# 0#) = False
++    | isTrue# (i <# (WORD_SIZE_IN_BITS# -# 1#)) =
+         let !mask = 1# `uncheckedIShiftL#` i in
+         word2Int# (int2Word# j `and#` int2Word# mask) /=# 0#
+     | otherwise =
+@@ -39,8 +39,8 @@
+ 
+ setBitInteger :: Integer -> Int# -> Integer
+ setBitInteger (S# j) i
+-    | i <# 0# = S# j
+-    | i <# (WORD_SIZE_IN_BITS# -# 1#) =
++    | isTrue# (i <# 0# = S# j)
++    | isTrue# (i <# (WORD_SIZE_IN_BITS# -# 1#)) =
+         let !mask = 1# `uncheckedIShiftL#` i in
+         S# (word2Int# (int2Word# j `or#` int2Word# mask))
+     | otherwise =
+@@ -51,7 +51,7 @@
+ 
+ clearBitInteger :: Integer -> Int# -> Integer
+ clearBitInteger (S# j) i
+-    | i <# 0# || i >=# (WORD_SIZE_IN_BITS# -# 1#) = S# j
++    | isTrue# (i <# 0#) || isTrue# (i >=# (WORD_SIZE_IN_BITS# -# 1#) = S# j)
+     | otherwise =
+         let !mask =
+                 int2Word# (1# `uncheckedIShiftL#` i) `xor#`
