@@ -35,79 +35,102 @@
  #ifdef __HADDOCK__
 --- old/Data/Generics/SYB/WithClass/Instances.hs.orig	2014-02-19 06:26:16.000000000 -0800
 +++ new/Data/Generics/SYB/WithClass/Instances.hs	2014-02-19 09:19:35.258326066 -0800
-@@ -364,7 +364,7 @@
+@@ -364,7 +364,11 @@
  eitherDataType :: DataType
  eitherDataType = mkDataType "Prelude.Either" [leftConstr,rightConstr]
  
--instance (Sat (ctx (Either a b)), Data ctx a, Data ctx b) =>
++#if MIN_VERSION_base(4,7,0)
 +instance (Typeable2 Either, Sat (ctx (Either a b)), Data ctx a, Data ctx b) =>
++#else
+ instance (Sat (ctx (Either a b)), Data ctx a, Data ctx b) =>
++#endif
            Data ctx (Either a b) where
    gfoldl _ f z (Left a)   = z Left  `f` a
    gfoldl _ f z (Right a)  = z Right `f` a
-@@ -523,7 +523,7 @@
+@@ -523,7 +527,11 @@
           Data ctx TypeRep where
    toConstr _ _   = error "toConstr"
    gunfold _ _ _  = error "gunfold TypeRep"
--  dataTypeOf _ _ = mkNorepType "Data.Typeable.TypeRep"
++#if MIN_VERSION_base(4,7,0)
 +  dataTypeOf _ _ = mkNorepType "Data.OldTypeable.TypeRep"
++#else
+   dataTypeOf _ _ = mkNorepType "Data.Typeable.TypeRep"
++#endif
  
  
  ------------------------------------------------------------------------------
-@@ -533,7 +533,7 @@
+@@ -533,7 +541,11 @@
           Data ctx TyCon where
    toConstr _ _   = error "toConstr"
    gunfold _ _ _  = error "gunfold TyCon"
--  dataTypeOf _ _ = mkNorepType "Data.Typeable.TyCon"
++#if MIN_VERSION_base(4,7,0)
 +  dataTypeOf _ _ = mkNorepType "Data.OldTypeable.TyCon"
++#else
+   dataTypeOf _ _ = mkNorepType "Data.Typeable.TyCon"
++#endif
  
  
  ------------------------------------------------------------------------------
-@@ -564,7 +564,8 @@
+@@ -564,7 +576,12 @@
  ------------------------------------------------------------------------------
  
  
--instance Sat (ctx Handle) =>
++#if MIN_VERSION_base(4,7,0)
 +instance (Typeable1 ForeignPtr, Typeable Handle,
 +          Sat (ctx Handle)) =>
++#else
+ instance Sat (ctx Handle) =>
++#endif
           Data ctx Handle where
    toConstr _ _   = error "toConstr"
    gunfold _ _ _  = error "gunfold Handle"
-@@ -604,7 +605,8 @@
+@@ -604,7 +621,12 @@
  ------------------------------------------------------------------------------
  
  
--instance (Sat (ctx (ForeignPtr a)), Typeable a) =>
++#if MIN_VERSION_base(4,7,0)
 +instance (Typeable1 ForeignPtr,
 +          Sat (ctx (ForeignPtr a)), Typeable a) =>
++#else
+ instance (Sat (ctx (ForeignPtr a)), Typeable a) =>
++#endif
            Data ctx (ForeignPtr a) where
    toConstr _ _   = error "toConstr"
    gunfold _ _ _  = error "gunfold ForeignPtr"
-@@ -683,7 +685,8 @@
+@@ -683,7 +705,12 @@
  mapDataType :: DataType
  mapDataType = mkDataType "Data.Map.Map" [emptyMapConstr,insertMapConstr]
  
--instance (Sat (ctx (M.Map a b)), Data ctx a, Data ctx b, Ord a) =>
++#if MIN_VERSION_base(4,7,0)
 +instance (Typeable2 M.Map,
 +          Sat (ctx (M.Map a b)), Data ctx a, Data ctx b, Ord a) =>
++#else
+ instance (Sat (ctx (M.Map a b)), Data ctx a, Data ctx b, Ord a) =>
++#endif
            Data ctx (M.Map a b) where
    gfoldl _ f z m = case M.minViewWithKey m of
                       Nothing -> z M.empty
-@@ -707,7 +710,8 @@
+@@ -707,7 +734,12 @@
  setDataType :: DataType
  setDataType = mkDataType "Data.Set.Set" [emptySetConstr,insertSetConstr]
  
--instance (Sat (ctx (S.Set a)), Data ctx a, Ord a) =>
++#if MIN_VERSION_base(4,7,0)
 +instance (Typeable1 S.Set,
 +          Sat (ctx (S.Set a)), Data ctx a, Ord a) =>
++#else
+ instance (Sat (ctx (S.Set a)), Data ctx a, Ord a) =>
++#endif
            Data ctx (S.Set a ) where
    gfoldl _ f z s = case S.minView s of
                       Nothing -> z S.empty
-@@ -723,5 +727,8 @@
+@@ -723,5 +755,10 @@
  
  ------------------------------------------------------------------------------
  
++#if MIN_VERSION_base(4,7,0)
 +instance Typeable ByteString
 +instance Typeable L.ByteString
++#endif
 +
  $( deriveData [''ByteString] )
  $( deriveData [''L.ByteString] )

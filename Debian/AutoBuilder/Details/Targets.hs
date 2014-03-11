@@ -83,14 +83,22 @@ deriving instance Typeable PackageFlag
 -- no intermediate group is omitted.  Comment out the ones you
 -- don't wish to build.
 public :: String -> String -> P.Packages
-public home release =
+public home release = 
+    proc' release $
     {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap $ Public.targets home release
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     --          ++ private home
 
-private :: String -> P.Packages
-private home =
+private :: String -> String -> P.Packages
+private home release =
+    proc' release $
     {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap $ mappend (Private.libraries home) (Private.applications home)
+
+proc' :: String -> P.Packages -> P.Packages
+proc' "wheezy-seereason" p@(Package {}) = p {spec = Proc (spec p)}
+proc' "wheezy-seereason-private" p@(Package {}) = p {spec = Proc (spec p)}
+proc' release@"wheezy-seereason" p@(Packages {}) = p {list = map (proc' release) (list p)}
+proc' _ p = p
 
 -- | This prevents every package that uses cabal-debian for
 -- debianization from rebuilding every time the library is revved.
@@ -121,7 +129,7 @@ applyDepMap x@(P.Package {}) =
                   P.MapDep "GL" (deb "libgl1-mesa-dev"),
                   P.MapDep "GLU" (deb "libglu1-mesa-dev"),
                   P.MapDep "glut" (deb "freeglut3-dev"),
-                  P.MapDep "libpcre-dev" (deb "libpcre3-dev"),
+                  P.MapDep "pcre" (deb "libpcre3-dev"),
                   P.MapDep "m" (deb "libc6-dev"),
                   P.MapDep "X11" (deb "libx11-dev"),
                   P.MapDep "Xi" (deb "libxi-dev"),

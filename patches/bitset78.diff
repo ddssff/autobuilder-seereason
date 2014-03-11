@@ -1,33 +1,52 @@
 --- old/src/GHC/Integer/GMP/TypeExt.hs	2014-03-04 07:21:23.000000000 -0800
 +++ new/src/GHC/Integer/GMP/TypeExt.hs	2014-03-04 09:46:37.593275018 -0800
-@@ -28,8 +28,8 @@
+@@ -20,6 +20,9 @@
+ 
+ import GHC.Integer.GMP.PrimExt (popCountInteger#, testBitInteger#,
+                                 setBitInteger#, clearBitInteger#)
++#if MIN_VERSION_ghc_prim(0,3,1)
++import GHC.Types (isTrue#)
++#endif
+ 
+ popCountInteger :: Integer -> Int#
+ popCountInteger (S# i)   = word2Int# (popCnt# (int2Word# i))
+@@ -28,8 +28,13 @@
  
  testBitInteger :: Integer -> Int# -> Bool
  testBitInteger (S# j) i
--    | i <# 0# = False
--    | i <# (WORD_SIZE_IN_BITS# -# 1#) =
++#if MIN_VERSION_ghc_prim(0,3,1)
 +    | isTrue# (i <# 0#) = False
 +    | isTrue# (i <# (WORD_SIZE_IN_BITS# -# 1#)) =
++#else
+     | i <# 0# = False
+     | i <# (WORD_SIZE_IN_BITS# -# 1#) =
++#endif
          let !mask = 1# `uncheckedIShiftL#` i in
          word2Int# (int2Word# j `and#` int2Word# mask) /=# 0#
      | otherwise =
-@@ -39,8 +39,8 @@
+@@ -39,8 +44,13 @@
  
  setBitInteger :: Integer -> Int# -> Integer
  setBitInteger (S# j) i
--    | i <# 0# = S# j
--    | i <# (WORD_SIZE_IN_BITS# -# 1#) =
++#if MIN_VERSION_ghc_prim(0,3,1)
 +    | isTrue# (i <# 0# = S# j)
 +    | isTrue# (i <# (WORD_SIZE_IN_BITS# -# 1#)) =
++#else
+     | i <# 0# = S# j
+     | i <# (WORD_SIZE_IN_BITS# -# 1#) =
++#endif
          let !mask = 1# `uncheckedIShiftL#` i in
          S# (word2Int# (int2Word# j `or#` int2Word# mask))
      | otherwise =
-@@ -51,7 +51,7 @@
+@@ -51,7 +61,11 @@
  
  clearBitInteger :: Integer -> Int# -> Integer
  clearBitInteger (S# j) i
--    | i <# 0# || i >=# (WORD_SIZE_IN_BITS# -# 1#) = S# j
++#if MIN_VERSION_ghc_prim(0,3,1)
 +    | isTrue# (i <# 0#) || isTrue# (i >=# (WORD_SIZE_IN_BITS# -# 1#) = S# j)
++#else
+     | i <# 0# || i >=# (WORD_SIZE_IN_BITS# -# 1#) = S# j
++#endif
      | otherwise =
          let !mask =
                  int2Word# (1# `uncheckedIShiftL#` i) `xor#`

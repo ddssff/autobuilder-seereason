@@ -24,17 +24,12 @@ seereason = "http://src.seereason.com"
 localRepo :: String
 localRepo = "file:///home/dsf/darcs/"
 
-proc' :: String -> P.Packages -> P.Packages
-proc' "wheezy-seereason" p@(Package {}) = p {spec = Proc (spec p)}
-proc' release@"wheezy-seereason" p@(Packages {}) = p {list = map (proc' release) (list p)}
-proc' _ p = p
-
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
 targets :: String -> String -> P.Packages
 targets _home release =
-    proc' release $ P.Packages empty $
+    P.Packages empty $
     [ main _home release
     , autobuilder _home
     , clckwrks _home release
@@ -145,7 +140,7 @@ main _home release =
     , debianize (hackage "Validation" `patch` $(embedFile "patches/validation.diff"))
     , debianize (hackage "template-default" `patch` $(embedFile "patches/template-default.diff"))
     , debianize (hackage "bitmap")
-    , debianize (hackage "bitset" `patch` $(embedFile "patches/bitset.diff"))
+    , debianize (hackage "bitset")
     , apt (rel release "wheezy" "quantal") "haskell-bytestring-nums"
     , debianize (hackage "bytestring-trie")
     , debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
@@ -321,7 +316,7 @@ main _home release =
     -- , debianize (git "haskell-logic-hs" "https://github.com/smichal/hs-logic")
 {-  , apt "wheezy" "haskell-leksah"
     , apt "wheezy" "haskell-leksah-server" -- for leksah -}
-    , darcs "haskell-logic-classes" (repo ++ "/haskell-logic") `patch` $(embedFile "patches/logic-classes.diff")
+    , darcs "haskell-logic-classes" (repo ++ "/haskell-logic")
     , debianize (hackage "pointed")
     , P.Package { P.name = "haskell-logic-tptp"
                 , P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff"))
@@ -370,7 +365,9 @@ main _home release =
     , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
     , debianize (hackage "PBKDF2" `patch` $(embedFile "patches/PBKDF2.diff"))
     -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
-    , debianize (hackage "pcre-light" `flag` P.DevelDep "libpcre3-dev")
+    , debianize (hackage "pcre-light"
+                   `flag` P.DebVersion "0.4-3"
+                   `flag` P.DevelDep "libpcre3-dev")
     , debianize (hackage "permutation" `flag` P.DebVersion "0.4.1-1~hackage1")
     , debianize (hackage "pipes")
     , debianize (hackage "polyparse")
@@ -533,7 +530,9 @@ main _home release =
     , P.Package { P.name = "magic-haskell"
                 , P.spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
                 , P.flags = [] }
-    , debianize (hackage "MissingH" `patch` $(embedFile "patches/missingh.diff"))
+    , debianize (case release of
+                   "wheezy-seereason" -> hackage "MissingH" `patch` $(embedFile "patches/missingh.diff")
+                   _ -> hackage "MissingH")
     , darcs "seereason-keyring" (repo </> "seereason-keyring") `flag` P.UDeb "seereason-keyring-udeb"
     , debianize (darcs "seereason-ports" (repo </> "seereason-ports"))
     , apt "wheezy" "tinymce"
@@ -657,7 +656,7 @@ platform release =
                    `sflag` P.DebVersion "5.4.2.4-1")
     , debianize (hackage "text")
     , P.Package { P.name = "alex"
-                , P.spec = Debianize (Patch (Hackage "alex") $(embedFile "patches/alex.diff"))
+                , P.spec = Debianize (Hackage "alex")
                   -- alex shouldn't rebuild just because alex seems newer, but alex does require
                   -- an installed alex binary to build
                 , P.flags = [P.RelaxDep "alex",
@@ -725,7 +724,7 @@ clckwrks _home release =
                                                  "e211065e573ea0239d6449882c9d860d")
                                             "jstree")
                                            (Uri "https://raw.github.com/douglascrockford/JSON-js/master/json2.js"
-                                                "f97cd64fa7f3d3d3728786288fef56c8")
+                                                "5eecb009ae16dc54f261f31da01dbbac")
                                            "json2")
                                           $(embedFile "patches/clckwrks.diff"))
                     , P.flags = [P.BuildDep "hsx2hs"] }

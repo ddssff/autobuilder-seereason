@@ -130,8 +130,8 @@ myDiscards = Set.empty
 myKnownTargets :: FilePath -> ParamRec -> P.Packages
 myKnownTargets home params =
     if isPrivateRelease rel
-    then Targets.private home
-    else mappend (Targets.public home rel) (if testWithPrivate params then Targets.private home else NoPackage)
+    then Targets.private home rel
+    else mappend (Targets.public home rel) (if testWithPrivate params then Targets.private home rel else NoPackage)
     where
       rel = relName (buildRelease params)
 
