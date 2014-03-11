@@ -530,9 +530,7 @@ main _home release =
     , P.Package { P.name = "magic-haskell"
                 , P.spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
                 , P.flags = [] }
-    , debianize (case release of
-                   "wheezy-seereason" -> hackage "MissingH" `patch` $(embedFile "patches/missingh.diff")
-                   _ -> hackage "MissingH")
+    , debianize (hackage "MissingH")
     , darcs "seereason-keyring" (repo </> "seereason-keyring") `flag` P.UDeb "seereason-keyring-udeb"
     , debianize (darcs "seereason-ports" (repo </> "seereason-ports"))
     , apt "wheezy" "tinymce"
