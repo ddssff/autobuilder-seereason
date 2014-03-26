@@ -98,6 +98,7 @@ proc' :: String -> P.Packages -> P.Packages
 proc' "wheezy-seereason" p@(Package {}) = p {spec = Proc (spec p)}
 proc' "wheezy-seereason-private" p@(Package {}) = p {spec = Proc (spec p)}
 proc' release@"wheezy-seereason" p@(Packages {}) = p {list = map (proc' release) (list p)}
+proc' release@"wheezy-seereason-private" p@(Packages {}) = p {list = map (proc' release) (list p)}
 proc' _ p = p
 
 -- | This prevents every package that uses cabal-debian for

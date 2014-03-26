@@ -1,0 +1,15 @@
+--- old/Bundled/SHA256.hs~	2014-03-07 16:26:46.000000000 -0800
++++ new/Bundled/SHA256.hs	2014-03-22 06:11:27.405629708 -0700
+@@ -6,10 +6,11 @@
+ 
+ module Bundled.SHA256 ( sha256 ) where
+ 
+-import Foreign
++import Foreign hiding (unsafePerformIO)
+ import Foreign.C.Types
+ import Data.ByteString.Unsafe (unsafeUseAsCStringLen)
+ import qualified Data.ByteString.Internal as BSI
++import System.IO.Unsafe (unsafePerformIO)
+ 
+ sha256 :: BSI.ByteString -> BSI.ByteString
+ sha256 p = unsafePerformIO $ do

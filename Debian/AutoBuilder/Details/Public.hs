@@ -124,7 +124,7 @@ main _home release =
     -- Our applicative-extras repository has several important patches.
     , debianize (hackage "applicative-extras" `flag` P.DebVersion "0.1.8-1")
     , debianize (hackage "asn1-data")
-    , wskip $ debianize (hackage "attempt" `pflag` P.DebVersion "0.4.0-1" `qflag` P.DebVersion "0.4.0-1build2")
+    , wskip $ debianize (hackage "attempt")
     , debianize (hackage "errors")
     , debianize (hackage "failure" `wflag` P.DebVersion "0.2.0.1-1" `qflag` P.DebVersion "0.2.0.1-1build2")
     , debianize (hackage "attoparsec")
@@ -197,8 +197,8 @@ main _home release =
     , debianize (hackage "css" `flag` P.DebVersion "0.1-1~hackage1")
     , debianize (hackage "css-text")
     , apt (rel release "wheezy" "quantal") "haskell-curl"
-    , debianize (hackage "data-accessor" `patch` $(embedFile "patches/data-accessor.diff"))
-    , debianize (hackage "data-accessor-template" `patch` $(embedFile "patches/data-accessor-template.diff"))
+    , debianize (hackage "data-accessor")
+    , debianize (hackage "data-accessor-template")
     , debianize (hackage "data-default")
     , debianize (hackage "data-default-class")
     , debianize (hackage "data-default-instances-base")
@@ -454,7 +454,7 @@ main _home release =
     , debianize (hackage "utf8-light")
     , debianize (hackage "language-haskell-extract")
     , debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
-    , debianize (hackage "language-ecmascript" `patch` $(embedFile "patches/language-ecmascript.diff"))
+    , debianize (hackage "language-ecmascript")
     , debianize (hackage "charset")
     , debianize (hackage "union-find")
     -- , debianize (hackage "Elm")
@@ -802,7 +802,7 @@ happstack _home release =
     , debianize (hackage "time-compat")
     , debianize (hackage "base64-bytestring")
     , debianize (hackage "threads")
-    , debianize (hackage "list-tries" `patch` $(embedFile "patches/list-tries.diff"))
+    , debianize (hackage "list-tries")
     , debianize (hackage "happstack-static-routing" `flag` P.DebVersion "0.3.1-1~hackage1")
     , debianize (hackage "happstack-util"
                    `patch` $(embedFile "patches/happstack-util-ghc76.diff")
@@ -950,8 +950,6 @@ opengl release = P.Packages (singleton "opengl") $
                                   , " --------------------------------------------------------------------------------" ])
                 , P.flags = [ P.DebVersion "0.0.3-1~hackage2" ] } -}
     , debianize (hackage "bitmap-opengl"
-                   -- This applies, but the build fails - maybe its no longer needed?  Maybe a newer version will appear.
-                   `patch` $(embedFile "patches/bitmap-opengl.diff")
                    `flag` P.DevelDep "libglu1-mesa-dev")
     , debianize (hackage "GLUT"
                    `flag` P.DevelDep "freeglut3-dev")
@@ -1004,8 +1002,8 @@ algebra release =
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "algebra")
-    [ debianize (hackage "data-lens" {- `patch` $(embedFile "patches/data-lens.diff") -})
-    , debianize (hackage "data-lens-template" `patch` $(embedFile "patches/data-lens-template.diff"))
+    [ debianize (hackage "data-lens")
+    , debianize (hackage "data-lens-template")
     , debianize (hackage "bifunctors")
     , debianize (hackage "categories")
     -- comonad now includes comonad-transformers and comonads-fd

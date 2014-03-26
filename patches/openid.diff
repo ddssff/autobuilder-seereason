@@ -31,3 +31,16 @@
        draw w = case showHex w [] of
                   [x] -> ['0', x]
                   x   -> x
+--- old/src/Data/Digest/OpenSSL/SHA.hs	2014-03-07 16:40:44.000000000 -0800
++++ new/src/Data/Digest/OpenSSL/SHA.hs	2014-03-22 06:15:40.801635695 -0700
+@@ -14,8 +14,9 @@
+ module Data.Digest.OpenSSL.SHA (sha1, sha256) where
+ 
+ import Control.Exception
+-import Foreign
++import Foreign hiding (unsafePerformIO)
+ import Foreign.C
++import System.IO.Unsafe (unsafePerformIO)
+ 
+ data EVP_MD
+ data EVP_MD_CTX
