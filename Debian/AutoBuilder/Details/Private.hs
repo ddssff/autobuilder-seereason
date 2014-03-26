@@ -6,7 +6,7 @@ import Data.FileEmbed (embedFile)
 import Data.Set (singleton)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, ModifyAtoms, BuildDep, NoDoc, CabalDebian),
                                                Packages(Package, Packages), RetrieveMethod(Debianize, Hackage, Cd, Darcs),
-                                               flag, flags, spec, name, patch, debianize, hackage, rename, method, darcs)
+                                               flag, flags, spec, name, patch, debianize, hackage, rename, method, darcs, cd)
 import Debian.Debianize (sourcePackageName, execDebM)
 import Debian.Debianize.Prelude ((~=))
 import Debian.Relation (SrcPkgName(..))
@@ -19,12 +19,12 @@ libraries _home =
       -- darcs "haskell-generic-formlets3" (privateRepo </> "generic-formlets3")
     -- , darcs "haskell-document" (privateRepo </> "haskell-document")
       darcs "haskell-ontology" (privateRepo </> "haskell-ontology")
-    , debianize (method "haskell-stripe-core"
-                        (Cd "stripe-core" (Darcs (privateRepo </> "stripe"))))
-    , debianize (method "haskell-stripe-http-conduit"
-                        (Cd "stripe-http-conduit" (Darcs (privateRepo </> "stripe"))))
-    , debianize (method "haskell-clckwrks-plugin-stripe"
-                        (Darcs (privateRepo </> "clckwrks-plugin-stripe"))
+    , debianize (darcs "haskell-stripe-core" (privateRepo </> "stripe")
+                   `cd` "stripe-core"
+                   `patch` $(embedFile "patches/stripe-core.diff"))
+    , debianize (darcs "haskell-stripe-http-conduit" (privateRepo </> "stripe")
+                   `cd` "stripe-http-conduit")
+    , debianize (darcs "haskell-clckwrks-plugin-stripe" (privateRepo </> "clckwrks-plugin-stripe")
                    `flag` P.BuildDep "hsx2hs")
     , debianize (method "haskell-mimo" (Darcs (privateRepo </> "mimo")))
     ] {- ++ clckwrks14 -}
