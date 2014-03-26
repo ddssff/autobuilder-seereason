@@ -126,7 +126,7 @@ main _home release =
     , debianize (hackage "asn1-data")
     , wskip $ debianize (hackage "attempt")
     , debianize (hackage "errors")
-    , debianize (hackage "failure" `wflag` P.DebVersion "0.2.0.1-1" `qflag` P.DebVersion "0.2.0.1-1build2")
+    , debianize (hackage "failure")
     , debianize (hackage "attoparsec")
     , debianize (hackage "scientific")
     , debianize (hackage "attoparsec-enumerator")
