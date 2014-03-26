@@ -455,6 +455,8 @@ main _home release =
     , debianize (hackage "language-haskell-extract")
     , debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
     , debianize (hackage "language-ecmascript")
+    , debianize (hackage "testing-feat")
+    , debianize (hackage "tagshare")
     , debianize (hackage "charset")
     , debianize (hackage "union-find")
     -- , debianize (hackage "Elm")
@@ -695,6 +697,7 @@ platform release =
     -- , debianize (hackage "process")
     , debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2" `wflag` P.DebVersion "1.0.1.1-1")
     , debianize (hackage "HUnit")
+    , debianize (hackage "tf-random")
     , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
     , debianize (hackage "parsec" `flag` P.CabalDebian (replacementLibrary "parsec2" "parsec3"))
     , apt (rel release "wheezy" "quantal") "haskell-html"
