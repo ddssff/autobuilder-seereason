@@ -1,0 +1,11 @@
+--- old/http-client.cabal	2014-03-26 22:34:44.000000000 -0700
++++ new/http-client.cabal	2014-03-26 22:39:17.596892379 -0700
+@@ -37,7 +37,7 @@
+                      , containers
+                      , transformers
+                      , deepseq           >= 1.3    && <1.4
+-                     , case-insensitive  >= 1.0    && <1.2
++                     , case-insensitive  >= 1.0
+                      , failure           >= 0.2    && <0.3
+                      , base64-bytestring >= 1.0    && <1.1
+                      , publicsuffixlist

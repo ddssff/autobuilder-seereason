@@ -886,6 +886,7 @@ authenticate _home release =
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum" `flag` P.DebVersion "0.2.3-1~hackage1")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
+    , debianize (hackage "tagstream-conduit")
     , digestiveFunctors
     -- , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
     , debianize (git "haskell-fb" "https://github.com/stepcut/fb")
@@ -916,7 +917,7 @@ conduit =
     , debianize (hackage "attoparsec-conduit")
     , debianize (hackage "blaze-builder-conduit")
     , debianize (hackage "http-conduit")
-    , debianize (hackage "http-client")
+    , debianize (hackage "http-client" `patch`  $(embedFile "patches/http-client.diff"))
     , debianize (hackage "http-client-tls")
     , debianize (hackage "http-client-conduit")
     , debianize (hackage "zlib-conduit")
