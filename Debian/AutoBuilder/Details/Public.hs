@@ -346,7 +346,7 @@ main _home release =
     , P.Package { P.name = "haskell-nano-hmac"
                 , P.spec = Debianize (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff"))
                 , P.flags = [P.DebVersion "0.2.0ubuntu1"] }
-    , debianize (hackage "openid" `patch` $(embedFile "patches/openid.diff"))
+    , debianize (hackage "openid")
 {-  , P.Package { P.name = "haskell-openid"
                 , P.spec = Debianize (Patch (Hackage "openid") $(embedFile "patches/openid-ghc76.diff"))
                 , P.flags = [] } -}
