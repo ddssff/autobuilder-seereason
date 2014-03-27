@@ -299,7 +299,7 @@ main _home release =
     , debianize (hackage "HsSyck" `patch`  $(embedFile "patches/HsSyck.diff"))
     , debianize (hackage "HStringTemplate")
     , darcs "haskell-html-entities" (repo </> "html-entities")
-    , debianize (hackage "http-types")
+    , debianize (hackage "http-types" `patch`  $(embedFile "patches/http-types.diff"))
     , debianize (hackage "i18n" `flag` P.DebVersion "0.3-1~hackage1")
     , debianize (hackage "iconv")
     , P.Package { P.name = "haskell-incremental-sat-solver"
@@ -358,7 +358,7 @@ main _home release =
     , debianize (hackage "ordered")
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize (hackage "exceptions")
-    , debianize (hackage "temporary")
+    , debianize (hackage "temporary" `patch` $(embedFile "patches/temporary.diff"))
     , debianize (hackage "pandoc-types")
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
