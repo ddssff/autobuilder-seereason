@@ -1,0 +1,202 @@
+diff -ru stripe-core/Stripe/Account.hs stripe/stripe-core/Stripe/Account.hs
+--- stripe-core/Stripe/Account.hs	2014-03-26 13:14:45.217844094 -0700
++++ stripe-core/Stripe/Account.hs	2014-03-26 13:14:12.833845018 -0700
+@@ -20,7 +20,7 @@
+ ------------------------------------------------------------------------------
+ 
+ newtype AccountId = AccountId { unAccountId :: Text }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy, FromJSON)
++    deriving (Eq, Ord, Read, Show, Data, Typeable, FromJSON)
+ 
+ -- | This is an object representing your Stripe account. You can
+ -- retrieve it to see properties on the account like its current
+@@ -35,6 +35,7 @@
+     , accountStatementDescriptor :: Maybe Text
+     }
+     deriving (Eq, Ord, Read, Show, Data, Typeable)
++$(deriveSafeCopy 0 'base ''AccountId)
+ $(deriveSafeCopy 0 'base ''Account)
+ 
+ instance FromJSON Account where
+diff -ru stripe-core/Stripe/Charge.hs stripe/stripe-core/Stripe/Charge.hs
+--- stripe-core/Stripe/Charge.hs	2014-03-26 13:14:45.217844094 -0700
++++ stripe-core/Stripe/Charge.hs	2014-03-26 13:10:32.077851238 -0700
+@@ -37,7 +37,7 @@
+ ------------------------------------------------------------------------------
+ 
+ newtype ChargeId = ChargeId { unChargeId :: Text }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy, FromJSON)
++    deriving (Eq, Ord, Read, Show, Data, Typeable, FromJSON)
+              
+ data Charge = Charge
+     { chargeId             :: ChargeId    -- ^ charge id
+@@ -58,6 +58,7 @@
+     , chargeInvoice        :: Maybe Text
+     }
+     deriving (Eq, Ord, Read, Show, Data, Typeable)
++$(deriveSafeCopy 0 'base ''ChargeId)
+ $(deriveSafeCopy 0 'base ''Charge)
+ 
+ instance FromJSON Charge where
+diff -ru stripe-core/Stripe/Core.hs stripe/stripe-core/Stripe/Core.hs
+--- stripe-core/Stripe/Core.hs	2014-03-26 13:14:45.221844098 -0700
++++ stripe-core/Stripe/Core.hs	2014-03-26 13:09:10.749853498 -0700
+@@ -95,7 +95,9 @@
+ 
+ -- | unique key used to access the Stripe API
+ newtype ApiKey = ApiKey { unApiKey :: ByteString }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy)
++    deriving (Eq, Ord, Read, Show, Data, Typeable)
++
++$(deriveSafeCopy 1 'base ''ApiKey)
+ 
+ ------------------------------------------------------------------------------
+ -- Errors
+@@ -187,7 +189,7 @@
+ --
+ -- see also: 'Card'
+ newtype CardId = CardId { unCardId :: Text }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy, FromJSON)
++    deriving (Eq, Ord, Read, Show, Data, Typeable, FromJSON)
+ 
+ -- | describes the card used to make a 'Charge'
+ data Card = Card
+@@ -210,6 +212,7 @@
+     , cardName           :: Maybe Text  -- ^ Cardholder name
+     }
+     deriving (Eq, Ord, Read, Show, Data, Typeable)
++$(deriveSafeCopy 0 'base ''CardId)
+ $(deriveSafeCopy 0 'base ''Card)
+ 
+ instance FromJSON Card where
+@@ -244,4 +247,6 @@
+ --
+ -- see also: 'Customer', 'createCustomer'
+ newtype CustomerId = CustomerId { unCustomerId :: Text }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy, FromJSON)
++    deriving (Eq, Ord, Read, Show, Data, Typeable, FromJSON)
++
++$(deriveSafeCopy 0 'base ''CustomerId)
+\ No newline at end of file
+diff -ru stripe-core/Stripe/Coupon.hs stripe/stripe-core/Stripe/Coupon.hs
+--- stripe-core/Stripe/Coupon.hs	2014-03-26 13:14:45.221844098 -0700
++++ stripe-core/Stripe/Coupon.hs	2014-03-26 13:10:58.861850461 -0700
+@@ -25,7 +25,7 @@
+ 
+ -- | id uniquely identifying a 'Coupon'
+ newtype CouponId = CouponId { unCouponId :: Text }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy, FromJSON)
++    deriving (Eq, Ord, Read, Show, Data, Typeable, FromJSON)
+ 
+ -- | how long a 'Discount' is in effect
+ data Duration
+@@ -33,6 +33,7 @@
+     | Once
+     | Repeating
+     deriving (Eq, Ord, Read, Show, Data, Typeable)
++$(deriveSafeCopy 0 'base ''CouponId)
+ $(deriveSafeCopy 0 'base ''Duration)
+ 
+ instance FromJSON Duration where
+diff -ru stripe-core/Stripe/Invoice.hs stripe/stripe-core/Stripe/Invoice.hs
+--- stripe-core/Stripe/Invoice.hs	2014-03-26 13:14:45.221844098 -0700
++++ stripe-core/Stripe/Invoice.hs	2014-03-26 13:13:14.345846652 -0700
+@@ -42,11 +42,11 @@
+ 
+ -- | unique identifier for an 'Invoice'
+ newtype InvoiceId = InvoiceId { unInvoiceId :: Text }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy, FromJSON)
++    deriving (Eq, Ord, Read, Show, Data, Typeable, FromJSON)
+ 
+ -- | unique identifier for an 'InvoiceItem'
+ newtype InvoiceItemId = InvoiceItemId { unInvoiceItemId :: Text }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy, FromJSON)
++    deriving (Eq, Ord, Read, Show, Data, Typeable, FromJSON)
+ 
+ -- | Sometimes you want to add a charge or credit to a customer but
+ -- only actually charge the customer's card at the end of a regular
+@@ -64,6 +64,8 @@
+     , invoiceItemInvoiceId   :: InvoiceId
+     }
+     deriving (Eq, Ord, Read, Show, Data, Typeable)
++$(deriveSafeCopy 0 'base ''InvoiceId)
++$(deriveSafeCopy 0 'base ''InvoiceItemId)
+ $(deriveSafeCopy 0 'base ''InvoiceItem)
+ 
+ instance FromJSON InvoiceItem where
+@@ -79,7 +81,7 @@
+     parseJSON _ = mzero
+ 
+ newtype InvoiceProrationId = InvoiceProrationId { unInvoiceProrationId :: Text }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy, FromJSON)
++    deriving (Eq, Ord, Read, Show, Data, Typeable, FromJSON)
+ 
+ data InvoiceProration = InvoiceProration
+     { invoiceProrationId          :: InvoiceProrationId
+@@ -92,6 +94,7 @@
+     , invoiceProrationInvoiceId   :: Maybe InvoiceId
+     }
+     deriving (Eq, Ord, Read, Show, Data, Typeable)
++$(deriveSafeCopy 0 'base ''InvoiceProrationId)
+ $(deriveSafeCopy 0 'base ''InvoiceProration)
+ 
+ instance FromJSON InvoiceProration where
+diff -ru stripe-core/Stripe/Plan.hs stripe/stripe-core/Stripe/Plan.hs
+--- stripe-core/Stripe/Plan.hs	2014-03-26 13:14:45.221844098 -0700
++++ stripe-core/Stripe/Plan.hs	2014-03-26 13:11:21.557849812 -0700
+@@ -26,13 +26,14 @@
+ 
+ -- | an unique id which identifies a 'Plan'
+ newtype PlanId = PlanId { unPlanId :: Text }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy, FromJSON)
++    deriving (Eq, Ord, Read, Show, Data, Typeable, FromJSON)
+ 
+ -- | Frequency that a subscription should be billed
+ data Interval
+     = Month
+     | Year
+     deriving (Eq, Ord, Read, Show, Data, Typeable)
++$(deriveSafeCopy 0 'base ''PlanId)
+ $(deriveSafeCopy 0 'base ''Interval)
+ 
+ instance FromJSON Interval where
+diff -ru stripe-core/Stripe/Subscription.hs stripe/stripe-core/Stripe/Subscription.hs
+--- stripe-core/Stripe/Subscription.hs	2014-03-26 13:14:45.225844099 -0700
++++ stripe-core/Stripe/Subscription.hs	2014-03-26 13:12:26.597847994 -0700
+@@ -36,7 +36,7 @@
+ $(deriveSafeCopy 0 'base ''SubscriptionStatus)
+ 
+ newtype SubscriptionId = SubscriptionId { unSubscriptionId :: Text }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy, FromJSON)
++    deriving (Eq, Ord, Read, Show, Data, Typeable, FromJSON)
+ 
+ instance FromJSON SubscriptionStatus where
+     parseJSON (String str)
+@@ -63,6 +63,7 @@
+     , subTrialStart_0         :: Maybe Timestamp    -- ^ If the subscription has a trial, the beginning of that trial.
+     }
+     deriving (Eq, Ord, Read, Show, Data, Typeable)
++$(deriveSafeCopy 0 'base ''SubscriptionId)
+ $(deriveSafeCopy 0 'base ''Subscription_0)
+ 
+ -- | A 'Subscription' to 'Plan'
+diff -ru stripe-core/Stripe/Token.hs stripe/stripe-core/Stripe/Token.hs
+--- stripe-core/Stripe/Token.hs	2014-03-26 13:14:45.225844099 -0700
++++ stripe-core/Stripe/Token.hs	2014-03-26 13:10:00.157852088 -0700
+@@ -73,7 +73,7 @@
+ --
+ -- see: 'createCardToken'
+ newtype CardTokenId = CardTokenId { unCardTokenId :: Text }
+-    deriving (Eq, Ord, Read, Show, Data, Typeable, SafeCopy)
++    deriving (Eq, Ord, Read, Show, Data, Typeable)
+ 
+ -- | a single use token that can be used instead of a 'Card'. Can be
+ -- safely embedded in downloadable applications like iPhone and
+@@ -86,6 +86,7 @@
+     , cardTokenUsed     :: Bool         -- ^ Whether or not this token has already been used (tokens can be used only once)
+     }
+     deriving (Eq, Ord, Read, Show, Data, Typeable)
++$(deriveSafeCopy 0 'base ''CardTokenId)
+ $(deriveSafeCopy 0 'base ''CardToken)
+ 
+ -- |Creates a single use token that wraps the details of a credit
