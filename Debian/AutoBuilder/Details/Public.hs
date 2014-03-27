@@ -241,12 +241,12 @@ main _home release =
     , debianize (hackage "formlets"
                     `patch` $(embedFile "patches/formlets.diff")
                     `flag` P.DebVersion "0.8-1~hackage1")
-    , wskip $
-      debianize (hackage "gd"
+    , debianize (hackage "gd"
                     `patch` $(embedFile "patches/gd.diff")
                     `flag` P.DevelDep "libgd-dev"
                     `flag` P.DevelDep "libc6-dev"
                     `flag` P.DevelDep "libfreetype6-dev"
+                    `wflag` P.DebVersion "3000.7.3-1"
                     `qflag` P.DebVersion "3000.7.3-1build2")
     -- , debianize (flags [P.BuildDep "libm-dev", P.BuildDep "libfreetype-dev"] (hackage "gd"))
     , debianize (hackage "cabal-macosx")
@@ -260,7 +260,7 @@ main _home release =
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
     , apt (rel release "wheezy" "quantal") "haskell-harp"
     , debianize (hackage "hashable")
-    , debianize (hackage "hashed-storage")
+    , debianize (hackage "hashed-storage" `patch` $(embedFile "patches/hashed-storage.diff"))
     , debianize (hackage "haskeline")
     , debianize (hackage "th-orphans")
     , debianize (hackage "haskell-src-meta" {- `patch` $(embedFile "patches/haskell-src-meta.diff") -})
@@ -346,7 +346,7 @@ main _home release =
     , P.Package { P.name = "haskell-nano-hmac"
                 , P.spec = Debianize (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff"))
                 , P.flags = [P.DebVersion "0.2.0ubuntu1"] }
-    , debianize (hackage "openid")
+    , debianize (hackage "openid" `patch` $(embedFile "patches/openid.diff"))
 {-  , P.Package { P.name = "haskell-openid"
                 , P.spec = Debianize (Patch (Hackage "openid") $(embedFile "patches/openid-ghc76.diff"))
                 , P.flags = [] } -}
@@ -366,6 +366,7 @@ main _home release =
     , debianize (hackage "PBKDF2" `patch` $(embedFile "patches/PBKDF2.diff"))
     -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
     , debianize (hackage "pcre-light"
+                   `patch` $(embedFile "patches/pcre-light.diff")
                    `flag` P.DebVersion "0.4-3"
                    `flag` P.DevelDep "libpcre3-dev")
     , debianize (hackage "permutation" `flag` P.DebVersion "0.4.1-1~hackage1")
@@ -432,7 +433,7 @@ main _home release =
     , debianize (hackage "test-framework-hunit")
     -- Retired
     -- , debianize (hackage "test-framework-quickcheck")
-    , debianize (hackage "test-framework-quickcheck2")
+    , debianize (hackage "test-framework-quickcheck2" `patch` $(embedFile "patches/test-framework-quickcheck2.diff"))
     , debianize (hackage "test-framework-th")
     --
     -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
@@ -448,9 +449,9 @@ main _home release =
                    `flag` P.DebVersion "3.2.0.0-1~hackage1")
     , debianize (hackage "uniplate")
     , debianize (hackage "cmdargs")
-    , P.Package { P.name = "haskell-language-javascript"
-                , P.spec = Debianize (Hackage "language-javascript")
-                , P.flags = [P.BuildDep "happy"] }
+    , debianize (hackage "language-javascript"
+                   `patch` $(embedFile "patches/language-javascript.diff")
+                   `flag` P.BuildDep "happy")
     , debianize (hackage "utf8-light")
     , debianize (hackage "language-haskell-extract")
     , debianize (hackage "pretty-show" `flag` P.BuildDep "happy")

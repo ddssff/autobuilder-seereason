@@ -136,7 +136,7 @@ applyDepMap x@(P.Package {}) =
                   P.MapDep "Xi" (deb "libxi-dev"),
                   P.MapDep "Xxf86vm" (deb "libxxf86vm-dev"),
                   P.MapDep "pthread" (deb "libc6-dev"),
-                  P.MapDep "Xrandr" (rel "libxrandr-dev (= 2:1.3.2-2ubuntu0.2)"),
+                  P.MapDep "Xrandr" (rel "libxrandr-dev (= 2:1.3.2-2+deb7u1)"),
                   -- the libxrandr-dev-lts-quantal package installs
                   -- /usr/lib/x86_64-linux-gnu/libXrandr_ltsq.so.
                   -- P.MapDep "Xrandr_ltsq" (deb "libxrandr-dev-lts-quantal"),

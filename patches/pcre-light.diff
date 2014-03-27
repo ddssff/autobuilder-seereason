@@ -1,0 +1,17 @@
+--- old/Text/Regex/PCRE/Light.hs.orig	2014-03-22 06:05:39.000000000 -0700
++++ new/Text/Regex/PCRE/Light.hs	2014-03-22 06:20:16.872253232 -0700
+@@ -82,12 +82,13 @@
+ #endif
+ 
+ -- Foreigns
+-import Foreign
++import Foreign hiding (unsafePerformIO)
+ import Foreign.Ptr
+ import Foreign.C.Types
+ import Foreign.C.String
+ import Foreign.Storable
+ import Foreign.Marshal.Alloc
++import System.IO.Unsafe (unsafePerformIO)
+ 
+ -- | 'compile'
+ --
