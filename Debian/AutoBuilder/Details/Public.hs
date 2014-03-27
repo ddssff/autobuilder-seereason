@@ -917,7 +917,7 @@ conduit =
     , debianize (hackage "attoparsec-conduit")
     , debianize (hackage "blaze-builder-conduit")
     , debianize (hackage "http-conduit")
-    , debianize (hackage "http-client" `patch`  $(embedFile "patches/http-client.diff"))
+    , debianize (hackage "http-client")
     , debianize (hackage "http-client-tls")
     , debianize (hackage "http-client-conduit")
     , debianize (hackage "zlib-conduit")
