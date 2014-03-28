@@ -1,0 +1,10 @@
+--- old/xml-conduit.cabal	2014-03-27 15:16:27.000000000 -0700
++++ new/xml-conduit.cabal	2014-03-27 15:18:46.255207323 -0700
+@@ -29,7 +29,6 @@
+ library
+     build-depends:   base                      >= 4        && < 5
+                    , conduit                   >= 1.0      && < 1.2
+-                   , conduit-extra
+                    , resourcet                 >= 0.3      && < 1.2
+                    , attoparsec-conduit        >= 1.0
+                    , blaze-builder-conduit     >= 1.0

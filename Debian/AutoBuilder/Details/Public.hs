@@ -921,7 +921,8 @@ conduit =
     , debianize (hackage "http-client-tls")
     , debianize (hackage "http-client-conduit")
     , debianize (hackage "zlib-conduit")
-    , debianize (hackage "xml-conduit")
+    , debianize (hackage "xml-conduit" `patch` $(embedFile "patches/xml-conduit.diff"))
+    -- , debianize (hackage "conduit-extra") -- needs a module or haddock build dies
     , debianize (hackage "mime-types")
     ]
 
