@@ -56,7 +56,7 @@ myParams home myBuildRelease =
     -- 6.15 changes Epoch parameter arity to 2
     -- 6.18 renames type Spec -> RetrieveMethod
     -- 6.35 added the CabalDebian flag
-    , requiredVersion = [(parseDebianVersion ("6.57" :: String), Nothing)]
+    , requiredVersion = [(parseDebianVersion ("6.62" :: String), Nothing)]
     , hackageServer = myHackageServer
     }
 

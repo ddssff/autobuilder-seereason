@@ -8,7 +8,8 @@ import Data.Monoid ((<>))
 import Data.Set as Set (empty, singleton)
 import Debian.AutoBuilder.Details.Common (repo)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Quilt, Proc),
-                                               PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer, ModifyAtoms, UDeb, OmitLTDeps),
+                                               PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
+                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, FailVersion, SkipPackage, FailPackage),
                                                Packages(Package, Packages, list, NoPackage), flags, name, spec,
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, InstallFile(..), (~=), (+++=))
@@ -305,7 +306,7 @@ main _home release =
     , P.Package { P.name = "haskell-incremental-sat-solver"
                 , P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs (repo </> "haskell-incremental-sat-solver-debian"))
                 , P.flags = [] }
-    , debianize (hackage "instant-generics")
+    , debianize (hackage "instant-generics" `flag` P.SkipVersion "0.3.7")
     , debianize (hackage "generic-deriving")
     , debianize (hackage "irc")
     , debianize (hackage "ixset" `patch` $(embedFile "patches/ixset.diff"))
@@ -329,7 +330,7 @@ main _home release =
     , debianize (hackage "abstract-deque")
     , debianize (hackage "abstract-par")
     , debianize (hackage "monad-par")
-    , debianize (hackage "IORefCAS")
+    , debianize (hackage "IORefCAS" `flag` P.SkipVersion "0.2.0.1")
     , debianize (hackage "bits-atomic")
     , debianize (hackage "monadLib")
     -- Putting this in our repo can cause problems, because when it is
@@ -421,7 +422,7 @@ main _home release =
     , debianize (hackage "strict-io") -- for GenI
     , debianize (hackage "smallcheck")
     , debianize (hackage "syb-with-class" `patch` $(embedFile "patches/syb-with-class.diff"))
-    , debianize (hackage "syb-with-class-instances-text" `wflag` P.DebVersion "0.0.1-3")
+    , debianize (hackage "syb-with-class-instances-text" `wflag` P.DebVersion "0.0.1-3" `wflag` P.SkipVersion "0.0.1")
     , debianize (hackage "tagged")
     , debianize (hackage "tagsoup")
     , debianize (hackage "tar")
@@ -473,13 +474,13 @@ main _home release =
     , P.Package { P.name = "haskell-utf8-string"
                 , P.spec = Apt (rel release "wheezy" "quantal") "haskell-utf8-string"
                 , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
-    , debianize (hackage "unification-fd")
+    , debianize (hackage "unification-fd" `flag` P.SkipVersion "0.8.0")
     , debianize (hackage "newtype" `wflag` P.DebVersion "0.2-1")
     , P.Package { P.name = "haskell-logict"
                 , P.spec = Debianize (Hackage "logict")
                 , P.flags = [] }
     , debianize (hackage "utility-ht")
-    , debianize (hackage "vacuum")
+    , debianize (hackage "vacuum" `flag` P.SkipVersion "2.1.0.1")
     , debianize (hackage "vector" `patch` $(embedFile "patches/vector.diff"))
     , debianize (hackage "vector-algorithms")
     , P.Package { P.name = "haskell-virthualenv"
@@ -798,7 +799,7 @@ happstack _home release =
                    `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "happstack-jmacro")
     , debianize (hackage "jmacro-rpc-happstack")
-    , debianize (hackage "jmacro-rpc")
+    , debianize (hackage "jmacro-rpc" `flag` P.SkipVersion "0.2")
     , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
     , debianize (hackage "happstack-server")
     , debianize (hackage "happstack-lite")
@@ -831,7 +832,7 @@ happstack _home release =
     , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
     , debianize (hackage "web-routes-th" `flag` P.DebVersion "0.22.1-1~hackage1")
     -- Retired, should be withdrawn from repos
-    -- , darcs "haskell-formlets-hsp" (repo ++ "/formlets-hsp")
+    , darcs "haskell-formlets-hsp" (repo ++ "/formlets-hsp") `flag` P.SkipPackage
     , darcs "haskell-happstack-scaffolding" (repo ++ "/happstack-scaffolding") -- Don't use Debianize here, it restores the doc package which crashes the build
     , debianize (hackage "HJScript")
     , debianize (darcs "reform" (seereason ++ "/reform") `cd` "reform")
@@ -922,7 +923,7 @@ conduit =
     , debianize (hackage "http-client-conduit")
     , debianize (hackage "zlib-conduit")
     , debianize (hackage "xml-conduit" `patch` $(embedFile "patches/xml-conduit.diff"))
-    -- , debianize (hackage "conduit-extra") -- needs a module or haddock build dies
+    , debianize (hackage "conduit-extra" `flag` P.FailVersion "1.0.0") -- needs a module or haddock build dies
     , debianize (hackage "mime-types")
     ]
 
@@ -960,7 +961,7 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "GLUT"
                    `flag` P.DevelDep "freeglut3-dev")
     , wskip $ debianize (hackage "StateVar" `pflag` P.DebVersion "1.0.0.0-2build1" `qflag` P.DebVersion "1.0.0.0-2build3")
-    , debianize (hackage "Tensor")
+    , debianize (hackage "Tensor" `flag` P.SkipVersion "1.0.0.1")
     , debianize (hackage "GLURaw")
     , debianize (hackage "ObjectName")
     , debianize (hackage "monad-task")
