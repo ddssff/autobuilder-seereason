@@ -401,7 +401,8 @@ main _home release =
     , debianize (hackage "nats")
     , debianize (hackage "sendfile")
     , darcs "haskell-set-extra" (repo </> "set-extra")
-    , debianize (darcs "haskell-old-exception" (repo ++ "/old-exception"))
+    -- I don't think we use this any more
+    -- , debianize (darcs "haskell-old-exception" (repo ++ "/old-exception"))
     , apt (rel release "wheezy" "quantal") "haskell-sha"
     , debianize (hackage "shake")
     , debianize (hackage "shakespeare")
@@ -434,7 +435,7 @@ main _home release =
     , debianize (hackage "test-framework-hunit")
     -- Retired
     -- , debianize (hackage "test-framework-quickcheck")
-    , debianize (hackage "test-framework-quickcheck2" `patch` $(embedFile "patches/test-framework-quickcheck2.diff"))
+    , debianize (hackage "test-framework-quickcheck2")
     , debianize (hackage "test-framework-th")
     --
     -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
@@ -527,8 +528,7 @@ main _home release =
 {-  , P.Package { P.name = "jqueryui"
                 , P.spec = Proc (Apt "wheezy" "jqueryui")
                 , P.flags = [] } -}
-    , wskip $
-      P.Package { P.name = "jcrop"
+    , P.Package { P.name = "jcrop"
                 , P.spec = DebDir (Uri (repo </> "jcrop/Jcrop.tar.gz") "028feeb9b6415af3b7fd7d9471c92469") (Darcs (repo ++ "/jcrop-debian"))
                 , P.flags = [] }
     , P.Package { P.name = "magic-haskell"
@@ -736,7 +736,7 @@ clckwrks _home release =
         , debianize (darcs "haskell-clckwrks-plugin-media" repo `cd` "clckwrks-plugin-media" `flag` P.BuildDep "hsx2hs")
         , debianize (darcs "haskell-clckwrks-plugin-ircbot" repo `cd` "clckwrks-plugin-ircbot" `flag` P.BuildDep "hsx2hs")
         , debianize (darcs "haskell-clckwrks-theme-bootstrap" repo `cd` "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
-        , debianize (darcs "clckwrks-dot-com" repo `cd` "clckwrks-dot-com" {- `patch` $(embedFile "patches/clckwrks-dot-com.diff") -})
+        , debianize (darcs "clckwrks-dot-com" repo `cd` "clckwrks-dot-com" `patch` $(embedFile "patches/clckwrks-dot-com.diff"))
         , debianize (darcs "haskell-clckwrks-theme-clckwrks" repo `cd` "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
         , debianize (hackage "jmacro")
         , debianize (hackage "hsx-jmacro")
@@ -799,7 +799,7 @@ happstack _home release =
                    `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "happstack-jmacro")
     , debianize (hackage "jmacro-rpc-happstack")
-    , debianize (hackage "jmacro-rpc" `flag` P.SkipVersion "0.2")
+    , debianize (hackage "jmacro-rpc" `flag` P.FailVersion "0.2")
     , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
     , debianize (hackage "happstack-server")
     , debianize (hackage "happstack-lite")
@@ -855,7 +855,8 @@ happstack _home release =
                    -- `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
                    `flag` P.BuildDep "hsx2hs")
     , debianize (darcs "happstack-dot-com" (repo ++ "/happstack-clckwrks")
-                   `cd` "happstack-dot-com")
+                   `cd` "happstack-dot-com"
+                   `patch` $(embedFile "patches/happstack-dot-com.diff"))
     , debianize (hackage "acid-state" `patch` $(embedFile "patches/acid-state.diff"))
     ]
 
