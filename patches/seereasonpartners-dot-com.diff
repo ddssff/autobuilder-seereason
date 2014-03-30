@@ -1,11 +1,12 @@
---- old/seereasonpartners-dot-com.cabal	2013-10-14 06:20:02.000000000 -0700
-+++ new/seereasonpartners-dot-com.cabal	2013-10-14 06:20:36.692677534 -0700
-@@ -29,7 +29,7 @@
-   build-depends:       base                     > 4 && <5,
-                        clckwrks                 >= 0.18 && < 0.20,
-                        clckwrks-plugin-page     == 0.2.*,
--                       clckwrks-plugin-media    == 0.5.*,
-+                       clckwrks-plugin-media    >= 0.5,
-                        clckwrks-theme-seereasonpartners >= 0.3,
-                        containers               >= 0.4,
-                        happstack-server         >= 7.0 && < 7.4,
+--- old/seereasonpartners-dot-com.cabal	2014-03-29 17:14:10.000000000 -0700
++++ new/seereasonpartners-dot-com.cabal	2014-03-29 17:15:42.790155081 -0700
+@@ -18,7 +18,8 @@
+ 
+ Flag backups
+      Description: enable the backups executable (currently disabled by default do to wacky dependencies not on hackage)
+-     Default: False
++     Default: True
++     Manual: True
+ 
+ Executable seereasonpartners-dot-com-server
+   Main-is: Main.hs
