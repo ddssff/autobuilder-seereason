@@ -44,10 +44,10 @@ applications _home =
     , debianize (darcs "seereason-darcs-backups" (repo </> "autobuilder-config")
                   `flag` P.CabalDebian ["--source-package-name", "seereason-darcs-backups"])
     , debianize (method "seereasonpartners-dot-com"
-                      (Cd "seereasonpartners-dot-com" (Darcs (privateRepo </> "seereasonpartners-clckwrks"))))
+                      (Cd "seereasonpartners-dot-com" (Darcs (privateRepo </> "seereasonpartners-clckwrks")))
+                   `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
     , debianize (method "haskell-clckwrks-theme-seereasonpartners"
                       (Cd "clckwrks-theme-seereasonpartners" (Darcs (privateRepo </> "seereasonpartners-clckwrks")))
-                   `patch` $(embedFile "patches/seereasonpartners-dot-com.diff")
                    `flag` P.BuildDep "hsx2hs"
                    `flag` P.NoDoc)
     , debianize (method "haskell-clckwrks-theme-appraisalscribe"
