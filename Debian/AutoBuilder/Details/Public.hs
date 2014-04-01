@@ -947,7 +947,6 @@ shakespeare =
     , debianize (hackage "wai-logger")
     , debianize (hackage "http-date")
     , debianize (hackage "shakespeare")
-    , debianize (hackage "shakespeare-css" `flag` P.SkipVersion "1.1.0") -- has a haddock error I think
     ]
 
 
