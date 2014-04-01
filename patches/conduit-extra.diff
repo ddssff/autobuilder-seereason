@@ -1,0 +1,16 @@
+diff -ruN conduit-extra-1.0.0.orig/conduit-extra.cabal conduit-extra-1.0.0/conduit-extra.cabal
+--- conduit-extra-1.0.0.orig/conduit-extra.cabal	2014-04-01 09:24:04.095183484 -0700
++++ conduit-extra-1.0.0/conduit-extra.cabal	2014-04-01 10:01:56.363121367 -0700
+@@ -13,6 +13,7 @@
+ 
+ Library
+   Build-depends:       base                     >= 4            && < 5
++  Exposed-Modules: ConduitExtraDummy
+ 
+ source-repository head
+   type:     git
+diff -ruN conduit-extra-1.0.0.orig/ConduitExtraDummy.hs conduit-extra-1.0.0/ConduitExtraDummy.hs
+--- conduit-extra-1.0.0.orig/ConduitExtraDummy.hs	1969-12-31 16:00:00.000000000 -0800
++++ conduit-extra-1.0.0/ConduitExtraDummy.hs	2014-04-01 10:01:36.787121903 -0700
+@@ -0,0 +1 @@
++module ConduitExtraDummy where

@@ -300,7 +300,7 @@ main _home release =
     , debianize (hackage "HsSyck" `patch`  $(embedFile "patches/HsSyck.diff"))
     , debianize (hackage "HStringTemplate")
     , darcs "haskell-html-entities" (repo </> "html-entities")
-    , debianize (hackage "http-types" `patch`  $(embedFile "patches/http-types.diff"))
+    , debianize (hackage "http-types")
     , debianize (hackage "i18n" `flag` P.DebVersion "0.3-1~hackage1")
     , debianize (hackage "iconv")
     , P.Package { P.name = "haskell-incremental-sat-solver"
@@ -370,7 +370,7 @@ main _home release =
                    `patch` $(embedFile "patches/pcre-light.diff")
                    `flag` P.DebVersion "0.4-3"
                    `flag` P.DevelDep "libpcre3-dev")
-    , debianize (hackage "permutation" `flag` P.DebVersion "0.4.1-1~hackage1")
+    , debianize (hackage "permutation" `flag` P.DebVersion "0.4.1-1~hackage1" `wflag` P.SkipVersion "0.4.1") -- Waiting for update to GHC.Prim code
     , debianize (hackage "pipes")
     , debianize (hackage "polyparse")
     , debianize (hackage "primitive")
@@ -405,8 +405,8 @@ main _home release =
     -- , debianize (darcs "haskell-old-exception" (repo ++ "/old-exception"))
     , apt (rel release "wheezy" "quantal") "haskell-sha"
     , debianize (hackage "shake")
-    , debianize (hackage "shakespeare")
-    , debianize (hackage "shakespeare-css")
+    , debianize (hackage "byteorder")
+    , debianize (hackage "word8")
     , debianize (hackage "system-fileio")
     , debianize (hackage "SMTPClient")
     , debianize (hackage "socks")
@@ -423,19 +423,18 @@ main _home release =
     , debianize (hackage "strict-io") -- for GenI
     , debianize (hackage "smallcheck")
     , debianize (hackage "syb-with-class" `patch` $(embedFile "patches/syb-with-class.diff"))
-    , debianize (hackage "syb-with-class-instances-text" `wflag` P.DebVersion "0.0.1-3" `wflag` P.SkipVersion "0.0.1")
+    , debianize (hackage "syb-with-class-instances-text" `pflag` P.DebVersion "0.0.1-3" `wflag` P.DebVersion "0.0.1-3" `wflag` P.SkipVersion "0.0.1-3")
     , debianize (hackage "tagged")
     , debianize (hackage "tagsoup")
     , debianize (hackage "tar")
     , debianize (hackage "terminfo"
-                             `flag` P.CabalPin "0.3.2.6" -- Waiting for update of haskeline
                              `flag` P.DevelDep "libncurses5-dev"
                              `flag` P.DevelDep "libncursesw5-dev")
     , debianize (hackage "test-framework")
     , debianize (hackage "test-framework-hunit")
     -- Retired
     -- , debianize (hackage "test-framework-quickcheck")
-    , debianize (hackage "test-framework-quickcheck2")
+    , debianize (hackage "test-framework-quickcheck2" `flag` P.SkipVersion "0.3.0.2") -- waiting for quickcheck2-2.7 support
     , debianize (hackage "test-framework-th")
     --
     -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
@@ -584,7 +583,8 @@ main _home release =
     , case release of
         "wheezy-seereason" -> debianize (hackage "network")
         _ -> P.NoPackage
-    , debianize (darcs "haskell-tiny-server" (repo </> "tiny-server") `flag` P.BuildDep "hsx2hs")
+    , debianize (darcs "haskell-tiny-server" (repo </> "tiny-server") `flag` P.BuildDep "hsx2hs"
+                   `flag` P.SkipPackage {- has a "derives SafeCopy" -})
     , debianize (hackage "stringable") -- this can be done with listlike-instances
     , debianize (hackage "currency")
     , debianize (hackage "iso3166-country-codes")
@@ -799,7 +799,7 @@ happstack _home release =
                    `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "happstack-jmacro")
     , debianize (hackage "jmacro-rpc-happstack")
-    , debianize (hackage "jmacro-rpc" `flag` P.FailVersion "0.2")
+    , debianize (hackage "jmacro-rpc" `flag` P.SkipVersion "0.2")
     , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
     , debianize (hackage "happstack-server")
     , debianize (hackage "happstack-lite")
@@ -807,7 +807,7 @@ happstack _home release =
     , debianize (hackage "time-compat")
     , debianize (hackage "base64-bytestring")
     , debianize (hackage "threads")
-    , debianize (hackage "list-tries")
+    , debianize (hackage "list-tries" `patch` $(embedFile "patches/list-tries.diff"))
     , debianize (hackage "happstack-static-routing" `flag` P.DebVersion "0.3.1-1~hackage1")
     , debianize (hackage "happstack-util"
                    `patch` $(embedFile "patches/happstack-util-ghc76.diff")
@@ -923,8 +923,8 @@ conduit =
     , debianize (hackage "http-client-tls")
     , debianize (hackage "http-client-conduit")
     , debianize (hackage "zlib-conduit")
-    , debianize (hackage "xml-conduit" `patch` $(embedFile "patches/xml-conduit.diff"))
-    , debianize (hackage "conduit-extra" `flag` P.FailVersion "1.0.0") -- needs a module or haddock build dies
+    , debianize (hackage "xml-conduit")
+    , debianize (hackage "conduit-extra" `patch` $(embedFile "patches/conduit-extra.diff"))
     , debianize (hackage "mime-types")
     ]
 
@@ -934,6 +934,22 @@ happstackdotcom _home =
     [ debianize (hackage "ircbot")
     , debianize (hackage "SafeSemaphore")
     , darcs "haskell-happstackdotcom-doc" (repo </> "happstackDotCom-doc") ]
+
+shakespeare =
+    P.Packages (singleton "shakespeare-group") $
+    [ debianize (hackage "wai-extra")
+    , debianize (hackage "warp")
+    , debianize (hackage "cryptohash-conduit")
+    , debianize (hackage "wai-app-static")
+    , debianize (hackage "network-conduit")
+    , debianize (hackage "simple-sendfile")
+    , debianize (hackage "streaming-commons")
+    , debianize (hackage "wai-logger")
+    , debianize (hackage "http-date")
+    , debianize (hackage "shakespeare")
+    , debianize (hackage "shakespeare-css" `flag` P.SkipVersion "1.1.0") -- has a haddock error I think
+    ]
+
 
 -- May work with these added dependencies (statevar thru openglraw)
 opengl release = P.Packages (singleton "opengl") $

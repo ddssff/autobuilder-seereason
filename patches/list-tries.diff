@@ -1,20 +1,11 @@
---- old/list-tries.cabal	2014-03-22 06:05:07.000000000 -0700
-+++ new/list-tries.cabal	2014-03-22 06:22:43.932249100 -0700
-@@ -43,7 +43,7 @@
- Library
-    Build-Depends: base       >= 3   && < 4.8
-                 , containers >= 0.3 && < 0.6
--                , dlist      >= 0.4 && < 0.8
-+                , dlist      >= 0.4
-                 , binary     >= 0.5 && < 0.8
- 
-    Exposed-Modules: Data.ListTrie.Base.Map
+--- old/list-tries.cabal	2014-04-01 08:29:08.000000000 -0700
++++ new/list-tries.cabal	2014-04-01 13:57:48.926734476 -0700
 @@ -80,7 +80,7 @@
  
     Build-Depends: base       >= 3   && < 4.8
                  , containers >= 0.3 && < 0.6
 -                , dlist      >= 0.4 && < 0.7
-+                , dlist      >= 0.4
++                , dlist      >= 0.4 && < 0.8
                  , binary     >= 0.5 && < 0.8
  
     if flag(testing)
