@@ -242,6 +242,7 @@ myCompilerVersion "natty-seereason" = Just "7.4.1"
 myCompilerVersion "lucid-seereason" = Just "7.4.1"
 myCompilerVersion "lenny-seereason" = Just "7.4.1"
 myCompilerVersion "wheezy-seereason" = Just "7.8.1"
+myCompilerVersion "jessie-seereason" = Just "7.8.1"
 myCompilerVersion _myBuildRelease = Nothing
 
 myHackageServer = "hackage.haskell.org"
@@ -295,7 +296,7 @@ ubuntuSourceLines ubuntuMirrorHost release =
 
 -- The names of the releases that we are able to create build environments for.
 --
-debianReleases = ["experimental", "sid", "wheezy", "squeeze", "lenny", "sarge"]
+debianReleases = ["experimental", "sid", "jessie", "wheezy", "squeeze", "lenny", "sarge"]
 ubuntuReleases = ["raring", "quantal", "precise", "oneiric", "natty", "maverick", "lucid",
                   "karmic", "jaunty", "intrepid", "hardy", "feisty", "edgy", "dapper"]
 
