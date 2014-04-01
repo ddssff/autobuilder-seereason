@@ -85,14 +85,14 @@ deriving instance Typeable PackageFlag
 public :: String -> String -> P.Packages
 public home release = 
     proc' release $
-    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap $ Public.targets home release
+    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ Public.targets home release
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     --          ++ private home
 
 private :: String -> String -> P.Packages
 private home release =
     proc' release $
-    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap $ mappend (Private.libraries home) (Private.applications home)
+    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ mappend (Private.libraries home) (Private.applications home)
 
 proc' :: String -> P.Packages -> P.Packages
 proc' "wheezy-seereason" p@(Package {}) = p {spec = Proc (spec p)}
@@ -118,10 +118,10 @@ isDebianizeSpec (P.Debianize _) = True
 isDebianizeSpec _ = False
 
 -- | Add MapDep and DevelDep flags Supply some special cases to map cabal library names to debian.
-applyDepMap :: P.Packages -> P.Packages
-applyDepMap P.NoPackage = P.NoPackage
-applyDepMap (P.Packages n s) = P.Packages n (map applyDepMap s)
-applyDepMap x@(P.Package {}) =
+applyDepMap :: String -> P.Packages -> P.Packages
+applyDepMap _ P.NoPackage = P.NoPackage
+applyDepMap release (P.Packages n s) = P.Packages n (map (applyDepMap release) s)
+applyDepMap release x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
       mappings = [P.MapDep "cryptopp" (deb "libcrypto++-dev"),
@@ -136,7 +136,11 @@ applyDepMap x@(P.Package {}) =
                   P.MapDep "Xi" (deb "libxi-dev"),
                   P.MapDep "Xxf86vm" (deb "libxxf86vm-dev"),
                   P.MapDep "pthread" (deb "libc6-dev"),
-                  P.MapDep "Xrandr" (rel "libxrandr-dev (= 2:1.3.2-2+deb7u1)"),
+                  P.MapDep "Xrandr" (rel ("libxrandr-dev" ++
+                                          case release of
+                                            "wheezy-seereason" -> " (= 2:1.3.2-2+deb7u1)"
+                                            "precise-seereason" -> " (= 2:1.3.2-2ubuntu0.2)"
+                                            _ -> "")),
                   -- the libxrandr-dev-lts-quantal package installs
                   -- /usr/lib/x86_64-linux-gnu/libXrandr_ltsq.so.
                   -- P.MapDep "Xrandr_ltsq" (deb "libxrandr-dev-lts-quantal"),
