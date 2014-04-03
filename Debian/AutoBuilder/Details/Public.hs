@@ -575,7 +575,6 @@ main _home release =
                 `flag` P.DebVersion "0.5.6-2"
                 `flag` P.ModifyAtoms (execDebM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
     , debianize (hackage "urlencoded")
-    , debianize (hackage "resourcet")
     , debianize (hackage "hxt")
     , debianize (hackage "hxt-charproperties")
     , debianize (hackage "hxt-regex-xmlschema")
@@ -798,7 +797,7 @@ happstack _home release =
                    -- `patch` $(embedFile "patches/happstack-hsp.diff")
                    `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "happstack-jmacro")
-    , debianize (hackage "jmacro-rpc-happstack")
+    , debianize (hackage "jmacro-rpc-happstack" `flag` P.SkipVersion "0.2.1") -- Really just waiting for jmacro-rpc
     , debianize (hackage "jmacro-rpc" `flag` P.SkipVersion "0.2")
     , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
     , debianize (hackage "happstack-server")
@@ -819,7 +818,7 @@ happstack _home release =
     , debianize (hackage "hsx" `patch` $(embedFile "patches/hsx.diff"))
     , debianize (hackage "hslua")
     , debianize (hackage "pandoc"
-                   -- `patch` $(embedFile "patches/pandoc.diff")
+                   `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
                    `flag` P.BuildDep "alex"
                    `flag` P.BuildDep "happy")
@@ -866,7 +865,7 @@ authenticate _home release =
     , debianize (hackage "pureMD5")
     , debianize (hackage "monadcryptorandom")
     , debianize (hackage "RSA")
-    , debianize (hackage "resourcet")
+    , debianize (hackage "resourcet" `flag` P.CabalPin "0.4.10.2")
     , debianize (hackage "mmorph")
     , debianize (hackage "void")
     , debianize (hackage "certificate")
@@ -913,18 +912,20 @@ digestiveFunctors =
 -- from conduit 0.4.2 to 0.5.
 conduit =
   P.Packages (singleton "conduit")
-    [ debianize (hackage "conduit")
+    [ debianize (hackage "conduit" `flag` P.CabalPin "1.0.17.1")
     , debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
     , debianize (hackage "connection")
-    , debianize (hackage "attoparsec-conduit")
-    , debianize (hackage "blaze-builder-conduit")
-    , debianize (hackage "http-conduit")
-    , debianize (hackage "http-client")
+    , debianize (hackage "attoparsec-conduit" `flag` P.CabalPin "1.0.1.2")
+    , debianize (hackage "blaze-builder-conduit" `flag` P.CabalPin "1.0.0")
+    , debianize (hackage "http-conduit" `flag` P.CabalPin "2.0.0.8")
+    , debianize (hackage "http-client" `flag` P.CabalPin "0.2.3")
     , debianize (hackage "http-client-tls")
-    , debianize (hackage "http-client-conduit")
-    , debianize (hackage "zlib-conduit")
+    , debianize (hackage "http-client-conduit" `flag` P.CabalPin "0.2.0.1")
+    , debianize (hackage "zlib-conduit" `flag` P.CabalPin "1.0.0")
     , debianize (hackage "xml-conduit")
-    , debianize (hackage "conduit-extra" `patch` $(embedFile "patches/conduit-extra.diff"))
+    , debianize (hackage "conduit-extra"
+                   `flag` P.CabalPin "1.0.0"
+                   `patch` $(embedFile "patches/conduit-extra.diff"))
     , debianize (hackage "mime-types")
     ]
 
@@ -983,7 +984,7 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "monad-task")
     , debianize (hackage "GLFW" `flag` P.DevelDep "libglu1-mesa-dev")
     , debianize (hackage "GLFW-b")
-    , debianize (hackage "GLFW-b-demo" {- `patch` $(embedFile "patches/GLFW-b-demo.diff") -})
+    , debianize (hackage "GLFW-b-demo" `flag` P.SkipPackage {- `patch` $(embedFile "patches/GLFW-b-demo.diff") -})
     , debianize (hackage "GLFW-task")
     , debianize (hackage "bindings-GLFW"
                              -- `patch` $(embedFile "patches/bindings-GLFW.diff")
@@ -1042,7 +1043,7 @@ algebra release =
     , debianize (hackage "contravariant"
                              `patch` $(embedFile "patches/contravariant.diff")
                              `qflag` P.DebVersion "0.2.0.2-1build2")
-    , debianize (hackage "distributive" `patch` $(embedFile "patches/distributive.diff"))
+    , debianize (hackage "distributive" `flag` P.CabalPin "0.4.1" `patch` $(embedFile "patches/distributive.diff"))
     -- This package fails to build in several different ways because it has no modules.
     -- I am just going to patch the packages that use it to require transformers >= 0.3.
     -- Specifically, distributive and lens.
