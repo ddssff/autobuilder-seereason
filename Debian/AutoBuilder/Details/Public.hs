@@ -35,6 +35,7 @@ targets _home release =
     , autobuilder _home
     , clckwrks _home release
     , sunroof
+    , haste
     -- , authenticate _home release
     -- , happstackdotcom _home
     -- , happstack release
@@ -1126,3 +1127,14 @@ replacementLibrary orig name =
       dev x = "libghc-" ++ x ++ "-dev"
       prof x = "libghc-" ++ x ++ "-dev"
       doc x = "libghc-" ++ x ++ "-dev"
+
+haste = P.Packages (singleton "haste")
+  [ hack "haste-compiler"
+  , git' "haskell-haste-ffi-parser" "https://github.com/RudolfVonKrugstein/haste-ffi-parser"
+  , hack "data-binary-ieee754"
+  , hack "shellmate"
+  , git' "haskell-websockets" "https://github.com/cliffordbeshers/websockets"
+  , hack "io-streams"
+  ]
+    where hack = debianize . hackage
+          git' n r = debianize $ git n r
