@@ -262,7 +262,7 @@ main _home release =
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
     , apt (rel release "wheezy" "quantal") "haskell-harp"
     , debianize (hackage "hashable")
-    , debianize (hackage "hashed-storage" `patch` $(embedFile "patches/hashed-storage.diff"))
+    , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline")
     , debianize (hackage "th-orphans")
     , debianize (hackage "haskell-src-meta" {- `patch` $(embedFile "patches/haskell-src-meta.diff") -})
@@ -360,7 +360,7 @@ main _home release =
     , debianize (hackage "ordered")
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize (hackage "exceptions")
-    , debianize (hackage "temporary" `patch` $(embedFile "patches/temporary.diff"))
+    , debianize (hackage "temporary")
     , debianize (hackage "pandoc-types")
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
@@ -423,7 +423,7 @@ main _home release =
                 , P.flags = rel release [P.DebVersion "0.2.4.1-3"] [P.DebVersion "0.2.4.1-2build3"] }
     , debianize (hackage "strict-io") -- for GenI
     , debianize (hackage "smallcheck")
-    , debianize (hackage "syb-with-class" `patch` $(embedFile "patches/syb-with-class.diff"))
+    , debianize (hackage "syb-with-class")
     , debianize (hackage "syb-with-class-instances-text" `pflag` P.DebVersion "0.0.1-3" `wflag` P.DebVersion "0.0.1-3" `wflag` P.SkipVersion "0.0.1-3")
     , debianize (hackage "tagged")
     , debianize (hackage "tagsoup")
@@ -451,9 +451,7 @@ main _home release =
                    `flag` P.DebVersion "3.2.0.0-1~hackage1")
     , debianize (hackage "uniplate")
     , debianize (hackage "cmdargs")
-    , debianize (hackage "language-javascript"
-                   `patch` $(embedFile "patches/language-javascript.diff")
-                   `flag` P.BuildDep "happy")
+    , debianize (hackage "language-javascript" `flag` P.BuildDep "happy")
     , debianize (hackage "utf8-light")
     , debianize (hackage "language-haskell-extract")
     , debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
@@ -588,6 +586,7 @@ main _home release =
     , debianize (hackage "stringable") -- this can be done with listlike-instances
     , debianize (hackage "currency")
     , debianize (hackage "iso3166-country-codes")
+    , debianize (hackage "memoize")
     ]
 
 relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
@@ -684,11 +683,7 @@ platform release =
                                                                , "AlexWrapper-strict-bytestring"]) ] }
     , opengl release
     -- , haddock release
-    , debianize (hackage "haskell-src"
-                             `flag` P.BuildDep "happy"
-                             `wflag` P.DebVersion "1.0.1.5-1"
-                             `pflag` P.DebVersion "1.0.1.5-1"
-                             `qflag` P.DebVersion "1.0.1.5-1build2")
+    , debianize (hackage "haskell-src" `flag` P.BuildDep "happy")
     -- Versions 2.4.1.1 and 2.4.1.2 change unEscapeString in a way
     -- that breaks our apps: https://github.com/haskell/network/issues/86
     , debianize (hackage "network")
