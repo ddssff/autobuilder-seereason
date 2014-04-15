@@ -1,0 +1,22 @@
+--- old/lib/Data/IntArray.hs.orig	2014-04-15 10:20:25.000000000 -0700
++++ new/lib/Data/IntArray.hs	2014-04-15 10:48:04.750276267 -0700
+@@ -40,7 +40,7 @@
+ import GHC.ST
+ import Foreign( sizeOf )
+ 
+-#if __GLASGOW_HASKELL__ >= 78
++#if __GLASGOW_HASKELL__ >= 708
+ import GHC.Exts (isTrue#)
+ 
+ isTrue = isTrue#
+--- old/lib/Data/Permute/MPermute.hs	2014-04-15 10:20:25.000000000 -0700
++++ new/lib/Data/Permute/MPermute.hs	2014-04-15 10:48:11.270276420 -0700
+@@ -78,7 +78,7 @@
+ 
+ import Control.Monad
+ import Control.Monad.ST
+-#if __GLASGOW_HASKELL__ >= 78
++#if __GLASGOW_HASKELL__ >= 708
+ import Control.Monad.ST.Unsafe
+ #endif
+ import Data.Function( on )

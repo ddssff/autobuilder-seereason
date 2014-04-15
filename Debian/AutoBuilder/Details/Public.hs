@@ -365,13 +365,12 @@ main _home release =
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
     , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
-    , debianize (hackage "PBKDF2" `patch` $(embedFile "patches/PBKDF2.diff"))
+    , debianize (hackage "PBKDF2")
     -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
     , debianize (hackage "pcre-light"
                    `patch` $(embedFile "patches/pcre-light.diff")
-                   `flag` P.DebVersion "0.4-3"
                    `flag` P.DevelDep "libpcre3-dev")
-    , debianize (hackage "permutation" `flag` P.DebVersion "0.4.1-1~hackage1" `wflag` P.SkipVersion "0.4.1") -- Waiting for update to GHC.Prim code
+    , debianize (hackage "permutation" `patch` $(embedFile "patches/permutation.diff"))
     , debianize (hackage "pipes")
     , debianize (hackage "polyparse")
     , debianize (hackage "primitive")
@@ -415,6 +414,7 @@ main _home release =
     -- Version 1.14, which is in darcs, is too new for the current haskell-src-meta and haskell-derive
     , debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
                  hackage "haskell-src-exts"
+                   `flag` P.CabalPin "1.14.0.1" -- Waiting for newer haskell-src-meta, haskell-hsx, derive
                    `flag` P.BuildDep "happy")
     , debianize (hackage "stb-image")
     , apt (rel release "wheezy" "quantal") "haskell-strict" -- for leksah
@@ -686,7 +686,7 @@ platform release =
     , debianize (hackage "haskell-src" `flag` P.BuildDep "happy")
     -- Versions 2.4.1.1 and 2.4.1.2 change unEscapeString in a way
     -- that breaks our apps: https://github.com/haskell/network/issues/86
-    , debianize (hackage "network")
+    , debianize (hackage "network" `flag` P.CabalPin "2.4.2.2") -- Waiting for newer rss, hslogger
     , debianize (hackage "publicsuffixlist")
     , debianize (hackage "HTTP")
     , debianize (hackage "cgi")
