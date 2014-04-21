@@ -208,7 +208,7 @@ main _home release =
     , debianize (hackage "data-default-instances-dlist")
     , debianize (hackage "data-default-instances-old-locale")
     , debianize (hackage "data-object" `patch` $(embedFile "patches/data-object.diff"))
-    , debianize (hackage "dataenc" `patch` $(embedFile "patches/dataenc.diff"))
+    , debianize (hackage "dataenc" {- `patch` $(embedFile "patches/dataenc.diff") -})
     , debianize (hackage "Diff")
     , debianize (hackage "executable-path" `flag` P.DebVersion "0.0.3-1")
     -- , apt (rel release "wheezy" "quantal") "haskell-digest"
@@ -370,7 +370,7 @@ main _home release =
     , debianize (hackage "pcre-light"
                    `patch` $(embedFile "patches/pcre-light.diff")
                    `flag` P.DevelDep "libpcre3-dev")
-    , debianize (hackage "permutation" `patch` $(embedFile "patches/permutation.diff"))
+    , debianize (hackage "permutation")
     , debianize (hackage "pipes")
     , debianize (hackage "polyparse")
     , debianize (hackage "primitive")
@@ -423,7 +423,7 @@ main _home release =
                 , P.flags = rel release [P.DebVersion "0.2.4.1-3"] [P.DebVersion "0.2.4.1-2build3"] }
     , debianize (hackage "strict-io") -- for GenI
     , debianize (hackage "smallcheck")
-    , debianize (hackage "syb-with-class")
+    , debianize (hackage "syb-with-class" `flag` P.SkipVersion "0.6.1.5") -- This version tries to derive typeable instances when building rjson
     , debianize (hackage "syb-with-class-instances-text" `pflag` P.DebVersion "0.0.1-3" `wflag` P.DebVersion "0.0.1-3" `wflag` P.SkipVersion "0.0.1-3")
     , debianize (hackage "tagged")
     , debianize (hackage "tagsoup")
@@ -581,8 +581,8 @@ main _home release =
     , case release of
         "wheezy-seereason" -> debianize (hackage "network")
         _ -> P.NoPackage
-    , debianize (darcs "haskell-tiny-server" (repo </> "tiny-server") `flag` P.BuildDep "hsx2hs"
-                   `flag` P.SkipPackage {- has a "derives SafeCopy" -})
+    -- , debianize (darcs "haskell-tiny-server" (repo </> "tiny-server") `flag` P.BuildDep "hsx2hs"
+    --                `flag` P.SkipPackage {- has a "derives SafeCopy" -})
     , debianize (hackage "stringable") -- this can be done with listlike-instances
     , debianize (hackage "currency")
     , debianize (hackage "iso3166-country-codes")
