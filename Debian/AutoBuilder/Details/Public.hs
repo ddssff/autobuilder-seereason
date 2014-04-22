@@ -1051,6 +1051,7 @@ algebra release =
                                         , "--replaces=libghc-profunctors-dev:libghc-profunctors-extras-dev"
                                         , "--provides=libghc-profunctors-dev:libghc-profunctors-extras-dev"])
     , debianize (hackage "reflection")
+    , debianize (hackage "prelude-extras")
     , debianize (hackage "free")
     , debianize (hackage "keys")
     , debianize (hackage "intervals")
