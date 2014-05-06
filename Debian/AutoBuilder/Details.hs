@@ -203,7 +203,9 @@ myIncludePackages myBuildRelease =
       "ubuntu" ->
           ["ubuntu-keyring"] ++
           case () of
-            _ | isPrefixOf "raring-" myBuildRelease -> []
+            _ | isPrefixOf "trusty-" myBuildRelease -> []
+              | isPrefixOf "saucy-" myBuildRelease -> []
+              | isPrefixOf "raring-" myBuildRelease -> []
               | isPrefixOf "quantal-" myBuildRelease -> []
               | isPrefixOf "precise-" myBuildRelease -> []
               | isPrefixOf "oneiric-" myBuildRelease -> []
@@ -297,7 +299,7 @@ ubuntuSourceLines ubuntuMirrorHost release =
 -- The names of the releases that we are able to create build environments for.
 --
 debianReleases = ["experimental", "sid", "jessie", "wheezy", "squeeze", "lenny", "sarge"]
-ubuntuReleases = ["raring", "quantal", "precise", "oneiric", "natty", "maverick", "lucid",
+ubuntuReleases = ["trusty", "saucy", "raring", "quantal", "precise", "oneiric", "natty", "maverick", "lucid",
                   "karmic", "jaunty", "intrepid", "hardy", "feisty", "edgy", "dapper"]
 
 oldDebianReleases = []
