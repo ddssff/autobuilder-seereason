@@ -423,7 +423,7 @@ main _home release =
                 , P.flags = rel release [P.DebVersion "0.2.4.1-3"] [P.DebVersion "0.2.4.1-2build3"] }
     , debianize (hackage "strict-io") -- for GenI
     , debianize (hackage "smallcheck")
-    , debianize (hackage "syb-with-class" `flag` P.SkipVersion "0.6.1.5") -- This version tries to derive typeable instances when building rjson
+    , debianize (hackage "syb-with-class" `flag` P.CabalPin "0.6.1.4") -- Version 0.6.1.5 tries to derive typeable instances when building rjson, which is an error for ghc-7.8
     , debianize (hackage "syb-with-class-instances-text" `pflag` P.DebVersion "0.0.1-3" `wflag` P.DebVersion "0.0.1-3" `wflag` P.SkipVersion "0.0.1-3")
     , debianize (hackage "tagged")
     , debianize (hackage "tagsoup")
