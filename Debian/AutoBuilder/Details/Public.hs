@@ -9,8 +9,8 @@ import Data.Set as Set (empty, singleton)
 import Debian.AutoBuilder.Details.Common (repo)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Quilt, Proc),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
-                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, FailVersion, SkipPackage, FailPackage),
-                                               Packages(Package, Packages, list, NoPackage), flags, name, spec,
+                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage),
+                                               Packages(Package, Packages, NoPackage), flags, name, spec,
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, InstallFile(..), (~=), (+++=))
 import Debian.Relation (BinPkgName(..))

@@ -16,9 +16,9 @@ import Data.Set as Set (Set, empty)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.Packages (Packages(NoPackage))
-import Debian.AutoBuilder.Types.ParamRec (ParamRec(..), Strictness(..), TargetSpec(..))
-import Debian.Release (ReleaseName(ReleaseName, relName))
-import Debian.Repo (SourcesChangedAction(SourcesChangedError))
+import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
+import Debian.Release (ReleaseName(relName))
+--import Debian.Repo (SourcesChangedAction(SourcesChangedError))
 import Debian.Sources (DebSource, parseSourceLine)
 import Debian.URI
 import Debian.Version (parseDebianVersion)
@@ -119,8 +119,8 @@ myDevelopmentReleaseNames = ["sid", "quantal"]
 --
 myVendorTag = "+seereason"
 
-myDiscards :: Set.Set String
-myDiscards = Set.empty
+--myDiscards :: Set.Set String
+--myDiscards = Set.empty
 
 -- The set of all known package targets.  The targets we will
 -- actually build are chosen from these.  The myBuildRelease argument
@@ -220,7 +220,7 @@ myIncludePackages myBuildRelease =
 
 -- This will not be available when a new release is created, so we
 -- have to make due until it gets built and uploaded.
-myOptionalIncludePackages myBuildRelease =
+myOptionalIncludePackages _myBuildRelease =
     [ "seereason-keyring" ]
 
 myExcludePackages _ = []
