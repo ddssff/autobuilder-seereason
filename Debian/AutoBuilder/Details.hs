@@ -48,7 +48,7 @@ myParams home myBuildRelease =
     , optionalIncludePackages = myOptionalIncludePackages myBuildRelease
     , excludePackages = myExcludePackages myBuildRelease
     , components = myComponents myBuildRelease
-    , ghcVersion = myCompilerVersion myBuildRelease
+    -- , ghcVersion = myCompilerVersion myBuildRelease
     , developmentReleaseNames = myDevelopmentReleaseNames
     , releaseAliases = myReleaseAliases myBuildRelease
     , newDistProgram = "newdist --sender-email=autobuilder@seereason.com --notify-email dsf@seereason.com --notify-email beshers@seereason.com --notify-email jeremy@seereason.com"
