@@ -34,7 +34,6 @@ myParams home myBuildRelease =
     (defaultParams myBuildRelease
                    myUploadURIPrefix
                    myBuildURIPrefix
-                   myCompilerVersion
                    myDevelopmentReleaseNames)
     { vendorTag = myVendorTag
     , oldVendorTags = ["seereason"]
@@ -48,7 +47,6 @@ myParams home myBuildRelease =
     , optionalIncludePackages = myOptionalIncludePackages myBuildRelease
     , excludePackages = myExcludePackages myBuildRelease
     , components = myComponents myBuildRelease
-    -- , ghcVersion = myCompilerVersion myBuildRelease
     , developmentReleaseNames = myDevelopmentReleaseNames
     , releaseAliases = myReleaseAliases myBuildRelease
     , newDistProgram = "newdist --sender-email=autobuilder@seereason.com --notify-email dsf@seereason.com --notify-email beshers@seereason.com --notify-email jeremy@seereason.com"
@@ -56,7 +54,8 @@ myParams home myBuildRelease =
     -- 6.15 changes Epoch parameter arity to 2
     -- 6.18 renames type Spec -> RetrieveMethod
     -- 6.35 added the CabalDebian flag
-    , requiredVersion = [(parseDebianVersion ("6.62" :: String), Nothing)]
+    -- 6.64 removes the myCompilerVersion argument from defaultParams
+    , requiredVersion = [(parseDebianVersion ("6.64" :: String), Nothing)]
     , hackageServer = myHackageServer
     }
 
@@ -231,21 +230,6 @@ myComponents myBuildRelease =
       "debian" -> ["main", "contrib", "non-free"]
       "ubuntu" -> ["main", "restricted", "universe", "multiverse"]
       _ -> error $ "Invalid build release: " ++ myBuildRelease
-
--- | Unfortunately, we need to tell the autobuilder what version of ghc
--- is going to be in our release so that cabal-debian knows what packages
--- are bundled with the compiler.  If a compiler version is assigned here
--- it must be known to the cabal-debian library installed on the machine
--- on which the autobuilder is running.  If the result is Nothing it
--- assumes the same compiler is used in the build environment as in the
--- parent environment.
-myCompilerVersion "quantal-seereason" = Just "7.6.1"
-myCompilerVersion "natty-seereason" = Just "7.4.1"
-myCompilerVersion "lucid-seereason" = Just "7.4.1"
-myCompilerVersion "lenny-seereason" = Just "7.4.1"
-myCompilerVersion "wheezy-seereason" = Just "7.8.1"
-myCompilerVersion "jessie-seereason" = Just "7.8.1"
-myCompilerVersion _myBuildRelease = Nothing
 
 myHackageServer = "hackage.haskell.org"
 -- myHackageServer = "hackage.factisresearch.com"
