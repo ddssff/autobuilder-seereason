@@ -1,0 +1,18 @@
+--- old/cabal-macosx.cabal	2014-05-07 09:16:21.000000000 -0700
++++ new/cabal-macosx.cabal	2014-05-07 10:25:37.583235418 -0700
+@@ -32,7 +32,7 @@
+ 
+ Library
+   Build-Depends:   base >= 4 && < 5, Cabal >= 1.6, directory
+-               ,   fgl >= 5.4.2.2 && < 5.5
++               ,   fgl >= 5.4.2.2
+                ,   filepath, parsec, process, text
+   Exposed-modules: Distribution.MacOSX
+   Other-modules:   Distribution.MacOSX.Common,<
+@@ -44,5 +44,5 @@
+ Executable macosx-app
+   Main-is:         macosx-app.hs
+   Build-Depends:   base >= 4 && < 5, Cabal >= 1.6, directory
+-               ,   fgl >= 5.4.2.2 && < 5.5
++               ,   fgl >= 5.4.2.2
+                ,   filepath, parsec, process, text

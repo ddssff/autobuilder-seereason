@@ -251,7 +251,7 @@ main _home release =
                     `wflag` P.DebVersion "3000.7.3-1"
                     `qflag` P.DebVersion "3000.7.3-1build2")
     -- , debianize (flags [P.BuildDep "libm-dev", P.BuildDep "libfreetype-dev"] (hackage "gd"))
-    , debianize (hackage "cabal-macosx")
+    , debianize (hackage "cabal-macosx" `patch` $(embedFile "patches/cabal-macosx.diff"))
     , apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah
     -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
     -- dpkg: error processing /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb (--unpack):
@@ -298,7 +298,7 @@ main _home release =
     , debianize (hackage "HsOpenSSL"
                    `flag` P.DevelDep "libssl-dev"
                    `flag` P.DevelDep "libcrypto++-dev")
-    , debianize (hackage "HsSyck" `patch`  $(embedFile "patches/HsSyck.diff"))
+    , debianize (hackage "HsSyck")
     , debianize (hackage "HStringTemplate")
     , darcs "haskell-html-entities" (repo </> "html-entities")
     , debianize (hackage "http-types")
@@ -323,10 +323,11 @@ main _home release =
     , P.Package { P.name = "haskell-logic-tptp"
                 , P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff"))
                 , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
-    , apt "sid" "haskell-maybet"
+    -- , apt "sid" "haskell-maybet"
+    , debianize (hackage "MaybeT" `flag` P.DebVersion "1.2-6")
     , darcs "haskell-mime" (repo </> "haskell-mime")
     , debianize (hackage "mmap")
-    , debianize (hackage "monad-control")
+    , debianize (hackage "monad-control" `flag` P.CabalPin "0.3.2.3")
     , debianize (hackage "monad-par-extras")
     , debianize (hackage "abstract-deque")
     , debianize (hackage "abstract-par")
@@ -359,7 +360,7 @@ main _home release =
     , debianize (hackage "optparse-applicative")
     , debianize (hackage "ordered")
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
-    , debianize (hackage "exceptions")
+    , debianize (hackage "exceptions" `flag` P.CabalPin "0.5") -- 0.6 is too new for temporary
     , debianize (hackage "temporary")
     , debianize (hackage "pandoc-types")
     , debianize (hackage "parse-dimacs")
@@ -442,6 +443,7 @@ main _home release =
     , debianize (hackage "th-expand-syns")
     , debianize (hackage "th-lift")
     , debianize (hackage "transformers-base"
+                             `flag` P.CabalPin "0.4.1" -- prevent rebuilds
                              `pflag` P.DebVersion "0.4.1-2"
                              `qflag` P.DebVersion "0.4.1-2build2"
                              `wflag` P.DebVersion "0.4.1-2")
@@ -451,7 +453,7 @@ main _home release =
                    `flag` P.DebVersion "3.2.0.0-1~hackage1")
     , debianize (hackage "uniplate")
     , debianize (hackage "cmdargs")
-    , debianize (hackage "language-javascript" `flag` P.BuildDep "happy")
+    , debianize (hackage "language-javascript" `flag` P.BuildDep "happy" `flag` P.CabalPin "0.5.12") -- 0.5.13 needs alex>=3.0.5
     , debianize (hackage "utf8-light")
     , debianize (hackage "language-haskell-extract")
     , debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
@@ -644,18 +646,12 @@ platform release =
     , debianize (hackage "stm")
     , debianize (hackage "stm-chans")
     , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
-    , debianize (hackage "mtl"
-                   -- Something happened once and I added this, but its crazy.
-                   `relax` "hsx2hs")
-    , wskip $ debianize (hackage "transformers" `qflag` P.DebVersion "0.3.0.0-1build3")
+    , debianize (hackage "mtl" `flag` P.CabalPin "2.1.3.1") -- minimize rebuild
+    , wskip $ debianize (hackage "transformers" `flag` P.CabalPin "0.3.0.0" `qflag` P.DebVersion "0.3.0.0-1build3")
     , debianize (hackage "parallel")
     , debianize (hackage "syb")
-    , debianize (hackage "fgl"
-                   `wflag` P.DebVersion "5.4.2.4-2"
-                   `pflag` P.DebVersion "5.4.2.4-2"
-                   `qflag` P.DebVersion "5.4.2.4-2build2"
-                   `sflag` P.DebVersion "5.4.2.4-1")
-    , debianize (hackage "text")
+    , debianize (hackage "fgl" `flag` P.CabalPin "5.5.0.1") -- Minimizing rebuild
+    , debianize (hackage "text" `flag` P.CabalPin "1.1.1.0")
     , P.Package { P.name = "alex"
                 , P.spec = Debianize (Hackage "alex")
                   -- alex shouldn't rebuild just because alex seems newer, but alex does require
@@ -721,7 +717,7 @@ clckwrks _home release =
                                             (Uri "http://cloud.github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip"
                                                  "e211065e573ea0239d6449882c9d860d")
                                             "jstree")
-                                           (Uri "https://raw.github.com/douglascrockford/JSON-js/master/json2.js"
+                                           (Uri "https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"
                                                 "5eecb009ae16dc54f261f31da01dbbac")
                                            "json2")
                                           $(embedFile "patches/clckwrks.diff"))
@@ -803,7 +799,7 @@ happstack _home release =
     , debianize (hackage "base64-bytestring")
     , debianize (hackage "threads")
     , debianize (hackage "list-tries" `patch` $(embedFile "patches/list-tries.diff"))
-    , debianize (hackage "happstack-static-routing" `flag` P.DebVersion "0.3.1-1~hackage1")
+    , debianize (hackage "happstack-static-routing")
     , debianize (hackage "happstack-util"
                    `patch` $(embedFile "patches/happstack-util-ghc76.diff")
                    `flag` P.DebVersion "6.0.3-1")
@@ -825,7 +821,7 @@ happstack _home release =
     , debianize (hackage "web-routes-happstack")
     , debianize (hackage "web-routes-hsp" `patch` $(embedFile "patches/web-routes-hsp.diff"))
     , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
-    , debianize (hackage "web-routes-th" `flag` P.DebVersion "0.22.1-1~hackage1")
+    , debianize (hackage "web-routes-th")
     -- Retired, should be withdrawn from repos
     , darcs "haskell-formlets-hsp" (repo ++ "/formlets-hsp") `flag` P.SkipPackage
     , darcs "haskell-happstack-scaffolding" (repo ++ "/happstack-scaffolding") -- Don't use Debianize here, it restores the doc package which crashes the build
@@ -1028,6 +1024,7 @@ algebra release =
     , debianize (hackage "categories")
     -- comonad now includes comonad-transformers and comonads-fd
     , debianize (hackage "comonad"
+                   `flag` P.CabalPin "4.0.1" -- 4.2 is too new for data-lens-2.10.4
                    `flag`  P.CabalDebian [ "--conflicts=libghc-comonad-dev:libghc-comonad-transformers-dev"
                                          , "--replaces=libghc-comonad-dev:libghc-comonad-transformers-dev"
                                          , "--provides=libghc-comonad-dev:libghc-comonad-transformers-dev"
@@ -1036,10 +1033,8 @@ algebra release =
                                          , "--provides=libghc-comonad-dev:libghc-comonads-fd-dev" ])
     , debianize (hackage "control-monad-free")
     , debianize (hackage "transformers-free")
-    , debianize (hackage "contravariant"
-                             `patch` $(embedFile "patches/contravariant.diff")
-                             `qflag` P.DebVersion "0.2.0.2-1build2")
-    , debianize (hackage "distributive" `flag` P.CabalPin "0.4.1" `patch` $(embedFile "patches/distributive.diff"))
+    , debianize (hackage "contravariant" `flag` P.CabalPin "0.5") -- minimize rebuild
+    , debianize (hackage "distributive" `flag` P.CabalPin "0.4.3.1") -- minimize rebuild
     -- This package fails to build in several different ways because it has no modules.
     -- I am just going to patch the packages that use it to require transformers >= 0.3.
     -- Specifically, distributive and lens.
@@ -1105,7 +1100,7 @@ sunroof =
   , debianize (hackage "NumInstances")
   , debianize (hackage "MemoTrie")
   , debianize (hackage "value-supply")
-  , debianize (hackage "reified-records"`patch` $(embedFile "patches/reified-records.diff"))
+  , debianize (hackage "reified-records")
   , debianize (darcs "seclib" (repo </> "seclib"))
   ]
   where repo = "http://src.seereason.com/"
