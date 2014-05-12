@@ -265,7 +265,7 @@ main _home release =
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline")
     , debianize (hackage "th-orphans")
-    , debianize (hackage "haskell-src-meta" {- `patch` $(embedFile "patches/haskell-src-meta.diff") -})
+    , debianize (hackage "haskell-src-meta" `flag` P.CabalPin "0.6.0.5") -- last version compatible with haskell-src-exts-1.14
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
