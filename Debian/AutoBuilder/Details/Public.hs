@@ -362,8 +362,8 @@ main _home release =
     , debianize (hackage "optparse-applicative")
     , debianize (hackage "ordered")
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
-    , debianize (hackage "exceptions" `flag` P.CabalPin "0.5") -- 0.6 is too new for temporary
-    , debianize (hackage "temporary" `flag` P.CabalPin "1.2.0.2") -- this can probably be unpinned now along with exceptions
+    , debianize (hackage "exceptions")
+    , debianize (hackage "temporary")
     , debianize (hackage "pandoc-types")
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
