@@ -585,9 +585,6 @@ main _home release =
     , debianize (hackage "hxt-charproperties")
     , debianize (hackage "hxt-regex-xmlschema")
     , debianize (hackage "hxt-unicode")
-    , case release of
-        "wheezy-seereason" -> debianize (hackage "network")
-        _ -> P.NoPackage
     -- , debianize (darcs "haskell-tiny-server" (repo </> "tiny-server") `flag` P.BuildDep "hsx2hs"
     --                `flag` P.SkipPackage {- has a "derives SafeCopy" -})
     , debianize (hackage "stringable") -- this can be done with listlike-instances
