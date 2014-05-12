@@ -153,7 +153,9 @@ main _home release =
     -- autobuilder patch.  The autobuilder then automatically runs this
     -- script to create the debianization.
     , debianize (if | ghc release >= 708 ->
-                        hackage "cabal-install" `patch` $(embedFile "patches/cabal-install-18.diff")
+                        hackage "cabal-install"
+                                    `flag` P.CabalPin "1.18.0.3"
+                                    `patch` $(embedFile "patches/cabal-install-18.diff")
                     | otherwise ->
                         hackage "cabal-install"
                                     -- Waiting for Cabal 1.18.0, shipped with ghc-7.8
@@ -361,7 +363,7 @@ main _home release =
     , debianize (hackage "ordered")
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize (hackage "exceptions" `flag` P.CabalPin "0.5") -- 0.6 is too new for temporary
-    , debianize (hackage "temporary")
+    , debianize (hackage "temporary" `flag` P.CabalPin "1.2.0.2") -- this can probably be unpinned now along with exceptions
     , debianize (hackage "pandoc-types")
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
@@ -543,6 +545,7 @@ main _home release =
     , P.Package { P.name = "vc-darcs"
                 , P.spec = Darcs (repo </> "vc-darcs")
                 , P.flags = [] }
+    , debianize (hackage "wl-pprint-extras")
     , debianize (hackage "HaTeX")
     , debianize (hackage "matrix")
     , debianize (hackage "hlatex")
