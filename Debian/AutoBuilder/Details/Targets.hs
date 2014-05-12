@@ -17,6 +17,7 @@ import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
 import Debian.Relation (Relation(..), BinPkgName(..))
 import Debian.Relation.String (parseRelations)
+import Debian.AutoBuilder.Details.GHC (ghc)
 import qualified Debian.AutoBuilder.Details.Public as Public
 import qualified Debian.AutoBuilder.Details.Private as Private
 
@@ -84,21 +85,20 @@ deriving instance Typeable PackageFlag
 -- don't wish to build.
 public :: String -> String -> P.Packages
 public home release = 
-    proc' release $
+    proc' (ghc release) $
     {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ Public.targets home release
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     --          ++ private home
 
 private :: String -> String -> P.Packages
 private home release =
-    proc' release $
+    proc' (ghc release) $
     {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ mappend (Private.libraries home) (Private.applications home)
 
-proc' :: String -> P.Packages -> P.Packages
-proc' "wheezy-seereason" p@(Package {}) = p {spec = Proc (spec p)}
-proc' "wheezy-seereason-private" p@(Package {}) = p {spec = Proc (spec p)}
-proc' release@"wheezy-seereason" p@(Packages {}) = p {list = map (proc' release) (list p)}
-proc' release@"wheezy-seereason-private" p@(Packages {}) = p {list = map (proc' release) (list p)}
+proc' :: Int -> P.Packages -> P.Packages
+proc' _ p@(Package {spec = Proc _}) = p
+proc' 708 p@(Package {}) = p {spec = Proc (spec p)}
+proc' 708 p@(Packages {}) = p {list = map (proc' 708) (list p)}
 proc' _ p = p
 
 -- | This prevents every package that uses cabal-debian for

@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, TemplateHaskell #-}
+{-# LANGUAGE MultiWayIf, OverloadedStrings, TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
@@ -7,6 +7,7 @@ import Data.List (intercalate)
 import Data.Monoid ((<>))
 import Data.Set as Set (empty, singleton)
 import Debian.AutoBuilder.Details.Common (repo)
+import Debian.AutoBuilder.Details.GHC (ghc)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Quilt, Proc),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage),
@@ -151,14 +152,13 @@ main _home release =
     -- Here is an example of creating a debian/Debianize.hs file with an
     -- autobuilder patch.  The autobuilder then automatically runs this
     -- script to create the debianization.
-    , debianize (case release of
-                   "wheezy-seereason" ->
-                         hackage "cabal-install"
-                           `patch` $(embedFile "patches/cabal-install-18.diff")
-                   _ ->  hackage "cabal-install"
-                         -- Waiting for Cabal 1.18.0, shipped with ghc-7.8
-                           `flag` P.CabalPin "1.16.0.2"
-                           `patch` $(embedFile "patches/cabal-install.diff"))
+    , debianize (if | ghc release >= 708 ->
+                        hackage "cabal-install" `patch` $(embedFile "patches/cabal-install-18.diff")
+                    | otherwise ->
+                        hackage "cabal-install"
+                                    -- Waiting for Cabal 1.18.0, shipped with ghc-7.8
+                                    `flag` P.CabalPin "1.16.0.2"
+                                    `patch` $(embedFile "patches/cabal-install.diff"))
     -- , debianize (git "haskell-cabal-install" "https://github.com/haskell/cabal"
     --                      `cd` "cabal-install"
     --                      `patch` $(embedFile "patches/cabal-install.diff"))
@@ -424,7 +424,9 @@ main _home release =
                 , P.flags = rel release [P.DebVersion "0.2.4.1-3"] [P.DebVersion "0.2.4.1-2build3"] }
     , debianize (hackage "strict-io") -- for GenI
     , debianize (hackage "smallcheck")
-    , debianize (hackage "syb-with-class" `flag` P.CabalPin "0.6.1.4") -- Version 0.6.1.5 tries to derive typeable instances when building rjson, which is an error for ghc-7.8
+    , debianize (hackage "syb-with-class"
+                             `patch` $(embedFile "patches/syb-with-class.diff")
+                             `flag` P.CabalPin "0.6.1.4") -- Version 0.6.1.5 tries to derive typeable instances when building rjson, which is an error for ghc-7.8
     , debianize (hackage "syb-with-class-instances-text" `pflag` P.DebVersion "0.0.1-3" `wflag` P.DebVersion "0.0.1-3" `wflag` P.SkipVersion "0.0.1-3")
     , debianize (hackage "tagged")
     , debianize (hackage "tagsoup")
@@ -595,7 +597,7 @@ relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
 
 compiler release =
     case release of
-      "precise-seereason" -> P.Packages (singleton "ghc") [devscripts]
+      "precise-seereason" -> P.Packages (singleton "ghc") [ghc, devscripts]
       _ -> P.Packages (singleton "ghc") [ghc, devscripts]
     where
       ghc78 = proc (apt "experimental" "ghc")
@@ -609,7 +611,7 @@ compiler release =
                      `relax` "python-minimal"
                      `relax` "libgmp-dev"
       ghc = case release of
-              "precise-seereason" -> ghcFlags ghc76 `flag` P.DebVersion "7.6.3-3" -- pin to avoid massive rebuild
+              -- "precise-seereason" -> ghcFlags ghc76 `flag` P.DebVersion "7.6.3-3" -- pin to avoid massive rebuild
               "squeeze-seereason" -> ghcFlags ghc76 `patch` $(embedFile "patches/ghc.diff") <>
                                      apt "wheezy" "po4a" <>
                                      apt "wheezy" "debhelper" `patch` $(embedFile "patches/debhelper.diff") <>
@@ -810,7 +812,7 @@ happstack _home release =
     , debianize (hackage "hsx" `patch` $(embedFile "patches/hsx.diff"))
     , debianize (hackage "hslua")
     , debianize (hackage "pandoc"
-                   `patch` $(embedFile "patches/pandoc.diff")
+                   -- `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
                    `flag` P.BuildDep "alex"
                    `flag` P.BuildDep "happy")
@@ -1034,7 +1036,7 @@ algebra release =
     , debianize (hackage "control-monad-free")
     , debianize (hackage "transformers-free")
     , debianize (hackage "contravariant" `flag` P.CabalPin "0.5") -- minimize rebuild
-    , debianize (hackage "distributive" `flag` P.CabalPin "0.4.3.1") -- minimize rebuild
+    , debianize (hackage "distributive" `flag` P.CabalPin "0.4.4") -- minimize rebuild
     -- This package fails to build in several different ways because it has no modules.
     -- I am just going to patch the packages that use it to require transformers >= 0.3.
     -- Specifically, distributive and lens.
