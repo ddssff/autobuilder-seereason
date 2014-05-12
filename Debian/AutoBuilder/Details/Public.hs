@@ -1057,8 +1057,8 @@ algebra release =
     , debianize (hackage "numeric-extras")
     -- lens-4.0 depends on aeson >= 0.7, which is not in hackage yet.  Also, lens-3.10.2 depends on a version of
     -- monadcatchio-transformers<0.3.1, which is older than our oldest.
-    , case release of
-        "wheezy-seereason" -> debianize (hackage "lens" `patch` $(embedFile "patches/lens4.diff"))
+    , case ghc release of
+        708 -> debianize (hackage "lens" `patch` $(embedFile "patches/lens4.diff"))
         _ -> debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff") `flag` P.CabalPin "3.10.1")
     , debianize (hackage "constraints")
     , debianize (hackage "lens-family-core")
