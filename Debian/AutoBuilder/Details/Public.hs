@@ -653,9 +653,7 @@ platform release =
     , debianize (hackage "parallel")
     , debianize (hackage "syb")
     , debianize (hackage "fgl" `flag` P.CabalPin "5.5.0.1") -- Minimizing rebuild
-    , debianize (case release of
-                   "precise-seereason" -> hackage "text" `flag` P.CabalPin "1.1.1.0"
-                   _ -> hackage "text" `flag` P.CabalPin "1.1.1.1")
+    , debianize (hackage "text" `flag` P.CabalPin "1.1.1.1")
     , P.Package { P.name = "alex"
                 , P.spec = Debianize (Hackage "alex")
                   -- alex shouldn't rebuild just because alex seems newer, but alex does require
