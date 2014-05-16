@@ -130,8 +130,9 @@ main _home release =
     , wskip $ debianize (hackage "attempt")
     , debianize (hackage "errors")
     , debianize (hackage "failure")
-    , debianize (hackage "attoparsec")
-    , debianize (hackage "scientific")
+    , debianize (hackage "attoparsec" `patch` $(embedFile "patches/attoparsec.diff"))
+    , debianize (hackage "scientific" `flag` P.CabalPin "0.2.0.2") -- waiting for a aeson > 0.7.0.4
+    , debianize (hackage "arithmoi")
     , debianize (hackage "attoparsec-enumerator")
     -- This was merged into attoparsec
     -- , debianize (hackage "attoparsec-text" `patch` $(embedFile "patches/attoparsec-text.diff") `flag` P.Revision "")
@@ -351,7 +352,7 @@ main _home release =
     , P.Package { P.name = "haskell-nano-hmac"
                 , P.spec = Debianize (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff"))
                 , P.flags = [P.DebVersion "0.2.0ubuntu1"] }
-    , debianize (hackage "openid")
+    , debianize (hackage "openid" `patch` $(embedFile "patches/openid.diff"))
 {-  , P.Package { P.name = "haskell-openid"
                 , P.spec = Debianize (Patch (Hackage "openid") $(embedFile "patches/openid-ghc76.diff"))
                 , P.flags = [] } -}
@@ -421,9 +422,7 @@ main _home release =
                    `flag` P.BuildDep "happy")
     , debianize (hackage "stb-image")
     , apt (rel release "wheezy" "quantal") "haskell-strict" -- for leksah
-    , P.Package { P.name = "haskell-strict-concurrency"
-                , P.spec = Debianize (Patch (Hackage "strict-concurrency") $(embedFile "patches/strict-concurrency.diff"))
-                , P.flags = rel release [P.DebVersion "0.2.4.1-3"] [P.DebVersion "0.2.4.1-2build3"] }
+    , debianize (hackage "strict-concurrency" `wflag` P.DebVersion "0.2.4.1-2")
     , debianize (hackage "strict-io") -- for GenI
     , debianize (hackage "smallcheck")
     , debianize (hackage "syb-with-class"
@@ -687,7 +686,7 @@ platform release =
     , debianize (hackage "network" `flag` P.CabalPin "2.4.2.2") -- Waiting for newer rss, hslogger
     , debianize (hackage "publicsuffixlist")
     , debianize (hackage "HTTP")
-    , debianize (hackage "cgi")
+    , debianize (hackage "cgi" `flag` P.SkipVersion "3001.1.8.5") -- incompatible with current Typeable
     -- This is bundled with the compiler
     -- , debianize (hackage "process")
     , debianize (hackage "random" `pflag` P.DebVersion "1.0.1.1-1" `qflag` P.DebVersion "1.0.1.1-1build2" `wflag` P.DebVersion "1.0.1.1-1")
@@ -949,6 +948,7 @@ shakespeare =
 opengl release = P.Packages (singleton "opengl") $
     let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
         wskip t = case release of "wheezy-seereason" -> P.NoPackage; _ -> t
+        wflag = case release of "wheezy-seereason" -> flag; _ -> \ p _ -> p
         pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
     [ debianize (hackage "OpenGL"
                    `flag` P.DevelDep "libglu1-mesa-dev")
@@ -990,7 +990,10 @@ opengl release = P.Packages (singleton "opengl") $
     , debianize (hackage "bindings-DSL")
 --    , debianize (hackage "freetype2")
 --    , debianize (hackage "FreeTypeGL") -- Does not build because (freetype2 > 0.1.2) but the lib (haskell, at least) is at 0.1.1.
-    , debianize (hackage "FTGL" `flag` P.DevelDep "libftgl-dev" `flag` P.DevelDep "libfreetype6-dev")
+    , debianize (hackage "FTGL"
+                   `patch` $(embedFile "patches/FTGL.diff")
+                   `flag` P.DevelDep "libftgl-dev"
+                   `flag` P.DevelDep "libfreetype6-dev")
     , debianize (hackage "OpenGLRaw"
                    `flag` P.DevelDep "libgl1-mesa-dev")
     ]

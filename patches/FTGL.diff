@@ -1,0 +1,11 @@
+--- old/Graphics/Rendering/FTGL.hs	2014-05-14 06:52:40.000000000 -0700
++++ new/Graphics/Rendering/FTGL.hs	2014-05-14 09:01:12.092872870 -0700
+@@ -26,7 +26,7 @@
+ module Graphics.Rendering.FTGL 
+ where
+ 
+-import Foreign (unsafePerformIO)
++import System.IO.Unsafe (unsafePerformIO)
+ import Foreign.C
+ import Foreign.Ptr
+ import Foreign.Marshal.Alloc

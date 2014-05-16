@@ -1,0 +1,11 @@
+--- old/attoparsec.cabal	2014-05-14 10:07:57.000000000 -0700
++++ new/attoparsec.cabal	2014-05-14 10:42:20.396961715 -0700
+@@ -44,7 +44,7 @@
+                  containers,
+                  deepseq,
+                  text >= 0.11.3.1,
+-                 scientific >= 0.2 && < 0.3
++                 scientific >= 0.2
+ 
+   exposed-modules: Data.Attoparsec
+                    Data.Attoparsec.ByteString
