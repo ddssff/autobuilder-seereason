@@ -89,7 +89,7 @@ autobuilder home =
 
 unixutils _home =
     P.Packages (singleton "Unixutils")
-    [ darcs "haskell-unixutils" (repo ++ "/haskell-unixutils") `patch` $(embedFile "patches/unixutils.diff")
+    [ darcs "haskell-unixutils" (repo ++ "/haskell-unixutils")
     , darcs "haskell-extra" (repo </> "haskell-extra") `flag` P.RelaxDep "cabal-debian"
     , darcs "haskell-help" (repo </> "haskell-help") ]
 
@@ -118,7 +118,9 @@ main _home release =
                                          "--build-dep", "happy",
                                          "--revision", ""])
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
-    , debianize (hackage "aeson" `patch` $(embedFile "patches/aeson.diff"))
+    , debianize (hackage "aeson"
+                   `flag` P.CabalPin "0.7.0.4" -- Waiting for scientific > 0.2
+                   {- `patch` $(embedFile "patches/aeson.diff") -})
     , darcs "haskell-agi" (repo </> "haskell-agi")
     , debianize (hackage "ansi-terminal")
     , debianize (hackage "ansi-wl-pprint")
@@ -130,7 +132,9 @@ main _home release =
     , wskip $ debianize (hackage "attempt")
     , debianize (hackage "errors")
     , debianize (hackage "failure")
-    , debianize (hackage "attoparsec" `patch` $(embedFile "patches/attoparsec.diff"))
+    , debianize (hackage "attoparsec"
+                   `flag` P.CabalPin "0.11.3.1"  -- waiting for scientific > 0.2
+                   {- `patch` $(embedFile "patches/attoparsec.diff") -})
     , debianize (hackage "scientific" `flag` P.CabalPin "0.2.0.2") -- waiting for a aeson > 0.7.0.4
     , debianize (hackage "arithmoi")
     , debianize (hackage "attoparsec-enumerator")
@@ -849,7 +853,7 @@ happstack _home release =
     , debianize (darcs "happstack-dot-com" (repo ++ "/happstack-clckwrks")
                    `cd` "happstack-dot-com"
                    `patch` $(embedFile "patches/happstack-dot-com.diff"))
-    , debianize (hackage "acid-state" `patch` $(embedFile "patches/acid-state.diff"))
+    , debianize (hackage "acid-state" {- `patch` $(embedFile "patches/acid-state.diff") -})
     ]
 
 authenticate _home release =
