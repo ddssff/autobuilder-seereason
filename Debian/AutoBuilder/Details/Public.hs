@@ -1093,6 +1093,8 @@ units = P.Packages (singleton "units")
     [ debianize (hackage "quickcheck-instances")
     , debianize (hackage "mainland-pretty")
     , debianize (hackage "srcloc")
+    , debianize ((hackage "singletons") `flag` P.CabalPin "0.10.0")
+    , debianize (hackage "th-desugar")
     , debianize (hackage "processing")
     , debianize (hackage "units") ]
 
