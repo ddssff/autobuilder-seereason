@@ -106,7 +106,8 @@ main _home release =
     , platform release
     , debianize (hackage "hashtables")
     , apt "squeeze" "bugzilla"
-    , debianize (hackage "ListLike" `patch` $(embedFile "patches/ListLike.diff"))
+    , debianize (hackage "fmlist")
+    , debianize (hackage "ListLike")
     -- Merged into ListLike-4.0
     -- , debianize (hackage "listlike-instances")
     , debianize (hackage "cpphs") -- apt (rel release "wheezy" "quantal") "cpphs"
@@ -178,7 +179,9 @@ main _home release =
     , debianize (hackage "List")
     , debianize (hackage "network-info" `tflag` P.DebVersion "0.2.0.3-2")
     , debianize (hackage "uuid")
-    , debianize (hackage "maccatcher" `tflag` P.DebVersion "2.1.5-5build1")
+    , debianize (hackage "maccatcher"
+                   `pflag` P.DebVersion "2.1.5-3"
+                   `tflag` P.DebVersion "2.1.5-5build1")
     , debianize (hackage "colour"
                    `pflag` P.DebVersion "2.3.3-1build1"
                    `qflag` P.DebVersion "2.3.3-1build1"
@@ -218,7 +221,9 @@ main _home release =
     , debianize (hackage "data-object" `patch` $(embedFile "patches/data-object.diff"))
     , debianize (hackage "dataenc" {- `patch` $(embedFile "patches/dataenc.diff") -})
     , debianize (hackage "Diff" `tflag` P.DebVersion "0.3.0-1")
-    , debianize (hackage "executable-path" `tflag` P.DebVersion "0.0.3-3")
+    , debianize (hackage "executable-path"
+                   `pflag` P.DebVersion "0.0.3-1"
+                   `tflag` P.DebVersion "0.0.3-3")
     -- , apt (rel release "wheezy" "quantal") "haskell-digest"
     -- , apt (rel release "wheezy" "quantal") "haskell-dlist"
     , debianize (hackage "digest")
@@ -239,7 +244,10 @@ main _home release =
     , debianize (hackage "hdaemonize"
                    `patch` $(embedFile "patches/hdaemonize.diff"))
     , debianize (hackage "hsyslog")
-    , debianize (hackage "erf" `wflag` P.DebVersion "2.0.0.0-3" `tflag` P.DebVersion "2.0.0.0-5")
+    , debianize (hackage "erf"
+                   `pflag` P.DebVersion "2.0.0.0-3"
+                   `wflag` P.DebVersion "2.0.0.0-3"
+                   `tflag` P.DebVersion "2.0.0.0-5")
     , debianize (hackage "feed" `tflag` P.DebVersion "0.3.9.2-1")
     -- Darcs 2.8.1 won't build with the current version of haskeline.
     -- , apt "wheezy" "darcs" `patch` $(embedFile "patches/darcs.diff")
@@ -269,7 +277,9 @@ main _home release =
     -- Errors were encountered while processing:
     --  /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb
     -- E: Sub-process /usr/bin/dpkg returned an error code (1)
-    , debianize (hackage "harp" `tflag` P.DebVersion "0.4-6") -- apt (rel release "wheezy" "quantal") "haskell-harp"
+    , debianize (hackage "harp"
+                   `pflag` P.DebVersion "0.4-3"
+                   `tflag` P.DebVersion "0.4-6") -- apt (rel release "wheezy" "quantal") "haskell-harp"
     , debianize (hackage "hashable")
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline")
@@ -293,6 +303,7 @@ main _home release =
     , debianize (hackage "hinotify")
     , debianize (hackage "HJavaScript"
                    `patch` $(embedFile "patches/hjavascript.diff")
+                   `pflag` P.DebVersion "0.4.7-3++1"
                    `tflag` P.DebVersion "0.4.7-6")
     -- Not used, and not building.
     -- , debianize (hackage "hoauth")
@@ -432,7 +443,9 @@ main _home release =
                    `flag` P.CabalPin "1.14.0.1" -- Waiting for newer haskell-src-meta, haskell-hsx, derive
                    `flag` P.BuildDep "happy")
     , debianize (hackage "stb-image")
-    , debianize (hackage "strict" `tflag` P.DebVersion "0.3.2-7") -- apt (rel release "wheezy" "quantal") "haskell-strict" -- for leksah
+    , debianize (hackage "strict"
+                   `pflag` P.DebVersion "0.3.2-2"
+                   `tflag` P.DebVersion "0.3.2-7") -- apt (rel release "wheezy" "quantal") "haskell-strict" -- for leksah
     -- , debianize (hackage "strict-concurrency" `wflag` P.DebVersion "0.2.4.1-2")
     , debianize (hackage "strict-io") -- for GenI
     , debianize (hackage "smallcheck")
@@ -597,7 +610,9 @@ main _home release =
     , debianize (hackage "async")
     -- Waiting for a newer GHC
     -- , debianize (hackage "units" `flag` P.CabalPin "1.0.0" {- `patch` $(embedFile "patches/units.diff") -})
-    , debianize (hackage "csv" `tflag` P.DebVersion "0.1.2-5build1")
+    , debianize (hackage "csv"
+                   `pflag` P.DebVersion "0.1.2-2"
+                   `tflag` P.DebVersion "0.1.2-5build1")
 {-
     -- Needs a build dependency on libXrandr-dev and the cabal package x11.
     , P.Package { P.name = "xmobar"
@@ -731,9 +746,15 @@ platform release =
     , debianize (hackage "tf-random")
     , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
     , debianize (hackage "parsec" `flag` P.CabalDebian (replacementLibrary "parsec2" "parsec3"))
-    , debianize (hackage "html" `tflag` P.DebVersion "1.0.1.2-7") -- apt (rel release "wheezy" "quantal") "haskell-html"
-    , debianize (hackage "regex-compat" `tflag` P.DebVersion "0.95.1-4") -- apt (rel release "wheezy" "quantal") "haskell-regex-compat"
-    , debianize (hackage "regex-base" `tflag` P.DebVersion "0.93.2-4") -- apt (rel release "wheezy" "quantal") "haskell-regex-base"
+    , debianize (hackage "html"
+                   `tflag` P.DebVersion "1.0.1.2-7"
+                   `pflag` P.DebVersion "1.0.1.2-5") -- apt (rel release "wheezy" "quantal") "haskell-html"
+    , debianize (hackage "regex-compat"
+                   `pflag` P.DebVersion "0.95.1-2"
+                   `tflag` P.DebVersion "0.95.1-4") -- apt (rel release "wheezy" "quantal") "haskell-regex-compat"
+    , debianize (hackage "regex-base"
+                   `tflag` P.DebVersion "0.93.2-4"
+                   `pflag` P.DebVersion "0.93.2-2") -- apt (rel release "wheezy" "quantal") "haskell-regex-base"
     , debianize (hackage "regex-posix" `tflag` P.DebVersion "0.95.2-3")
     , debianize (hackage "xhtml"
                    `wflag` P.DebVersion "3000.2.1-1"
@@ -801,6 +822,7 @@ fay _home _release =
 
 happstack _home release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String
+        pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p
         tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "happstack")
     [ plugins
@@ -877,7 +899,9 @@ happstack _home release =
     , debianize (hackage "blaze-builder")
     , debianize (hackage "blaze-markup")
     -- , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
-    , debianize (hackage "blaze-builder-enumerator" `tflag` P.DebVersion "0.2.0.5-3build2")
+    , debianize (hackage "blaze-builder-enumerator"
+                   `pflag` P.DebVersion "0.2.0.5-1~hackage1"
+                   `tflag` P.DebVersion "0.2.0.5-3build2")
     , debianize (hackage "blaze-from-html")
     , debianize (hackage "blaze-html")
     , debianize (hackage "blaze-textual")
@@ -895,7 +919,8 @@ happstack _home release =
     ]
 
 authenticate _home release =
-  let tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p in
+  let pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p
+      tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p in
   P.Packages (singleton "authenticate") $
     [ conduit release
     , debianize (hackage "pureMD5" `tflag` P.DebVersion "2.1.2.1-3build3")
@@ -923,7 +948,9 @@ authenticate _home release =
                    `tflag` P.DebVersion "0.2.3-1")
     , debianize (hackage "crypto-cipher-types" `tflag` P.DebVersion "0.0.9-1")
     , debianize (hackage "authenticate")
-    , debianize (hackage "zlib-enum" `tflag` P.DebVersion "0.2.3-3build1")
+    , debianize (hackage "zlib-enum"
+                   `pflag` P.DebVersion "0.2.3-1~hackage1"
+                   `tflag` P.DebVersion "0.2.3-3build1")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
     , debianize (hackage "tagstream-conduit")
     , digestiveFunctors

@@ -26,6 +26,12 @@ libraries _home =
                    `cd` "stripe-http-conduit")
     , debianize (darcs "haskell-clckwrks-plugin-stripe" (privateRepo </> "clckwrks-plugin-stripe")
                    `flag` P.BuildDep "hsx2hs")
+    -- The debian/Debianize.hs script has a dependency on
+    -- happstack-foundation, which must be installed in the parent
+    -- environment *before* we can create the debianization.  We don't
+    -- really have a mechanism to ensure this is installed in the
+    -- parent environment, except making it a dependency of the
+    -- autobuilder itself.
     , debianize (method "haskell-mimo" (Darcs (privateRepo </> "mimo")))
     ] {- ++ clckwrks14 -}
 
