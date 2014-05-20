@@ -1,3 +1,23 @@
+--- old/GenI.cabal	2013-11-04 06:36:04.000000000 -0800
++++ new/GenI.cabal	2014-05-20 06:16:30.662553974 -0700
+@@ -67,7 +67,7 @@
+                , errors
+                , filepath    == 1.*
+                , hslogger
+-               , json >= 0.4.3 && < 0.6
++               , json >= 0.4.3
+                , mtl > 1.0
+                , old-locale
+                , ordered == 0.1.*
+@@ -142,7 +142,7 @@
+               , filepath    == 1.*
+               , yaml-light  == 0.1.*
+               , hslogger
+-              , json        >= 0.4 && < 0.6
++              , json        >= 0.4
+               , mtl         > 1.0
+               , process     > 1
+ 
 --- old/src/NLP/GenI/General.hs	2013-06-11 06:33:21.000000000 -0700
 +++ new/src/NLP/GenI/General.hs	2013-06-11 06:33:02.000000000 -0700
 @@ -412,11 +412,3 @@
