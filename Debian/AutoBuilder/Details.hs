@@ -12,7 +12,7 @@ module Debian.AutoBuilder.Details
 import Data.List as List (isSuffixOf, isPrefixOf, map)
 import Data.Maybe
 import Data.Monoid (mappend)
-import Data.Set as Set (Set, empty)
+-- import Data.Set as Set (Set, empty)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.Packages (Packages(NoPackage))

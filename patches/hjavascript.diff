@@ -1,0 +1,14 @@
+--- haskell-hjavascript-0.4.7/src/Language/HJavaScript/Syntax.hs	2010-03-05 08:31:18.000000000 -0800
++++ haskell-hjavascript-0.4.7/src/Language/HJavaScript/Syntax.hs	2011-08-29 10:33:49.898826156 -0700
+@@ -468,6 +468,11 @@
+ instance Args (Exp t1, Exp t2, Exp t3, Exp t4, Exp t5) (t1,t2,t3,t4,t5) where
+   showsArgs = shows
+ 
++instance Args (Exp t1, Exp t2, Exp t3, Exp t4, Exp t5, Exp t6) (t1,t2,t3,t4,t5,t6) where
++  showsArgs = shows
++
++instance Args (Exp t1, Exp t2, Exp t3, Exp t4, Exp t5, Exp t6, Exp t7) (t1,t2,t3,t4,t5,t6,t7) where
++  showsArgs = shows
+ 
+ class VarsToExps v e | v -> e, e -> v where
+   v2e :: v -> e
