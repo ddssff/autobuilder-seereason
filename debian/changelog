@@ -1,3 +1,11 @@
+autobuilder-seereason (1.0) unstable; urgency=low
+
+  * Renamed source package autobuilder-seereason, we now build an
+    executable here to run the autobuilder that includes the seereason
+    repository configuration.
+
+ -- David Fox <dsf@seereason.com>  Thu, 22 May 2014 05:50:29 -0700
+
 seereason-darcs-backups (0.9) unstable; urgency=low
 
   * New package to pull backups of our darcs repositories from our server,

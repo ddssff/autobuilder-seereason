@@ -8,11 +8,11 @@ import Data.Monoid ((<>))
 import Data.Set as Set (empty, singleton)
 import Debian.AutoBuilder.Details.Common (repo)
 import Debian.AutoBuilder.Details.GHC (ghc)
-import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Quilt, Proc),
+import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Proc),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
-                                               rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc)
+                                               rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, dir)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, InstallFile(..), (~=), (+++=))
 import Debian.Relation (BinPkgName(..))
 import System.FilePath((</>))
@@ -76,7 +76,6 @@ autobuilder home =
     -- let repo = localRepo home in
     P.Packages (singleton "autobuilder-group") $
     [ unixutils home
-    , debianize (darcs "autobuilder" (repo </> "debian-tools") `cd` "autobuilder")
     , darcs "haskell-cabal-debian" (repo </> "debian-tools") `cd` "cabal-debian"
     , darcs "haskell-debian" (repo ++ "/haskell-debian") `flag` P.RelaxDep "cabal-debian"
     , darcs "haskell-debian-mirror" (repo </> "mirror")
@@ -85,6 +84,30 @@ autobuilder home =
     -- , debianize (hackage "process-extras")
     , debianize (darcs "haskell-process-listlike" (repo </> "process-listlike"))
     , darcs "haskell-process-progress" (repo </> "debian-tools") `cd` "process-progress"
+    , debianize (darcs "autobuilder" (repo </> "debian-tools") `cd` "autobuilder")
+    , debianize (darcs "autobuilder-seereason" (repo </> "autobuilder-seereason"))
+        -- It would be nice if these dependencies were in the cabal file
+        `flag` P.CabalDebian [ "--depends=autobuilder-seereason:ghc"
+                             , "--depends=autobuilder-seereason:debootstrap"
+                             , "--depends=autobuilder-seereason:rsync"
+                             , "--depends=autobuilder-seereason:dupload"
+                             , "--depends=autobuilder-seereason:darcs"
+                             , "--depends=autobuilder-seereason:git"
+                             , "--depends=autobuilder-seereason:tla"
+                             , "--depends=autobuilder-seereason:mercurial"
+                             , "--depends=autobuilder-seereason:subversion"
+                             , "--depends=autobuilder-seereason:apt"
+                             , "--depends=autobuilder-seereason:build-essential"
+                             , "--depends=autobuilder-seereason:quilt"
+                             , "--depends=autobuilder-seereason:curl"
+                             , "--depends=autobuilder-seereason:debian-archive-keyring"
+                             , "--depends=autobuilder-seereason:seereason-keyring"
+                             , "--depends=autobuilder-seereason:ubuntu-keyring" ]
+        `flag` P.CabalDebian [ "--conflicts=autobuilder-seereason:autobuilder"
+                             , "--replaces=autobuilder-seereason:autobuilder" ]
+        `flag` P.CabalDebian [ "--executable", "autobuilder-seereason" ]
+        `flag` P.CabalDebian [ "--executable", "seereason-darcs-backups" ]
+        `flag` P.CabalDebian [ "--source-package-name", "autobuilder-seereason" ]
     ]
 
 unixutils _home =

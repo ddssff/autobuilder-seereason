@@ -1,0 +1,24 @@
+Name:             autobuilder-seereason
+Version:          1.0
+License:          AllRightsReserved
+Copyright:        (c) 2010-2011, SeeReason Partners LLC
+Author:           SeeReason Partners <partners@seereason.com>
+Maintainer:       SeeReason Partners <partners@seereason.com>
+Synopsis:         The autobuilder executable configured for the seereason repository
+Description:      The autobuilder executable configured for the seereason repository.  Includes a backup
+                  script for our source repositories, Install on a machine other than src.seereason.com
+		  to perform automated timed incremental backups.
+Build-Type:       Custom
+Category:         Web, Language
+Cabal-version:    >= 1.2
+
+Executable autobuilder-seereason
+ Main-Is: autobuilder.hs
+ GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
+ Build-depends: AutoBuilder >= 6.64, base, bytestring, cabal-debian, containers, debian, filepath, file-embed, process, unix
+
+Executable seereason-darcs-backups
+ Main-Is: Backups.hs
+ GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
+ Build-depends: archive >= 1.7, base, Extra, network
+ 
