@@ -103,7 +103,8 @@ autobuilder home =
                              , "--depends=autobuilder-seereason:curl"
                              , "--depends=autobuilder-seereason:debian-archive-keyring"
                              , "--depends=autobuilder-seereason:seereason-keyring"
-                             , "--depends=autobuilder-seereason:ubuntu-keyring" ]
+                             -- , "--depends=autobuilder-seereason:ubuntu-keyring"
+                             ]
         `flag` P.CabalDebian [ "--conflicts=autobuilder-seereason:autobuilder"
                              , "--replaces=autobuilder-seereason:autobuilder" ]
         `flag` P.CabalDebian [ "--executable", "autobuilder-seereason" ]
