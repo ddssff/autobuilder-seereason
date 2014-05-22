@@ -318,7 +318,7 @@ main _home release =
     , debianize (hackage "heap" `flag` P.DebVersion "1.0.0-1~hackage1")
     , debianize (hackage "heist")
     , debianize (hackage "xmlhtml")
-    , debianize (hackage "directory-tree" `tflag` P.DebVersion "0.11.0-1")
+    , debianize (hackage "directory-tree")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
     , debianize (hackage "MonadCatchIO-mtl")
     , debianize (hackage "haskell-lexer"
@@ -368,7 +368,7 @@ main _home release =
 {-  , apt "wheezy" "haskell-leksah"
     , apt "wheezy" "haskell-leksah-server" -- for leksah -}
     , darcs "haskell-logic-classes" (repo ++ "/haskell-logic")
-    , debianize (hackage "pointed" `tflag` P.DebVersion "4.0-1")
+    , debianize (hackage "pointed")
     , P.Package { P.name = "haskell-logic-tptp"
                 , P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff"))
                 , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
@@ -973,9 +973,7 @@ authenticate _home release =
                    `tflag` P.DebVersion "0.2.3-1")
     , debianize (hackage "crypto-cipher-types" `tflag` P.DebVersion "0.0.9-1")
     , debianize (hackage "authenticate")
-    , debianize (hackage "zlib-enum"
-                   `pflag` P.DebVersion "0.2.3-1~hackage1"
-                   `tflag` P.DebVersion "0.2.3-3build1")
+    , debianize (hackage "zlib-enum")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
     , debianize (hackage "tagstream-conduit")
     , digestiveFunctors
