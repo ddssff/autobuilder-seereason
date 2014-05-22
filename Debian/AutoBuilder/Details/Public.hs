@@ -85,6 +85,7 @@ autobuilder home =
     , debianize (darcs "haskell-process-listlike" (repo </> "process-listlike"))
     , darcs "haskell-process-progress" (repo </> "debian-tools") `cd` "process-progress"
     , debianize (darcs "autobuilder" (repo </> "debian-tools") `cd` "autobuilder")
+        `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
     , debianize (darcs "autobuilder-seereason" (repo </> "autobuilder-seereason"))
         -- It would be nice if these dependencies were in the cabal file
         `flag` P.CabalDebian [ "--depends=autobuilder-seereason:ghc"
