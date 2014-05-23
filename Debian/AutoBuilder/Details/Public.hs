@@ -520,6 +520,7 @@ main _home release =
     , debianize (hackage "language-haskell-extract")
     , debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
     , debianize (hackage "language-ecmascript")
+    , debianize (hackage "language-java" `flag` P.BuildDep "alex")
     , debianize (hackage "testing-feat")
     , debianize (hackage "tagshare")
     , debianize (hackage "charset")
