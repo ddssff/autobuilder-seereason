@@ -43,6 +43,7 @@ Executable autobuilder-seereason
        Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen, ../debian-tools/debian-repo
    else
      Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen
+     Build-Depends: cabal-debian, debian-repo
  else
    Build-Depends: AutoBuilder >= 6.64, cabal-debian, debian-repo
 
