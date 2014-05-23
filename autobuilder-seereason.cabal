@@ -37,12 +37,12 @@ Executable autobuilder-seereason
      Build-Depends: deepseq, data-lens-template, template-haskell, old-locale, bzlib, old-time
      if flag (local-cabal-debian)
        Build-Depends: Diff, hsemail, parsec, regex-tdfa, set-extra, syb
-       Hs-Source-Dirs: ., ../debian-tools_2/autobuilder, ../debian-tools_2/autobuilder/dist/build/autogen, ../debian-tools_2/debian-repo, ../debian-tools_2/cabal-debian/src
+       Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen, ../debian-tools/debian-repo, ../debian-tools/cabal-debian/src
      else
        Build-Depends: cabal-debian
-       Hs-Source-Dirs: ., ../debian-tools_2/autobuilder, ../debian-tools_2/autobuilder/dist/build/autogen, ../debian-tools_2/debian-repo
+       Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen, ../debian-tools/debian-repo
    else
-     Hs-Source-Dirs: ., ../debian-tools_2/autobuilder, ../debian-tools_2/autobuilder/dist/build/autogen
+     Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen
  else
    Build-Depends: AutoBuilder >= 6.64
 
