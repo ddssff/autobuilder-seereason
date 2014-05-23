@@ -37,6 +37,7 @@ targets _home release =
     , clckwrks _home release
     , sunroof release
     , haste
+    , idris
     -- , authenticate _home release
     -- , happstackdotcom _home
     -- , happstack release
@@ -520,7 +521,6 @@ main _home release =
     , debianize (hackage "language-haskell-extract")
     , debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
     , debianize (hackage "language-ecmascript")
-    , debianize (hackage "language-java" `flag` P.BuildDep "alex")
     , debianize (hackage "testing-feat")
     , debianize (hackage "tagshare")
     , debianize (hackage "charset")
@@ -1228,6 +1228,19 @@ replacementLibrary orig name =
       dev x = "libghc-" ++ x ++ "-dev"
       prof x = "libghc-" ++ x ++ "-dev"
       doc x = "libghc-" ++ x ++ "-dev"
+
+idris = P.Packages (singleton "idris")
+        [ debianize (hackage "idris" `flag` P.BuildDep "libgc-dev")
+        , hack "vector-binary-instances"
+        , hack "trifecta"
+        , hack "parsers"
+        , debianize (hackage "language-java" `flag` P.BuildDep "alex")
+        , hack "cheapskate"
+        , hack "annotated-wl-pprint"
+        , hack "fingertree"
+        , hack "reducers"
+        ]
+    where hack = debianize . hackage
 
 haste = P.Packages (singleton "haste")
   [ hack "haste-compiler"
