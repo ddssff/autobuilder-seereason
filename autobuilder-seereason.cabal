@@ -44,7 +44,7 @@ Executable autobuilder-seereason
    else
      Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen
  else
-   Build-Depends: AutoBuilder >= 6.64
+   Build-Depends: AutoBuilder >= 6.64, cabal-debian, debian-repo
 
 Executable seereason-darcs-backups
  Main-Is: Backups.hs
