@@ -14,12 +14,12 @@ Cabal-version:    >= 1.2
 
 flag local-autobuilder
   Description: Link directly to the source of the debian-repo library
-  Default: True
+  Default: False
   Manual: True
 
 flag local-debian-repo
   Description: Link directly to the source of the debian-repo library
-  Default: True
+  Default: False
   Manual: True
 
 flag local-cabal-debian
