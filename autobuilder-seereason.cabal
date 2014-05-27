@@ -32,7 +32,7 @@ Executable autobuilder-seereason
  GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
  Build-depends: base, bytestring, containers, debian, filepath, file-embed, process, unix
  if flag(local-autobuilder)
-   Build-Depends: applicative-extras, Cabal, data-lens, debian-repo, directory, exceptions, magic, mtl, process-listlike, process-progress, pureMD5, regex-compat, tar, text, time, Unixutils, utf8-string, zlib
+   Build-Depends: applicative-extras, Cabal, data-lens, directory, exceptions, magic, mtl, process-listlike, process-progress, pureMD5, regex-compat, tar, text, time, Unixutils, utf8-string, zlib
    if flag (local-debian-repo)
      Build-Depends: deepseq, data-lens-template, template-haskell, old-locale, bzlib, old-time
      if flag (local-cabal-debian)
