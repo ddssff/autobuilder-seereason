@@ -91,6 +91,7 @@ autobuilder home =
         -- It would be nice if these dependencies were in the cabal file
         `flag` P.CabalDebian [ "--depends=autobuilder-seereason:ghc"
                              , "--depends=autobuilder-seereason:debhelper"
+                             , "--depends=autobuilder-seereason:apt-file"
                              , "--depends=autobuilder-seereason:debootstrap"
                              , "--depends=autobuilder-seereason:rsync"
                              , "--depends=autobuilder-seereason:dupload"
