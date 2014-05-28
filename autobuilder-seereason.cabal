@@ -42,10 +42,10 @@ Executable autobuilder-seereason
        Build-Depends: cabal-debian
        Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen, ../debian-tools/debian-repo
    else
-     Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen
-     Build-Depends: cabal-debian, debian-repo
+     Hs-Source-Dirs: ., ../debian-tools_0/autobuilder, ../debian-tools_0/autobuilder/dist/build/autogen
+     Build-Depends: cabal-debian, debian-repo >= 5.63
  else
-   Build-Depends: AutoBuilder >= 6.64, cabal-debian, debian-repo
+   Build-Depends: AutoBuilder >= 6.64, cabal-debian, debian-repo >= 5.63
 
 Executable seereason-darcs-backups
  Main-Is: Backups.hs
