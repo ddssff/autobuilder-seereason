@@ -635,7 +635,7 @@ main _home release =
                 , P.spec = Debianize (Darcs "http://code.haskell.org/hackage-server")
                 , P.flags = [] } -}
     , debianize (hackage "stringsearch")
-    , debianize (hackage "rss" `patch` $(embedFile "patches/rss.diff"))
+    , debianize (hackage "rss")
     , debianize (hackage "async")
     -- Waiting for a newer GHC
     -- , debianize (hackage "units" `flag` P.CabalPin "1.0.0" {- `patch` $(embedFile "patches/units.diff") -})
