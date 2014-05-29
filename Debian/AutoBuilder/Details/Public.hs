@@ -1233,7 +1233,7 @@ replacementLibrary orig name =
       doc x = "libghc-" ++ x ++ "-dev"
 
 idris = P.Packages (singleton "idris")
-        [ debianize (hackage "idris" `flag` P.BuildDep "libgc-dev")
+        [ debianize (hackage "idris" `flag` P.BuildDep "libgc-dev" `patch` $(embedFile "patches/idris.diff"))
         , hack "vector-binary-instances"
         , hack "trifecta"
         , hack "parsers"
