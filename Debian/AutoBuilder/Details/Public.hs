@@ -223,6 +223,7 @@ main _home release =
                    `flag` P.BuildDep "rsync")
     , debianize (hackage "securemem" `tflag` P.DebVersion "0.1.3-1")
     , debianize (hackage "cipher-aes")
+    , debianize (hackage "cipher-des")
     , debianize (hackage "cprng-aes" `tflag` P.DebVersion "0.5.2-1build1")
     , debianize (hackage "crypto-random" `tflag` P.DebVersion "0.0.7-1")
     , debianize (hackage "crypto-random-api" `tflag` P.DebVersion "0.2.0-2")
@@ -279,7 +280,7 @@ main _home release =
     , debianize (hackage "feed" `tflag` P.DebVersion "0.3.9.2-1")
     -- Darcs 2.8.1 won't build with the current version of haskeline.
     -- , apt "wheezy" "darcs" `patch` $(embedFile "patches/darcs.diff")
-    , debianize (hackage "file-embed" `tflag` P.DebVersion "0.0.6-1")
+    , debianize (hackage "file-embed")
     , debianize (hackage "indents")
     , debianize (hackage "concatenative")
     , debianize (hackage "either")
@@ -1157,7 +1158,7 @@ algebra release =
     , debianize (hackage "reflection")
     , debianize (hackage "prelude-extras")
     , debianize (hackage "free")
-    , debianize (hackage "keys" `tflag` P.DebVersion "3.10-1build3")
+    , debianize (hackage "keys")
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
     -- lens-4.0 depends on aeson >= 0.7, which is not in hackage yet.  Also, lens-3.10.2 depends on a version of
