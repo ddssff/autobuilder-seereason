@@ -37,7 +37,7 @@ targets _home release =
     , clckwrks _home release
     , sunroof release
     , haste
-    , idris
+    , idris release
     -- , authenticate _home release
     -- , happstackdotcom _home
     -- , happstack release
@@ -1233,7 +1233,9 @@ replacementLibrary orig name =
       prof x = "libghc-" ++ x ++ "-dev"
       doc x = "libghc-" ++ x ++ "-dev"
 
-idris = P.Packages (singleton "idris")
+idris release =
+    let tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p in
+    P.Packages (singleton "idris")
         [ debianize (hackage "idris"
                        `flag` P.BuildDep "libgc-dev"
                        `flag` P.CabalDebian ["--default-package=idris"]
@@ -1244,7 +1246,7 @@ idris = P.Packages (singleton "idris")
         , debianize (hackage "language-java" `flag` P.BuildDep "alex")
         , hack "cheapskate"
         , hack "annotated-wl-pprint"
-        , hack "fingertree"
+        , hack "fingertree" `tflag` P.DebVersion "0.1.0.0-1"
         , hack "reducers"
         ]
     where hack = debianize . hackage
