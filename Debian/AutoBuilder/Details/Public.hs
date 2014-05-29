@@ -92,6 +92,7 @@ autobuilder home =
         `flag` P.CabalDebian [ "--depends=autobuilder-seereason:ghc"
                              , "--depends=autobuilder-seereason:debhelper"
                              , "--depends=autobuilder-seereason:apt-file"
+                             , "--depends=autobuilder-seereason:apt-utils"
                              , "--depends=autobuilder-seereason:debootstrap"
                              , "--depends=autobuilder-seereason:rsync"
                              , "--depends=autobuilder-seereason:dupload"
