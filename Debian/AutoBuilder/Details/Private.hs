@@ -49,8 +49,6 @@ applications _home =
     -- There is a debianization in the repo that contains this file
     -- (Targets.hs), and it creates a package named seereason-darcs-backups,
     -- which performs backups on the darcs repo.
-    , debianize (darcs "autobuilder-seereason" (repo </> "autobuilder-seereason")
-                  `flag` P.CabalDebian ["--source-package-name", "autobuilder-seereason"])
     , debianize (method "seereasonpartners-dot-com"
                       (Cd "seereasonpartners-dot-com" (Darcs (privateRepo </> "seereasonpartners-clckwrks")))
                    `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
