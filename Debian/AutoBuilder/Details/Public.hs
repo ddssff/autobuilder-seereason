@@ -1250,7 +1250,7 @@ idris = P.Packages (singleton "idris")
     where hack = debianize . hackage
 
 haste = P.Packages (singleton "haste")
-  [ hack "haste-compiler"
+  [ hack "haste-compiler" `flag` P.CabalDebian ["--default-package=haste-compiler"]
   , git' "haskell-haste-ffi-parser" "https://github.com/RudolfVonKrugstein/haste-ffi-parser"
   , hack "data-binary-ieee754"
   , hack "shellmate"
