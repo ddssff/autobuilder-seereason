@@ -224,7 +224,7 @@ main _home release =
                    `flag` P.BuildDep "rsync")
     , debianize (hackage "securemem" `tflag` P.DebVersion "0.1.3-1")
     , debianize (hackage "cipher-aes")
-    , debianize (hackage "cipher-des")
+    , debianize (hackage "cipher-des" `tflag` P.DebVersion "0.0.6-1")
     , debianize (hackage "cprng-aes" `tflag` P.DebVersion "0.5.2-1build1")
     , debianize (hackage "crypto-random" `tflag` P.DebVersion "0.0.7-1")
     , debianize (hackage "crypto-random-api" `tflag` P.DebVersion "0.2.0-2")
