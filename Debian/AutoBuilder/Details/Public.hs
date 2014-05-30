@@ -577,7 +577,7 @@ main _home release =
     , debianize (hackage "xml") -- apt (rel release "wheezy" "quantal") "haskell-xml"
     , debianize (hackage "cookie")
     , debianize (hackage "lifted-base")
-    , debianize (hackage "system-filepath")
+    , debianize (hackage "system-filepath" `flag` P.CabalPin "0.4.11") -- avoid a rebuild
     , P.Package { P.name = "haskell-xml-enumerator"
                 , P.spec = Debianize (Patch (Hackage "xml-enumerator") $(embedFile "patches/xml-enumerator.diff"))
                 , P.flags = [] }
