@@ -37,6 +37,7 @@ targets _home release =
     , clckwrks _home release
     , sunroof release
     , haste
+    , ghcjs
     , idris release
     -- , authenticate _home release
     -- , happstackdotcom _home
@@ -1272,3 +1273,15 @@ haste = P.Packages (singleton "haste")
   ]
     where hack = debianize . hackage
           git' n r = debianize $ git n r
+
+-- agda = P.Packages (singleton "agda")
+--   [ hack "agda"
+--   ]
+--     where hack = debianize . hackage
+--           git' n r = debianize $ git n r
+
+ghcjs = P.Packages (singleton "agda")
+  [ git' "ghcjs" "https://github.com/ghcjs/ghcjs"
+  ]
+    where git' n r = debianize $ git n r
+
