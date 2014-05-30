@@ -1,3 +1,14 @@
+autobuilder-seereason (1.0.1) unstable; urgency=low
+
+  * Target updates
+  * Add dependencies due to some of the debian/Debianize.hs scripts of the
+    targets.  These scripts are run before the package build starts, so
+    theys aren't dependencies of the package, they are dependencies of our
+    version of the autobuilder, autobuilder-seereason.  The more I think
+    about it the more correct this seems.
+
+ -- David Fox <dsf@seereason.com>  Thu, 29 May 2014 17:07:44 -0700
+
 autobuilder-seereason (1.0) unstable; urgency=low
 
   * Renamed source package autobuilder-seereason, we now build an
