@@ -1268,7 +1268,7 @@ haste = P.Packages (singleton "haste")
   , git' "haskell-haste-ffi-parser" "https://github.com/RudolfVonKrugstein/haste-ffi-parser"
   , hack "data-binary-ieee754"
   , hack "shellmate"
-  , git' "haskell-websockets" "https://github.com/cliffordbeshers/websockets"
+  , debianize (git "haskell-websockets" "https://github.com/cliffordbeshers/websockets" `patch` $(embedFile "patches/websockets.diff"))
   , hack "io-streams"
   ]
     where hack = debianize . hackage
