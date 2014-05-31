@@ -1,0 +1,6 @@
+Q1.  How do I build a target that isn't checked into a VCS, just
+     a directory on my local machine?
+
+A1.  Build the target using the dir function in
+     Debian.AutoBuilder.Types.Packages.  Please don't upload anything
+     built from such a target, though, check it in and build again.
