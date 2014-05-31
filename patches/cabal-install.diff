@@ -9,7 +9,7 @@ diff -ruN old/debian/Debianize.hs new/debian/Debianize.hs
 +top = Top "."
 +
 +main :: IO ()
-+main = evalDebT (debianization top seereasonDefaultAtoms customize >> writeDebianization top) newAtoms
++main = newAtoms >>= evalDebT (debianization top seereasonDefaultAtoms customize >> writeDebianization top)
 +
 +customize :: DebT IO ()
 +customize = utilsPackageNames += BinPkgName "cabal-install"
