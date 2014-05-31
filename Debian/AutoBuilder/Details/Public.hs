@@ -203,7 +203,7 @@ main _home release =
     , debianize (if | ghc release >= 708 ->
                         hackage "cabal-install"
                                     `flag` P.CabalPin "1.18.0.3"
-                                    `patch` $(embedFile "patches/cabal-install-18.diff")
+                                    `patch` $(embedFile "patches/cabal-install.diff")
                     | otherwise ->
                         hackage "cabal-install"
                                     -- Waiting for Cabal 1.18.0, shipped with ghc-7.8
