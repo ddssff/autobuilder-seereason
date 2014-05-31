@@ -1281,7 +1281,11 @@ haste = P.Packages (singleton "haste")
 --           git' n r = debianize $ git n r
 
 ghcjs = P.Packages (singleton "agda")
-  [ git' "ghcjs" "https://github.com/ghcjs/ghcjs"
+  [ debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs" `patch` $(embedFile "patches/ghcjs.diff"))
+  , debianize (hackage "shelly")
+  , debianize (hackage "text-binary")
+  , debianize (hackage "enclosed-exceptions")
+  , debianize (hackage "lifted-async")
   ]
     where git' n r = debianize $ git n r
 
