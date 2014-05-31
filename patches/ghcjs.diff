@@ -48,3 +48,14 @@
    where
      (ga,args') = partition (\a -> any (`isPrefixOf` unLoc a) as) args
      p = execParserPure (prefs mempty) optParser' (map unLoc ga)
+--- old/src/Compiler/JMacro/Base.hs	2014-05-30 17:19:55.000000000 -0700
++++ new/src/Compiler/JMacro/Base.hs	2014-05-30 17:35:47.724564505 -0700
+@@ -177,7 +177,7 @@
+       | LeOp            -- <=
+       | AddOp           -- +
+       | SubOp           -- -
+-      | MulOp           -- *
++      | MulOp           -- (this was a star, but it confused haddock)
+       | DivOp           -- /
+       | ModOp           -- %
+       | LeftShiftOp     -- <<
