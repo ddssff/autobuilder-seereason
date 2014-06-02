@@ -30,7 +30,7 @@ flag local-cabal-debian
 Executable autobuilder-seereason
  Main-Is: autobuilder.hs
  GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
- Build-depends: base, bytestring, containers, debian, filepath, file-embed, process, unix
+ Build-depends: base, bytestring, Cabal, containers, debian, filepath, file-embed, process, unix
  if flag(local-autobuilder)
    Build-Depends: applicative-extras, Cabal, data-lens, directory, exceptions, magic, mtl, process-listlike, process-progress, pureMD5, regex-compat, tar, text, time, Unixutils, utf8-string, zlib
    if flag (local-debian-repo)
