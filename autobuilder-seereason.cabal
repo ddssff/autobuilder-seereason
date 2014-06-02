@@ -39,13 +39,13 @@ Executable autobuilder-seereason
        Build-Depends: Diff, hsemail, parsec, regex-tdfa, set-extra, syb
        Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen, ../debian-tools/debian-repo, ../debian-tools/cabal-debian/src
      else
-       Build-Depends: cabal-debian >= 4.6
+       Build-Depends: cabal-debian >= 4.7
        Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen, ../debian-tools/debian-repo
    else
      Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen
-     Build-Depends: cabal-debian >= 4.6, debian-repo >= 5.63
+     Build-Depends: cabal-debian >= 4.7, debian-repo >= 5.63
  else
-   Build-Depends: cabal-debian >= 4.6, debian-repo >= 5.63, AutoBuilder >= 6.64
+   Build-Depends: cabal-debian >= 4.7, debian-repo >= 5.63, AutoBuilder >= 6.64
 
 Executable seereason-darcs-backups
  Main-Is: Backups.hs
