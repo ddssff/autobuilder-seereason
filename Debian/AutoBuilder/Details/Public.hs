@@ -1282,6 +1282,8 @@ haste = P.Packages (singleton "haste")
 
 ghcjs = P.Packages (singleton "agda")
   [ debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs" `patch` $(embedFile "patches/ghcjs.diff"))
+  , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal" `cd` "Cabal" `flag` P.CabalDebian (replacementLibrary "cabal" "cabal-ghcjs"))
+  , debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal" `cd` "cabal-install")
   , debianize (hackage "shelly")
   , debianize (hackage "text-binary")
   , debianize (hackage "enclosed-exceptions")
