@@ -149,7 +149,7 @@ main _home release =
     [ compiler release
     , platform release
     , debianize (hackage "hashtables")
-    , apt "squeeze" "bugzilla"
+    , broken $ apt "squeeze" "bugzilla" -- requires python-central (>= 0.5)
     , debianize (hackage "fmlist")
     , debianize (hackage "ListLike")
     -- Merged into ListLike-4.0
@@ -203,7 +203,8 @@ main _home release =
     -- Here is an example of creating a debian/Debianize.hs file with an
     -- autobuilder patch.  The autobuilder then automatically runs this
     -- script to create the debianization.
-    , debianize (if | ghc release >= 708 ->
+    , broken $
+      debianize (if | ghc release >= 708 ->
                         hackage "cabal-install"
                                     `flag` P.CabalPin "1.18.0.3"
                                     `patch` $(embedFile "patches/cabal-install.diff")
@@ -376,7 +377,7 @@ main _home release =
     , P.Package { P.name = "haskell-incremental-sat-solver"
                 , P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs (repo </> "haskell-incremental-sat-solver-debian"))
                 , P.flags = [] }
-    , debianize (hackage "instant-generics" `flag` P.SkipVersion "0.3.7")
+    , broken $ debianize (hackage "instant-generics" `flag` P.SkipVersion "0.3.7")
     , debianize (hackage "generic-deriving")
     , debianize (hackage "irc")
     , debianize (hackage "ixset" `patch` $(embedFile "patches/ixset.diff") `tflag` P.DebVersion "1.0.5-1")
@@ -498,7 +499,8 @@ main _home release =
                              `patch` $(embedFile "patches/syb-with-class.diff")
                              `tflag` P.DebVersion "0.6.1.4-2"
                              `flag` P.CabalPin "0.6.1.4") -- Version 0.6.1.5 tries to derive typeable instances when building rjson, which is an error for ghc-7.8
-    , debianize (hackage "syb-with-class-instances-text"
+    , broken $
+      debianize (hackage "syb-with-class-instances-text"
                    `pflag` P.DebVersion "0.0.1-3"
                    `wflag` P.DebVersion "0.0.1-3"
                    `wflag` P.SkipVersion "0.0.1-3"
@@ -642,14 +644,7 @@ main _home release =
     , debianize (hackage "frquotes")
     -- Usable versions of this package are available in some dists -
     -- e.g. trusty and wheezy.
-    , apt "quantal" "foo2zjs"
-{-  , P.Package { P.name = "foo2zjs"
-                , P.spec = Apt "quantal" "foo2zjs"
-                , P.flags = [] } -}
-{-  -- Has no Setup.hs file, not sure how to build this.
-    , P.Package { P.name = "hackage"
-                , P.spec = Debianize (Darcs "http://code.haskell.org/hackage-server")
-                , P.flags = [] } -}
+    , apt "trusty" "foo2zjs"
     , debianize (hackage "stringsearch")
     , debianize (hackage "rss")
     , debianize (hackage "async")
@@ -899,8 +894,8 @@ happstack _home release =
                    -- `patch` $(embedFile "patches/happstack-hsp.diff")
                    `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "happstack-jmacro")
-    , debianize (hackage "jmacro-rpc-happstack" `flag` P.SkipVersion "0.2.1") -- Really just waiting for jmacro-rpc
-    , debianize (hackage "jmacro-rpc")
+    , broken $ debianize (hackage "jmacro-rpc-happstack" `flag` P.SkipVersion "0.2.1") -- Really just waiting for jmacro-rpc
+    , broken $ debianize (hackage "jmacro-rpc")
     , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
     , debianize (hackage "happstack-server")
     , debianize (hackage "happstack-lite")
@@ -1092,7 +1087,7 @@ opengl release = P.Packages (singleton "opengl") $
                    `pflag` P.DebVersion "1.0.0.0-2build1"
                    `qflag` P.DebVersion "1.0.0.0-2build3"
                    `tflag` P.DebVersion "1.0.0.0-4")
-    , debianize (hackage "Tensor" `tflag` P.DebVersion "1.0.0.1-2")
+    , broken $ debianize (hackage "Tensor" `tflag` P.DebVersion "1.0.0.1-2")
     , debianize (hackage "GLURaw")
     , debianize (hackage "ObjectName" `tflag` P.DebVersion "1.0.0.0-2")
     , debianize (hackage "monad-task")
@@ -1147,7 +1142,7 @@ algebra release =
     [ debianize (hackage "data-lens")
     , debianize (hackage "data-lens-template")
     , debianize (hackage "bifunctors")
-    , debianize (hackage "categories" `tflag` P.DebVersion "1.0.6-1")
+    , broken $ debianize (hackage "categories" `tflag` P.DebVersion "1.0.6-1")
     -- comonad now includes comonad-transformers and comonads-fd
     , debianize (hackage "comonad"
                    `flag` P.CabalPin "4.0.1" -- 4.2 is too new for data-lens-2.10.4
@@ -1301,3 +1296,5 @@ ghcjs = P.Packages (singleton "agda")
   ]
     where git' n r = debianize $ git n r
 
+broken :: P.Packages -> P.Packages
+broken _ = P.NoPackage
