@@ -90,7 +90,8 @@ autobuilder home =
         `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
     , debianize (darcs "autobuilder-seereason" (repo </> "autobuilder-seereason"))
         -- It would be nice if these dependencies were in the cabal file
-        `flag` P.CabalDebian [ "--depends=autobuilder-seereason:ghc"
+        `flag` P.CabalDebian [ "--depends=autobuilder-seereason:libghc-autobuilder-seereason-dev"
+                             , "--depends=autobuilder-seereason:ghc"
                              , "--depends=autobuilder-seereason:debhelper"
                              , "--depends=autobuilder-seereason:apt-file"
                              , "--depends=autobuilder-seereason:apt-utils"
@@ -115,14 +116,13 @@ autobuilder home =
                              -- then I can just ask the release who its vendor is.
                              -- , "--depends=autobuilder-seereason:ubuntu-keyring"
                              -- These are dependencies used by certain debian/Debianize.hs scripts
-                             , "--depends=autobuilder-seereason:libghc-autobuilder-seereason-dev"
-                             , "--depends=autobuilder-seereason:libghc-text-dev"
-                             , "--depends=autobuilder-seereason:libghc-seereason-ports-dev" -- used by most (all?) of our web apps
-                             , "--depends=autobuilder-seereason:libghc-happstack-authenticate-dev" -- used by mimo
-                             , "--depends=autobuilder-seereason:libghc-happstack-foundation-dev" -- used by mimo
-                             , "--depends=autobuilder-seereason:libghc-safecopy-dev" -- used by mimo
-                             , "--depends=autobuilder-seereason:libghc-hsp-dev" -- used by mimo
-                             , "--depends=autobuilder-seereason:libghc-utility-ht-dev" -- used by mimo
+                             , "--recommends=autobuilder-seereason:libghc-text-dev"
+                             , "--recommends=autobuilder-seereason:libghc-seereason-ports-dev" -- used by most (all?) of our web apps
+                             , "--recommends=autobuilder-seereason:libghc-happstack-authenticate-dev" -- used by mimo
+                             , "--recommends=autobuilder-seereason:libghc-happstack-foundation-dev" -- used by mimo
+                             , "--recommends=autobuilder-seereason:libghc-safecopy-dev" -- used by mimo
+                             , "--recommends=autobuilder-seereason:libghc-hsp-dev" -- used by mimo
+                             , "--recommends=autobuilder-seereason:libghc-utility-ht-dev" -- used by mimo
                              ]
         `flag` P.CabalDebian [ "--conflicts=autobuilder-seereason:autobuilder"
                              , "--replaces=autobuilder-seereason:autobuilder" ]
