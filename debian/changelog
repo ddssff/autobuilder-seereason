@@ -1,3 +1,9 @@
+autobuilder-seereason (1.1) unstable; urgency=low
+
+  * Make library packages.
+
+ -- David Fox <dsf@seereason.com>  Mon, 02 Jun 2014 19:00:18 -0700
+
 autobuilder-seereason (1.0.1) unstable; urgency=low
 
   * Target updates
