@@ -35,8 +35,9 @@ flag local-cabal-debian
 Library
   if flag(local-autobuilder-seereason)
     Buildable: False
+  else
+    Build-Depends: cabal-debian >= 4.7, debian-repo >= 5.63, AutoBuilder >= 6.64
   Build-depends: base, bytestring, Cabal, containers, debian, filepath, file-embed, process, unix
-  Build-Depends: cabal-debian >= 4.7, debian-repo >= 5.63, AutoBuilder >= 6.64
   Exposed-Modules:
     Debian.AutoBuilder.Details
     Debian.AutoBuilder.Details.Atoms
