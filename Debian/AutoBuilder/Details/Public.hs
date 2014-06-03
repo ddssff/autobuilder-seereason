@@ -686,7 +686,7 @@ compiler release =
       "precise-seereason" -> P.Packages (singleton "ghc") [ghc, devscripts]
       _ -> P.Packages (singleton "ghc") [ghc, devscripts]
     where
-      ghc78 = proc (apt "experimental" "ghc")
+      ghc78 = proc (apt "experimental" "ghc" `patch` $(embedFile "patches/trac8768.diff"))
       ghc76 = apt "sid" "ghc" -- As of 8 Jun 2013 this contains 7.6.3-3.  As of 13 Feb 2014 it contains 7.6.3-6.
       ghcFlags p = p `relax` "ghc"
                      `relax` "happy"
