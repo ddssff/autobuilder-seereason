@@ -108,6 +108,9 @@ autobuilder home =
                              , "--depends=autobuilder-seereason:curl"
                              , "--depends=autobuilder-seereason:debian-archive-keyring"
                              , "--depends=autobuilder-seereason:seereason-keyring"
+                             -- Pull in the autobuilder-seereason library so the target's
+                             -- debian/Debianize.hs scripts can run.
+                             , "--depends=autobuilder-seereason:autobuilder-seereason"
                              -- This is needed if the release vendor is ubuntu.  I need
                              -- to use a real type for the release value instead of a string,
                              -- then I can just ask the release who its vendor is.
