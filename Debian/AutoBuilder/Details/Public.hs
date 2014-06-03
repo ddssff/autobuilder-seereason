@@ -10,7 +10,7 @@ import Debian.AutoBuilder.Details.Common (repo)
 import Debian.AutoBuilder.Details.GHC (ghc)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Proc),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
-                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc),
+                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, GitBranch),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, dir)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, InstallFile(..), (~=), (+++=))
@@ -1282,8 +1282,15 @@ haste = P.Packages (singleton "haste")
 
 ghcjs = P.Packages (singleton "agda")
   [ debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs" `patch` $(embedFile "patches/ghcjs.diff"))
-  , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal" `cd` "Cabal"`flag` P.NoDoc)
-  , debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal" `cd` "cabal-install" `flag` P.NoDoc)
+  , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal" `flag` P.GitBranch "ghcjs" `cd` "Cabal" `flag` P.NoDoc)
+  , debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal"
+                       `flag` P.GitBranch "ghcjs"
+                       `cd` "cabal-install"
+                       `flag` P.NoDoc
+                       `flag` P.CabalDebian ["--executable", "cabal-install-ghcjs",
+                                             "--conflicts=cabal-install-ghcjs:cabal-install",
+                                             "--replaces=cabal-install-ghcjs:cabal-install",
+                                             "--provides=cabal-install-ghcjs:cabal-install"])
   , debianize (hackage "shelly")
   , debianize (hackage "text-binary")
   , debianize (hackage "enclosed-exceptions")
