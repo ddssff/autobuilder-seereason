@@ -1,0 +1,10 @@
+--- old/transformers-compat.cabal	2014-06-03 11:51:09.778514570 -0700
++++ new/transformers-compat.cabal	2014-06-03 13:57:30.094726301 -0700
+@@ -46,7 +46,6 @@
+ 
+ flag three
+   default: False
+-  manual: True
+   description: Use transformers 0.3. This should toggle on/off automatically.
+ 
+ library
