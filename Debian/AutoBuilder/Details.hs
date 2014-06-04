@@ -293,8 +293,8 @@ dropSuffix suff x = take (length x - length suff) x
 mySources :: Release -> String -> String -> [(String, [DebSource])]
 mySources myBuildRelease debianMirrorHost ubuntuMirrorHost =
     List.map releaseSources
-            (map Release allReleases ++
-             concatMap (derivedReleases myBuildRelease) allReleases) ++
+            (map Release baseReleases ++
+             concatMap (derivedReleases myBuildRelease) baseReleases) ++
     [(baseReleaseString Experimental, debianSourceLines debianMirrorHost Experimental),
 {-   ("debian-multimedia",
       (unlines ["deb http://mirror.home-dn.net/debian-multimedia stable main",
@@ -304,6 +304,7 @@ mySources myBuildRelease debianMirrorHost ubuntuMirrorHost =
                 ["deb http://kanotix.com/files/debian sid main contrib non-free vdr",
                  "  deb-src http://kanotix.com/files/debian sid main contrib non-free vdr"]))]
     where
+      baseReleases = filter (/= Experimental) allReleases
       releaseSources release =
           (releaseString release, releaseSourceLines release debianMirrorHost ubuntuMirrorHost)
 
