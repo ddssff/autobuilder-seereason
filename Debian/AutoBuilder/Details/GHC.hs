@@ -6,6 +6,7 @@ module Debian.AutoBuilder.Details.GHC
     ) where
 
 import Data.Maybe (fromMaybe)
+import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..))
 
 -- | Unfortunately, we need to tell the autobuilder what version of ghc
 -- is going to be in our release so that cabal-debian knows what packages
@@ -14,6 +15,7 @@ import Data.Maybe (fromMaybe)
 -- on which the autobuilder is running.  If the result is Nothing it
 -- assumes the same compiler is used in the build environment as in the
 -- parent environment.
+myCompilerVersion :: Release -> Maybe String
 myCompilerVersion release =
     case ghc release of
       704 -> Just "7.4.1"
@@ -21,19 +23,17 @@ myCompilerVersion release =
       708 -> Just "7.8.1"
       _ -> Nothing
 
-ghc :: String -> Int
+ghc :: Release -> Int
 ghc release =
-    fromMaybe 706 (lookup release alist)
+    fromMaybe 706 (lookup (baseRelease release) alist)
     where
-      alist = alistPublic ++ alistPrivate
-      alistPublic
-          = [ ("quantal-seereason", 706)
-            , ("natty-seereason", 704)
-            , ("natty-seereason", 704)
-            , ("lucid-seereason", 704)
-            , ("lenny-seereason", 704)
-            , ("wheezy-seereason", 708)
-            , ("jessie-seereason", 708)
-            , ("precise-seereason", 708)
-            , ("trusty-seereason", 708) ]
-      alistPrivate = map (\ (s, n) -> (s ++ "-private", n)) alistPublic
+      alist
+          = [ (Quantal, 706)
+            , (Natty, 704)
+            , (Natty, 704)
+            , (Lucid, 704)
+            , (Lenny, 704)
+            , (Wheezy, 708)
+            , (Jessie, 708)
+            , (Precise, 708)
+            , (Trusty, 708) ]

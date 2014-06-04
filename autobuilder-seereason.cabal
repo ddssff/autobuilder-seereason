@@ -46,6 +46,7 @@ Library
     Debian.AutoBuilder.Details.Public
     Debian.AutoBuilder.Details.Common
     Debian.AutoBuilder.Details.GHC
+    Debian.AutoBuilder.Details.Distros
 
 Executable autobuilder-seereason
  Main-Is: autobuilder.hs

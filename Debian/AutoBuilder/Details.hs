@@ -9,16 +9,17 @@ module Debian.AutoBuilder.Details
     ( myParams
     ) where
 
-import Data.List as List (isSuffixOf, isPrefixOf, map)
+import Data.List as List (isSuffixOf, map)
 import Data.Maybe
 import Data.Monoid (mappend)
 -- import Data.Set as Set (Set, empty)
+import Debian.AutoBuilder.Details.Distros (Release(..), BaseRelease(..), allReleases, baseReleaseString,
+                                           releaseString, parseReleaseName, isPrivateRelease,
+                                           baseRelease, baseReleaseDistro, Distro(..), distroString)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.Packages (Packages(NoPackage))
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
-import Debian.Release (ReleaseName(relName))
---import Debian.Repo (SourcesChangedAction(SourcesChangedError))
 import Debian.Sources (DebSource, parseSourceLine)
 import Debian.URI
 import Debian.Version (parseDebianVersion)
@@ -26,12 +27,12 @@ import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
 import System.FilePath ((</>))
 
-myParams :: FilePath -> String -> ParamRec
+myParams :: FilePath -> Release -> ParamRec
 myParams home myBuildRelease =
     let myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
         myBuildURIPrefix = "http://deb.seereason.com" in
     (\ params -> params {knownPackages = myKnownTargets home params}) $
-    (defaultParams myBuildRelease
+    (defaultParams (releaseString myBuildRelease)
                    myUploadURIPrefix
                    myBuildURIPrefix
                    myDevelopmentReleaseNames)
@@ -64,17 +65,16 @@ myParams home myBuildRelease =
 --
 myReleaseSuffixes = ["-seereason", "-private"]
 
--- Helper function to identify private releases.  This implies a different
--- upload uri, a different target list, and other as well.
---
-isPrivateRelease release = isSuffixOf "-private" release
-
 -- Our private releases are always based on our public releases, not
 -- directly on upstream releases.
 --
-derivedReleaseNames myBuildRelease baseRelease =
-    [baseRelease ++ "-seereason"] ++
-    if isPrivateRelease myBuildRelease then [baseRelease ++ "-seereason-private"] else []
+derivedReleaseNames :: Release -> BaseRelease -> [String]
+derivedReleaseNames myBuildRelease baseRelease = map releaseString (derivedReleases myBuildRelease baseRelease)
+
+derivedReleases :: Release -> BaseRelease -> [Release]
+derivedReleases myBuildRelease baseRelease =
+    [ExtendedRelease (Release baseRelease) SeeReason] ++
+    if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Release baseRelease) SeeReason)] else []
 
 -- This URI is the address of the remote repository to which packages
 -- will be uploaded after a run with no failures, when the myDoUpload
@@ -84,22 +84,24 @@ derivedReleaseNames myBuildRelease baseRelease =
 -- it is built for use as build dependencies of other packages during
 -- the same run.
 --
+myUploadURI :: Release -> Maybe URI
 myUploadURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateUploadURI else myPublicUploadURI)
     where
-      myPrivateUploadURI = myPrivateURIPrefix </> "deb-private" </> releaseRepoName myBuildRelease
-      myPublicUploadURI = myPrivateURIPrefix </> "deb" </> releaseRepoName myBuildRelease
+      myPrivateUploadURI = myPrivateURIPrefix </> "deb-private" </> distroString (releaseRepoName (baseRelease myBuildRelease))
+      myPublicUploadURI = myPrivateURIPrefix </> "deb" </> distroString (releaseRepoName (baseRelease myBuildRelease))
 
 
 -- An alternate url for the same repository the upload-uri points to,
 -- used for downloading packages that have already been installed
 -- there.
 --
+myBuildURI :: Release -> Maybe URI
 myBuildURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI)
     where
-      myPrivateBuildURI = myPrivateURIPrefix </> "deb-private" </> releaseRepoName myBuildRelease
-      myPublicBuildURI = "http://deb.seereason.com/" ++ releaseRepoName myBuildRelease
+      myPrivateBuildURI = myPrivateURIPrefix </> "deb-private" </> distroString (releaseRepoName (baseRelease myBuildRelease))
+      myPublicBuildURI = "http://deb.seereason.com/" ++ distroString (releaseRepoName (baseRelease myBuildRelease))
 
 -- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
 myPrivateURIPrefix = "ssh://upload@deb.seereason.com/srv"
@@ -132,7 +134,7 @@ myKnownTargets home params =
     then Targets.private home rel
     else mappend (Targets.public home rel) (if testWithPrivate params then Targets.private home rel else NoPackage)
     where
-      rel = relName (buildRelease params)
+      rel = parseReleaseName (buildRelease params)
 
 -- These host names are used to construct the sources.list lines to
 -- access the Debian and Ubuntu repositories.  The anl.gov values here
@@ -161,7 +163,7 @@ myReleaseAliases myBuildRelease =
      ("squeeze", "bpo60+"),
      ("squeeze-seereason", "bpo60+"),
      ("squeeze-seereason-private", "bpo60+")] ++
-    concatMap (\ rel -> List.map (\ der -> (der, rel)) (derivedReleaseNames myBuildRelease rel)) (ubuntuReleases ++ debianReleases)
+    concatMap (\ rel -> List.map (\ der -> (der, baseReleaseString rel)) (derivedReleaseNames myBuildRelease rel)) allReleases
 
 -- Additional packages to include in the clean build environment.
 -- Adding packages here can speed things up when you are building many
@@ -177,7 +179,8 @@ myReleaseAliases myBuildRelease =
 -- seereason-keyring) you currently need to first build it and then
 -- install it manually.
 --
-myIncludePackages myBuildRelease = 
+myIncludePackages :: Release -> [String]
+myIncludePackages myBuildRelease =
     [ "debian-archive-keyring"
     , "build-essential"         -- This is required by autobuilder code that opens the essential-packages list
     , "pkg-config"              -- Some packages now depend on this package via new cabal options.
@@ -197,26 +200,26 @@ myIncludePackages myBuildRelease =
     -- I have observed that this solves the "ssh died unexpectedly"
     -- errors.
     (if isPrivateRelease myBuildRelease then ["ssh"] else []) ++
-    case releaseRepoName myBuildRelease of
-      "debian" -> []
-      "ubuntu" ->
+    case releaseRepoName (baseRelease myBuildRelease) of
+      Debian -> []
+      Ubuntu ->
           ["ubuntu-keyring"] ++
-          case () of
-            _ | isPrefixOf "trusty-" myBuildRelease -> []
-              | isPrefixOf "saucy-" myBuildRelease -> []
-              | isPrefixOf "raring-" myBuildRelease -> []
-              | isPrefixOf "quantal-" myBuildRelease -> []
-              | isPrefixOf "precise-" myBuildRelease -> []
-              | isPrefixOf "oneiric-" myBuildRelease -> []
-              | isPrefixOf "natty-" myBuildRelease -> []
-              | isPrefixOf "maverick-" myBuildRelease -> []
-              | isPrefixOf "lucid-" myBuildRelease -> []
-              | isPrefixOf "karmic-" myBuildRelease -> [{-"upstart"-}]
-              | isPrefixOf "jaunty-" myBuildRelease -> [{-"upstart-compat-sysv"-}]
-              | isPrefixOf "intrepid-" myBuildRelease -> [{-"upstart-compat-sysv", "belocs-locales-bin"-}]
-              | isPrefixOf "hardy-" myBuildRelease -> [{-"upstart-compat-sysv", "belocs-locales-bin"-}]
-              | True -> [{-"belocs-locales-bin"-}]
-      _ -> error $ "Invalid build release: " ++ myBuildRelease
+          case baseRelease myBuildRelease of
+            Trusty -> []
+            Saucy -> []
+            Raring -> []
+            Quantal -> []
+            Precise -> []
+            Oneiric -> []
+            Natty -> []
+            Maverick -> []
+            Lucid -> []
+            Karmic -> [{-"upstart"-}]
+            Jaunty -> [{-"upstart-compat-sysv"-}]
+            Intrepid -> [{-"upstart-compat-sysv", "belocs-locales-bin"-}]
+            Hardy -> [{-"upstart-compat-sysv", "belocs-locales-bin"-}]
+            _ -> [{-"belocs-locales-bin"-}]
+      _ -> error $ "Invalid base distro: " ++ show myBuildRelease
 
 -- This will not be available when a new release is created, so we
 -- have to make due until it gets built and uploaded.
@@ -225,69 +228,59 @@ myOptionalIncludePackages _myBuildRelease =
 
 myExcludePackages _ = []
 
+myComponents :: Release -> [String]
 myComponents myBuildRelease =
-    case releaseRepoName myBuildRelease of
-      "debian" -> ["main", "contrib", "non-free"]
-      "ubuntu" -> ["main", "restricted", "universe", "multiverse"]
-      _ -> error $ "Invalid build release: " ++ myBuildRelease
+    case releaseRepoName (baseRelease myBuildRelease) of
+      Debian -> ["main", "contrib", "non-free"]
+      Ubuntu -> ["main", "restricted", "universe", "multiverse"]
+      _ -> error $ "Invalid base distro: " ++ show myBuildRelease
 
 myHackageServer = "hackage.haskell.org"
 -- myHackageServer = "hackage.factisresearch.com"
 
 ------------------------- SOURCES --------------------------------
 
--- Return one of the elements in myReleaseSuffixes, or Nothing.
---
-releaseSuffix :: String -> Maybe String
-releaseSuffix release =
-    case filter (`isSuffixOf` release) myReleaseSuffixes of
-      [] -> Nothing
-      [suffix] -> Just suffix
-      suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
-
 -- Build a sources.list for one of our build relases.
 --
-releaseSourceLines :: String -> String -> String -> [DebSource]
+releaseSourceLines :: Release -> String -> String -> [DebSource]
 releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
-    case releaseSuffix release of
-      Nothing -> baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost
-      Just suff ->
-          releaseSourceLines (dropSuffix suff release) debianMirrorHost ubuntuMirrorHost ++
-          List.map parseSourceLine [ "deb " ++ uri ++ " " ++ release ++ " main"
-                                   , "deb-src " ++ uri ++ " " ++ release ++ " main" ]
+    case release of
+      PrivateRelease r ->
+          releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
+          List.map parseSourceLine [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
+                                   , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]
+      ExtendedRelease r d ->
+          releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
+          List.map parseSourceLine [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
+                                   , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]
+      Release b -> baseReleaseSourceLines b debianMirrorHost ubuntuMirrorHost
     where
       uri = show (fromJust (myBuildURI release))
 
 baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     case releaseRepoName release of
-      "debian" -> debianSourceLines debianMirrorHost release
-      "ubuntu" -> ubuntuSourceLines ubuntuMirrorHost release
+      Debian -> debianSourceLines debianMirrorHost release
+      Ubuntu -> ubuntuSourceLines ubuntuMirrorHost release
       x -> error $ "Unknown release repository: " ++ show x
 
 debianSourceLines debianMirrorHost release =
     List.map parseSourceLine $
-    [ "deb http://" ++ debianMirrorHost ++ "/debian " ++ release ++ " main contrib non-free"
-    , "deb-src http://" ++ debianMirrorHost ++ "/debian " ++ release ++ " main contrib non-free" ]
+    [ "deb http://" ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free"
+    , "deb-src http://" ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free" ]
 
 ubuntuSourceLines ubuntuMirrorHost release =
     List.map parseSourceLine $
-    [ "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ " main restricted universe multiverse"
-    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ " main restricted universe multiverse"
-    , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-updates main restricted universe multiverse"
-    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-updates main restricted universe multiverse"
-    , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-backports main restricted universe multiverse"
-    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-backports main restricted universe multiverse"
-    , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-security main restricted universe multiverse"
-    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ release ++ "-security main restricted universe multiverse" ]
+    [ "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
+    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
+    , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
+    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
+    , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
+    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
+    , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse"
+    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse" ]
 
--- The names of the releases that we are able to create build environments for.
---
-debianReleases = ["experimental", "sid", "jessie", "wheezy", "squeeze", "lenny", "sarge"]
-ubuntuReleases = ["trusty", "saucy", "raring", "quantal", "precise", "oneiric", "natty", "maverick", "lucid",
-                  "karmic", "jaunty", "intrepid", "hardy", "feisty", "edgy", "dapper"]
-
-oldDebianReleases = []
-oldUbuntuReleases = []
+-- oldDebianReleases = []
+-- oldUbuntuReleases = []
 
 -- A utility function
 dropSuffix suff x = take (length x - length suff) x
@@ -297,22 +290,22 @@ dropSuffix suff x = take (length x - length suff) x
 -- that we can use any base release or build release name to look up a
 -- sources.list.
 --
-mySources :: String -> String -> String -> [(String, [DebSource])]
+mySources :: Release -> String -> String -> [(String, [DebSource])]
 mySources myBuildRelease debianMirrorHost ubuntuMirrorHost =
     List.map releaseSources
-            (debianReleases ++ ubuntuReleases ++
-             concatMap (derivedReleaseNames myBuildRelease) (debianReleases ++ ubuntuReleases)) ++
-    [("debian-experimental", debianSourceLines debianMirrorHost "experimental"),
+            (map Release allReleases ++
+             concatMap (derivedReleases myBuildRelease) allReleases) ++
+    [(baseReleaseString Experimental, debianSourceLines debianMirrorHost Experimental),
 {-   ("debian-multimedia",
       (unlines ["deb http://mirror.home-dn.net/debian-multimedia stable main",
                 "deb-src http://mirror.home-dn.net/debian-multimedia stable main"])), -}
-      ("kanotix",
+      (distroString Kanotix,
        (List.map parseSourceLine
                 ["deb http://kanotix.com/files/debian sid main contrib non-free vdr",
                  "  deb-src http://kanotix.com/files/debian sid main contrib non-free vdr"]))]
     where
       releaseSources release =
-          (release, releaseSourceLines release debianMirrorHost ubuntuMirrorHost)
+          (releaseString release, releaseSourceLines release debianMirrorHost ubuntuMirrorHost)
 
 -- Any package listed here will not trigger rebuilds when updated.
 --
@@ -362,6 +355,8 @@ myGlobalRelaxInfo =
 -- Given a release name, return the subdirectory of myUploadURI which
 -- contains the repository.
 --
+releaseRepoName = baseReleaseDistro
+{-
 releaseRepoName rname
     | elem rname (debianReleases ++ oldDebianReleases) = "debian"
     | elem rname (ubuntuReleases ++ oldUbuntuReleases) = "ubuntu"
@@ -369,3 +364,4 @@ releaseRepoName rname
                [suffix] -> releaseRepoName (dropSuffix suffix rname)
                [] -> error $ "Release name has unknown suffix: " ++ show rname
                suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
+-}

@@ -7,6 +7,7 @@ import Data.List (intercalate)
 import Data.Monoid ((<>))
 import Data.Set as Set (empty, singleton)
 import Debian.AutoBuilder.Details.Common (repo)
+import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..), Release(..))
 import Debian.AutoBuilder.Details.GHC (ghc)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Proc),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
@@ -29,7 +30,7 @@ localRepo = "file:///home/dsf/darcs/"
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
-targets :: String -> String -> P.Packages
+targets :: String -> Release -> P.Packages
 targets _home release =
     P.Packages empty $
     [ main _home release
@@ -58,22 +59,24 @@ targets _home release =
     -- , other
     ]
 
-rel :: String -> a -> a -> a
+rel :: Release -> a -> a -> a
 rel release precise quantal =
-    case release of
-      "quantal-seereason" -> quantal
+    case baseRelease release of
+      Quantal -> quantal
       _ -> precise
 
 -- | We don't currently support ghc 7.4
 ghc74flag :: P.Packages -> P.PackageFlag -> P.Packages
 ghc74flag p _ = p
 
+fixme :: P.Packages
 fixme =
     P.Packages (singleton "fixme") $
     [ debianize (hackage "test-framework-smallcheck")
     , debianize (darcs "haskell-geni" "http://hub.darcs.net/kowey/GenI" `patch` $(embedFile "patches/GenI.diff"))
     ]
 
+autobuilder :: FilePath -> P.Packages
 autobuilder home =
     -- let repo = localRepo home in
     P.Packages (singleton "autobuilder-group") $
@@ -131,20 +134,22 @@ autobuilder home =
         `flag` P.CabalDebian [ "--source-package-name", "autobuilder-seereason" ]
     ]
 
+unixutils :: FilePath-> P.Packages
 unixutils _home =
     P.Packages (singleton "Unixutils")
     [ darcs "haskell-unixutils" (repo ++ "/haskell-unixutils")
     , darcs "haskell-extra" (repo </> "haskell-extra") `flag` P.RelaxDep "cabal-debian"
     , darcs "haskell-help" (repo </> "haskell-help") ]
 
+main :: FilePath-> Release -> P.Packages
 main _home release =
-    let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
-        wflag = case release of "wheezy-seereason" -> flag; _ -> \ p _ -> p
-        wskip t = case release of "wheezy-seereason" -> P.NoPackage; _ -> t
-        wonly t = case release of "wheezy-seereason" -> t; _ -> P.NoPackage
-        pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p
-        tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p
-        sflag = case release of "squeeze-seereason" -> flag; _ -> \ p _ -> p in
+    let qflag = case baseRelease release of Quantal -> flag; _ -> \ p _ -> p
+        wflag = case baseRelease release of Wheezy -> flag; _ -> \ p _ -> p
+        wskip t = case baseRelease release of Wheezy -> P.NoPackage; _ -> t
+        wonly t = case baseRelease release of Wheezy -> t; _ -> P.NoPackage
+        pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
+        tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p
+        sflag = case baseRelease release of Squeeze -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "main") $
     [ compiler release
     , platform release
@@ -604,9 +609,9 @@ main _home release =
     , debianize (hackage "hslogger")
     , debianize (hackage "extensible-exceptions" -- required for ghc-7.6.  Conflicts with ghc-7.4 in wheezy.
                    `tflag` P.DebVersion "0.1.1.4-2")
-    , case release of
-        "quantal-seereason" -> P.NoPackage -- This build hangs when performing tests
-        "wheezy-seereason" -> P.NoPackage -- This build hangs when performing tests
+    , case baseRelease release of
+        Quantal -> P.NoPackage -- This build hangs when performing tests
+        Wheezy -> P.NoPackage -- This build hangs when performing tests
         _ -> apt "sid" "html-xml-utils"
     , wskip $
       P.Package { P.name = "jquery"
@@ -679,11 +684,13 @@ main _home release =
     , debianize (hackage "memoize")
     ]
 
+relax :: P.Packages -> String -> P.Packages
 relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
 
+compiler :: Release -> P.Packages
 compiler release =
-    case release of
-      "precise-seereason" -> P.Packages (singleton "ghc") [ghc, devscripts]
+    case baseRelease release of
+      Precise -> P.Packages (singleton "ghc") [ghc, devscripts]
       _ -> P.Packages (singleton "ghc") [ghc, devscripts]
     where
       ghc78 = proc (apt "experimental" "ghc" `patch` $(embedFile "patches/trac8768.diff"))
@@ -696,13 +703,14 @@ compiler release =
                      `relax` "quilt"
                      `relax` "python-minimal"
                      `relax` "libgmp-dev"
-      ghc = case release of
+      ghc = case baseRelease release of
               -- "precise-seereason" -> ghcFlags ghc76 `flag` P.DebVersion "7.6.3-3" -- pin to avoid massive rebuild
-              "squeeze-seereason" -> ghcFlags ghc76 `patch` $(embedFile "patches/ghc.diff") <>
-                                     apt "wheezy" "po4a" <>
-                                     apt "wheezy" "debhelper" `patch` $(embedFile "patches/debhelper.diff") <>
-                                     apt "wheezy" "dpkg" `patch` $(embedFile "patches/dpkg.diff") <>
-                                     apt "wheezy" "makedev"
+              Squeeze ->
+                  ghcFlags ghc76 `patch` $(embedFile "patches/ghc.diff") <>
+                  apt "wheezy" "po4a" <>
+                  apt "wheezy" "debhelper" `patch` $(embedFile "patches/debhelper.diff") <>
+                  apt "wheezy" "dpkg" `patch` $(embedFile "patches/dpkg.diff") <>
+                  apt "wheezy" "makedev"
               _ -> ghcFlags ghc78
 
       devscripts =
@@ -710,17 +718,18 @@ compiler release =
                     , P.spec = Apt "sid" "haskell-devscripts"
                     , P.flags = [P.RelaxDep "python-minimal"] }
       -- haskell-devscripts-0.8.13 is for ghc-7.6 only
-      squeezeRelax = case release of "squeeze-seereason" -> relax; "squeeze-seereason-private" -> relax; _ -> \ p _ -> p
-      squeezePatch = case release of "squeeze-seereason" -> patch; "squeeze-seereason-private" -> patch; _ -> \ p _ -> p
-      wskip t = case release of "wheezy-seereason" -> P.NoPackage; _ -> t
+      squeezeRelax = case baseRelease release of Squeeze -> relax; _ -> \ p _ -> p
+      squeezePatch = case baseRelease release of Squeeze -> patch; _ -> \ p _ -> p
+      wskip t = case baseRelease release of Wheezy -> P.NoPackage; _ -> t
 
+platform :: Release -> P.Packages
 platform release =
-    let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
-        tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p
-        wflag = case release of "wheezy-seereason" -> flag; _ -> \ p _ -> p
-        wskip t = case release of "wheezy-seereason" -> P.NoPackage; _ -> t
-        pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p
-        sflag = case release of "squeeze-seereason" -> flag; _ -> \ p _ -> p in
+    let qflag = case baseRelease release of Quantal -> flag; _ -> \ p _ -> p
+        tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p
+        wflag = case baseRelease release of Wheezy -> flag; _ -> \ p _ -> p
+        wskip t = case baseRelease release of Wheezy -> P.NoPackage; _ -> t
+        pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
+        sflag = case baseRelease release of Squeeze -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "platform") $
     [ -- Our automatic debianization code produces a package which is
       -- missing the template files required for happy to work properly,
@@ -802,9 +811,10 @@ platform release =
                    `tflag` P.DebVersion "3000.2.1-4")
     ]
 
+clckwrks :: String -> Release -> P.Packages
 clckwrks _home release =
     let repo = "http://src.seereason.com/mirrors/clckwrks-dev"
-        tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p in
+        tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     -- let repo = "http://hub.darcs.net/stepcut/clckwrks-dev" in
     P.Packages (singleton "clckwrks") $
         [ happstack _home release
@@ -839,6 +849,7 @@ clckwrks _home release =
                                `flag` P.BuildDep "hsx2hs")
         ]
 
+fay :: String -> Release -> P.Packages
 fay _home _release =
     P.Packages (singleton "fay")
     [ debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
@@ -860,10 +871,11 @@ fay _home _release =
                                          "--build-dep=haskell-happstack-fay-ajax-utils"]) -} -- waiting for a fix
     ]
 
+happstack :: String -> Release -> P.Packages
 happstack _home release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String
-        pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p
-        tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p in
+        pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
+        tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "happstack")
     [ plugins
     , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
@@ -959,8 +971,8 @@ happstack _home release =
     ]
 
 authenticate _home release =
-  let pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p
-      tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p in
+  let pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
+      tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
   P.Packages (singleton "authenticate") $
     [ conduit release
     , debianize (hackage "pureMD5" `tflag` P.DebVersion "2.1.2.1-3build3")
@@ -1014,7 +1026,7 @@ digestiveFunctors =
 -- | We need new releases of all the conduit packages before we can move
 -- from conduit 0.4.2 to 0.5.
 conduit release =
-  let tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p in
+  let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
   P.Packages (singleton "conduit")
     [ debianize (hackage "conduit" `flag` P.CabalPin "1.0.17.1")
     , debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
@@ -1057,11 +1069,11 @@ shakespeare =
 
 -- May work with these added dependencies (statevar thru openglraw)
 opengl release = P.Packages (singleton "opengl") $
-    let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
-        wskip t = case release of "wheezy-seereason" -> P.NoPackage; _ -> t
-        wflag = case release of "wheezy-seereason" -> flag; _ -> \ p _ -> p
-        tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p
-        pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p in
+    let qflag = case baseRelease release of Quantal -> flag; _ -> \ p _ -> p
+        wskip t = case baseRelease release of Wheezy -> P.NoPackage; _ -> t
+        wflag = case baseRelease release of Wheezy -> flag; _ -> \ p _ -> p
+        tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p
+        pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p in
     [ debianize (hackage "OpenGL"
                    `flag` P.DevelDep "libglu1-mesa-dev")
 {-  , P.Package { P.name = "haskell-vacuum-opengl"
@@ -1127,6 +1139,7 @@ opengl release = P.Packages (singleton "opengl") $
 --  src/System/Plugins/Load.hs:91:35:
 --      Module `GHC.Exts' does not export `addrToHValue#'
 --  make: *** [build-ghc-stamp] Error 1
+plugins :: P.Packages
 plugins = P.Packages (singleton "plugins") $
     [ debianize (hackage "plugins")
     , debianize (hackage "plugins-auto" `patch` $(embedFile "patches/plugins-auto.diff"))
@@ -1134,10 +1147,11 @@ plugins = P.Packages (singleton "plugins") $
     , debianize (darcs "haskell-web-plugins" (darcsHub ++ "/web-plugins") `cd` "web-plugins")
     ]
 
+algebra :: Release -> P.Packages
 algebra release =
-    let qflag = case release of "quantal-seereason" -> flag; _ -> \ p _ -> p
-        pflag = case release of "precise-seereason" -> flag; _ -> \ p _ -> p
-        tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p in
+    let qflag = case baseRelease release of Quantal -> flag; _ -> \ p _ -> p
+        pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
+        tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "algebra")
     [ debianize (hackage "data-lens")
     , debianize (hackage "data-lens-template")
@@ -1199,6 +1213,7 @@ algebra release =
     , debianize (hackage "spine") ]
 
 -- CB I was after units, but it requires ghc 7.8
+units :: P.Packages
 units = P.Packages (singleton "units")
     [ debianize (hackage "quickcheck-instances")
     , debianize (hackage "mainland-pretty")
@@ -1208,8 +1223,9 @@ units = P.Packages (singleton "units")
     , debianize (hackage "processing")
     , debianize (hackage "units") ]
 
+sunroof :: Release -> P.Packages
 sunroof release =
-  let tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p in
+  let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
   P.Packages (singleton "sunroof")
   [ debianize (git "haskell-sunroof-compiler" "http://github.com/ku-fpg/sunroof-compiler"
                  `patch` $(embedFile "patches/sunroof-compiler.diff"))
@@ -1241,8 +1257,9 @@ replacementLibrary orig name =
       prof x = "libghc-" ++ x ++ "-dev"
       doc x = "libghc-" ++ x ++ "-dev"
 
+idris :: Release -> P.Packages
 idris release =
-    let tflag = case release of "trusty-seereason" -> flag; _ -> \ p _ -> p in
+    let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "idris")
         [ debianize (hackage "idris"
                        `flag` P.BuildDep "libgc-dev"
@@ -1259,6 +1276,7 @@ idris release =
         ]
     where hack = debianize . hackage
 
+haste :: P.Packages
 haste = P.Packages (singleton "haste")
   [ hack "haste-compiler" `flag` P.CabalDebian ["--default-package=haste-compiler"]
   , git' "haskell-haste-ffi-parser" "https://github.com/RudolfVonKrugstein/haste-ffi-parser"

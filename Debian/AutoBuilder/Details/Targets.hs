@@ -6,13 +6,9 @@ module Debian.AutoBuilder.Details.Targets
     , private
     ) where
 
-import Data.Data (Data, toConstr)
 import Data.Typeable (Typeable)
-import Data.List (isPrefixOf, partition)
 import Data.Monoid (mappend)
-import qualified Data.Set as Set
-import qualified Debian.AutoBuilder.Params as P
-import qualified Debian.AutoBuilder.Types.CacheRec as P
+import Debian.AutoBuilder.Details.Distros (BaseRelease(..), baseRelease, Release)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
 import Debian.Relation (Relation(..), BinPkgName(..))
@@ -83,14 +79,14 @@ deriving instance Typeable PackageFlag
 -- and any sequence of groups can be built together as long as
 -- no intermediate group is omitted.  Comment out the ones you
 -- don't wish to build.
-public :: String -> String -> P.Packages
-public home release = 
+public :: String -> Release -> P.Packages
+public home release =
     proc' (ghc release) $
     {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ Public.targets home release
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     --          ++ private home
 
-private :: String -> String -> P.Packages
+private :: String -> Release -> P.Packages
 private home release =
     proc' (ghc release) $
     {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ mappend (Private.libraries home) (Private.applications home)
@@ -118,7 +114,7 @@ isDebianizeSpec (P.Debianize _) = True
 isDebianizeSpec _ = False
 
 -- | Add MapDep and DevelDep flags Supply some special cases to map cabal library names to debian.
-applyDepMap :: String -> P.Packages -> P.Packages
+applyDepMap :: Release -> P.Packages -> P.Packages
 applyDepMap _ P.NoPackage = P.NoPackage
 applyDepMap release (P.Packages n s) = P.Packages n (map (applyDepMap release) s)
 applyDepMap release x@(P.Package {}) =
@@ -137,9 +133,9 @@ applyDepMap release x@(P.Package {}) =
                   P.MapDep "Xxf86vm" (deb "libxxf86vm-dev"),
                   P.MapDep "pthread" (deb "libc6-dev"),
                   P.MapDep "Xrandr" (rel ("libxrandr-dev" ++
-                                          case release of
-                                            "wheezy-seereason" -> " (= 2:1.3.2-2+deb7u1)"
-                                            "precise-seereason" -> " (= 2:1.3.2-2ubuntu0.2)"
+                                          case baseRelease release of
+                                            Wheezy -> " (= 2:1.3.2-2+deb7u1)"
+                                            Precise -> " (= 2:1.3.2-2ubuntu0.2)"
                                             _ -> "")),
                   -- the libxrandr-dev-lts-quantal package installs
                   -- /usr/lib/x86_64-linux-gnu/libXrandr_ltsq.so.
