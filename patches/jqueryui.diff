@@ -1,0 +1,33 @@
+diff -ru jqueryui.orig/jqueryui-1.8.ooops.21+dfsg/debian/control jqueryui/jqueryui-1.8.ooops.21+dfsg/debian/control
+--- jqueryui.orig/jqueryui-1.8.ooops.21+dfsg/debian/control	2012-05-06 15:27:26.000000000 -0700
++++ jqueryui/jqueryui-1.8.ooops.21+dfsg/debian/control	2014-06-05 06:37:41.000000000 -0700
+@@ -9,21 +9,27 @@
+ Vcs-Browser: http://git.debian.org/?p=pkg-javascript/jqueryui.git
+ Vcs-Git: git://git.debian.org/pkg-javascript/jqueryui.git
+ 
+-Package: libjs-jquery-ui
++Package: libjs-jquery-ui-18
+ Architecture: all
+ Depends: ${misc:Depends}, libjs-jquery (>= 1.4)
+ Recommends: javascript-common
+ Suggests: libjs-jquery-ui-docs
++Conflicts: libjs-jquery-ui
++Provides: libjs-jquery-ui
++Replaces: libjs-jquery-ui
+ Description: JavaScript UI library for dynamic web applications
+  jQuery UI provides abstractions for low-level interaction and
+  animation, advanced effects and high-level, themeable widgets,
+  built on top of the jQuery JavaScript Library, that you can use
+  to build highly interactive web applications.
+ 
+-Package: libjs-jquery-ui-docs
++Package: libjs-jquery-ui-docs-18
+ Section: doc
+ Architecture: all
+ Depends: ${misc:Depends}, libjs-jquery-ui
++Conflicts: libjs-jquery-ui-docs
++Provides: libjs-jquery-ui-docs
++Replaces: libjs-jquery-ui-docs
+ Description: Documentation for JQuery-UI
+  jQuery UI provides abstractions for low-level interaction and
+  animation, advanced effects and high-level, themeable widgets,
