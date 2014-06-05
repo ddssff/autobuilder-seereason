@@ -5,7 +5,7 @@
  
  Library
 -  Build-depends:	mtl, haskell-src-exts >= 1.13 && < 1.14, utf8-string
-+  Build-depends:	mtl, haskell-src-exts >= 1.14, utf8-string
++  Build-depends:	mtl, haskell-src-exts >= 1.15, utf8-string
    if flag(base4)
      Build-depends:      base >= 4 && < 5
      cpp-options:        -DBASE4
@@ -67,3 +67,13 @@
    where fcuc= unlines $ filter (not . isPrefixOf "#") $ lines fc
  
  usageString :: String
+--- old/src/HSX/Transform.hs	2014-06-04 18:29:11.193594923 -0700
++++ new/src/HSX/Transform.hs	2014-06-04 18:39:37.401612414 -0700
+@@ -992,7 +992,6 @@
+     PWildCard          -> return p
+     PIrrPat p          -> tr1pat p PIrrPat (trPattern s)
+     PatTypeSig s p t   -> tr1pat p (\p -> PatTypeSig s p t) (trPattern s)
+-    PExplTypeArg _ _   -> return p
+     PQuasiQuote _ _    -> return p
+     PBangPat p         -> tr1pat p PBangPat (trPattern s)
+     PNPlusK _ _        -> return p

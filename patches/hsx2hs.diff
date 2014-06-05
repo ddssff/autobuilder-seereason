@@ -1,11 +1,24 @@
 --- old/hsx2hs.cabal	2014-02-18 21:18:09.000000000 -0800
 +++ new/hsx2hs.cabal	2014-02-19 06:08:14.222054803 -0800
-@@ -44,7 +44,7 @@
+@@ -42,9 +42,9 @@
+ 
+ Library
    Build-depends:	mtl              >= 2.0 && < 2.2,
-                         haskell-src-exts == 1.14.*,
+-                        haskell-src-exts == 1.14.*,
++                        haskell-src-exts >= 1.14,
                          haskell-src-meta >= 0.6,
 -                        template-haskell >= 2.7 && < 2.9,
 +                        template-haskell >= 2.7,
                          utf8-string      == 0.3.*
  
    if flag(base4)
+--- old/src/Language/Haskell/HSX/Transform.hs	2014-06-05 06:12:36.242773784 -0700
++++ new/src/Language/Haskell/HSX/Transform.hs	2014-06-05 06:14:52.182777581 -0700
+@@ -994,7 +994,6 @@
+     PWildCard          -> return p
+     PIrrPat p          -> tr1pat p PIrrPat (trPattern s)
+     PatTypeSig s p t   -> tr1pat p (\p -> PatTypeSig s p t) (trPattern s)
+-    PExplTypeArg _ _   -> return p
+     PQuasiQuote _ _    -> return p
+     PBangPat p         -> tr1pat p PBangPat (trPattern s)
+     PNPlusK _ _        -> return p
