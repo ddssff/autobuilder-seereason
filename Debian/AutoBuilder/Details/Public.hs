@@ -1263,7 +1263,7 @@ idris release =
                        `patch` $(embedFile "patches/idris.diff"))
         , hack "vector-binary-instances"
         , hack "trifecta"
-        , hack "parsers"
+        , debianize (hackage "parsers" `patch` $(embedFile "patches/parsers.diff"))
         , debianize (hackage "language-java" `flag` P.BuildDep "alex")
         , hack "cheapskate"
         , hack "annotated-wl-pprint"

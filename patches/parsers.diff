@@ -1,0 +1,40 @@
+--- old/src/Text/Parser/Combinators.hs.orig	2014-06-05 12:49:01.471438147 -0700
++++ new/src/Text/Parser/Combinators.hs	2014-06-05 13:05:14.635465329 -0700
+@@ -373,14 +373,6 @@
+   eof           = Parsec.eof
+   notFollowedBy = Parsec.notFollowedBy
+ 
+-instance Att.Chunk t => Parsing (Att.Parser t) where
+-  try             = Att.try
+-  (<?>)           = (Att.<?>)
+-  skipMany        = Att.skipMany
+-  skipSome        = Att.skipMany1
+-  unexpected      = fail
+-  eof             = Att.endOfInput
+-
+ instance Parsing ReadP.ReadP where
+   try        = id
+   (<?>)      = const
+--- old/src/Text/Parser/Char.hs	2014-06-05 13:16:33.407484288 -0700
++++ new/src/Text/Parser/Char.hs	2014-06-05 13:17:40.911486174 -0700
+@@ -342,11 +342,6 @@
+   anyChar   = Parsec.anyChar
+   string    = Parsec.string
+ 
+-instance Att.Chunk t => CharParsing (Att.Parser t) where
+-  satisfy p = fmap e2c $ Att.satisfyElem $ p . e2c
+-    where e2c = Att.chunkElemToChar (undefined :: t)
+-  {-# INLINE satisfy #-}
+-
+ instance CharParsing ReadP.ReadP where
+   satisfy   = ReadP.satisfy
+   char      = ReadP.char
+--- old/src/Text/Parser/Token.hs	2014-06-05 13:16:33.407484288 -0700
++++ new/src/Text/Parser/Token.hs	2014-06-05 13:18:41.399487863 -0700
+@@ -758,6 +758,4 @@
+ 
+ instance Parsec.Stream s m Char => TokenParsing (Parsec.ParsecT s u m)
+ 
+-instance Att.Chunk t => TokenParsing (Att.Parser t)
+-
+ instance TokenParsing ReadP.ReadP
