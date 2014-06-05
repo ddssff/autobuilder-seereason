@@ -925,7 +925,7 @@ happstack _home release =
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hslua")
     , debianize (hackage "pandoc"
-                   -- `patch` $(embedFile "patches/pandoc.diff")
+                   `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
                    `flag` P.BuildDep "alex"
                    `flag` P.BuildDep "happy")
@@ -1001,7 +1001,7 @@ authenticate _home release =
     , debianize (hackage "tagstream-conduit")
     , digestiveFunctors
     -- , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
-    , debianize (git "haskell-fb" "https://github.com/stepcut/fb")
+    , debianize (git "haskell-fb" "https://github.com/stepcut/fb" `patch` $(embedFile "patches/fb.diff"))
     , debianize (hackage "monad-logger")
     , debianize (hackage "monad-loops" `tflag` P.DebVersion "0.4.2-1")
     , debianize (hackage "fast-logger")
@@ -1189,8 +1189,7 @@ algebra release =
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
     , debianize (hackage "lens-family-th")
-    -- Version 1.6 waiting for lens-4.0
-    , debianize (hackage "linear" `pflag` P.CabalPin "1.4" {- `patch` $(embedFile "patches/linear.diff") -})
+    , debianize (hackage "linear")
 
     -- These five fail because representable-functors fails, it wasn't updated
     -- for the consolidation of comonad
