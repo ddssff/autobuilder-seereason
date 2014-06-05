@@ -15,8 +15,8 @@ module Debian.AutoBuilder.Details.Distros
     , isPrivateRelease
     ) where
 
--- | The ReleaseName type from the debian library - just a newtyped string.
 import Data.Char (toLower)
+-- The ReleaseName type from the debian library - just a newtyped string.
 import Debian.Release (ReleaseName(ReleaseName))
 
 data BaseRelease =
