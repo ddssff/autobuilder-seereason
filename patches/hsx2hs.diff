@@ -14,11 +14,13 @@
    if flag(base4)
 --- old/src/Language/Haskell/HSX/Transform.hs	2014-06-05 06:12:36.242773784 -0700
 +++ new/src/Language/Haskell/HSX/Transform.hs	2014-06-05 06:14:52.182777581 -0700
-@@ -994,7 +994,6 @@
+@@ -994,7 +994,9 @@
      PWildCard          -> return p
      PIrrPat p          -> tr1pat p PIrrPat (trPattern s)
      PatTypeSig s p t   -> tr1pat p (\p -> PatTypeSig s p t) (trPattern s)
--    PExplTypeArg _ _   -> return p
++#if !MIN_VERSION_haskell_src_exts(1,15,0)
+     PExplTypeArg _ _   -> return p
++#endif
      PQuasiQuote _ _    -> return p
      PBangPat p         -> tr1pat p PBangPat (trPattern s)
      PNPlusK _ _        -> return p
