@@ -877,7 +877,7 @@ happstack _home release =
         tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     P.Packages (singleton "happstack")
     [ plugins
-    , darcs "haskell-seereason-base" (repo ++ "/seereason-base")
+    , debianize (darcs "haskell-seereason-base" (repo ++ "/seereason-base"))
     , debianize (hackage "happstack" `patch` $(embedFile "patches/happstack.diff") `tflag` P.DebVersion "7.0.1-2build6")
     , debianize (darcs "haskell-happstack-foundation" (darcsHub ++ "/happstack") `cd` "happstack-foundation")
     , debianize (hackage "cryptohash-cryptoapi")
@@ -891,7 +891,7 @@ happstack _home release =
     , debianize (hackage "sourcemap")
     , debianize (hackage "haskell-packages")
     , debianize (hackage "hse-cpp")
-    , darcs "haskell-happstack-extra" (repo ++ "/happstack-extra")
+    , debianize (darcs "haskell-happstack-extra" (repo ++ "/happstack-extra"))
 {-  , debianize (git "haskell-haskell-names" "https://github.com/haskell-suite/haskell-names")
     , debianize (git "haskell-haskell-packages" "https://github.com/haskell-suite/haskell-packages")
     , debianize (git "haskell-hse-cpp" "https://github.com/haskell-suite/hse-cpp")
@@ -923,7 +923,6 @@ happstack _home release =
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
     -- use debianize for natty and apt:sid for lucid.
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
-    , debianize (hackage "hsx" `patch` $(embedFile "patches/hsx.diff"))
     , debianize (hackage "hslua")
     , debianize (hackage "pandoc"
                    -- `patch` $(embedFile "patches/pandoc.diff")
@@ -938,9 +937,7 @@ happstack _home release =
     , debianize (hackage "web-routes-hsp" `patch` $(embedFile "patches/web-routes-hsp.diff"))
     , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
     , debianize (hackage "web-routes-th")
-    -- Retired, should be withdrawn from repos
-    , darcs "haskell-formlets-hsp" (repo ++ "/formlets-hsp") `flag` P.SkipPackage
-    , darcs "haskell-happstack-scaffolding" (repo ++ "/happstack-scaffolding") -- Don't use Debianize here, it restores the doc package which crashes the build
+    , debianize (darcs "haskell-happstack-scaffolding" (repo ++ "/happstack-scaffolding"))
     , debianize (hackage "HJScript")
     , debianize (darcs "reform" (seereason ++ "/reform") `cd` "reform")
     , debianize (darcs "reform-blaze" (seereason </> "reform") `cd` "reform-blaze")
