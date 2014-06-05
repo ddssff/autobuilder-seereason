@@ -1302,7 +1302,7 @@ ghcjs release =
                        `flag` P.GitBranch "ghcjs"
                        `cd` "cabal-install"
                        `flag` P.NoDoc
-                       `flag` P.CabalDebian ["--executable", "cabal-install-ghcjs",
+                       `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
                                              "--conflicts=cabal-install-ghcjs:cabal-install",
                                              "--replaces=cabal-install-ghcjs:cabal-install",
                                              "--provides=cabal-install-ghcjs:cabal-install"])
