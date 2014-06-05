@@ -1,6 +1,19 @@
-diff -ru jqueryui.orig/jqueryui-1.8.ooops.21+dfsg/debian/control jqueryui/jqueryui-1.8.ooops.21+dfsg/debian/control
---- jqueryui.orig/jqueryui-1.8.ooops.21+dfsg/debian/control	2012-05-06 15:27:26.000000000 -0700
-+++ jqueryui/jqueryui-1.8.ooops.21+dfsg/debian/control	2014-06-05 06:37:41.000000000 -0700
+--- old/debian/changelog	2012-06-21 11:49:24.000000000 -0700
++++ new/debian/changelog	2014-06-05 10:40:08.299222146 -0700
+@@ -1,4 +1,4 @@
+-jqueryui (1.8.ooops.21+dfsg-2) unstable; urgency=low
++jqueryui18 (1.8.ooops.21+dfsg-2) unstable; urgency=low
+ 
+   * Minifying effects and UI files (Closes: #677619)
+ 
+--- old/debian/control	2012-05-06 15:27:26.000000000 -0700
++++ new/debian/control	2014-06-05 06:37:41.000000000 -0700
+@@ -1,4 +1,4 @@
+-Source: jqueryui
++Source: jqueryui18
+ Section: web
+ Priority: optional
+ Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
 @@ -9,21 +9,27 @@
  Vcs-Browser: http://git.debian.org/?p=pkg-javascript/jqueryui.git
  Vcs-Git: git://git.debian.org/pkg-javascript/jqueryui.git

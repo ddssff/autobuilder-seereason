@@ -623,7 +623,7 @@ main _home release =
                 , P.flags = [] }
     -- We want to stick with jqueryui-1.8 for now, so create
     -- packages with the version number embedded in the name.
-    , apt "wheezy" "jqueryui" `patch` $(embedFile "patches/jqueryui.diff")
+    , darcs "jqueryui" (localRepo </> "jqueryui18")
     , P.Package { P.name = "jcrop"
                 , P.spec = DebDir (Uri (repo </> "jcrop/Jcrop.tar.gz") "028feeb9b6415af3b7fd7d9471c92469") (Darcs (repo ++ "/jcrop-debian"))
                 , P.flags = [] }
