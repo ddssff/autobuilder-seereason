@@ -1,0 +1,11 @@
+--- old/clckwrks-plugin-ircbot.cabal	2014-05-30 16:18:27.256409980 -0700
++++ new/clckwrks-plugin-ircbot.cabal	2014-06-05 15:57:16.959753649 -0700
+@@ -41,7 +41,7 @@
+   Build-depends:
+     base                    < 5,
+     acid-state             >= 0.12 && < 0.13,
+-    attoparsec             >= 0.10 && < 0.12,
++    attoparsec             >= 0.10,
+     blaze-html             >= 0.5 && < 0.8,
+     bytestring             >= 0.10 && < 0.11,
+     clckwrks               >= 0.21 && < 0.23,

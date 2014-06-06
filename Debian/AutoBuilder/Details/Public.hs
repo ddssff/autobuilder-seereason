@@ -554,7 +554,7 @@ main _home release =
     -- , debianize (hackage "Elm")
     -- , debianize (hackage "elm-server" {- `patch` $(embedFile "patches/elm-server.diff") -})
     , debianize (hackage "gdiff")
-    , debianize (hackage "hjsmin")
+    , debianize (hackage "hjsmin" `patch` $(embedFile "patches/hjsmin.diff"))
     , debianize (hackage "unix-compat")
     , debianize (hackage "Unixutils-shadow")
     , debianize (hackage "unordered-containers")
@@ -834,9 +834,18 @@ clckwrks _home release =
                                           $(embedFile "patches/clckwrks.diff"))
                     , P.flags = [P.BuildDep "hsx2hs"] }
         , debianize (darcs "haskell-clckwrks-cli" repo `cd` "clckwrks-cli" {- `patch` $(embedFile "patches/clckwrks-cli.diff") -})
-        , debianize (darcs "haskell-clckwrks-plugin-bugs" repo `cd` "clckwrks-plugin-bugs" `flag` P.BuildDep "hsx2hs")
-        , debianize (darcs "haskell-clckwrks-plugin-media" repo `cd` "clckwrks-plugin-media" `flag` P.BuildDep "hsx2hs")
-        , debianize (darcs "haskell-clckwrks-plugin-ircbot" repo `cd` "clckwrks-plugin-ircbot" `flag` P.BuildDep "hsx2hs")
+        , debianize (darcs "haskell-clckwrks-plugin-bugs" repo
+                       `cd` "clckwrks-plugin-bugs"
+                       `patch` $(embedFile "patches/clckwrks-plugin-bugs.diff")
+                       `flag` P.BuildDep "hsx2hs")
+        , debianize (darcs "haskell-clckwrks-plugin-media" repo
+                       `cd` "clckwrks-plugin-media"
+                       `patch` $(embedFile "patches/clckwrks-plugin-media.diff")
+                       `flag` P.BuildDep "hsx2hs")
+        , debianize (darcs "haskell-clckwrks-plugin-ircbot" repo
+                       `cd` "clckwrks-plugin-ircbot"
+                       `patch` $(embedFile "patches/clckwrks-plugin-ircbot.diff")
+                       `flag` P.BuildDep "hsx2hs")
         , debianize (darcs "haskell-clckwrks-theme-bootstrap" repo `cd` "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
         , debianize (darcs "clckwrks-dot-com" repo `cd` "clckwrks-dot-com" `patch` $(embedFile "patches/clckwrks-dot-com.diff"))
         , debianize (darcs "haskell-clckwrks-theme-clckwrks" repo `cd` "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
@@ -844,8 +853,9 @@ clckwrks _home release =
         , debianize (hackage "hsx-jmacro")
         , debianize (hackage "monadlist")
         , debianize (darcs "haskell-clckwrks-plugin-page" repo
-                               `cd` "clckwrks-plugin-page"
-                               `flag` P.BuildDep "hsx2hs")
+                       `cd` "clckwrks-plugin-page"
+                       `patch` $(embedFile "patches/clckwrks-plugin-page.diff")
+                       `flag` P.BuildDep "hsx2hs")
         ]
 
 fay :: String -> Release -> P.Packages
@@ -1189,17 +1199,17 @@ algebra release =
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
     , debianize (hackage "lens-family-th")
-    , debianize (hackage "linear")
 
     -- These five fail because representable-functors fails, it wasn't updated
     -- for the consolidation of comonad
     {-
     , debianize (hackage "representable-functors" {- `patch` $(embedFile "patches/representable-functors.diff") -})
     , debianize (hackage "representable-tries")
-    , debianize (hackage "adjunctions")
     , debianize (hackage "algebra")
     , debianize (hackage "universe" {- `patch` $(embedFile "patches/universe.diff") -})
     -}
+    , debianize (hackage "adjunctions")
+    , debianize (hackage "linear")
 
     , debianize (hackage "semigroupoids"
                    `flag` P.CabalDebian [ "--conflicts=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"

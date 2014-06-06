@@ -1,3 +1,14 @@
+--- old/ghcjs.cabal	2014-06-05 15:07:30.495670232 -0700
++++ new/ghcjs.cabal	2014-06-05 15:12:35.259678745 -0700
+@@ -90,7 +90,7 @@
+                    aeson          >= 0.7      && < 0.8,
+                    text           >= 0.11     && < 1.2,
+                    wl-pprint-text >= 1.1      && < 1.2,
+-                   lens           >= 4.0      && < 4.2,
++                   lens           >= 4.0,
+                    yaml           >= 0.8      && < 0.9,
+                    time,
+                    system-filepath,
 --- old/src/Compiler/JMacro/Base.hs	2014-05-30 17:19:55.000000000 -0700
 +++ new/src/Compiler/JMacro/Base.hs	2014-05-30 17:35:47.724564505 -0700
 @@ -177,7 +177,7 @@

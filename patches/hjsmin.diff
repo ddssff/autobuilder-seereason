@@ -1,0 +1,11 @@
+--- old/hjsmin.cabal	2014-06-05 15:07:45.859670661 -0700
++++ new/hjsmin.cabal	2014-06-05 15:13:36.755680462 -0700
+@@ -44,7 +44,7 @@
+                  , text                 >= 0.8     && < 1.2
+                  , containers           >= 0.2     && < 0.6
+                  , language-javascript  >= 0.5.1   && < 0.6
+-                 , optparse-applicative >= 0.7     && < 0.9
++                 , optparse-applicative >= 0.7
+ 
+ Test-Suite test-hjsmin
+   Type: exitcode-stdio-1.0

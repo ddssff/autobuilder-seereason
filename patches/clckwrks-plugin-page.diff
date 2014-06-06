@@ -1,0 +1,11 @@
+--- old/clckwrks-plugin-page.cabal	2014-05-30 16:18:27.280409980 -0700
++++ new/clckwrks-plugin-page.cabal	2014-06-05 16:04:08.891765155 -0700
+@@ -41,7 +41,7 @@
+   build-depends:       base                   >= 4.3 && < 4.8,
+                        aeson                  >= 0.6 && < 0.8,
+                        acid-state             == 0.12.*,
+-                       attoparsec             >= 0.10 && < 0.12,
++                       attoparsec             >= 0.10,
+                        clckwrks               >= 0.21 && < 0.23,
+                        containers             >= 0.4 && < 0.6,
+                        directory              >= 1.1 && < 1.3,

@@ -1,0 +1,11 @@
+--- old/clckwrks-plugin-bugs.cabal	2014-05-30 16:18:27.236409979 -0700
++++ new/clckwrks-plugin-bugs.cabal	2014-06-05 16:05:32.655767495 -0700
+@@ -43,7 +43,7 @@
+   Build-depends:
+     base                    < 5,
+     acid-state             >= 0.12 && < 0.13,
+-    attoparsec             >= 0.10 && < 0.12,
++    attoparsec             >= 0.10,
+     clckwrks               >= 0.21 && < 0.23,
+     clckwrks-plugin-page   == 0.3.*,
+     cereal                 >= 0.4 && < 0.5,
