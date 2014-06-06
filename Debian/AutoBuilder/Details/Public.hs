@@ -1306,7 +1306,11 @@ ghcjs release =
   [ debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs" `patch` $(embedFile "patches/ghcjs.diff"))
   -- Don't upgrade cabal and cabal-install in precise until we
   -- establish they are reliable in trusty.
-  , pskip $ debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal" `flag` P.GitBranch "ghcjs" `cd` "Cabal" `flag` P.NoDoc)
+  , pskip $ debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal"
+                         `flag` P.GitBranch "ghcjs"
+                         `cd` "Cabal"
+                         `patch` $(embedFile "patches/cabal-ghcjs.diff")
+                         `flag` P.NoDoc)
   , pskip $ debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal"
                        `flag` P.GitBranch "ghcjs"
                        `cd` "cabal-install"
@@ -1314,7 +1318,10 @@ ghcjs release =
                        `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
                                              "--conflicts=cabal-install-ghcjs:cabal-install",
                                              "--replaces=cabal-install-ghcjs:cabal-install",
-                                             "--provides=cabal-install-ghcjs:cabal-install"])
+                                             "--provides=cabal-install-ghcjs:cabal-install",
+                                             "--conflicts=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
+                                             "--replaces=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
+                                             "--provides=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils"])
   , debianize (hackage "shelly")
   , debianize (hackage "text-binary")
   , debianize (hackage "enclosed-exceptions")

@@ -15,11 +15,6 @@
                         rts/idris_stdfgn.h
                         rts/libtest.c
  
-+                       libs/prelude/Prelude/*.ibc
-+                       libs/prelude/Decidable/*.ibc
-+                       libs/prelude/*.ibc
-+
-+                       libs/base/*.ibc
 +                       libs/base/Control/*.ibc
 +                       libs/base/Control/Isomorphism/*.ibc
 +                       libs/base/Control/Monad/*.ibc
@@ -27,21 +22,18 @@
 +                       libs/base/Data/Vect/*.ibc
 +                       libs/base/Debug/*.ibc
 +                       libs/base/Decidable/*.ibc
++                       libs/base/*.ibc
 +                       libs/base/Language/*.ibc
 +                       libs/base/Language/Reflection/*.ibc
 +                       libs/base/Network/*.ibc
-+                       libs/base/System/Concurrency/*.ibc
 +                       libs/base/Syntax/*.ibc
-+
-+
++                       libs/base/System/Concurrency/*.ibc
++                       libs/base/System/*.ibc
 +                       libs/effects/Effect/*.ibc
 +                       libs/effects/*.ibc
-+
-+                       libs/oldeffects/Effect/*.ibc
-+                       libs/oldeffects/*.ibc
-+
-+                       libs/javascript/*.ibc
-+                       libs/javascript/JavaScript/*.ibc
++                       libs/prelude/Decidable/*.ibc
++                       libs/prelude/*.ibc
++                       libs/prelude/Prelude/*.ibc
 +
  Extra-source-files:
                         Makefile
