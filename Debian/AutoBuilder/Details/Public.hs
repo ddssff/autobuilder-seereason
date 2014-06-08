@@ -1304,7 +1304,23 @@ ghcjs :: Release -> P.Packages
 ghcjs release =
   let pskip t = case baseRelease release of Precise -> P.NoPackage; _ -> t in
   P.Packages (singleton "agda") $
-  [ debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs" `patch` $(embedFile "patches/ghcjs.diff"))
+  [ debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs"
+                 `patch` $(embedFile "patches/ghcjs.diff")
+                 `flag` P.BuildDep "alex"
+                 `flag` P.BuildDep "happy"
+                 `flag` P.BuildDep "make"
+                 `flag` P.BuildDep "patch"
+                 `flag` P.BuildDep "autoconf"
+                 `flag` P.BuildDep "cpp"
+                 `flag` P.BuildDep "git"
+                 `flag` P.CabalDebian ["--default-package=ghcjs",
+                                       "--depends=ghcjs:alex",
+                                       "--depends=ghcjs:happy",
+                                       "--depends=ghcjs:make",
+                                       "--depends=ghcjs:patch",
+                                       "--depends=ghcjs:autoconf",
+                                       "--depends=ghcjs:cpp",
+                                       "--depends=ghcjs:git"])
   -- Don't upgrade cabal and cabal-install in precise until we
   -- establish they are reliable in trusty.
   , pskip $ debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal"
