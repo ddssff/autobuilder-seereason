@@ -303,6 +303,7 @@ main _home release =
     -- Darcs 2.8.1 won't build with the current version of haskeline.
     -- , apt "wheezy" "darcs" `patch` $(embedFile "patches/darcs.diff")
     , debianize (hackage "file-embed")
+    , debianize (hackage "filemanip" `tflag` P.DebVersion "0.3.6.2-3")
     , debianize (hackage "indents")
     , debianize (hackage "concatenative")
     , debianize (hackage "either")
