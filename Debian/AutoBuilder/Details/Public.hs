@@ -1304,8 +1304,15 @@ ghcjs :: Release -> P.Packages
 ghcjs release =
   let pskip t = case baseRelease release of Precise -> P.NoPackage; _ -> t in
   P.Packages (singleton "agda") $
-  [ debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs"
-                 `patch` $(embedFile "patches/ghcjs.diff")
+  [ darcs "ghcjs-boot" (repo </> "ghcjs-boot")
+      `flag` P.CabalDebian ["--depends=ghcjs-boot:nodejs"]
+  , debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs"
+                 `patch` $(embedFile "patches/ghcjs-ghc.diff")
+                 `patch` $(embedFile "patches/ghcjs-haddock.diff")
+                 `patch` $(embedFile "patches/ghcjs-cabal.diff")
+                 -- `patch` $(embedFile "patches/ghcjs-setup.diff")
+                 `patch` $(embedFile "patches/ghcjs-home.diff")
+                 -- `patch` $(embedFile "patches/ghcjs-debug.diff")
                  `flag` P.BuildDep "alex"
                  `flag` P.BuildDep "happy"
                  `flag` P.BuildDep "make"
@@ -1327,11 +1334,11 @@ ghcjs release =
                          `flag` P.GitBranch "ghcjs"
                          `cd` "Cabal"
                          `patch` $(embedFile "patches/cabal-ghcjs.diff")
+                         -- The doc package conflicts with ghc-doc
                          `flag` P.NoDoc)
   , pskip $ debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal"
                        `flag` P.GitBranch "ghcjs"
                        `cd` "cabal-install"
-                       `flag` P.NoDoc
                        `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
                                              "--conflicts=cabal-install-ghcjs:cabal-install",
                                              "--replaces=cabal-install-ghcjs:cabal-install",

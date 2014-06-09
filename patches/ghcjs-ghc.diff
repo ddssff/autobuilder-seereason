@@ -1,0 +1,35 @@
+--- old/src/Compiler/Program.hs	2014-06-07 05:57:25.651574955 -0700
++++ new/src/Compiler/Program.hs	2014-06-07 06:08:30.987593539 -0700
+@@ -667,7 +667,7 @@
+   , Flag "M"            (PassFlag (setMode doMkDependHSMode))
+   , Flag "E"            (PassFlag (setMode (stopBeforeMode anyHsc)))
+   , Flag "C"            (PassFlag (setMode (stopBeforeMode HCc)))
+-  , Flag "S"            (PassFlag (setMode (stopBeforeMode As)))
++  , Flag "S"            (PassFlag (setMode (stopBeforeMode (As False))))
+   , Flag "-make"        (PassFlag (setMode doMakeMode))
+   , Flag "-interactive" (PassFlag (setMode doInteractiveMode))
+   , Flag "-abi-hash"    (PassFlag (setMode doAbiHashMode))
+@@ -744,7 +744,7 @@
+         haskellish (f,Nothing) =
+           looksLikeModuleName f || isHaskellUserSrcFilename f || '.' `notElem` f
+         haskellish (_,Just phase) =
+-          phase `notElem` [As, Cc, Cobjc, Cobjcpp, CmmCpp, Cmm, StopLn]
++          phase `notElem` [As False, As True, Cc, Cobjc, Cobjcpp, CmmCpp, Cmm, StopLn]
+ 
+     hsc_env <- GHC.getSession
+ 
+--- old/src/Compiler/GhcjsHooks.hs	2014-06-07 05:57:25.651574955 -0700
++++ new/src/Compiler/GhcjsHooks.hs	2014-06-07 06:06:58.075590944 -0700
+@@ -149,10 +149,10 @@
+   | Just next <- lookup ph skipPhases = do
+     output <- phaseOutputFilename next
+     liftIO (copyFile input output)
+-    when (ph == As) (liftIO $ doFakeNative dflags (dropExtension output))
++    case ph of As _ -> (liftIO $ doFakeNative dflags (dropExtension output)); _ -> return ()
+     return (RealPhase next, output)
+   where
+-    skipPhases = [ (CmmCpp, Cmm), (Cmm, As), (As, StopLn) ]
++    skipPhases = [ (CmmCpp, Cmm), (Cmm, As False), (Cmm, As True), (As False, StopLn), (As True, StopLn) ]
+ 
+ -- otherwise use default
+ runGhcjsPhase _ _ p input dflags = runPhase p input dflags

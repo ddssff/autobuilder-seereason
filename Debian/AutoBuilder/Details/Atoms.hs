@@ -17,6 +17,7 @@ seereasonDefaultAtoms =
     do debianDefaultAtoms
 
        missingDependencies += BinPkgName "libghc-happstack-authenticate-9-doc"
+       missingDependencies += BinPkgName "libghc-cabal-ghcjs-doc"
 
        mapCabal (PackageName "clckwrks") "clckwrks"
        splitCabal (PackageName "clckwrks") "clckwrks-13" (Version [0, 14] [])
