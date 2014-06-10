@@ -169,9 +169,7 @@ main _home release =
                                          "--build-dep", "happy",
                                          "--revision", ""])
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
-    , debianize (hackage "aeson"
-                   `pflag` P.CabalPin "0.7.0.4" -- Waiting for scientific > 0.2
-                   {- `patch` $(embedFile "patches/aeson.diff") -})
+    , debianize (hackage "aeson")
     , darcs "haskell-agi" (repo </> "haskell-agi")
     , debianize (hackage "ansi-terminal")
     , debianize (hackage "ansi-wl-pprint" `tflag` P.DebVersion "0.6.7.1-1")
@@ -183,10 +181,8 @@ main _home release =
     , wskip $ debianize (hackage "attempt")
     , debianize (hackage "errors")
     , debianize (hackage "failure")
-    , debianize (hackage "attoparsec"
-                   `pflag` P.CabalPin "0.11.3.1"  -- waiting for scientific > 0.2
-                   {- `patch` $(embedFile "patches/attoparsec.diff") -})
-    , debianize (hackage "scientific" `pflag` P.CabalPin "0.2.0.2") -- waiting for a aeson > 0.7.0.4
+    , debianize (hackage "attoparsec")
+    , debianize (hackage "scientific")
     , debianize (hackage "arithmoi")
     , debianize (hackage "attoparsec-enumerator")
     -- This was merged into attoparsec
@@ -336,7 +332,7 @@ main _home release =
     , debianize (hackage "hashed-storage")
     , debianize (hackage "haskeline")
     , debianize (hackage "th-orphans")
-    , debianize (hackage "haskell-src-meta" `pflag` P.CabalPin "0.6.0.5") -- last version compatible with haskell-src-exts-1.14
+    , debianize (hackage "haskell-src-meta")
     -- Because we specify an exact debian version here, this package
     -- needs to be forced to rebuilt when its build dependencies (such
     -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -492,7 +488,6 @@ main _home release =
     -- Version 1.14, which is in darcs, is too new for the current haskell-src-meta and haskell-derive
     , debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
                  hackage "haskell-src-exts"
-                   `pflag` P.CabalPin "1.14.0.1" -- Waiting for newer haskell-src-meta, haskell-hsx, derive
                    `flag` P.BuildDep "happy")
     , debianize (hackage "stb-image")
     , debianize (hackage "strict"
@@ -749,7 +744,7 @@ platform release =
     , debianize (hackage "parallel")
     , debianize (hackage "syb")
     , debianize (hackage "fgl" `flag` P.CabalPin "5.5.0.1") -- Minimizing rebuild
-    , debianize (hackage "text" `pflag` P.CabalPin "1.1.1.1")
+    , debianize (hackage "text")
     , P.Package { P.name = "alex"
                 , P.spec = Debianize (Hackage "alex")
                   -- alex shouldn't rebuild just because alex seems newer, but alex does require
@@ -1195,7 +1190,7 @@ algebra release =
     , debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
     -- lens-4.0 depends on aeson >= 0.7, which is not in hackage yet.  Also, lens-3.10.2 depends on a version of
     -- monadcatchio-transformers<0.3.1, which is older than our oldest.
-    , debianize (hackage "lens" `pflag` P.CabalPin "4.1.2.1") -- waiting for aeson that can handle the newer version of scientific that lens-4.2 requires
+    , debianize (hackage "lens") -- waiting for aeson that can handle the newer version of scientific that lens-4.2 requires
     , debianize (hackage "constraints")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
@@ -1330,13 +1325,13 @@ ghcjs release =
                                        "--depends=ghcjs:git"])
   -- Don't upgrade cabal and cabal-install in precise until we
   -- establish they are reliable in trusty.
-  , pskip $ debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal"
+  , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal"
                          `flag` P.GitBranch "ghcjs"
                          `cd` "Cabal"
                          `patch` $(embedFile "patches/cabal-ghcjs.diff")
                          -- The doc package conflicts with ghc-doc
                          `flag` P.NoDoc)
-  , pskip $ debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal"
+  , debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal"
                        `flag` P.GitBranch "ghcjs"
                        `cd` "cabal-install"
                        `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
