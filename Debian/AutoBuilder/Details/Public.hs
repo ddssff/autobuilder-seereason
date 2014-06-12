@@ -13,7 +13,7 @@ import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Pa
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, GitBranch),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
-                                               rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, dir)
+                                               rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, InstallFile(..), (~=), (+++=))
 import Debian.Relation (BinPkgName(..))
 import System.FilePath((</>))
@@ -1299,14 +1299,26 @@ ghcjs :: Release -> P.Packages
 ghcjs release =
   let pskip t = case baseRelease release of Precise -> P.NoPackage; _ -> t in
   P.Packages (singleton "agda") $
-  [ darcs "ghcjs-boot" (repo </> "ghcjs-boot")
-      `flag` P.CabalDebian ["--depends=ghcjs-boot:nodejs"]
+  [ debdir (git "ghcjs-boot" "https://github.com/ghcjs/ghcjs") (Darcs (repo </> "ghcjs-boot"))
+      `flag` P.CabalDebian ["--depends=ghcjs-boot:ghcjs",
+                            "--depends=ghcjs-boot:cabal-install-ghcjs",
+                            "--depends=ghcjs-boot:nodejs",
+                            "--provides=ghcjs-boot:libghc-ghcjs-base-dev",
+                            "--provides=ghcjs-boot:libghc-ghcjs-base-prof",
+                            "--provides=ghcjs-boot:libghc-ghcjs-base-doc"]
+      -- `patch` $(embedFile "patches/ghcjs-boot.diff")
+      `patch` $(embedFile "patches/ghcjs-ghc.diff")
+      `patch` $(embedFile "patches/ghcjs-haddock.diff")
+      `patch` $(embedFile "patches/ghcjs-cabal.diff")
+      -- `patch` $(embedFile "patches/ghcjs-home.diff")
+  , debianize (git "ghcjs-base" "https://github/ghcjs/ghcjs-base")
+  , debianize (hackage "ghcjs-dom"
+                 `flag` P.BuildDep "ghcjs-boot")
   , debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs"
                  `patch` $(embedFile "patches/ghcjs-ghc.diff")
                  `patch` $(embedFile "patches/ghcjs-haddock.diff")
                  `patch` $(embedFile "patches/ghcjs-cabal.diff")
-                 -- `patch` $(embedFile "patches/ghcjs-setup.diff")
-                 `patch` $(embedFile "patches/ghcjs-home.diff")
+                 -- `patch` $(embedFile "patches/ghcjs-home.diff")
                  -- `patch` $(embedFile "patches/ghcjs-debug.diff")
                  `flag` P.BuildDep "alex"
                  `flag` P.BuildDep "happy"
