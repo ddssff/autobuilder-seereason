@@ -43,7 +43,8 @@ applications _home =
     , debianize (darcs "haskell-appraisalscribe-data" (privateRepo </> "appraisalscribe-data"))
     , debianize (darcs "haskell-appraisalscribe-data-unstable" (privateRepo </> "appraisalscribe-data-unstable"))
     , darcs "haskell-seereason" (privateRepo </> "seereason")
-    , darcs "haskell-happstack-ontology" (privateRepo </> "happstack-ontology")
+    , debianize (darcs "haskell-happstack-ontology" (privateRepo </> "happstack-ontology")
+                   `flag` P.BuildDep "hsx2hs")
     -- Obsolete
     -- , darcs "haskell-creativeprompts" (privateRepo </> "creativeprompts")
     -- There is a debianization in the repo that contains this file
