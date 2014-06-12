@@ -731,6 +731,7 @@ platform release =
       -- work with ghc 7.4.1.  Note that this is also the first target
       -- to require the new "install orig.tar.gz file" code in the
       -- autobuilder.
+      broken $
       P.Package { P.name = "happy",
                   P.spec = DebDir (Hackage "happy") (Darcs (repo </> "happy-debian")),
                   P.flags = [P.RelaxDep "happy", P.CabalDebian ["--executable", "happy"],
