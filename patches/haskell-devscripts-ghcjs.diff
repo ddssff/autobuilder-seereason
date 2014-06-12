@@ -1,0 +1,114 @@
+diff -ur haskell-devscripts-0.8.21/dh_haskell_depends haskell-devscripts-0.8.21.new/dh_haskell_depends
+--- haskell-devscripts-0.8.21/dh_haskell_depends	2014-06-08 11:09:15.000000000 -0500
++++ haskell-devscripts-0.8.21.new/dh_haskell_depends	2014-06-11 13:36:50.667669601 -0500
+@@ -118,6 +118,16 @@
+             echo "haskell:Recommends=" >> $sfile.tmp
+             echo "haskell:Suggests=" >> $sfile.tmp
+ 	    ;;
++	libghcjs-*)
++	    grep -v \
++                -e ^haskell:Depends \
++                -e ^haskell:Recommends \
++                -e ^haskell:Suggests \
++                $sfile > $sfile.tmp || true
++	    echo "haskell:Depends=`depends_for_ghcjs`" >> $sfile.tmp
++            echo "haskell:Recommends=" >> $sfile.tmp
++            echo "haskell:Suggests=" >> $sfile.tmp
++	    ;;
+         libghc-*-doc|haskell-*-doc)
+ 	    grep -v \
+                 -e ^haskell:Depends \
+diff -ur haskell-devscripts-0.8.21/Dh_Haskell.sh haskell-devscripts-0.8.21.new/Dh_Haskell.sh
+--- haskell-devscripts-0.8.21/Dh_Haskell.sh	2013-07-21 12:18:14.000000000 -0500
++++ haskell-devscripts-0.8.21.new/Dh_Haskell.sh	2014-06-11 11:56:45.243822321 -0500
+@@ -191,6 +191,14 @@
+     echo "hugs (>= $upstream_version)"
+ }
+ 
++depends_for_ghcjs(){
++    local version
++    local upstream_version
++    version=`dpkg-query --showformat='${Version}' -W ghcjs`
++    upstream_version=`echo $version | sed -e 's/-[^-]*$//'`
++    echo "ghcjs (>= $upstream_version)"
++}
++
+ find_config_for_ghc(){
+     local f
+     local pkg
+diff -ur haskell-devscripts-0.8.21/dh_haskell_shlibdeps.pod haskell-devscripts-0.8.21.new/dh_haskell_shlibdeps.pod
+--- haskell-devscripts-0.8.21/dh_haskell_shlibdeps.pod	2014-06-01 14:20:03.000000000 -0500
++++ haskell-devscripts-0.8.21.new/dh_haskell_shlibdeps.pod	2014-06-11 11:48:54.779630378 -0500
+@@ -28,6 +28,9 @@
+ hugs and ghc are the only supported targets at the moment.  Cabal does
+ not yet support nhc98.
+ 
++ghcjs support has been added experimentally to cabal, so experimental
++support has been added here as well.
++
+ =head1 SEE ALSO
+ 
+ L<dh_haskell_depends(1)>
+diff -ur haskell-devscripts-0.8.21/hlibrary.mk haskell-devscripts-0.8.21.new/hlibrary.mk
+--- haskell-devscripts-0.8.21/hlibrary.mk	2014-06-08 10:46:33.000000000 -0500
++++ haskell-devscripts-0.8.21.new/hlibrary.mk	2014-06-11 12:20:06.884402831 -0500
+@@ -95,8 +95,8 @@
+ 
+ clean::
+ 	[ ! -x "$(DEB_SETUP_BIN_NAME)" ] || $(DEB_SETUP_BIN_NAME) clean
+-	rm -rf dist dist-ghc dist-hugs $(DEB_SETUP_BIN_NAME) Setup.hi Setup.ho Setup.o .*config*
+-	rm -f configure-ghc-stamp build-ghc-stamp build-hugs-stamp build-haddock-stamp
++	rm -rf dist dist-ghc dist-hugs dist-ghcjs $(DEB_SETUP_BIN_NAME) Setup.hi Setup.ho Setup.o .*config*
++	rm -f configure-ghc-stamp build-ghc-stamp build-hugs-stamp build-ghcjs-stamp build-haddock-stamp
+ 	rm -rf debian/tmp-inst-ghc
+ 	rm -f debian/extra-depends
+ 	rm -f debian/libghc-$(CABAL_PACKAGE)-doc.links
+@@ -150,6 +150,12 @@
+ build/libhugs-$(CABAL_PACKAGE):: dist-hugs
+ 	$(DEB_SETUP_BIN_NAME) build --builddir=dist-hugs
+ 
++dist-ghcjs: $(DEB_SETUP_BIN_NAME)
++	$(DEB_SETUP_BIN_NAME) configure --ghcjs --prefix=/usr -v2 --builddir=dist-ghcjs $(DEB_SETUP_GHCJS_CONFIGURE_ARGS)
++
++build/libghcjs-$(CABAL_PACKAGE):: dist-ghcjs
++	$(DEB_SETUP_BIN_NAME) build --builddir=dist-ghcjs
++
+ debian/tmp-inst-ghc: $(DEB_SETUP_BIN_NAME) build-ghc-stamp
+ 	$(DEB_SETUP_BIN_NAME) copy --builddir=dist-ghc --destdir=debian/tmp-inst-ghc
+ 
+@@ -201,6 +207,11 @@
+ 	rm -rf debian/libhugs-$(CABAL_PACKAGE)/usr/share/doc/*
+ 	dh_haskell_depends -p$(notdir $@)
+ 
++install/libghcjs-$(CABAL_PACKAGE):: $(DEB_SETUP_BIN_NAME) dist-ghcjs debian/extra-depends
++	$(DEB_SETUP_BIN_NAME) copy --destdir=debian/libghcjs-$(CABAL_PACKAGE) --builddir=dist-ghcjs
++	rm -rf debian/libghcjs-$(CABAL_PACKAGE)/usr/share/doc/*
++	dh_haskell_depends -p$(notdir $@)
++
+ # Run dh_haskell_blurbs on all packags, useful e.g. for binary packages
+ $(patsubst %,install/%,$(DEB_PACKAGES)) :: install/%:
+ 	dh_haskell_blurbs -p$(cdbs_curpkg)
+diff -ur haskell-devscripts-0.8.21/README haskell-devscripts-0.8.21.new/README
+--- haskell-devscripts-0.8.21/README	2013-07-21 12:18:14.000000000 -0500
++++ haskell-devscripts-0.8.21.new/README	2014-06-11 11:54:29.291771520 -0500
+@@ -34,6 +34,11 @@
+ maybe it should be Architecture: any (please let me know if you have
+ an answer to that).
+ 
++If you build a GHCJS package, name it libghcjs-<name>.  Most GHCJS packages
++should be Architecture: all.  If your package uses foreign methods,
++maybe it should be Architecture: any (please let me know if you have
++an answer to that).
++
+ dh_haskell assumes that the Haskell Cabal (see www.haskell.org/cabal) can
+ be used to build your package.  It obtains package name and version
+ information from the Cabal file.
+@@ -64,6 +69,8 @@
+ hugs and ghc are the only supported targets at the moment.  Cabal does
+ not yet support nhc98.
+ 
++Experimental ghcjs support added.
++
+ SEE ALSO
+ --------
+ 

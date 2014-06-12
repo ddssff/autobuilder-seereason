@@ -1,5 +1,5 @@
 {-# LANGUAGE MultiWayIf, OverloadedStrings, TemplateHaskell #-}
-{-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
+{-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-unused-imports -fno-warn-name-shadowing #-}
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
 import Data.FileEmbed (embedFile)
@@ -9,9 +9,9 @@ import Data.Set as Set (empty, singleton)
 import Debian.AutoBuilder.Details.Common (repo)
 import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..), Release(..))
 import Debian.AutoBuilder.Details.GHC (ghc)
-import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Proc),
+import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Proc, Git, Dir),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
-                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, GitBranch),
+                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, NoHoogle, GitBranch),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, InstallFile(..), (~=), (+++=))
@@ -684,12 +684,26 @@ relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
 
 compiler :: Release -> P.Packages
 compiler release =
-    case baseRelease release of
-      Precise -> P.Packages (singleton "ghc") [ghc, devscripts]
-      _ -> P.Packages (singleton "ghc") [ghc, devscripts]
+    P.Packages (singleton "ghc") [ghc, devscripts]
     where
-      ghc78 = proc (apt "experimental" "ghc" `patch` $(embedFile "patches/trac8768.diff"))
-      ghc76 = apt "sid" "ghc" -- As of 8 Jun 2013 this contains 7.6.3-3.  As of 13 Feb 2014 it contains 7.6.3-6.
+      ghc = case baseRelease release of
+              Squeeze ->
+                  -- This might also work for 7.8
+                  ghcFlags ghc76 `patch` $(embedFile "patches/ghc.diff") <>
+                  apt "wheezy" "po4a" <>
+                  apt "wheezy" "debhelper" `patch` $(embedFile "patches/debhelper.diff") <>
+                  apt "wheezy" "dpkg" `patch` $(embedFile "patches/dpkg.diff") <>
+                  apt "wheezy" "makedev"
+              _ -> ghcFlags ghc78
+      devscripts =
+          apt "sid" "haskell-devscripts"
+              `patch` $(embedFile "patches/haskell-devscripts-ghcjs.diff")
+              `flag` P.RelaxDep "python-minimal"
+      -- Pin ghc to revision 3, revision 4 still conflicts with
+      -- libghc-cabal-dev so it doesn't buy us anything.  Watch for
+      -- revision 5.
+      ghc78 = proc (apt "experimental" "ghc=7.8.20140411-5" `patch` $(embedFile "patches/trac8768.diff"))
+      ghc76 = apt "sid" "ghc" -- up to revision 13 now
       ghcFlags p = p `relax` "ghc"
                      `relax` "happy"
                      `relax` "alex"
@@ -698,21 +712,6 @@ compiler release =
                      `relax` "quilt"
                      `relax` "python-minimal"
                      `relax` "libgmp-dev"
-      ghc = case baseRelease release of
-              -- "precise-seereason" -> ghcFlags ghc76 `flag` P.DebVersion "7.6.3-3" -- pin to avoid massive rebuild
-              Squeeze ->
-                  ghcFlags ghc76 `patch` $(embedFile "patches/ghc.diff") <>
-                  apt "wheezy" "po4a" <>
-                  apt "wheezy" "debhelper" `patch` $(embedFile "patches/debhelper.diff") <>
-                  apt "wheezy" "dpkg" `patch` $(embedFile "patches/dpkg.diff") <>
-                  apt "wheezy" "makedev"
-              _ -> ghcFlags ghc78
-
-      devscripts =
-          P.Package { P.name = "haskell-devscripts"
-                    , P.spec = Apt "sid" "haskell-devscripts"
-                    , P.flags = [P.RelaxDep "python-minimal"] }
-      -- haskell-devscripts-0.8.13 is for ghc-7.6 only
       squeezeRelax = case baseRelease release of Squeeze -> relax; _ -> \ p _ -> p
       squeezePatch = case baseRelease release of Squeeze -> patch; _ -> \ p _ -> p
       wskip t = case baseRelease release of Wheezy -> P.NoPackage; _ -> t

@@ -1,5 +1,5 @@
--- | Specific information about support distributions and releases
--- thereof.
+-- | Specific information about supported Debian-based distributions
+-- and releases thereof.
 module Debian.AutoBuilder.Details.Distros
     ( BaseRelease(..)
     , baseReleaseDistro
@@ -28,7 +28,8 @@ data BaseRelease =
     | Wheezy -- 2013/5
     | Jessie -- unreleased as of 2014/6
     | Sid -- always current
-    | Experimental -- always current
+    | Experimental -- always current (but actually not a base release,
+                   -- not complete.  Is experimental an add-on to sid?)
     -- Ubuntu releases
     | Dapper -- 2006/10
     | Edgy -- 2007/4
