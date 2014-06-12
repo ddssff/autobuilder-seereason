@@ -953,9 +953,7 @@ happstack _home release =
     , debianize (hackage "blaze-builder")
     , debianize (hackage "blaze-markup")
     -- , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
-    , debianize (hackage "blaze-builder-enumerator"
-                   `pflag` P.DebVersion "0.2.0.5-1~hackage1"
-                   `tflag` P.DebVersion "0.2.0.5-3build2")
+    , debianize (hackage "blaze-builder-enumerator")
     , debianize (hackage "blaze-from-html")
     , debianize (hackage "blaze-html")
     , debianize (hackage "blaze-textual")
