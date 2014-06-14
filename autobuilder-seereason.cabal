@@ -56,7 +56,7 @@ Executable autobuilder-seereason
      if flag (local-debian-repo)
        Build-Depends: bzlib, data-lens-template, deepseq, old-locale, old-time, template-haskell
        if flag (local-cabal-debian)
-         Build-Depends: Diff, hsemail, parsec, regex-tdfa, set-extra, syb
+         Build-Depends: Diff, hsemail, parsec, regex-tdfa, set-extra, syb, memoize
          Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen, ../debian-tools/debian-repo, ../debian-tools/cabal-debian/src
        else
          Build-Depends: cabal-debian >= 4.7

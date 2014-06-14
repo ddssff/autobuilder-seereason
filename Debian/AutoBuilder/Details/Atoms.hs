@@ -9,6 +9,7 @@ import Debian.Debianize.Details (debianDefaultAtoms)
 import Debian.Debianize.Types.Atoms as T (missingDependencies)
 import Debian.Debianize.Monad (DebT)
 import Debian.Debianize.Prelude ((+=))
+import Debian.Debianize.VersionSplits (DebBase(DebBase))
 import Debian.Relation (BinPkgName(BinPkgName))
 import Distribution.Package (PackageName(PackageName))
 
@@ -19,25 +20,25 @@ seereasonDefaultAtoms =
        missingDependencies += BinPkgName "libghc-happstack-authenticate-9-doc"
        missingDependencies += BinPkgName "libghc-cabal-ghcjs-doc"
 
-       mapCabal (PackageName "clckwrks") "clckwrks"
-       splitCabal (PackageName "clckwrks") "clckwrks-13" (Version [0, 14] [])
-       splitCabal (PackageName "clckwrks") "clckwrks-14" (Version [0, 15] [])
+       mapCabal (PackageName "clckwrks") (DebBase "clckwrks")
+       splitCabal (PackageName "clckwrks") (DebBase "clckwrks-13") (Version [0, 14] [])
+       splitCabal (PackageName "clckwrks") (DebBase "clckwrks-14") (Version [0, 15] [])
 
-       mapCabal (PackageName "blaze-html") "blaze-html"
-       splitCabal (PackageName "blaze-html") "blaze-html-5" (Version [0, 6] [])
+       mapCabal (PackageName "blaze-html") (DebBase "blaze-html")
+       splitCabal (PackageName "blaze-html") (DebBase "blaze-html-5") (Version [0, 6] [])
 
-       mapCabal (PackageName "happstack-authenticate") "happstack-authenticate"
-       splitCabal (PackageName "happstack-authenticate") "happstack-authenticate-9" (Version [0, 10] [])
+       mapCabal (PackageName "happstack-authenticate") (DebBase "happstack-authenticate")
+       splitCabal (PackageName "happstack-authenticate") (DebBase "happstack-authenticate-9") (Version [0, 10] [])
 
-       mapCabal (PackageName "http-types") "http-types"
-       splitCabal (PackageName "http-types") "http-types-7" (Version [0, 8] [])
+       mapCabal (PackageName "http-types") (DebBase "http-types")
+       splitCabal (PackageName "http-types") (DebBase "http-types-7") (Version [0, 8] [])
 
-       mapCabal (PackageName "web-plugins") "web-plugins"
-       splitCabal (PackageName "web-plugins") "web-plugins-1" (Version [0, 2] [])
+       mapCabal (PackageName "web-plugins") (DebBase "web-plugins")
+       splitCabal (PackageName "web-plugins") (DebBase "web-plugins-1") (Version [0, 2] [])
 
-       mapCabal (PackageName "case-insensitive") "case-insensitive"
-       splitCabal (PackageName "case-insensitive") "case-insensitive-0" (Version [1] [])
+       mapCabal (PackageName "case-insensitive") (DebBase "case-insensitive")
+       splitCabal (PackageName "case-insensitive") (DebBase "case-insensitive-0") (Version [1] [])
 
        -- We build special versions of cabal and cabal-install to support the ghcjs compiler
-       mapCabal (PackageName "Cabal") "cabal-ghcjs"
-       mapCabal (PackageName "cabal-install") "cabal-install-ghcjs"
+       mapCabal (PackageName "Cabal") (DebBase "cabal-ghcjs")
+       mapCabal (PackageName "cabal-install") (DebBase "cabal-install-ghcjs")
