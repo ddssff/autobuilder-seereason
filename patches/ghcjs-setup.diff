@@ -1,0 +1,52 @@
+--- old/Setup.hs	2014-06-15 08:52:14.889705140 -0700
++++ new/Setup.hs	2014-06-15 11:06:55.929930858 -0700
+@@ -1,20 +1,29 @@
++import Data.Char (toLower)
++import Data.List (intercalate)
++import Data.Maybe (mapMaybe)
++import Debian.Relation (BinPkgName(..))
+ import Distribution.Simple (defaultMainWithHooks, simpleUserHooks, hookedPrograms, UserHooks(..))
+ import Distribution.Simple.Program.Types (simpleProgram)
+ import Distribution.Simple.Setup (CopyDest(..), installVerbosity, copyVerbosity, fromFlag)
+ import Distribution.Simple.Utils (createDirectoryIfMissingVerbose, installOrdinaryFile)
+ import Distribution.Simple.LocalBuildInfo (buildDir, absoluteInstallDirs, InstallDirs(..), LocalBuildInfo(..))
+ import Distribution.PackageDescription (PackageDescription(..), BuildInfo(..), Executable(..))
++import System.Environment (setEnv)
+ import System.FilePath ((</>))
+-import System.Process (rawSystem)
++import System.Process (rawSystem, readProcess)
+ import Control.Monad (when)
+ import Data.Maybe (maybe, listToMaybe)
++import Text.Regex.TDFA
+ 
+ main = defaultMainWithHooks simpleUserHooks
+          { hookedPrograms = [simpleProgram "java"]
+          , postInst       = ghcjsPostInst
+          }
+ 
+-ghcjsPostInst _ _ pkgDesc lbi = when doBoot (autoboot >> return ())
++ghcjsPostInst _ _ pkgDesc lbi = do
++  pkgs <- hcProvides
++  appendFile "debian/ghcjs.substvars" ("haskell:provides=" ++ intercalate ", " (map (\ (BinPkgName name) -> name) pkgs))
++  when doBoot (autoboot >> return ())
+   where
+     ghcjsexe = listToMaybe $ filter (\(Executable s _ _) -> s == "ghcjs") 
+                  (executables . localPkgDescr $ lbi)
+@@ -22,3 +31,17 @@
+ 
+ autoboot = rawSystem "ghcjs-boot" ["--auto"] -- fixme make sure that the one from the current install is being run
+ 
++-- Find the list of libraries built into ghcjs, turn them into debian
++-- virtual package names, and append an assignment to variable
++-- haskell:provides into the ghcjs.substvars file.
++hcProvides :: IO [BinPkgName]
++hcProvides = do
++  setEnv "HOME" "/homedoesnotexistatbuildtime"
++  readProcess "ghcjs-pkg" ["list", "-v2"] "" >>= return . concatMap parseLib . lines
++    where
++      parseLib :: String -> [BinPkgName]
++      parseLib s = case s =~ "^.*\\((.*)-([0-9.]*)-(.....)...........................\\)$" :: (String, String, String, [String]) of
++                     (_, _, _, [name,ver,sum]) ->
++                         [BinPkgName ("libghcjs-" ++ map toLower name ++ "-dev"),
++                          BinPkgName ("libghcjs-" ++ map toLower name ++ "-dev-" ++ ver ++ "-" ++ sum)]
++                     _ -> []

@@ -1297,45 +1297,10 @@ ghcjs :: Release -> P.Packages
 ghcjs release =
   let pskip t = case baseRelease release of Precise -> P.NoPackage; _ -> t in
   P.Packages (singleton "agda") $
-  [ debdir (git "ghcjs-boot" "https://github.com/ghcjs/ghcjs") (Darcs (repo </> "ghcjs-boot"))
-      `flag` P.CabalDebian ["--depends=ghcjs-boot:ghcjs",
-                            "--depends=ghcjs-boot:cabal-install-ghcjs",
-                            "--depends=ghcjs-boot:nodejs",
-                            "--provides=ghcjs-boot:libghc-ghcjs-base-dev",
-                            "--provides=ghcjs-boot:libghc-ghcjs-base-prof",
-                            "--provides=ghcjs-boot:libghc-ghcjs-base-doc"]
-      -- `patch` $(embedFile "patches/ghcjs-boot.diff")
-      `patch` $(embedFile "patches/ghcjs-ghc.diff")
-      `patch` $(embedFile "patches/ghcjs-haddock.diff")
-      `patch` $(embedFile "patches/ghcjs-cabal.diff")
-      -- `patch` $(embedFile "patches/ghcjs-home.diff")
-  , debianize (git "ghcjs-base" "https://github/ghcjs/ghcjs-base")
-  , debianize (hackage "ghcjs-dom"
-                 `flag` P.BuildDep "ghcjs-boot")
-  , debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs"
-                 `patch` $(embedFile "patches/ghcjs-ghc.diff")
-                 `patch` $(embedFile "patches/ghcjs-haddock.diff")
-                 `patch` $(embedFile "patches/ghcjs-cabal.diff")
-                 -- `patch` $(embedFile "patches/ghcjs-home.diff")
-                 -- `patch` $(embedFile "patches/ghcjs-debug.diff")
-                 `flag` P.BuildDep "alex"
-                 `flag` P.BuildDep "happy"
-                 `flag` P.BuildDep "make"
-                 `flag` P.BuildDep "patch"
-                 `flag` P.BuildDep "autoconf"
-                 `flag` P.BuildDep "cpp"
-                 `flag` P.BuildDep "git"
-                 `flag` P.CabalDebian ["--default-package=ghcjs",
-                                       "--depends=ghcjs:alex",
-                                       "--depends=ghcjs:happy",
-                                       "--depends=ghcjs:make",
-                                       "--depends=ghcjs:patch",
-                                       "--depends=ghcjs:autoconf",
-                                       "--depends=ghcjs:cpp",
-                                       "--depends=ghcjs:git"])
   -- Don't upgrade cabal and cabal-install in precise until we
   -- establish they are reliable in trusty.
-  , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal"
+  [ -- Start with tools required to build ghcjs
+    debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal"
                          `flag` P.GitBranch "ghcjs"
                          `cd` "Cabal"
                          `patch` $(embedFile "patches/cabal-ghcjs.diff")
@@ -1355,6 +1320,37 @@ ghcjs release =
   , debianize (hackage "text-binary")
   , debianize (hackage "enclosed-exceptions")
   , debianize (hackage "lifted-async")
+  -- ghcjs tools, including the compiler wrapper /usr/bin/ghcjs
+  , debianize (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs"
+                 `patch` $(embedFile "patches/ghcjs-ghc.diff")
+                 `patch` $(embedFile "patches/ghcjs-haddock.diff")
+                 `patch` $(embedFile "patches/ghcjs-cabal.diff")
+                 -- `patch` $(embedFile "patches/ghcjs-home.diff")
+                 -- `patch` $(embedFile "patches/ghcjs-debug.diff")
+                 `flag` P.BuildDep "alex"
+                 `flag` P.BuildDep "happy"
+                 `flag` P.BuildDep "make"
+                 `flag` P.BuildDep "patch"
+                 `flag` P.BuildDep "autoconf"
+                 `flag` P.BuildDep "cpp"
+                 `flag` P.BuildDep "git"
+                 `flag` P.CabalDebian ["--default-package=ghcjs-tools",
+                                       "--depends=ghcjs-tools:alex",
+                                       "--depends=ghcjs-tools:happy",
+                                       "--depends=ghcjs-tools:make",
+                                       "--depends=ghcjs-tools:patch",
+                                       "--depends=ghcjs-tools:autoconf",
+                                       "--depends=ghcjs-tools:cpp",
+                                       "--depends=ghcjs-tools:git"])
+  , debdir (git "ghcjs" "https://github.com/ghcjs/ghcjs") (Darcs (repo </> "ghcjs-boot"))
+      `patch` $(embedFile "patches/ghcjs-ghc.diff")
+      `patch` $(embedFile "patches/ghcjs-haddock.diff")
+      `patch` $(embedFile "patches/ghcjs-cabal.diff")
+      `patch` $(embedFile "patches/ghcjs-setup.diff")
+  , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base")
+  , debianize (hackage "ghcjs-dom"
+                 `patch` $(embedFile "patches/ghcjs-dom.diff")
+                 `flag` P.BuildDep "ghcjs-boot")
   ]
     where git' n r = debianize $ git n r
 
