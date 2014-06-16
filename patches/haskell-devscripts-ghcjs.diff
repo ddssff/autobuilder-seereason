@@ -1,6 +1,19 @@
-diff -ur haskell-devscripts-0.8.21/dh_haskell_depends haskell-devscripts-0.8.21.new/dh_haskell_depends
---- haskell-devscripts-0.8.21/dh_haskell_depends	2014-06-08 11:09:15.000000000 -0500
-+++ haskell-devscripts-0.8.21.new/dh_haskell_depends	2014-06-11 13:36:50.667669601 -0500
+diff -rN -u old-haskell-devscripts/debian/changelog new-haskell-devscripts/debian/changelog
+--- old-haskell-devscripts/debian/changelog	2014-06-16 15:28:00.844781709 -0700
++++ new-haskell-devscripts/debian/changelog	2014-06-16 15:28:00.848781710 -0700
+@@ -1,3 +1,9 @@
++haskell-devscripts (0.8.21-1) unstable; urgency=low
++
++  * Added ghcjs support.
++
++ -- David Fox <dsf@seereason.com>  Mon, 16 Jun 2014 09:51:30 -0700
++
+ haskell-devscripts (0.8.21) unstable; urgency=medium
+ 
+   * Install hoogle .txt files to DEB_HOOGLE_TXT_DIR with a filename derived
+diff -rN -u old-haskell-devscripts/dh_haskell_depends new-haskell-devscripts/dh_haskell_depends
+--- old-haskell-devscripts/dh_haskell_depends	2014-06-16 15:28:00.844781709 -0700
++++ new-haskell-devscripts/dh_haskell_depends	2014-06-16 15:28:00.852781710 -0700
 @@ -118,6 +118,16 @@
              echo "haskell:Recommends=" >> $sfile.tmp
              echo "haskell:Suggests=" >> $sfile.tmp
@@ -11,34 +24,106 @@ diff -ur haskell-devscripts-0.8.21/dh_haskell_depends haskell-devscripts-0.8.21.
 +                -e ^haskell:Recommends \
 +                -e ^haskell:Suggests \
 +                $sfile > $sfile.tmp || true
-+	    echo "haskell:Depends=`depends_for_ghcjs`" >> $sfile.tmp
++	    HC=ghcjs echo "haskell:Depends=`depends_for_ghc`" >> $sfile.tmp
 +            echo "haskell:Recommends=" >> $sfile.tmp
 +            echo "haskell:Suggests=" >> $sfile.tmp
 +	    ;;
          libghc-*-doc|haskell-*-doc)
  	    grep -v \
                  -e ^haskell:Depends \
-diff -ur haskell-devscripts-0.8.21/Dh_Haskell.sh haskell-devscripts-0.8.21.new/Dh_Haskell.sh
---- haskell-devscripts-0.8.21/Dh_Haskell.sh	2013-07-21 12:18:14.000000000 -0500
-+++ haskell-devscripts-0.8.21.new/Dh_Haskell.sh	2014-06-11 11:56:45.243822321 -0500
-@@ -191,6 +191,14 @@
-     echo "hugs (>= $upstream_version)"
+diff -rN -u old-haskell-devscripts/dh_haskell_extra_depends new-haskell-devscripts/dh_haskell_extra_depends
+--- old-haskell-devscripts/dh_haskell_extra_depends	2014-06-16 15:28:00.844781709 -0700
++++ new-haskell-devscripts/dh_haskell_extra_depends	2014-06-16 15:28:00.852781710 -0700
+@@ -59,7 +59,7 @@
+ extradeps=''
+ for dep in `cabal_depends $files` ; do
+     dep_package_ver=`echo $dep | grep '^.\+-[0-9\.]\+-................................$' | sed 's|^\(.\+\)-\([0-9.]\+\)-[0-9a-f]\+$|\1-\2|'`
+-    extra_packages_file=/usr/lib/haskell-packages/ghc/lib/$dep_package_ver/extra-packages
++    extra_packages_file=/${LIBDIR}/$dep_package_ver/extra-packages
+     if [ -f $extra_packages_file ] ; then
+         extradeps="$extradeps, `cat $extra_packages_file`"
+     fi
+diff -rN -u old-haskell-devscripts/Dh_Haskell.sh new-haskell-devscripts/Dh_Haskell.sh
+--- old-haskell-devscripts/Dh_Haskell.sh	2014-06-16 15:28:00.844781709 -0700
++++ new-haskell-devscripts/Dh_Haskell.sh	2014-06-16 15:28:00.848781710 -0700
+@@ -1,3 +1,14 @@
++case ${HC} in
++    ghc)
++      PREFIX=usr
++      LIBDIR=${PREFIX}/lib/haskell-packages/ghc/lib
++      PKGDIR=var/lib/ghc/package.conf.d;;
++    ghcjs)
++      PREFIX=homedoesnotexistatbuildtime
++      LIBDIR=${PREFIX}/.cabal/lib
++      PKGDIR=${PREFIX}/.ghcjs/x86_64-linux-0.1.0-7.8.2/package.conf.d;;
++esac
++
+ strip_hash(){
+ 	echo "$1" | sed 's/-................................$//'
+ }
+@@ -21,7 +32,7 @@
  }
  
-+depends_for_ghcjs(){
-+    local version
-+    local upstream_version
-+    version=`dpkg-query --showformat='${Version}' -W ghcjs`
-+    upstream_version=`echo $version | sed -e 's/-[^-]*$//'`
-+    echo "ghcjs (>= $upstream_version)"
-+}
-+
- find_config_for_ghc(){
-     local f
+ ghc_pkg_field(){
+-    ghc-pkg --global field $@ | head -n1
++    ${HC}-pkg --global field $@ | head -n1
+ }
+ 
+ providing_package_for_ghc(){
+@@ -180,7 +191,7 @@
+ 	type="$1"
+ 	echo $2 | tr A-Z a-z | \
+             grep '[a-z0-9]\+-[0-9\.]\+-................................' | \
+-		perl -pe 's/([a-z0-9-]+)-([0-9\.]+)-(.....).........................../libghc-\1-'$type'-\2-\3/'
++		perl -pe 's/([a-z0-9-]+)-([0-9\.]+)-(.....).........................../lib'${HC}'-\1-'$type'-\2-\3/'
+ }
+ 
+ depends_for_hugs(){
+@@ -196,16 +207,16 @@
      local pkg
-diff -ur haskell-devscripts-0.8.21/dh_haskell_shlibdeps.pod haskell-devscripts-0.8.21.new/dh_haskell_shlibdeps.pod
---- haskell-devscripts-0.8.21/dh_haskell_shlibdeps.pod	2014-06-01 14:20:03.000000000 -0500
-+++ haskell-devscripts-0.8.21.new/dh_haskell_shlibdeps.pod	2014-06-11 11:48:54.779630378 -0500
+     pkg=$1
+     case "$pkg" in
+-	ghc-prof)
+-	    pkg=ghc
++	${HC}-prof)
++	    pkg=${HC}
+ 	    ;;
+-	libghc-*-prof)
++	lib${HC}-*-prof)
+ 	    pkg=`echo $pkg | sed -e 's/-prof$/-dev/'`
+ 	    ;;
+ 	*)
+ 	    ;;
+     esac
+-    for f in debian/$pkg/var/lib/ghc/package.conf.d/*.conf ; do
++    for f in debian/$pkg/${PKGDIR}/*.conf ; do
+ 	if [ -f "$f" ] ; then
+ 	    echo $f
+ 	    echo " "
+diff -rN -u old-haskell-devscripts/dh_haskell_shlibdeps new-haskell-devscripts/dh_haskell_shlibdeps
+--- old-haskell-devscripts/dh_haskell_shlibdeps	2014-06-16 15:28:00.844781709 -0700
++++ new-haskell-devscripts/dh_haskell_shlibdeps	2014-06-16 15:28:00.852781710 -0700
+@@ -32,7 +32,7 @@
+ for pkg in $pkgs
+ do
+     case "$pkg" in
+-        libghc-*-dev)
++        lib${HC}-*-dev)
+ 	    if [ -z "$files" ] ; then
+ 		files=`find_config_for_ghc $pkg`
+ 	    fi
+@@ -68,7 +68,7 @@
+ for pkg in $pkgs
+ do
+     case "$pkg" in
+-        libghc-*-dev)
++        lib${HC}-*-dev)
+             dpkg-shlibdeps --warnings=1 -Tdebian/$pkg.substvars $T_DIR/probe
+             ;;
+     esac
+diff -rN -u old-haskell-devscripts/dh_haskell_shlibdeps.pod new-haskell-devscripts/dh_haskell_shlibdeps.pod
+--- old-haskell-devscripts/dh_haskell_shlibdeps.pod	2014-06-16 15:28:00.844781709 -0700
++++ new-haskell-devscripts/dh_haskell_shlibdeps.pod	2014-06-16 15:28:00.852781710 -0700
 @@ -28,6 +28,9 @@
  hugs and ghc are the only supported targets at the moment.  Cabal does
  not yet support nhc98.
@@ -49,61 +134,212 @@ diff -ur haskell-devscripts-0.8.21/dh_haskell_shlibdeps.pod haskell-devscripts-0
  =head1 SEE ALSO
  
  L<dh_haskell_depends(1)>
-diff -ur haskell-devscripts-0.8.21/hlibrary.mk haskell-devscripts-0.8.21.new/hlibrary.mk
---- haskell-devscripts-0.8.21/hlibrary.mk	2014-06-08 10:46:33.000000000 -0500
-+++ haskell-devscripts-0.8.21.new/hlibrary.mk	2014-06-11 12:20:06.884402831 -0500
-@@ -95,8 +95,8 @@
+diff -rN -u old-haskell-devscripts/hlibrary.mk new-haskell-devscripts/hlibrary.mk
+--- old-haskell-devscripts/hlibrary.mk	2014-06-16 15:28:00.844781709 -0700
++++ new-haskell-devscripts/hlibrary.mk	2014-06-16 15:28:00.852781710 -0700
+@@ -17,6 +17,18 @@
+ # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ # 02111-1307 USA.
+ 
++HC ?= ghc
++
++ifeq ($(HC),ghcjs)
++PREFIX ?= homedoesnotexistatbuildtime
++LIBDIR ?= $(PREFIX)/.cabal/lib
++PKGDIR ?= $(PREFIX)/.ghcjs/x86_64-linux-0.1.0-7.8.2/package.conf.d
++else
++PREFIX ?= usr
++LIBDIR ?= $(PREFIX)/lib/haskell-packages/ghc/lib
++PKGDIR ?= $(PREFIX)/lib/ghc/package.conf.d
++endif
++
+ export GREP_OPTIONS :=
+ 
+ # Set a dummy HOME variable upon build. Some build daemons do not set HOME, but
+@@ -33,9 +45,9 @@
+ DEB_ENABLE_TESTS ?= no
+ DEB_ENABLE_HOOGLE ?= yes
+ 
+-DEB_DH_GENCONTROL_ARGS_libghc-$(CABAL_PACKAGE)-dev += -- '-DGHC-Package=$${haskell:ghc-package}'
++DEB_DH_GENCONTROL_ARGS_lib${HC}-$(CABAL_PACKAGE)-dev += -- '-DGHC-Package=$${haskell:ghc-package}'
+ 
+-ifneq (,$(filter libghc-$(CABAL_PACKAGE)-prof,$(DEB_PACKAGES)))
++ifneq (,$(filter lib${HC}-$(CABAL_PACKAGE)-prof,$(DEB_PACKAGES)))
+ ENABLE_PROFILING = --enable-library-profiling
+ endif
+ 
+@@ -59,7 +71,7 @@
+ # - get this included in the cdbs package once this gets mature enough (maybe?)
+ 
+ DEB_SETUP_BIN_NAME ?= debian/hlibrary.setup
+-DEB_HADDOCK_HTML_DIR ?= /usr/share/doc/libghc-$(CABAL_PACKAGE)-doc/html/
++DEB_HADDOCK_HTML_DIR ?= /usr/share/doc/lib${HC}-$(CABAL_PACKAGE)-doc/html/
+ 
+ # most likely you don't need to touch this one
+ GHC6_VERSION = $(shell ghc --numeric-version)
+@@ -95,11 +107,11 @@
  
  clean::
  	[ ! -x "$(DEB_SETUP_BIN_NAME)" ] || $(DEB_SETUP_BIN_NAME) clean
 -	rm -rf dist dist-ghc dist-hugs $(DEB_SETUP_BIN_NAME) Setup.hi Setup.ho Setup.o .*config*
 -	rm -f configure-ghc-stamp build-ghc-stamp build-hugs-stamp build-haddock-stamp
-+	rm -rf dist dist-ghc dist-hugs dist-ghcjs $(DEB_SETUP_BIN_NAME) Setup.hi Setup.ho Setup.o .*config*
-+	rm -f configure-ghc-stamp build-ghc-stamp build-hugs-stamp build-ghcjs-stamp build-haddock-stamp
- 	rm -rf debian/tmp-inst-ghc
+-	rm -rf debian/tmp-inst-ghc
++	rm -rf dist dist-${HC} dist-hugs $(DEB_SETUP_BIN_NAME) Setup.hi Setup.ho Setup.o .*config*
++	rm -f configure-${HC}-stamp build-${HC}-stamp build-hugs-stamp build-haddock-stamp
++	rm -rf debian/tmp-inst-${HC}
  	rm -f debian/extra-depends
- 	rm -f debian/libghc-$(CABAL_PACKAGE)-doc.links
-@@ -150,6 +150,12 @@
+-	rm -f debian/libghc-$(CABAL_PACKAGE)-doc.links
++	rm -f debian/lib${HC}-$(CABAL_PACKAGE)-doc.links
+ 	rm -f $(MAKEFILE)
+ 	rm -rf debian/dh_haskell_shlibdeps
+ 
+@@ -108,22 +120,22 @@
+ 	for setup in Setup.lhs Setup.hs; do if test -e $$setup; then ghc --make $$setup -o $(DEB_SETUP_BIN_NAME); exit 0; fi; done
+ 
+ configure-ghc-stamp: $(DEB_SETUP_BIN_NAME)
+-	$(DEB_SETUP_BIN_NAME) configure --ghc -v2 \
+-		--prefix=/usr --libdir=/usr/lib/haskell-packages/ghc/lib \
+-		--builddir=dist-ghc \
++	$(DEB_SETUP_BIN_NAME) configure --${HC} -v2 --package-db=/$(PKGDIR) \
++		--prefix=/$(PREFIX) --libdir=/$(LIBDIR) \
++		--builddir=dist-${HC} \
+ 		--haddockdir=$(DEB_HADDOCK_DIR) --datasubdir=$(CABAL_PACKAGE)\
+ 		--htmldir=$(DEB_HADDOCK_HTML_DIR) $(ENABLE_PROFILING) $(NO_GHCI_FLAG) \
+ 		$(DEB_SETUP_GHC6_CONFIGURE_ARGS) $(DEB_SETUP_GHC_CONFIGURE_ARGS) $(OPTIMIZATION) $(TESTS)
+ 	touch $@
+ 
+ build-ghc-stamp: configure-ghc-stamp
+-	$(DEB_SETUP_BIN_NAME) build --builddir=dist-ghc
++	$(DEB_SETUP_BIN_NAME) build --builddir=dist-${HC}
+ 	touch $@
+ 
+ ifeq ($(DEB_ENABLE_TESTS),yes)
+ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+ check-ghc-stamp: build-ghc-stamp
+-	$(DEB_SETUP_BIN_NAME) test --builddir=dist-ghc --show-details=always
++	$(DEB_SETUP_BIN_NAME) test --builddir=dist-${HC} --show-details=always
+ 	touch $@
+ else
+ check-ghc-stamp: build-ghc-stamp
+@@ -136,13 +148,13 @@
+ 	touch $@
+ endif
+ 
+-build/libghc-$(CABAL_PACKAGE)-prof build/libghc-$(CABAL_PACKAGE)-dev:: build-ghc-stamp check-ghc-stamp
++build/lib${HC}-$(CABAL_PACKAGE)-prof build/lib${HC}-$(CABAL_PACKAGE)-dev:: build-ghc-stamp check-ghc-stamp
+ 
+ build-haddock-stamp:
+-	[ ! -x /usr/bin/haddock ] || $(DEB_SETUP_BIN_NAME) haddock --builddir=dist-ghc $(DEB_HADDOCK_OPTS)
++	[ ! -x /usr/bin/haddock ] || $(DEB_SETUP_BIN_NAME) haddock --builddir=dist-${HC} $(DEB_HADDOCK_OPTS)
+ 	touch build-haddock-stamp
+ 
+-build/haskell-$(CABAL_PACKAGE)-doc build/libghc-$(CABAL_PACKAGE)-doc:: configure-ghc-stamp build-haddock-stamp
++build/haskell-$(CABAL_PACKAGE)-doc build/lib${HC}-$(CABAL_PACKAGE)-doc:: configure-ghc-stamp build-haddock-stamp
+ 
+ dist-hugs: $(DEB_SETUP_BIN_NAME)
+ 	$(DEB_SETUP_BIN_NAME) configure --hugs --prefix=/usr -v2 --builddir=dist-hugs $(DEB_SETUP_HUGS_CONFIGURE_ARGS)
+@@ -150,51 +162,51 @@
  build/libhugs-$(CABAL_PACKAGE):: dist-hugs
  	$(DEB_SETUP_BIN_NAME) build --builddir=dist-hugs
  
-+dist-ghcjs: $(DEB_SETUP_BIN_NAME)
-+	$(DEB_SETUP_BIN_NAME) configure --ghcjs --prefix=/usr -v2 --builddir=dist-ghcjs $(DEB_SETUP_GHCJS_CONFIGURE_ARGS)
-+
-+build/libghcjs-$(CABAL_PACKAGE):: dist-ghcjs
-+	$(DEB_SETUP_BIN_NAME) build --builddir=dist-ghcjs
-+
- debian/tmp-inst-ghc: $(DEB_SETUP_BIN_NAME) build-ghc-stamp
- 	$(DEB_SETUP_BIN_NAME) copy --builddir=dist-ghc --destdir=debian/tmp-inst-ghc
+-debian/tmp-inst-ghc: $(DEB_SETUP_BIN_NAME) build-ghc-stamp
+-	$(DEB_SETUP_BIN_NAME) copy --builddir=dist-ghc --destdir=debian/tmp-inst-ghc
++debian/tmp-inst-${HC}: $(DEB_SETUP_BIN_NAME) build-ghc-stamp
++	$(DEB_SETUP_BIN_NAME) copy --builddir=dist-${HC} --destdir=debian/tmp-inst-${HC}
  
-@@ -201,6 +207,11 @@
- 	rm -rf debian/libhugs-$(CABAL_PACKAGE)/usr/share/doc/*
- 	dh_haskell_depends -p$(notdir $@)
+-debian/extra-depends: debian/tmp-inst-ghc
+-	pkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | tr -d ' \n' | sed -r 's,^.*:,,'` ; \
++debian/extra-depends: debian/tmp-inst-${HC}
++	pkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-${HC} --gen-pkg-config | tr -d ' \n' | sed -r 's,^.*:,,'` ; \
+ 		dh_haskell_extra_depends $$pkg_config ; \
+ 		rm $$pkg_config
  
-+install/libghcjs-$(CABAL_PACKAGE):: $(DEB_SETUP_BIN_NAME) dist-ghcjs debian/extra-depends
-+	$(DEB_SETUP_BIN_NAME) copy --destdir=debian/libghcjs-$(CABAL_PACKAGE) --builddir=dist-ghcjs
-+	rm -rf debian/libghcjs-$(CABAL_PACKAGE)/usr/share/doc/*
-+	dh_haskell_depends -p$(notdir $@)
-+
- # Run dh_haskell_blurbs on all packags, useful e.g. for binary packages
- $(patsubst %,install/%,$(DEB_PACKAGES)) :: install/%:
- 	dh_haskell_blurbs -p$(cdbs_curpkg)
-diff -ur haskell-devscripts-0.8.21/README haskell-devscripts-0.8.21.new/README
---- haskell-devscripts-0.8.21/README	2013-07-21 12:18:14.000000000 -0500
-+++ haskell-devscripts-0.8.21.new/README	2014-06-11 11:54:29.291771520 -0500
-@@ -34,6 +34,11 @@
- maybe it should be Architecture: any (please let me know if you have
- an answer to that).
+-install/libghc-$(CABAL_PACKAGE)-dev:: debian/tmp-inst-ghc debian/extra-depends
+-	cd debian/tmp-inst-ghc ; find usr/lib/haskell-packages/ghc/lib/ \
++install/lib${HC}-$(CABAL_PACKAGE)-dev:: debian/tmp-inst-${HC} debian/extra-depends
++	cd debian/tmp-inst-${HC} ; find $(LIBDIR)/ \
+ 		\( ! -name "*_p.a" ! -name "*.p_hi" \) \
+ 		-exec install -Dm 644 '{}' ../$(notdir $@)/'{}' ';'
+-	pkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-ghc --gen-pkg-config | tr -d ' \n' | sed -r 's,^.*:,,'`; \
++	pkg_config=`$(DEB_SETUP_BIN_NAME) register --builddir=dist-${HC} --gen-pkg-config | tr -d ' \n' | sed -r 's,^.*:,,'`; \
+ 		$(if $(HASKELL_HIDE_PACKAGES),sed -i 's/^exposed: True$$/exposed: False/' $$pkg_config;) \
+-		install -Dm 644 $$pkg_config debian/$(notdir $@)/var/lib/ghc/package.conf.d/$$pkg_config; \
++		install -Dm 644 $$pkg_config debian/$(notdir $@)/$(PKGDIR)/$$pkg_config; \
+ 		rm -f $$pkg_config
+ 	if [ 'z$(DEB_GHC_EXTRA_PACKAGES)' != 'z' ] ; then \
+-		echo '$(DEB_GHC_EXTRA_PACKAGES)' > debian/$(notdir $@)/usr/lib/haskell-packages/ghc/lib/$(CABAL_PACKAGE)-$(CABAL_VERSION)/extra-packages ; \
++		echo '$(DEB_GHC_EXTRA_PACKAGES)' > debian/$(notdir $@)/$(LIBDIR)/$(CABAL_PACKAGE)-$(CABAL_VERSION)/extra-packages ; \
+ 	fi
+-	dh_haskell_provides -p$(notdir $@)
+-	dh_haskell_depends -p$(notdir $@)
+-	dh_haskell_shlibdeps -p$(notdir $@)
++	HC=$(HC) dh_haskell_provides -p$(notdir $@)
++	HC=$(HC) dh_haskell_depends -p$(notdir $@)
++	HC=$(HC) dh_haskell_shlibdeps -p$(notdir $@)
  
-+If you build a GHCJS package, name it libghcjs-<name>.  Most GHCJS packages
-+should be Architecture: all.  If your package uses foreign methods,
-+maybe it should be Architecture: any (please let me know if you have
-+an answer to that).
-+
+-install/libghc-$(CABAL_PACKAGE)-prof:: debian/tmp-inst-ghc install/libghc-$(CABAL_PACKAGE)-dev debian/extra-depends
+-	cd debian/tmp-inst-ghc ; find usr/lib/haskell-packages/ghc/lib/ \
++install/lib${HC}-$(CABAL_PACKAGE)-prof:: debian/tmp-inst-${HC} install/lib${HC}-$(CABAL_PACKAGE)-dev debian/extra-depends
++	cd debian/tmp-inst-${HC} ; find $(LIBDIR)/ \
+ 		! \( ! -name "*_p.a" ! -name "*.p_hi" \) \
+ 		-exec install -Dm 644 '{}' ../$(notdir $@)/'{}' ';'
+-	dh_haskell_provides -p$(notdir $@)
+-	dh_haskell_depends -p$(notdir $@)
++	HC=$(HC) dh_haskell_provides -p$(notdir $@)
++	HC=$(HC) dh_haskell_depends -p$(notdir $@)
+ 
+-install/haskell-$(CABAL_PACKAGE)-doc install/libghc-$(CABAL_PACKAGE)-doc:: debian/tmp-inst-ghc build-haddock-stamp debian/extra-depends
++install/haskell-$(CABAL_PACKAGE)-doc install/lib${HC}-$(CABAL_PACKAGE)-doc:: debian/tmp-inst-${HC} build-haddock-stamp debian/extra-depends
+ 	mkdir -p debian/$(notdir $@)/$(DEB_HADDOCK_HTML_DIR)
+-	cd debian/tmp-inst-ghc/ ; find ./$(DEB_HADDOCK_HTML_DIR)/ \
++	cd debian/tmp-inst-${HC}/ ; find ./$(DEB_HADDOCK_HTML_DIR)/ \
+ 		! -name "*.haddock" -exec install -Dm 644 '{}' \
+ 		../$(notdir $@)/'{}' ';'
+ 	mkdir -p debian/$(notdir $@)/$(DEB_HADDOCK_DIR)
+-	[ 0 = `ls debian/tmp-inst-ghc/$(DEB_HADDOCK_DIR)/ 2>/dev/null | wc -l` ] || \
+-		cp -r debian/tmp-inst-ghc/$(DEB_HADDOCK_DIR)/*.haddock \
++	[ 0 = `ls debian/tmp-inst-${HC}/$(DEB_HADDOCK_DIR)/ 2>/dev/null | wc -l` ] || \
++		cp -r debian/tmp-inst-${HC}/$(DEB_HADDOCK_DIR)/*.haddock \
+ 		debian/$(notdir $@)/$(DEB_HADDOCK_DIR)
+ ifeq ($(DEB_ENABLE_HOOGLE),yes)
+ 	find debian/$(notdir $@)/$(DEB_HADDOCK_HTML_DIR) -name "*.txt" \
+-		-printf "%p $(DEB_HOOGLE_TXT_DIR)/$(notdir $@).txt\n" >> debian/libghc-$(CABAL_PACKAGE)-doc.links
+-	sed -i s,^debian/libghc-$(CABAL_PACKAGE)-doc,, debian/libghc-$(CABAL_PACKAGE)-doc.links
++		-printf "%p $(DEB_HOOGLE_TXT_DIR)/$(notdir $@).txt\n" >> debian/lib${HC}-$(CABAL_PACKAGE)-doc.links
++	sed -i s,^debian/lib${HC}-$(CABAL_PACKAGE)-doc,, debian/lib${HC}-$(CABAL_PACKAGE)-doc.links
+ endif
+-	dh_haskell_depends -p$(notdir $@)
++	HC=$(HC) dh_haskell_depends -p$(notdir $@)
+ 
+ install/libhugs-$(CABAL_PACKAGE):: $(DEB_SETUP_BIN_NAME) dist-hugs debian/extra-depends
+ 	$(DEB_SETUP_BIN_NAME) copy --destdir=debian/libhugs-$(CABAL_PACKAGE) --builddir=dist-hugs
+@@ -213,5 +225,5 @@
+ endef
+ $(patsubst debian/%.haskell-binaries,build/%,$(wildcard debian/*.haskell-binaries)):: build-ghc-stamp
+ 
+-$(patsubst debian/%.haskell-binaries,install/%,$(wildcard debian/*.haskell-binaries)):: debian/tmp-inst-ghc
+-	$(foreach binary,$(shell cat debian/$(cdbs_curpkg).haskell-binaries),dh_install -p$(cdbs_curpkg) dist-ghc/build/$(binary)/$(binary) usr/bin $(newline))
++$(patsubst debian/%.haskell-binaries,install/%,$(wildcard debian/*.haskell-binaries)):: debian/tmp-inst-${HC}
++	$(foreach binary,$(shell cat debian/$(cdbs_curpkg).haskell-binaries),dh_install -p$(cdbs_curpkg) dist-${HC}/build/$(binary)/$(binary) usr/bin $(newline))
+diff -rN -u old-haskell-devscripts/README new-haskell-devscripts/README
+--- old-haskell-devscripts/README	2014-06-16 15:28:00.844781709 -0700
++++ new-haskell-devscripts/README	2014-06-16 15:28:00.848781710 -0700
+@@ -29,10 +29,10 @@
+ if you provide a <dev> package you should also provide a
+ corresponding <prof> package.
+ 
+-If you build a Hugs package, name it libhugs-<name>.  Most Hugs packages
+-should be Architecture: all.  If your package uses foreign methods,
+-maybe it should be Architecture: any (please let me know if you have
+-an answer to that).
++If you build a Hugs or GHCJS package, name it libhugs-<name> or
++libghcjs-<name>.  Most Hugs and GHCJS packages should be Architecture:
++all.  If your package uses foreign methods, maybe it should be
++Architecture: any (please let me know if you have an answer to that).
+ 
  dh_haskell assumes that the Haskell Cabal (see www.haskell.org/cabal) can
  be used to build your package.  It obtains package name and version
- information from the Cabal file.
-@@ -64,6 +69,8 @@
+@@ -64,6 +64,8 @@
  hugs and ghc are the only supported targets at the moment.  Cabal does
  not yet support nhc98.
  
