@@ -1347,10 +1347,11 @@ ghcjs release =
       `patch` $(embedFile "patches/ghcjs-haddock.diff")
       `patch` $(embedFile "patches/ghcjs-cabal.diff")
       `patch` $(embedFile "patches/ghcjs-setup.diff")
-  , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base")
   , debianize (hackage "ghcjs-dom"
-                 `patch` $(embedFile "patches/ghcjs-dom.diff")
-                 `flag` P.BuildDep "ghcjs-boot")
+                 `flag` P.CabalDebian ["--hc=ghcjs"]
+                 `flag` P.BuildDep "ghcjs"
+                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-1)")
+  -- , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base")
   ]
     where git' n r = debianize $ git n r
 
