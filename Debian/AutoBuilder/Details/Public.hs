@@ -698,6 +698,7 @@ compiler release =
       devscripts =
           apt "sid" "haskell-devscripts"
               `patch` $(embedFile "patches/haskell-devscripts-ghcjs.diff")
+              `flag` P.DebVersion "0.8.21-2"
               `flag` P.RelaxDep "python-minimal"
       -- Pin ghc to revision 3, revision 4 still conflicts with
       -- libghc-cabal-dev so it doesn't buy us anything.  Watch for
