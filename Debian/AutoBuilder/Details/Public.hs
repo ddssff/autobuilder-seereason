@@ -1353,7 +1353,11 @@ ghcjs release =
   , debianize (hackage "ghcjs-dom"
                  `flag` P.CabalDebian ["--hc=ghcjs"]
                  `flag` P.BuildDep "ghcjs"
-                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-1)")
+                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-3)")
+  , debianize (hackage "ghcjs-dom-hello"
+                 `flag` P.CabalDebian ["--hc=ghcjs"]
+                 `flag` P.BuildDep "ghcjs"
+                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-3)")
   -- , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base")
   ]
     where git' n r = debianize $ git n r
