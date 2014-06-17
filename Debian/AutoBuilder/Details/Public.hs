@@ -10,7 +10,7 @@ import Debian.AutoBuilder.Details.Common (repo)
 import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..), Release(..))
 import Debian.AutoBuilder.Details.GHC (ghc)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Proc, Git, Dir),
-                                               PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
+                                               PackageFlag(AptPin, CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, NoHoogle, GitBranch),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
@@ -703,7 +703,9 @@ compiler release =
       -- Pin ghc to revision 3, revision 4 still conflicts with
       -- libghc-cabal-dev so it doesn't buy us anything.  Watch for
       -- revision 5.
-      ghc78 = proc (apt "experimental" "ghc=7.8.20140411-5" `patch` $(embedFile "patches/trac8768.diff"))
+      ghc78 = proc (apt "experimental" "ghc"
+                      `flag` P.AptPin "7.8.20140411-5"
+                      `patch` $(embedFile "patches/trac8768.diff"))
       ghc76 = apt "sid" "ghc" -- up to revision 13 now
       ghcFlags p = p `relax` "ghc"
                      `relax` "happy"
