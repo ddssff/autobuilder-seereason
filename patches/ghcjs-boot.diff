@@ -1,0 +1,121 @@
+diff -ru ghcjs/Setup.hs new//Setup.hs
+--- old/Setup.hs	2014-06-19 12:49:04.403755249 -0700
++++ new/Setup.hs	2014-06-19 11:46:02.455649613 -0700
+@@ -11,19 +11,66 @@
+ import Control.Monad (when)
+ import Data.Maybe (maybe, listToMaybe)
+ 
++import Data.Char (toLower)
++import Data.List (intercalate)
++import Data.Maybe (mapMaybe)
++import Debian.Relation (BinPkgName(..))
++import System.Environment (setEnv)
++import System.FilePath (takeDirectory)
++import System.Process (readProcess)
++import Text.Regex.TDFA
++
++-- Find the list of libraries built into ghcjs, turn them into debian
++-- virtual package names, and append an assignment to variable
++-- haskell:Provides into the ghcjs.substvars file.
++
++hcProvides dir = do
++  setEnv "HOME" "/homedoesnotexistatbuildtime"
++  pkgs <- readProcess (dir </> "ghcjs-pkg/ghcjs-pkg") ["list", "-v2"] "" >>= return . concatMap parseLib . lines
++  appendFile "debian/ghcjs.substvars" ("haskell:Provides=" ++ intercalate ", " (map (\ (BinPkgName name) -> name) pkgs))
++    where
++      parseLib :: String -> [BinPkgName]
++      parseLib s = case s =~ "^.*\\((.*)-([0-9.]*)-(.....)...........................\\)$" :: (String, String, String, [String]) of
++                     (_, _, _, [name,ver,sum]) ->
++                         [BinPkgName ("libghcjs-" ++ map toLower name ++ "-dev"),
++                          BinPkgName ("libghcjs-" ++ map toLower name ++ "-dev-" ++ ver ++ "-" ++ sum)]
++                     _ -> []
++
+ main = defaultMainWithHooks $ showHooks $ simpleUserHooks
+          { hookedPrograms = [simpleProgram "java"]
++         , preConf        = ghcjsPreConf
++         , postCopy       = ghcjsPostCopy
++         , postBuild      = ghcjsPostBuild
+          , postInst       = ghcjsPostInst
+          }
+ 
+-ghcjsPostInst _ _ pkgDesc lbi = when doBoot (autoboot >> return ())
++ghcjsPostInst _ _ pkgDesc lbi = do
++  when doBoot (autoboot lbi >> return ())
+   where
+     ghcjsexe = listToMaybe $ filter (\(Executable s _ _) -> s == "ghcjs") 
+                  (executables . localPkgDescr $ lbi)
+     doBoot   = maybe False (any (==("x-boot", "True")).customFieldsBI.buildInfo) ghcjsexe
+ 
+-autoboot = rawSystem "ghcjs-boot" ["--auto"] -- fixme make sure that the one from the current install is being run
++ghcjsPreConf a b = mapM_ (\ p -> rawSystem "apt-get" ["remove", "--yes", p]) ["ghcjs-tools", "ghcjs", "libghcjs-ghcjs-dom-dev", "libghcjs-ghcjs-dom-doc"] >> preConf simpleUserHooks a b
++
++ghcjsPostBuild a b c lbi = do
++  rawSystem "cabal" ["update"]
++  rawSystem "cp" [buildDir lbi </> "ghcjs-pkg/ghcjs-pkg", "/usr/bin/ghcjs-pkg"]
++  rawSystem "cp" [buildDir lbi </> "ghcjs/ghcjs", "/usr/bin/ghcjs"]
++  rawSystem (buildDir lbi </> "ghcjs-boot/ghcjs-boot") ["--init"]
++  readProcess "find" ["/homedoesnotexistatbuildtime", "-name", "config.guess"] "" >>= mapM_ (\ name -> rawSystem "rm" [name]) . lines
++  readProcess "find" ["/homedoesnotexistatbuildtime", "-name", "config.sub"] "" >>= mapM_ (\ name -> rawSystem "rm" [name]) . lines
++  rawSystem "rm" ["-rf", "debian/tmp/homedoesnotexistatbuildtime"]
++  rawSystem "mkdir" ["-p", "debian/tmp"]
++  rawSystem "cp" ["-apx", "/homedoesnotexistatbuildtime", "homedoesnotexistatbuildtime"]
++  rawSystem "cp" ["-apx", "/homedoesnotexistatbuildtime", "debian/tmp/homedoesnotexistatbuildtime"]
++  readProcess "find" ["/homedoesnotexistatbuildtime", "-type", "f"] "" >>=
++    appendFile "debian/ghcjs.install" . unlines . map (\ s -> s ++ " " ++ takeDirectory s) . lines
++  postBuild simpleUserHooks a b c lbi
++
++ghcjsPostCopy _ _ _ lbi = hcProvides (buildDir lbi)
+ 
++autoboot lbi = rawSystem (buildDir lbi </> "ghcjs-boot/ghcjs-boot") ["--auto"] -- fixme make sure that the one from the current install is being run
+ 
+ showHooks :: UserHooks -> UserHooks
+ showHooks hooks =
+diff -ru old/src/Compiler/Info.hs new/src/Compiler/Info.hs
+--- old/src/Compiler/Info.hs	2014-06-19 10:47:09.715550937 -0700
++++ new/src/Compiler/Info.hs	2014-06-19 11:31:23.975625075 -0700
+@@ -31,7 +31,7 @@
+ 
+ getGlobalPackageBase :: IO FilePath
+ getGlobalPackageBase = do
+-  appdir <- getAppUserDataDirectory "ghcjs"
++  appdir <- return "/homedoesnotexistatbuildtime/.ghcjs" -- getAppUserDataDirectory "ghcjs"
+   return (appdir </> subdir)
+       where
+         targetARCH = arch
+diff -ru old/src-bin/Boot.hs new/src-bin/Boot.hs
+--- old/src-bin/Boot.hs	2014-06-19 10:47:09.715550937 -0700
++++ new/src-bin/Boot.hs	2014-06-19 11:53:08.851661523 -0700
+@@ -6,7 +6,7 @@
+ import Prelude hiding (FilePath)
+ import Shelly
+ import qualified GHC.Paths as Paths
+-import Data.Text (Text)
++import Data.Text (Text, pack)
+ import qualified Data.Text as T
+ import Data.Monoid
+ import Data.Maybe
+@@ -15,6 +15,7 @@
+ import Control.Monad
+ import Options.Applicative
+ import qualified Control.Exception as Ex
++import System.Environment (setEnv)
+ import System.Exit (exitSuccess, exitFailure)
+ import Filesystem.Path hiding ((<.>), (</>), null)
+ 
+@@ -30,6 +31,7 @@
+ default (Text)
+ 
+ main = do
++    setEnv "HOME" "/homedoesnotexistatbuildtime"
+     settings <- adjustDefaultSettings <$> execParser optParser'
+     when (showVersion settings) (printVersion >> exitSuccess)
+     r <- (shelly $ actions settings `catchany_sh` (return . Just))
+@@ -437,6 +439,8 @@
+       incNative = lib  </> "include_native"
+       rtsLib    = lib  </> "rts-1.0"
+   rtsConf <- readfile (Paths.libdir </> "package.conf.d" </> "builtin_rts.conf")
++  echo $ pack ("installRts - writeFile " <> show (dest </> "builtin_rts.conf"))
++  mkdir_p (fromString dest)
+   writefile (dest </> "builtin_rts.conf") $
+                  fixRtsConf (toTextIgnore inc) (toTextIgnore rtsLib) rtsConf
+   ghcjs_pkg' ["recache", "--global"]

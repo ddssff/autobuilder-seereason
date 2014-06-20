@@ -1,0 +1,64 @@
+--- old/Setup.hs	2014-06-18 09:00:13.988958432 -0700
++++ new/Setup.hs	2014-06-18 09:02:06.040961561 -0700
+@@ -1,2 +1,4 @@
++import System.IO (hPutStrLn, stderr)
++
+ import Distribution.Simple (defaultMainWithHooks, simpleUserHooks, hookedPrograms, UserHooks(..))
+ import Distribution.Simple.Program.Types (simpleProgram)
+@@ -33,5 +35,5 @@
+                      _ -> []
+ 
+-main = defaultMainWithHooks simpleUserHooks
++main = defaultMainWithHooks $ showHooks $ simpleUserHooks
+          { hookedPrograms = [simpleProgram "java"]
+          , preConf        = ghcjsPreConf
+@@ -61,2 +63,49 @@
+ 
+ autoboot = rawSystem "dist-ghc/build/ghcjs-boot/ghcjs-boot" ["--auto"] -- fixme make sure that the one from the current install is being run
++
++showHooks :: UserHooks -> UserHooks
++showHooks hooks =
++   hooks {
++         -- , runTests = \ a b c d -> (runTests simpleUserHooks) a b c d -- :: Args -> Bool -> PackageDescription -> LocalBuildInfo -> IO ()
++           preConf =      \ a b ->       bracketMessage "preConf" $ (preConf hooks) a b        -- :: Args -> ConfigFlags -> IO HookedBuildInfo
++         , confHook =     \ a b ->       bracketMessage "confHook" $ (confHook hooks) a b -- :: (GenericPackageDescription, HookedBuildInfo) -> ConfigFlags -> IO LocalBuildInfo,
++         , postConf =     \ a b c d ->   bracketMessage "postConf" $ (postConf hooks) a b c d -- :: Args -> ConfigFlags -> PackageDescription -> LocalBuildInfo -> IO (),
++         , preBuild =     \ a b ->       bracketMessage "preBuild" $ (preBuild hooks) a b -- :: Args -> BuildFlags -> IO HookedBuildInfo,
++         , buildHook =    \ a b c d ->   bracketMessage "buildHook" $ (buildHook hooks) a b c d -- :: PackageDescription -> LocalBuildInfo -> UserHooks -> BuildFlags -> IO (),
++         , postBuild =    \ a b c d ->   bracketMessage "postBuild" $ (postBuild hooks) a b c d -- :: Args -> BuildFlags -> PackageDescription -> LocalBuildInfo -> IO (),
++         , preRepl =      \ a b ->       bracketMessage "preRepl" $ (preRepl hooks) a b -- :: Args -> ReplFlags -> IO HookedBuildInfo,
++         , replHook =     \ a b c d e -> bracketMessage "replHook" $ (replHook hooks) a b c d e -- :: PackageDescription -> LocalBuildInfo -> UserHooks -> ReplFlags -> [String] -> IO (),
++         , postRepl =     \ a b c d ->   bracketMessage "postRepl" $ (postRepl hooks) a b c d -- :: Args -> ReplFlags -> PackageDescription -> LocalBuildInfo -> IO (),
++         , preClean =     \ a b ->       bracketMessage "preClean" $ (preClean hooks) a b -- :: Args -> CleanFlags -> IO HookedBuildInfo,
++         , cleanHook =    \ a b c d ->   bracketMessage "cleanHook" $ (cleanHook hooks) a b c d -- :: PackageDescription -> () -> UserHooks -> CleanFlags -> IO (),
++         , postClean =    \ a b c d ->   bracketMessage "postClean" $ (postClean hooks) a b c d -- :: Args -> CleanFlags -> PackageDescription -> () -> IO (),
++         , preCopy =      \ a b ->       bracketMessage "preCopy" $ (preCopy hooks) a b -- :: Args -> CopyFlags -> IO HookedBuildInfo,
++         , copyHook =     \ a b c d ->   bracketMessage "copyHook" $ (copyHook hooks) a b c d -- :: PackageDescription -> LocalBuildInfo -> UserHooks -> CopyFlags -> IO (),
++         , postCopy =     \ a b c d ->   bracketMessage "postCopy" $ (postCopy hooks) a b c d -- :: Args -> CopyFlags -> PackageDescription -> LocalBuildInfo -> IO (),
++         , preInst =      \ a b ->       bracketMessage "preInst" $ (preInst hooks) a b -- :: Args -> InstallFlags -> IO HookedBuildInfo,
++         , instHook =     \ a b c d ->   bracketMessage "instHook" $ (instHook hooks) a b c d -- :: PackageDescription -> LocalBuildInfo -> UserHooks -> InstallFlags -> IO (),
++         , postInst =     \ a b c d ->   bracketMessage "postInst" $ (postInst hooks) a b c d -- :: Args -> InstallFlags -> PackageDescription -> LocalBuildInfo -> IO (),
++         , preSDist =     \ a b ->       bracketMessage "preSDist" $ (preSDist hooks) a b -- :: Args -> SDistFlags -> IO HookedBuildInfo,
++         , sDistHook =    \ a b c d ->   bracketMessage "sDistHook" $ (sDistHook hooks) a b c d -- :: PackageDescription -> Maybe LocalBuildInfo -> UserHooks -> SDistFlags -> IO (),
++         , postSDist =    \ a b c d ->   bracketMessage "postSDist" $ (postSDist hooks) a b c d -- :: Args -> SDistFlags -> PackageDescription -> Maybe LocalBuildInfo -> IO (),
++         , preReg =       \ a b ->       bracketMessage "preReg" $ (preReg hooks) a b -- :: Args -> RegisterFlags -> IO HookedBuildInfo,
++         , regHook =      \ a b c d ->   bracketMessage "regHook" $ (regHook hooks) a b c d -- :: PackageDescription -> LocalBuildInfo -> UserHooks -> RegisterFlags -> IO (),
++         , postReg =      \ a b c d ->   bracketMessage "postReg" $ (postReg hooks) a b c d -- :: Args -> RegisterFlags -> PackageDescription -> LocalBuildInfo -> IO (),
++         , preUnreg =     \ a b ->       bracketMessage "preUnreg" $ (preUnreg hooks) a b -- :: Args -> RegisterFlags -> IO HookedBuildInfo,
++         , unregHook =    \ a b c d ->   bracketMessage "unregHook" $ (unregHook hooks) a b c d -- :: PackageDescription -> LocalBuildInfo -> UserHooks -> RegisterFlags -> IO (),
++         , postUnreg =    \ a b c d ->   bracketMessage "postUnreg" $ (postUnreg hooks) a b c d -- :: Args -> RegisterFlags -> PackageDescription -> LocalBuildInfo -> IO (),
++         , preHscolour =  \ a b ->       bracketMessage "preHscolour" $ (preHscolour hooks) a b -- :: Args -> HscolourFlags -> IO HookedBuildInfo,
++         , hscolourHook = \ a b c d ->   bracketMessage "hscolourHook" $ (hscolourHook hooks) a b c d -- :: PackageDescription -> LocalBuildInfo -> UserHooks -> HscolourFlags -> IO (),
++         , postHscolour = \ a b c d ->   bracketMessage "postHscolour" $ (postHscolour hooks) a b c d -- :: Args -> HscolourFlags -> PackageDescription -> LocalBuildInfo -> IO (),
++         , preHaddock =   \ a b ->       bracketMessage "preHaddock" $ (preHaddock hooks) a b -- :: Args -> HaddockFlags -> IO HookedBuildInfo,
++         , haddockHook =  \ a b c d ->   bracketMessage "haddockHook" $ (haddockHook hooks) a b c d -- :: PackageDescription -> LocalBuildInfo -> UserHooks -> HaddockFlags -> IO (),
++         , postHaddock =  \ a b c d ->   bracketMessage "postHaddock" $ (postHaddock hooks) a b c d -- :: Args -> HaddockFlags -> PackageDescription -> LocalBuildInfo -> IO (),
++         , preTest =      \ a b ->       bracketMessage "preTest" $ (preTest hooks) a b -- :: Args -> TestFlags -> IO HookedBuildInfo,
++         , testHook =     \ a b c d ->   bracketMessage "testHook" $ (testHook hooks) a b c d -- :: PackageDescription -> LocalBuildInfo -> UserHooks -> TestFlags -> IO (),
++         , postTest =     \ a b c d ->   bracketMessage "postTest" $ (postTest hooks) a b c d -- :: Args -> TestFlags -> PackageDescription -> LocalBuildInfo -> IO (),
++         , preBench =     \ a b ->       bracketMessage "preBench" $ (preBench hooks) a b -- :: Args -> BenchmarkFlags -> IO HookedBuildInfo,
++         , benchHook =    \ a b c d e -> bracketMessage "benchHook" $ (benchHook hooks) a b c d e -- :: Args -> PackageDescription -> LocalBuildInfo -> UserHooks -> BenchmarkFlags -> IO (),
++         , postBench =    \ a b c d ->   bracketMessage "postBench" $ (postBench hooks) a b c d -- :: Args -> BenchmarkFlags -> PackageDescription -> LocalBuildInfo -> IO ()
++         }
++    where
++      bracketMessage s x = hPutStrLn stderr ("--> " ++ s) >> x >>= \ r -> hPutStrLn stderr ("<-- " ++ s) >> return r
