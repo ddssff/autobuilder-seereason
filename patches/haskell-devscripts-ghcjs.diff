@@ -14,7 +14,15 @@ diff -rN -u old-haskell-devscripts/debian/changelog new-haskell-devscripts/debia
 diff -rN -u old-haskell-devscripts/dh_haskell_depends new-haskell-devscripts/dh_haskell_depends
 --- old-haskell-devscripts/dh_haskell_depends	2014-06-16 15:28:00.844781709 -0700
 +++ new-haskell-devscripts/dh_haskell_depends	2014-06-16 15:28:00.852781710 -0700
-@@ -118,6 +118,16 @@
+@@ -58,6 +58,7 @@
+ 
+ for pkg in `dh_listpackages $args`; do
+     sfile=debian/$pkg.substvars
++    pfile=debian/$pkg.postinst
+     touch $sfile
+ 
+     case "$pkg" in
+@@ -118,6 +119,19 @@
              echo "haskell:Recommends=" >> $sfile.tmp
              echo "haskell:Suggests=" >> $sfile.tmp
  	    ;;
@@ -27,6 +35,9 @@ diff -rN -u old-haskell-devscripts/dh_haskell_depends new-haskell-devscripts/dh_
 +	    HC=ghcjs echo "haskell:Depends=`depends_for_ghc`" >> $sfile.tmp
 +            echo "haskell:Recommends=" >> $sfile.tmp
 +            echo "haskell:Suggests=" >> $sfile.tmp
++	    echo "#!/bin/sh" >> $pfile
++	    echo "ghcjs-pkg recache --global" >> $pfile
++	    echo "ghcjs-pkg recache --user" >> $pfile
 +	    ;;
          libghc-*-doc|haskell-*-doc)
  	    grep -v \
