@@ -1,0 +1,11 @@
+--- old/ghcjs-dom-hello.cabal	2014-06-20 12:15:03.622111550 -0700
++++ new/ghcjs-dom-hello.cabal	2014-06-20 14:41:38.466357205 -0700
+@@ -22,7 +22,7 @@
+     location: https://github.com/ghcjs/ghcjs-dom-hello
+  
+ executable ghcjs-dom-hello
+-    build-depends: base >=4.2 && <5, ghcjs-dom >=0.0.7 && <0.1
++    build-depends: base >=4.2 && <5, ghcjs-dom >=0.0.7
+     main-is: Main.hs
+     buildable: True
+     hs-source-dirs: src

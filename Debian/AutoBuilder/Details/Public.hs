@@ -1343,7 +1343,9 @@ ghcjs release =
                  `flag` P.BuildDep "ghcjs"
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-3)")
   , debianize (hackage "ghcjs-dom-hello"
+                 `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
                  `flag` P.CabalDebian ["--hc=ghcjs"]
+                 `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]
                  `flag` P.BuildDep "ghcjs"
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-3)")
   -- , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base")
