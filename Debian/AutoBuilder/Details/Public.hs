@@ -1340,7 +1340,7 @@ ghcjs release =
                                              "--provides=ghcjs:ghcjs-tools"]))
   , debianize (hackage "ghcjs-dom"
                  `flag` P.CabalDebian ["--hc=ghcjs"]
-                 `flag` P.BuildDep "ghcjs"
+                 `flag` P.BuildDep "ghcjs"                  -- to compile the library
                  `flag` P.BuildDep "libghc-cabal-ghcjs-dev" -- to compile Setup.hs
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-4)")
   , debianize (hackage "ghcjs-dom-hello"
@@ -1348,10 +1348,11 @@ ghcjs release =
                  `flag` P.CabalDebian ["--hc=ghcjs"]
                  `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]
                  `flag` P.BuildDep "ghcjs"
-                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev" -- to compile Setup.hs
+                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-4)")
   , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base"
                  `flag` P.CabalDebian ["--hc=ghcjs"]
+                 `flag` P.BuildDep "ghcjs"
                  `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-4)")
   ]
