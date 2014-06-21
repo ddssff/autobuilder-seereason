@@ -1,3 +1,21 @@
+--- old/Setup.hs	2014-06-20 14:48:01.866367914 -0700
++++ new/Setup.hs	2014-06-20 17:56:06.958683127 -0700
+@@ -1,6 +1,13 @@
+ module Main (main) where
+ 
+-import Distribution.Simple
++import Distribution.Simple (defaultMainWithHooks, simpleUserHooks, UserHooks(postBuild))
++import Distribution.Simple.LocalBuildInfo (buildDir)
++import System.FilePath ((</>))
++import System.IO (appendFile)
++import System.Process (readProcess)
+ 
+ main :: IO ()
+-main = defaultMain
++main = defaultMainWithHooks $ simpleUserHooks
++         { postBuild = \ _ _ _ lbi -> let prefix = buildDir lbi </> "ghcjs-dom-hello/ghcjs-dom-hello.jsexe" in
++                                      readProcess "find" [prefix, "-type", "f"] "" >>=
++                                        writeFile "debian/ghcjs-dom-hello.install" . unlines . map (++ " usr/bin/ghcjs-dom-hello.jsexe") . lines }
 --- old/ghcjs-dom-hello.cabal	2014-06-20 12:15:03.622111550 -0700
 +++ new/ghcjs-dom-hello.cabal	2014-06-20 14:41:38.466357205 -0700
 @@ -22,7 +22,7 @@
