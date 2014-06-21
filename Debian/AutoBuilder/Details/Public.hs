@@ -684,7 +684,7 @@ relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
 
 compiler :: Release -> P.Packages
 compiler release =
-    P.Packages (singleton "ghc") [ghc, devscripts]
+    P.Packages (singleton "ghc") [ghc]
     where
       ghc = case baseRelease release of
               Squeeze ->
@@ -695,11 +695,6 @@ compiler release =
                   apt "wheezy" "dpkg" `patch` $(embedFile "patches/dpkg.diff") <>
                   apt "wheezy" "makedev"
               _ -> ghcFlags ghc78
-      devscripts =
-          apt "sid" "haskell-devscripts"
-              `patch` $(embedFile "patches/haskell-devscripts-ghcjs.diff")
-              `flag` P.DebVersion "0.8.21-2"
-              `flag` P.RelaxDep "python-minimal"
       -- Pin ghc to revision 3, revision 4 still conflicts with
       -- libghc-cabal-dev so it doesn't buy us anything.  Watch for
       -- revision 5.
@@ -1298,12 +1293,19 @@ haste = P.Packages (singleton "haste")
 
 ghcjs :: Release -> P.Packages
 ghcjs release =
-  let pskip t = case baseRelease release of Precise -> P.NoPackage; _ -> t in
-  P.Packages (singleton "agda") $
-  -- Don't upgrade cabal and cabal-install in precise until we
-  -- establish they are reliable in trusty.
-  [ -- Start with tools required to build ghcjs
-    debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal"
+  P.Packages (singleton "ghcjs-group") $
+  [ debianize (hackage "shelly")
+  , debianize (hackage "text-binary")
+  , debianize (hackage "enclosed-exceptions")
+  , debianize (hackage "lifted-async")
+  -- haskell-devscripts modified to support ghcjs packaging.
+  , apt "sid" "haskell-devscripts"
+      `patch` $(embedFile "patches/haskell-devscripts-ghcjs.diff")
+      `flag` P.DebVersion "0.8.21-2"
+      `flag` P.RelaxDep "python-minimal"
+  -- Cabal library with ghcjs support.  The debs are named cabal-ghcjs
+  -- so packages that require ghcjs suppport can specify this.
+  , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal"
                          `flag` P.GitBranch "ghcjs"
                          `cd` "Cabal"
                          `patch` $(embedFile "patches/cabal-ghcjs.diff")
@@ -1319,11 +1321,8 @@ ghcjs release =
                                              "--conflicts=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
                                              "--replaces=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
                                              "--provides=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils"])
-  , debianize (hackage "shelly")
-  , debianize (hackage "text-binary")
-  , debianize (hackage "enclosed-exceptions")
-  , debianize (hackage "lifted-async")
-  , let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s `flag` P.CabalDebian ["--depends=ghcjs:" ++ s])
+  , -- I think deps is the equivalent of using the P.DevelDep flag.
+    let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s `flag` P.CabalDebian ["--depends=ghcjs:" ++ s])
                         p0 ["alex", "happy", "make", "patch", "autoconf",
                             "cpp", "git", "cabal-install-ghcjs"] in
     deps (debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs"
@@ -1351,9 +1350,11 @@ ghcjs release =
                  `flag` P.BuildDep "ghcjs"
                  `flag` P.BuildDep "libghc-cabal-ghcjs-dev" -- to compile Setup.hs
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-4)")
-  -- , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base")
+  , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base"
+                 `flag` P.CabalDebian ["--hc=ghcjs"]
+                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
+                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-4)")
   ]
-    where git' n r = debianize $ git n r
 
 broken :: P.Packages -> P.Packages
 broken _ = P.NoPackage
