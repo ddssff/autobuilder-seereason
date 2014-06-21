@@ -1332,6 +1332,7 @@ ghcjs release =
                        `patch` $(embedFile "patches/ghcjs-cabal.diff")
                        `patch` $(embedFile "patches/ghcjs-debug.diff")
                        `patch` $(embedFile "patches/ghcjs-boot.diff")
+                       `patch` $(embedFile "patches/ghcjs-paths.diff")
                        `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-2)"
                        `flag` P.CabalDebian ["--source-package-name=ghcjs",
                                              "--default-package=ghcjs",
