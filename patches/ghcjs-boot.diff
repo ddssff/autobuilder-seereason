@@ -47,7 +47,10 @@ diff -ru ghcjs/Setup.hs new//Setup.hs
      doBoot   = maybe False (any (==("x-boot", "True")).customFieldsBI.buildInfo) ghcjsexe
  
 -autoboot = rawSystem "ghcjs-boot" ["--auto"] -- fixme make sure that the one from the current install is being run
-+ghcjsPreConf a b = mapM_ (\ p -> rawSystem "apt-get" ["remove", "--yes", p]) ["ghcjs-tools", "ghcjs", "libghcjs-ghcjs-dom-dev", "libghcjs-ghcjs-dom-doc"] >> preConf simpleUserHooks a b
++ghcjsPreConf a b = do
++  mapM_ (\ p -> rawSystem "apt-get" ["remove", "--yes", p]) ["ghcjs-tools", "ghcjs", "libghcjs-ghcjs-dom-dev", "libghcjs-ghcjs-dom-doc"]
++  rawSystem "rm" ["-rf", "homedoesnotexistatbuildtime"]
++  preConf simpleUserHooks a b
 +
 +ghcjsPostBuild a b c lbi = do
 +  rawSystem "cabal" ["update"]
@@ -56,12 +59,9 @@ diff -ru ghcjs/Setup.hs new//Setup.hs
 +  rawSystem (buildDir lbi </> "ghcjs-boot/ghcjs-boot") ["--init"]
 +  readProcess "find" ["/homedoesnotexistatbuildtime", "-name", "config.guess"] "" >>= mapM_ (\ name -> rawSystem "rm" [name]) . lines
 +  readProcess "find" ["/homedoesnotexistatbuildtime", "-name", "config.sub"] "" >>= mapM_ (\ name -> rawSystem "rm" [name]) . lines
-+  rawSystem "rm" ["-rf", "debian/tmp/homedoesnotexistatbuildtime"]
-+  rawSystem "mkdir" ["-p", "debian/tmp"]
++  readProcess "find" ["/homedoesnotexistatbuildtime", "-name", "ghcjs-boot"] "" >>= mapM_ (\ name -> rawSystem "rm" ["-rf", name]) . lines
 +  rawSystem "cp" ["-apx", "/homedoesnotexistatbuildtime", "homedoesnotexistatbuildtime"]
-+  rawSystem "cp" ["-apx", "/homedoesnotexistatbuildtime", "debian/tmp/homedoesnotexistatbuildtime"]
-+  readProcess "find" ["/homedoesnotexistatbuildtime", "-type", "f"] "" >>=
-+    appendFile "debian/ghcjs.install" . unlines . map (\ s -> s ++ " " ++ takeDirectory s) . lines
++  readProcess "find" ["/homedoesnotexistatbuildtime", "-type", "f"] "" >>= appendFile "debian/ghcjs.install" . unlines . map (\ s -> s ++ " " ++ takeDirectory s) . lines   
 +  postBuild simpleUserHooks a b c lbi
 +
 +ghcjsPostCopy _ _ _ lbi = hcProvides (buildDir lbi)
