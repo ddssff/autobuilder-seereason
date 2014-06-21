@@ -2,7 +2,7 @@ diff -rN -u old-haskell-devscripts/debian/changelog new-haskell-devscripts/debia
 --- old/debian/changelog	2014-06-16 17:39:20.697001807 -0700
 +++ new/debian/changelog	2014-06-16 17:38:48.625000912 -0700
 @@ -1,3 +1,9 @@
-+haskell-devscripts (0.8.21-3) unstable; urgency=low
++haskell-devscripts (0.8.21-4) unstable; urgency=low
 +
 +  * Add ghcjs support
 +
@@ -36,8 +36,8 @@ diff -rN -u old-haskell-devscripts/dh_haskell_depends new-haskell-devscripts/dh_
 +            echo "haskell:Recommends=" >> $sfile.tmp
 +            echo "haskell:Suggests=" >> $sfile.tmp
 +	    echo "#!/bin/sh" >> $pfile
-+	    echo "ghcjs-pkg recache --global" >> $pfile
-+	    echo "ghcjs-pkg recache --user" >> $pfile
++	    echo "HOME=/homedoesnotexistatbuildtime ghcjs-pkg recache --global" >> $pfile
++	    echo "HOME=/homedoesnotexistatbuildtime ghcjs-pkg recache --user" >> $pfile
 +	    ;;
          libghc-*-doc|haskell-*-doc)
  	    grep -v \
