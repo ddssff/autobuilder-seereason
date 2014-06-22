@@ -6,7 +6,7 @@ diff -ru ghcjs/Setup.hs new//Setup.hs
  import Data.Maybe (maybe, listToMaybe)
  
 +import Data.Char (toLower)
-+import Data.List (intercalate)
++import Data.List (intercalate, intersperse)
 +import Data.Maybe (mapMaybe)
 +import Debian.Relation (BinPkgName(..))
 +import System.Environment (setEnv)
@@ -49,7 +49,7 @@ diff -ru ghcjs/Setup.hs new//Setup.hs
 -autoboot = rawSystem "ghcjs-boot" ["--auto"] -- fixme make sure that the one from the current install is being run
 +ghcjsPreConf a b = do
 +  mapM_ (\ p -> rawSystem "apt-get" ["remove", "--yes", p]) ["ghcjs-tools", "ghcjs", "libghcjs-ghcjs-dom-dev", "libghcjs-ghcjs-dom-doc"]
-+  rawSystem "rm" ["-rf", "homedoesnotexistatbuildtime"]
++  rawSystem "rm" ["-rf", "/homedoesnotexistatbuildtime", "homedoesnotexistatbuildtime"]
 +  preConf simpleUserHooks a b
 +
 +ghcjsPostBuild a b c lbi = do
@@ -57,11 +57,10 @@ diff -ru ghcjs/Setup.hs new//Setup.hs
 +  rawSystem "cp" [buildDir lbi </> "ghcjs-pkg/ghcjs-pkg", "/usr/bin/ghcjs-pkg"]
 +  rawSystem "cp" [buildDir lbi </> "ghcjs/ghcjs", "/usr/bin/ghcjs"]
 +  rawSystem (buildDir lbi </> "ghcjs-boot/ghcjs-boot") ["--init"]
-+  readProcess "find" ["/homedoesnotexistatbuildtime", "-name", "config.guess"] "" >>= mapM_ (\ name -> rawSystem "rm" [name]) . lines
-+  readProcess "find" ["/homedoesnotexistatbuildtime", "-name", "config.sub"] "" >>= mapM_ (\ name -> rawSystem "rm" [name]) . lines
-+  readProcess "find" ["/homedoesnotexistatbuildtime", "-name", "ghcjs-boot"] "" >>= mapM_ (\ name -> rawSystem "rm" ["-rf", name]) . lines
++  let junk = ["*/config.guess", "*/config.sub", "*/ghcjs-boot", "*/packages/hackage.haskell.org", "*/.cabal/logs"]
++  readProcess "find" (["/homedoesnotexistatbuildtime"] ++ concat (intersperse ["-o"] (map (\ p -> ["-path", p]) junk))) "" >>= mapM_ (\ name -> rawSystem "rm" ["-rf", name]) . lines
 +  rawSystem "cp" ["-apx", "/homedoesnotexistatbuildtime", "homedoesnotexistatbuildtime"]
-+  readProcess "find" ["/homedoesnotexistatbuildtime", "-type", "f"] "" >>= appendFile "debian/ghcjs.install" . unlines . map (\ s -> s ++ " " ++ takeDirectory s) . lines   
++  readProcess "find" ["/homedoesnotexistatbuildtime", "-type", "f"] "" >>= appendFile "debian/ghcjs.install" . unlines . map (\ s -> s ++ " " ++ takeDirectory s) . lines
 +  postBuild simpleUserHooks a b c lbi
 +
 +ghcjsPostCopy _ _ _ lbi = hcProvides (buildDir lbi)
