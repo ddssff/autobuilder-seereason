@@ -70,4 +70,30 @@ diff -ru ghcjs/Setup.hs new//Setup.hs
  
  showHooks :: UserHooks -> UserHooks
  showHooks hooks =
-diff -ru old/src/Compiler/Info.hs new/src/Compiler/Info.hs
+diff -ru old/src-bin/Boot.hs new/src-bin/Boot.hs
+--- old/src-bin/Boot.hs	2014-06-21 13:22:11.070766243 -0700
++++ new/src-bin/Boot.hs	2014-06-21 13:21:02.730764629 -0700
+@@ -15,6 +15,7 @@
+ import Control.Monad
+ import Options.Applicative
+ import qualified Control.Exception as Ex
++import System.Environment (setEnv)
+ import System.Exit (exitSuccess, exitFailure)
+ import Filesystem.Path hiding ((<.>), (</>), null)
+ 
+@@ -30,6 +31,7 @@
+ default (Text)
+ 
+ main = do
++    setEnv "HOME" "/homedoesnotexistatbuildtime"
+     settings <- adjustDefaultSettings <$> execParser optParser'
+     when (showVersion settings) (printVersion >> exitSuccess)
+     r <- (shelly $ actions settings `catchany_sh` (return . Just))
+@@ -437,6 +439,7 @@
+       incNative = lib  </> "include_native"
+       rtsLib    = lib  </> "rts-1.0"
+   rtsConf <- readfile (Paths.libdir </> "package.conf.d" </> "builtin_rts.conf")
++  mkdir_p (fromString dest)
+   writefile (dest </> "builtin_rts.conf") $
+                  fixRtsConf (toTextIgnore inc) (toTextIgnore rtsLib) rtsConf
+   ghcjs_pkg' ["recache", "--global"]
