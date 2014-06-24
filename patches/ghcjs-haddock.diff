@@ -11,7 +11,7 @@
        | LeftShiftOp     -- <<
 --- old/src/Compiler/Variants.hs.orig	2014-05-30 16:58:44.000000000 -0700
 +++ new/src/Compiler/Variants.hs	2014-05-30 18:06:24.000000000 -0700
-@@ -25,12 +25,12 @@
+@@ -26,13 +26,13 @@
                                 -> ByteString
      , variantLink              :: DynFlags
                                 -> GhcjsSettings
@@ -21,12 +21,14 @@
 -                               -> [FilePath]                -- ^ object files
 -                               -> [FilePath]                -- ^ extra JavaScript files
 -                               -> (Gen2.Fun -> Bool)        -- ^ function to use as roots
+-                               -> Set Gen2.Fun              -- ^ extra roots
 +                               -> FilePath                  -- output directory
 +                               -> [FilePath]                -- include paths for home package
 +                               -> [(PackageId, [FilePath])] -- library dirs for dependencies
 +                               -> [FilePath]                -- object files
 +                               -> [FilePath]                -- extra JavaScript files
 +                               -> (Gen2.Fun -> Bool)        -- function to use as roots
++                               -> Set Gen2.Fun              -- extra roots
                                 -> IO ()
      }
  
@@ -90,3 +92,14 @@
                           ]
                     | otherwise            = []
  
+--- old/src/Gen2/Linker.hs	2014-05-30 16:58:44.000000000 -0700
++++ new/src/Gen2/Linker.hs	2014-05-30 18:10:45.000000000 -0700
+@@ -67,7 +67,7 @@
+ import           Gen2.RtsTypes
+ import           Gen2.Shim
+ 
+-type LinkableUnit = (Package, Module, Int) -- | module and the index of the block in the object file
++type LinkableUnit = (Package, Module, Int) -- module and the index of the block in the object file
+ type Module       = Text
+ 
+ -- number of bytes linked per module

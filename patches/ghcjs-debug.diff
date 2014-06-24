@@ -5,13 +5,16 @@
 +
  import Distribution.Simple (defaultMainWithHooks, simpleUserHooks, hookedPrograms, UserHooks(..))
  import Distribution.Simple.Program.Types (simpleProgram)
-@@ -33,5 +35,5 @@
-                      _ -> []
+@@ -25,7 +27,8 @@
+ main = defaultMainWithHooks ghcjsHooks
  
--main = defaultMainWithHooks simpleUserHooks
-+main = defaultMainWithHooks $ showHooks $ simpleUserHooks
-          { hookedPrograms = [simpleProgram "java"]
-          , preConf        = ghcjsPreConf
+ ghcjsHooks :: UserHooks
+-ghcjsHooks = simpleUserHooks { preSDist = ghcjsSDist
++ghcjsHooks = showHooks $ simpleUserHooks
++                             { preSDist = ghcjsSDist
+                              , postCopy = ghcjsPostCopy
+                              }
+ 
 @@ -61,2 +63,49 @@
  
  autoboot = rawSystem "dist-ghc/build/ghcjs-boot/ghcjs-boot" ["--auto"] -- fixme make sure that the one from the current install is being run
