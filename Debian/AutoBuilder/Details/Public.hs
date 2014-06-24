@@ -1321,23 +1321,28 @@ ghcjs release =
                                              "--conflicts=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
                                              "--replaces=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
                                              "--provides=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils"])
-  , -- I think deps is the equivalent of using the P.DevelDep flag.
-    let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s `flag` P.CabalDebian ["--depends=ghcjs:" ++ s])
-                        p0 ["alex", "happy", "make", "patch", "autoconf",
-                            "cpp", "git", "cabal-install-ghcjs"] in
-    deps (debianize (git "ghcjs" "https://github.com/ghcjs/ghcjs"
+  , -- the ghcjs library and four tools - ghcjs, ghcjs-pkg,
+    -- ghcjs-boot, and haddock-ghcjs.  Does *not* run ghcjs-boot.
+    debianize (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs"
                        `patch` $(embedFile "patches/ghcjs-ghc.diff")
                        `patch` $(embedFile "patches/ghcjs-haddock.diff")
                        `patch` $(embedFile "patches/ghcjs-cabal.diff")
                        `patch` $(embedFile "patches/ghcjs-debug.diff")
-                       `patch` $(embedFile "patches/ghcjs-boot.diff")
-                       `patch` $(embedFile "patches/ghcjs-paths.diff")
-                       `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-2)"
-                       `flag` P.CabalDebian ["--source-package-name=ghcjs",
-                                             "--default-package=ghcjs",
-                                             "--conflicts=ghcjs:ghcjs-tools",
-                                             "--replaces=ghcjs:ghcjs-tools",
-                                             "--provides=ghcjs:ghcjs-tools"]))
+                       -- `patch` $(embedFile "patches/ghcjs-paths.diff")
+                       `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
+                                             "--default-package=ghcjs-tools"])
+  , -- I think deps is the equivalent of using the P.DevelDep flag.
+    let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s `flag` P.CabalDebian ["--depends=ghcjs:" ++ s])
+                        p0 ["alex", "happy", "make", "patch", "autoconf",
+                            "cpp", "git", "cabal-install-ghcjs"] in
+    deps (debdir (git "ghcjs" "https://github.com/ghcjs/ghcjs"
+                       `patch` $(embedFile "patches/ghcjs-ghc.diff")
+                       `patch` $(embedFile "patches/ghcjs-haddock.diff")
+                       `patch` $(embedFile "patches/ghcjs-cabal.diff")
+                       -- `patch` $(embedFile "patches/ghcjs-boot.diff")
+                       -- `patch` $(embedFile "patches/ghcjs-paths.diff")
+                       `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-2)")
+                 (Darcs (repo </> "ghcjs-debian")))
   , debianize (hackage "ghcjs-dom"
                  `flag` P.CabalDebian ["--hc=ghcjs"]
                  `flag` P.BuildDep "ghcjs"                  -- to compile the library
