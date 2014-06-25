@@ -1335,8 +1335,8 @@ ghcjs release =
     let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s `flag` P.CabalDebian ["--depends=ghcjs:" ++ s])
                         p0 ["alex", "happy", "make", "patch", "autoconf",
                             "cpp", "git", "cabal-install-ghcjs"] in
-    deps (debdir (git "ghcjs" "https://github.com/ghcjs/ghcjs"
-                       `patch` $(embedFile "patches/ghcjs-ghc.diff")
+    deps (debdir (git "ghcjs" "https://github.com/ddssff/ghcjs"
+                       `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
                        `patch` $(embedFile "patches/ghcjs-haddock.diff")
                        `patch` $(embedFile "patches/ghcjs-cabal.diff")
                        -- `patch` $(embedFile "patches/ghcjs-boot.diff")
