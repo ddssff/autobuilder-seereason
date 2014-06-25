@@ -1,35 +1,53 @@
---- old/src/Compiler/Program.hs	2014-06-07 05:57:25.651574955 -0700
-+++ new/src/Compiler/Program.hs	2014-06-07 06:08:30.987593539 -0700
-@@ -667,7 +667,7 @@
+--- old/src/Compiler/Program.hs	2014-06-24 13:44:45.000000000 -0700
++++ new/src/Compiler/Program.hs	2014-06-24 13:47:25.532926155 -0700
+@@ -663,7 +663,11 @@
    , Flag "M"            (PassFlag (setMode doMkDependHSMode))
    , Flag "E"            (PassFlag (setMode (stopBeforeMode anyHsc)))
    , Flag "C"            (PassFlag (setMode (stopBeforeMode HCc)))
--  , Flag "S"            (PassFlag (setMode (stopBeforeMode As)))
++#if MIN_VERSION_ghc(7,8,3)
 +  , Flag "S"            (PassFlag (setMode (stopBeforeMode (As False))))
++#else
+   , Flag "S"            (PassFlag (setMode (stopBeforeMode As)))
++#endif
    , Flag "-make"        (PassFlag (setMode doMakeMode))
    , Flag "-interactive" (PassFlag (setMode doInteractiveMode))
    , Flag "-abi-hash"    (PassFlag (setMode doAbiHashMode))
-@@ -744,7 +744,7 @@
+@@ -740,7 +744,11 @@
          haskellish (f,Nothing) =
            looksLikeModuleName f || isHaskellUserSrcFilename f || '.' `notElem` f
          haskellish (_,Just phase) =
--          phase `notElem` [As, Cc, Cobjc, Cobjcpp, CmmCpp, Cmm, StopLn]
++#if MIN_VERSION_ghc(7,8,3)
 +          phase `notElem` [As False, As True, Cc, Cobjc, Cobjcpp, CmmCpp, Cmm, StopLn]
++#else
+           phase `notElem` [As, Cc, Cobjc, Cobjcpp, CmmCpp, Cmm, StopLn]
++#endif
  
      hsc_env <- GHC.getSession
  
---- old/src/Compiler/GhcjsHooks.hs	2014-06-07 05:57:25.651574955 -0700
-+++ new/src/Compiler/GhcjsHooks.hs	2014-06-07 06:06:58.075590944 -0700
-@@ -149,10 +149,10 @@
+--- old/src/Compiler/GhcjsHooks.hs	2014-06-24 13:44:45.000000000 -0700
++++ new/src/Compiler/GhcjsHooks.hs	2014-06-24 13:49:16.296928772 -0700
+@@ -1,4 +1,4 @@
+-{-# LANGUAGE OverloadedStrings, TupleSections #-}
++{-# LANGUAGE CPP, OverloadedStrings, TupleSections #-}
+ module Compiler.GhcjsHooks where
+ 
+ import           CorePrep             (corePrepPgm)
+@@ -149,10 +149,18 @@
    | Just next <- lookup ph skipPhases = do
      output <- phaseOutputFilename next
      liftIO (copyFile input output)
--    when (ph == As) (liftIO $ doFakeNative dflags (dropExtension output))
++#if MIN_VERSION_ghc(7,8,3)
 +    case ph of As _ -> (liftIO $ doFakeNative dflags (dropExtension output)); _ -> return ()
++#else
+     when (ph == As) (liftIO $ doFakeNative dflags (dropExtension output))
++#endif
      return (RealPhase next, output)
    where
--    skipPhases = [ (CmmCpp, Cmm), (Cmm, As), (As, StopLn) ]
++#if MIN_VERSION_ghc(7,8,3)
 +    skipPhases = [ (CmmCpp, Cmm), (Cmm, As False), (Cmm, As True), (As False, StopLn), (As True, StopLn) ]
++#else
+     skipPhases = [ (CmmCpp, Cmm), (Cmm, As), (As, StopLn) ]
++#endif
  
  -- otherwise use default
  runGhcjsPhase _ _ p input dflags = runPhase p input dflags
