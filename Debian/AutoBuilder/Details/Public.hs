@@ -1323,8 +1323,8 @@ ghcjs release =
                                              "--provides=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils"])
   , -- the ghcjs library and four tools - ghcjs, ghcjs-pkg,
     -- ghcjs-boot, and haddock-ghcjs.  Does *not* run ghcjs-boot.
-    debianize (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs"
-                       `patch` $(embedFile "patches/ghcjs-ghc.diff")
+    debianize (git "ghcjs-tools" "https://github.com/ddssff/ghcjs"
+                       `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
                        `patch` $(embedFile "patches/ghcjs-haddock.diff")
                        `patch` $(embedFile "patches/ghcjs-cabal.diff")
                        `patch` $(embedFile "patches/ghcjs-debug.diff")
