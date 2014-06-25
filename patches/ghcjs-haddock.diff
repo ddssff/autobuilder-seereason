@@ -5,7 +5,7 @@
        | AddOp           -- +
        | SubOp           -- -
 -      | MulOp           -- *
-+      | MulOp           -- (this was a star, but it confused haddock)
++      | MulOp           -- "*"
        | DivOp           -- /
        | ModOp           -- %
        | LeftShiftOp     -- <<
@@ -40,8 +40,8 @@
  
 -data StaticInfo = StaticInfo { siVar    :: !Text      -- | global object
 -                             , siVal    :: !StaticVal -- | static initialization
-+data StaticInfo = StaticInfo { siVar    :: !Text      -- global object
-+                             , siVal    :: !StaticVal -- static initialization
++data StaticInfo = StaticInfo { siVar    :: !Text      -- ^ global object
++                             , siVal    :: !StaticVal -- ^ static initialization
                               }
    deriving (Eq, Ord, Show, Typeable)
  
@@ -50,7 +50,7 @@
                 | StringLit !Text
                 | BinLit    !ByteString
 -               | LabelLit  !Bool !Text -- | is function pointer, label (also used for string / binary init)
-+               | LabelLit  !Bool !Text -- is function pointer, label (also used for string / binary init)
++               | LabelLit  !Bool !Text -- ^ is function pointer, label (also used for string / binary init)
    deriving (Eq, Ord, Show, Typeable)
  
  instance ToJExpr StaticArg where
@@ -74,9 +74,9 @@
 -selectApply :: Bool     ->    -- ^ true for fast apply, false for stack apply
 -               ([StgArg], [JExpr]) ->    -- ^ arguments
 -               G (JExpr,Bool) -- ^ the function to call, true if specialized path
-+selectApply :: Bool     ->    -- true for fast apply, false for stack apply
-+               ([StgArg], [JExpr]) ->    -- arguments
-+               G (JExpr,Bool) -- the function to call, true if specialized path
++selectApply :: Bool           -- ^ true for fast apply, false for stack apply
++            -> ([StgArg], [JExpr])       -- ^ arguments
++            -> G (JExpr,Bool) -- ^ the function to call, true if specialized path
  selectApply fast (args, as) = do
    case specApply fast (length args) (length as) of
      Just e  -> return (e, True)
@@ -99,7 +99,7 @@
  import           Gen2.Shim
  
 -type LinkableUnit = (Package, Module, Int) -- | module and the index of the block in the object file
-+type LinkableUnit = (Package, Module, Int) -- module and the index of the block in the object file
++type LinkableUnit = (Package, Module, Int) -- ^ module and the index of the block in the object file
  type Module       = Text
  
  -- number of bytes linked per module
