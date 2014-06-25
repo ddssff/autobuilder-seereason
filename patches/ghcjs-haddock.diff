@@ -80,15 +80,20 @@
  selectApply fast (args, as) = do
    case specApply fast (length args) (length as) of
      Just e  -> return (e, True)
---- old/src/Gen2/DynamicLinking.hs.orig	2014-05-30 16:58:44.000000000 -0700
-+++ new/src/Gen2/DynamicLinking.hs	2014-05-30 18:10:45.000000000 -0700
-@@ -341,9 +341,6 @@
+--- old/src/Gen2/DynamicLinking.hs	2014-06-25 13:08:42.714267980 -0700
++++ new/src/Gen2/DynamicLinking.hs	2014-06-25 13:29:56.086303548 -0700
+@@ -342,9 +342,11 @@
      -- by the RTS.  We can't therefore use the ordinary way opts for these.
      let
          debug_opts | WayDebug `elem` ways dflags = [
 --- #if defined(HAVE_LIBBFD)
 ---                        "-lbfd", "-liberty"
 --- #endif
++{-
++#if defined(HAVE_LIBBFD)
++                          "-lbfd", "-liberty"
++#endif
++-}
                           ]
                     | otherwise            = []
  
