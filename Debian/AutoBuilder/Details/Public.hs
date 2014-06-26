@@ -5,7 +5,7 @@ module Debian.AutoBuilder.Details.Public ( targets ) where
 import Data.FileEmbed (embedFile)
 import Data.List (intercalate)
 import Data.Monoid ((<>))
-import Data.Set as Set (empty, singleton)
+import Data.Set as Set (empty, singleton, fromList)
 import Debian.AutoBuilder.Details.Common (repo)
 import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..), Release(..))
 import Debian.AutoBuilder.Details.GHC (ghc)
@@ -14,7 +14,7 @@ import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Pa
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, NoHoogle, GitBranch),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
-import Debian.Debianize (compat, doExecutable, execDebM, installData, InstallFile(..), (~=), (+++=))
+import Debian.Debianize (compat, doExecutable, execDebM, installData, installTo, InstallFile(..), (~=), (+++=))
 import Debian.Relation (BinPkgName(..))
 import System.FilePath((</>))
 
@@ -1329,7 +1329,21 @@ ghcjs release =
                        `patch` $(embedFile "patches/ghcjs-debug.diff")
                        -- `patch` $(embedFile "patches/ghcjs-paths.diff")
                        `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
-                                             "--default-package=ghcjs-tools"])
+                                             "--default-package=ghcjs-tools"]
+                       `flag` P.ModifyAtoms (execDebM $ do installTo +++= (BinPkgName "ghcjs-tools",
+                                                                           (fromList
+                                                                            (map (\ name -> ("debian/tmp-inst-ghc" </> name, name))
+                                                                                 ["usr/bin/ghcjs-0.1.0-7.8.2.bin",
+                                                                                  "usr/bin/ghcjs-pkg-0.1.0-7.8.2.bin",
+                                                                                  "usr/bin/ghcjs-0.1.0-7.8.2",
+                                                                                  "usr/bin/haddock-ghcjs-0.1.0-7.8.2.bin",
+                                                                                  "usr/bin/haddock-ghcjs-0.1.0-7.8.2",
+                                                                                  "usr/bin/ghcjs-pkg-0.1.0-7.8.2",
+                                                                                  "usr/bin/ghcjs-boot",
+                                                                                  "usr/bin/ghcjs",
+                                                                                  "usr/bin/ghcjs-pkg",
+                                                                                  "usr/bin/ghcjs-boot-0.1.0-7.8.2",
+                                                                                  "usr/bin/haddock-ghcjs"])))))
   , -- I think deps is the equivalent of using the P.DevelDep flag.
     let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s `flag` P.CabalDebian ["--depends=ghcjs:" ++ s])
                         p0 ["alex", "happy", "make", "patch", "autoconf",
