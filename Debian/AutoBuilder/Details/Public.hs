@@ -882,14 +882,13 @@ happstack _home release =
     P.Packages (singleton "happstack")
     [ plugins
     , debianize (darcs "haskell-seereason-base" (repo ++ "/seereason-base"))
-    , debianize (hackage "happstack" `patch` $(embedFile "patches/happstack.diff") `tflag` P.DebVersion "7.0.1-2build6")
+    , debianize (hackage "happstack")
     , debianize (darcs "haskell-happstack-foundation" (darcsHub ++ "/happstack") `cd` "happstack-foundation")
     , debianize (hackage "cryptohash-cryptoapi")
     , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs",
                                                         "--conflicts=hsx2hs:haskell-hsx-utils",
                                                         "--replaces=hsx2hs:haskell-hsx-utils",
                                                         "--provides=hsx2hs:haskell-hsx-utils"]
-                   `patch` $(embedFile "patches/hsx2hs.diff")
                    `tflag` P.DebVersion "0.13.1-1")
     -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
     , debianize (hackage "sourcemap")
@@ -938,7 +937,7 @@ happstack _home release =
     , debianize (hackage "web-routes")
     , debianize (hackage "web-routes-boomerang")
     , debianize (hackage "web-routes-happstack")
-    , debianize (hackage "web-routes-hsp" `patch` $(embedFile "patches/web-routes-hsp.diff"))
+    , debianize (hackage "web-routes-hsp")
     , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
     , debianize (hackage "web-routes-th")
     , debianize (darcs "haskell-happstack-scaffolding" (repo ++ "/happstack-scaffolding"))
