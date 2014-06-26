@@ -1325,7 +1325,6 @@ ghcjs release =
     -- ghcjs-boot, and haddock-ghcjs.  Does *not* run ghcjs-boot.
     debianize (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs"
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
-                       `patch` $(embedFile "patches/ghcjs-haddock.diff")
                        `patch` $(embedFile "patches/ghcjs-cabal.diff")
                        `patch` $(embedFile "patches/ghcjs-debug.diff")
                        -- `patch` $(embedFile "patches/ghcjs-paths.diff")
@@ -1337,7 +1336,6 @@ ghcjs release =
                             "cpp", "git", "cabal-install-ghcjs"] in
     deps (debdir (git "ghcjs" "https://github.com/ghcjs/ghcjs"
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
-                       `patch` $(embedFile "patches/ghcjs-haddock.diff")
                        `patch` $(embedFile "patches/ghcjs-cabal.diff")
                        -- `patch` $(embedFile "patches/ghcjs-boot.diff")
                        -- `patch` $(embedFile "patches/ghcjs-paths.diff")
