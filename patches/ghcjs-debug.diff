@@ -5,8 +5,21 @@
 +
  import Distribution.Simple (defaultMainWithHooks, simpleUserHooks, hookedPrograms, UserHooks(..))
  import Distribution.Simple.Program.Types (simpleProgram)
-@@ -25,7 +27,8 @@
- main = defaultMainWithHooks ghcjsHooks
+@@ -17,7 +17,7 @@
+ import           Distribution.System
+ import           Distribution.Verbosity
+ 
+-import           System.Environment    (setEnv)
++import           System.Environment    (setEnv, getArgs, withArgs)
+ import           System.Exit           (ExitCode(..))
+ import           System.Directory      (doesFileExist, removeFile, renameFile)
+ import           System.FilePath       ((</>), (<.>), splitExtensions, dropExtensions)
+@@ -25,10 +25,11 @@
+ import           System.IO.Error       (IOError, isDoesNotExistError)
+ 
+ main :: IO ()
+-main = setEnv "HOME" "/homedoesnotexistatbuildtime" >> defaultMainWithHooks ghcjsHooks
++main = setEnv "HOME" "/homedoesnotexistatbuildtime" >> getArgs >>= \ args -> withArgs ("-v2" : args) (defaultMainWithHooks ghcjsHooks)
  
  ghcjsHooks :: UserHooks
 -ghcjsHooks = simpleUserHooks { preSDist = ghcjsSDist
@@ -15,9 +28,49 @@
                               , postCopy = ghcjsPostCopy
                               }
  
-@@ -61,2 +63,49 @@
+@@ -48,6 +49,7 @@
+         return () -- User has opted to skip wrapper script installation. Let's hope they know what they're doing.
+                   -- Executables will keep their original names, e.g. ghcjs.bin, ghcjs-pkg.bin
+   | otherwise = do
++        hPutStrLn stderr ("exes: " ++ show exes)
+         wrapperEnv <- getWrapperEnv verbosity descr installDirs exes
+         mapM_ (copyWrapper verbosity wrapperEnv descr installDirs) exes
+     where
+@@ -167,6 +168,8 @@
+                         e' <.> "exe" <.> "options"
+       destOptions  = destExeVer <.> "options"                     -- ex: bin\ghcjs-0.1.0-7.8.3.exe.options (created, existing files not overwritten)
  
- autoboot = rawSystem "dist-ghc/build/ghcjs-boot/ghcjs-boot" ["--auto"] -- fixme make sure that the one from the current install is being run
++installExecutableFile' v s d = hPutStrLn stderr ("installExecutableFile " ++ show v ++ " " ++ show s ++ " " ++ show d) >> installExecutableFile v s d
++
+ {- |
+      on non-Windows we copy shell scripts that pass the -B flag to ghcjs, ghcjs-pkg etc
+ 
+@@ -185,7 +188,7 @@
+              -> IO ()
+ copyWrapperU v env descr installDirs exe
+   | requiresWrapper e = do
+-      installExecutableFile v (b </> srcExe) (b </> destExe)
++      installExecutableFile' v (b </> srcExe) (b </> destExe)
+       removeFile (b </> srcExe)
+       wrapperExists <- doesFileExist (b </> destWrapperVer)
+       when (not wrapperExists) $ do
+@@ -193,10 +196,10 @@
+         withTempFile (bindir installDirs) "ghcjs-wrapper-XXXXXX.tmp" $ \tmp h -> do
+           hPutStr h script
+           hClose h
+-          installExecutableFile v tmp (b </> destWrapperVer)
++          installExecutableFile' v tmp (b </> destWrapperVer)
+       linkFileU v b destWrapperVer destWrapper
+   | otherwise = do
+-      installExecutableFile v (b </> srcExe) (b </> srcExe ++ "-" ++ verSuff env)
++      installExecutableFile' v (b </> srcExe) (b </> srcExe ++ "-" ++ verSuff env)
+       removeFile (b </> srcExe)
+       linkFileU v b (srcExe ++ "-" ++ verSuff env) srcExe
+   where
+@@ -245,3 +249,50 @@
+ 
+ trim :: String -> String
+ trim = let f = dropWhile isSpace . reverse in f . f
 +
 +showHooks :: UserHooks -> UserHooks
 +showHooks hooks =

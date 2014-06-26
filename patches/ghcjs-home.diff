@@ -1,0 +1,19 @@
+--- old/Setup.hs	2014-06-26 07:03:28.172069172 -0700
++++ new/Setup.hs	2014-06-26 07:31:05.516115464 -0700
+@@ -17,6 +17,7 @@
+ import           Distribution.System
+ import           Distribution.Verbosity
+ 
++import           System.Environment    (setEnv)
+ import           System.Exit           (ExitCode(..))
+ import           System.Directory      (doesFileExist, removeFile, renameFile)
+ import           System.FilePath       ((</>), (<.>), splitExtensions, dropExtensions)
+@@ -24,7 +25,7 @@
+ import           System.IO.Error       (IOError, isDoesNotExistError)
+ 
+ main :: IO ()
+-main = defaultMainWithHooks ghcjsHooks
++main = setEnv "HOME" "/homedoesnotexistatbuildtime" >> defaultMainWithHooks ghcjsHooks
+ 
+ ghcjsHooks :: UserHooks
+ ghcjsHooks = showHooks $ simpleUserHooks

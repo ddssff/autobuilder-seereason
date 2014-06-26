@@ -1326,8 +1326,9 @@ ghcjs release =
     debianize (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs"
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
                        `patch` $(embedFile "patches/ghcjs-cabal.diff")
+                       `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME to /homedoesnotexistatbuildtime
+                       -- The debug patch should come last, the "real" patches mustn't depend on it
                        `patch` $(embedFile "patches/ghcjs-debug.diff")
-                       -- `patch` $(embedFile "patches/ghcjs-paths.diff")
                        `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                              "--default-package=ghcjs-tools"]
                        `flag` P.ModifyAtoms (execDebM $ do installTo +++= (BinPkgName "ghcjs-tools",
@@ -1351,8 +1352,6 @@ ghcjs release =
     deps (debdir (git "ghcjs" "https://github.com/ghcjs/ghcjs"
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
                        `patch` $(embedFile "patches/ghcjs-cabal.diff")
-                       -- `patch` $(embedFile "patches/ghcjs-boot.diff")
-                       -- `patch` $(embedFile "patches/ghcjs-paths.diff")
                        `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-2)")
                  (Darcs (repo </> "ghcjs-debian")))
   , debianize (hackage "ghcjs-dom"
