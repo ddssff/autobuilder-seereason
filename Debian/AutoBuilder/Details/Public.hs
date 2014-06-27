@@ -223,7 +223,7 @@ main _home release =
     , debianize (hackage "citeproc-hs" `tflag` P.DebVersion "0.3.9-1build2")
     , debianize (hackage "hexpat")
     , debianize (hackage "List")
-    , debianize (hackage "network-info" `tflag` P.DebVersion "0.2.0.3-2")
+    , debianize (hackage "network-info")
     , debianize (hackage "uuid")
     , debianize (hackage "maccatcher"
                    `pflag` P.DebVersion "2.1.5-3"
@@ -888,8 +888,7 @@ happstack _home release =
     , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs",
                                                         "--conflicts=hsx2hs:haskell-hsx-utils",
                                                         "--replaces=hsx2hs:haskell-hsx-utils",
-                                                        "--provides=hsx2hs:haskell-hsx-utils"]
-                   `tflag` P.DebVersion "0.13.1-1")
+                                                        "--provides=hsx2hs:haskell-hsx-utils"])
     -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
     , debianize (hackage "sourcemap")
     , debianize (hackage "haskell-packages")
@@ -1230,7 +1229,7 @@ sunroof release =
   , debianize (hackage "set-monad")
   , debianize (hackage "data-reify")
   , debianize (hackage "Boolean")
-  , debianize (hackage "vector-space" `tflag` P.DebVersion "0.8.6-3build2")
+  , debianize (hackage "vector-space")
   , debianize (hackage "NumInstances" `tflag` P.DebVersion "1.3-1")
   , debianize (hackage "MemoTrie")
   , debianize (hackage "value-supply")
