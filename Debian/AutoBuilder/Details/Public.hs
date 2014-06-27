@@ -1325,6 +1325,7 @@ ghcjs release =
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
                        `patch` $(embedFile "patches/ghcjs-cabal.diff")
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME to /homedoesnotexistatbuildtime
+                       `patch` $(embedFile "patches/ghcjs-copydest.diff")
                        -- The debug patch should come last, the "real" patches mustn't depend on it
                        `patch` $(embedFile "patches/ghcjs-debug.diff")
                        `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
