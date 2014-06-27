@@ -28,14 +28,6 @@
                               , postCopy = ghcjsPostCopy
                               }
  
-@@ -48,6 +49,7 @@
-         return () -- User has opted to skip wrapper script installation. Let's hope they know what they're doing.
-                   -- Executables will keep their original names, e.g. ghcjs.bin, ghcjs-pkg.bin
-   | otherwise = do
-+        hPutStrLn stderr ("exes: " ++ show exes)
-         wrapperEnv <- getWrapperEnv verbosity descr installDirs exes
-         mapM_ (copyWrapper verbosity wrapperEnv descr installDirs) exes
-     where
 @@ -167,6 +168,8 @@
                          e' <.> "exe" <.> "options"
        destOptions  = destExeVer <.> "options"                     -- ex: bin\ghcjs-0.1.0-7.8.3.exe.options (created, existing files not overwritten)
