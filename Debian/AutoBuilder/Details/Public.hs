@@ -1003,7 +1003,7 @@ authenticate _home release =
     -- , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
     , debianize (git "haskell-fb" "https://github.com/stepcut/fb" `patch` $(embedFile "patches/fb.diff"))
     , debianize (hackage "monad-logger")
-    , debianize (hackage "monad-loops" `tflag` P.DebVersion "0.4.2-1")
+    , debianize (hackage "monad-loops")
     , debianize (hackage "fast-logger")
     , debianize (hackage "date-cache" `tflag` P.DebVersion "0.3.0-3")
     , debianize (hackage "unix-time")
