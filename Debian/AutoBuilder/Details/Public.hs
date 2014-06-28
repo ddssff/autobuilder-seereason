@@ -14,7 +14,7 @@ import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Pa
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, NoHoogle, GitBranch),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
-import Debian.Debianize (compat, doExecutable, execDebM, installData, installTo, InstallFile(..), (~=), (+++=))
+import Debian.Debianize (compat, doExecutable, execDebM, installData, installTo, link, InstallFile(..), (~=), (+++=))
 import Debian.Relation (BinPkgName(..))
 import System.FilePath((</>))
 
@@ -1339,11 +1339,18 @@ ghcjs release =
                                                                                   "usr/bin/haddock-ghcjs-0.1.0-7.8.2.bin",
                                                                                   "usr/bin/haddock-ghcjs-0.1.0-7.8.2",
                                                                                   "usr/bin/ghcjs-pkg-0.1.0-7.8.2",
-                                                                                  "usr/bin/ghcjs-boot",
-                                                                                  "usr/bin/ghcjs",
-                                                                                  "usr/bin/ghcjs-pkg",
-                                                                                  "usr/bin/ghcjs-boot-0.1.0-7.8.2",
-                                                                                  "usr/bin/haddock-ghcjs"])))))
+                                                                                  "usr/bin/ghcjs-boot-0.1.0-7.8.2"])))
+                                                           link +++= (BinPkgName "ghcjs-tools",
+                                                                      (fromList
+                                                                       (map (\ name ->
+                                                                                 let text = "/usr/bin" </> name ++ "-0.1.0-7.8.2"
+                                                                                     loc = "/usr/bin" </> name in
+                                                                                 (text, loc))
+                                                                            ["ghcjs-boot",
+                                                                             "ghcjs",
+                                                                             "ghcjs-pkg",
+                                                                             "haddock-ghcjs"])))
+                                            ))
   , -- I think deps is the equivalent of using the P.DevelDep flag.
     let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s `flag` P.CabalDebian ["--depends=ghcjs:" ++ s])
                         p0 ["alex", "happy", "make", "patch", "autoconf",
