@@ -13,7 +13,7 @@
  
  main :: IO ()
 -main = defaultMainWithHooks ghcjsHooks
-+main = setEnv "HOME" "/homedoesnotexistatbuildtime" >> defaultMainWithHooks ghcjsHooks
++main = setEnv "HOME" "/usr/lib/ghcjs" >> defaultMainWithHooks ghcjsHooks
  
  ghcjsHooks :: UserHooks
  ghcjsHooks = showHooks $ simpleUserHooks

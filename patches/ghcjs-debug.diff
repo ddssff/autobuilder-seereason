@@ -5,7 +5,7 @@
 +
  import Distribution.Simple (defaultMainWithHooks, simpleUserHooks, hookedPrograms, UserHooks(..))
  import Distribution.Simple.Program.Types (simpleProgram)
-@@ -17,7 +17,7 @@
+@@ -15,7 +17,7 @@
  import           Distribution.System
  import           Distribution.Verbosity
  
@@ -14,12 +14,12 @@
  import           System.Exit           (ExitCode(..))
  import           System.Directory      (doesFileExist, removeFile, renameFile)
  import           System.FilePath       ((</>), (<.>), splitExtensions, dropExtensions)
-@@ -25,10 +25,11 @@
+@@ -23,10 +25,11 @@
  import           System.IO.Error       (IOError, isDoesNotExistError)
  
  main :: IO ()
--main = setEnv "HOME" "/homedoesnotexistatbuildtime" >> defaultMainWithHooks ghcjsHooks
-+main = setEnv "HOME" "/homedoesnotexistatbuildtime" >> getArgs >>= \ args -> withArgs ("-v2" : args) (defaultMainWithHooks ghcjsHooks)
+-main = setEnv "HOME" "/usr/lib/ghcjs" >> defaultMainWithHooks ghcjsHooks
++main = setEnv "HOME" "/usr/lib/ghcjs" >> getArgs >>= \ args -> withArgs ("-v2" : args) (defaultMainWithHooks ghcjsHooks)
  
  ghcjsHooks :: UserHooks
 -ghcjsHooks = simpleUserHooks { preSDist = ghcjsSDist
