@@ -18,7 +18,6 @@ seereasonDefaultAtoms =
     do debianDefaultAtoms
 
        missingDependencies += BinPkgName "libghc-happstack-authenticate-9-doc"
-       missingDependencies += BinPkgName "libghc-cabal-ghcjs-doc"
 
        mapCabal (PackageName "clckwrks") (DebBase "clckwrks")
        splitCabal (PackageName "clckwrks") (DebBase "clckwrks-13") (Version [0, 14] [])
@@ -39,6 +38,7 @@ seereasonDefaultAtoms =
        mapCabal (PackageName "case-insensitive") (DebBase "case-insensitive")
        splitCabal (PackageName "case-insensitive") (DebBase "case-insensitive-0") (Version [1] [])
 
-       -- We build special versions of cabal and cabal-install to support the ghcjs compiler
-       mapCabal (PackageName "Cabal") (DebBase "cabal-ghcjs")
-       mapCabal (PackageName "cabal-install") (DebBase "cabal-install-ghcjs")
+       mapCabal (PackageName "Cabal") (DebBase "cabal")
+       -- mapCabal (PackageName "cabal-install") (DebBase "cabal-install-ghcjs")
+
+       missingDependencies += BinPkgName "libghcjs-ghcjs-dom-doc" -- Haven't worked out how to do documentation for ghcjs libraries
