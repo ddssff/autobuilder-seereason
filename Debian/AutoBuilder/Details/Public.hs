@@ -1305,9 +1305,7 @@ ghcjs release =
   , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal"
                          `flag` P.GitBranch "ghcjs"
                          `cd` "Cabal"
-                         `patch` $(embedFile "patches/cabal-ghcjs.diff")
-                         -- The doc package conflicts with ghc-doc
-                         `flag` P.NoDoc)
+                         `patch` $(embedFile "patches/cabal-ghcjs.diff"))
   , debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal"
                        `flag` P.GitBranch "ghcjs"
                        `cd` "cabal-install"
