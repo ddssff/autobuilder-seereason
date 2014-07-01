@@ -22,7 +22,7 @@ diff -rN -u old-haskell-devscripts/dh_haskell_depends new-haskell-devscripts/dh_
      touch $sfile
  
      case "$pkg" in
-@@ -118,6 +119,19 @@
+@@ -118,6 +119,18 @@
              echo "haskell:Recommends=" >> $sfile.tmp
              echo "haskell:Suggests=" >> $sfile.tmp
  	    ;;
@@ -36,8 +36,7 @@ diff -rN -u old-haskell-devscripts/dh_haskell_depends new-haskell-devscripts/dh_
 +            echo "haskell:Recommends=" >> $sfile.tmp
 +            echo "haskell:Suggests=" >> $sfile.tmp
 +	    echo "#!/bin/sh" >> $pfile
-+	    echo "HOME=/usr/lib/ghcjs ghcjs-pkg recache --global" >> $pfile
-+	    echo "HOME=/usr/lib/ghcjs ghcjs-pkg recache --user" >> $pfile
++	    echo "HOME=/${PREFIX} ghcjs-pkg recache --global" >> $pfile
 +	    ;;
          libghc-*-doc|haskell-*-doc)
  	    grep -v \
