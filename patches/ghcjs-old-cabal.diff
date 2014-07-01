@@ -1,0 +1,29 @@
+--- old/ghcjs.cabal	2014-07-01 13:53:53.948823529 -0700
++++ new/ghcjs.cabal	2014-07-01 13:53:16.684822488 -0700
+@@ -90,7 +90,7 @@
+                      GHCJS
+     other-modules: Paths_ghcjs
+     build-depends: base           >= 4        && < 5,
+-                   Cabal,
++                   Cabal          < 1.20,
+                    ghc            >= 7.8      && < 7.10,
+                    directory,
+                    filepath,
+@@ -172,7 +172,7 @@
+                       directory  >= 1   && < 1.3,
+                       process    >= 1   && < 1.3,
+                       filepath,
+-                      Cabal,
++                      Cabal      < 1.20,
+                       binary,
+                       bin-package-db,
+                       bytestring
+@@ -196,7 +196,7 @@
+     Build-Depends:    base                 >= 4      && < 5,
+                       ghcjs,
+                       directory,
+-                      Cabal,
++                      Cabal                < 1.20,
+                       mtl,
+                       transformers,
+                       lens,
