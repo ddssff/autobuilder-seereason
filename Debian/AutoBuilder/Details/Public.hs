@@ -1299,7 +1299,6 @@ ghcjs release =
   -- haskell-devscripts modified to support ghcjs packaging.
   , apt "sid" "haskell-devscripts"
       `patch` $(embedFile "patches/haskell-devscripts-ghcjs.diff")
-      `flag` P.DebVersion "0.8.21-2"
       `flag` P.RelaxDep "python-minimal"
   -- Cabal library with ghcjs support.  The debs are named cabal-ghcjs
   -- so packages that require ghcjs suppport can specify this.
