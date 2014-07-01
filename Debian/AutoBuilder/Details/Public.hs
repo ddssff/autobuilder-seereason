@@ -1324,9 +1324,12 @@ ghcjs release =
     debianize (deps $
                git "ghcjs-tools" "https://github.com/ghcjs/ghcjs"
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
-                       `patch` $(embedFile "patches/ghcjs-cabal.diff")
+                       `patch` $(embedFile "patches/ghcjs-cabal-lens.diff")
+                       `patch` $(embedFile "patches/ghcjs-old-cabal.diff")
+                       -- `patch` $(embedFile "patches/ghcjs-cabal.diff")
+                       -- `patch` $(embedFile "patches/ghcjs-cabal-options.diff")
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
-                       `patch` $(embedFile "patches/ghcjs-debug.diff")
+                       -- `patch` $(embedFile "patches/ghcjs-debug.diff")
                        `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                              "--default-package=ghcjs-tools"]
                        `flag` P.ModifyAtoms (execDebM $ do installTo +++= (BinPkgName "ghcjs-tools",
@@ -1356,9 +1359,11 @@ ghcjs release =
                             "cpp", "git", "cabal-install-ghcjs"] in
     deps (debdir (git "ghcjs" "https://github.com/ghcjs/ghcjs"
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
-                       `patch` $(embedFile "patches/ghcjs-cabal.diff")
+                       `patch` $(embedFile "patches/ghcjs-cabal-lens.diff")
+                       -- `patch` $(embedFile "patches/ghcjs-cabal.diff")
+                       -- `patch` $(embedFile "patches/ghcjs-cabal-options.diff")
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must the one in ghcjs-debian/debian/Setup.hs
-                       `patch` $(embedFile "patches/ghcjs-debug.diff")
+                       -- `patch` $(embedFile "patches/ghcjs-debug.diff")
                        `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-2)")
                  (Darcs (repo </> "ghcjs-debian") {- Dir "/home/dsf/darcs/ghcjs-debian" -}))
   , debianize (hackage "ghcjs-dom"

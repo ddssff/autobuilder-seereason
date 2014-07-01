@@ -1,95 +1,29 @@
---- old/ghcjs.cabal	2014-06-05 15:07:30.495670232 -0700
-+++ new/ghcjs.cabal	2014-06-05 15:12:35.259678745 -0700
-@@ -88,7 +88,7 @@
+--- old/ghcjs.cabal	2014-07-01 07:50:03.968213779 -0700
++++ new/ghcjs.cabal	2014-07-01 08:02:47.448235104 -0700
+@@ -90,7 +90,7 @@
                       GHCJS
      other-modules: Paths_ghcjs
      build-depends: base           >= 4        && < 5,
 -                   Cabal,
-+                   Cabal >= 1.21, regex-tdfa, debian,
++                   Cabal          >= 1.21,
                     ghc            >= 7.8      && < 7.10,
                     directory,
                     filepath,
-@@ -104,7 +104,7 @@
-                    aeson          >= 0.7      && < 0.8,
-                    text           >= 0.11     && < 1.2,
-                    wl-pprint-text >= 1.1      && < 1.2,
--                   lens           >= 4.0      && < 4.2,
-+                   lens           >= 4.0      && < 4.3,
-                    yaml           >= 0.8      && < 0.9,
-                    time,
-                    system-filepath,
-@@ -127,12 +127,13 @@
-                    safe                       >= 0.3  && < 0.4,
-                    parsec                     >= 3.1  && < 3.2,
-                    haskell-src-exts           >= 1.15 && < 1.16,
--                   haskell-src-meta           >= 0.6.0.3  && < 0.7
-+                   haskell-src-meta           >= 0.6.0.3  && < 0.7,
-+                   filemanip
-     exposed: True
-     buildable: True
-     hs-source-dirs: src
-     include-dirs: include
--    GHC-Options: -O2 -fno-warn-orphans -auto-all -Wall
-+    GHC-Options: -O2 -fno-warn-orphans -auto-all -Wall -package Cabal-1.21.0.0 -package Cabal-1.18.1.3
- 
- -- the compiler executable, Setup.hs installs a wrapper script that
- -- supplies the installation directory
-@@ -142,7 +143,7 @@
-     hs-source-dirs: src-bin
-     Build-Depends:  base                >= 4    &&  < 5,
-                     ghcjs
--    GHC-Options:    -O2 -rtsopts -with-rtsopts=-N -with-rtsopts=-K256m -threaded
-+    GHC-Options:    -O2 -rtsopts -with-rtsopts=-N -with-rtsopts=-K256m -threaded -package Cabal-1.21.0.0 -package Cabal-1.18.1.3
- 
- -- a wrapper for haddock
- Executable haddock-ghcjs.bin
-@@ -155,7 +156,7 @@
-                     process,
-                     filepath,
-                     ghcjs
--    GHC-Options:    -O
-+    GHC-Options:    -O -package Cabal-1.21.0.0 -package Cabal-1.18.1.3
- 
- -- the package manager, like with the compiler, this executable is called
- -- through a wrapper script
-@@ -165,12 +166,13 @@
-     Main-Is:          Pkg.hs
-     Default-Language: Haskell2010
-     Hs-Source-Dirs:   src-bin
-+    ghc-options:  -package Cabal-1.21.0.0 -package Cabal-1.18.1.3
-     Build-Depends:    ghcjs,
-                       base       >= 4   && < 5,
+@@ -172,7 +172,7 @@
                        directory  >= 1   && < 1.3,
                        process    >= 1   && < 1.3,
                        filepath,
 -                      Cabal,
-+                      Cabal >= 1.21, regex-tdfa, debian,
++                      Cabal      >= 1.21,
                        binary,
                        bin-package-db,
                        bytestring
-@@ -187,14 +189,14 @@
-       Buildable:      False
-     if os(Windows)
-       cpp-options: -DWINDOWS
--    ghc-options:      -threaded -O
-+    ghc-options:      -threaded -O -package Cabal-1.21.0.0 -package Cabal-1.18.1.3
-     Main-Is:          Boot.hs
-     Default-Language: Haskell2010
-     Hs-Source-Dirs:   src-bin
+@@ -196,7 +196,7 @@
      Build-Depends:    base                 >= 4      && < 5,
                        ghcjs,
                        directory,
 -                      Cabal,
-+                      Cabal >= 1.21, regex-tdfa, debian,
++                      Cabal                >= 1.21,
                        mtl,
                        transformers,
                        lens,
-@@ -223,7 +225,7 @@
-     type:             exitcode-stdio-1.0
-     Default-Language: Haskell2010
-     hs-source-dirs:   test
--    ghc-options:      -threaded -O
-+    ghc-options:      -threaded -O -package Cabal-1.21.0.0 -package Cabal-1.18.1.3
-     main-is:          TestRunner.hs
-     build-depends:    base                 >= 4 && < 5,
-                       process,
