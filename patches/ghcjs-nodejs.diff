@@ -1,0 +1,11 @@
+--- old/src/Gen2/TH.hs	2014-07-02 12:36:36.259107293 -0700
++++ new/src/Gen2/TH.hs	2014-07-02 12:37:46.955109267 -0700
+@@ -158,7 +158,7 @@
+         fb <- BL.fromChunks <$> mapM (Gen2.tryReadShimFile dflags) (Gen2.linkLibB lr)
+         fa <- BL.fromChunks <$> mapM (Gen2.tryReadShimFile dflags) (Gen2.linkLibA lr)
+         let rts = TL.encodeUtf8 $ Gen2.rtsText' (Gen2.dfCgSettings dflags)
+-        (inp,out,err,pid) <- runInteractiveProcess "node" [topDir dflags </> "thrunner.js"] Nothing Nothing
++        (inp,out,err,pid) <- runInteractiveProcess "nodejs" [topDir dflags </> "thrunner.js"] Nothing Nothing
+         mv  <- newMVar (Gen2.linkBase lr)
+         forkIO $ catchIOError (forever $ hGetChar out >>= putChar) (\_ -> return ())
+         let r = ThRunner pid inp err mv
