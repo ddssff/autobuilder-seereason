@@ -1325,8 +1325,8 @@ ghcjs release =
     debianize (deps $
                git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" Nothing
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
-                       `patch` $(embedFile "patches/ghcjs-cabal-lens.diff")
                        `patch` $(embedFile "patches/ghcjs-old-cabal.diff")
+                       `patch` $(embedFile "patches/ghcjs-nodejs.diff")
                        -- `patch` $(embedFile "patches/ghcjs-cabal.diff")
                        -- `patch` $(embedFile "patches/ghcjs-cabal-options.diff")
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
@@ -1354,19 +1354,7 @@ ghcjs release =
                                                                              "ghcjs-pkg",
                                                                              "haddock-ghcjs"])))
                                             ))
-  , -- I think deps is the equivalent of using the P.DevelDep flag.
-    let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s `flag` P.CabalDebian ["--depends=ghcjs:" ++ s])
-                        p0 ["alex", "happy", "make", "patch", "autoconf",
-                            "cpp", "git", "cabal-install-ghcjs"] in
-    deps (debdir (git "ghcjs" "https://github.com/ghcjs/ghcjs"
-                       `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
-                       `patch` $(embedFile "patches/ghcjs-cabal-lens.diff")
-                       -- `patch` $(embedFile "patches/ghcjs-cabal.diff")
-                       -- `patch` $(embedFile "patches/ghcjs-cabal-options.diff")
-                       `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must the one in ghcjs-debian/debian/Setup.hs
-                       -- `patch` $(embedFile "patches/ghcjs-debug.diff")
-                       `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-2)")
-                 (Darcs (repo </> "ghcjs-debian") {- Dir "/home/dsf/darcs/ghcjs-debian" -}))
+  , darcs "ghcjs" (repo </> "ghcjs-debian") {-dir "ghcjs" "/home/dsf/darcs/ghcjs-debian"-}
   , debianize (hackage "ghcjs-dom"
                  `flag` P.CabalDebian ["--hc=ghcjs"]
                  `flag` P.BuildDep "ghcjs"                  -- to compile the library
