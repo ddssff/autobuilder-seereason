@@ -863,7 +863,7 @@ fay _home _release =
     , debianize (hackage "fay" {- `patch` $(embedFile "patches/fay.diff") -}) `flag` P.CabalDebian [ "--depends=haskell-fay-utils:cpphs" ]
     , debianize (hackage "fay-base")
     , debianize (hackage "fay-text")
-    , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery")
+    , debianize (git "haskell-fay-jquery" "https://github.com/faylang/fay-jquery" Nothing)
     -- , debianize (hackage "fay-jquery" `flag` P.CabalPin "0.3.0.0")
 {-  , debianize (darcs "mastermind" (darcsHub ++ "/mastermind")
                    `flag` P.CabalDebian ["--build-dep=hsx2hs",
@@ -1001,7 +1001,7 @@ authenticate _home release =
     , debianize (hackage "tagstream-conduit")
     , digestiveFunctors
     -- , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
-    , debianize (git "haskell-fb" "https://github.com/stepcut/fb" `patch` $(embedFile "patches/fb.diff"))
+    , debianize (git "haskell-fb" "https://github.com/stepcut/fb" Nothing `patch` $(embedFile "patches/fb.diff"))
     , debianize (hackage "monad-logger")
     , debianize (hackage "monad-loops")
     , debianize (hackage "fast-logger")
@@ -1222,7 +1222,7 @@ sunroof :: Release -> P.Packages
 sunroof release =
   let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
   P.Packages (singleton "sunroof")
-  [ debianize (git "haskell-sunroof-compiler" "http://github.com/ku-fpg/sunroof-compiler"
+  [ debianize (git "haskell-sunroof-compiler" "http://github.com/ku-fpg/sunroof-compiler" Nothing
                  `patch` $(embedFile "patches/sunroof-compiler.diff"))
   -- , debianize (hackage "sunroof-compiler")
   , debianize (hackage "constrained-normal")
@@ -1274,14 +1274,14 @@ idris release =
 haste :: P.Packages
 haste = P.Packages (singleton "haste")
   [ hack "haste-compiler" `flag` P.CabalDebian ["--default-package=haste-compiler"]
-  , git' "haskell-haste-ffi-parser" "https://github.com/RudolfVonKrugstein/haste-ffi-parser"
+  , git' "haskell-haste-ffi-parser" "https://github.com/RudolfVonKrugstein/haste-ffi-parser" Nothing
   , hack "data-binary-ieee754"
   , hack "shellmate"
-  , debianize (git "haskell-websockets" "https://github.com/cliffordbeshers/websockets" `patch` $(embedFile "patches/websockets.diff"))
+  , debianize (git "haskell-websockets" "https://github.com/cliffordbeshers/websockets" Nothing `patch` $(embedFile "patches/websockets.diff"))
   , hack "io-streams"
   ]
     where hack = debianize . hackage
-          git' n r = debianize $ git n r
+          git' n r c = debianize $ git n r c
 
 -- agda = P.Packages (singleton "agda")
 --   [ hack "agda"
@@ -1302,11 +1302,11 @@ ghcjs release =
       `flag` P.RelaxDep "python-minimal"
   -- Cabal library with ghcjs support.  The debs are named cabal-ghcjs
   -- so packages that require ghcjs suppport can specify this.
-  , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal"
+  , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal" Nothing
                          `flag` P.GitBranch "ghcjs"
                          `cd` "Cabal"
                          `patch` $(embedFile "patches/cabal-ghcjs.diff"))
-  , debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal"
+  , debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal" Nothing
                        `flag` P.GitBranch "ghcjs"
                        `cd` "cabal-install"
                        `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
@@ -1322,7 +1322,7 @@ ghcjs release =
                         p0 ["alex", "happy", "make", "patch", "autoconf",
                             "cpp", "git", "cabal-install-ghcjs"] in
     debianize (deps $
-               git "ghcjs-tools" "https://github.com/ghcjs/ghcjs"
+               git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" Nothing
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
                        `patch` $(embedFile "patches/ghcjs-cabal-lens.diff")
                        `patch` $(embedFile "patches/ghcjs-old-cabal.diff")
@@ -1378,7 +1378,7 @@ ghcjs release =
                  `flag` P.BuildDep "ghcjs"
                  `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-5)")
-  , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base"
+  , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base" Nothing
                  `flag` P.CabalDebian ["--hc=ghcjs"]
                  `flag` P.BuildDep "ghcjs"
                  `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
