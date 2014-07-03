@@ -1292,7 +1292,14 @@ haste = P.Packages (singleton "haste")
 ghcjs :: Release -> P.Packages
 ghcjs release =
   P.Packages (singleton "ghcjs-group") $
-  [ debianize (hackage "shelly")
+  [ case baseRelease release of
+      Precise -> P.Packages (singleton "ghcjs-deps")
+                    [ apt "sid" "nodejs"
+                    , apt "sid" "c-ares"
+                    , apt "sid" "gyp"
+                    , apt "sid" "libv8-3.14" ]
+      _ -> P.NoPackage
+  , debianize (hackage "shelly")
   , debianize (hackage "text-binary")
   , debianize (hackage "enclosed-exceptions")
   , debianize (git "haskell-ghcjs-prim" "https://github.com/ghcjs/ghcjs-prim.git" Nothing)
