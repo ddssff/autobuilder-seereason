@@ -1364,15 +1364,19 @@ ghcjs release =
   , darcs "ghcjs" (repo </> "ghcjs-debian") {-dir "ghcjs" "/home/dsf/darcs/ghcjs-debian"-}
   , debianize (hackage "ghcjs-dom"
                  `flag` P.CabalDebian ["--hc=ghcjs"]
+                 `flag` P.CabalDebian ["--depends=libghcjs-ghcjs-dom-dev:ghcjs"]
+                 `flag` P.BuildDep "libghc-cabal-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
                  `flag` P.BuildDep "ghcjs"                  -- to compile the library
-                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev" -- to compile Setup.hs
+                 `flag` P.NoDoc
+                 -- `flag` P.BuildDep "libghc-cabal-dev" -- to compile Setup.hs
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-5)")
   , debianize (hackage "ghcjs-dom-hello"
                  `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
                  `flag` P.CabalDebian ["--hc=ghcjs"]
                  `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]
                  `flag` P.BuildDep "ghcjs"
-                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
+                 `flag` P.BuildDep "libghc-cabal-dev (>= 1.21)"
+                 -- `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-5)")
   , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base" Nothing
                  `flag` P.CabalDebian ["--hc=ghcjs"]
