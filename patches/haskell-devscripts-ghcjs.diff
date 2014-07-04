@@ -65,7 +65,7 @@ diff -rN -u old-haskell-devscripts/Dh_Haskell.sh new-haskell-devscripts/Dh_Haske
 +    ghcjs)
 +      PREFIX=usr/lib/ghcjs
 +      LIBDIR=${PREFIX}/.cabal/lib
-+      PKGDIR=${PREFIX}/.ghcjs/x86_64-linux-0.1.0-7.8.2/package.conf.d;;
++      PKGDIR=${PREFIX}/.ghcjs/x86_64-linux-0.1.0-7.8.2/ghcjs/package.conf.d;;
 +esac
 +
  strip_hash(){
@@ -156,7 +156,7 @@ diff -rN -u old-haskell-devscripts/hlibrary.mk new-haskell-devscripts/hlibrary.m
 +ifeq ($(HC),ghcjs)
 +PREFIX ?= usr/lib/ghcjs
 +LIBDIR ?= $(PREFIX)/.cabal/lib
-+PKGDIR ?= $(PREFIX)/.ghcjs/x86_64-linux-0.1.0-7.8.2/package.conf.d
++PKGDIR ?= $(PREFIX)/.ghcjs/x86_64-linux-0.1.0-7.8.2/ghcjs/package.conf.d
 +else
 +PREFIX ?= usr
 +LIBDIR ?= $(PREFIX)/lib/haskell-packages/ghc/lib
