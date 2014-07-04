@@ -1326,15 +1326,14 @@ ghcjs release =
                                              "--provides=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils"])
   , -- the ghcjs library and four tools - ghcjs, ghcjs-pkg,
     -- ghcjs-boot, and haddock-ghcjs.  Does *not* run ghcjs-boot.
-    let tpatch p text = case baseRelease release of Trusty -> patch p text ; _ -> p
-        deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
+    let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
                         p0 ["alex", "happy", "make", "patch", "autoconf",
                             "cpp", "git", "cabal-install-ghcjs"] in
     debianize (deps $
                git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" Nothing
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
                        `patch` $(embedFile "patches/ghcjs-old-cabal.diff")
-                       `tpatch` $(embedFile "patches/ghcjs-nodejs.diff")
+                       `patch` $(embedFile "patches/ghcjs-nodejs.diff")
                        -- `patch` $(embedFile "patches/ghcjs-cabal.diff")
                        -- `patch` $(embedFile "patches/ghcjs-cabal-options.diff")
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
