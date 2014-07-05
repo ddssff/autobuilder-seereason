@@ -1333,7 +1333,7 @@ ghcjs release =
                git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" Nothing
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
                        `patch` $(embedFile "patches/ghcjs-old-cabal.diff")
-                       `patch` $(embedFile "patches/ghcjs-nodejs.diff")
+                       -- `patch` $(embedFile "patches/ghcjs-nodejs.diff")
                        -- `patch` $(embedFile "patches/ghcjs-cabal.diff")
                        -- `patch` $(embedFile "patches/ghcjs-cabal-options.diff")
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
