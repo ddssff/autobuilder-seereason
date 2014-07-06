@@ -1302,7 +1302,7 @@ ghcjs release =
   , debianize (hackage "shelly")
   , debianize (hackage "text-binary")
   , debianize (hackage "enclosed-exceptions")
-  , debianize (git "haskell-ghcjs-prim" "https://github.com/ghcjs/ghcjs-prim.git" Nothing)
+  , debianize (git "haskell-ghcjs-prim" "https://github.com/ghcjs/ghcjs-prim.git" (Just "d76c61208c44e3673539e029ecc59e270170ed13"))
   , debianize (hackage "lifted-async")
   -- haskell-devscripts modified to support ghcjs packaging.
   , apt "sid" "haskell-devscripts"
@@ -1310,12 +1310,12 @@ ghcjs release =
       `flag` P.RelaxDep "python-minimal"
   -- Cabal library with ghcjs support.  The debs are named cabal-ghcjs
   -- so packages that require ghcjs suppport can specify this.
-  , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal" Nothing
+  , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal" (Just "fb8914dd55813a781f986e45a3a20ee66dd6a566")
                          `flag` P.GitBranch "ghcjs"
                          `cd` "Cabal"
                          `flag` P.DebVersion "1.21.0.0-2" -- bump to pull in changes through July 4th
                          `patch` $(embedFile "patches/cabal-ghcjs.diff"))
-  , debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal" Nothing
+  , debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal" (Just "fb8914dd55813a781f986e45a3a20ee66dd6a566")
                        `flag` P.GitBranch "ghcjs"
                        `cd` "cabal-install"
                        `flag` P.DebVersion "1.21.0.0-2" -- bump to pull in changes through July 4th
@@ -1332,7 +1332,7 @@ ghcjs release =
                         p0 ["alex", "happy", "make", "patch", "autoconf",
                             "cpp", "git", "cabal-install-ghcjs"] in
     debianize (deps $
-               git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" Nothing
+               git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" (Just "09481291c0a60ed43db46191705f0ec9995dba4e")
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
                        `patch` $(embedFile "patches/ghcjs-old-cabal.diff")
                        -- `patch` $(embedFile "patches/ghcjs-nodejs.diff")
