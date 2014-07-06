@@ -36,7 +36,7 @@ Library
   if flag(local-autobuilder-seereason)
     Buildable: False
   else
-    Build-Depends: cabal-debian >= 4.7, debian-repo >= 5.63, AutoBuilder >= 6.64
+    Build-Depends: cabal-debian >= 4.14, debian-repo >= 5.63, AutoBuilder >= 6.64
   Build-depends: base, bytestring, Cabal, containers, debian, filepath, file-embed, process, unix
   Exposed-Modules:
     Debian.AutoBuilder.Details
@@ -50,24 +50,27 @@ Library
 
 Executable autobuilder-seereason
  Main-Is: autobuilder.hs
+ Hs-Source-Dirs: .
  if flag(local-autobuilder-seereason)
    if flag(local-autobuilder)
-     Build-Depends: applicative-extras, data-lens, directory, exceptions, Extra, magic, mtl, network, process-listlike, process-progress, pureMD5, regex-compat, tar, text, time, unix, Unixutils, utf8-string, zlib
+     Hs-Source-Dirs: ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen
+     Build-Depends: applicative-extras, data-lens, directory, exceptions, Extra, magic, mtl, network,
+                    process-listlike, process-progress, pureMD5, regex-compat, tar, text, time, unix,
+                    Unixutils, utf8-string, zlib
      if flag (local-debian-repo)
+       Hs-Source-Dirs: ../debian-tools/debian-repo
        Build-Depends: bzlib, data-lens-template, deepseq, old-locale, old-time, template-haskell
        if flag (local-cabal-debian)
+         Hs-Source-Dirs: ../debian-tools/cabal-debian/src
          Build-Depends: Diff, hsemail, parsec, regex-tdfa, set-extra, syb, memoize
-         Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen, ../debian-tools/debian-repo, ../debian-tools/cabal-debian/src
        else
-         Build-Depends: cabal-debian >= 4.7
-         Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen, ../debian-tools/debian-repo
+         Build-Depends: cabal-debian >= 4.14
      else
-       Hs-Source-Dirs: ., ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen
-       Build-Depends: cabal-debian >= 4.7, debian-repo >= 5.63
+       Build-Depends: debian-repo >= 5.63
    else
-     Build-Depends: cabal-debian >= 4.7, debian-repo >= 5.63, AutoBuilder >= 6.64
+     Build-Depends: AutoBuilder >= 6.64
  else
-   Build-Depends: cabal-debian >= 4.7, debian-repo >= 5.63, AutoBuilder >= 6.64, autobuilder-seereason
+   Build-Depends: autobuilder-seereason
  GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
  Build-Depends: base, bytestring, Cabal, containers, debian, file-embed, filepath, process
 
