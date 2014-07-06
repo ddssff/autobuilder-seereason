@@ -1313,10 +1313,12 @@ ghcjs release =
   , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal" Nothing
                          `flag` P.GitBranch "ghcjs"
                          `cd` "Cabal"
+                         `flag` P.DebVersion "1.21.0.0-2" -- bump to pull in changes through July 4th
                          `patch` $(embedFile "patches/cabal-ghcjs.diff"))
   , debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal" Nothing
                        `flag` P.GitBranch "ghcjs"
                        `cd` "cabal-install"
+                       `flag` P.DebVersion "1.21.0.0-2" -- bump to pull in changes through July 4th
                        `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
                                              "--conflicts=cabal-install-ghcjs:cabal-install",
                                              "--replaces=cabal-install-ghcjs:cabal-install",
