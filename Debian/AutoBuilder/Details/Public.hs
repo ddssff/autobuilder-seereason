@@ -1335,11 +1335,9 @@ ghcjs release =
                git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" (Just "09481291c0a60ed43db46191705f0ec9995dba4e")
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
                        `patch` $(embedFile "patches/ghcjs-old-cabal.diff")
-                       -- `patch` $(embedFile "patches/ghcjs-nodejs.diff")
-                       -- `patch` $(embedFile "patches/ghcjs-cabal.diff")
-                       -- `patch` $(embedFile "patches/ghcjs-cabal-options.diff")
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
-                       -- `patch` $(embedFile "patches/ghcjs-debug.diff")
+                       `patch` $(embedFile "patches/ghcjs-update-archives.diff")
+                       `patch` $(embedFile "patches/ghcjs-boot-repo.diff") -- use ddssff version of ghcjs-boot repo
                        `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                              "--default-package=ghcjs-tools"]
                        `flag` P.ModifyAtoms (execDebM $ do installTo +++= (BinPkgName "ghcjs-tools",

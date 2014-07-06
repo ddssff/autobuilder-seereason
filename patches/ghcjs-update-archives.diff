@@ -1,0 +1,64 @@
+--- old/Setup.hs	2014-07-03 18:26:57.998107770 -0700
++++ new/Setup.hs	2014-07-05 11:13:08.458207326 -0700
+@@ -23,10 +23,13 @@
+ import           System.IO.Error       (IOError, isDoesNotExistError)
+ 
+ main :: IO ()
+-main = setEnv "HOME" "/usr/lib/ghcjs" >> defaultMainWithHooks ghcjsHooks
++main = do
++  setEnv "HOME" "/usr/lib/ghcjs"
++  defaultMainWithHooks ghcjsHooks
+ 
+ ghcjsHooks :: UserHooks
+ ghcjsHooks = simpleUserHooks { preSDist = ghcjsSDist
++                             , preBuild = \ a b -> updateArchives normal >> return emptyHookedBuildInfo
+                              , postCopy = ghcjsPostCopy
+                              }
+ 
+@@ -37,9 +40,12 @@
+  -}
+ ghcjsSDist :: Args -> SDistFlags -> IO HookedBuildInfo
+ ghcjsSDist as flags = do
+-  rawSystemExit (fromFlagOrDefault normal $ sDistVerbosity flags) "bash" ["utils/update_archives.sh"]
++  updateArchives (fromFlagOrDefault normal $ sDistVerbosity flags)
+   return emptyHookedBuildInfo
+ 
++updateArchives :: Verbosity -> IO ()
++updateArchives v = rawSystemExit v "bash" ["utils/update_archives.sh"]
++
+ ghcjsPostCopy :: Args -> CopyFlags -> PackageDescription -> LocalBuildInfo -> IO ()
+ ghcjsPostCopy args flags descr lbi
+   | (FlagName "no-wrapper-install", True) `elem` configConfigurationsFlags (configFlags lbi) =
+--- old/utils/update_archives.sh	2014-07-05 11:23:05.938224014 -0700
++++ new/utils/update_archives.sh	2014-07-05 11:30:31.590236462 -0700
+@@ -95,9 +95,9 @@
+ 
+ if [ -f ghcjs.cabal ] && [ -d .git ]
+ then
+-    echo "building sdist cache from GHCJS repository"
++    echo "$0: building sdist cache from GHCJS repository"
+ else
+-    echo "this doesn't look like a GHCJS repository, aborting"
++    echo "$0: ${PWD} doesn't look like a GHCJS repository, aborting"
+     exit 1
+ fi
+ 
+@@ -105,12 +105,12 @@
+ git update-index --assume-unchanged lib/cache/shims.tar
+ git update-index --assume-unchanged lib/cache/test.tar
+ 
+-STATUS=`git status --porcelain`
+-if [ ${#STATUS} -gt 0 ]
+-then
+-    echo "working tree is dirty, run from a clean working tree"
+-    exit 1
+-fi
++# STATUS=`git status --porcelain`
++# if [ ${#STATUS} -gt 0 ]
++# then
++#     echo "working tree is dirty, run from a clean working tree"
++#     exit 1
++# fi
+ 
+ if BRANCH=$(git symbolic-ref --short -q HEAD)
+ then
