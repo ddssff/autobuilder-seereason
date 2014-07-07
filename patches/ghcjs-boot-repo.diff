@@ -1,0 +1,11 @@
+--- old/utils/update_archives.sh.orig	2014-07-06 06:27:21.808141693 -0700
++++ new/utils/update_archives.sh	2014-07-06 09:14:25.940421684 -0700
+@@ -19,7 +19,7 @@
+ set -e
+ 
+ SHIMS_ORIGIN=https://github.com/ghcjs/shims.git
+-BOOT_ORIGIN=https://github.com/ghcjs/ghcjs-boot.git
++BOOT_ORIGIN=https://github.com/ddssff/ghcjs-boot.git
+ 
+ # file patters to ignore from the distribution archives
+ SHIMS_EXCLUDE="
