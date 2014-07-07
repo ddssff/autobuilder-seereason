@@ -1342,7 +1342,6 @@ ghcjs release =
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
                        `patch` $(embedFile "patches/ghcjs-old-cabal.diff")
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
-                       `patch` $(embedFile "patches/ghcjs-update-archives.diff")
                        `patch` $(embedFile "patches/ghcjs-boot-repo.diff") -- use ddssff version of ghcjs-boot repo
                        `flag` P.BuildDep "nodejs (>> 0.10.28)"
                        `flag` P.BuildDep "git (>> 1.9.1)" -- so git symbolic-ref --short works
