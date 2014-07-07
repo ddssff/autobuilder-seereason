@@ -11,7 +11,7 @@ import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..)
 import Debian.AutoBuilder.Details.GHC (ghc)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Proc, Git, Dir),
                                                PackageFlag(AptPin, CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
-                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, NoHoogle, GitBranch),
+                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, NoHoogle, GitBranch, KeepRCS),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, installTo, link, InstallFile(..), (~=), (+++=))
@@ -1348,6 +1348,7 @@ ghcjs release =
                        `flag` P.BuildDep "git (>> 1.9.1)" -- so git symbolic-ref --short works
                        `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                              "--default-package=ghcjs-tools"]
+                       `flag` P.KeepRCS
                        `flag` P.ModifyAtoms (execDebM $ do installTo +++= (BinPkgName "ghcjs-tools",
                                                                            (fromList
                                                                             (map (\ name -> ("debian/tmp-inst-ghc" </> name, name))
