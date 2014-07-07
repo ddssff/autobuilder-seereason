@@ -1339,7 +1339,7 @@ ghcjs release =
                             "cpp", "git", "cabal-install-ghcjs"] in
     debianize (deps $
                git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" (Just "09481291c0a60ed43db46191705f0ec9995dba4e")
-                       `patch` $(embedFile "patches/ghcjs-ghc-extra.diff")
+                       `patch` $(embedFile "patches/ghcjs-ghc-extra.diff") -- Retire when ghc-7.8.3 is out
                        `patch` $(embedFile "patches/ghcjs-old-cabal.diff")
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
                        `patch` $(embedFile "patches/ghcjs-boot-repo.diff") -- use ddssff version of ghcjs-boot repo
