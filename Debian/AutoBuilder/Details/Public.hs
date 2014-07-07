@@ -1345,6 +1345,7 @@ ghcjs release =
                        `patch` $(embedFile "patches/ghcjs-update-archives.diff")
                        `patch` $(embedFile "patches/ghcjs-boot-repo.diff") -- use ddssff version of ghcjs-boot repo
                        `flag` P.BuildDep "nodejs (>> 0.10.28)"
+                       `flag` P.BuildDep "git (>> 1.9.1)" -- so git symbolic-ref --short works
                        `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                              "--default-package=ghcjs-tools"]
                        `flag` P.ModifyAtoms (execDebM $ do installTo +++= (BinPkgName "ghcjs-tools",
