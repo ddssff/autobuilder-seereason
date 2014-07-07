@@ -1289,6 +1289,12 @@ haste = P.Packages (singleton "haste")
 --     where hack = debianize . hackage
 --           git' n r = debianize $ git n r
 
+
+-- ghcjs TO DO:
+--   1. fix cabal-debian so it really knows which packages ghc
+--      conflicts with and which it just provides
+--   2. Merge ghcjs and ghcjs-tools
+
 ghcjs :: Release -> P.Packages
 ghcjs release =
   P.Packages (singleton "ghcjs-group") $
