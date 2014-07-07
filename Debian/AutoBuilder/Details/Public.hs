@@ -1292,10 +1292,10 @@ haste = P.Packages (singleton "haste")
 ghcjs :: Release -> P.Packages
 ghcjs release =
   P.Packages (singleton "ghcjs-group") $
-  [ case baseRelease release of
+  [ apt "sid" "nodejs"
+  , case baseRelease release of
       Precise -> P.Packages (singleton "ghcjs-deps")
-                    [ apt "sid" "nodejs"
-                    , apt "sid" "c-ares"
+                    [ apt "sid" "c-ares"
                     , apt "sid" "gyp"
                     , apt "sid" "libv8-3.14" ]
       _ -> P.NoPackage
@@ -1338,6 +1338,7 @@ ghcjs release =
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
                        `patch` $(embedFile "patches/ghcjs-update-archives.diff")
                        `patch` $(embedFile "patches/ghcjs-boot-repo.diff") -- use ddssff version of ghcjs-boot repo
+                       `flag` P.BuildDep "nodejs (>= 0.10.29)"
                        `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                              "--default-package=ghcjs-tools"]
                        `flag` P.ModifyAtoms (execDebM $ do installTo +++= (BinPkgName "ghcjs-tools",
