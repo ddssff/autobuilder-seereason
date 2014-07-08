@@ -1294,6 +1294,7 @@ haste = P.Packages (singleton "haste")
 --   1. fix cabal-debian so it really knows which packages ghc
 --      conflicts with and which it just provides
 --   2. Merge ghcjs and ghcjs-tools
+--   3. Don't hard code the version numbers in the wrapper scripts
 
 ghcjs :: Release -> P.Packages
 ghcjs release =
@@ -1340,7 +1341,7 @@ ghcjs release =
     debianize (deps $
                git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" (Just "09481291c0a60ed43db46191705f0ec9995dba4e")
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff") -- Retire when ghc-7.8.3 is out
-                       `patch` $(embedFile "patches/ghcjs-old-cabal.diff")
+                       `patch` $(embedFile "patches/ghcjs-old-cabal.diff") -- The cabal version we build with must be the one in ghc
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
                        `patch` $(embedFile "patches/ghcjs-boot-repo.diff") -- use ddssff version of ghcjs-boot repo
                        `patch` $(embedFile "patches/ghcjs-old-git.diff") -- avoid use of git symbolic-ref --short, unavailable before git 1.8 -- ghcjs pull request #210
