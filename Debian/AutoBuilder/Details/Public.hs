@@ -1357,7 +1357,8 @@ ghcjs release =
                                                                                   "usr/bin/haddock-ghcjs-0.1.0-7.8.2.bin",
                                                                                   "usr/bin/haddock-ghcjs-0.1.0-7.8.2",
                                                                                   "usr/bin/ghcjs-pkg-0.1.0-7.8.2",
-                                                                                  "usr/bin/ghcjs-boot-0.1.0-7.8.2"])))
+                                                                                  "usr/bin/ghcjs-boot-0.1.0-7.8.2",
+                                                                                  "usr/bin/ghcjs-run"])))
                                                            link +++= (BinPkgName "ghcjs-tools",
                                                                       (fromList
                                                                        (map (\ name ->
