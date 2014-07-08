@@ -1343,7 +1343,6 @@ ghcjs release =
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff") -- Retire when ghc-7.8.3 is out
                        `patch` $(embedFile "patches/ghcjs-old-cabal.diff") -- The cabal version we build with must be the one in ghc
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
-                       `patch` $(embedFile "patches/ghcjs-boot-repo.diff") -- use ddssff version of ghcjs-boot repo
                        `patch` $(embedFile "patches/ghcjs-old-git.diff") -- avoid use of git symbolic-ref --short, unavailable before git 1.8 -- ghcjs pull request #210
                        `patch` $(embedFile "patches/ghcjs-update-archives.diff") -- run update_archives during regular build
                        `flag` P.BuildDep "nodejs (>> 0.10.28)"
