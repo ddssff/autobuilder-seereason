@@ -1,5 +1,13 @@
 --- old/Setup.hs	2014-07-08 07:38:57.781088293 -0700
 +++ new/Setup.hs	2014-07-08 08:17:32.013152934 -0700
+@@ -27,6 +27,7 @@
+ 
+ ghcjsHooks :: UserHooks
+ ghcjsHooks = simpleUserHooks { preSDist = ghcjsSDist
++                             , preBuild = \ a b -> updateArchives normal >> return emptyHookedBuildInfo
+                              , postCopy = ghcjsPostCopy
+                              }
+ 
 @@ -37,9 +37,12 @@
   -}
  ghcjsSDist :: Args -> SDistFlags -> IO HookedBuildInfo
