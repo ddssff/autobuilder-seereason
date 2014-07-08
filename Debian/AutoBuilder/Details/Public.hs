@@ -1295,6 +1295,9 @@ haste = P.Packages (singleton "haste")
 --      conflicts with and which it just provides
 --   2. Merge ghcjs and ghcjs-tools
 --   3. Don't hard code the version numbers in the wrapper scripts
+--   4. Make it so we don't have to set $HOME in Setup.hs
+--   5. Figure out how to require the version of Cabal bundled with ghc
+--   6. Build everything into a prefix directory instead of into /usr
 
 ghcjs :: Release -> P.Packages
 ghcjs release =

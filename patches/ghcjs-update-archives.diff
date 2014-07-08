@@ -4,7 +4,7 @@
  
  ghcjsHooks :: UserHooks
  ghcjsHooks = simpleUserHooks { preSDist = ghcjsSDist
-+                             , preBuild = \ a b -> updateArchives normal >> return emptyHookedBuildInfo
++                             , preBuild = \ _ _ -> updateArchives normal >> return emptyHookedBuildInfo
                               , postCopy = ghcjsPostCopy
                               }
  
