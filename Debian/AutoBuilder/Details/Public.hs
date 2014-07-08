@@ -1338,7 +1338,7 @@ ghcjs release =
                         p0 ["alex", "happy", "make", "patch", "autoconf",
                             "cpp", "git", "cabal-install-ghcjs"] in
     debianize (deps $
-               git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" (Just "09481291c0a60ed43db46191705f0ec9995dba4e")
+               git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" (Just "775c13e07a50616efca0dcdc462bf3fb2a6905ce")
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff") -- Retire when ghc-7.8.3 is out
                        `patch` $(embedFile "patches/ghcjs-old-cabal.diff") -- The cabal version we build with must be the one in ghc
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
