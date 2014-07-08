@@ -1390,11 +1390,6 @@ ghcjs release =
                  `flag` P.BuildDep "libghc-cabal-dev (>= 1.21)"
                  -- `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-5)")
-  , debianize (git "ghcjs-base" "https://github.com/ghcjs/ghcjs-base" Nothing
-                 `flag` P.CabalDebian ["--hc=ghcjs"]
-                 `flag` P.BuildDep "ghcjs"
-                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
-                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-5)")
   ]
 
 broken :: P.Packages -> P.Packages
