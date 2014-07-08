@@ -23,3 +23,25 @@
  ghcjsPostCopy args flags descr lbi
    | (FlagName "no-wrapper-install", True) `elem` configConfigurationsFlags (configFlags lbi) =
 
+--- old/utils/update_archives.sh	2014-07-05 11:23:05.938224014 -0700
++++ new/utils/update_archives.sh	2014-07-05 11:30:31.590236462 -0700
+@@ -105,12 +105,12 @@
+ git update-index --assume-unchanged lib/cache/shims.tar
+ git update-index --assume-unchanged lib/cache/test.tar
+ 
+-STATUS=`git status --porcelain`
+-if [ ${#STATUS} -gt 0 ]
+-then
+-    echo "working tree is dirty, run from a clean working tree"
+-    exit 1
+-fi
++# STATUS=`git status --porcelain`
++# if [ ${#STATUS} -gt 0 ]
++# then
++#     echo "working tree is dirty, run from a clean working tree"
++#     exit 1
++# fi
+ 
+ if BRANCH=$(git symbolic-ref --short -q HEAD)
+ then
+
