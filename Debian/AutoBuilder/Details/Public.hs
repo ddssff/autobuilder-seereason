@@ -1342,41 +1342,8 @@ ghcjs release =
     let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
                         p0 ["alex", "happy", "make", "patch", "autoconf",
                             "cpp", "git", "cabal-install-ghcjs"] in
-    debianize (deps $
-               git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" (Just "775c13e07a50616efca0dcdc462bf3fb2a6905ce")
-                       `patch` $(embedFile "patches/ghcjs-ghc-extra.diff") -- Retire when ghc-7.8.3 is out
-                       `patch` $(embedFile "patches/ghcjs-old-git.diff") -- avoid use of git symbolic-ref --short, unavailable before git 1.8 -- ghcjs pull request #210
-                       `patch` $(embedFile "patches/ghcjs-update-archives.diff") -- run update_archives during regular build
-                       `flag` P.BuildDep "nodejs (>> 0.10.28)"
-                       `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
-                                             "--default-package=ghcjs-tools"]
-                       `flag` P.KeepRCS
-                       `flag` P.ModifyAtoms (execDebM $ do installTo +++= (BinPkgName "ghcjs-tools",
-                                                                           (fromList
-                                                                            (map (\ name -> ("debian/tmp-inst-ghc" </> name, name))
-                                                                                 ["usr/bin/ghcjs-0.1.0-7.8.2.bin",
-                                                                                  "usr/bin/ghcjs-pkg-0.1.0-7.8.2.bin",
-                                                                                  "usr/bin/ghcjs-0.1.0-7.8.2",
-                                                                                  "usr/bin/haddock-ghcjs-0.1.0-7.8.2.bin",
-                                                                                  "usr/bin/haddock-ghcjs-0.1.0-7.8.2",
-                                                                                  "usr/bin/ghcjs-pkg-0.1.0-7.8.2",
-                                                                                  "usr/bin/ghcjs-boot-0.1.0-7.8.2",
-                                                                                  "usr/bin/ghcjs-run"])))
-                                                           link +++= (BinPkgName "ghcjs-tools",
-                                                                      (fromList
-                                                                       (map (\ name ->
-                                                                                 let text = "/usr/bin" </> name ++ "-0.1.0-7.8.2"
-                                                                                     loc = "/usr/bin" </> name in
-                                                                                 (text, loc))
-                                                                            ["ghcjs-boot",
-                                                                             "ghcjs",
-                                                                             "ghcjs-pkg",
-                                                                             "haddock-ghcjs"])))
-                                                           -- Make sure the cabal version we build with is the ghc was built with
-                                                           hd <- makeRulesHead
-                                                           rulesHead ~= Just (f hd)
-                                            ))
-  , darcs "ghcjs" (repo </> "ghcjs-debian") {-dir "ghcjs" "/home/dsf/darcs/ghcjs-debian"-}
+    debdir (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" Nothing `flag` P.KeepRCS) (Git "https://github.com/ddssff/ghcjs-tools-debian" Nothing)
+  , git "ghcjs" "https://github.com/ddssff/ghcjs-debian" Nothing
   , debianize (hackage "ghcjs-dom"
                  `flag` P.CabalDebian ["--hc=ghcjs"]
                  `flag` P.CabalDebian ["--depends=libghcjs-ghcjs-dom-dev:ghcjs"]
@@ -1397,9 +1364,3 @@ ghcjs release =
 
 broken :: P.Packages -> P.Packages
 broken _ = P.NoPackage
-
-f t = Text.unlines $ concat $
-      map (\ line -> if line == "include /usr/share/cdbs/1/rules/debhelper.mk"
-                     then ["HOME=/usr/lib/ghcjs",
-                           "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')", "", line] :: [Text]
-                     else [line] :: [Text]) (Text.lines t)
