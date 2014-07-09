@@ -6,6 +6,7 @@ import Data.FileEmbed (embedFile)
 import Data.List (intercalate)
 import Data.Monoid ((<>))
 import Data.Set as Set (empty, singleton, fromList)
+import Data.Text as Text (Text, lines, unlines)
 import Debian.AutoBuilder.Details.Common (repo)
 import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..), Release(..))
 import Debian.AutoBuilder.Details.GHC (ghc)
@@ -14,7 +15,8 @@ import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Pa
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, NoHoogle, GitBranch, KeepRCS),
                                                Packages(Package, Packages, NoPackage), flags, name, spec,
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
-import Debian.Debianize (compat, doExecutable, execDebM, installData, installTo, link, InstallFile(..), (~=), (+++=))
+import Debian.Debianize (compat, doExecutable, execDebM, installData, installTo, link, rulesHead, InstallFile(..), (~=), (+++=), (%=))
+import Debian.Debianize.Goodies (makeRulesHead)
 import Debian.Relation (BinPkgName(..))
 import System.FilePath((</>))
 
@@ -1343,7 +1345,6 @@ ghcjs release =
     debianize (deps $
                git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" (Just "775c13e07a50616efca0dcdc462bf3fb2a6905ce")
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff") -- Retire when ghc-7.8.3 is out
-                       `patch` $(embedFile "patches/ghcjs-old-cabal.diff") -- The cabal version we build with must be the one in ghc
                        `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
                        `patch` $(embedFile "patches/ghcjs-old-git.diff") -- avoid use of git symbolic-ref --short, unavailable before git 1.8 -- ghcjs pull request #210
                        `patch` $(embedFile "patches/ghcjs-update-archives.diff") -- run update_archives during regular build
@@ -1372,6 +1373,9 @@ ghcjs release =
                                                                              "ghcjs",
                                                                              "ghcjs-pkg",
                                                                              "haddock-ghcjs"])))
+                                                           -- Make sure the cabal version we build with is the ghc was built with
+                                                           hd <- makeRulesHead
+                                                           rulesHead ~= Just (f hd)
                                             ))
   , darcs "ghcjs" (repo </> "ghcjs-debian") {-dir "ghcjs" "/home/dsf/darcs/ghcjs-debian"-}
   , debianize (hackage "ghcjs-dom"
@@ -1394,3 +1398,8 @@ ghcjs release =
 
 broken :: P.Packages -> P.Packages
 broken _ = P.NoPackage
+
+f t = Text.unlines $ concat $
+      map (\ line -> if line == "include /usr/share/cdbs/1/rules/debhelper.mk"
+                     then ["DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')", "", line] :: [Text]
+                     else [line] :: [Text]) (Text.lines t)
