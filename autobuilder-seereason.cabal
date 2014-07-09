@@ -36,7 +36,7 @@ Library
   if flag(local-autobuilder-seereason)
     Buildable: False
   else
-    Build-Depends: cabal-debian >= 4.14, debian-repo >= 5.63, AutoBuilder >= 6.64
+    Build-Depends: cabal-debian >= 4.14, debian-repo >= 5.63, AutoBuilder >= 6.67
   Build-depends: base, bytestring, Cabal, containers, debian, filepath, file-embed, process, unix
   Exposed-Modules:
     Debian.AutoBuilder.Details
@@ -62,7 +62,7 @@ Executable autobuilder-seereason
                   process-listlike, process-progress, pureMD5, regex-compat, tar, text, time, unix,
                   Unixutils, utf8-string, zlib
  else
-   Build-Depends: AutoBuilder >= 6.66
+   Build-Depends: AutoBuilder >= 6.67
 
  if flag (local-debian-repo)
    Hs-Source-Dirs: ../debian-tools/debian-repo
