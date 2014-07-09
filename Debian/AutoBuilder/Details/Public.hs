@@ -1345,7 +1345,6 @@ ghcjs release =
     debianize (deps $
                git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" (Just "775c13e07a50616efca0dcdc462bf3fb2a6905ce")
                        `patch` $(embedFile "patches/ghcjs-ghc-extra.diff") -- Retire when ghc-7.8.3 is out
-                       `patch` $(embedFile "patches/ghcjs-home.diff") -- set HOME - path must match the one in ghcjs-debian/debian/Setup.hs
                        `patch` $(embedFile "patches/ghcjs-old-git.diff") -- avoid use of git symbolic-ref --short, unavailable before git 1.8 -- ghcjs pull request #210
                        `patch` $(embedFile "patches/ghcjs-update-archives.diff") -- run update_archives during regular build
                        `flag` P.BuildDep "nodejs (>> 0.10.28)"
@@ -1401,5 +1400,6 @@ broken _ = P.NoPackage
 
 f t = Text.unlines $ concat $
       map (\ line -> if line == "include /usr/share/cdbs/1/rules/debhelper.mk"
-                     then ["DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')", "", line] :: [Text]
+                     then ["HOME=/usr/lib/ghcjs",
+                           "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')", "", line] :: [Text]
                      else [line] :: [Text]) (Text.lines t)
