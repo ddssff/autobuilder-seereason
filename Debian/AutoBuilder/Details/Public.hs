@@ -1322,25 +1322,26 @@ ghcjs release =
       `flag` P.RelaxDep "python-minimal"
   -- Cabal library with ghcjs support.  The debs are named cabal-ghcjs
   -- so packages that require ghcjs suppport can specify this.
-  , debianize (git "cabal-ghcjs" "https://github.com/ghcjs/cabal" [P.Branch "ghcjs"]
-                         `cd` "Cabal"
-                         `flag` P.DebVersion "1.21.0.0-2")
-  , debianize (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal" [P.Branch "ghcjs"]
-                       `cd` "cabal-install"
-                       `flag` P.DebVersion "1.21.0.0-2" -- bump to pull in changes through July 4th
-                       `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
-                                             "--conflicts=cabal-install-ghcjs:cabal-install",
-                                             "--replaces=cabal-install-ghcjs:cabal-install",
-                                             "--provides=cabal-install-ghcjs:cabal-install",
-                                             "--conflicts=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
-                                             "--replaces=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
-                                             "--provides=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils"])
-  , -- the ghcjs library and four tools - ghcjs, ghcjs-pkg,
-    -- ghcjs-boot, and haddock-ghcjs.  Does *not* run ghcjs-boot.
-    let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
-                        p0 ["alex", "happy", "make", "patch", "autoconf",
-                            "cpp", "git", "cabal-install-ghcjs"] in
-    debdir (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" [] `flag` P.KeepRCS)
+  -- Options used to debianize: `flag` P.DebVersion "1.21.0.0-2"
+  , debdir (git "cabal-ghcjs" "https://github.com/ghcjs/cabal" [P.Branch "ghcjs"] `cd` "Cabal")
+           (Git "https://github.com/ddssff/cabal-ghcjs-debian" [])
+  -- Options used to generate debianization:
+  --                       `flag` P.DebVersion "1.21.0.0-2"
+  --                       `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
+  --                                             "--conflicts=cabal-install-ghcjs:cabal-install",
+  --                                             "--replaces=cabal-install-ghcjs:cabal-install",
+  --                                             "--provides=cabal-install-ghcjs:cabal-install",
+  --                                             "--conflicts=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
+  --                                             "--replaces=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
+  --                                             "--provides=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils"]
+  , debdir (git "cabal-install-ghcjs" "https://github.com/ghcjs/cabal" [P.Branch "ghcjs"]
+                       `cd` "cabal-install")
+           (Git "https://github.com/ddssff/cabal-install-ghcjs-debian" [])
+  -- Options used to debianize:
+  --  let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
+  --                      p0 ["alex", "happy", "make", "patch", "autoconf",
+  --                          "cpp", "git", "cabal-install-ghcjs"] in
+  , debdir (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" [] `flag` P.KeepRCS)
            (Git "https://github.com/ddssff/ghcjs-tools-debian" [P.Branch "trac8768"])
   , git "ghcjs" "https://github.com/ddssff/ghcjs-debian" []
   , debianize (hackage "ghcjs-dom"
