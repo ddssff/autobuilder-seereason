@@ -3,12 +3,13 @@ module Debian.AutoBuilder.Details.Atoms
     ( seereasonDefaultAtoms
     ) where
 
+import Data.Map as Map (alter)
 import Data.Version (Version(Version))
 import Debian.Debianize.DebianName (mapCabal, splitCabal)
 import Debian.Debianize.Details (debianDefaultAtoms)
-import Debian.Debianize.Types.Atoms as T (missingDependencies)
+import Debian.Debianize.Types.Atoms as T (missingDependencies, debianNameMap)
 import Debian.Debianize.Monad (DebT)
-import Debian.Debianize.Prelude ((+=))
+import Debian.Debianize.Prelude ((+=), (%=))
 import Debian.Debianize.VersionSplits (DebBase(DebBase))
 import Debian.Relation (BinPkgName(BinPkgName))
 import Distribution.Package (PackageName(PackageName))
@@ -39,5 +40,13 @@ seereasonDefaultAtoms =
        splitCabal (PackageName "case-insensitive") (DebBase "case-insensitive-0") (Version [1] [])
 
        -- mapCabal (PackageName "cabal-install") (DebBase "cabal-install-ghcjs")
+       remapCabal (PackageName "Cabal") (DebBase "cabal-ghcjs")
 
        missingDependencies += BinPkgName "libghcjs-ghcjs-dom-doc" -- Haven't worked out how to do documentation for ghcjs libraries
+
+-- | Belongs in cabal-debian
+unmapCabal :: Monad m => PackageName -> DebT m ()
+unmapCabal pname = debianNameMap %= Map.alter (const Nothing) pname
+
+remapCabal :: Monad m => PackageName -> DebBase -> DebT m ()
+remapCabal pname dname = unmapCabal pname >> mapCabal pname dname
