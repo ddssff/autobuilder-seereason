@@ -552,7 +552,7 @@ main _home release =
     -- , debianize (hackage "Elm")
     -- , debianize (hackage "elm-server" {- `patch` $(embedFile "patches/elm-server.diff") -})
     , debianize (hackage "gdiff")
-    , debianize (hackage "hjsmin" `patch` $(embedFile "patches/hjsmin.diff"))
+    , debianize (hackage "hjsmin")
     , debianize (hackage "unix-compat")
     , debianize (hackage "Unixutils-shadow")
     , debianize (hackage "unordered-containers")
@@ -701,8 +701,9 @@ compiler release =
       -- libghc-cabal-dev so it doesn't buy us anything.  Watch for
       -- revision 5.
       ghc78 = proc (apt "experimental" "ghc"
-                      `flag` P.AptPin "7.8.20140411-5"
-                      `patch` $(embedFile "patches/trac8768.diff"))
+                      -- `flag` P.AptPin "7.8.20140411-5"
+                      -- `patch` $(embedFile "patches/trac8768.diff")
+                   )
       ghc76 = apt "sid" "ghc" -- up to revision 13 now
       ghcFlags p = p `relax` "ghc"
                      `relax` "happy"
@@ -832,25 +833,23 @@ clckwrks _home release =
         , debianize (darcs "haskell-clckwrks-cli" repo `cd` "clckwrks-cli" {- `patch` $(embedFile "patches/clckwrks-cli.diff") -})
         , debianize (darcs "haskell-clckwrks-plugin-bugs" repo
                        `cd` "clckwrks-plugin-bugs"
-                       `patch` $(embedFile "patches/clckwrks-plugin-bugs.diff")
                        `flag` P.BuildDep "hsx2hs")
         , debianize (darcs "haskell-clckwrks-plugin-media" repo
                        `cd` "clckwrks-plugin-media"
-                       `patch` $(embedFile "patches/clckwrks-plugin-media.diff")
                        `flag` P.BuildDep "hsx2hs")
         , debianize (darcs "haskell-clckwrks-plugin-ircbot" repo
                        `cd` "clckwrks-plugin-ircbot"
-                       `patch` $(embedFile "patches/clckwrks-plugin-ircbot.diff")
                        `flag` P.BuildDep "hsx2hs")
         , debianize (darcs "haskell-clckwrks-theme-bootstrap" repo `cd` "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
-        , debianize (darcs "clckwrks-dot-com" repo `cd` "clckwrks-dot-com" `patch` $(embedFile "patches/clckwrks-dot-com.diff"))
+        , debianize (darcs "clckwrks-dot-com" repo `cd` "clckwrks-dot-com"
+                           -- This is a change that only relates to the autobuilder
+                           `patch` $(embedFile "patches/clckwrks-dot-com.diff"))
         , debianize (darcs "haskell-clckwrks-theme-clckwrks" repo `cd` "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
-        , debianize (hackage "jmacro" `tflag` P.DebVersion "0.6.8-1build4")
+        , debianize (hackage "jmacro")
         , debianize (hackage "hsx-jmacro")
         , debianize (hackage "monadlist")
         , debianize (darcs "haskell-clckwrks-plugin-page" repo
                        `cd` "clckwrks-plugin-page"
-                       `patch` $(embedFile "patches/clckwrks-plugin-page.diff")
                        `flag` P.BuildDep "hsx2hs")
         ]
 
@@ -964,6 +963,7 @@ happstack _home release =
                    `flag` P.BuildDep "hsx2hs")
     , debianize (darcs "happstack-dot-com" (repo ++ "/happstack-clckwrks")
                    `cd` "happstack-dot-com"
+                   -- This is a change that only relates to the autobuilder
                    `patch` $(embedFile "patches/happstack-dot-com.diff"))
     , debianize (hackage "acid-state" {- `patch` $(embedFile "patches/acid-state.diff") -})
     ]
