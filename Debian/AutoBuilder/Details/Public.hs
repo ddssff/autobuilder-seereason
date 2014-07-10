@@ -1314,7 +1314,8 @@ ghcjs release =
   , debianize (hackage "shelly")
   , debianize (hackage "text-binary")
   , debianize (hackage "enclosed-exceptions")
-  , debianize (git "haskell-ghcjs-prim" "https://github.com/ghcjs/ghcjs-prim.git" [])
+  , debdir (git "haskell-ghcjs-prim" "https://github.com/ghcjs/ghcjs-prim.git" [])
+           (Git "https://github.com/ddssff/ghcjs-prim-debian" [])
   , debianize (hackage "lifted-async")
   -- haskell-devscripts modified to support ghcjs packaging.
   , apt "sid" "haskell-devscripts"
