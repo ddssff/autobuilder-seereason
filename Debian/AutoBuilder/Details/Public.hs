@@ -1361,6 +1361,27 @@ ghcjs release =
                  `flag` P.BuildDep "libghc-cabal-dev (>= 1.21)"
                  -- `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-5)")
+  , debianize (hackage "blaze-builder"
+                 `flag` P.CabalDebian ["--hc=ghcjs"]
+                 `flag` P.CabalDebian ["--source-package-name=ghcjs-blaze-builder"]
+                 `flag` P.BuildDep "libghc-cabal-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
+                 `flag` P.BuildDep "ghcjs"                  -- to compile the library
+                 `flag` P.NoDoc
+                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-5)")
+  , debianize (hackage "blaze-markup"
+                 `flag` P.CabalDebian ["--hc=ghcjs"]
+                 `flag` P.CabalDebian ["--source-package-name=ghcjs-blaze-markup"]
+                 `flag` P.BuildDep "libghc-cabal-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
+                 `flag` P.BuildDep "ghcjs"                  -- to compile the library
+                 `flag` P.NoDoc
+                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-5)")
+  , debianize (hackage "blaze-html"
+                 `flag` P.CabalDebian ["--hc=ghcjs"]
+                 `flag` P.CabalDebian ["--source-package-name=ghcjs-blaze-html"]
+                 `flag` P.BuildDep "libghc-cabal-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
+                 `flag` P.BuildDep "ghcjs"                  -- to compile the library
+                 `flag` P.NoDoc
+                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21-5)")
   ]
 
 broken :: P.Packages -> P.Packages
