@@ -37,7 +37,7 @@ Library
     Buildable: False
   else
     Build-Depends: cabal-debian >= 4.14, debian-repo >= 5.63, AutoBuilder >= 6.67
-  Build-depends: base, bytestring, Cabal, containers, debian, filepath, file-embed, process, unix
+  Build-depends: base, bytestring, Cabal, containers, debian, filepath, file-embed, process, text, unix
   Exposed-Modules:
     Debian.AutoBuilder.Details
     Debian.AutoBuilder.Details.Atoms
@@ -51,7 +51,7 @@ Library
 Executable autobuilder-seereason
  Main-Is: autobuilder.hs
  GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
- Build-Depends: base, bytestring, Cabal, containers, debian, file-embed, filepath, process, text
+ Build-Depends: base, bytestring, Cabal, containers, debian, file-embed, filepath, process
  Hs-Source-Dirs: .
  if !flag(local-autobuilder-seereason)
    Build-Depends: autobuilder-seereason
@@ -59,7 +59,7 @@ Executable autobuilder-seereason
  if flag(local-autobuilder)
    Hs-Source-Dirs: ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen
    Build-Depends: applicative-extras, data-lens, directory, exceptions, Extra, magic, mtl, network,
-                  process-listlike, process-progress, pureMD5, regex-compat, tar, time, unix,
+                  process-listlike, process-progress, pureMD5, regex-compat, tar, text, time, unix,
                   Unixutils, utf8-string, zlib
  else
    Build-Depends: AutoBuilder >= 6.67
