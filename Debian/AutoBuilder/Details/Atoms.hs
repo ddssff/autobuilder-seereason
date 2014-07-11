@@ -40,7 +40,7 @@ seereasonDefaultAtoms =
        splitCabal (PackageName "case-insensitive") (DebBase "case-insensitive-0") (Version [1] [])
 
        -- mapCabal (PackageName "cabal-install") (DebBase "cabal-install-ghcjs")
-       remapCabal (PackageName "Cabal") (DebBase "cabal-ghcjs")
+       remapCabal (PackageName "Cabal") (DebBase "cabal")
 
        missingDependencies += BinPkgName "libghcjs-ghcjs-dom-doc" -- Haven't worked out how to do documentation for ghcjs libraries
 

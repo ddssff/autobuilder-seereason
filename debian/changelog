@@ -1,3 +1,10 @@
+autobuilder-seereason (1.1.1) unstable; urgency=low
+
+  * Map cabal package name "Cabal" to debian package name "cabal"
+    (not cabal-ghcjs yet, but soon.)
+
+ -- David Fox <dsf@seereason.com>  Fri, 11 Jul 2014 12:10:13 -0700
+
 autobuilder-seereason (1.1) unstable; urgency=low
 
   * Make library packages.
