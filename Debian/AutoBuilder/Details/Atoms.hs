@@ -40,9 +40,13 @@ seereasonDefaultAtoms =
        splitCabal (PackageName "case-insensitive") (DebBase "case-insensitive-0") (Version [1] [])
 
        -- mapCabal (PackageName "cabal-install") (DebBase "cabal-install-ghcjs")
-       remapCabal (PackageName "Cabal") (DebBase "cabal")
+       remapCabal (PackageName "Cabal") (DebBase "cabal-ghcjs")
 
-       missingDependencies += BinPkgName "libghcjs-ghcjs-dom-doc" -- Haven't worked out how to do documentation for ghcjs libraries
+       -- Haven't worked out how to do documentation packages for ghcjs libraries
+       missingDependencies += BinPkgName "libghcjs-ghcjs-dom-doc"
+       missingDependencies += BinPkgName "libghcjs-blaze-builder-doc"
+       missingDependencies += BinPkgName "libghcjs-blaze-markup-doc"
+       missingDependencies += BinPkgName "libghcjs-blaze-html-doc"
 
 -- | Belongs in cabal-debian
 unmapCabal :: Monad m => PackageName -> DebT m ()
