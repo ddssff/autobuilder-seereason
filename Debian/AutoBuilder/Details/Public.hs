@@ -83,15 +83,15 @@ autobuilder home =
     -- let repo = localRepo home in
     P.Packages (singleton "autobuilder-group") $
     [ unixutils home
-    , darcs "haskell-cabal-debian" (repo </> "debian-tools") `cd` "cabal-debian"
+    , darcs "haskell-cabal-debian" (repo </> "cabal-debian")
     , darcs "haskell-debian" (repo ++ "/haskell-debian") `flag` P.RelaxDep "cabal-debian"
     , darcs "haskell-debian-mirror" (repo </> "mirror")
-    , darcs "haskell-debian-repo" (repo </> "debian-tools") `cd` "debian-repo"
+    , darcs "haskell-debian-repo" (repo </> "debian-repo")
     , darcs "haskell-archive" (repo </> "archive")
     -- , debianize (hackage "process-extras")
     , debianize (darcs "haskell-process-listlike" (repo </> "process-listlike"))
-    , darcs "haskell-process-progress" (repo </> "debian-tools") `cd` "process-progress"
-    , debianize (darcs "autobuilder" (repo </> "debian-tools") `cd` "autobuilder")
+    , darcs "haskell-process-progress" (repo </> "process-progress")
+    , debianize (darcs "autobuilder" (repo </> "autobuilder"))
         `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
     , debianize (darcs "autobuilder-seereason" (repo </> "autobuilder-seereason"))
         -- It would be nice if these dependencies were in the cabal file
