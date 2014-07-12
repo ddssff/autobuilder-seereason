@@ -1295,11 +1295,12 @@ haste = P.Packages (singleton "haste")
 -- ghcjs TO DO:
 --   1. fix cabal-debian so it really knows which packages ghc
 --      conflicts with and which it just provides
---   2. Merge ghcjs and ghcjs-tools
---   3. Don't hard code the version numbers in the wrapper scripts
+-- x 2. Merge ghcjs and ghcjs-tools
+--   3. Don't hard code the version numbers in the wrapper scripts (or haskell-devscripts)
 --   4. Make it so we don't have to set $HOME in Setup.hs
---   5. Figure out how to require the version of Cabal bundled with ghc
+-- * 5. Figure out how to require the version of Cabal bundled with ghc (done)
 --   6. Build everything into a prefix directory instead of into /usr
+--   7. Build cabal-debian with Cabal >= 1.21 - otherwise there's no GHCJS constructor.  Remove ifdefs.  Add note about where to find cabal-ghcjs.
 
 ghcjs :: Release -> P.Packages
 ghcjs release =
