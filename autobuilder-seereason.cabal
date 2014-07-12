@@ -57,7 +57,7 @@ Executable autobuilder-seereason
    Build-Depends: autobuilder-seereason
 
  if flag(local-autobuilder)
-   Hs-Source-Dirs: ../debian-tools/autobuilder, ../debian-tools/autobuilder/dist/build/autogen
+   Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen
    Build-Depends: applicative-extras, data-lens, directory, exceptions, Extra, magic, mtl, network,
                   process-listlike, process-progress, pureMD5, regex-compat, tar, time, unix,
                   Unixutils, utf8-string, zlib
@@ -65,13 +65,13 @@ Executable autobuilder-seereason
    Build-Depends: AutoBuilder >= 6.67
 
  if flag (local-debian-repo)
-   Hs-Source-Dirs: ../debian-tools/debian-repo
+   Hs-Source-Dirs: ../debian-repo
    Build-Depends: bzlib, data-lens-template, deepseq, old-locale, old-time, template-haskell
  else
    Build-Depends: debian-repo >= 5.63
 
  if flag (local-cabal-debian)
-   Hs-Source-Dirs: ../debian-tools/cabal-debian/src
+   Hs-Source-Dirs: ../cabal-debian/src
    Build-Depends: Diff, hsemail, parsec, regex-tdfa, set-extra, syb, memoize
  else
    Build-Depends: cabal-debian >= 4.14
