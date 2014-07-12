@@ -1319,9 +1319,7 @@ ghcjs release =
            (Git "https://github.com/ddssff/ghcjs-prim-debian" [])
   , debianize (hackage "lifted-async")
   -- haskell-devscripts modified to support ghcjs packaging.
-  , apt "sid" "haskell-devscripts"
-      `patch` $(embedFile "patches/haskell-devscripts-ghcjs.diff")
-      `flag` P.RelaxDep "python-minimal"
+  , darcs "haskell-devscripts" (repo </> "haskell-devscripts") `flag` P.RelaxDep "python-minimal"
   -- Cabal library with ghcjs support.  The debs are named cabal-ghcjs
   -- so packages that require ghcjs suppport can specify this.
   -- Options used to debianize: `flag` P.DebVersion "1.21.0.0-2"
