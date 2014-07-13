@@ -976,7 +976,7 @@ authenticate _home release =
     , debianize (hackage "pureMD5" `tflag` P.DebVersion "2.1.2.1-3build3")
     , debianize (hackage "monadcryptorandom")
     , debianize (hackage "RSA")
-    , debianize (hackage "drbg")
+    , debianize (hackage "DRBG")
     , debianize (hackage "resourcet" `flag` P.CabalPin "0.4.10.2")
     , debianize (hackage "mmorph")
     , debianize (hackage "void" `tflag` P.DebVersion "0.6.1-1build1")
