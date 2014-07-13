@@ -345,7 +345,7 @@ main _home release =
     , debianize (hackage "xmlhtml")
     , debianize (hackage "directory-tree")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
-    , debianize (hackage "MonadCatchIO-mtl")
+    , debianize (hackage "MonadCatchIO-mtl" `patch` $(embedFile "patches/monadcatchio-mtl.diff"))
     , debianize (hackage "haskell-lexer"
                    `pflag` P.DebVersion "1.0-3build2"
                    `wflag` P.DebVersion "1.0-3+b1"
@@ -913,7 +913,7 @@ happstack _home release =
     , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
     , debianize (hackage "happstack-server")
     , debianize (hackage "happstack-lite")
-    , debianize (hackage "happstack-server-tls")
+    , debianize (hackage "happstack-server-tls" `patch` $(embedFile "patches/happstack-server-tls.diff"))
     , debianize (hackage "time-compat")
     , debianize (hackage "base64-bytestring" `tflag` P.DebVersion "1.0.0.1-1")
     , debianize (hackage "threads")
@@ -977,6 +977,8 @@ authenticate _home release =
     , debianize (hackage "monadcryptorandom")
     , debianize (hackage "RSA")
     , debianize (hackage "DRBG")
+    , debianize (hackage "prettyclass")
+    , debianize (hackage "cipher-aes128")
     , debianize (hackage "resourcet" `flag` P.CabalPin "0.4.10.2")
     , debianize (hackage "mmorph")
     , debianize (hackage "void" `tflag` P.DebVersion "0.6.1-1build1")

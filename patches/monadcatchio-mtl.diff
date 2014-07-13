@@ -1,0 +1,11 @@
+--- old/MonadCatchIO-mtl.cabal	2014-07-13 06:11:20.000000000 -0700
++++ new/MonadCatchIO-mtl.cabal	2014-07-13 06:20:27.495078677 -0700
+@@ -18,7 +18,7 @@
+ tested-with:        GHC==6.12.3, GHC==7.0.3, GHC==7.2.1, GHC==7.4.2, GHC==7.6.0
+ 
+ Library
+-  build-depends:    base < 5, extensible-exceptions, MonadCatchIO-transformers==0.3.1.0
++  build-depends:    base < 5, extensible-exceptions, MonadCatchIO-transformers==0.3.1.*
+   extensions:       PackageImports
+ 
+   exposed-modules: Control.Monad.CatchIO
