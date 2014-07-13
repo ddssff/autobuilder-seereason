@@ -625,7 +625,7 @@ main _home release =
     , P.Package { P.name = "jcrop"
                 , P.spec = DebDir (Uri (repo </> "jcrop/Jcrop.tar.gz") "028feeb9b6415af3b7fd7d9471c92469") (Darcs (repo ++ "/jcrop-debian"))
                 , P.flags = [] }
-    , debianize (hackage "magic" `flag` P.DevelDep "libmagic-dev" `tflag` P.DebVersion "1.0.8-12")
+    , debianize (hackage "magic" `flag` P.DevelDep "libmagic-dev" `flag` P.DebVersion "1.0.8-12")
 {-  , P.Package { P.name = "magic-haskell"
                 , P.spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
                 , P.flags = [] } -}
