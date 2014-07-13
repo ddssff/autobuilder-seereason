@@ -1185,9 +1185,7 @@ algebra release =
     , debianize (hackage "keys")
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
-    -- lens-4.0 depends on aeson >= 0.7, which is not in hackage yet.  Also, lens-3.10.2 depends on a version of
-    -- monadcatchio-transformers<0.3.1, which is older than our oldest.
-    , debianize (hackage "lens") -- waiting for aeson that can handle the newer version of scientific that lens-4.2 requires
+    , debianize (hackage "lens")
     , debianize (hackage "constraints")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
