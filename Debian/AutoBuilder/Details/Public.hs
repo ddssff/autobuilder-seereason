@@ -611,20 +611,19 @@ main _home release =
         Quantal -> P.NoPackage -- This build hangs when performing tests
         Wheezy -> P.NoPackage -- This build hangs when performing tests
         _ -> apt "sid" "html-xml-utils"
-    , wskip $
-      P.Package { P.name = "jquery"
-                , P.spec = Proc (Apt "sid" "jquery")
-                , P.flags = [] }
-    , wskip $
-      P.Package { P.name = "jquery-goodies"
-                , P.spec = Proc (Apt "sid" "jquery-goodies")
-                , P.flags = [] }
+    , apt "sid" "jquery"
+    , apt "sid" "jquery-goodies" `pflag` P.BuildDep "nodejs-legacy"
     -- We want to stick with jqueryui-1.8 for now, so create
     -- packages with the version number embedded in the name.
     , darcs "jqueryui" (repo </> "jqueryui18")
+    , case baseRelease release of
+        Precise -> proc (apt "trusty" "libjs-jcrop")
+        _ -> P.NoPackage
+{-
     , P.Package { P.name = "jcrop"
                 , P.spec = DebDir (Uri (repo </> "jcrop/Jcrop.tar.gz") "028feeb9b6415af3b7fd7d9471c92469") (Darcs (repo ++ "/jcrop-debian"))
                 , P.flags = [] }
+-}
     , debianize (hackage "magic" `flag` P.DevelDep "libmagic-dev" `flag` P.DebVersion "1.0.8-12")
 {-  , P.Package { P.name = "magic-haskell"
                 , P.spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
