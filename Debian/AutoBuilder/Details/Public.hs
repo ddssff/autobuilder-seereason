@@ -699,10 +699,16 @@ compiler release =
       -- Pin ghc to revision 3, revision 4 still conflicts with
       -- libghc-cabal-dev so it doesn't buy us anything.  Watch for
       -- revision 5.
-      ghc78 = proc (apt "experimental" "ghc"
-                      -- `flag` P.AptPin "7.8.20140411-5"
-                      -- `patch` $(embedFile "patches/trac8768.diff")
-                   )
+      ghc78 = case baseRelease release of
+                Trusty ->
+                    -- Just to avoid a rebuild for now
+                    proc (apt "experimental" "ghc"
+                                  `flag` P.AptPin "7.8.20140710-1"
+                                  `patch` $(embedFile "patches/ghc-provides.diff"))
+                _ ->
+                    proc (apt "experimental" "ghc"
+                                  `flag` P.AptPin "7.8.20140710-2"
+                                  `patch` $(embedFile "patches/ghc-libtinfo.diff"))
       ghc76 = apt "sid" "ghc" -- up to revision 13 now
       ghcFlags p = p `relax` "ghc"
                      `relax` "happy"

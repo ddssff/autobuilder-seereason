@@ -1,0 +1,11 @@
+--- old/debian/provided_substvars	2014-06-10 01:47:34.000000000 -0700
++++ new/debian/provided_substvars	2014-07-12 06:34:38.637057410 -0700
+@@ -5,7 +5,7 @@
+ open PKG, 'inplace/bin/ghc-pkg list --simple-output |'
+     or die "ghc-pkg list failed: $!";
+ 
+-my @ignored = ('ghc', 'mtl', 'terminfo', 'haskeline', 'utf8-string', 'xhtml', 'rts', 'stm', 'parallel');
++my @ignored = ('ghc', 'mtl', 'utf8-string', 'rts', 'stm', 'parallel');
+ my %ignored;
+ $ignored{$_}++ for @ignored;
+ 

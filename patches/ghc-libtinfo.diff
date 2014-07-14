@@ -1,0 +1,11 @@
+--- old/debian/control	2014-06-11 01:02:36.000000000 -0700
++++ new/debian/control	2014-07-14 10:01:09.765432929 -0700
+@@ -33,7 +33,7 @@
+ 
+ Package: ghc
+ Architecture: any
+-Depends: llvm [armel armhf], gcc, libgmp-dev, libffi-dev, libbsd-dev, libc6-dev, ${shlibs:Depends}, ${misc:Depends}
++Depends: llvm [armel armhf], gcc, libgmp-dev, libffi-dev, libbsd-dev, libc6-dev, libtinfo-dev, ${shlibs:Depends}, ${misc:Depends}
+ Provides: haskell-compiler, ${provided-devs}, ${haskell:Provides}, ${ghci}, ghc-dynamic
+ Replaces: ghc6 (<< 7), ghc-dynamic (<< 7.8)
+ Conflicts: ghc6 (<< 7), ghc-dynamic (<< 7.8), ${conflicting-devs}
