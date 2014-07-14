@@ -185,7 +185,7 @@ main _home release =
     , debianize (hackage "failure")
     , debianize (hackage "attoparsec")
     , debianize (hackage "scientific")
-    , debianize (hackage "arithmoi")
+    , debianize (hackage "arithmoi" `flag` P.BuildDep "llvm-dev")
     , debianize (hackage "attoparsec-enumerator")
     -- This was merged into attoparsec
     -- , debianize (hackage "attoparsec-text" `patch` $(embedFile "patches/attoparsec-text.diff") `flag` P.Revision "")
