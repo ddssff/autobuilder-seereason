@@ -1347,8 +1347,14 @@ ghcjs release =
   --  let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
   --                      p0 ["alex", "happy", "make", "patch", "autoconf",
   --                          "cpp", "git", "cabal-install-ghcjs"] in
-  , debdir (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" [] `flag` P.KeepRCS)
-           (Git "https://github.com/ddssff/ghcjs-tools-debian" [P.Branch "trac8768"])
+  , case baseRelease release of
+      Precise ->
+          -- Keep precise back at patched ghc-7.8.2
+          debdir (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" [] `flag` P.KeepRCS)
+                 (Git "https://github.com/ddssff/ghcjs-tools-debian" [P.Branch "trac8768"])
+      _ ->
+          debdir (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" [] `flag` P.KeepRCS)
+                 (Git "https://github.com/ddssff/ghcjs-tools-debian" [])
   , git "ghcjs" "https://github.com/ddssff/ghcjs-debian" []
   , debianize (hackage "ghcjs-dom"
                  `flag` P.CabalDebian ["--hc=ghcjs"]
