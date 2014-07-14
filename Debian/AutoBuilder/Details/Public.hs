@@ -1307,6 +1307,8 @@ haste = P.Packages (singleton "haste")
 -- * 5. Figure out how to require the version of Cabal bundled with ghc (done)
 --   6. Build everything into a prefix directory instead of into /usr
 --   7. Build cabal-debian with Cabal >= 1.21 - otherwise there's no GHCJS constructor.  Remove ifdefs.  Add note about where to find cabal-ghcjs.
+--   8. Enable documentation packages in haskell-devscripts
+--   9. Enable -prof packages(?)
 
 ghcjs :: Release -> P.Packages
 ghcjs release =
