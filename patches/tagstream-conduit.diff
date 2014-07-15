@@ -1,0 +1,11 @@
+--- old/tagstream-conduit.cabal	2014-07-15 08:39:43.162878203 -0700
++++ new/tagstream-conduit.cabal	2014-07-15 09:31:44.278965381 -0700
+@@ -43,8 +43,6 @@
+                      , resourcet
+                      , attoparsec
+                      , blaze-builder
+-                     , blaze-builder-conduit >= 0.5 && < 1.2
+-                     , attoparsec-conduit >= 0.5
+                      , xml-conduit >= 1.1.0.0
+                      , data-default >= 0.5.0
+ 

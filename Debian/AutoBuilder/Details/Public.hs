@@ -987,7 +987,7 @@ authenticate _home release =
     , debianize (hackage "DRBG")
     , debianize (hackage "prettyclass")
     , debianize (hackage "cipher-aes128")
-    , debianize (hackage "resourcet" `flag` P.CabalPin "0.4.10.2")
+    , debianize (hackage "resourcet" {- `flag` P.CabalPin "0.4.10.2" -})
     , debianize (hackage "mmorph")
     , debianize (hackage "void" `tflag` P.DebVersion "0.6.1-1build1")
     , debianize (hackage "certificate" `tflag` P.DebVersion "1.3.9-1build4")
@@ -1011,7 +1011,6 @@ authenticate _home release =
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
-    , debianize (hackage "tagstream-conduit")
     , digestiveFunctors
     -- , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
     , debianize (git "haskell-fb" "https://github.com/stepcut/fb" [] `patch` $(embedFile "patches/fb.diff"))
@@ -1037,20 +1036,25 @@ digestiveFunctors =
 conduit release =
   let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
   P.Packages (singleton "conduit")
-    [ debianize (hackage "conduit" `flag` P.CabalPin "1.0.17.1")
+    [ debianize (hackage "streaming-commons")
+    , debianize (hackage "conduit" {- `flag` P.CabalPin "1.0.17.1" -})
     , debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
     , debianize (hackage "connection")
-    , debianize (hackage "attoparsec-conduit" `flag` P.CabalPin "1.0.1.2" `tflag` P.DebVersion "1.0.1.2-1build2")
-    , debianize (hackage "blaze-builder-conduit" `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build4")
-    , debianize (hackage "http-conduit" `flag` P.CabalPin "2.0.0.8")
-    , debianize (hackage "http-client" `flag` P.CabalPin "0.2.3")
+    , debianize (hackage "http-conduit" {- `flag` P.CabalPin "2.0.0.8" -})
+    , debianize (hackage "http-client" {- `flag` P.CabalPin "0.2.3" -})
     , debianize (hackage "http-client-tls")
-    , debianize (hackage "http-client-conduit" `flag` P.CabalPin "0.2.0.1")
-    , debianize (hackage "zlib-conduit" `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build3")
-    , debianize (hackage "xml-conduit")
+    -- Deprecated in favor of http-conduit
+    -- , debianize (hackage "http-client-conduit" {- `flag` P.CabalPin "0.2.0.1" -})
+    -- Deprecated in favor of conduit-extra
+    -- , debianize (hackage "attoparsec-conduit" {- `flag` P.CabalPin "1.0.1.2" `tflag` P.DebVersion "1.0.1.2-1build2" -})
+    -- , debianize (hackage "blaze-builder-conduit" {- `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build4" -})
+    -- , debianize (hackage "zlib-conduit" {- `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build3" -})
+    , debianize (hackage "xml-conduit" `patch` $(embedFile "patches/xml-conduit.diff"))
+    , debianize (hackage "tagstream-conduit" `patch` $(embedFile "patches/tagstream-conduit.diff"))
     , debianize (hackage "conduit-extra"
-                   `flag` P.CabalPin "1.0.0"
-                   `patch` $(embedFile "patches/conduit-extra.diff"))
+                   -- `flag` P.CabalPin "1.0.0"
+                   -- `patch` $(embedFile "patches/conduit-extra.diff")
+                )
     , debianize (hackage "mime-types")
     ]
 

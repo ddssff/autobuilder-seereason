@@ -1,11 +1,188 @@
---- old/fb.cabal	2014-06-05 13:30:32.255507719 -0700
-+++ new/fb.cabal	2014-06-05 14:46:20.487634759 -0700
-@@ -74,7 +74,7 @@
+--- old/fb.cabal	2014-07-15 09:53:36.395002031 -0700
++++ new/fb.cabal	2014-07-15 09:58:01.031009423 -0700
+@@ -70,12 +70,12 @@
+     , transformers-base
+     , monad-control
+     , resourcet
+-    , conduit              == 1.0.*
++    , conduit              >= 1.0
++    , conduit-extra
      , data-default
      , http-types
-     , http-conduit         == 2.0.*
+-    , http-conduit         == 2.0.*
 -    , attoparsec           == 0.11.*
+-    , attoparsec-conduit   == 1.0.*
++    , http-conduit         >= 2.0
 +    , attoparsec           >= 0.11
-     , attoparsec-conduit   == 1.0.*
      , unordered-containers
      , aeson                >= 0.5     && < 0.8
+     , base16-bytestring    >= 0.1
+@@ -111,7 +111,7 @@
+       -- Library dependencies used on the tests.  No need to
+       -- specify versions since they'll use the same as above.
+       base, lifted-base, transformers, bytestring,
+-      conduit, http-conduit, text, time, aeson, monad-control
++      conduit, conduit-extra, http-conduit, text, time, aeson, monad-control
+ 
+       -- Test-only dependencies
+     , containers
+diff -ru old/src/Facebook/Auth.hs new/src/Facebook/Auth.hs
+--- old/src/Facebook/Auth.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/Auth.hs	2014-07-15 10:18:29.663043740 -0700
+@@ -20,6 +20,7 @@
+ import Control.Monad.IO.Class (MonadIO(liftIO))
+ import Control.Monad.Trans.Control (MonadBaseControl)
+ import Control.Monad.Trans.Maybe (MaybeT(..))
++import qualified Control.Monad.Trans.Resource as C
+ import Crypto.Classes (constTimeEq)
+ import Crypto.Hash.CryptoAPI (SHA256)
+ import Crypto.HMAC (hmac', MacKey(..))
+diff -ru old/src/Facebook/Base.hs new/src/Facebook/Base.hs
+--- old/src/Facebook/Base.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/Base.hs	2014-07-15 10:16:38.995040649 -0700
+@@ -22,6 +22,7 @@
+ import qualified Control.Exception.Lifted as E
+ import Control.Monad.Trans.Class (MonadTrans)
+ import Control.Monad.Trans.Control (MonadBaseControl)
++import qualified Control.Monad.Trans.Resource as C
+ import qualified Data.Aeson as A
+ import qualified Data.Attoparsec.Char8 as AT
+ import qualified Data.ByteString as B
+diff -ru old/src/Facebook/FQL.hs new/src/Facebook/FQL.hs
+--- old/src/Facebook/FQL.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/FQL.hs	2014-07-15 10:14:28.183036996 -0700
+@@ -8,6 +8,7 @@
+ 
+ import Control.Applicative((<$>))
+ import Control.Monad.Trans.Control (MonadBaseControl)
++import qualified Control.Monad.Trans.Resource as C (MonadResource)
+ import Data.Monoid (mempty)
+ import Data.Text (Text)
+ import Data.Time (UTCTime)
+diff -ru old/src/Facebook/Graph.hs new/src/Facebook/Graph.hs
+--- old/src/Facebook/Graph.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/Graph.hs	2014-07-15 10:13:32.123035430 -0700
+@@ -16,6 +16,7 @@
+ import Control.Applicative
+ import Control.Monad (mzero)
+ import Control.Monad.Trans.Control (MonadBaseControl)
++import qualified Control.Monad.Trans.Resource as C (MonadResource)
+ import Data.ByteString.Char8 (ByteString)
+ import Data.Int (Int8, Int16, Int32, Int64)
+ import Data.List (intersperse)
+diff -ru old/src/Facebook/Monad.hs new/src/Facebook/Monad.hs
+--- old/src/Facebook/Monad.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/Monad.hs	2014-07-15 10:09:27.547028598 -0700
+@@ -47,7 +47,7 @@
+ newtype FacebookT auth m a = F { unF :: ReaderT FbData m a }
+     deriving ( Functor, Applicative, Alternative, Monad
+              , MonadFix, MonadPlus, MonadIO, MonadTrans
+-             , R.MonadThrow, R.MonadActive, R.MonadResource )
++             , R.MonadThrow )
+ 
+ instance MonadBase b m => MonadBase b (FacebookT auth m) where
+     liftBase = lift . liftBase
+@@ -136,10 +136,10 @@
+ 
+ 
+ -- | Run a 'ResourceT' inside a 'FacebookT'.
+-runResourceInFb :: (C.MonadResource m, MonadBaseControl IO m) =>
+-                   FacebookT anyAuth (C.ResourceT m) a
++runResourceInFb :: (R.MonadResource m, MonadBaseControl IO m) =>
++                   FacebookT anyAuth (R.ResourceT m) a
+                 -> FacebookT anyAuth m a
+-runResourceInFb (F inner) = F $ ask >>= lift . C.runResourceT . runReaderT inner
++runResourceInFb (F inner) = F $ ask >>= lift . R.runResourceT . runReaderT inner
+ 
+ 
+ -- | Transform the computation inside a 'FacebookT'.
+diff -ru old/src/Facebook/Object/Action.hs new/src/Facebook/Object/Action.hs
+--- old/src/Facebook/Object/Action.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/Object/Action.hs	2014-07-15 10:13:44.975035789 -0700
+@@ -6,6 +6,7 @@
+ 
+ import Control.Arrow (first)
+ import Control.Monad.Trans.Control (MonadBaseControl)
++import qualified Control.Monad.Trans.Resource as C (MonadResource)
+ import Data.Function (on)
+ import Data.String (IsString(..))
+ import Data.Text (Text)
+diff -ru old/src/Facebook/Object/Checkin.hs new/src/Facebook/Object/Checkin.hs
+--- old/src/Facebook/Object/Checkin.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/Object/Checkin.hs	2014-07-15 10:13:52.399035996 -0700
+@@ -9,6 +9,7 @@
+ import Control.Applicative
+ import Control.Monad (mzero)
+ import Control.Monad.Trans.Control (MonadBaseControl)
++import qualified Control.Monad.Trans.Resource as C (MonadResource)
+ import Data.Aeson ((.:), (.:?))
+ import Data.Text (Text)
+ import Data.Time (UTCTime)
+diff -ru old/src/Facebook/Object/Order.hs new/src/Facebook/Object/Order.hs
+--- old/src/Facebook/Object/Order.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/Object/Order.hs	2014-07-15 10:14:08.615036449 -0700
+@@ -10,6 +10,7 @@
+ import Control.Applicative
+ import Control.Monad (mzero)
+ import Control.Monad.Trans.Control (MonadBaseControl)
++import qualified Control.Monad.Trans.Resource as C (MonadResource)
+ import Data.Text (Text)
+ import Data.Aeson ((.:), (.:?))
+ import Data.Typeable (Typeable)
+diff -ru old/src/Facebook/Object/Page.hs new/src/Facebook/Object/Page.hs
+--- old/src/Facebook/Object/Page.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/Object/Page.hs	2014-07-15 10:13:21.119035122 -0700
+@@ -11,6 +11,7 @@
+ import Control.Applicative
+ import Control.Monad (mzero)
+ import Control.Monad.Trans.Control (MonadBaseControl)
++import qualified Control.Monad.Trans.Resource as C (MonadResource)
+ import Data.Aeson ((.:), (.:?))
+ import qualified Data.Aeson as A
+ import qualified Data.Conduit as C
+diff -ru old/src/Facebook/Object/User.hs new/src/Facebook/Object/User.hs
+--- old/src/Facebook/Object/User.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/Object/User.hs	2014-07-15 10:13:59.887036205 -0700
+@@ -12,6 +12,7 @@
+ import Control.Applicative
+ import Control.Monad (mzero)
+ import Control.Monad.Trans.Control (MonadBaseControl)
++import qualified Control.Monad.Trans.Resource as C (MonadResource)
+ import Data.Aeson ((.:), (.:?))
+ import Data.Text (Text)
+ import Data.Typeable (Typeable)
+diff -ru old/src/Facebook/Pager.hs new/src/Facebook/Pager.hs
+--- old/src/Facebook/Pager.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/Pager.hs	2014-07-15 10:11:28.467031976 -0700
+@@ -11,8 +11,7 @@
+ import Control.Applicative
+ import Control.Monad (mzero)
+ import Control.Monad.IO.Class (liftIO)
+-import Control.Monad.Trans.Control (MonadBaseControl)
+-import Control.Monad.Trans.Resource (MonadResourceBase)
++import Control.Monad.Trans.Resource as C
+ import Data.Typeable (Typeable)
+ 
+ import qualified Data.Aeson as A
+diff -ru old/src/Facebook/RealTime.hs new/src/Facebook/RealTime.hs
+--- old/src/Facebook/RealTime.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/RealTime.hs	2014-07-15 10:14:19.391036750 -0700
+@@ -15,6 +15,7 @@
+ 
+ import Control.Applicative ((<$>), (<*>))
+ import Control.Monad.Trans.Control (MonadBaseControl)
++import qualified Control.Monad.Trans.Resource as C (MonadResource)
+ import Control.Monad (liftM, mzero, void)
+ import Crypto.Hash.CryptoAPI (SHA1)
+ import Data.ByteString.Char8 (ByteString)
+diff -ru old/src/Facebook/TestUsers.hs new/src/Facebook/TestUsers.hs
+--- old/src/Facebook/TestUsers.hs	2014-07-15 09:58:57.615011003 -0700
++++ new/src/Facebook/TestUsers.hs	2014-07-15 10:14:37.183037247 -0700
+@@ -14,6 +14,7 @@
+ import Control.Applicative ((<$>), (<*>))
+ import Control.Monad (unless, mzero)
+ import Control.Monad.Trans.Control (MonadBaseControl)
++import qualified Control.Monad.Trans.Resource as C (MonadResource)
+ import Data.Default
+ import Data.Text
+ import Data.Time (UTCTime(..), Day(..))
