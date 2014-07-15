@@ -332,7 +332,8 @@ main _home release =
                    `tflag` P.DebVersion "0.4-6") -- apt (rel release "wheezy" "quantal") "haskell-harp"
     , debianize (hackage "hashable")
     , debianize (hackage "hashed-storage")
-    , debianize (hackage "haskeline")
+    -- Built into ghc-7.8.3
+    -- , debianize (hackage "haskeline")
     , debianize (hackage "th-orphans")
     , debianize (hackage "haskell-src-meta")
     -- Because we specify an exact debian version here, this package
@@ -511,9 +512,10 @@ main _home release =
     , debianize (hackage "tagged")
     , debianize (hackage "tagsoup")
     , debianize (hackage "tar" `tflag` P.DebVersion "0.4.0.1-3")
+{-  -- This is built into ghc-7.8.3
     , debianize (hackage "terminfo"
                              `flag` P.DevelDep "libncurses5-dev"
-                             `flag` P.DevelDep "libncursesw5-dev")
+                             `flag` P.DevelDep "libncursesw5-dev") -}
     , debianize (hackage "test-framework" `tflag` P.DebVersion "0.8.0.3-1build3")
     , debianize (hackage "test-framework-hunit" `tflag` P.DebVersion "0.3.0.1-1build4")
     -- Retired
@@ -806,10 +808,11 @@ platform release =
                    `tflag` P.DebVersion "0.93.2-4"
                    `pflag` P.DebVersion "0.93.2-2") -- apt (rel release "wheezy" "quantal") "haskell-regex-base"
     , debianize (hackage "regex-posix" `tflag` P.DebVersion "0.95.2-3")
-    , debianize (hackage "xhtml"
+    -- Built into ghc-7.8.3
+{-  , debianize (hackage "xhtml"
                    `wflag` P.DebVersion "3000.2.1-1"
                    `qflag` P.DebVersion "3000.2.1-1build2"
-                   `tflag` P.DebVersion "3000.2.1-4")
+                   `tflag` P.DebVersion "3000.2.1-4") -}
     ]
 
 clckwrks :: String -> Release -> P.Packages
