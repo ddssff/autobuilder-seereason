@@ -614,7 +614,7 @@ main _home release =
         Wheezy -> P.NoPackage -- This build hangs when performing tests
         _ -> apt "sid" "html-xml-utils"
     , apt "sid" "jquery"
-    , apt "sid" "jquery-goodies" `pflag` P.BuildDep "nodejs-legacy"
+    , apt "sid" "jquery-goodies" `patch` $(embedFile "patches/jquery-goodies.diff")
     -- We want to stick with jqueryui-1.8 for now, so create
     -- packages with the version number embedded in the name.
     , darcs "jqueryui" (repo </> "jqueryui18")
