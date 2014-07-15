@@ -647,7 +647,7 @@ main _home release =
     , debianize (hackage "frquotes")
     -- Usable versions of this package are available in some dists -
     -- e.g. trusty and wheezy.
-    , apt "trusty" "foo2zjs"
+    -- , apt "trusty" "foo2zjs"
     , debianize (hackage "stringsearch")
     , debianize (hackage "rss")
     , debianize (hackage "async")
