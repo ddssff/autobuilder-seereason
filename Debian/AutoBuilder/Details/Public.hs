@@ -683,7 +683,9 @@ main _home release =
     ]
 
 relax :: P.Packages -> String -> P.Packages
-relax p x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
+relax p@(P.Package {}) x = p {P.flags = P.flags p ++ [P.RelaxDep x]}
+relax (P.Packages n ps) x = P.Packages n (map (\ p -> relax p x) ps)
+relax p@P.NoPackage _ = p
 
 compiler :: Release -> P.Packages
 compiler release =
