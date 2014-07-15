@@ -482,7 +482,7 @@ main _home release =
     , debianize (hackage "SHA") -- apt (rel release "wheezy" "quantal") "haskell-sha"
     , debianize (hackage "shake")
     , debianize (hackage "byteorder" `tflag` P.DebVersion "1.0.4-1")
-    , debianize (hackage "word8" `tflag` P.DebVersion "0.0.4-1")
+    , debianize (hackage "word8")
     , debianize (hackage "system-fileio")
     , debianize (hackage "SMTPClient")
     , debianize (hackage "socks")
@@ -1270,7 +1270,7 @@ idris release =
                        `patch` $(embedFile "patches/idris.diff"))
         , hack "vector-binary-instances"
         , hack "trifecta"
-        , debianize (hackage "parsers" `patch` $(embedFile "patches/parsers.diff"))
+        , debianize (hackage "parsers" {- `patch` $(embedFile "patches/parsers.diff") -})
         , debianize (hackage "language-java" `flag` P.BuildDep "alex")
         , hack "cheapskate"
         , hack "annotated-wl-pprint"
