@@ -706,9 +706,7 @@ compiler release =
       ghc78 = case baseRelease release of
                 Trusty ->
                     -- Just to avoid a rebuild for now
-                    proc (apt "experimental" "ghc"
-                                  `flag` P.AptPin "7.8.20140710-1"
-                                  `patch` $(embedFile "patches/ghc-provides.diff"))
+                    P.NoPackage
                 _ ->
                     proc (apt "experimental" "ghc"
                                   `flag` P.AptPin "7.8.20140710-2"
