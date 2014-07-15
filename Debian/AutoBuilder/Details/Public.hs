@@ -1305,7 +1305,7 @@ haste = P.Packages (singleton "haste")
 --   1. fix cabal-debian so it really knows which packages ghc
 --      conflicts with and which it just provides
 -- x 2. Merge ghcjs and ghcjs-tools
---   3. Don't hard code the version numbers in the wrapper scripts (or haskell-devscripts)
+-- * 3. Don't hard code the version numbers in the wrapper scripts (or haskell-devscripts)
 --   4. Make it so we don't have to set $HOME in Setup.hs
 -- * 5. Figure out how to require the version of Cabal bundled with ghc (done)
 --   6. Build everything into a prefix directory instead of into /usr
