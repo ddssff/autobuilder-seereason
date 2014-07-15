@@ -1334,7 +1334,7 @@ ghcjs release =
   -- Cabal library with ghcjs support.  The debs are named cabal-ghcjs
   -- so packages that require ghcjs suppport can specify this.
   -- Options used to debianize: `flag` P.DebVersion "1.21.0.0-2"
-  , debdir (git "cabal-ghcjs" "https://github.com/ghcjs/cabal" [P.Branch "ghcjs"] `cd` "Cabal")
+  , debdir (git "cabal-ghcjs" "https://github.com/ddssff/cabal" [P.Branch "ghcjs"] `cd` "Cabal")
            (Git "https://github.com/ddssff/cabal-ghcjs-debian" [])
   -- Options used to generate debianization:
   --                       `flag` P.DebVersion "1.21.0.0-2"
