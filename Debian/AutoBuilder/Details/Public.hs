@@ -1012,7 +1012,7 @@ authenticate _home release =
     , debianize (hackage "zlib-enum")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
     , digestiveFunctors
-    , debianize (git "haskell-fb" "https://github.com/ddssff/fb" [])
+    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
     , debianize (hackage "monad-logger")
     , debianize (hackage "monad-loops")
     , debianize (hackage "fast-logger")
