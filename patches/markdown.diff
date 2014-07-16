@@ -1,0 +1,10 @@
+--- old/markdown.cabal	2014-07-15 13:19:14.047346643 -0700
++++ new/markdown.cabal	2014-07-15 17:18:26.835747542 -0700
+@@ -23,7 +23,6 @@
+   Build-depends:       base                   >= 4       && < 5
+                      , blaze-html             >= 0.4
+                      , attoparsec             >= 0.10
+-                     , attoparsec-conduit     >= 0.5
+                      , transformers           >= 0.2.2
+                      , conduit                >= 0.5.2.1
+                      , conduit-extra
