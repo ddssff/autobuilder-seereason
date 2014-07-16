@@ -940,7 +940,7 @@ happstack _home release =
                    `flag` P.RelaxDep "libghc-pandoc-doc"
                    `flag` P.BuildDep "alex"
                    `flag` P.BuildDep "happy")
-    , debianize (hackage "markdown" `rename` "markdown")
+    , debianize (hackage "markdown" `rename` "markdown" `patch` $(embedFile "patches/markdown.diff"))
     , debianize (hackage "highlighting-kate")
     , debianize (hackage "web-routes")
     , debianize (hackage "web-routes-boomerang")
@@ -1012,7 +1012,7 @@ authenticate _home release =
     , debianize (hackage "zlib-enum")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
     , digestiveFunctors
-    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
+    , debianize (hackage "fb")
     , debianize (hackage "monad-logger")
     , debianize (hackage "monad-loops")
     , debianize (hackage "fast-logger")
