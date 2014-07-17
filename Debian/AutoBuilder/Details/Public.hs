@@ -858,6 +858,7 @@ clckwrks _home release =
         , debianize (hackage "monadlist")
         , debianize (darcs "haskell-clckwrks-plugin-page" repo
                        `cd` "clckwrks-plugin-page"
+                       `patch` $(embedFile "patches/clckwrks-plugin-page.diff")
                        `flag` P.BuildDep "hsx2hs")
         ]
 
@@ -1010,7 +1011,7 @@ authenticate _home release =
     , debianize (hackage "crypto-cipher-types" `tflag` P.DebVersion "0.0.9-1")
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum")
-    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
+    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate" `patch` $(embedFile "patches/happstack-authenticate.diff"))
     , digestiveFunctors
     , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
     , debianize (hackage "monad-logger")
@@ -1355,7 +1356,9 @@ ghcjs release =
   --  let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
   --                      p0 ["alex", "happy", "make", "patch", "autoconf",
   --                          "cpp", "git", "cabal-install-ghcjs"] in
-  , debdir (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" [] `flag` P.KeepRCS)
+  , debdir (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" []
+                    `patch` $(embedFile "patches/ghcjs-tools.diff")
+                    `flag` P.KeepRCS)
            (Git "https://github.com/ddssff/ghcjs-tools-debian" [])
   , git "ghcjs" "https://github.com/ddssff/ghcjs-debian" []
   , debianize (hackage "ghcjs-dom"

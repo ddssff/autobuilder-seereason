@@ -1,11 +1,11 @@
---- old/clckwrks-plugin-page.cabal	2014-05-30 16:18:27.280409980 -0700
-+++ new/clckwrks-plugin-page.cabal	2014-06-05 16:04:08.891765155 -0700
-@@ -41,7 +41,7 @@
+--- old/clckwrks-plugin-page.cabal	2014-07-10 16:44:53.793055491 -0700
++++ new/clckwrks-plugin-page.cabal	2014-07-17 15:39:36.992408517 -0700
+@@ -39,7 +39,7 @@
+   other-modules:
+                        Clckwrks.Page.Verbatim
    build-depends:       base                   >= 4.3 && < 4.8,
-                        aeson                  >= 0.6 && < 0.8,
+-                       aeson                  >= 0.6 && < 0.8,
++                       aeson                  >= 0.6 && < 0.9,
                         acid-state             == 0.12.*,
--                       attoparsec             >= 0.10 && < 0.12,
-+                       attoparsec             >= 0.10,
+                        attoparsec             >= 0.10 && < 0.13,
                         clckwrks               >= 0.21 && < 0.23,
-                        containers             >= 0.4 && < 0.6,
-                        directory              >= 1.1 && < 1.3,
