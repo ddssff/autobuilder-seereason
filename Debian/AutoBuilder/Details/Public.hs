@@ -342,7 +342,7 @@ main _home release =
     -- sound right...
     , debianize (hackage "HaXml")
     , debianize (hackage "heap" `flag` P.DebVersion "1.0.0-1~hackage1")
-    , debianize (hackage "heist")
+    , debianize (hackage "heist" `patch` $(embedFile "patches/heist.diff"))
     , debianize (hackage "xmlhtml")
     , debianize (hackage "directory-tree")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
@@ -1012,7 +1012,7 @@ authenticate _home release =
     , debianize (hackage "zlib-enum")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
     , digestiveFunctors
-    , debianize (hackage "fb")
+    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
     , debianize (hackage "monad-logger")
     , debianize (hackage "monad-loops")
     , debianize (hackage "fast-logger")
@@ -1198,7 +1198,7 @@ algebra release =
     , debianize (hackage "keys")
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
-    , debianize (hackage "lens")
+    , debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff"))
     , debianize (hackage "constraints")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")

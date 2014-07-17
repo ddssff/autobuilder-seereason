@@ -1,12 +1,11 @@
---- old/lens.cabal	2013-12-09 09:36:53.000000000 -0800
-+++ new/lens.cabal	2013-12-09 09:41:14.189010307 -0800
-@@ -187,8 +187,7 @@
-     tagged                    >= 0.4.4    && < 1,
-     template-haskell          >= 2.4      && < 2.10,
-     text                      >= 0.11     && < 1.2,
--    transformers              >= 0.2      && < 0.4,
--    transformers-compat       >= 0.1      && < 1,
-+    transformers              >= 0.3      && < 0.4,
-     unordered-containers      >= 0.2      && < 0.3,
-     vector                    >= 0.9      && < 0.11,
-     void                      >= 0.5      && < 1
+--- old/lens.cabal	2014-07-17 13:18:03.772171286 -0700
++++ new/lens.cabal	2014-07-17 14:29:47.448291496 -0700
+@@ -181,7 +181,7 @@
+ 
+ library
+   build-depends:
+-    aeson                     >= 0.7.0.5  && < 0.8,
++    aeson                     >= 0.7.0.5  && < 0.9,
+     attoparsec                >= 0.10     && < 0.13,
+     array                     >= 0.3.0.2  && < 0.6,
+     base                      >= 4.3      && < 5,
