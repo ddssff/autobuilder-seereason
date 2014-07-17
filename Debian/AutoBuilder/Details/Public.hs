@@ -921,7 +921,7 @@ happstack _home release =
     , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
     , debianize (hackage "happstack-server")
     , debianize (hackage "happstack-lite")
-    , debianize (hackage "happstack-server-tls" `patch` $(embedFile "patches/happstack-server-tls.diff"))
+    , debianize (darcs "haskell-happstack-server-tls" "http://hub.darcs.net/stepcut/happstack" `cd` "happstack-server-tls")
     , debianize (hackage "time-compat")
     , debianize (hackage "base64-bytestring" `tflag` P.DebVersion "1.0.0.1-1")
     , debianize (hackage "threads")
