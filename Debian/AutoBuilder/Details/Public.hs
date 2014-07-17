@@ -437,7 +437,7 @@ main _home release =
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize (hackage "exceptions")
     , debianize (hackage "temporary")
-    , debianize (hackage "pandoc-types")
+    , debianize (hackage "pandoc-types" `patch` $(embedFile "patches/pandoc-types.diff"))
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
     , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
