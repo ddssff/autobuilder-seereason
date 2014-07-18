@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiWayIf, OverloadedStrings, TemplateHaskell #-}
+{-# LANGUAGE MultiWayIf, OverloadedStrings, RecordWildCards, TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-unused-imports -fno-warn-name-shadowing #-}
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
@@ -13,7 +13,7 @@ import Debian.AutoBuilder.Details.GHC (ghc)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Proc, Git, Dir),
                                                PackageFlag(AptPin, CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, NoHoogle, GitBranch, KeepRCS),
-                                               GitSpec(..), Packages(Package, Packages, NoPackage), flags, name, spec, TargetName(..),
+                                               GitSpec(..), Packages(..), flags, name, spec, TargetName(..),
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, installTo, link, rulesHead, InstallFile(..), (~=), (+++=), (%=))
 import Debian.Debianize.Goodies (makeRulesHead)
@@ -1361,63 +1361,31 @@ ghcjs release =
                     `flag` P.KeepRCS)
            (Git "https://github.com/ddssff/ghcjs-tools-debian" [])
   , git "ghcjs" "https://github.com/ddssff/ghcjs-debian" []
-  , debianize (hackage "ghcjs-dom"
-                 `flag` P.CabalDebian ["--hc=ghcjs"]
-                 `flag` P.CabalDebian ["--depends=libghcjs-ghcjs-dom-dev:ghcjs"]
-                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
-                 `flag` P.BuildDep "ghcjs"                  -- to compile the library
-                 `flag` P.NoDoc
-                 -- `flag` P.BuildDep "libghc-cabal-dev" -- to compile Setup.hs
-                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)")
-  , debianize (hackage "ghcjs-dom-hello"
-                 `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
-                 `flag` P.CabalDebian ["--hc=ghcjs"]
-                 `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]
-                 `flag` P.BuildDep "ghcjs"
-                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev (>= 1.21)"
-                 -- `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
-                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)")
-  , debianize (hackage "blaze-builder"
-                 `flag` P.CabalDebian ["--hc=ghcjs"]
-                 `flag` P.CabalDebian ["--source-package-name=ghcjs-blaze-builder"]
-                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
-                 `flag` P.BuildDep "ghcjs"                  -- to compile the library
-                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)") {name = "ghcjs-blaze-builder"}
-  , debianize (hackage "blaze-markup"
-                 `flag` P.CabalDebian ["--hc=ghcjs"]
-                 `flag` P.CabalDebian ["--source-package-name=ghcjs-blaze-markup"]
-                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
-                 `flag` P.BuildDep "ghcjs"                  -- to compile the library
-                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)") {name = "ghcjs-blaze-markup"}
-  , debianize (hackage "blaze-html"
-                 `flag` P.CabalDebian ["--hc=ghcjs"]
-                 `flag` P.CabalDebian ["--source-package-name=ghcjs-blaze-html"]
-                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
-                 `flag` P.BuildDep "ghcjs"                  -- to compile the library
-                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)") {name = "ghcjs-blaze-html"}
-  , ghcjs_hackage "data-default-class"
-  , ghcjs_hackage "data-default-instances-base"
-  , ghcjs_hackage "data-default-instances-dlist"
-  , ghcjs_hackage "data-default-instances-containers"
-  , ghcjs_hackage "data-default-instances-old-locale"
-  , ghcjs_hackage "data-default"
-  , debianize (git "ghcjs-jquery" "https://github.com/ghcjs/ghcjs-jquery" [] `flag` P.KeepRCS)
-                 `flag` P.CabalDebian ["--hc=ghcjs"]
-                 `flag` P.CabalDebian ["--default-package=ghcjs-jquery"]
-                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
-                 `flag` P.BuildDep "ghcjs"                  -- to compile the library
-                 `flag` P.NoDoc
-                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)"
+  , ghcjs_flags (hackage "ghcjs-dom")
+  , ghcjs_flags (hackage "ghcjs-dom-hello"
+                   `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]
+                   `patch` $(embedFile "patches/ghcjs-dom-hello.diff"))
+  , ghcjs_flags (hackage "blaze-builder")
+  , ghcjs_flags (hackage "blaze-markup")
+  , ghcjs_flags (hackage "blaze-html")
+  , ghcjs_flags (hackage "data-default-class")
+  , ghcjs_flags (hackage "data-default-instances-base")
+  , ghcjs_flags (hackage "data-default-instances-dlist")
+  , ghcjs_flags (hackage "data-default-instances-containers")
+  , ghcjs_flags (hackage "data-default-instances-old-locale")
+  , ghcjs_flags (hackage "data-default")
+  , ghcjs_flags (git "ghcjs-jquery" "https://github.com/ghcjs/ghcjs-jquery" [])
   ]
-   where ghcjs_hackage p = (debianize (hackage p
-                 `flag` P.CabalDebian ["--hc=ghcjs"]
-                 `flag` P.CabalDebian ["--source-package-name=ghcjs-" ++p]
-                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
-                 `flag` P.BuildDep "ghcjs"
-                 `flag` P.NoDoc
-                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)"))  { name = TargetName ("ghcjs-" ++ p)}
-
-
+   where ghcjs_flags p@(Package {..}) =
+             debianize (p `flag` P.CabalDebian ["--hc=ghcjs"]
+                          `flag` P.CabalDebian ["--source-package-name=ghcjs-" <> unTargetName name]
+                          `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
+                          `flag` P.BuildDep "ghcjs"
+                          `flag` P.NoDoc
+                          `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)"
+                          `rename` TargetName ("ghcjs-" ++ unTargetName name))
+         ghcjs_flags NoPackage = NoPackage
+         ghcjs_flags p@(Packages {..}) = p {list = map ghcjs_flags list}
 
 broken :: P.Packages -> P.Packages
 broken _ = P.NoPackage
