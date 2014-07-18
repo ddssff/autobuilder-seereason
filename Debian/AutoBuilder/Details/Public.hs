@@ -1412,8 +1412,8 @@ ghcjs release =
    where ghcjs_hackage p = (debianize (hackage p
                  `flag` P.CabalDebian ["--hc=ghcjs"]
                  `flag` P.CabalDebian ["--source-package-name=ghcjs-" ++p]
-                 `flag` P.BuildDep "libghc-cabal-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
-                 `flag` P.BuildDep "ghcjs"                  -- to compile the library
+                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
+                 `flag` P.BuildDep "ghcjs"
                  `flag` P.NoDoc
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)"))  { name = TargetName ("ghcjs-" ++ p)}
 
