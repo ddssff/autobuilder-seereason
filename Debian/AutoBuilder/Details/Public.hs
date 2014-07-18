@@ -13,7 +13,7 @@ import Debian.AutoBuilder.Details.GHC (ghc)
 import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Hackage, Apt, DebDir, Proc, Git, Dir),
                                                PackageFlag(AptPin, CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, NoHoogle, GitBranch, KeepRCS),
-                                               GitSpec(..), Packages(Package, Packages, NoPackage), flags, name, spec,
+                                               GitSpec(..), Packages(Package, Packages, NoPackage), flags, name, spec, TargetName(..),
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, installTo, link, rulesHead, InstallFile(..), (~=), (+++=), (%=))
 import Debian.Debianize.Goodies (makeRulesHead)
@@ -1407,15 +1407,15 @@ ghcjs release =
                  `flag` P.BuildDep "libghc-cabal-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
                  `flag` P.BuildDep "ghcjs"                  -- to compile the library
                  `flag` P.NoDoc
-                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)")
+                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)"
   ]
-   where ghcjs_hackage p =  debianize (hackage p
+   where ghcjs_hackage p = (debianize (hackage p
                  `flag` P.CabalDebian ["--hc=ghcjs"]
                  `flag` P.CabalDebian ["--source-package-name=ghcjs-" ++p]
                  `flag` P.BuildDep "libghc-cabal-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
                  `flag` P.BuildDep "ghcjs"                  -- to compile the library
                  `flag` P.NoDoc
-                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)")  { name = "ghcjs-"++ p}
+                 `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)"))  { name = TargetName ("ghcjs-" ++ p)}
 
 
 
