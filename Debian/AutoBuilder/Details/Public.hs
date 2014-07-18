@@ -3,7 +3,7 @@
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
 import Data.FileEmbed (embedFile)
-import Data.List (intercalate)
+import Data.List (intercalate, isPrefixOf)
 import Data.Monoid ((<>))
 import Data.Set as Set (empty, singleton, fromList)
 import Data.Text as Text (Text, lines, unlines)
@@ -1378,14 +1378,19 @@ ghcjs release =
   ]
    where ghcjs_flags p@(Package {..}) =
              debianize (p `flag` P.CabalDebian ["--hc=ghcjs"]
-                          `flag` P.CabalDebian ["--source-package-name=ghcjs-" <> unTargetName name]
+                          `flag` P.CabalDebian ["--source-package-name=" <> unTargetName (sourceName name)]
                           `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
                           `flag` P.BuildDep "ghcjs"
                           `flag` P.NoDoc
                           `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)"
-                          `rename` TargetName ("ghcjs-" ++ unTargetName name))
+                          `rename` sourceName name)
          ghcjs_flags NoPackage = NoPackage
          ghcjs_flags p@(Packages {..}) = p {list = map ghcjs_flags list}
+         sourceName name = TargetName (maybe (unTargetName name) ("ghcjs-" ++) (dropPrefix "haskell-" (unTargetName name)))
 
 broken :: P.Packages -> P.Packages
 broken _ = P.NoPackage
+
+dropPrefix :: Monad m => String -> String -> m String
+dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
+dropPrefix pre str = fail $ "Expected prefix " ++ show pre ++ ", found " ++ show str
