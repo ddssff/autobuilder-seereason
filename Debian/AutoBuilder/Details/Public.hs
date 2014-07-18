@@ -1404,7 +1404,7 @@ ghcjs release =
   , debianize (git "ghcjs-jquery" "https://github.com/ghcjs/ghcjs-jquery" [] `flag` P.KeepRCS)
                  `flag` P.CabalDebian ["--hc=ghcjs"]
                  `flag` P.CabalDebian ["--default-package=ghcjs-jquery"]
-                 `flag` P.BuildDep "libghc-cabal-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
+                 `flag` P.BuildDep "libghc-cabal-ghcjs-dev (>= 1.21)" -- gives Setup.hs the --ghcjs option
                  `flag` P.BuildDep "ghcjs"                  -- to compile the library
                  `flag` P.NoDoc
                  `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)"
