@@ -5,7 +5,7 @@ module Debian.AutoBuilder.Details.Private (libraries, applications) where
 import Data.FileEmbed (embedFile)
 import Data.Set (singleton)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, ModifyAtoms, BuildDep, NoDoc, CabalDebian),
-                                               Packages(Package, Packages), RetrieveMethod(Debianize, Hackage, Cd, Darcs, Dir),
+                                               Packages(..), RetrieveMethod(Debianize, Hackage, Cd, Darcs, Dir),
                                                flag, flags, spec, name, patch, debianize, hackage, rename, method, darcs, cd)
 import Debian.Debianize (sourcePackageName, execDebM)
 import Debian.Debianize.Prelude ((~=))

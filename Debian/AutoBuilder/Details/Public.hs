@@ -949,7 +949,8 @@ happstack _home release =
     , debianize (hackage "web-routes-hsp")
     , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
     , debianize (hackage "web-routes-th")
-    , debianize (darcs "haskell-happstack-scaffolding" (repo ++ "/happstack-scaffolding"))
+    , debianize (darcs "haskell-happstack-scaffolding" (repo ++ "/happstack-scaffolding")
+                   `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "HJScript")
     , debianize (darcs "reform" (seereason ++ "/reform") `cd` "reform")
     , debianize (darcs "reform-blaze" (seereason </> "reform") `cd` "reform-blaze")
@@ -1028,7 +1029,7 @@ digestiveFunctors =
     , debianize (hackage "digestive-functors-happstack"
                    `patch` $(embedFile "patches/digestive-functors-happstack.diff")
                    `flag` P.CabalPin "0.1.1.5"
-                   `flag` P.DebVersion "0.1.1.5-1~hackage1")
+                   `flag` P.DebVersion "0.1.1.5-2")
     , debianize (darcs "haskell-digestive-functors-hsp" (repo ++ "/digestive-functors-hsp") `flag` P.BuildDep "hsx2hs") ]
 
 -- | We need new releases of all the conduit packages before we can move
@@ -1390,6 +1391,9 @@ ghcjs release =
 
 broken :: P.Packages -> P.Packages
 broken _ = P.NoPackage
+
+skip :: P.Packages -> P.Packages
+skip _ = P.NoPackage
 
 dropPrefix :: Monad m => String -> String -> m String
 dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
