@@ -920,7 +920,8 @@ happstack _home release =
     , broken $ debianize (hackage "jmacro-rpc-happstack" `flag` P.SkipVersion "0.2.1") -- Really just waiting for jmacro-rpc
     , broken $ debianize (hackage "jmacro-rpc")
     , darcs "haskell-happstack-search" (repo ++ "/happstack-search")
-    , debianize (hackage "happstack-server")
+    -- , debianize (hackage "happstack-server")
+    , debianize (darcs "haskell-happstack-server" (repo ++ "/happstack-server-debug") `cd` "happstack-server")
     , debianize (hackage "happstack-lite")
     , debianize (darcs "haskell-happstack-server-tls" "http://hub.darcs.net/stepcut/happstack" `cd` "happstack-server-tls")
     , debianize (hackage "time-compat")
