@@ -5,7 +5,7 @@
  Package: ghc
  Architecture: any
 -Depends: llvm [armel armhf], gcc, libgmp-dev, libffi-dev, libbsd-dev, libc6-dev, ${shlibs:Depends}, ${misc:Depends}
-+Depends: llvm [armel armhf], gcc, libgmp-dev, libffi-dev, libbsd-dev, libc6-dev, libtinfo-dev, ${shlibs:Depends}, ${misc:Depends}
++Depends: llvm [armel armhf], gcc, libgmp-dev, libffi-dev, libbsd-dev, libc6-dev, libncurses5-dev, ${shlibs:Depends}, ${misc:Depends}
  Provides: haskell-compiler, ${provided-devs}, ${haskell:Provides}, ${ghci}, ghc-dynamic
  Replaces: ghc6 (<< 7), ghc-dynamic (<< 7.8)
  Conflicts: ghc6 (<< 7), ghc-dynamic (<< 7.8), ${conflicting-devs}
