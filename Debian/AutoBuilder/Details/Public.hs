@@ -437,7 +437,7 @@ main _home release =
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize (hackage "exceptions")
     , debianize (hackage "temporary")
-    , debianize (hackage "pandoc-types" `patch` $(embedFile "patches/pandoc-types.diff"))
+    , debianize (hackage "pandoc-types")
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
     , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
@@ -704,13 +704,10 @@ compiler release =
       -- libghc-cabal-dev so it doesn't buy us anything.  Watch for
       -- revision 5.
       ghc78 = case baseRelease release of
-                Trusty ->
-                    -- Just to avoid a rebuild for now
-                    P.NoPackage
-                _ ->
-                    proc (apt "experimental" "ghc"
-                                  `flag` P.AptPin "7.8.20140710-2"
-                                  `patch` $(embedFile "patches/ghc-libtinfo.diff"))
+                -- Just to avoid a rebuild for now
+                Trusty -> P.NoPackage
+                Precise -> P.NoPackage
+                _ -> proc (apt "experimental" "ghc")
       ghc76 = apt "sid" "ghc" -- up to revision 13 now
       ghcFlags p = p `relax` "ghc"
                      `relax` "happy"
@@ -938,7 +935,6 @@ happstack _home release =
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hslua")
     , debianize (hackage "pandoc"
-                   `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
                    `flag` P.BuildDep "alex"
                    `flag` P.BuildDep "happy")
@@ -1013,7 +1009,7 @@ authenticate _home release =
     , debianize (hackage "crypto-cipher-types" `tflag` P.DebVersion "0.0.9-1")
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum")
-    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate" `patch` $(embedFile "patches/happstack-authenticate.diff"))
+    , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate")
     , digestiveFunctors
     , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
     , debianize (hackage "monad-logger")
