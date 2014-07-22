@@ -1037,12 +1037,12 @@ digestiveFunctors =
 conduit release =
   let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
   P.Packages (singleton "conduit")
-    [ debianize (hackage "streaming-commons")
+    [ debianize (hackage "streaming-commons" `flag` P.CabalPin "0.1.4") -- avoid rebuild
     , debianize (hackage "conduit" {- `flag` P.CabalPin "1.0.17.1" -})
     , debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
     , debianize (hackage "connection")
-    , debianize (hackage "http-conduit" {- `flag` P.CabalPin "2.0.0.8" -})
-    , debianize (hackage "http-client" {- `flag` P.CabalPin "0.2.3" -})
+    , debianize (hackage "http-conduit" `flag` P.CabalPin "2.1.3") -- avoid rebuild
+    , debianize (hackage "http-client" `flag` P.CabalPin "0.3.5") -- avoid rebuild
     , debianize (hackage "http-client-tls")
     -- Deprecated in favor of http-conduit
     -- , debianize (hackage "http-client-conduit" {- `flag` P.CabalPin "0.2.0.1" -})
@@ -1050,7 +1050,7 @@ conduit release =
     -- , debianize (hackage "attoparsec-conduit" {- `flag` P.CabalPin "1.0.1.2" `tflag` P.DebVersion "1.0.1.2-1build2" -})
     -- , debianize (hackage "blaze-builder-conduit" {- `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build4" -})
     -- , debianize (hackage "zlib-conduit" {- `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build3" -})
-    , debianize (hackage "xml-conduit" `patch` $(embedFile "patches/xml-conduit.diff"))
+    , debianize (hackage "xml-conduit" `patch` $(embedFile "patches/xml-conduit.diff") `flag` P.CabalPin "1.2.0.3") -- avoid rebuild
     , debianize (hackage "tagstream-conduit" `patch` $(embedFile "patches/tagstream-conduit.diff"))
     , debianize (hackage "conduit-extra"
                    -- `flag` P.CabalPin "1.0.0"
