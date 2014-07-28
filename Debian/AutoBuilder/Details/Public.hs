@@ -15,7 +15,7 @@ import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Pa
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, NoHoogle, GitBranch, KeepRCS),
                                                GitSpec(..), Packages(..), flags, name, spec, TargetName(..),
                                                rename, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
-import Debian.Debianize (compat, doExecutable, execDebM, installData, installTo, link, rulesHead, InstallFile(..), (~=), (+++=), (%=))
+import Debian.Debianize (compat, doExecutable, execDebM, installData, installTo, link, rulesFragments, rulesHead, InstallFile(..), (+=), (~=), (+++=), (%=))
 import Debian.Debianize.Goodies (makeRulesHead)
 import Debian.Relation (BinPkgName(..))
 import System.FilePath((</>))
@@ -1333,6 +1333,10 @@ ghcjs release =
   , debianize (hackage "enclosed-exceptions")
   , debdir (git "haskell-ghcjs-prim" "https://github.com/ghcjs/ghcjs-prim.git" [])
            (Git "https://github.com/ddssff/ghcjs-prim-debian" [])
+  , debianize (git "haskell-haddock-internal" "https://github.com/ghcjs/haddock-internal" []
+                   `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
+                                                                        [ "# Force the Cabal dependency to be the version provided by GHC"
+                                                                        , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
   , debianize (hackage "lifted-async")
   -- haskell-devscripts modified to support ghcjs packaging.
   , darcs "haskell-devscripts" (repo </> "haskell-devscripts") `flag` P.RelaxDep "python-minimal"
@@ -1357,10 +1361,13 @@ ghcjs release =
   --  let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
   --                      p0 ["alex", "happy", "make", "patch", "autoconf",
   --                          "cpp", "git", "cabal-install-ghcjs"] in
-  , debdir (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" []
-                    `patch` $(embedFile "patches/ghcjs-tools.diff")
-                    `flag` P.KeepRCS)
-           (Git "https://github.com/ddssff/ghcjs-tools-debian" [])
+  , debianize (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" []
+                   `patch` $(embedFile "patches/ghcjs-tools.diff")
+                   `flag` P.DebVersion "0.1.0-2"
+                   `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
+                                                                        [ "# Force the Cabal dependency to be the version provided by GHC"
+                                                                        , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])
+                   `flag` P.KeepRCS)
   , git "ghcjs" "https://github.com/ddssff/ghcjs-debian" []
   , ghcjs_flags (hackage "ghcjs-dom")
   , ghcjs_flags (hackage "ghcjs-dom-hello"
