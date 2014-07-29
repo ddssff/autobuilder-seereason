@@ -74,7 +74,7 @@ Executable autobuilder-seereason
    Hs-Source-Dirs: ../cabal-debian/src
    Build-Depends: Diff, hsemail, parsec, regex-tdfa, set-extra, syb, memoize
  else
-   Build-Depends: cabal-debian >= 4.14
+   Build-Depends: cabal-debian >= 4.14, syb
 
 Executable seereason-darcs-backups
  Main-Is: Backups.hs

@@ -1,4 +1,4 @@
-autobuilder-seereason (1.1.1) unstable; urgency=low
+haskell-autobuilder-seereason (1.1.1) unstable; urgency=low
 
   * Map cabal package name "Cabal" to debian package name "cabal"
     (not cabal-ghcjs yet, but soon.)
