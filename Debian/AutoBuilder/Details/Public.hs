@@ -1363,6 +1363,8 @@ ghcjs release =
   --                          "cpp", "git", "cabal-install-ghcjs"] in
   , debianize (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" []
                    `patch` $(embedFile "patches/ghcjs-tools.diff")
+                   `flag` P.CabalDebian ["--source-package-name=ghcjs-tools"]
+                   `flag` P.CabalDebian ["--default-package=ghcjs-tools"]
                    `flag` P.DebVersion "0.1.0-2"
                    `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
                                                                         [ "# Force the Cabal dependency to be the version provided by GHC"
