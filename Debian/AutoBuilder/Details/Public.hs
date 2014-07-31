@@ -1158,7 +1158,7 @@ plugins = P.Packages (singleton "plugins") $
     [ debianize (hackage "plugins")
     , debianize (hackage "plugins-auto" `patch` $(embedFile "patches/plugins-auto.diff"))
     , debianize (hackage "happstack-plugins" `patch` $(embedFile "patches/happstack-plugins.diff"))
-    , debianize (darcs "haskell-web-plugins" (darcsHub ++ "/web-plugins") `cd` "web-plugins")
+    , debianize (git "haskell-web-plugins" ("http://github.com/clckwrks/web-plugins") `cd` "web-plugins")
     ]
 
 algebra :: Release -> P.Packages
