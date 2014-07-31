@@ -475,7 +475,7 @@ main _home release =
     , debianize (hackage "sat"
                    `patch` $(embedFile "patches/sat.diff")
                    `flag` P.DebVersion "1.1.1-1~hackage1")
-    , debianize (hackage "semigroups")
+    , debianize (hackage "semigroups" `flag` P.CabalPin "0.15.1")
     , debianize (hackage "nats")
     , debianize (hackage "sendfile" `tflag` P.DebVersion "0.7.9-1")
     , darcs "haskell-set-extra" (repo </> "set-extra")
@@ -989,7 +989,7 @@ authenticate _home release =
     , debianize (hackage "DRBG")
     , debianize (hackage "prettyclass")
     , debianize (hackage "cipher-aes128")
-    , debianize (hackage "resourcet" {- `flag` P.CabalPin "0.4.10.2" -})
+    , debianize (hackage "resourcet")
     , debianize (hackage "mmorph")
     , debianize (hackage "void" `tflag` P.DebVersion "0.6.1-1build1")
     , debianize (hackage "certificate" `tflag` P.DebVersion "1.3.9-1build4")
@@ -1200,7 +1200,7 @@ algebra release =
     , debianize (hackage "keys")
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
-    , debianize (hackage "lens" `patch` $(embedFile "patches/lens.diff"))
+    , debianize (hackage "lens")
     , debianize (hackage "constraints")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
@@ -1214,7 +1214,7 @@ algebra release =
     , debianize (hackage "algebra")
     , debianize (hackage "universe" {- `patch` $(embedFile "patches/universe.diff") -})
     -}
-    , debianize (hackage "adjunctions")
+    , debianize (hackage "adjunctions" `flag` P.CabalPin "4.1.0.1") -- waiting for contravariant>=1
     , debianize (hackage "linear")
 
     , debianize (hackage "semigroupoids"
