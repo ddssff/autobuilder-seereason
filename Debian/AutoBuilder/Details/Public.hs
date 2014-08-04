@@ -1361,6 +1361,8 @@ ghcjs release =
   --  let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
   --                      p0 ["alex", "happy", "make", "patch", "autoconf",
   --                          "cpp", "git", "cabal-install-ghcjs"] in
+  -- So wrong.
+{-
   , debianize (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" []
                    `patch` $(embedFile "patches/ghcjs-tools.diff")
                    `flag` P.CabalDebian ["--source-package-name=ghcjs-tools"]
@@ -1370,6 +1372,16 @@ ghcjs release =
                                                                         [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                         , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])
                    `flag` P.KeepRCS)
+-}
+  , debdir (git "ghcjs-tools" "https://github.com/ghcjs/ghcjs" []
+                   `patch` $(embedFile "patches/ghcjs-tools.diff")
+                   `flag` P.CabalDebian ["--source-package-name=ghcjs-tools"]
+                   `flag` P.CabalDebian ["--default-package=ghcjs-tools"]
+                   `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
+                                                                        [ "# Force the Cabal dependency to be the version provided by GHC"
+                                                                        , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])
+                   `flag` P.KeepRCS)
+           (Git "https://github.com/ddssff/ghcjs-tools-debian" []) -- (Dir "/home/dsf/git/ghcjs-tools-debian")
   , git "ghcjs" "https://github.com/ddssff/ghcjs-debian" []
   , ghcjs_flags (hackage "ghcjs-dom")
   , ghcjs_flags (hackage "ghcjs-dom-hello"
