@@ -1016,10 +1016,11 @@ authenticate _home release =
     , debianize (hackage "zlib-enum")
     , debianize (darcs "haskell-happstack-authenticate" (darcsHub ++ "/happstack") `cd` "happstack-authenticate" `patch` $(embedFile "patches/happstack-authenticate.diff"))
     , digestiveFunctors
-    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
+    , debianize (hackage "fb")
     , debianize (hackage "monad-logger")
     , debianize (hackage "monad-loops")
     , debianize (hackage "fast-logger")
+    , debianize (hackage "auto-update")
     , debianize (hackage "date-cache" `tflag` P.DebVersion "0.3.0-3")
     , debianize (hackage "unix-time")
     ]
@@ -1202,7 +1203,7 @@ algebra release =
     , debianize (hackage "keys")
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
-    , debianize (hackage "lens")
+    , debianize (hackage "lens" `flag` P.CabalPin "4.3.2") -- avoid rebuild
     , debianize (hackage "constraints")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
@@ -1220,6 +1221,7 @@ algebra release =
     , debianize (hackage "linear")
 
     , debianize (hackage "semigroupoids"
+                   `flag` P.CabalPin "4.0.4" -- avoid rebuild
                    `flag` P.CabalDebian [ "--conflicts=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"
                                         , "--replaces=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"
                                         , "--provides=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"])
