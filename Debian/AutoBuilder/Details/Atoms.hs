@@ -47,6 +47,13 @@ seereasonDefaultAtoms =
        missingDependencies += BinPkgName "libghcjs-blaze-builder-doc"
        missingDependencies += BinPkgName "libghcjs-blaze-markup-doc"
        missingDependencies += BinPkgName "libghcjs-blaze-html-doc"
+       missingDependencies += BinPkgName "libghcjs-data-default-class-doc"
+       missingDependencies += BinPkgName "libghcjs-data-default-instances-base-doc"
+       missingDependencies += BinPkgName "libghcjs-data-default-instances-dlist-doc"
+       missingDependencies += BinPkgName "libghcjs-data-default-instances-containers-doc"
+       missingDependencies += BinPkgName "libghcjs-data-default-instances-old-locale-doc"
+       missingDependencies += BinPkgName "libghcjs-data-default-doc"
+       missingDependencies += BinPkgName "libghcjs-ghcjs-jquery-doc"
 
 -- | Belongs in cabal-debian
 unmapCabal :: Monad m => PackageName -> DebT m ()
