@@ -162,6 +162,8 @@ main _home release =
     -- Merged into ListLike-4.0
     -- , debianize (hackage "listlike-instances")
     , debianize (hackage "cpphs") -- apt (rel release "wheezy" "quantal") "cpphs"
+    -- No longer available
+    -- , apt "sid" "debian-keyring=2014.03.03" -- The current version (2014.04.25) seems to be missing some keys that we need
     , apt "sid" "debootstrap" `flag` P.UDeb "debootstrap-udeb"
     -- Build fails due to some debianization issue
     -- , apt "wheezy" "geneweb"
