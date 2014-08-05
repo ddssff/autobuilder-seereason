@@ -1,12 +1,11 @@
 {-# LANGUAGE DeriveDataTypeable, StandaloneDeriving #-}
 -- |This module defines how we obtain and assemble the source code for
 -- the packages we want to build.
-module Debian.AutoBuilder.Details.Targets 
+module Debian.AutoBuilder.Details.Targets
     ( public
     , private
     ) where
 
-import Data.Typeable (Typeable)
 import Data.Monoid (mappend)
 import Debian.AutoBuilder.Details.Distros (BaseRelease(..), baseRelease, Release)
 import qualified Debian.AutoBuilder.Types.Packages as P
@@ -53,6 +52,7 @@ relaxCabalDebian x = x
 -- Debianize is outermost is valid.
 isDebianizeSpec  :: P.RetrieveMethod -> Bool
 isDebianizeSpec (P.Debianize _) = True
+isDebianizeSpec (P.Debianize' _ _) = True
 isDebianizeSpec _ = False
 
 -- | Add MapDep and DevelDep flags Supply some special cases to map cabal library names to debian.

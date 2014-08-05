@@ -9,7 +9,7 @@ module Debian.AutoBuilder.Details
     ( myParams
     ) where
 
-import Data.List as List (isSuffixOf, map)
+import Data.List as List (map)
 import Data.Maybe
 import Data.Monoid (mappend)
 -- import Data.Set as Set (Set, empty)
