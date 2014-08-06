@@ -32,12 +32,17 @@ flag local-cabal-debian
   Default: False
   Manual: True
 
+flag local-debian
+  Description: Link directly to the source of the debian library
+  Default: False
+  Manual: True
+
 Library
   if flag(local-autobuilder-seereason)
     Buildable: False
   else
-    Build-Depends: cabal-debian >= 4.14, debian-repo >= 5.66, AutoBuilder >= 6.69
-  Build-depends: base, bytestring, Cabal, containers, debian, filepath, file-embed, process, text, unix
+    Build-Depends: debian >= 3.82, cabal-debian >= 4.14, debian-repo >= 5.66, AutoBuilder >= 6.69
+  Build-depends: base, bytestring, Cabal, containers, filepath, file-embed, process, text, unix
   Exposed-Modules:
     Debian.AutoBuilder.Details
     Debian.AutoBuilder.Details.Atoms
@@ -51,7 +56,7 @@ Library
 Executable autobuilder-seereason
  Main-Is: autobuilder.hs
  GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
- Build-Depends: base, bytestring, Cabal, containers, debian, file-embed, filepath, process, text
+ Build-Depends: base, bytestring, Cabal, containers, either, file-embed, filepath, process, text
  Hs-Source-Dirs: .
  if !flag(local-autobuilder-seereason)
    Build-Depends: autobuilder-seereason
@@ -75,6 +80,12 @@ Executable autobuilder-seereason
    Build-Depends: Diff, hsemail, parsec, regex-tdfa, set-extra, syb, memoize
  else
    Build-Depends: cabal-debian >= 4.14, syb
+
+ if flag (local-debian)
+   Hs-Source-Dirs: ../haskell-debian
+   Build-Depends: either, ListLike
+ else
+   Build-Depends: debian >= 3.82
 
 Executable seereason-darcs-backups
  Main-Is: Backups.hs
