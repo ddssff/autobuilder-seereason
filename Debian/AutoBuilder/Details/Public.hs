@@ -90,8 +90,26 @@ autobuilder home =
     , darcs (repo </> "mirror")
     , darcs (repo </> "debian-repo")
     , darcs (repo </> "archive")
-    -- , debianize (hackage "process-extras")
+    , debianize (hackage "process-extras")
+        `flag` P.CabalDebian [ "--conflicts=libghc-process-extras-dev:libghc-process-listlike-dev"
+                             , "--provides=libghc-process-extras-dev:libghc-process-listlike-dev"
+                             , "--replaces=libghc-process-extras-dev:libghc-process-listlike-dev"
+                             , "--conflicts=libghc-process-extras-prof:libghc-process-listlike-prof"
+                             , "--provides=libghc-process-extras-prof:libghc-process-listlike-prof"
+                             , "--replaces=libghc-process-extras-prof:libghc-process-listlike-prof"
+                             , "--conflicts=libghc-process-extras-doc:libghc-process-listlike-doc"
+                             , "--provides=libghc-process-extras-doc:libghc-process-listlike-doc"
+                             , "--replaces=libghc-process-extras-doc:libghc-process-listlike-doc" ]
     , debianize (darcs (repo </> "process-listlike"))
+        `flag` P.CabalDebian [ "--conflicts=libghc-process-listlike-dev:libghc-process-extras-dev"
+                             , "--provides=libghc-process-listlike-dev:libghc-process-extras-dev"
+                             , "--replaces=libghc-process-listlike-dev:libghc-process-extras-dev"
+                             , "--conflicts=libghc-process-listlike-prof:libghc-process-extras-prof"
+                             , "--provides=libghc-process-listlike-prof:libghc-process-extras-prof"
+                             , "--replaces=libghc-process-listlike-prof:libghc-process-extras-prof"
+                             , "--conflicts=libghc-process-listlike-doc:libghc-process-extras-doc"
+                             , "--provides=libghc-process-listlike-doc:libghc-process-extras-doc"
+                             , "--replaces=libghc-process-listlike-doc:libghc-process-extras-doc" ]
     , darcs (repo </> "process-progress")
     , debianize (darcs (repo </> "autobuilder"))
         `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
