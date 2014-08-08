@@ -34,7 +34,8 @@ localRepo = "file:///home/dsf/darcs/"
 -- Stick new packages here to get an initial build, then move
 -- them to a suitable group.
 new :: P.Packages
-new = P.Packages "new" [debianize (darcs (repo </> "showplease"))]
+new = P.Packages "new" [ debianize (darcs (repo </> "showplease"))
+                       , debianize (hackage "pseudomacros") ]
 
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
