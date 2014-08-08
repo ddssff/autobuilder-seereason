@@ -457,7 +457,7 @@ main _home release =
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize (hackage "exceptions")
     , debianize (hackage "temporary")
-    , debianize (hackage "pandoc-types" `patch` $(embedFile "patches/pandoc-types.diff"))
+    , debianize (hackage "pandoc-types")
     , debianize (hackage "deepseq-generics")
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
@@ -1373,7 +1373,7 @@ ghcjs release =
     --                      p0 ["alex", "happy", "make", "patch", "autoconf",
     --                          "cpp", "git", "cabal-install-ghcjs"] in
     , debdir (git "https://github.com/ghcjs/ghcjs" []
-                      `patch` $(embedFile "patches/ghcjs-tools.diff")
+                      -- `patch` $(embedFile "patches/ghcjs-tools.diff")
                       `flag` P.CabalDebian ["--source-package-name=ghcjs-tools"]
                       `flag` P.CabalDebian ["--default-package=ghcjs-tools"]
                       `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
