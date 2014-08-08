@@ -31,7 +31,7 @@ libraries _home =
     -- really have a mechanism to ensure this is installed in the
     -- parent environment, except making it a dependency of the
     -- autobuilder itself.
-    , debianize (method (Darcs (privateRepo </> "mimo")))
+    -- , debianize (method (Darcs (privateRepo </> "mimo"))) -- Disabled until safecopy instances are fixed
     ] {- ++ clckwrks14 -}
 
 applications _home =
