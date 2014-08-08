@@ -3,7 +3,6 @@
 module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
 import Data.FileEmbed (embedFile)
-import Data.Set (singleton)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, ModifyAtoms, BuildDep, NoDoc, CabalDebian),
                                                Packages(..), RetrieveMethod(Debianize, Hackage, Cd, Darcs, Dir),
                                                flag, flags, spec, patch, debianize, hackage, rename, method, darcs, cd)
@@ -14,7 +13,7 @@ import Debian.AutoBuilder.Details.Common (repo, privateRepo)
 import System.FilePath ((</>))
 
 libraries _home =
-    P.Packages (singleton "libraries") $
+    P.Packages "libraries" $
     [ -- Retired, should be withdrawn from repos
       -- darcs "haskell-generic-formlets3" (privateRepo </> "generic-formlets3")
     -- , darcs "haskell-document" (privateRepo </> "haskell-document")
@@ -36,7 +35,7 @@ libraries _home =
     ] {- ++ clckwrks14 -}
 
 applications _home =
-    P.Packages (singleton "applications") $
+    P.Packages "applications" $
     [ debianize (darcs (privateRepo </> "appraisalscribe"))
     , debianize (darcs (privateRepo </> "appraisalscribe-data"))
     , darcs (privateRepo </> "seereason")

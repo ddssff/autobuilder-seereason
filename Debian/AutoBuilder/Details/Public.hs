@@ -31,13 +31,19 @@ seereason = "http://src.seereason.com"
 localRepo :: String
 localRepo = "file:///home/dsf/darcs/"
 
+-- Stick new packages here to get an initial build, then move
+-- them to a suitable group.
+new :: P.Packages
+new = P.Packages "new" [debianize (darcs (repo </> "showplease"))]
+
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
 targets :: String -> Release -> P.Packages
 targets _home release =
-    P.Packages empty $
-    [ main _home release
+    P.Packages "all" $
+    [ new
+    , main _home release
     , autobuilder _home
     , clckwrks _home release
     , sunroof release
@@ -75,7 +81,7 @@ ghc74flag p _ = p
 
 fixme :: P.Packages
 fixme =
-    P.Packages (singleton "fixme") $
+    P.Packages "fixme" $
     [ debianize (hackage "test-framework-smallcheck")
     , debianize (darcs "http://hub.darcs.net/kowey/GenI" `patch` $(embedFile "patches/GenI.diff"))
     ]
@@ -83,7 +89,7 @@ fixme =
 autobuilder :: FilePath -> P.Packages
 autobuilder home =
     -- let repo = localRepo home in
-    P.Packages (singleton "autobuilder-group") $
+    P.Packages "autobuilder-group" $
     [ unixutils home
     , darcs (repo </> "cabal-debian")
     , darcs (repo ++ "/haskell-debian") `flag` P.RelaxDep "cabal-debian"
@@ -158,7 +164,7 @@ autobuilder home =
 
 unixutils :: FilePath-> P.Packages
 unixutils _home =
-    P.Packages (singleton "Unixutils")
+    P.Packages "Unixutils"
     [ darcs (repo ++ "/haskell-unixutils")
     , darcs (repo </> "haskell-extra") `flag` P.RelaxDep "cabal-debian"
     , darcs (repo </> "haskell-help") ]
@@ -172,7 +178,7 @@ main _home release =
         pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
         tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p
         sflag = case baseRelease release of Squeeze -> flag; _ -> \ p _ -> p in
-    P.Packages (singleton "main") $
+    P.Packages "main" $
     [ compiler release
     , platform release
     , debianize (hackage "hashtables")
@@ -694,7 +700,7 @@ relax p@P.NoPackage _ = p
 
 compiler :: Release -> P.Packages
 compiler release =
-    P.Packages (singleton "ghc") [ghc]
+    P.Packages "ghc" [ghc]
     where
       ghc = case baseRelease release of
               Squeeze ->
@@ -734,7 +740,7 @@ platform release =
         wskip t = case baseRelease release of Wheezy -> P.NoPackage; _ -> t
         pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
         sflag = case baseRelease release of Squeeze -> flag; _ -> \ p _ -> p in
-    P.Packages (singleton "platform") $
+    P.Packages "platform" $
     [ -- Our automatic debianization code produces a package which is
       -- missing the template files required for happy to work properly,
       -- so I have imported debian's debianization and patched it to
@@ -820,7 +826,7 @@ clckwrks _home release =
     let repo = "http://src.seereason.com/mirrors/clckwrks-dev"
         tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     -- let repo = "http://hub.darcs.net/stepcut/clckwrks-dev" in
-    P.Packages (singleton "clckwrks") $
+    P.Packages "clckwrks" $
         [ happstack _home release
         , authenticate _home release
         , happstackdotcom _home
@@ -864,7 +870,7 @@ clckwrks _home release =
 
 fay :: String -> Release -> P.Packages
 fay _home _release =
-    P.Packages (singleton "fay")
+    P.Packages "fay"
     [ debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
     , debianize (hackage "type-eq")
     , debianize (hackage "haskell-names")
@@ -889,7 +895,7 @@ happstack _home release =
     let privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String
         pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
         tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
-    P.Packages (singleton "happstack")
+    P.Packages "happstack"
     [ plugins
     , debianize (darcs (repo ++ "/seereason-base"))
     , debianize (hackage "happstack")
@@ -983,7 +989,7 @@ happstack _home release =
 authenticate _home release =
   let pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
       tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
-  P.Packages (singleton "authenticate") $
+  P.Packages "authenticate" $
     [ conduit release
     , debianize (hackage "pureMD5" `tflag` P.DebVersion "2.1.2.1-3build3")
     , debianize (hackage "monadcryptorandom")
@@ -1026,7 +1032,7 @@ authenticate _home release =
     ]
 
 digestiveFunctors =
-    P.Packages (singleton "digestive-functors")
+    P.Packages "digestive-functors"
     [ debianize (hackage "digestive-functors" `flag` P.CabalPin "0.2.1.0")  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
     -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
     , debianize (hackage "digestive-functors-happstack"
@@ -1039,7 +1045,7 @@ digestiveFunctors =
 -- from conduit 0.4.2 to 0.5.
 conduit release =
   let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
-  P.Packages (singleton "conduit")
+  P.Packages "conduit"
     [ debianize (hackage "streaming-commons" `flag` P.CabalPin "0.1.4") -- avoid rebuild
     , debianize (hackage "conduit" {- `flag` P.CabalPin "1.0.17.1" -})
     , debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
@@ -1064,13 +1070,13 @@ conduit release =
 
 -- ircbot needs a dependency on containers
 happstackdotcom _home =
-    P.Packages (singleton "happstackdotcom") $
+    P.Packages "happstackdotcom" $
     [ debianize (hackage "ircbot")
     , debianize (hackage "SafeSemaphore")
     , darcs (repo </> "happstackDotCom-doc") ]
 
 shakespeare =
-    P.Packages (singleton "shakespeare-group") $
+    P.Packages "shakespeare-group" $
     [ debianize (hackage "wai-extra")
     , debianize (hackage "warp")
     , debianize (hackage "cryptohash-conduit")
@@ -1085,7 +1091,7 @@ shakespeare =
 
 
 -- May work with these added dependencies (statevar thru openglraw)
-opengl release = P.Packages (singleton "opengl") $
+opengl release = P.Packages "opengl" $
     let qflag = case baseRelease release of Quantal -> flag; _ -> \ p _ -> p
         wskip t = case baseRelease release of Wheezy -> P.NoPackage; _ -> t
         wflag = case baseRelease release of Wheezy -> flag; _ -> \ p _ -> p
@@ -1156,7 +1162,7 @@ opengl release = P.Packages (singleton "opengl") $
 --      Module `GHC.Exts' does not export `addrToHValue#'
 --  make: *** [build-ghc-stamp] Error 1
 plugins :: P.Packages
-plugins = P.Packages (singleton "plugins") $
+plugins = P.Packages "plugins" $
     [ debianize (hackage "plugins")
     , debianize (hackage "plugins-auto" `patch` $(embedFile "patches/plugins-auto.diff"))
     , debianize (hackage "happstack-plugins" `patch` $(embedFile "patches/happstack-plugins.diff"))
@@ -1168,7 +1174,7 @@ algebra release =
     let qflag = case baseRelease release of Quantal -> flag; _ -> \ p _ -> p
         pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
         tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
-    P.Packages (singleton "algebra")
+    P.Packages "algebra"
     [ debianize (hackage "data-lens")
     , debianize (hackage "data-lens-template")
     , debianize (hackage "bifunctors")
@@ -1228,7 +1234,7 @@ algebra release =
 
 -- CB I was after units, but it requires ghc 7.8
 units :: P.Packages
-units = P.Packages (singleton "units")
+units = P.Packages "units"
     [ debianize (hackage "quickcheck-instances")
     , debianize (hackage "mainland-pretty")
     , debianize (hackage "srcloc")
@@ -1240,7 +1246,7 @@ units = P.Packages (singleton "units")
 sunroof :: Release -> P.Packages
 sunroof release =
   let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
-  P.Packages (singleton "sunroof")
+  P.Packages "sunroof"
   [ debianize (git "http://github.com/ku-fpg/sunroof-compiler" []
                  `patch` $(embedFile "patches/sunroof-compiler.diff"))
   -- , debianize (hackage "sunroof-compiler")
@@ -1274,7 +1280,7 @@ replacementLibrary orig name =
 idris :: Release -> P.Packages
 idris release =
     let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
-    P.Packages (singleton "idris")
+    P.Packages "idris"
         [ debianize (hackage "idris"
                        `flag` P.BuildDep "libgc-dev"
                        `flag` P.CabalDebian ["--default-package=idris"]
@@ -1291,7 +1297,7 @@ idris release =
     where hack = debianize . hackage
 
 haste :: P.Packages
-haste = P.Packages (singleton "haste")
+haste = P.Packages "haste"
   [ hack "haste-compiler" `flag` P.CabalDebian ["--default-package=haste-compiler"]
   , git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
   , hack "data-binary-ieee754"
@@ -1323,10 +1329,10 @@ haste = P.Packages (singleton "haste")
 
 ghcjs :: Release -> P.Packages
 ghcjs release =
-  P.Packages (singleton "ghcjs-group") $
-  [ P.Packages (singleton "ghcjs") $
+  P.Packages "ghcjs-group" $
+  [ P.Packages "ghcjs" $
     [ case baseRelease release of
-        Precise -> P.Packages (singleton "ghcjs-deps")
+        Precise -> P.Packages "ghcjs-deps"
                    [ apt "sid" "c-ares"
                    , apt "sid" "gyp"
                    , apt "sid" "libv8-3.14" ]
@@ -1375,7 +1381,7 @@ ghcjs release =
                       `flag` P.KeepRCS)
              (Git "https://github.com/ddssff/ghcjs-tools-debian" []) -- (Dir "/home/dsf/git/ghcjs-tools-debian")
     , git "https://github.com/ddssff/ghcjs-debian" [] ]
-  , P.Packages (singleton "ghcjs-libs") $
+  , P.Packages "ghcjs-libs" $
     [ ghcjs_flags (debianize (hackage "ghcjs-dom"))
     , ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
                                 `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]
