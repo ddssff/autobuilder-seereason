@@ -33,16 +33,19 @@ private home release =
     {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ mappend (Private.libraries home) (Private.applications home)
 
 proc' :: Int -> P.Packages -> P.Packages
+proc' n p | n < 708 = p
+proc' n p@(Named {}) = p {packages = proc' n (packages p)}
+proc' n p@(Packages {}) = p {list = map (proc' n) (list p)}
 proc' _ p@(Package {spec = Proc _}) = p
-proc' 708 p@(Package {}) = p {spec = Proc (spec p)}
-proc' 708 p@(Packages {}) = p {list = map (proc' 708) (list p)}
+proc' _ p@(Package {}) = p {spec = Proc (spec p)}
 proc' _ p = p
 
 -- | This prevents every package that uses cabal-debian for
 -- debianization from rebuilding every time the library is revved.
 -- Presumably the current build is working ok, right?
 relaxCabalDebian :: P.Packages -> P.Packages
-relaxCabalDebian (P.Packages n s) = P.Packages n (map relaxCabalDebian s)
+relaxCabalDebian (P.Named n s) = P.Named n (relaxCabalDebian s)
+relaxCabalDebian (P.Packages s) = P.Packages (map relaxCabalDebian s)
 relaxCabalDebian x@(P.Package {})
     | isDebianizeSpec (P.spec x) =
         x {P.flags = P.flags x ++ map P.RelaxDep ["libghc-cabal-debian-dev", "libghc-cabal-debian-prof", "libghc-cabal-debian-doc"]}
@@ -58,7 +61,8 @@ isDebianizeSpec _ = False
 -- | Add MapDep and DevelDep flags Supply some special cases to map cabal library names to debian.
 applyDepMap :: Release -> P.Packages -> P.Packages
 applyDepMap _ P.NoPackage = P.NoPackage
-applyDepMap release (P.Packages n s) = P.Packages n (map (applyDepMap release) s)
+applyDepMap release (P.Named n s) = P.Named n (applyDepMap release s)
+applyDepMap release (P.Packages s) = P.Packages (map (applyDepMap release) s)
 applyDepMap release x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where
@@ -88,7 +92,8 @@ applyDepMap release x@(P.Package {}) =
 
 applyEpochMap :: P.Packages -> P.Packages
 applyEpochMap P.NoPackage = P.NoPackage
-applyEpochMap (P.Packages n s) = P.Packages n (map applyEpochMap s)
+applyEpochMap (P.Named n s) = P.Named n (applyEpochMap s)
+applyEpochMap (P.Packages s) = P.Packages (map applyEpochMap s)
 applyEpochMap x@(P.Package {}) =
     x {P.flags = P.flags x ++ mappings}
     where

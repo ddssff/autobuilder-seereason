@@ -9,11 +9,11 @@ import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, ModifyAtoms
 import Debian.Debianize (sourcePackageName, execDebM)
 import Debian.Debianize.Prelude ((~=))
 import Debian.Relation (SrcPkgName(..))
-import Debian.AutoBuilder.Details.Common (repo, privateRepo)
+import Debian.AutoBuilder.Details.Common (repo, privateRepo, named)
 import System.FilePath ((</>))
 
 libraries _home =
-    P.Packages "libraries" $
+    named "libraries" $
     [ -- Retired, should be withdrawn from repos
       -- darcs "haskell-generic-formlets3" (privateRepo </> "generic-formlets3")
     -- , darcs "haskell-document" (privateRepo </> "haskell-document")
@@ -35,7 +35,7 @@ libraries _home =
     ] {- ++ clckwrks14 -}
 
 applications _home =
-    P.Packages "applications" $
+    named "applications" $
     [ debianize (darcs (privateRepo </> "appraisalscribe"))
     , debianize (darcs (privateRepo </> "appraisalscribe-data"))
     , darcs (privateRepo </> "seereason")
