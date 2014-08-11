@@ -488,7 +488,7 @@ main _home release =
     , debianize (hackage "RJson"
                    `patch` $(embedFile "patches/RJson.diff")
                    `wflag` P.DebVersion "0.3.7-1~hackage1")
-    , debianize (hackage "safe")
+    , debianize (hackage "safe" `flag` P.CabalPin "0.3.7") -- avoid a rebuild
     , debianize (hackage "safecopy")
     , debianize (hackage "SafeSemaphore")
     , debianize (hackage "sat"
@@ -654,7 +654,7 @@ main _home release =
     , debianize (hackage "matrix")
     , debianize (hackage "hlatex")
     , debianize (hackage "latex")
-    , debianize (hackage "texmath")
+    , debianize (hackage "texmath" `flag` P.CabalPin "0.6.6.3") -- waiting for pandoc > 1.12.4.2
     , debianize (hackage "derive")
     , debianize (hackage "frquotes")
     -- Usable versions of this package are available in some dists -
