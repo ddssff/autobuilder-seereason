@@ -97,7 +97,9 @@ autobuilder home =
     , darcs (repo </> "mirror")
     , darcs (repo </> "debian-repo")
     , darcs (repo </> "archive")
-    , debianize (hackage "process-extras")
+    , skip $ -- we don't want this in our repository because we need everything to work
+             -- with process-listlike.
+      debianize (hackage "process-extras")
         `flag` P.CabalDebian [ "--conflicts=libghc-process-extras-dev:libghc-process-listlike-dev"
                              , "--provides=libghc-process-extras-dev:libghc-process-listlike-dev"
                              , "--replaces=libghc-process-extras-dev:libghc-process-listlike-dev"
