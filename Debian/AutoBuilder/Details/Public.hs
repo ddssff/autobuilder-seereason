@@ -35,7 +35,31 @@ localRepo = "file:///home/dsf/darcs/"
 -- them to a suitable group.
 new :: P.Packages
 new = named "new" [ debianize (darcs (repo </> "showplease"))
-                  , debianize (hackage "pseudomacros") ]
+                  , debianize (hackage "pseudomacros")
+                  , debianize (hackage "aeson-pretty")
+                  , debianize (hackage "wai-middleware-static")
+                  , debianize (hackage "data-r-tree")
+                  , debianize (hackage "wai-extra")
+                  , debianize (hackage "wai-logger")
+                  , debianize (hackage "easy-file")
+                  , debianize (hackage "fast-logger")
+                  , debianize (hackage "http-date")
+                  , debianize (hackage "simple-sendfile")
+                  , debianize (hackage "auto-update")
+                  , debianize (hackage "warp")
+                  , debianize (hackage "shakespeare")
+                  , debianize (hackage "monad-parallel")
+                  , debianize (hackage "data-stringmap")
+                  , debianize (hackage "shakespeare-js" `flag` P.NoDoc)
+                  , debianize (hackage "scotty")
+                  , debianize (hackage "ekg-core")
+                  , debianize (hackage "hamlet" `flag` P.NoDoc)
+                  , debianize (git "https://github.com/hunt-framework/hunt.git" []
+                                 `cd` "hunt-searchengine" )
+                  , debianize (git "https://github.com/hunt-framework/hunt.git" []
+                                 `cd` "hunt-server"
+                                 `patch` $(embedFile "patches/hunt-server.diff")
+                                 `flag` P.CabalDebian ["--default-package=hunt-server"]) ]
 
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
