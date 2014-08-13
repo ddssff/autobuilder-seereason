@@ -50,10 +50,10 @@ new = named "new" [ debianize (darcs (repo </> "showplease"))
                   , debianize (hackage "shakespeare")
                   , debianize (hackage "monad-parallel")
                   , debianize (hackage "data-stringmap")
-                  , debianize (hackage "shakespeare-js" `flag` P.NoDoc)
+                  , debianize (hackage "shakespeare-js")
                   , debianize (hackage "scotty")
                   , debianize (hackage "ekg-core")
-                  , debianize (hackage "hamlet" `flag` P.NoDoc)
+                  , debianize (hackage "hamlet")
                   , debianize (git "https://github.com/hunt-framework/hunt.git" []
                                  `cd` "hunt-searchengine" )
                   , debianize (git "https://github.com/hunt-framework/hunt.git" []
