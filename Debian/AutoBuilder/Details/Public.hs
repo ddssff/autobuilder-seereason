@@ -1430,8 +1430,8 @@ ghcjs release =
     , ghcjs_flags (debianize (hackage "data-default-instances-containers"))
     , ghcjs_flags (debianize (hackage "data-default-instances-old-locale"))
     , ghcjs_flags (debianize (hackage "data-default"))
-    -- We can't build the source package name from a git target
-    -- (without doing IO) so we set it here explicitly.
+    -- We can't compute a reasonable source package name for a git
+    -- target (without doing IO) so we set it here explicitly.
     , ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-jquery" []) `srcDebName` "ghcjs-ghcjs-jquery")
     ] ]
    where srcDebName :: Packages -> String -> Packages
@@ -1452,11 +1452,10 @@ ghcjs release =
                  cabName :: RetrieveMethod -> String
                  cabName (Hackage n) = n
                  cabName _ = error $ "ghcjs_flags - unsupported target type: " ++ show spec in
-             p `flag` P.CabalDebian ["--hc=ghcjs"]
+             p `flag` P.CabalDebian ["--ghcjs", "--no-ghc"]
                `flag` P.CabalDebian ["--source-package-name=" <> srcName spec]
                `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
                `flag` P.BuildDep "ghcjs"
-               `flag` P.NoDoc
                `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)"
 
 broken :: P.Packages -> P.Packages
