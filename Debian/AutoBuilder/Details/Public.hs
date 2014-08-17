@@ -207,6 +207,7 @@ main _home release =
         sflag = case baseRelease release of Squeeze -> flag; _ -> \ p _ -> p in
     named "main" $
     [ compiler release
+    , darcs "http://hub.darcs.net/ddssff/haskell-devscripts" `flag` P.RelaxDep "python-minimal"
     , platform release
     , debianize (hackage "hashtables")
     , broken $ apt "squeeze" "bugzilla" -- requires python-central (>= 0.5)
@@ -1376,7 +1377,7 @@ ghcjs release =
                                                             , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
     , debianize (hackage "lifted-async")
     -- haskell-devscripts modified to support ghcjs packaging.
-    , darcs (repo </> "haskell-devscripts") `flag` P.RelaxDep "python-minimal"
+    -- , darcs "http://hub.darcs.net/ddssff/haskell-devscripts" `flag` P.RelaxDep "python-minimal"
     -- Cabal library with ghcjs support.  The debs are named cabal-ghcjs
     -- so packages that require ghcjs suppport can specify this.
     -- Options used to debianize: `flag` P.DebVersion "1.21.0.0-2"
