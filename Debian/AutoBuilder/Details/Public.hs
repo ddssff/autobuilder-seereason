@@ -1377,6 +1377,7 @@ ghcjs release =
     , debdir (git "https://github.com/ghcjs/ghcjs-prim.git" [])
                  (Git "https://github.com/ddssff/ghcjs-prim-debian" [])
     , debianize (git "https://github.com/ghcjs/haddock-internal" []
+                         `flag` P.CabalDebian ["--default-package=haddock-internal"]
                          `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
                                                             [ "# Force the Cabal dependency to be the version provided by GHC"
                                                             , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
@@ -1408,6 +1409,7 @@ ghcjs release =
                       -- `patch` $(embedFile "patches/ghcjs-tools.diff")
                       `flag` P.CabalDebian ["--source-package-name=ghcjs-tools"]
                       `flag` P.CabalDebian ["--default-package=ghcjs-tools"]
+                      `flag` P.CabalDebian ["--depends=ghcjs-tools:haddock-internal"]
                       `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
                                                                          [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                          , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])
