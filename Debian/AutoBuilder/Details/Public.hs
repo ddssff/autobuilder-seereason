@@ -635,6 +635,7 @@ main _home release =
     , P.Package { P.spec = Debianize' (Patch (Hackage "xml-enumerator") $(embedFile "patches/xml-enumerator.diff")) []
                 , P.flags = [] }
     , debianize (hackage "xml-types" `tflag` P.DebVersion "0.3.4-1")
+    , debianize (hackage "network-uri")
     , debianize (hackage "xss-sanitize" `qflag` P.DebVersion "0.3.2-1build1")
     , debianize (hackage "yaml")
     , debianize (hackage "yaml-light"
@@ -678,10 +679,11 @@ main _home release =
                 , P.flags = [] }
     , debianize (hackage "wl-pprint-extras")
     , debianize (hackage "HaTeX")
+    , debianize (hackage "loop")
     , debianize (hackage "matrix")
     , debianize (hackage "hlatex")
     , debianize (hackage "latex")
-    , debianize (hackage "texmath" `flag` P.CabalPin "0.6.6.3") -- waiting for pandoc > 1.12.4.2
+    , debianize (hackage "texmath")
     , debianize (hackage "derive")
     , debianize (hackage "frquotes")
     -- Usable versions of this package are available in some dists -
@@ -973,11 +975,11 @@ happstack _home release =
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hslua")
     , debianize (hackage "pandoc"
-                   `patch` $(embedFile "patches/pandoc.diff")
+                   -- `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
                    `flag` P.BuildDep "alex"
                    `flag` P.BuildDep "happy")
-    , debianize (hackage "markdown" `patch` $(embedFile "patches/markdown.diff"))
+    , debianize (hackage "markdown" {- `patch` $(embedFile "patches/markdown.diff") -})
     , debianize (hackage "highlighting-kate")
     , debianize (hackage "web-routes")
     , debianize (hackage "web-routes-boomerang")
@@ -1048,7 +1050,10 @@ authenticate _home release =
     , debianize (hackage "crypto-cipher-types" `tflag` P.DebVersion "0.0.9-1")
     , debianize (hackage "authenticate")
     , debianize (hackage "zlib-enum")
-    , debianize (darcs (darcsHub ++ "/happstack") `cd` "happstack-authenticate" `patch` $(embedFile "patches/happstack-authenticate.diff"))
+    , debianize (darcs (darcsHub ++ "/happstack")
+                           `cd` "happstack-authenticate"
+                           -- `patch` $(embedFile "patches/happstack-authenticate.diff")
+                )
     , digestiveFunctors
     , debianize (hackage "fb")
     , debianize (hackage "monad-logger")
