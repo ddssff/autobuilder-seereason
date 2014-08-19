@@ -798,7 +798,7 @@ platform release =
                              P.BuildDep "happy",
                              P.CabalDebian ["--executable", "alex"],
                              P.ModifyAtoms (execDebM $ do compat ~= Just 9
-                                                          mapM_ (\ name -> installData +++= (BinPkgName "alex", singleton (name, name)))
+                                                          mapM_ (\ name -> installData (BinPkgName "alex") name name)
                                                                [ "AlexTemplate"
                                                                , "AlexTemplate-debug"
                                                                , "AlexTemplate-ghc"
