@@ -1,15 +1,15 @@
-{-# LANGUAGE OverloadedStrings, TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings, PackageImports, TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
 import Data.FileEmbed (embedFile)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, ModifyAtoms, BuildDep, NoDoc, CabalDebian),
-                                               Packages(..), RetrieveMethod(Debianize, Hackage, Cd, Darcs, Dir),
-                                               flag, flags, spec, patch, debianize, hackage, rename, method, darcs, cd)
-import Debian.Debianize (sourcePackageName, execDebM)
+                                               Packages(..), RetrieveMethod(Debianize, Hackage, Cd, Darcs),
+                                               flag, flags, spec, patch, debianize, hackage, rename, method, darcs, cd, dir)
+import Debian.Debianize (sourcePackageName, execDebM, installTo)
 import Debian.Debianize.Prelude ((~=))
-import Debian.Relation (SrcPkgName(..))
-import Debian.AutoBuilder.Details.Common (repo, privateRepo, named)
+import Debian.Relation (SrcPkgName(SrcPkgName), BinPkgName(BinPkgName))
+import Debian.AutoBuilder.Details.Common (privateRepo, named, ghcjs_flags)
 import System.FilePath ((</>))
 
 libraries _home =
@@ -32,6 +32,18 @@ libraries _home =
     -- parent environment, except making it a dependency of the
     -- autobuilder itself.
     -- , debianize (method (Darcs (privateRepo </> "mimo"))) -- Disabled until safecopy instances are fixed
+    , ghcjs_flags (debianize (darcs (privateRepo </> "happstack-ghcjs")
+                                `cd` "happstack-ghcjs-client"
+                                `flag` P.CabalDebian ["--default-package=happstack-ghcjs-client"]
+                                `flag` P.ModifyAtoms (execDebM $ installTo
+                                                                   (BinPkgName "happstack-ghcjs-client")
+                                                                   "client/Common.hs"
+                                                                   "usr/share/happstack-ghcjs/Common.hs")))
+    , debianize (darcs (privateRepo </> "happstack-ghcjs")
+                   `cd` "happstack-ghcjs-server"
+                   `flag` P.CabalDebian ["--default-package=happstack-ghcjs-server"]
+                   `flag` P.BuildDep "happstack-ghcjs-client"
+                )
     ] {- ++ clckwrks14 -}
 
 applications _home =

@@ -1,24 +1,20 @@
 {-# LANGUAGE MultiWayIf, OverloadedStrings, RecordWildCards, TemplateHaskell #-}
-{-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-unused-imports -fno-warn-name-shadowing #-}
+{-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
-import Data.Char (toLower)
 import Data.FileEmbed (embedFile)
 import Data.List (intercalate, isPrefixOf)
-import Data.Maybe (fromMaybe)
 import Data.Monoid ((<>))
-import Data.Set as Set (empty, singleton, fromList)
-import Data.Text as Text (Text, lines, unlines)
-import Debian.AutoBuilder.Details.Common (repo, named)
+import Data.Text as Text (unlines)
+import Debian.AutoBuilder.Details.Common (repo, named, ghcjs_flags)
 import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..), Release(..))
 import Debian.AutoBuilder.Details.GHC (ghc)
-import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Debianize', Hackage, Apt, DebDir, Proc, Git, Dir),
-                                               PackageFlag(AptPin, CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
-                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, NoDoc, NoHoogle, GitBranch, KeepRCS),
+import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Debianize', Hackage, DebDir, Git),
+                                               PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
+                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, KeepRCS),
                                                GitSpec(..), DebSpec(..), Packages(..), flags, spec,
                                                hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
-import Debian.Debianize (compat, doExecutable, execDebM, installData, installTo, link, rulesFragments, rulesHead, InstallFile(..), (+=), (~=), (+++=), (%=))
-import Debian.Debianize.Goodies (makeRulesHead)
+import Debian.Debianize (compat, doExecutable, execDebM, installData, rulesFragments, InstallFile(..), (+=), (~=))
 import Debian.Relation (BinPkgName(..), SrcPkgName(..))
 import System.FilePath((</>))
 
@@ -1440,25 +1436,6 @@ ghcjs release =
          srcDebName p@(Package {spec = Debianize' s xs}) name = p {spec = Debianize' s (SrcDeb (SrcPkgName name) : xs)}
          srcDebName p@(Package {spec = Debianize s}) name = p {spec = Debianize' s [SrcDeb (SrcPkgName name)]}
          srcDebName spec _ = error $ "srcDebName - invalid argument.  Can't set source package name of " ++ show spec
-         ghcjs_flags NoPackage = NoPackage
-         ghcjs_flags p@(Named {..}) = p {packages = ghcjs_flags packages}
-         ghcjs_flags p@(Packages {..}) = p {list = map ghcjs_flags list}
-         ghcjs_flags p@(Package {..}) =
-             let srcName :: RetrieveMethod -> String
-                 srcName (Debianize' p fs) = case fs of
-                                              (SrcDeb (SrcPkgName name) : _) -> name
-                                              [] -> srcName (Debianize p)
-                 srcName (Debianize p) = srcName p
-                 srcName (Patch x _) = srcName x
-                 srcName m = "ghcjs-" <> map toLower (fromMaybe (cabName m) (dropPrefix "haskell-" (cabName m)))
-                 cabName :: RetrieveMethod -> String
-                 cabName (Hackage n) = n
-                 cabName _ = error $ "ghcjs_flags - unsupported target type: " ++ show spec in
-             p `flag` P.CabalDebian ["--ghcjs", "--no-ghc"]
-               `flag` P.CabalDebian ["--source-package-name=" <> srcName spec]
-               `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
-               `flag` P.BuildDep "ghcjs"
-               `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.1)"
 
 broken :: P.Packages -> P.Packages
 broken _ = P.NoPackage
