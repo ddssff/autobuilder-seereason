@@ -974,6 +974,8 @@ happstack _home release =
     -- use debianize for natty and apt:sid for lucid.
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hslua")
+    , debianize (hackage "JuicyPixels")
+    , debianize (hackage "haddock-library")
     , debianize (hackage "pandoc"
                    -- `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
