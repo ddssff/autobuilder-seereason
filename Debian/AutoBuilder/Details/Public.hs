@@ -342,7 +342,7 @@ main _home release =
     , (debianize (hackage "EdisonCore" `qflag` P.DebVersion "1.2.1.3-9build2"))
     , debianize (hackage "entropy" {- `tflag` P.DebVersion "0.2.1-5" -}) -- apt (rel release "wheezy" "quantal") "haskell-entropy"
     , debianize (hackage "enumerator" `qflag` P.DebVersion "0.4.19-1build2")
-    , debianize (git "https://github.com/ddssff/hdaemonize" [])
+    , debianize (git "https://github.com/madhadron/hdaemonize" [])
     , debianize (hackage "hsyslog")
     , debianize (hackage "erf"
                    `pflag` P.DebVersion "2.0.0.0-3"
