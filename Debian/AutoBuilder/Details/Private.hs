@@ -32,18 +32,8 @@ libraries _home =
     -- parent environment, except making it a dependency of the
     -- autobuilder itself.
     -- , debianize (method (Darcs (privateRepo </> "mimo"))) -- Disabled until safecopy instances are fixed
-    , ghcjs_flags (debianize (darcs (privateRepo </> "happstack-ghcjs")
-                                `cd` "happstack-ghcjs-client"
-                                `flag` P.CabalDebian ["--default-package=happstack-ghcjs-client"]
-                                `flag` P.ModifyAtoms (execDebM $ installTo
-                                                                   (BinPkgName "happstack-ghcjs-client")
-                                                                   "client/Common.hs"
-                                                                   "usr/share/happstack-ghcjs/Common.hs")))
-    , debianize (darcs (privateRepo </> "happstack-ghcjs")
-                   `cd` "happstack-ghcjs-server"
-                   `flag` P.CabalDebian ["--default-package=happstack-ghcjs-server"]
-                   `flag` P.BuildDep "happstack-ghcjs-client"
-                )
+    , ghcjs_flags (debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-client"))
+    , debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-server")
     ] {- ++ clckwrks14 -}
 
 applications _home =
