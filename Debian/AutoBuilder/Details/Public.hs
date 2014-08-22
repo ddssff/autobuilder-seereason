@@ -821,11 +821,7 @@ platform release =
     , debianize (hackage "cgi" `flag` P.SkipVersion "3001.1.8.5") -- incompatible with current Typeable
     -- This is bundled with the compiler
     -- , debianize (hackage "process")
-    , debianize (hackage "random"
-                   `pflag` P.DebVersion "1.0.1.1-1"
-                   `qflag` P.DebVersion "1.0.1.1-1build2"
-                   `wflag` P.DebVersion "1.0.1.1-1"
-                   `tflag` P.DebVersion "1.0.1.1-3")
+    , debianize (hackage "random")
     , debianize (hackage "HUnit" `tflag` P.DebVersion "1.2.5.2-1")
     , debianize (hackage "tf-random")
     , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
@@ -881,7 +877,7 @@ clckwrks _home release =
                        `cd` "clckwrks-plugin-ircbot"
                        `flag` P.BuildDep "hsx2hs")
         , debianize (darcs repo `cd` "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
-        , debianize (darcs repo `cd` "clckwrks-dot-com"
+        , debianize (git "https://github.com/clckwrks/clckwrks-dot-com" []
                            -- This is a change that only relates to the autobuilder
                            `patch` $(embedFile "patches/clckwrks-dot-com.diff"))
         , debianize (darcs repo `cd` "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
@@ -1171,7 +1167,7 @@ opengl release = named "opengl" $
 --    , debianize (hackage "freetype2")
 --    , debianize (hackage "FreeTypeGL") -- Does not build because (freetype2 > 0.1.2) but the lib (haskell, at least) is at 0.1.1.
     , debianize (hackage "FTGL"
-                   `patch` $(embedFile "patches/FTGL.diff")
+                   -- `patch` $(embedFile "patches/FTGL.diff")
                    `flag` P.DevelDep "libftgl-dev"
                    `flag` P.DevelDep "libfreetype6-dev")
     , debianize (hackage "OpenGLRaw"
