@@ -1400,7 +1400,7 @@ ghcjs release =
     --                      p0 ["alex", "happy", "make", "patch", "autoconf",
     --                          "cpp", "git", "cabal-install-ghcjs"] in
     , debdir (git "https://github.com/ghcjs/ghcjs" []
-                      -- `patch` $(embedFile "patches/ghcjs-tools.diff")
+                      `patch` $(embedFile "patches/ghcjs-restrict-library-versions.diff")
                       `flag` P.CabalDebian ["--source-package-name=ghcjs-tools"]
                       `flag` P.CabalDebian ["--default-package=ghcjs-tools"]
                       `flag` P.CabalDebian ["--depends=ghcjs-tools:haddock-internal"]
