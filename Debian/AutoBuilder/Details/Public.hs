@@ -671,8 +671,8 @@ main _home release =
     , darcs (repo </> "seereason-keyring") `flag` P.UDeb "seereason-keyring-udeb"
     , debianize (darcs (repo </> "seereason-ports"))
     , apt "wheezy" "tinymce"
-    , P.Package { P.spec = Darcs (repo </> "vc-darcs")
-                , P.flags = [] }
+    , darcs (repo </> "vc-darcs")
+    , darcs (repo </> "vc-git-dired")
     , debianize (hackage "wl-pprint-extras")
     , debianize (hackage "HaTeX")
     , debianize (hackage "loop")
