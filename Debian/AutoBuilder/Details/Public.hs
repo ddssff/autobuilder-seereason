@@ -483,7 +483,7 @@ main _home release =
     , debianize (hackage "deepseq-generics")
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
-    , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
+    -- , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
     , debianize (hackage "PBKDF2")
     -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
     , debianize (hackage "pcre-light"
