@@ -821,7 +821,7 @@ platform release =
     , debianize (hackage "cgi" `flag` P.SkipVersion "3001.1.8.5") -- incompatible with current Typeable
     -- This is bundled with the compiler
     -- , debianize (hackage "process")
-    , debianize (hackage "random")
+    , debianize (hackage "random" `flag` P.SkipVersion "1.0.1.3") -- 1.1.0.3 fixes the build for ghc-7.4.2 / base < 4.6
     , debianize (hackage "HUnit" `tflag` P.DebVersion "1.2.5.2-1")
     , debianize (hackage "tf-random")
     , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
