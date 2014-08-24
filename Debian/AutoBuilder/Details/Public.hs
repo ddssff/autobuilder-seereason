@@ -1393,7 +1393,7 @@ ghcjs release =
     --                                             "--conflicts=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
     --                                             "--replaces=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
     --                                             "--provides=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils"]
-    , debdir (git "https://github.com/ghcjs/cabal" [P.Branch "ghcjs"]
+    , debdir (git "https://github.com/ddssff/cabal" {- "https://github.com/ghcjs/cabal" -} [P.Branch "ghcjs"]
                       `cd` "cabal-install")
              (Git "https://github.com/ddssff/cabal-install-ghcjs-debian" [])
     -- Options used to debianize:
