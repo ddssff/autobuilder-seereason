@@ -815,7 +815,7 @@ platform release =
     , debianize (hackage "haskell-src" `flag` P.BuildDep "happy")
     -- Versions 2.4.1.1 and 2.4.1.2 change unEscapeString in a way
     -- that breaks our apps: https://github.com/haskell/network/issues/86
-    , debianize (hackage "network" `flag` P.CabalPin "2.4.2.2") -- Waiting for newer rss, hslogger
+    , debianize (hackage "network")
     , debianize (hackage "publicsuffixlist" `tflag` P.DebVersion "0.1-1build4")
     , debianize (hackage "HTTP")
     , debianize (hackage "cgi" `flag` P.SkipVersion "3001.1.8.5") -- incompatible with current Typeable
