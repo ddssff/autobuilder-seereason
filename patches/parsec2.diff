@@ -7,7 +7,7 @@
 -Provides: libghc-parsec-dev, ${haskell:Provides}
 -Conflicts: libghc-parsec-dev (<< 3.0.0-5)
 -Replaces: libghc-parsec-dev (<< 3.0.0-5)
-+Provides: libghc-parsec-dev, libghc-parsec3-dev, ${haskell:Provides}
++Provides: libghc-parsec-dev, ${haskell:Provides}
 +Conflicts: libghc-parsec-dev (<< 3.0.0-5), libghc-parsec3-dev
 +Replaces: libghc-parsec-dev (<< 3.0.0-5), libghc-parsec3-dev
  Description: Haskell monadic parser combinator library for GHC
@@ -20,7 +20,7 @@
 -Provides: libghc-parsec-prof, ${haskell:Provides}
 -Conflicts: libghc-parsec-prof (<< 3.0.0-5)
 -Replaces: libghc-parsec-prof (<< 3.0.0-5)
-+Provides: libghc-parsec-prof, libghc-parsec3-prof, ${haskell:Provides}
++Provides: libghc-parsec-prof, ${haskell:Provides}
 +Conflicts: libghc-parsec-prof (<< 3.0.0-5), libghc-parsec3-prof
 +Replaces: libghc-parsec-prof (<< 3.0.0-5), libghc-parsec3-prof
  Description: Haskell monadic parser combinator library for GHC; profiling libraries
@@ -33,7 +33,7 @@
 -Provides: libghc-parsec-doc
 -Conflicts: libghc-parsec-doc (<< 3.0.0-5)
 -Replaces: libghc-parsec-doc (<< 3.0.0-5)
-+Provides: libghc-parsec-doc, libghc-parsec3-doc
++Provides: libghc-parsec-doc
 +Conflicts: libghc-parsec-doc (<< 3.0.0-5), libghc-parsec3-doc
 +Replaces: libghc-parsec-doc (<< 3.0.0-5), libghc-parsec3-doc
  Description: Haskell monadic parser combinator library for GHC; documentation
