@@ -705,7 +705,7 @@ main _home release =
                 `pflag` P.DebVersion "0.5.6-2"
                 `wflag` P.DebVersion "0.5.6-2"
                 `flag` P.ModifyAtoms (execDebM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
-    , debianize (hackage "urlencoded")
+    , debianize (hackage "urlencoded" `patch` $(embedFile "patches/urlencoded.diff"))
     , debianize (hackage "hxt")
     , debianize (hackage "hxt-charproperties")
     , debianize (hackage "hxt-regex-xmlschema")
