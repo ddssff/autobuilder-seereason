@@ -352,7 +352,7 @@ main _home release =
     , debianize (hackage "indents")
     , debianize (hackage "concatenative")
     , debianize (hackage "either")
-    , debianize (hackage "MonadRandom")
+    , debianize (hackage "MonadRandom" `flag` P.CabalPin "0.1.13") -- 0.2 requires transformers >= 0.4, we don't currently build transformers
     , debianize (hackage "formlets"
                     `patch` $(embedFile "patches/formlets.diff")
                     `flag` P.DebVersion "0.8-1~hackage1")
