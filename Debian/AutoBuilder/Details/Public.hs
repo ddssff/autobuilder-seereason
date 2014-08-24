@@ -672,7 +672,7 @@ main _home release =
     , debianize (darcs (repo </> "seereason-ports"))
     , apt "wheezy" "tinymce"
     , darcs (repo </> "vc-darcs")
-    , darcs (repo </> "vc-git-dired")
+    , git "https://github.com/ddssff/vc-git-dired" []
     , debianize (hackage "wl-pprint-extras")
     , debianize (hackage "HaTeX")
     , debianize (hackage "loop")
