@@ -139,6 +139,7 @@ autobuilder home =
                              , "--provides=libghc-process-listlike-doc:libghc-process-extras-doc"
                              , "--replaces=libghc-process-listlike-doc:libghc-process-extras-doc" ]
     , darcs (repo </> "process-progress")
+    , debianize (darcs (repo </> "process-verbosity"))
     , debianize (darcs (repo </> "autobuilder"))
         `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
     , debianize (darcs (repo </> "autobuilder-seereason"))
@@ -272,7 +273,9 @@ main _home release =
     , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
     -- , apt (rel release "wheezy" "quantal") "haskell-cereal"
     , debianize (hackage "cereal")
-    , debianize (hackage "citeproc-hs" `tflag` P.DebVersion "0.3.9-1build2")
+    , debianize (hackage "citeproc-hs"
+                   `patch` $(embedFile "patches/citeproc-hs.diff")
+                   `tflag` P.DebVersion "0.3.9-1build2")
     , debianize (hackage "hexpat")
     , debianize (hackage "List")
     , debianize (hackage "network-info")
@@ -685,7 +688,7 @@ main _home release =
     -- e.g. trusty and wheezy.
     -- , apt "trusty" "foo2zjs"
     , debianize (hackage "stringsearch")
-    , debianize (hackage "rss")
+    , debianize (hackage "rss" `patch` $(embedFile "patches/rss.diff"))
     , debianize (hackage "async")
     -- Waiting for a newer GHC
     -- , debianize (hackage "units" `flag` P.CabalPin "1.0.0" {- `patch` $(embedFile "patches/units.diff") -})
@@ -705,7 +708,7 @@ main _home release =
                 `wflag` P.DebVersion "0.5.6-2"
                 `flag` P.ModifyAtoms (execDebM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
     , debianize (hackage "urlencoded" `patch` $(embedFile "patches/urlencoded.diff"))
-    , debianize (hackage "hxt")
+    , debianize (hackage "hxt" `patch` $(embedFile "patches/hxt.diff"))
     , debianize (hackage "hxt-charproperties")
     , debianize (hackage "hxt-regex-xmlschema")
     , debianize (hackage "hxt-unicode")
@@ -967,7 +970,7 @@ happstack _home release =
     , debianize (hackage "JuicyPixels")
     , debianize (hackage "haddock-library")
     , debianize (hackage "pandoc"
-                   -- `patch` $(embedFile "patches/pandoc.diff")
+                   `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
                    `flag` P.BuildDep "alex"
                    `flag` P.BuildDep "happy")
@@ -1076,7 +1079,7 @@ conduit release =
     , debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
     , debianize (hackage "connection")
     , debianize (hackage "http-conduit" `flag` P.CabalPin "2.1.3") -- avoid rebuild
-    , debianize (hackage "http-client" `flag` P.CabalPin "0.3.5") -- avoid rebuild
+    , debianize (hackage "http-client")
     , debianize (hackage "http-client-tls")
     -- Deprecated in favor of http-conduit
     -- , debianize (hackage "http-client-conduit" {- `flag` P.CabalPin "0.2.0.1" -})
@@ -1096,7 +1099,7 @@ conduit release =
 -- ircbot needs a dependency on containers
 happstackdotcom _home =
     named "happstackdotcom" $
-    [ debianize (hackage "ircbot")
+    [ debianize (hackage "ircbot" `patch` $(embedFile "patches/ircbot.diff"))
     , debianize (hackage "SafeSemaphore")
     , darcs (repo </> "happstackDotCom-doc") ]
 
@@ -1328,7 +1331,7 @@ haste = named "haste"
   , hack "data-binary-ieee754"
   , hack "shellmate"
   , debianize (git "https://github.com/cliffordbeshers/websockets" [] `patch` $(embedFile "patches/websockets.diff"))
-  , hack "io-streams"
+  , debianize (hackage "io-streams" `patch` $(embedFile "patches/io-streams.diff"))
   ]
     where hack = debianize . hackage
           git' r c = debianize $ git r c
@@ -1399,6 +1402,7 @@ ghcjs release =
     --                          "cpp", "git", "cabal-install-ghcjs"] in
     , debdir (git "https://github.com/ghcjs/ghcjs" []
                       `patch` $(embedFile "patches/ghcjs-restrict-library-versions.diff")
+                      `patch` $(embedFile "patches/ghcjs-network-uri.diff")
                       `flag` P.CabalDebian ["--source-package-name=ghcjs-tools"]
                       `flag` P.CabalDebian ["--default-package=ghcjs-tools"]
                       `flag` P.CabalDebian ["--depends=ghcjs-tools:haddock-internal"]

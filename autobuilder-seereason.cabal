@@ -90,5 +90,5 @@ Executable autobuilder-seereason
 Executable seereason-darcs-backups
  Main-Is: Backups.hs
  GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
- Build-depends: archive >= 1.7, base, Extra, network
+ Build-depends: archive >= 1.7, base, Extra, network-uri
  

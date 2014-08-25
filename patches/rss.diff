@@ -1,11 +1,11 @@
---- old/rss.cabal	2013-06-08 09:49:11.000000000 -0700
-+++ new/rss.cabal	2013-06-09 09:00:07.267642973 -0700
-@@ -21,7 +21,7 @@
+--- old/rss.cabal	2014-08-25 06:15:23.346714259 -0700
++++ new/rss.cabal	2014-08-25 06:15:28.138714057 -0700
+@@ -20,7 +20,7 @@
+ 
  Library
    build-depends: base       >= 3      && < 5
-                , network    >= 2.0    && < 2.5
--               , HaXml      >= 1.19.2 && < 1.24
-+               , HaXml      >= 1.19.2
+-               , network    >= 2.0    && < 2.6
++               , network-uri
+                , HaXml      >= 1.24
                 , time       >= 1.1.2  && < 1.5
                 , old-locale >= 1.0    && < 1.1
-   Exposed-Modules: Text.RSS
