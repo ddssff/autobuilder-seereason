@@ -63,8 +63,8 @@ Executable autobuilder-seereason
 
  if flag(local-autobuilder)
    Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen
-   Build-Depends: applicative-extras, data-lens, directory, exceptions, Extra, magic, mtl, network,
-                  process-listlike, process-progress, pureMD5, regex-compat, tar, time, unix,
+   Build-Depends: applicative-extras, data-lens, directory, exceptions, Extra, magic, mtl, network-uri,
+                  process-listlike, process-progress, process-verbosity, pureMD5, regex-compat, tar, time, unix,
                   Unixutils, utf8-string, zlib
  else
    Build-Depends: AutoBuilder >= 6.69

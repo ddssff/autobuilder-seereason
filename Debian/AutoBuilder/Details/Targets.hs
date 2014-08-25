@@ -12,6 +12,7 @@ import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
 import Debian.Relation (Relation(..), BinPkgName(..))
 import Debian.Relation.String (parseRelations)
+import qualified Debian.Repo.Fingerprint as P
 import Debian.AutoBuilder.Details.GHC (ghc)
 import qualified Debian.AutoBuilder.Details.Public as Public
 import qualified Debian.AutoBuilder.Details.Private as Private
@@ -36,8 +37,8 @@ proc' :: Int -> P.Packages -> P.Packages
 proc' n p | n < 708 = p
 proc' n p@(Named {}) = p {packages = proc' n (packages p)}
 proc' n p@(Packages {}) = p {list = map (proc' n) (list p)}
-proc' _ p@(Package {spec = Proc _}) = p
-proc' _ p@(Package {}) = p {spec = Proc (spec p)}
+proc' _ p@(Package {spec = P.Proc _}) = p
+proc' _ p@(Package {}) = p {spec = P.Proc (spec p)}
 proc' _ p = p
 
 -- | This prevents every package that uses cabal-debian for

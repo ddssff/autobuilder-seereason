@@ -4,11 +4,11 @@ module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
 import Data.FileEmbed (embedFile)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, ModifyAtoms, BuildDep, NoDoc, CabalDebian),
-                                               Packages(..), RetrieveMethod(Debianize, Hackage, Cd, Darcs),
-                                               flag, flags, spec, patch, debianize, hackage, rename, method, darcs, cd, dir)
+                                               Packages(..), flag, flags, spec, patch, debianize, hackage, rename, method, darcs, cd, dir)
 import Debian.Debianize (sourcePackageName, execDebM, installTo)
 import Debian.Debianize.Prelude ((~=))
-import Debian.Relation (SrcPkgName(SrcPkgName), BinPkgName(BinPkgName))
+import Debian.Relation (SrcPkgName(SrcPkgName))
+import Debian.Repo.Fingerprint (RetrieveMethod(Debianize, Hackage, Cd, Darcs))
 import Debian.AutoBuilder.Details.Common (privateRepo, named, ghcjs_flags)
 import System.FilePath ((</>))
 

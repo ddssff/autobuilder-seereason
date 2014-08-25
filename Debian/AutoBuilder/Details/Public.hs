@@ -9,13 +9,12 @@ import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common (repo, named, ghcjs_flags)
 import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..), Release(..))
 import Debian.AutoBuilder.Details.GHC (ghc)
-import Debian.AutoBuilder.Types.Packages as P (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Debianize', Hackage, DebDir, Git),
-                                               PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
+import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, SkipPackage, KeepRCS),
-                                               GitSpec(..), DebSpec(..), Packages(..), flags, spec,
-                                               hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
+                                               Packages(..), flags, spec, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir, dir)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, rulesFragments, InstallFile(..), (+=), (~=))
 import Debian.Relation (BinPkgName(..), SrcPkgName(..))
+import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Cd, Darcs, Debianize, Debianize', Hackage, DebDir, Git), GitSpec(..), DebSpec(..))
 import System.FilePath((</>))
 
 patchTag :: String
@@ -1382,7 +1381,7 @@ ghcjs release =
     -- Cabal library with ghcjs support.  The debs are named cabal-ghcjs
     -- so packages that require ghcjs suppport can specify this.
     -- Options used to debianize: `flag` P.DebVersion "1.21.0.0-2"
-    , debdir (git "https://github.com/ghcjs/cabal" [P.Branch "ghcjs"] `cd` "Cabal")
+    , debdir (git "https://github.com/ghcjs/cabal" [Branch "ghcjs"] `cd` "Cabal")
              (Git "https://github.com/ddssff/cabal-ghcjs-debian" [])
     -- Options used to generate debianization:
     --                       `flag` P.DebVersion "1.21.0.0-2"
@@ -1393,7 +1392,7 @@ ghcjs release =
     --                                             "--conflicts=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
     --                                             "--replaces=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
     --                                             "--provides=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils"]
-    , debdir (git "https://github.com/ddssff/cabal" {- "https://github.com/ghcjs/cabal" -} [P.Branch "ghcjs"]
+    , debdir (git "https://github.com/ddssff/cabal" {- "https://github.com/ghcjs/cabal" -} [Branch "ghcjs"]
                       `cd` "cabal-install")
              (Git "https://github.com/ddssff/cabal-install-ghcjs-debian" [])
     -- Options used to debianize:

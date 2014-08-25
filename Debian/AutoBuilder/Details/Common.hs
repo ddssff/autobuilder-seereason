@@ -10,6 +10,7 @@ import Data.Monoid ((<>))
 import Data.String (IsString(fromString))
 import Debian.AutoBuilder.Types.Packages as P
 import Debian.Relation (SrcPkgName(SrcPkgName))
+import Debian.Repo.Fingerprint (RetrieveMethod(..), DebSpec(SrcDeb))
 
 data Build = Production | Testing
 build = Production
