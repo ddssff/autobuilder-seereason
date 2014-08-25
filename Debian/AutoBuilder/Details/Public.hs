@@ -844,7 +844,9 @@ platform release =
 
 clckwrks :: String -> Release -> P.Packages
 clckwrks _home release =
-    let repo = "http://src.seereason.com/mirrors/clckwrks-dev"
+    let gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
+        -- repo = "http://hub.darcs.net/stepcut/clckwrks-dev"
+        -- repo = "http://src.seereason.com/mirrors/clckwrks-dev"
         tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     -- let repo = "http://hub.darcs.net/stepcut/clckwrks-dev" in
     named "clckwrks" $
@@ -856,7 +858,7 @@ clckwrks _home release =
                                          (Patch
                                           (DataFiles
                                            (DataFiles
-                                            (Cd "clckwrks" (Darcs repo))
+                                            (Git "https://github.com/clckwrks/clckwrks" [])
                                             (Uri "http://cloud.github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip"
                                                  "e211065e573ea0239d6449882c9d860d")
                                             "jstree")
@@ -865,27 +867,23 @@ clckwrks _home release =
                                            "json2")
                                           $(embedFile "patches/clckwrks.diff")) []
                     , P.flags = [P.BuildDep "hsx2hs"] }
-        , debianize (darcs repo `cd` "clckwrks-cli" {- `patch` $(embedFile "patches/clckwrks-cli.diff") -})
-        , debianize (darcs repo
-                       `cd` "clckwrks-plugin-bugs"
+        , debianize (gitrepo "clckwrks-cli")
+        , debianize (gitrepo "clckwrks-plugin-bugs"
                        `flag` P.BuildDep "hsx2hs")
-        , debianize (darcs repo
-                       `cd` "clckwrks-plugin-media"
+        , debianize (gitrepo "clckwrks-plugin-media"
                        `flag` P.BuildDep "hsx2hs")
-        , debianize (darcs repo
-                       `cd` "clckwrks-plugin-ircbot"
+        , debianize (gitrepo "clckwrks-plugin-ircbot"
                        `flag` P.BuildDep "hsx2hs")
-        , debianize (darcs repo `cd` "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
-        , debianize (git "https://github.com/clckwrks/clckwrks-dot-com" []
+        , debianize (gitrepo "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
+        , debianize (gitrepo "clckwrks-dot-com"
                            -- This is a change that only relates to the autobuilder
                            `patch` $(embedFile "patches/clckwrks-dot-com.diff"))
-        , debianize (darcs repo `cd` "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
+        , debianize (gitrepo "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
         , debianize (hackage "jmacro")
         , debianize (hackage "hsx-jmacro")
         , debianize (hackage "monadlist")
-        , debianize (darcs repo
-                       `cd` "clckwrks-plugin-page"
-                       `patch` $(embedFile "patches/clckwrks-plugin-page.diff")
+        , debianize (gitrepo "clckwrks-plugin-page"
+                       -- `patch` $(embedFile "patches/clckwrks-plugin-page.diff")
                        `flag` P.BuildDep "hsx2hs")
         ]
 
