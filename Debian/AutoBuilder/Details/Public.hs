@@ -349,6 +349,9 @@ main _home release =
     , debianize (hackage "feed" `tflag` P.DebVersion "0.3.9.2-1")
     -- Darcs 2.8.1 won't build with the current version of haskeline.
     -- , apt "wheezy" "darcs" `patch` $(embedFile "patches/darcs.diff")
+    , debianize (hackage "data-ordlist")
+    , debianize (hackage "datetime" `flag` P.DebVersion "0.2.1-2")
+    , debianize (hackage "regex-compat-tdfa")
     , debianize (hackage "file-embed")
     , debianize (hackage "filemanip" `tflag` P.DebVersion "0.3.6.2-3")
     , debianize (hackage "indents")
