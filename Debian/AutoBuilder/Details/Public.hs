@@ -68,6 +68,7 @@ targets _home release =
     , clckwrks _home release
     , sunroof release
     , haste
+    , darcsGroup
     , ghcjs release
     , idris release
     -- , authenticate _home release
@@ -347,8 +348,6 @@ main _home release =
                    `wflag` P.DebVersion "2.0.0.0-3"
                    `tflag` P.DebVersion "2.0.0.0-5")
     , debianize (hackage "feed" `tflag` P.DebVersion "0.3.9.2-1")
-    -- Darcs 2.8.1 won't build with the current version of haskeline.
-    -- , apt "wheezy" "darcs" `patch` $(embedFile "patches/darcs.diff")
     , debianize (hackage "data-ordlist")
     , debianize (hackage "datetime" `flag` P.DebVersion "0.2.1-2")
     , debianize (hackage "regex-compat-tdfa")
@@ -1437,6 +1436,19 @@ ghcjs release =
          srcDebName p@(Package {spec = Debianize' s xs}) name = p {spec = Debianize' s (SrcDeb (SrcPkgName name) : xs)}
          srcDebName p@(Package {spec = Debianize s}) name = p {spec = Debianize' s [SrcDeb (SrcPkgName name)]}
          srcDebName spec _ = error $ "srcDebName - invalid argument.  Can't set source package name of " ++ show spec
+
+darcsGroup =
+    named "darcs"
+    [
+      -- Darcs 2.8.1 won't build with the current version of haskeline.
+      -- apt "wheezy" "darcs" `patch` $(embedFile "patches/darcs.diff")
+      -- apt "sid" "darcs"
+      debianize (darcs "http://darcs.net/reviewed"
+                   `flag` P.CabalDebian ["--source-package-name=darcs"]
+                   `flag` P.CabalDebian ["--default-package=darcs"]
+                   `patch` $(embedFile "patches/darcs.diff"))
+    ]
+
 
 broken :: P.Packages -> P.Packages
 broken _ = P.NoPackage

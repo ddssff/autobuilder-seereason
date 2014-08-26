@@ -1,64 +1,11 @@
---- old/darcs.cabal	2012-05-14 04:10:13.000000000 -0700
-+++ new/darcs.cabal	2012-10-15 20:53:28.742634352 -0700
-@@ -368,10 +368,10 @@
-                      parsec       >= 2.0 && < 3.2,
-                      html         == 1.0.*,
-                      filepath     >= 1.1.0.0 && < 1.5.0.0,
--                     haskeline    >= 0.6.3 && < 0.7,
-+                     haskeline    >= 0.6.3,
-                      hashed-storage >= 0.5.6 && < 0.6,
-                      vector       >= 0.7,
--                     tar          == 0.3.*
-+                     tar          >= 0.3
+--- old/darcs.cabal	2014-08-26 09:54:40.000000000 -0700
++++ new/darcs.cabal	2014-08-26 10:04:17.437008448 -0700
+@@ -456,7 +456,7 @@
+       cc-options:        -DHAVE_CURL
  
-     if !os(windows)
-       build-depends: unix >= 1.0 && < 2.6
-@@ -529,10 +529,10 @@
-                    parsec       >= 2.0 && < 3.2,
-                    html         == 1.0.*,
-                    filepath     >= 1.1.0.0 && < 1.5.0.0,
--                   haskeline    >= 0.6.3 && < 0.7,
-+                   haskeline    >= 0.6.3,
-                    hashed-storage >= 0.5.6 && < 0.6,
-                    vector       >= 0.7,
--                   tar          == 0.3.*
-+                   tar          >= 0.3
- 
-   if !os(windows)
-     build-depends: unix >= 1.0 && < 2.6
-@@ -720,7 +720,7 @@
-       build-depends: unix >= 1.0 && < 2.6
- 
-     build-depends: bytestring >= 0.9.0 && < 0.10,
--                   haskeline    >= 0.6.3 && < 0.7,
-+                   haskeline    >= 0.6.3,
-                    text       >= 0.11.0.6 && < 0.12.0.0,
-                    old-time   >= 1.0 && < 1.2,
-                    directory  >= 1.0.0.0 && < 1.2.0.0,
-@@ -729,7 +729,7 @@
-                    array      >= 0.1 && < 0.5,
-                    hashed-storage >= 0.5.6 && < 0.6,
-                    vector       >= 0.7,
--                   tar        == 0.3.*,
-+                   tar        >= 0.3,
-                    random     == 1.0.*
- 
-     if flag(mmap) && !os(windows)
---- old/debian/control	2012-05-15 14:30:36.000000000 -0700
-+++ new/debian/control	2012-10-15 21:30:24.386686701 -0700
-@@ -13,7 +13,6 @@
-  libghc-hashed-storage-dev (>= 0.5.6),
-  libghc-hashed-storage-dev (<< 0.6),
-  libghc-haskeline-dev (>= 0.6.3),
-- libghc-haskeline-dev (<< 0.7),
-  libghc-html-dev (>= 1.0),
-  libghc-html-dev (<< 1.1),
-  libghc-http-dev,
-@@ -28,7 +27,6 @@
-  libghc-random-dev (<< 1.1),
-  libghc-regex-compat-dev (>= 0.95.1),
-  libghc-tar-dev (>= 0.3),
-- libghc-tar-dev (<< 0.4),
-  libghc-terminfo-dev (>= 0.3),
-  libghc-terminfo-dev (<< 0.4),
-  libghc-text-dev (>= 0.11.0.6),
+     if flag(http)
+-        build-depends:    network >= 2.2 && < 2.5,
++        build-depends:    network-uri,
+                           HTTP    >= 4000.0.8 && < 4000.3
+         cpp-options:      -DHAVE_HTTP
+         x-have-http:
