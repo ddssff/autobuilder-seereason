@@ -140,13 +140,13 @@ myKnownTargets home params =
 -- access the Debian and Ubuntu repositories.  The anl.gov values here
 -- probably won't work outside the United States.
 --
---myDebianMirrorHost = "mirror.anl.gov"
-myDebianMirrorHost = "ftp.debian.org"
---myUbuntuMirrorHost = "mirror.anl.gov"
-myUbuntuMirrorHost = "us.archive.ubuntu.com/ubuntu"
---myUbuntuMirrorHost = "ubuntu.cs.utah.edu"
---myDebianMirrorHost = "mirrors.usc.edu/pub/linux/distributions"
---myUbuntuMirrorHost = "mirrors.usc.edu/pub/linux/distributions"
+--myDebianMirrorHost = "http://mirror.anl.gov"
+myDebianMirrorHost = "http://ftp.debian.org"
+--myUbuntuMirrorHost = "http://mirror.anl.gov"
+myUbuntuMirrorHost = "http://us.archive.ubuntu.com/ubuntu" --  "mirror://mirrors.ubuntu.com/mirrors.txt"
+--myUbuntuMirrorHost = "http://ubuntu.cs.utah.edu"
+--myDebianMirrorHost = "http://mirrors.usc.edu/pub/linux/distributions"
+--myUbuntuMirrorHost = "http://mirrors.usc.edu/pub/linux/distributions"
 
 -- There is a debian standard for constructing the version numbers of
 -- packages backported to older releases.  To follow this standard we
@@ -265,19 +265,19 @@ baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
 
 debianSourceLines debianMirrorHost release =
     List.map parseSourceLine $
-    [ "deb http://" ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free"
-    , "deb-src http://" ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free" ]
+    [ "deb " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free"
+    , "deb-src " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free" ]
 
 ubuntuSourceLines ubuntuMirrorHost release =
     List.map parseSourceLine $
-    [ "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
-    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
-    , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
-    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
-    , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
-    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
-    , "deb http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse"
-    , "deb-src http://" ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse" ]
+    [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
+    , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
+    , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
+    , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
+    , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
+    , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
+    , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse"
+    , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse" ]
 
 -- oldDebianReleases = []
 -- oldUbuntuReleases = []
