@@ -1332,7 +1332,7 @@ haste = named "haste"
   , git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
   , hack "data-binary-ieee754"
   , hack "shellmate"
-  , debianize (git "https://github.com/cliffordbeshers/websockets" [] `patch` $(embedFile "patches/websockets.diff"))
+  , debianize (git "https://github.com/ddssff/websockets" [])
   , debianize (hackage "io-streams" `patch` $(embedFile "patches/io-streams.diff"))
   ]
     where hack = debianize . hackage
