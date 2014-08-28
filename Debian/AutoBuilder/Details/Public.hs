@@ -129,7 +129,7 @@ autobuilder home =
                              , "--conflicts=libghc-process-extras-doc:libghc-process-listlike-doc"
                              , "--provides=libghc-process-extras-doc:libghc-process-listlike-doc"
                              , "--replaces=libghc-process-extras-doc:libghc-process-listlike-doc" ]
-    , debianize (darcs (repo </> "process-listlike"))
+    , debianize (git "https://github.com/ddssff/process-listlike" [])
         `flag` P.CabalDebian [ "--conflicts=libghc-process-listlike-dev:libghc-process-extras-dev"
                              , "--provides=libghc-process-listlike-dev:libghc-process-extras-dev"
                              , "--replaces=libghc-process-listlike-dev:libghc-process-extras-dev"
