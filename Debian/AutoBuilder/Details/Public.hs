@@ -112,8 +112,8 @@ autobuilder home =
     -- let repo = localRepo home in
     named "autobuilder-group" $
     [ unixutils home
-    , darcs (repo </> "cabal-debian")
-    , darcs (repo ++ "/haskell-debian") `flag` P.RelaxDep "cabal-debian"
+    , git "https://github.com/ddssff/debian-haskell" [] `flag` P.RelaxDep "cabal-debian"
+    , git "https://github.com/ddssff/cabal-debian" []
     , darcs (repo </> "mirror")
     , darcs (repo </> "debian-repo")
     , darcs (repo </> "archive")
