@@ -1,3 +1,14 @@
+--- old/tagstream-conduit.cabal	2014-08-27 22:10:06.000000000 -0700
++++ new/tagstream-conduit.cabal	2014-08-28 06:51:57.706537306 -0700
+@@ -38,7 +38,7 @@
+                      , text
+                      , case-insensitive
+                      , transformers >= 0.2
+-                     , conduit >= 0.5 && < 1.2
++                     , conduit >= 0.5 && < 1.3
+                      , conduit-extra
+                      , resourcet
+                      , attoparsec
 --- old/tagstream-conduit.cabal	2014-07-15 08:39:43.162878203 -0700
 +++ new/tagstream-conduit.cabal	2014-07-15 09:31:44.278965381 -0700
 @@ -43,8 +43,6 @@

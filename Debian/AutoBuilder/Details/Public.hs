@@ -505,6 +505,7 @@ main _home release =
                    `sflag` P.DebVersion "1.1-1"
                    `tflag` P.DebVersion "1.1-4")
     , debianize (hackage "pwstore-purehaskell"
+                   `flag` P.SkipVersion "2.1.2"
                    -- `patch` $(embedFile "patches/pwstore-purehaskell.diff")
                    -- `flag` P.DebVersion "2.1-1~hackage1"
                 )
@@ -1052,7 +1053,7 @@ authenticate _home release =
                            -- `patch` $(embedFile "patches/happstack-authenticate.diff")
                 )
     , digestiveFunctors
-    , debianize (hackage "fb")
+    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
     , debianize (hackage "monad-logger")
     , debianize (hackage "monad-loops")
     , debianize (hackage "fast-logger")
@@ -1076,11 +1077,11 @@ digestiveFunctors =
 conduit release =
   let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
   named "conduit"
-    [ debianize (hackage "streaming-commons" `flag` P.CabalPin "0.1.4") -- avoid rebuild
-    , debianize (hackage "conduit" {- `flag` P.CabalPin "1.0.17.1" -})
+    [ debianize (hackage "streaming-commons")
+    , debianize (hackage "conduit") -- waiting for newer xml-conduit
     , debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
     , debianize (hackage "connection")
-    , debianize (hackage "http-conduit" `flag` P.CabalPin "2.1.3") -- avoid rebuild
+    , debianize (hackage "http-conduit")
     , debianize (hackage "http-client")
     , debianize (hackage "http-client-tls")
     -- Deprecated in favor of http-conduit
@@ -1089,12 +1090,9 @@ conduit release =
     -- , debianize (hackage "attoparsec-conduit" {- `flag` P.CabalPin "1.0.1.2" `tflag` P.DebVersion "1.0.1.2-1build2" -})
     -- , debianize (hackage "blaze-builder-conduit" {- `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build4" -})
     -- , debianize (hackage "zlib-conduit" {- `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build3" -})
-    , debianize (hackage "xml-conduit" `patch` $(embedFile "patches/xml-conduit.diff") `flag` P.CabalPin "1.2.0.3") -- avoid rebuild
+    , debianize (hackage "xml-conduit" `patch` $(embedFile "patches/xml-conduit.diff"))
     , debianize (hackage "tagstream-conduit" `patch` $(embedFile "patches/tagstream-conduit.diff"))
-    , debianize (hackage "conduit-extra"
-                   -- `flag` P.CabalPin "1.0.0"
-                   -- `patch` $(embedFile "patches/conduit-extra.diff")
-                )
+    , debianize (hackage "conduit-extra")
     , debianize (hackage "mime-types")
     ]
 
