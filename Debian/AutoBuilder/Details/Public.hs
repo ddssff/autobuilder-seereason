@@ -1310,9 +1310,9 @@ idris release =
     let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     named "idris"
         [ debianize (hackage "idris"
+                       -- `patch` $(embedFile "patches/idris.diff")
                        `flag` P.BuildDep "libgc-dev"
-                       `flag` P.CabalDebian ["--default-package=idris"]
-                       `patch` $(embedFile "patches/idris.diff"))
+                       `flag` P.CabalDebian ["--default-package=idris"])
         , hack "vector-binary-instances"
         , hack "trifecta"
         , debianize (hackage "parsers" {- `patch` $(embedFile "patches/parsers.diff") -})
