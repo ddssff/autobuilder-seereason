@@ -115,7 +115,9 @@ autobuilder home =
     , git "https://github.com/ddssff/debian-haskell" [] `flag` P.RelaxDep "cabal-debian"
     , git "https://github.com/ddssff/cabal-debian" []
     , darcs (repo </> "mirror")
-    , darcs (repo </> "debian-repo")
+    , git "https://github.com/ddssff/debian-repo" []
+    , debianize (git "https://github.com/ddssff/autobuilder" [])
+        `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
     , darcs (repo </> "archive")
     , skip $ -- we don't want this in our repository because we need everything to work
              -- with process-listlike.
@@ -141,8 +143,6 @@ autobuilder home =
                              , "--replaces=libghc-process-listlike-doc:libghc-process-extras-doc" ]
     , darcs (repo </> "process-progress")
     , debianize (darcs (repo </> "process-verbosity"))
-    , debianize (darcs (repo </> "autobuilder"))
-        `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
     , debianize (darcs (repo </> "autobuilder-seereason"))
         -- It would be nice if these dependencies were in the cabal file
         `flag` P.CabalDebian [ "--depends=autobuilder-seereason:libghc-autobuilder-seereason-dev"
