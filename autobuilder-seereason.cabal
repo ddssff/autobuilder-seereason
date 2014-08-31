@@ -37,6 +37,11 @@ flag local-debian
   Default: False
   Manual: True
 
+flag local-process-listlike
+  Description: Link directly to the source of the process-listlike library
+  Default: False
+  Manual: True
+
 Library
   if flag(local-autobuilder-seereason)
     Buildable: False
@@ -62,33 +67,43 @@ Executable autobuilder-seereason
    Build-Depends: autobuilder-seereason
 
  if flag(local-autobuilder)
-   Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen
+   Hs-Source-Dirs: ../../git/autobuilder, ../../git/autobuilder/dist/build/autogen
    Build-Depends: applicative-extras, data-lens, directory, exceptions, Extra, magic, mtl, network-uri,
-                  process-listlike, process-progress, process-verbosity, pureMD5, regex-compat, tar, time, unix,
+                  pureMD5, regex-compat, tar, time, unix,
                   Unixutils, utf8-string, zlib
  else
    Build-Depends: AutoBuilder >= 6.69
 
  if flag (local-debian-repo)
-   Hs-Source-Dirs: ../debian-repo
+   Hs-Source-Dirs: ../../git/debian-repo
    Build-Depends: bzlib, data-lens-template, deepseq, old-locale, old-time, template-haskell
  else
    Build-Depends: debian-repo >= 5.66
 
  if flag (local-cabal-debian)
-   Hs-Source-Dirs: ../cabal-debian/src
+   Hs-Source-Dirs: ../../git/cabal-debian/src
    Build-Depends: Diff, hsemail, parsec, regex-tdfa, set-extra, syb, memoize
  else
    Build-Depends: cabal-debian >= 4.17.1, syb
 
  if flag (local-debian)
-   Hs-Source-Dirs: ../haskell-debian
+   Hs-Source-Dirs: ../../git/debian-haskell
    Build-Depends: either, ListLike
  else
    Build-Depends: debian >= 3.82
 
+ if flag (local-process-listlike)
+   Hs-Source-Dirs: ../../git/process-listlike, ../../darcs/process-progress, ../../darcs/process-verbosity, ../../darcs/archive
+ else
+   Build-Depends: process-listlike >= 0.9, process-progress, process-verbosity, archive
+
 Executable seereason-darcs-backups
  Main-Is: Backups.hs
+ Hs-Source-Dirs: .
  GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
- Build-depends: archive >= 1.7, base, Extra, network-uri
- 
+ Build-depends: base, Extra, network-uri
+ if flag (local-process-listlike)
+   Hs-Source-Dirs: ../../darcs/archive, ../../git/debian-haskell, ../../darcs/mirror, ../../git/process-listlike, ../../darcs/process-progress
+   Build-Depends: applicative-extras, bytestring, utf8-string, Unixutils, directory, unix, process, ListLike >= 4, old-locale, regex-compat, HUnit, regex-posix, zlib, text, pureMD5, containers, time, parsec, template-haskell, exceptions, deepseq, filepath, pretty, help, bzlib, mtl
+ else
+   Build-Depends: archive >= 1.7
