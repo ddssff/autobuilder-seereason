@@ -143,7 +143,7 @@ autobuilder home =
                              , "--replaces=libghc-process-listlike-doc:libghc-process-extras-doc" ]
     , darcs (repo </> "process-progress")
     , debianize (darcs (repo </> "process-verbosity"))
-    , debianize (git "htts://github.com/ddssff/autobuilder-seereason" [])
+    , debianize (git "https://github.com/ddssff/autobuilder-seereason" [])
         -- It would be nice if these dependencies were in the cabal file
         `flag` P.CabalDebian [ "--depends=autobuilder-seereason:libghc-autobuilder-seereason-dev"
                              , "--depends=autobuilder-seereason:ghc"
