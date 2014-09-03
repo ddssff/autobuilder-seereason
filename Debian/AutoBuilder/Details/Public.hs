@@ -53,7 +53,7 @@ new = named "new" [ debianize (darcs (repo </> "showplease"))
                                  `cd` "hunt-searchengine" )
                   , debianize (git "https://github.com/hunt-framework/hunt.git" []
                                  `cd` "hunt-server"
-                                 `patch` $(embedFile "patches/hunt-server.diff")
+                                 -- `patch` $(embedFile "patches/hunt-server.diff")
                                  `flag` P.CabalDebian ["--default-package=hunt-server"]) ]
 
 -- |the _home parameter has an underscore because normally it is unused, but when
@@ -297,7 +297,7 @@ main _home release =
     , debianize (hackage "cipher-aes")
     , debianize (hackage "cipher-des" `tflag` P.DebVersion "0.0.6-1")
     , debianize (hackage "cprng-aes" `tflag` P.DebVersion "0.5.2-1build1")
-    , debianize (hackage "crypto-random" `tflag` P.DebVersion "0.0.7-1")
+    , debianize (hackage "crypto-random")
     , debianize (hackage "crypto-random-api" `tflag` P.DebVersion "0.2.0-2")
     , debianize (hackage "Crypto")
     , debianize (hackage "crypto-api" `qflag` P.DebVersion "0.10.2-1build3")
@@ -393,11 +393,11 @@ main _home release =
     -- sound right...
     , debianize (hackage "HaXml")
     , debianize (hackage "heap" `flag` P.DebVersion "1.0.0-1~hackage1")
-    , debianize (hackage "heist" `patch` $(embedFile "patches/heist.diff"))
+    , debianize (hackage "heist")
     , debianize (hackage "xmlhtml")
     , debianize (hackage "directory-tree")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
-    , debianize (hackage "MonadCatchIO-mtl" `patch` $(embedFile "patches/monadcatchio-mtl.diff"))
+    , debianize (hackage "MonadCatchIO-mtl")
     , debianize (hackage "haskell-lexer"
                    `pflag` P.DebVersion "1.0-3build2"
                    `wflag` P.DebVersion "1.0-3+b1"
@@ -960,10 +960,10 @@ happstack _home release =
     , debianize (hackage "time-compat")
     , debianize (hackage "base64-bytestring" `tflag` P.DebVersion "1.0.0.1-1")
     , debianize (hackage "threads")
-    , debianize (hackage "list-tries" `patch` $(embedFile "patches/list-tries.diff"))
+    , debianize (hackage "list-tries")
     , debianize (hackage "happstack-static-routing")
     , debianize (hackage "happstack-util"
-                   `patch` $(embedFile "patches/happstack-util-ghc76.diff")
+                   -- `patch` $(embedFile "patches/happstack-util-ghc76.diff")
                    `flag` P.DebVersion "6.0.3-1")
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
@@ -973,7 +973,7 @@ happstack _home release =
     , debianize (hackage "JuicyPixels")
     , debianize (hackage "haddock-library")
     , debianize (hackage "pandoc"
-                   `patch` $(embedFile "patches/pandoc.diff")
+                   -- `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
                    `flag` P.BuildDep "alex"
                    `flag` P.BuildDep "happy")
@@ -1402,7 +1402,6 @@ ghcjs release =
     --                          "cpp", "git", "cabal-install-ghcjs"] in
     , debdir (git "https://github.com/ghcjs/ghcjs" []
                       `patch` $(embedFile "patches/ghcjs-restrict-library-versions.diff")
-                      `patch` $(embedFile "patches/ghcjs-network-uri.diff")
                       `flag` P.CabalDebian ["--source-package-name=ghcjs-tools"]
                       `flag` P.CabalDebian ["--default-package=ghcjs-tools"]
                       `flag` P.CabalDebian ["--depends=ghcjs-tools:haddock-internal"]
@@ -1415,8 +1414,8 @@ ghcjs release =
   , named "ghcjs-libs" $
     [ ghcjs_flags (debianize (hackage "ghcjs-dom"))
     , ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
-                                `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]
-                                `patch` $(embedFile "patches/ghcjs-dom-hello.diff")))
+                                `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
+                                `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]))
     , ghcjs_flags (debianize (hackage "blaze-builder"))
     , ghcjs_flags (debianize (hackage "blaze-markup"))
     , ghcjs_flags (debianize (hackage "blaze-html"))
