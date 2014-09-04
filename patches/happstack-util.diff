@@ -1,11 +1,105 @@
---- old/happstack-util.cabal	2012-12-18 06:49:52.507546733 -0800
-+++ new/happstack-util.cabal	2012-12-18 07:05:49.411569340 -0800
+--- old/happstack-util.cabal	2012-01-31 18:40:37.000000000 -0800
++++ new/happstack-util.cabal	2014-09-04 05:22:21.463056773 -0700
 @@ -29,7 +29,7 @@
                         directory,
                         extensible-exceptions, 
                         hslogger >= 1.0.2,
 -                       mtl >= 1.1 && < 2.1,
-+                       mtl >= 1.1,
++                       mtl >= 1.1 && < 2.3,
                         old-locale,
                         old-time,
                         parsec < 4,
+--- old/src/Happstack/Crypto/DES.lhs	2012-01-31 18:40:37.000000000 -0800
++++ new/src/Happstack/Crypto/DES.lhs	2014-09-04 05:28:03.595064856 -0700
+@@ -203,9 +203,9 @@
+ >             23, 24, 25, 26, 27, 28, 27, 28, 29, 30, 31,  0]
+ 
+ > s_box :: [[Word8]] -> Bits6 -> Bits4
+-> s_box s [a,b,c,d,e,f] = to_bool 4 $ (s !! row) !! col
++> s_box s [a,b,c,d,e,f] = to_bool (4 :: Int) $ (s !! row) !! col
+ >  where row = sum $ zipWith numericise [a,f]     [1, 0]
+->        col = sum $ zipWith numericise [b,c,d,e] [3, 2, 1, 0]
++>        col = sum $ zipWith numericise [b,c,d,e] ([3, 2, 1, 0] :: [Int])
+ >        numericise = (\x y -> if x then 2^y else 0)
+ >        to_bool 0 _ = []
+ >        to_bool n i = ((i .&. 8) == 8):to_bool (n-1) (shiftL i 1)
+--- old/src/Happstack/Util/AutoBuild.hs	2012-01-31 18:40:37.000000000 -0800
++++ new/src/Happstack/Util/AutoBuild.hs	2014-09-04 05:25:32.047061276 -0700
+@@ -16,10 +16,10 @@
+ import Control.Concurrent (forkIO, threadDelay)
+ import Control.Concurrent.MVar (MVar, newEmptyMVar, putMVar, takeMVar)
+ import Control.Exception (bracket)
++import Data.Time.Clock (UTCTime)
+ import System.Directory (getModificationTime)
+ import System.Exit (ExitCode(..), exitFailure)
+ import System.Process
+-import System.Time (ClockTime)
+ import System.IO
+ 
+ -- | Functionality for the autoBuild tool.
+@@ -43,7 +43,7 @@
+             exitFailure
+ 
+ -- builds the program
+-builder :: MVar ProcessHandle -> String -> FilePath -> ClockTime -> IO ()
++builder :: MVar ProcessHandle -> String -> FilePath -> UTCTime -> IO ()
+ builder mph buildCmd binPath lastMod = do
+     -- add a delay between build attempts (5 seconds)
+     threadDelay 5000000
+--- old/src/Happstack/Util/Common.hs	2012-01-31 18:40:37.000000000 -0800
++++ new/src/Happstack/Util/Common.hs	2014-09-04 05:24:41.119060072 -0700
+@@ -11,6 +11,7 @@
+ 
+ import System.Log.Logger
+ import Control.Concurrent
++import Control.Exception (catch)
+ import Control.Monad
+ import qualified Data.ByteString.Char8 as P
+ import Data.Char
+@@ -101,7 +102,7 @@
+ mbReadFile :: a -> (String -> a) -> FilePath -> IO a
+ mbReadFile noth just path  = 
+ 	(do text <- readFile path;return $ just text)
+-	`catch` \err -> if isDoesNotExistError err then return noth else ioError err
++	`catch` \ err -> if isDoesNotExistError err then return noth else ioError err
+ 
+ mapFst :: (a -> b) -> [(a,x)] -> [(b,x)]
+ mapFst = map . first
+--- old/src/Happstack/Util/Daemonize.hs	2012-01-31 18:40:37.000000000 -0800
++++ new/src/Happstack/Util/Daemonize.hs	2014-09-04 05:27:37.147064231 -0700
+@@ -3,10 +3,10 @@
+ import System.Directory
+ import System.Environment
+ import System.Exit
+-import System.Time
+ import Control.Concurrent
+ import Control.Exception.Extensible as E
+ import Control.Monad.Error
++import Data.Time (getCurrentTime, diffUTCTime)
+ import Happstack.Crypto.SHA1
+ import Happstack.Util.Common
+ 
+@@ -22,13 +22,12 @@
+ daemonize :: FilePath -> IO a -> IO a
+ daemonize binarylocation main = 
+     do
+-    startTime <- getClockTime
++    startTime <- getCurrentTime
+     tid1 <- exitIfAlreadyRunning startTime
+     mId <- myThreadId
+     tid2 <- appCheck binarylocation startTime mId
+     main `finally` mapM killThread [tid1,tid2]
+     where 
+-    seconds n = noTimeDiff { tdSec = n }
+     exitIfAlreadyRunning startTime = 
+         do
+         uniqueId <- getDaemonizedId
+@@ -37,7 +36,7 @@
+         when fe $ 
+              do 
+              daemonTime <- getModificationTime name         
+-             when (diffClockTimes startTime daemonTime < seconds 2) $
++             when (diffUTCTime startTime daemonTime < fromIntegral (2 :: Int)) $
+                   exitWith ExitSuccess  >> return ()
+         periodic (repeat 1) $ writeFile name "daemon" 
+ 

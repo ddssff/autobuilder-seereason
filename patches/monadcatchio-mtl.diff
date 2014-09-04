@@ -5,7 +5,7 @@
  
  Library
 -  build-depends:    base < 5, extensible-exceptions, MonadCatchIO-transformers==0.3.1.0
-+  build-depends:    base < 5, extensible-exceptions, MonadCatchIO-transformers==0.3.1.*
++  build-depends:    base < 5, extensible-exceptions, MonadCatchIO-transformers==0.3.*
    extensions:       PackageImports
  
    exposed-modules: Control.Monad.CatchIO
