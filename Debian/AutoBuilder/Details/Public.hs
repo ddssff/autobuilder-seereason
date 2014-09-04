@@ -393,11 +393,11 @@ main _home release =
     -- sound right...
     , debianize (hackage "HaXml")
     , debianize (hackage "heap" `flag` P.DebVersion "1.0.0-1~hackage1")
-    , debianize (hackage "heist")
+    , debianize (hackage "heist" `patch` $(embedFile "patches/heist.diff"))
     , debianize (hackage "xmlhtml")
     , debianize (hackage "directory-tree")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
-    , debianize (hackage "MonadCatchIO-mtl")
+    , debianize (hackage "MonadCatchIO-mtl" `patch` $(embedFile "patches/monadcatchio-mtl.diff"))
     , debianize (hackage "haskell-lexer"
                    `pflag` P.DebVersion "1.0-3build2"
                    `wflag` P.DebVersion "1.0-3+b1"
@@ -963,7 +963,7 @@ happstack _home release =
     , debianize (hackage "list-tries")
     , debianize (hackage "happstack-static-routing")
     , debianize (hackage "happstack-util"
-                   -- `patch` $(embedFile "patches/happstack-util-ghc76.diff")
+                   `patch` $(embedFile "patches/happstack-util.diff")
                    `flag` P.DebVersion "6.0.3-1")
     -- This target puts the trhsx binary in its own package, while the
     -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
@@ -971,7 +971,6 @@ happstack _home release =
     , debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "hslua")
     , debianize (hackage "JuicyPixels")
-    , debianize (hackage "haddock-library")
     , debianize (hackage "pandoc"
                    -- `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
@@ -1371,6 +1370,11 @@ ghcjs release =
     , apt "sid" "nodejs"
     , debdir (git "https://github.com/ghcjs/ghcjs-prim.git" [])
                  (Git "https://github.com/ddssff/ghcjs-prim-debian" [])
+    , debianize (hackage "haddock-api"
+                   `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
+                                                      [ "# Force the Cabal dependency to be the version provided by GHC"
+                                                      , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
+    , debianize (hackage "haddock-library")
     , debianize (git "https://github.com/ghcjs/haddock-internal" []
                          `flag` P.CabalDebian ["--default-package=haddock-internal"]
                          `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
@@ -1401,7 +1405,7 @@ ghcjs release =
     --                      p0 ["alex", "happy", "make", "patch", "autoconf",
     --                          "cpp", "git", "cabal-install-ghcjs"] in
     , debdir (git "https://github.com/ghcjs/ghcjs" []
-                      `patch` $(embedFile "patches/ghcjs-restrict-library-versions.diff")
+                      `patch` $(embedFile "patches/ghcjs-tools.diff")
                       `flag` P.CabalDebian ["--source-package-name=ghcjs-tools"]
                       `flag` P.CabalDebian ["--default-package=ghcjs-tools"]
                       `flag` P.CabalDebian ["--depends=ghcjs-tools:haddock-internal"]
