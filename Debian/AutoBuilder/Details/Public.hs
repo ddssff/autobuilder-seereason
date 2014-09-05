@@ -349,7 +349,7 @@ main _home release =
                    `tflag` P.DebVersion "2.0.0.0-5")
     , debianize (hackage "feed" `tflag` P.DebVersion "0.3.9.2-1")
     , debianize (hackage "data-ordlist")
-    , debianize (hackage "datetime" `flag` P.DebVersion "0.2.1-2")
+    , debianize (hackage "datetime" `pflag` P.DebVersion "0.2.1-2" `tflag` P.DebVersion "0.2.1-5build1")
     , debianize (hackage "regex-compat-tdfa")
     , debianize (hackage "file-embed")
     , debianize (hackage "filemanip" `tflag` P.DebVersion "0.3.6.2-3")
@@ -478,7 +478,7 @@ main _home release =
     , P.Package { P.spec = Debianize' (Hackage "operational") []
                 , P.flags = [P.OmitLTDeps] }
 --    , debianize (hackage "options")
-    , debianize (hackage "optparse-applicative")
+    , debianize (hackage "optparse-applicative" `flag` P.CabalPin "0.9.1.1") -- Waiting for support in ghcjs
     , debianize (hackage "ordered")
     , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
     , debianize (hackage "exceptions")
@@ -746,7 +746,9 @@ compiler release =
       -- libghc-cabal-dev so it doesn't buy us anything.  Watch for
       -- revision 5.
       ghc78 = case baseRelease release of
-                -- Just to avoid a rebuild for now
+                -- Just to avoid a rebuild for now.  A rebuild would
+                -- give ghc the missing libtinfo-dev dependency which
+                -- has bitten me a few times.
                 Trusty -> P.NoPackage
                 Precise -> P.NoPackage
                 _ -> proc (apt "experimental" "ghc")
@@ -932,7 +934,7 @@ happstack _home release =
                                                         "--provides=hsx2hs:haskell-hsx-utils"])
     -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
     , debianize (hackage "sourcemap")
-    , debianize (hackage "haskell-packages")
+    , debianize (hackage "haskell-packages" `flag` P.CabalPin "0.2.4.1") -- 0.2.4.2 waiting for optparse-applicative 0.10
     , debianize (hackage "hse-cpp")
     , debianize (darcs (repo ++ "/happstack-extra"))
 {-  , debianize (git "haskell-haskell-names" "https://github.com/haskell-suite/haskell-names")
@@ -1090,7 +1092,7 @@ conduit release =
     -- , debianize (hackage "blaze-builder-conduit" {- `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build4" -})
     -- , debianize (hackage "zlib-conduit" {- `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build3" -})
     , debianize (hackage "xml-conduit" `patch` $(embedFile "patches/xml-conduit.diff"))
-    , debianize (hackage "tagstream-conduit" `patch` $(embedFile "patches/tagstream-conduit.diff"))
+    , debianize (hackage "tagstream-conduit")
     , debianize (hackage "conduit-extra")
     , debianize (hackage "mime-types")
     ]
@@ -1371,15 +1373,12 @@ ghcjs release =
     , debdir (git "https://github.com/ghcjs/ghcjs-prim.git" [])
                  (Git "https://github.com/ddssff/ghcjs-prim-debian" [])
     , debianize (hackage "haddock-api"
+                   `flag` P.CabalDebian ["--default-package=haddock-api"]
+                   -- FIXME - This cabal-debian stuff does nothing because this isn't a Debianize target
                    `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
                                                       [ "# Force the Cabal dependency to be the version provided by GHC"
                                                       , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
     , debianize (hackage "haddock-library")
-    , debianize (git "https://github.com/ghcjs/haddock-internal" []
-                         `flag` P.CabalDebian ["--default-package=haddock-internal"]
-                         `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
-                                                            [ "# Force the Cabal dependency to be the version provided by GHC"
-                                                            , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
     , debianize (hackage "lifted-async")
     -- haskell-devscripts modified to support ghcjs packaging.
     -- , darcs "http://hub.darcs.net/ddssff/haskell-devscripts" `flag` P.RelaxDep "python-minimal"
@@ -1408,7 +1407,7 @@ ghcjs release =
                       `patch` $(embedFile "patches/ghcjs-tools.diff")
                       `flag` P.CabalDebian ["--source-package-name=ghcjs-tools"]
                       `flag` P.CabalDebian ["--default-package=ghcjs-tools"]
-                      `flag` P.CabalDebian ["--depends=ghcjs-tools:haddock-internal"]
+                      `flag` P.CabalDebian ["--depends=ghcjs-tools:haddock-api"]
                       `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
                                                                          [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                          , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])
