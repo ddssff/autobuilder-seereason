@@ -825,7 +825,9 @@ platform release =
     , debianize (hackage "network")
     , debianize (hackage "publicsuffixlist" `tflag` P.DebVersion "0.1-1build4")
     , debianize (hackage "HTTP")
-    , debianize (hackage "cgi" `flag` P.SkipVersion "3001.1.8.5") -- incompatible with current Typeable
+    , debianize (hackage "cgi" `flag` P.SkipVersion "3001.1.8.5" -- incompatible with current Typeable
+                               `flag` P.SkipVersion "3001.2.0.0" -- Requires an unavailable version of mtl
+                )
     -- This is bundled with the compiler
     -- , debianize (hackage "process")
     , debianize (hackage "random" `flag` P.SkipVersion "1.0.1.3") -- 1.1.0.3 fixes the build for ghc-7.4.2 / base < 4.6
