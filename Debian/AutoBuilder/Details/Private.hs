@@ -4,7 +4,7 @@ module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
 import Data.FileEmbed (embedFile)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, ModifyAtoms, BuildDep, NoDoc, CabalDebian),
-                                               Packages(..), flag, flags, spec, patch, debianize, hackage, rename, method, darcs, cd, dir)
+                                               Packages(..), flag, flags, spec, patch, debianize, hackage, rename, method, darcs, git, cd, dir)
 import Debian.Debianize (sourcePackageName, execDebM, installTo)
 import Debian.Debianize.Prelude ((~=))
 import Debian.Relation (SrcPkgName(SrcPkgName))
@@ -40,6 +40,7 @@ applications _home =
     named "applications" $
     [ debianize (darcs (privateRepo </> "appraisalscribe"))
     , debianize (darcs (privateRepo </> "appraisalscribe-data"))
+    , debianize (git "https://github.com/seereason/image-cache.git" [])
     , darcs (privateRepo </> "seereason")
     , debianize (darcs (privateRepo </> "happstack-ontology")
                    `flag` P.BuildDep "hsx2hs")
