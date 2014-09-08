@@ -93,9 +93,9 @@ Executable autobuilder-seereason
    Build-Depends: debian >= 3.82
 
  if flag (local-process-listlike)
-   Hs-Source-Dirs: ../../git/process-listlike, ../../darcs/process-progress, ../../darcs/process-verbosity, ../../darcs/archive
+   Hs-Source-Dirs: ../../git/process-listlike, ../../darcs/archive
  else
-   Build-Depends: process-listlike >= 0.9, process-progress, process-verbosity, archive
+   Build-Depends: process-listlike >= 0.9, archive
 
 Executable seereason-darcs-backups
  Main-Is: Backups.hs
@@ -103,7 +103,7 @@ Executable seereason-darcs-backups
  GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
  Build-depends: base, Extra, network-uri
  if flag (local-process-listlike)
-   Hs-Source-Dirs: ../../darcs/archive, ../../git/debian-haskell, ../../darcs/mirror, ../../git/process-listlike, ../../darcs/process-progress
+   Hs-Source-Dirs: ../../darcs/archive, ../../git/debian-haskell, ../../darcs/mirror, ../../git/process-listlike
    Build-Depends: applicative-extras, bytestring, utf8-string, Unixutils, directory, unix, process, ListLike >= 4, old-locale, regex-compat, HUnit, regex-posix, zlib, text, pureMD5, containers, time, parsec, template-haskell, exceptions, deepseq, filepath, pretty, help, bzlib, mtl
  else
    Build-Depends: archive >= 1.7
