@@ -237,7 +237,7 @@ main _home release =
     , wskip $ debianize (hackage "attempt")
     , debianize (hackage "errors")
     , debianize (hackage "failure")
-    , debianize (hackage "attoparsec")
+    , debianize (hackage "attoparsec" `flag` P.CabalPin "0.12.1.1") -- avoid rebuild
     , debianize (hackage "scientific")
     , debianize (hackage "arithmoi" `flag` P.BuildDep "llvm-dev")
     , debianize (hackage "attoparsec-enumerator")
@@ -713,7 +713,7 @@ main _home release =
                 `wflag` P.DebVersion "0.5.6-2"
                 `flag` P.ModifyAtoms (execDebM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
     , debianize (hackage "urlencoded" `patch` $(embedFile "patches/urlencoded.diff"))
-    , debianize (hackage "hxt" `patch` $(embedFile "patches/hxt.diff"))
+    , debianize (hackage "hxt" `patch` $(embedFile "patches/hxt.diff") `flag` P.CabalPin "9.3.1.6") -- avoid rebuild
     , debianize (hackage "hxt-charproperties")
     , debianize (hackage "hxt-regex-xmlschema")
     , debianize (hackage "hxt-unicode")
