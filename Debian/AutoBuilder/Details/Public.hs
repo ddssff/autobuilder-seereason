@@ -256,7 +256,7 @@ main _home release =
     , debianize (hackage "bytestring-trie")
     , debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev" `tflag` P.DebVersion "0.5.0.4-2")
     -- , debianize (hackage "cairo-pdf")
-    , debianize (hackage "case-insensitive")
+    , debianize (hackage "case-insensitive" `flag` P.CabalPin "1.2.0.0") -- avoid rebuild
     -- Here is an example of creating a debian/Debianize.hs file with an
     -- autobuilder patch.  The autobuilder then automatically runs this
     -- script to create the debianization.
@@ -794,7 +794,7 @@ platform release =
     , debianize (hackage "parallel")
     , debianize (hackage "syb")
     , debianize (hackage "fgl" `flag` P.CabalPin "5.5.0.1") -- Minimizing rebuild
-    , debianize (hackage "text")
+    , debianize (hackage "text" `flag` P.CabalPin "1.1.1.3") -- Avoid rebuild
     , P.Package { P.spec = Debianize' (Hackage "alex") []
                   -- alex shouldn't rebuild just because alex seems newer, but alex does require
                   -- an installed alex binary to build
@@ -938,7 +938,7 @@ happstack _home release =
                                                         "--provides=hsx2hs:haskell-hsx-utils"])
     -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
     , debianize (hackage "sourcemap")
-    , debianize (hackage "haskell-packages" `flag` P.CabalPin "0.2.4.1") -- 0.2.4.2 waiting for optparse-applicative 0.10
+    , debianize (hackage "haskell-packages" `flag` P.CabalPin "0.2.4.1") -- 0.2.4.2 waiting for optparse-applicative 0.10.  Btw, 0.2.4.1 doesn't build with Cabal-1.21
     , debianize (hackage "hse-cpp")
     , debianize (darcs (repo ++ "/happstack-extra"))
 {-  , debianize (git "haskell-haskell-names" "https://github.com/haskell-suite/haskell-names")
@@ -1058,7 +1058,7 @@ authenticate _home release =
                            -- `patch` $(embedFile "patches/happstack-authenticate.diff")
                 )
     , digestiveFunctors
-    , debianize (hackage "fb" `patch` $(embedFile "patches/fb.diff"))
+    , debianize (hackage "fb")
     , debianize (hackage "monad-logger")
     , debianize (hackage "monad-loops")
     , debianize (hackage "fast-logger")
@@ -1317,7 +1317,7 @@ idris release =
         [ debianize (hackage "idris"
                        -- `patch` $(embedFile "patches/idris.diff")
                        `flag` P.BuildDep "libgc-dev"
-                       `flag` P.CabalDebian ["--default-package=idris"])
+                       `flag` P.CabalDebian ["--default-package=idris"]) -- Requires optparse-applicative 0.10
         , hack "vector-binary-instances"
         , hack "trifecta"
         , debianize (hackage "parsers" {- `patch` $(embedFile "patches/parsers.diff") -})
