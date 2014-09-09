@@ -871,7 +871,7 @@ clckwrks _home release =
                                           (DataFiles
                                            (DataFiles
                                             (Git "https://github.com/clckwrks/clckwrks" [])
-                                            (Uri "http://cloud.github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip"
+                                            (Uri "https://cloud.github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip"
                                                  "e211065e573ea0239d6449882c9d860d")
                                             "jstree")
                                            (Uri "https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"
