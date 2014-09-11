@@ -34,24 +34,34 @@ ghcjs_flags NoPackage = NoPackage
 ghcjs_flags p@(Named {..}) = p {packages = ghcjs_flags packages}
 ghcjs_flags p@(Packages {..}) = p {list = map ghcjs_flags list}
 ghcjs_flags p@(Package {..}) =
-             let srcName :: RetrieveMethod -> String
-                 srcName (Debianize' p' fs) = case fs of
-                                              (SrcDeb (SrcPkgName name) : _) -> name
-                                              [] -> srcName (Debianize p')
-                 srcName (Debianize p') = srcName p'
-                 srcName (Patch x _) = srcName x
-                 srcName m = "ghcjs-" <> map toLower (fromMaybe (cabName m) (dropPrefix "haskell-" (cabName m)))
-                 cabName :: RetrieveMethod -> String
-                 cabName (Hackage n) = n
-                 cabName (Debianize p') = cabName p'
-                 cabName (Debianize' p' _) = cabName p'
-                 cabName (Cd d _) = d
-                 cabName _ = error $ "ghcjs_flags - unsupported target type: " ++ show spec in
              p `flag` P.CabalDebian ["--ghcjs", "--no-ghc"]
                `flag` P.CabalDebian ["--source-package-name=" <> srcName spec]
                `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
                `flag` P.BuildDep "ghcjs"
                `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
+               `putSrcPkgName` (SrcPkgName (srcName spec))
+    where
+      srcName :: RetrieveMethod -> String
+      srcName (Debianize' p' fs) = case fs of
+                                     (SrcDeb (SrcPkgName name) : _) -> name
+                                     [] -> srcName (Debianize p')
+      srcName (Debianize p') = srcName p'
+      srcName (Patch x _) = srcName x
+      srcName m = "ghcjs-" <> map toLower (fromMaybe (cabName m) (dropPrefix "haskell-" (cabName m)))
+      cabName :: RetrieveMethod -> String
+      cabName (Hackage n) = n
+      cabName (Debianize p') = cabName p'
+      cabName (Debianize' p' _) = cabName p'
+      cabName (Cd d _) = d
+      cabName _ = error $ "ghcjs_flags - unsupported target type: " ++ show spec
+
+      -- Hack to get the Debianize' retrieve method to look different
+      -- for packages built with both ghc and ghcjs.
+      putSrcPkgName :: Packages -> SrcPkgName -> Packages
+      putSrcPkgName p@(Package {spec = Debianize' m fs}) src = p {spec = Debianize' m (SrcDeb src : filter (not . isSrcDeb) fs)}
+      putSrcPkgName p src = p
+      isSrcDeb (SrcDeb {}) = True
+      isSrcDeb _ = False
 
 dropPrefix :: Monad m => String -> String -> m String
 dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
