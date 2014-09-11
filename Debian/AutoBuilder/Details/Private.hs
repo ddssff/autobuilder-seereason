@@ -40,7 +40,8 @@ applications _home =
     named "applications" $
     [ debianize (darcs (privateRepo </> "appraisalscribe"))
     , debianize (darcs (privateRepo </> "appraisalscribe-data"))
-    , debianize (git "ssh://seereason@github.com/image-cache.git" [])
+    -- , debianize (git "ssh://seereason@github.com/image-cache.git" [])
+    , debianize (git "https://github.com/seereason/image-cache.git" [])
     , darcs (privateRepo </> "seereason")
     , debianize (darcs (privateRepo </> "happstack-ontology")
                    `flag` P.BuildDep "hsx2hs")
