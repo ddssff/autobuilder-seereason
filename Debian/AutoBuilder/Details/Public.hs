@@ -237,7 +237,7 @@ main _home release =
     , wskip $ debianize (hackage "attempt")
     , debianize (hackage "errors")
     , debianize (hackage "failure")
-    , debianize (hackage "attoparsec" `flag` P.CabalPin "0.12.1.1") -- avoid rebuild
+    , debianize (hackage "attoparsec")
     , debianize (hackage "scientific")
     , debianize (hackage "arithmoi" `flag` P.BuildDep "llvm-dev")
     , debianize (hackage "attoparsec-enumerator")
@@ -751,8 +751,8 @@ compiler release =
                 -- Just to avoid a rebuild for now.  A rebuild would
                 -- give ghc the missing libtinfo-dev dependency which
                 -- has bitten me a few times.
-                Trusty -> P.NoPackage
-                Precise -> P.NoPackage
+                -- Trusty -> P.NoPackage
+                -- Precise -> P.NoPackage
                 _ -> proc (apt "experimental" "ghc")
       ghc76 = apt "sid" "ghc" -- up to revision 13 now
       ghcFlags p = p `relax` "ghc"
@@ -978,7 +978,7 @@ happstack _home release =
     , debianize (hackage "hslua")
     , debianize (hackage "JuicyPixels")
     , debianize (hackage "pandoc"
-                   -- `patch` $(embedFile "patches/pandoc.diff")
+                   `patch` $(embedFile "patches/pandoc.diff")
                    `flag` P.RelaxDep "libghc-pandoc-doc"
                    `flag` P.BuildDep "alex"
                    `flag` P.BuildDep "happy")
