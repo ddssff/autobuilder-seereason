@@ -6,7 +6,7 @@ import Data.FileEmbed (embedFile)
 import Data.List (intercalate, isPrefixOf)
 import Data.Monoid ((<>))
 import Data.Text as Text (unlines)
-import Debian.AutoBuilder.Details.Common (repo, named, ghcjs_flags)
+import Debian.AutoBuilder.Details.Common (named, ghcjs_flags)
 import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..), Release(..))
 import Debian.AutoBuilder.Details.GHC (ghc)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
@@ -21,15 +21,15 @@ patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"
 darcsHub :: String
 darcsHub = "http://hub.darcs.net/stepcut"
-seereason :: String
-seereason = "http://src.seereason.com"
+-- seereason :: String
+-- seereason = "http://src.seereason.com"
 localRepo :: String
 localRepo = "file:///home/dsf/darcs/"
 
 -- Stick new packages here to get an initial build, then move
 -- them to a suitable group.
 new :: P.Packages
-new = named "new" [ debianize (darcs (repo </> "showplease"))
+new = named "new" [ debianize (darcs ("http://src.seereason.com/showplease"))
                   , debianize (hackage "pseudomacros")
                   , debianize (hackage "aeson-pretty")
                   , debianize (hackage "wai-middleware-static")
@@ -114,11 +114,11 @@ autobuilder home =
     [ unixutils home
     , git "https://github.com/ddssff/debian-haskell" [] `flag` P.RelaxDep "cabal-debian"
     , git "https://github.com/ddssff/cabal-debian" []
-    , darcs (repo </> "mirror")
+    , darcs ("http://src.seereason.com/mirror")
     , git "https://github.com/ddssff/debian-repo" []
     , debianize (git "https://github.com/ddssff/autobuilder" [])
         `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
-    , darcs (repo </> "archive")
+    , darcs ("http://src.seereason.com/archive")
     , skip $ -- we don't want this in our repository because we need everything to work
              -- with process-listlike.
       debianize (hackage "process-extras")
@@ -142,8 +142,8 @@ autobuilder home =
                              , "--provides=libghc-process-listlike-doc:libghc-process-extras-doc"
                              , "--replaces=libghc-process-listlike-doc:libghc-process-extras-doc" ]
 {-
-    , darcs (repo </> "process-progress")
-    , debianize (darcs (repo </> "process-verbosity"))
+    , darcs ("http://src.seereason.com/process-progress")
+    , debianize (darcs ("http://src.seereason.com/process-verbosity"))
 -}
     , debianize (git "https://github.com/ddssff/autobuilder-seereason" [])
         -- It would be nice if these dependencies were in the cabal file
@@ -191,9 +191,9 @@ autobuilder home =
 unixutils :: FilePath-> P.Packages
 unixutils _home =
     named "Unixutils"
-    [ darcs (repo ++ "/haskell-unixutils")
-    , darcs (repo </> "haskell-extra") `flag` P.RelaxDep "cabal-debian"
-    , darcs (repo </> "haskell-help") ]
+    [ darcs ("http://src.seereason.com/haskell-unixutils")
+    , darcs ("http://src.seereason.com/haskell-extra") `flag` P.RelaxDep "cabal-debian"
+    , darcs ("http://src.seereason.com/haskell-help") ]
 
 main :: FilePath-> Release -> P.Packages
 main _home release =
@@ -226,7 +226,7 @@ main _home release =
                                          "--revision", ""])
     -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
     , debianize (hackage "aeson")
-    , darcs (repo </> "haskell-agi")
+    , darcs ("http://src.seereason.com/haskell-agi")
     , debianize (hackage "ansi-terminal")
     , debianize (hackage "ansi-wl-pprint" `tflag` P.DebVersion "0.6.7.1-1")
     , debianize (hackage "wl-pprint")
@@ -293,8 +293,8 @@ main _home release =
                    `tflag` P.DebVersion "2.3.3-4")
     -- , apt "wheezy" "haskell-configfile"
     , debianize (hackage "ConfigFile")
-    , darcs (repo </> "haskell-consumer")
-    , debianize (darcs (repo </> "module-management") `flag` P.BuildDep "rsync")
+    , darcs ("http://src.seereason.com/haskell-consumer")
+    , debianize (darcs ("http://src.seereason.com/module-management") `flag` P.BuildDep "rsync")
     , debianize (hackage "securemem" `tflag` P.DebVersion "0.1.3-1")
     , debianize (hackage "cipher-aes")
     , debianize (hackage "cipher-des" `tflag` P.DebVersion "0.0.6-1")
@@ -428,11 +428,11 @@ main _home release =
                    `flag` P.DevelDep "libcrypto++-dev")
     , debianize (hackage "HsSyck")
     , debianize (hackage "HStringTemplate")
-    , darcs (repo </> "html-entities")
+    , darcs ("http://src.seereason.com/html-entities")
     , debianize (hackage "http-types")
     , debianize (hackage "i18n" `flag` P.DebVersion "0.3-1~hackage1")
     , debianize (hackage "iconv")
-    , P.Package { P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs (repo </> "haskell-incremental-sat-solver-debian"))
+    , P.Package { P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs ("http://src.seereason.com/haskell-incremental-sat-solver-debian"))
                 , P.flags = [] }
     , broken $ debianize (hackage "instant-generics" `flag` P.SkipVersion "0.3.7")
     , debianize (hackage "generic-deriving")
@@ -445,13 +445,13 @@ main _home release =
     -- , debianize (git "haskell-logic-hs" "https://github.com/smichal/hs-logic")
 {-  , apt "wheezy" "haskell-leksah"
     , apt "wheezy" "haskell-leksah-server" -- for leksah -}
-    , darcs (repo ++ "/haskell-logic")
+    , darcs ("http://src.seereason.com/haskell-logic")
     , debianize (hackage "pointed")
     , P.Package { P.spec = Debianize' (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) []
                 , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
     -- , apt "sid" "haskell-maybet"
     , debianize (hackage "MaybeT" `flag` P.DebVersion "1.2-6")
-    , darcs (repo </> "haskell-mime")
+    , darcs ("http://src.seereason.com/haskell-mime")
     , debianize (hackage "mmap")
     , debianize (hackage "monad-control" `flag` P.CabalPin "0.3.2.3")
     , debianize (hackage "monad-par-extras")
@@ -514,7 +514,7 @@ main _home release =
     -- Retired
     -- , apt (rel release "wheezy" "quantal") "haskell-quickcheck1"
     , debianize (hackage "regex-tdfa")
-    , darcs (repo </> "haskell-revision")
+    , darcs ("http://src.seereason.com/haskell-revision")
     , debianize (hackage "RJson"
                    `patch` $(embedFile "patches/RJson.diff")
                    `wflag` P.DebVersion "0.3.7-1~hackage1")
@@ -527,9 +527,9 @@ main _home release =
     , debianize (hackage "semigroups" `flag` P.CabalPin "0.15.1")
     , debianize (hackage "nats")
     , debianize (hackage "sendfile" `tflag` P.DebVersion "0.7.9-1")
-    , darcs (repo </> "set-extra")
+    , darcs ("http://src.seereason.com/set-extra")
     -- I don't think we use this any more
-    -- , debianize (darcs "haskell-old-exception" (repo ++ "/old-exception"))
+    -- , debianize (darcs "haskell-old-exception" ("http://src.seereason.com/old-exception"))
     , debianize (hackage "SHA") -- apt (rel release "wheezy" "quantal") "haskell-sha"
     , debianize (hackage "shake")
     , debianize (hackage "byteorder" `tflag` P.DebVersion "1.0.4-1")
@@ -663,22 +663,22 @@ main _home release =
     , apt "sid" "jquery-goodies" `patch` $(embedFile "patches/jquery-goodies.diff")
     -- We want to stick with jqueryui-1.8 for now, so create
     -- packages with the version number embedded in the name.
-    , darcs (repo </> "jqueryui18")
+    , darcs ("http://src.seereason.com/jqueryui18")
     , case baseRelease release of
         Precise -> proc (apt "trusty" "libjs-jcrop")
         _ -> P.NoPackage
 {-
-    , P.Package { P.spec = DebDir (Uri (repo </> "jcrop/Jcrop.tar.gz") "028feeb9b6415af3b7fd7d9471c92469") (Darcs (repo ++ "/jcrop-debian"))
+    , P.Package { P.spec = DebDir (Uri ("http://src.seereason.com/jcrop/Jcrop.tar.gz") "028feeb9b6415af3b7fd7d9471c92469") (Darcs ("http://src.seereason.com/jcrop-debian"))
                 , P.flags = [] }
 -}
     , debianize (hackage "magic" `flag` P.DevelDep "libmagic-dev" `flag` P.DebVersion "1.0.8-12")
-{-  , P.Package { P.spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs (repo ++ "/magic-quilt"))
+{-  , P.Package { P.spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs ("http://src.seereason.com/magic-quilt"))
                 , P.flags = [] } -}
     , debianize (hackage "MissingH")
-    , darcs (repo </> "seereason-keyring") `flag` P.UDeb "seereason-keyring-udeb"
-    , debianize (darcs (repo </> "seereason-ports"))
+    , darcs ("http://src.seereason.com/seereason-keyring") `flag` P.UDeb "seereason-keyring-udeb"
+    , debianize (darcs ("http://src.seereason.com/seereason-ports"))
     , apt "wheezy" "tinymce"
-    , darcs (repo </> "vc-darcs")
+    , darcs ("http://src.seereason.com/vc-darcs")
     , git "https://github.com/ddssff/vc-git-dired" []
     , debianize (hackage "wl-pprint-extras")
     , debianize (hackage "HaTeX")
@@ -707,7 +707,7 @@ main _home release =
 -}
     -- Needs update for current http-conduit
     -- , debianize $ (hackage "dropbox-sdk") `patch` $(embedFile "patches/dropbox-sdk.diff")
-    , debianize (darcs (repo ++ "/hS3"))
+    , debianize (darcs ("http://src.seereason.com/hS3"))
                 `tflag` P.DebVersion "0.5.7-3build1"
                 `pflag` P.DebVersion "0.5.6-2"
                 `wflag` P.DebVersion "0.5.6-2"
@@ -717,7 +717,7 @@ main _home release =
     , debianize (hackage "hxt-charproperties")
     , debianize (hackage "hxt-regex-xmlschema")
     , debianize (hackage "hxt-unicode")
-    -- , debianize (darcs "haskell-tiny-server" (repo </> "tiny-server") `flag` P.BuildDep "hsx2hs"
+    -- , debianize (darcs "haskell-tiny-server" ("http://src.seereason.com/tiny-server") `flag` P.BuildDep "hsx2hs"
     --                `flag` P.SkipPackage {- has a "derives SafeCopy" -})
     , debianize (hackage "stringable") -- this can be done with listlike-instances
     , debianize (hackage "currency")
@@ -783,7 +783,7 @@ platform release =
       -- to require the new "install orig.tar.gz file" code in the
       -- autobuilder.
       broken $
-      P.Package { P.spec = DebDir (Hackage "happy") (Darcs (repo </> "happy-debian")),
+      P.Package { P.spec = DebDir (Hackage "happy") (Darcs ("http://src.seereason.com/happy-debian")),
                   P.flags = [P.RelaxDep "happy", P.CabalDebian ["--executable", "happy"],
                              P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
     , debianize (hackage "stm")
@@ -928,7 +928,7 @@ happstack _home release =
         tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     named "happstack"
     [ plugins
-    , debianize (darcs (repo ++ "/seereason-base"))
+    , debianize (darcs ("http://src.seereason.com/seereason-base"))
     , debianize (hackage "happstack")
     , debianize (darcs (darcsHub ++ "/happstack") `cd` "happstack-foundation")
     , debianize (hackage "cryptohash-cryptoapi")
@@ -940,7 +940,7 @@ happstack _home release =
     , debianize (hackage "sourcemap")
     , debianize (hackage "haskell-packages" `flag` P.CabalPin "0.2.4.1") -- 0.2.4.2 waiting for optparse-applicative 0.10.  Btw, 0.2.4.1 doesn't build with Cabal-1.21
     , debianize (hackage "hse-cpp")
-    , debianize (darcs (repo ++ "/happstack-extra"))
+    , debianize (darcs ("http://src.seereason.com/happstack-extra"))
 {-  , debianize (git "haskell-haskell-names" "https://github.com/haskell-suite/haskell-names")
     , debianize (git "haskell-haskell-packages" "https://github.com/haskell-suite/haskell-packages")
     , debianize (git "haskell-hse-cpp" "https://github.com/haskell-suite/hse-cpp")
@@ -956,17 +956,17 @@ happstack _home release =
     , debianize (hackage "happstack-jmacro")
     , broken $ debianize (hackage "jmacro-rpc-happstack" `flag` P.SkipVersion "0.2.1") -- Really just waiting for jmacro-rpc
     , broken $ debianize (hackage "jmacro-rpc")
-    , darcs (repo ++ "/happstack-search")
+    , darcs ("http://src.seereason.com/happstack-search")
     -- , debianize (hackage "happstack-server")
     , debianize (darcs "http://hub.darcs.net/stepcut/happstack" `cd` "happstack-server")
-    -- , debianize (darcs (repo ++ "/happstack-server-debug") `cd` "happstack-server")
+    -- , debianize (darcs ("http://src.seereason.com/happstack-server-debug") `cd` "happstack-server")
     , debianize (hackage "happstack-lite")
     , debianize (darcs "http://hub.darcs.net/stepcut/happstack" `cd` "happstack-server-tls")
-    -- , debianize (darcs (repo ++ "/happstack-server-debug") `cd` "happstack-server-tls")
+    -- , debianize (darcs ("http://src.seereason.com/happstack-server-debug") `cd` "happstack-server-tls")
     , debianize (hackage "time-compat")
     , debianize (hackage "base64-bytestring" `tflag` P.DebVersion "1.0.0.1-1")
     , debianize (hackage "threads")
-    , debianize (hackage "list-tries")
+    , debianize (hackage "list-tries" `patch` $(embedFile "patches/list-tries.diff"))
     , debianize (hackage "happstack-static-routing")
     , debianize (hackage "happstack-util"
                    `patch` $(embedFile "patches/happstack-util.diff")
@@ -990,14 +990,14 @@ happstack _home release =
     , debianize (hackage "web-routes-hsp")
     , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
     , debianize (hackage "web-routes-th")
-    , debianize (darcs (repo ++ "/happstack-scaffolding")
+    , debianize (darcs ("http://src.seereason.com/happstack-scaffolding")
                    `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "HJScript")
-    , debianize (darcs (seereason ++ "/reform") `cd` "reform")
-    , debianize (darcs (seereason </> "reform") `cd` "reform-blaze")
+    , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform")
+    , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform-blaze")
     , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-happstack")
     -- , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-heist")
-    , debianize (darcs (seereason </> "reform") `cd` "reform-hsp" `flag` P.BuildDep "hsx2hs")
+    , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform-hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "blaze-builder")
     , debianize (hackage "blaze-markup")
     -- , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
@@ -1008,11 +1008,11 @@ happstack _home release =
     , debianize (hackage "blaze-textual-native"
                    `patch` $(embedFile "patches/blaze-textual-native.diff")
                    `flag` P.Revision "")
-    , debianize (darcs (repo ++ "/happstack-clckwrks")
+    , debianize (darcs ("http://src.seereason.com/happstack-clckwrks")
                    `cd` "clckwrks-theme-happstack"
                    -- `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
                    `flag` P.BuildDep "hsx2hs")
-    , debianize (darcs (repo ++ "/happstack-clckwrks")
+    , debianize (darcs ("http://src.seereason.com/happstack-clckwrks")
                    `cd` "happstack-dot-com"
                    -- This is a change that only relates to the autobuilder
                    `patch` $(embedFile "patches/happstack-dot-com.diff"))
@@ -1075,7 +1075,7 @@ digestiveFunctors =
                    `patch` $(embedFile "patches/digestive-functors-happstack.diff")
                    `flag` P.CabalPin "0.1.1.5"
                    `flag` P.DebVersion "0.1.1.5-2")
-    , debianize (darcs (repo ++ "/digestive-functors-hsp") `flag` P.BuildDep "hsx2hs") ]
+    , debianize (darcs ("http://src.seereason.com/digestive-functors-hsp") `flag` P.BuildDep "hsx2hs") ]
 
 -- | We need new releases of all the conduit packages before we can move
 -- from conduit 0.4.2 to 0.5.
@@ -1106,7 +1106,7 @@ happstackdotcom _home =
     named "happstackdotcom" $
     [ debianize (hackage "ircbot" `patch` $(embedFile "patches/ircbot.diff"))
     , debianize (hackage "SafeSemaphore")
-    , darcs (repo </> "happstackDotCom-doc") ]
+    , darcs ("http://src.seereason.com/happstackDotCom-doc") ]
 
 shakespeare =
     named "shakespeare-group" $
@@ -1292,9 +1292,8 @@ sunroof release =
   , debianize (hackage "MemoTrie")
   , debianize (hackage "value-supply")
   , debianize (hackage "reified-records")
-  , debianize (darcs (repo </> "seclib"))
+  , debianize (darcs ("http://src.seereason.com/seclib"))
   ]
-  where repo = "http://src.seereason.com/"
 
 -- | Create a flag that tells cabal debian the package @name@ is a replacement for @orig@,
 -- so that when it is installed the @orig@ package is uninstalled.  (This may be buggy, the

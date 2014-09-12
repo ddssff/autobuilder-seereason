@@ -16,7 +16,7 @@ data Build = Production | Testing
 build = Production
 -- build = Testing
 
-repo = "http://src.seereason.com" :: String
+-- repo = "http://src.seereason.com" :: String
 localRepo home = "file://" ++ home ++ "/darcs"
 privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String
 
