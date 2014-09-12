@@ -659,7 +659,7 @@ main _home release =
         Quantal -> P.NoPackage -- This build hangs when performing tests
         Wheezy -> P.NoPackage -- This build hangs when performing tests
         _ -> apt "sid" "html-xml-utils"
-    , apt "sid" "jquery"
+    , apt "sid" "jquery" `patch` $(embedFile "patches/jquery.diff") -- Revert to version 1.7.2+dfsg-3, version 1.7.2+dfsg-3.2 gives us a nearly empty jquery.min.js 
     , apt "sid" "jquery-goodies" `patch` $(embedFile "patches/jquery-goodies.diff")
     -- We want to stick with jqueryui-1.8 for now, so create
     -- packages with the version number embedded in the name.
