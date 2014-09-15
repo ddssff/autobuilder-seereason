@@ -70,7 +70,7 @@ Executable autobuilder-seereason
    Hs-Source-Dirs: ../../git/autobuilder, ../../git/autobuilder/dist/build/autogen
    Build-Depends: applicative-extras, data-lens, directory, exceptions, Extra, magic, mtl, network-uri,
                   pureMD5, regex-compat, tar, time, unix,
-                  Unixutils, utf8-string, zlib
+                  Unixutils, utf8-string, zlib, prettyclass
  else
    Build-Depends: AutoBuilder >= 6.69
 

@@ -31,7 +31,7 @@ libraries _home =
     -- really have a mechanism to ensure this is installed in the
     -- parent environment, except making it a dependency of the
     -- autobuilder itself.
-    -- , debianize (method (Darcs (privateRepo </> "mimo"))) -- Disabled until safecopy instances are fixed
+    , debianize (git "https://github.com/seereason/mimo" []) -- Disabled until safecopy instances are fixed
     , ghcjs_flags (debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-client"))
     , debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-server")
     ] {- ++ clckwrks14 -}
@@ -50,62 +50,14 @@ applications _home =
     -- There is a debianization in the repo that contains this file
     -- (Targets.hs), and it creates a package named seereason-darcs-backups,
     -- which performs backups on the darcs repo.
-    , debianize (method (Cd "seereasonpartners-dot-com" (Darcs (privateRepo </> "seereasonpartners-clckwrks")))
+    , debianize (darcs (privateRepo </> "seereasonpartners-clckwrks")
+                   `cd` "seereasonpartners-dot-com"
                    `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
-    , debianize (method (Cd "clckwrks-theme-seereasonpartners" (Darcs (privateRepo </> "seereasonpartners-clckwrks")))
+    , debianize (darcs (privateRepo </> "seereasonpartners-clckwrks")
+                   `cd` "clckwrks-theme-seereasonpartners"
                    `flag` P.BuildDep "hsx2hs"
                    `flag` P.NoDoc)
-    , debianize (method (Darcs (privateRepo </> "clckwrks-theme-appraisalscribe"))
+    , debianize (darcs (privateRepo </> "clckwrks-theme-appraisalscribe")
                    `flag` P.BuildDep "hsx2hs")
-
-    -- Merged into appraisalscribe
-    -- , debianize (method "appraisalreportonline-dot-com"
-    --                   (Cd "appraisalreportonline-dot-com" (Darcs (privateRepo </> "appraisalreportonline-clckwrks")))) []
-    -- Theme is now haskell-clckwrks-theme-appraisalscribe
-    -- , debianize (method "haskell-clckwrks-theme-appraisalreportonline"
-    --                   (Cd "clckwrks-theme-appraisalreportonline" (Darcs (privateRepo </> "appraisalreportonline-clckwrks")))
-    --                `flag` P.BuildDep "hsx2hs")
     ]
 
-_clckwrks14 =
-      [ P.Package { P.spec = Debianize (Hackage "clckwrks")
-                  , P.flags = [P.CabalPin "0.14.2",
-                               P.ModifyAtoms (execDebM $ sourcePackageName ~= Just (SrcPkgName "haskell-clckwrks-14")) ] }
-      , debianize (hackage "clckwrks"
-                     `rename` "clckwrks-13"
-                     `flag` P.CabalPin "0.13.2"
-                     `flag` P.ModifyAtoms (execDebM $ sourcePackageName ~= Just (SrcPkgName "haskell-clckwrks-13"))
-                     `patch` $(embedFile "patches/clckwrks-13.diff"))
-      , P.Package { P.spec = Debianize (Hackage "blaze-html")
-                  , P.flags = [P.CabalPin "0.5.1.3",
-                               P.ModifyAtoms (execDebM $ sourcePackageName ~= Just (SrcPkgName "haskell-blaze-html-5")) ] }
-      , P.Package { P.spec = Debianize (Hackage "happstack-authenticate")
-                  , P.flags = [P.CabalPin "0.9.8",
-                               P.ModifyAtoms (execDebM $ sourcePackageName ~= Just (SrcPkgName "haskell-happstack-authenticate-9")) ] }
-      , P.Package { P.spec = Debianize (Hackage "http-types")
-                  , P.flags = [P.CabalPin "0.7.3.0.1",
-                               P.ModifyAtoms (execDebM $ sourcePackageName ~= Just (SrcPkgName "haskell-http-types-7")) ] }
-      , debianize (hackage "web-plugins"
-                     `patch` $(embedFile "patches/web-plugins.diff")
-                     `rename` "web-plugins-1"
-                     `flag` P.CabalPin "0.1.2"
-                     `flag` P.ModifyAtoms (execDebM $ sourcePackageName ~= Just (SrcPkgName "haskell-web-plugins-1")))
-      , P.Package { P.spec = Debianize (Hackage "case-insensitive")
-                  , P.flags = [P.CabalPin "0.4.0.4",
-                               P.ModifyAtoms (execDebM $ sourcePackageName ~= Just (SrcPkgName "case-insensitive-0")) ] }
-      -- Because this target has a debian/Debianize.hs script, the
-      -- debianization will be performed by running that rather than
-      -- calling callDebianize directly.  That means that the
-      -- ModifyAtoms flag here (won't work.  So now what?)
-{-
-      , P.Package { P.spec = Debianize (Cd "clckwrks-theme-clcksmith" (Darcs (privateRepo </> "clcksmith")))
-                  -- Haddock gets upset about the HSX.QQ modules.  Not sure why.
-                  , P.flags = [P.BuildDep "haskell-hsx-utils", P.NoDoc] }
-      , debianize (P.Package
-                        { P.spec = Darcs (privateRepo </> "clcksmith")
-                        , P.flags = [] }
-                    `patch` $(embedFile "patches/clcksmith.diff")
-                    `flag` P.BuildDep "haskell-hsx-utils"
-                    `flag` P.CabalDebian ["--missing-dependency", "libghc-clckwrks-theme-clcksmith-doc"])
--}
-      ]
