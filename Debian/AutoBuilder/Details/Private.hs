@@ -31,7 +31,7 @@ libraries _home =
     -- really have a mechanism to ensure this is installed in the
     -- parent environment, except making it a dependency of the
     -- autobuilder itself.
-    , debianize (git "https://github.com/seereason/mimo" []) -- Disabled until safecopy instances are fixed
+    , debianize (git "ssh://git@github.com/seereason/mimo.git" []) -- Disabled until safecopy instances are fixed
     , ghcjs_flags (debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-client"))
     , debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-server")
     ] {- ++ clckwrks14 -}
@@ -39,8 +39,8 @@ libraries _home =
 applications _home =
     named "applications" $
     [ debianize (darcs (privateRepo </> "appraisalscribe"))
-    , debianize (darcs (privateRepo </> "appraisalscribe-data"))
-    -- , debianize (git "ssh://seereason@github.com/image-cache.git" [])
+    , debianize (git "ssh://git@github.com/seereason/appraisalscribe-data" [])
+    , debianize (git "ssh://git@github.com/seereason/appraisalscribe-data-tests" [])
     , debianize (git "https://github.com/seereason/image-cache.git" [])
     , darcs (privateRepo </> "seereason")
     , debianize (darcs (privateRepo </> "happstack-ontology")
