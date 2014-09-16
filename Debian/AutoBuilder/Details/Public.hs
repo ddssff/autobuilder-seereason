@@ -114,11 +114,11 @@ autobuilder home =
     [ unixutils home
     , git "https://github.com/ddssff/debian-haskell" [] `flag` P.RelaxDep "cabal-debian"
     , git "https://github.com/ddssff/cabal-debian" []
-    , darcs ("http://src.seereason.com/mirror")
+    , git "https://github.com/seereason/mirror" []
     , git "https://github.com/ddssff/debian-repo" []
     , debianize (git "https://github.com/ddssff/autobuilder" [])
         `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
-    , darcs ("http://src.seereason.com/archive")
+    , git "https://github.com/seereason/archive" []
     , skip $ -- we don't want this in our repository because we need everything to work
              -- with process-listlike.
       debianize (hackage "process-extras")
@@ -191,7 +191,7 @@ autobuilder home =
 unixutils :: FilePath-> P.Packages
 unixutils _home =
     named "Unixutils"
-    [ darcs ("http://src.seereason.com/haskell-unixutils")
+    [ git "https://github.com/seereason/haskell-unixutils" []
     , darcs ("http://src.seereason.com/haskell-extra") `flag` P.RelaxDep "cabal-debian"
     , darcs ("http://src.seereason.com/haskell-help") ]
 
@@ -294,7 +294,7 @@ main _home release =
     -- , apt "wheezy" "haskell-configfile"
     , debianize (hackage "ConfigFile")
     , darcs ("http://src.seereason.com/haskell-consumer")
-    , debianize (darcs ("http://src.seereason.com/module-management") `flag` P.BuildDep "rsync")
+    , debianize (git "https://github.com/seereason/module-management" [] `flag` P.BuildDep "rsync")
     , debianize (hackage "securemem" `tflag` P.DebVersion "0.1.3-1")
     , debianize (hackage "cipher-aes")
     , debianize (hackage "cipher-des" `tflag` P.DebVersion "0.0.6-1")
@@ -541,6 +541,7 @@ main _home release =
     -- Version 1.14, which is in darcs, is too new for the current haskell-src-meta and haskell-derive
     , debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
                  hackage "haskell-src-exts"
+                   `flag` P.CabalPin "1.15.0.1" -- Waiting for new haskell-src-meta
                    `flag` P.BuildDep "happy")
     , debianize (hackage "stb-image")
     , debianize (hackage "strict"
@@ -681,7 +682,7 @@ main _home release =
     , darcs ("http://src.seereason.com/vc-darcs")
     , git "https://github.com/ddssff/vc-git-dired" []
     , debianize (hackage "wl-pprint-extras")
-    , debianize (hackage "HaTeX")
+    , debianize (git "https://github.com/Daniel-Diaz/HaTeX" []) -- debianize (hackage "HaTeX")
     , debianize (hackage "loop")
     , debianize (hackage "matrix")
     , debianize (hackage "hlatex")
