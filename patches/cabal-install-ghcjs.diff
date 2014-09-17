@@ -1,0 +1,82 @@
+--- a/Distribution/Client/BuildReports/Upload.hs
++++ b/Distribution/Client/BuildReports/Upload.hs
+@@ -51,11 +51,15 @@ postBuildReport uri buildReport = do
+   }
+   case rspCode response of
+     (3,0,3) | [Just buildId] <- [ do rel <- parseRelativeReference location
++#if defined(VERSION_network_uri)
++                                     return $ relativeTo rel uri
++#elif defined (VERSION_network)
+ #if MIN_VERSION_network(2,4,0)
+                                      return $ relativeTo rel uri
+ #else
+                                      relativeTo rel uri
+ #endif
++#endif
+                                   | Header HdrLocation location <- rspHeaders response ]
+               -> return $ buildId
+     _         -> error "Unrecognised response from server."
+--- a/cabal-install.cabal
++++ b/cabal-install.cabal
+@@ -38,6 +38,10 @@ Flag old-directory
+   description:  Use directory < 1.2 and old-time
+   default:      False
+ 
++Flag network-uri
++  description:  Get Nework.URI from the network-uri package
++  default:      True
++
+ executable cabal
+     main-is:        Main.hs
+     ghc-options:    -Wall -fwarn-tabs
+@@ -130,9 +134,8 @@ executable cabal
+         filepath   >= 1.0      && < 1.4,
+         HTTP       >= 4000.2.5 && < 4000.3,
+         mtl        >= 2.0      && < 3,
+-        network    >= 2.0      && < 2.6,
+         pretty     >= 1        && < 1.2,
+-        random     >= 1        && < 1.1,
++        random     >= 1        && < 1.2,
+         stm        >= 2.0      && < 3,
+         time       >= 1.1      && < 1.5,
+         zlib       >= 0.5.3    && < 0.6
+@@ -144,6 +147,11 @@ executable cabal
+       build-depends: directory >= 1.2 && < 1.3,
+                      process   >= 1.1.0.2  && < 1.3
+ 
++    if flag(network-uri)
++      build-depends: network-uri >= 2.6, network >= 2.6
++    else
++      build-depends: network     >= 2.0 && < 2.6
++
+     if os(windows)
+       build-depends: Win32 >= 2 && < 3
+       cpp-options: -DWIN32
+@@ -158,7 +166,6 @@ executable cabal
+ 
+     c-sources: cbits/getnumcores.c
+ 
+-
+ -- Small, fast running tests.
+ Test-Suite unit-tests
+   type: exitcode-stdio-1.0
+@@ -176,7 +183,6 @@ Test-Suite unit-tests
+         Cabal,
+         containers,
+         mtl,
+-        network,
+         pretty,
+         process,
+         directory,
+@@ -193,6 +199,11 @@ Test-Suite unit-tests
+         HUnit,
+         QuickCheck >= 2.5
+ 
++  if flag(network-uri)
++    build-depends: network-uri >= 2.6, network >= 2.6
++  else
++    build-depends: network < 2.6
++
+   if flag(old-directory)
+     build-depends: old-time
+ 

@@ -1400,9 +1400,14 @@ ghcjs release =
     --                                             "--conflicts=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
     --                                             "--replaces=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
     --                                             "--provides=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils"]
-    , debdir (git "https://github.com/ddssff/cabal" {- "https://github.com/ghcjs/cabal" -} [Branch "ghcjs"]
-                      `cd` "cabal-install")
-             (Git "https://github.com/ddssff/cabal-install-ghcjs-debian" [])
+    , debianize (git "https://github.com/ghcjs/cabal" [Branch "ghcjs"]
+                      `flag` P.DebVersion "1.21.0.0-2"
+                      `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
+                                            "--conflicts=cabal-install-ghcjs:cabal-install",
+                                            "--replaces=cabal-install-ghcjs:cabal-install",
+                                            "--provides=cabal-install-ghcjs:cabal-install"]
+                      `cd` "cabal-install"
+                      `patch` $(embedFile "patches/cabal-install-ghcjs.diff"))
     -- Options used to debianize:
     --  let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
     --                      p0 ["alex", "happy", "make", "patch", "autoconf",
