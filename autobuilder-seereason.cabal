@@ -82,7 +82,7 @@ Executable autobuilder-seereason
 
  if flag (local-cabal-debian)
    Hs-Source-Dirs: ../../git/cabal-debian/src
-   Build-Depends: Diff, hsemail, parsec, regex-tdfa, set-extra, syb, memoize
+   Build-Depends: Diff, hsemail, parsec, pretty, regex-tdfa, set-extra, syb, memoize
  else
    Build-Depends: cabal-debian >= 4.17.1, syb
 
