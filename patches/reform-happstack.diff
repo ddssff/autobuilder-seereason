@@ -1,11 +1,11 @@
---- old/reform-happstack.cabal	2012-11-02 16:27:34.000000000 -0700
-+++ new/reform-happstack.cabal	2012-12-18 07:46:06.251626445 -0800
-@@ -20,7 +20,7 @@
- Library
-   Exposed-modules:     Text.Reform.Happstack
-   Build-depends:       base >4 && <5,
--                       bytestring       == 0.9.*,
-+                       bytestring       >= 0.9,
-                        happstack-server == 7.0.*,
-                        mtl              >= 2.0 && <2.2,
-                        random           == 1.0.*,
+--- old/reform-happstack.cabal	2014-09-18 15:49:00.563597373 -0700
++++ new/reform-happstack.cabal	2014-09-18 15:49:51.091597618 -0700
+@@ -23,7 +23,7 @@
+                        bytestring       >= 0.9 && < 0.11,
+                        happstack-server >= 7.0 && < 7.4,
+                        mtl              >= 2.0 && < 2.3,
+-                       random           == 1.0.*,
++                       random           >= 1.0 && < 1.2,
+                        reform           == 0.2.*,
+                        text             >= 0.11 && < 1.2,
+                        utf8-string      == 0.3.*

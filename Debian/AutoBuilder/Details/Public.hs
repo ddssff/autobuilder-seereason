@@ -282,7 +282,7 @@ main _home release =
     , debianize (hackage "hexpat")
     , debianize (hackage "List")
     , debianize (hackage "network-info")
-    , debianize (hackage "uuid")
+    , debianize (hackage "uuid" `patch` $(embedFile "patches/uuid.diff"))
     , debianize (hackage "maccatcher"
                    `pflag` P.DebVersion "2.1.5-3"
                    `tflag` P.DebVersion "2.1.5-5build1")
@@ -490,7 +490,7 @@ main _home release =
     , debianize (hackage "parse-dimacs")
     , debianize (hackage "parseargs")
     -- , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
-    , debianize (hackage "PBKDF2")
+    , debianize (hackage "PBKDF2" `patch` $(embedFile "patches/PBKDF2.diff"))
     -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
     , debianize (hackage "pcre-light"
                    `patch` $(embedFile "patches/pcre-light.diff")
@@ -996,7 +996,9 @@ happstack _home release =
     , debianize (hackage "HJScript")
     , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform")
     , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform-blaze")
-    , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-happstack")
+    , debianize (darcs (darcsHub ++ "/reform")
+                   `cd` "reform-happstack"
+                   `patch` $(embedFile "patches/reform-happstack.diff"))
     -- , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-heist")
     , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform-hsp" `flag` P.BuildDep "hsx2hs")
     , debianize (hackage "blaze-builder")
