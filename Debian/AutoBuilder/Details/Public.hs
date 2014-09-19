@@ -51,10 +51,11 @@ new = named "new" [ debianize (darcs ("http://src.seereason.com/showplease"))
                   , debianize (hackage "hamlet")
                   , debianize (git "https://github.com/hunt-framework/hunt.git" []
                                  `cd` "hunt-searchengine" )
-                  , debianize (git "https://github.com/hunt-framework/hunt.git" []
-                                 `cd` "hunt-server"
-                                 -- `patch` $(embedFile "patches/hunt-server.diff")
-                                 `flag` P.CabalDebian ["--default-package=hunt-server"]) ]
+--                  , debianize (git "https://github.com/hunt-framework/hunt.git" []
+--                                 `cd` "hunt-server"
+--                                 -- `patch` $(embedFile "patches/hunt-server.diff")
+--                                 `flag` P.CabalDebian ["--default-package=hunt-server"])
+                  ]
 
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
@@ -239,7 +240,7 @@ main _home release =
     , debianize (hackage "failure")
     , debianize (hackage "attoparsec")
     , debianize (hackage "scientific")
-    , debianize (hackage "arithmoi" `flag` P.BuildDep "llvm-dev")
+    -- , debianize (hackage "arithmoi" `flag` P.BuildDep "llvm-dev")
     , debianize (hackage "attoparsec-enumerator")
     -- This was merged into attoparsec
     -- , debianize (hackage "attoparsec-text" `patch` $(embedFile "patches/attoparsec-text.diff") `flag` P.Revision "")
@@ -294,7 +295,7 @@ main _home release =
     -- , apt "wheezy" "haskell-configfile"
     , debianize (hackage "ConfigFile")
     , darcs ("http://src.seereason.com/haskell-consumer")
-    , debianize (git "https://github.com/seereason/module-management" [] `flag` P.BuildDep "rsync")
+    -- , debianize (git "https://github.com/seereason/module-management" [] `flag` P.BuildDep "rsync")
     , debianize (hackage "securemem" `tflag` P.DebVersion "0.1.3-1")
     , debianize (hackage "cipher-aes")
     , debianize (hackage "cipher-des" `tflag` P.DebVersion "0.0.6-1")
@@ -395,7 +396,7 @@ main _home release =
     -- sound right...
     , debianize (hackage "HaXml")
     , debianize (hackage "heap" `flag` P.DebVersion "1.0.0-1~hackage1")
-    , debianize (hackage "heist" `patch` $(embedFile "patches/heist.diff"))
+    -- , debianize (hackage "heist" `patch` $(embedFile "patches/heist.diff"))
     , debianize (hackage "xmlhtml")
     , debianize (hackage "directory-tree")
     , debianize (hackage "MonadCatchIO-transformers" `qflag` P.DebVersion "0.3.0.0-2build2")
@@ -605,7 +606,7 @@ main _home release =
     -- , debianize (hackage "Elm")
     -- , debianize (hackage "elm-server" {- `patch` $(embedFile "patches/elm-server.diff") -})
     , debianize (hackage "gdiff")
-    , debianize (hackage "hjsmin")
+    -- , debianize (hackage "hjsmin")
     , debianize (hackage "unix-compat")
     , debianize (hackage "Unixutils-shadow")
     , debianize (hackage "unordered-containers")
@@ -685,10 +686,10 @@ main _home release =
     , debianize (git "https://github.com/Daniel-Diaz/HaTeX" []) -- debianize (hackage "HaTeX")
     , debianize (hackage "loop")
     , debianize (hackage "matrix")
-    , debianize (hackage "hlatex")
+    -- , debianize (hackage "hlatex")
     , debianize (hackage "latex")
     , debianize (hackage "texmath")
-    , debianize (hackage "derive")
+    -- , debianize (hackage "derive")
     , debianize (hackage "frquotes")
     -- Usable versions of this package are available in some dists -
     -- e.g. trusty and wheezy.
@@ -828,9 +829,7 @@ platform release =
     , debianize (hackage "network")
     , debianize (hackage "publicsuffixlist" `tflag` P.DebVersion "0.1-1build4")
     , debianize (hackage "HTTP")
-    , debianize (hackage "cgi" `flag` P.SkipVersion "3001.1.8.5" -- incompatible with current Typeable
-                               `flag` P.SkipVersion "3001.2.0.0" -- Requires an unavailable version of mtl
-                )
+    -- , debianize (hackage "cgi")
     -- This is bundled with the compiler
     -- , debianize (hackage "process")
     , debianize (hackage "random" `flag` P.SkipVersion "1.0.1.3") -- 1.1.0.3 fixes the build for ghc-7.4.2 / base < 4.6
@@ -940,7 +939,7 @@ happstack _home release =
                                                         "--provides=hsx2hs:haskell-hsx-utils"])
     -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
     , debianize (hackage "sourcemap")
-    , debianize (hackage "haskell-packages" `flag` P.CabalPin "0.2.4.1") -- 0.2.4.2 waiting for optparse-applicative 0.10.  Btw, 0.2.4.1 doesn't build with Cabal-1.21
+    -- , debianize (hackage "haskell-packages" `flag` P.CabalPin "0.2.4.1") -- 0.2.4.2 waiting for optparse-applicative 0.10.  Btw, 0.2.4.1 doesn't build with Cabal-1.21
     , debianize (hackage "hse-cpp")
     , debianize (darcs ("http://src.seereason.com/happstack-extra"))
 {-  , debianize (git "haskell-haskell-names" "https://github.com/haskell-suite/haskell-names")
@@ -1163,8 +1162,8 @@ opengl release = named "opengl" $
     , debianize (hackage "ObjectName" `tflag` P.DebVersion "1.0.0.0-2")
     , debianize (hackage "monad-task")
     , debianize (hackage "GLFW" `flag` P.DevelDep "libglu1-mesa-dev")
-    , debianize (hackage "GLFW-b")
-    , debianize (hackage "GLFW-b-demo" `flag` P.SkipPackage {- `patch` $(embedFile "patches/GLFW-b-demo.diff") -})
+    -- , debianize (hackage "GLFW-b")
+    -- , debianize (hackage "GLFW-b-demo" `flag` P.SkipPackage {- `patch` $(embedFile "patches/GLFW-b-demo.diff") -})
     , debianize (hackage "GLFW-task")
     , debianize (hackage "bindings-GLFW"
                              -- `patch` $(embedFile "patches/bindings-GLFW.diff")
