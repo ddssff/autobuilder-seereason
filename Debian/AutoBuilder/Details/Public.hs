@@ -885,8 +885,7 @@ clckwrks _home release =
         , debianize (gitrepo "clckwrks-plugin-media"
                        `flag` P.BuildDep "hsx2hs")
         , debianize (gitrepo "clckwrks-plugin-ircbot"
-                       `flag` P.BuildDep "hsx2hs"
-                       `patch` $(embedFile "patches/ircbot.diff"))
+                       `flag` P.BuildDep "hsx2hs")
         , debianize (gitrepo "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
         , debianize (gitrepo "clckwrks-dot-com"
                            -- This is a change that only relates to the autobuilder
