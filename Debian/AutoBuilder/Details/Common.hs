@@ -5,12 +5,11 @@ module Debian.AutoBuilder.Details.Common where
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, isNothing)
 import Data.Monoid ((<>))
 import Data.String (IsString(fromString))
 import Debian.AutoBuilder.Types.Packages as P
-import Debian.Relation (SrcPkgName(SrcPkgName))
-import Debian.Repo.Fingerprint (RetrieveMethod(..), DebSpec(SrcDeb))
+import Debian.Repo.Fingerprint (RetrieveMethod(..))
 
 data Build = Production | Testing
 build = Production
@@ -34,34 +33,30 @@ ghcjs_flags NoPackage = NoPackage
 ghcjs_flags p@(Named {..}) = p {packages = ghcjs_flags packages}
 ghcjs_flags p@(Packages {..}) = p {list = map ghcjs_flags list}
 ghcjs_flags p@(Package {..}) =
-             p `flag` P.CabalDebian ["--ghcjs", "--no-ghc"]
-               `flag` P.CabalDebian ["--source-package-name=" <> srcName spec]
-               `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
-               `flag` P.BuildDep "ghcjs"
-               `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
-               `putSrcPkgName` (SrcPkgName (srcName spec))
+    p `putSrcPkgName` ghcjsName
+      `flag` P.CabalDebian ["--ghcjs", "--no-ghc"]
+      `flag` P.CabalDebian ["--source-package-name=" <> ghcjsName]
+      `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
+      `flag` P.BuildDep "ghcjs"
+      `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
     where
-      srcName :: RetrieveMethod -> String
-      srcName (Debianize' p' fs) = case fs of
-                                     (SrcDeb (SrcPkgName name) : _) -> name
-                                     [] -> srcName (Debianize p')
-      srcName (Debianize p') = srcName p'
-      srcName (Patch x _) = srcName x
-      srcName m = "ghcjs-" <> map toLower (fromMaybe (cabName m) (dropPrefix "haskell-" (cabName m)))
-      cabName :: RetrieveMethod -> String
-      cabName (Hackage n) = n
-      cabName (Debianize p') = cabName p'
-      cabName (Debianize' p' _) = cabName p'
-      cabName (Cd d _) = d
-      cabName _ = error $ "ghcjs_flags - unsupported target type: " ++ show spec
-
+      ghcjsName = "ghcjs-" <> map toLower (fromMaybe (cabName spec) (dropPrefix "haskell-" (cabName spec)))
       -- Hack to get the Debianize' retrieve method to look different
       -- for packages built with both ghc and ghcjs.
-      putSrcPkgName :: Packages -> SrcPkgName -> Packages
-      putSrcPkgName p@(Package {spec = Debianize' m fs}) src = p {spec = Debianize' m (SrcDeb src : filter (not . isSrcDeb) fs)}
-      putSrcPkgName p src = p
-      isSrcDeb (SrcDeb {}) = True
-      isSrcDeb _ = False
+
+putSrcPkgName :: Packages -> String -> Packages
+putSrcPkgName p@(Package {spec = Debianize _, flags = flags}) name =
+    p {flags = SourceDebName name : filter (isNothing . sourceDebName) flags}
+putSrcPkgName p _ = p
+
+cabName :: RetrieveMethod -> String
+cabName (Hackage n) = n
+cabName (Debianize p') = cabName p'
+-- cabName (Cd path _) = path -- Huh?
+cabName _ = error $ "ghcjs_flags - unsupported target type: " ++ show spec
+
+sourceDebName (SourceDebName s) = Just s
+sourceDebName _ = Nothing
 
 dropPrefix :: Monad m => String -> String -> m String
 dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
