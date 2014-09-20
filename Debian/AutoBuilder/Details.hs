@@ -69,12 +69,12 @@ myReleaseSuffixes = ["-seereason", "-private"]
 -- directly on upstream releases.
 --
 derivedReleaseNames :: Release -> BaseRelease -> [String]
-derivedReleaseNames myBuildRelease baseRelease = map releaseString (derivedReleases myBuildRelease baseRelease)
+derivedReleaseNames myBuildRelease baseRelease' = map releaseString (derivedReleases myBuildRelease baseRelease')
 
 derivedReleases :: Release -> BaseRelease -> [Release]
-derivedReleases myBuildRelease baseRelease =
-    [ExtendedRelease (Release baseRelease) SeeReason] ++
-    if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Release baseRelease) SeeReason)] else []
+derivedReleases myBuildRelease baseRelease' =
+    [ExtendedRelease (Release baseRelease') SeeReason] ++
+    if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Release baseRelease') SeeReason)] else []
 
 -- This URI is the address of the remote repository to which packages
 -- will be uploaded after a run with no failures, when the myDoUpload
@@ -278,12 +278,6 @@ ubuntuSourceLines ubuntuMirrorHost release =
     , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
     , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse"
     , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse" ]
-
--- oldDebianReleases = []
--- oldUbuntuReleases = []
-
--- A utility function
-dropSuffix suff x = take (length x - length suff) x
 
 -- Build a map assigning names to text for every sources.list we might
 -- use.  These names can be used in Apt targets.  It is also assumed

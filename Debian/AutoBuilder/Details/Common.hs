@@ -5,11 +5,12 @@ module Debian.AutoBuilder.Details.Common where
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
-import Data.Maybe (fromMaybe, isNothing)
+import Data.Maybe (isNothing)
 import Data.Monoid ((<>))
 import Data.String (IsString(fromString))
 import Debian.AutoBuilder.Types.Packages as P
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
+import System.FilePath (takeFileName)
 
 data Build = Production | Testing
 build = Production
@@ -33,27 +34,24 @@ ghcjs_flags NoPackage = NoPackage
 ghcjs_flags p@(Named {..}) = p {packages = ghcjs_flags packages}
 ghcjs_flags p@(Packages {..}) = p {list = map ghcjs_flags list}
 ghcjs_flags p@(Package {..}) =
-    p `putSrcPkgName` ghcjsName
+    p `putSrcPkgName` makeSrcPkgName spec
       `flag` P.CabalDebian ["--ghcjs", "--no-ghc"]
-      `flag` P.CabalDebian ["--source-package-name=" <> ghcjsName]
+      `flag` P.CabalDebian ["--source-package-name=" <> makeSrcPkgName spec]
       `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
       `flag` P.BuildDep "ghcjs"
       `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
-    where
-      ghcjsName = "ghcjs-" <> map toLower (fromMaybe (cabName spec) (dropPrefix "haskell-" (cabName spec)))
-      -- Hack to get the Debianize' retrieve method to look different
-      -- for packages built with both ghc and ghcjs.
+
+makeSrcPkgName :: RetrieveMethod -> String
+makeSrcPkgName (Hackage n) = "ghcjs-" ++ map toLower n
+makeSrcPkgName (Debianize p) = makeSrcPkgName p
+makeSrcPkgName (Patch p _) = makeSrcPkgName p
+makeSrcPkgName (Git url _) = "ghcjs-" ++ takeFileName url -- applying this to an url is sketchy
+makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
 
 putSrcPkgName :: Packages -> String -> Packages
 putSrcPkgName p@(Package {spec = Debianize _, flags = flags}) name =
     p {flags = SourceDebName name : filter (isNothing . sourceDebName) flags}
 putSrcPkgName p _ = p
-
-cabName :: RetrieveMethod -> String
-cabName (Hackage n) = n
-cabName (Debianize p') = cabName p'
--- cabName (Cd path _) = path -- Huh?
-cabName _ = error $ "ghcjs_flags - unsupported target type: " ++ show spec
 
 sourceDebName (SourceDebName s) = Just s
 sourceDebName _ = Nothing
