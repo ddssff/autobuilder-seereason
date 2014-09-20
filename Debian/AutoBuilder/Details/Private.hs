@@ -40,7 +40,13 @@ applications _home =
     named "applications" $
     [ debianize (darcs (privateRepo </> "appraisalscribe"))
     , debianize (git "ssh://git@github.com/seereason/appraisalscribe-data" [])
-    , debianize (git "ssh://git@github.com/seereason/appraisalscribe-data-tests" [])
+
+    -- appraisalscribe-data-tests is a huge package because it
+    -- contains lots of test data, it makes more sense to just check
+    -- it out of git and run it rather than constantly uploading it to
+    -- the repository.
+    -- , debianize (git "ssh://git@github.com/seereason/appraisalscribe-data-tests" [])
+
     , debianize (git "https://github.com/seereason/image-cache.git" [])
     , darcs (privateRepo </> "seereason")
     , debianize (darcs (privateRepo </> "happstack-ontology")
