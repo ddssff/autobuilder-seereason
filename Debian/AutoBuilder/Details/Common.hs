@@ -8,7 +8,8 @@ import Data.List (isPrefixOf)
 import Data.Maybe (isNothing)
 import Data.Monoid ((<>))
 import Data.String (IsString(fromString))
-import Debian.AutoBuilder.Types.Packages as P
+import qualified Debian.AutoBuilder.Types.Packages as P
+import Debian.AutoBuilder.Types.Packages (flag, Package(Package, spec, flags))
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeFileName)
 
@@ -26,17 +27,14 @@ happstackRepo = "http://hub.darcs.net/stepcut/happstack" :: String
 asciiToString :: B.ByteString -> String
 asciiToString = map (chr . fromIntegral) . B.unpack
 
-named :: String -> [Packages] -> Packages
+named :: String -> [P.Packages] -> P.Packages
 named s = P.Named (fromString s) . P.Packages
 
-ghcjs_flags :: Packages -> Packages
-ghcjs_flags NoPackage = NoPackage
-ghcjs_flags p@(Named {..}) = p {packages = ghcjs_flags packages}
-ghcjs_flags p@(Packages {..}) = p {list = map ghcjs_flags list}
-ghcjs_flags p@(Package {..}) =
-    p `putSrcPkgName` makeSrcPkgName spec
+ghcjs_flags :: P.Package -> P.Package
+ghcjs_flags p =
+    p `putSrcPkgName` makeSrcPkgName (P.spec p)
       `flag` P.CabalDebian ["--ghcjs", "--no-ghc"]
-      `flag` P.CabalDebian ["--source-package-name=" <> makeSrcPkgName spec]
+      `flag` P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)]
       `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
       `flag` P.BuildDep "ghcjs"
       `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
@@ -48,12 +46,12 @@ makeSrcPkgName (Patch p _) = makeSrcPkgName p
 makeSrcPkgName (Git url _) = "ghcjs-" ++ takeFileName url -- applying this to an url is sketchy
 makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
 
-putSrcPkgName :: Packages -> String -> Packages
+putSrcPkgName :: Package -> String -> Package
 putSrcPkgName p@(Package {spec = Debianize _, flags = flags}) name =
-    p {flags = SourceDebName name : filter (isNothing . sourceDebName) flags}
+    p {flags = P.SourceDebName name : filter (isNothing . sourceDebName) flags}
 putSrcPkgName p _ = p
 
-sourceDebName (SourceDebName s) = Just s
+sourceDebName (P.SourceDebName s) = Just s
 sourceDebName _ = Nothing
 
 dropPrefix :: Monad m => String -> String -> m String

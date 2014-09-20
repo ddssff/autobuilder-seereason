@@ -37,8 +37,8 @@ proc' :: Int -> P.Packages -> P.Packages
 proc' n p | n < 708 = p
 proc' n p@(Named {}) = p {packages = proc' n (packages p)}
 proc' n p@(Packages {}) = p {list = map (proc' n) (list p)}
-proc' _ p@(Package {spec = P.Proc _}) = p
-proc' _ p@(Package {}) = p {spec = P.Proc (spec p)}
+proc' _ a@(APackage (Package {spec = P.Proc _})) = a
+proc' _ (APackage p) = APackage (p {spec = P.Proc (spec p)})
 proc' _ p = p
 
 -- | This prevents every package that uses cabal-debian for
@@ -47,9 +47,9 @@ proc' _ p = p
 relaxCabalDebian :: P.Packages -> P.Packages
 relaxCabalDebian (P.Named n s) = P.Named n (relaxCabalDebian s)
 relaxCabalDebian (P.Packages s) = P.Packages (map relaxCabalDebian s)
-relaxCabalDebian x@(P.Package {})
-    | isDebianizeSpec (P.spec x) =
-        x {P.flags = P.flags x ++ map P.RelaxDep ["libghc-cabal-debian-dev", "libghc-cabal-debian-prof", "libghc-cabal-debian-doc"]}
+relaxCabalDebian (P.APackage p)
+    | isDebianizeSpec (P.spec p) =
+        P.APackage (p {P.flags = P.flags p ++ map P.RelaxDep ["libghc-cabal-debian-dev", "libghc-cabal-debian-prof", "libghc-cabal-debian-doc"]})
 relaxCabalDebian x = x
 
 -- FIXME - make this generic.  Not sure if the assumption that
@@ -63,8 +63,8 @@ applyDepMap :: Release -> P.Packages -> P.Packages
 applyDepMap _ P.NoPackage = P.NoPackage
 applyDepMap release (P.Named n s) = P.Named n (applyDepMap release s)
 applyDepMap release (P.Packages s) = P.Packages (map (applyDepMap release) s)
-applyDepMap release x@(P.Package {}) =
-    x {P.flags = P.flags x ++ mappings}
+applyDepMap release (P.APackage x) =
+    APackage (x {P.flags = P.flags x ++ mappings})
     where
       mappings = [P.MapDep "cryptopp" (deb "libcrypto++-dev"),
                   P.MapDep "crypto" (deb "libcrypto++-dev"),
@@ -94,8 +94,8 @@ applyEpochMap :: P.Packages -> P.Packages
 applyEpochMap P.NoPackage = P.NoPackage
 applyEpochMap (P.Named n s) = P.Named n (applyEpochMap s)
 applyEpochMap (P.Packages s) = P.Packages (map applyEpochMap s)
-applyEpochMap x@(P.Package {}) =
-    x {P.flags = P.flags x ++ mappings}
+applyEpochMap (P.APackage x) =
+    P.APackage (x {P.flags = P.flags x ++ mappings})
     where
       mappings = [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]
 

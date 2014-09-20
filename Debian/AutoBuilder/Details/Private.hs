@@ -3,12 +3,12 @@
 module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
 import Data.FileEmbed (embedFile)
-import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, NoDoc), flag, patch, debianize, darcs, git, cd)
+import Debian.AutoBuilder.Types.Packages as P (Packages(APackage), PackageFlag(BuildDep, NoDoc), flag, patch, debianize, darcs, git, cd)
 import Debian.AutoBuilder.Details.Common (privateRepo, named, ghcjs_flags)
 import System.FilePath ((</>))
 
 libraries _home =
-    named "libraries" $
+    named "libraries" $ map APackage $
     [ -- Retired, should be withdrawn from repos
       -- darcs "haskell-generic-formlets3" (privateRepo </> "generic-formlets3")
     -- , darcs "haskell-document" (privateRepo </> "haskell-document")
@@ -32,7 +32,7 @@ libraries _home =
     ] {- ++ clckwrks14 -}
 
 applications _home =
-    named "applications" $
+    named "applications" $ map APackage $
     [ debianize (darcs (privateRepo </> "appraisalscribe"))
     , debianize (git "ssh://git@github.com/seereason/appraisalscribe-data" [])
 
