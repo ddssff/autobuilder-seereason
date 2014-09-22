@@ -1344,7 +1344,9 @@ haste = named "haste" $ map APackage $
   , hack "data-binary-ieee754"
   , hack "shellmate"
   , debianize (git "https://github.com/ddssff/websockets" [])
-  , debianize (hackage "io-streams" `patch` $(embedFile "patches/io-streams.diff"))
+  , debianize (hackage "io-streams"
+                 `flag` P.CabalPin "1.1.4.6" -- avoid rebuild
+                 `patch` $(embedFile "patches/io-streams.diff"))
   ]
     where hack = debianize . hackage
           git' r c = debianize $ git r c
