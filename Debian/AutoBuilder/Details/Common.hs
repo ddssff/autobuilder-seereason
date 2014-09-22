@@ -5,11 +5,11 @@ module Debian.AutoBuilder.Details.Common where
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
-import Data.Maybe (isNothing, fromMaybe)
+import Data.Maybe (fromMaybe)
 import Data.Monoid ((<>))
 import Data.String (IsString(fromString))
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages (flag, Package(Package, spec, flags))
+import Debian.AutoBuilder.Types.Packages (flag, Package(spec))
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeFileName)
 
@@ -47,13 +47,13 @@ makeSrcPkgName (Git url _) = "ghcjs-" ++ takeFileName url -- applying this to an
 makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
 
 putSrcPkgName :: Package -> String -> Package
-putSrcPkgName p@(Package {spec = Debianize cabal _, flags = flags}) name =
-    p { spec = Debianize cabal (Just name)
-      , flags = P.SourceDebName name : filter (isNothing . sourceDebName) flags }
-putSrcPkgName p _ = p
+putSrcPkgName p name = p {spec = putSrcPkgName' (spec p) name}
 
-sourceDebName (P.SourceDebName s) = Just s
-sourceDebName _ = Nothing
+putSrcPkgName' :: RetrieveMethod -> String -> RetrieveMethod
+putSrcPkgName' (Debianize cabal _) name = Debianize cabal (Just name)
+putSrcPkgName' (Proc x) name = Proc (putSrcPkgName' x name)
+-- More - we need a traversal - is it Typeable yet?
+putSrcPkgName' p _ = p
 
 dropPrefix :: Monad m => String -> String -> m String
 dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
