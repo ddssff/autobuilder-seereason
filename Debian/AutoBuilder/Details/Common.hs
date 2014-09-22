@@ -5,7 +5,7 @@ module Debian.AutoBuilder.Details.Common where
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
-import Data.Maybe (isNothing)
+import Data.Maybe (isNothing, fromMaybe)
 import Data.Monoid ((<>))
 import Data.String (IsString(fromString))
 import qualified Debian.AutoBuilder.Types.Packages as P
@@ -41,14 +41,15 @@ ghcjs_flags p =
 
 makeSrcPkgName :: RetrieveMethod -> String
 makeSrcPkgName (Hackage n) = "ghcjs-" ++ map toLower n
-makeSrcPkgName (Debianize p) = makeSrcPkgName p
+makeSrcPkgName (Debianize p s) = fromMaybe (makeSrcPkgName p) s
 makeSrcPkgName (Patch p _) = makeSrcPkgName p
 makeSrcPkgName (Git url _) = "ghcjs-" ++ takeFileName url -- applying this to an url is sketchy
 makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
 
 putSrcPkgName :: Package -> String -> Package
-putSrcPkgName p@(Package {spec = Debianize _, flags = flags}) name =
-    p {flags = P.SourceDebName name : filter (isNothing . sourceDebName) flags}
+putSrcPkgName p@(Package {spec = Debianize cabal _, flags = flags}) name =
+    p { spec = Debianize cabal (Just name)
+      , flags = P.SourceDebName name : filter (isNothing . sourceDebName) flags }
 putSrcPkgName p _ = p
 
 sourceDebName (P.SourceDebName s) = Just s

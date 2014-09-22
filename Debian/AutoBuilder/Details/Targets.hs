@@ -55,7 +55,7 @@ relaxCabalDebian x = x
 -- FIXME - make this generic.  Not sure if the assumption that
 -- Debianize is outermost is valid.
 isDebianizeSpec  :: P.RetrieveMethod -> Bool
-isDebianizeSpec (P.Debianize _) = True
+isDebianizeSpec (P.Debianize _ _) = True
 isDebianizeSpec _ = False
 
 -- | Add MapDep and DevelDep flags Supply some special cases to map cabal library names to debian.
