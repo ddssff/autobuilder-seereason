@@ -13,7 +13,7 @@ import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, D
                                                Packages(..), Package(..), flags, spec, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir)
 import Debian.Debianize (compat, doExecutable, execDebM, installData, rulesFragments, InstallFile(..), (+=), (~=))
 import Debian.Relation (BinPkgName(..))
-import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize, Hackage, DebDir, Git, Zero), GitSpec(..))
+import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize', Hackage, DebDir, Git, Zero), GitSpec(..))
 import System.FilePath((</>))
 
 patchTag :: String
@@ -334,7 +334,7 @@ main _home release =
              -- , apt "wheezy" "haskell-dummy"
              -- Need this when we upgrade blaze-textual to 0.2.0.0
              -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
-             , P.Package { P.spec = Debianize (Hackage "EdisonAPI") Nothing
+             , P.Package { P.spec = Debianize' (Hackage "EdisonAPI") Nothing
                          , P.flags = rel release [] [P.DebVersion "1.2.1-18build2"] }
              , (debianize (hackage "EdisonCore" `qflag` P.DebVersion "1.2.1.3-9build2"))
              , debianize (hackage "entropy" {- `tflag` P.DebVersion "0.2.1-5" -}) -- apt (rel release "wheezy" "quantal") "haskell-entropy"
@@ -443,7 +443,7 @@ main _home release =
              , apt "wheezy" "haskell-leksah-server" -- for leksah -}
              , darcs ("http://src.seereason.com/haskell-logic")
              , debianize (hackage "pointed")
-             , P.Package { P.spec = Debianize (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) Nothing
+             , P.Package { P.spec = Debianize' (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) Nothing
                          , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
              -- , apt "sid" "haskell-maybet"
              , debianize (hackage "MaybeT" `flag` P.DebVersion "1.2-6")
@@ -468,12 +468,12 @@ main _home release =
              , debianize (hackage "monoid-transformer") -- apt (rel release "wheezy" "quantal") "haskell-monoid-transformer"
              , debianize (hackage "murmur-hash")
              , debianize (hackage "mwc-random")
-             , P.Package { P.spec = Debianize (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff")) Nothing
+             , P.Package { P.spec = Debianize' (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff")) Nothing
                          , P.flags = [P.DebVersion "0.2.0ubuntu1"] }
              , debianize (hackage "openid" `patch` $(embedFile "patches/openid.diff"))
          {-  , P.Package { P.spec = Debianize (Patch (Hackage "openid") $(embedFile "patches/openid-ghc76.diff"))
                          , P.flags = [] } -}
-             , P.Package { P.spec = Debianize (Hackage "operational") Nothing
+             , P.Package { P.spec = Debianize' (Hackage "operational") Nothing
                          , P.flags = [P.OmitLTDeps] }
          --    , debianize (hackage "options")
              , debianize (hackage "optparse-applicative" `flag` P.CabalPin "0.9.1.1") -- Waiting for support in ghcjs
@@ -615,24 +615,24 @@ main _home release =
              --             , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
              , debianize (hackage "unification-fd" `flag` P.SkipVersion "0.8.0")
              , debianize (hackage "newtype" `wflag` P.DebVersion "0.2-1" `tflag` P.DebVersion "0.2-3")
-             , P.Package { P.spec = Debianize (Hackage "logict") Nothing
+             , P.Package { P.spec = Debianize' (Hackage "logict") Nothing
                          , P.flags = [] }
              , debianize (hackage "utility-ht")
              , debianize (hackage "vacuum" `flag` P.SkipVersion "2.1.0.1")
              , debianize (hackage "vector" `patch` $(embedFile "patches/vector.diff"))
              , debianize (hackage "vector-algorithms")
-             , P.Package { P.spec = Debianize (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff")) Nothing
+             , P.Package { P.spec = Debianize' (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff")) Nothing
                          , P.flags =  [] }
              , debianize (hackage "vault")
              , debianize (hackage "wai" {- `patch` $(embedFile "patches/wai.diff") -})
-             , P.Package { P.spec = Debianize (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff")) Nothing
+             , P.Package { P.spec = Debianize' (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff")) Nothing
                          , P.flags = [] }
              , debianize (hackage "boomerang")
              , debianize (hackage "xml") -- apt (rel release "wheezy" "quantal") "haskell-xml"
              , debianize (hackage "cookie")
              , debianize (hackage "lifted-base")
              , debianize (hackage "system-filepath" `flag` P.CabalPin "0.4.11") -- avoid a rebuild
-             , P.Package { P.spec = Debianize (Patch (Hackage "xml-enumerator") $(embedFile "patches/xml-enumerator.diff")) Nothing
+             , P.Package { P.spec = Debianize' (Patch (Hackage "xml-enumerator") $(embedFile "patches/xml-enumerator.diff")) Nothing
                          , P.flags = [] }
              , debianize (hackage "xml-types" `tflag` P.DebVersion "0.3.4-1")
              , debianize (hackage "network-uri")
@@ -801,7 +801,7 @@ platform release =
             , debianize (hackage "syb")
             , debianize (hackage "fgl" `flag` P.CabalPin "5.5.0.1") -- Minimizing rebuild
             , debianize (hackage "text" `flag` P.CabalPin "1.1.1.3") -- Avoid rebuild
-            , P.Package { P.spec = Debianize (Hackage "alex") Nothing
+            , P.Package { P.spec = Debianize' (Hackage "alex") Nothing
                           -- alex shouldn't rebuild just because alex seems newer, but alex does require
                           -- an installed alex binary to build
                         , P.flags = [P.RelaxDep "alex",
@@ -871,7 +871,7 @@ clckwrks _home release =
       tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p
       packages =
           Packages $ map APackage $
-            [ P.Package { P.spec = Debianize (Patch
+            [ P.Package { P.spec = Debianize' (Patch
                                               (DataFiles
                                                (DataFiles
                                                 (Git "https://github.com/clckwrks/clckwrks" [])

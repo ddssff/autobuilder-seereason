@@ -41,7 +41,7 @@ ghcjs_flags p =
 
 makeSrcPkgName :: RetrieveMethod -> String
 makeSrcPkgName (Hackage n) = "ghcjs-" ++ map toLower n
-makeSrcPkgName (Debianize p s) = fromMaybe (makeSrcPkgName p) s
+makeSrcPkgName (Debianize' p s) = fromMaybe (makeSrcPkgName p) s
 makeSrcPkgName (Patch p _) = makeSrcPkgName p
 makeSrcPkgName (Git url _) = "ghcjs-" ++ takeFileName url -- applying this to an url is sketchy
 makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
@@ -50,7 +50,7 @@ putSrcPkgName :: Package -> String -> Package
 putSrcPkgName p name = p {spec = putSrcPkgName' (spec p) name}
 
 putSrcPkgName' :: RetrieveMethod -> String -> RetrieveMethod
-putSrcPkgName' (Debianize cabal _) name = Debianize cabal (Just name)
+putSrcPkgName' (Debianize' cabal _) name = Debianize' cabal (Just name)
 putSrcPkgName' (Proc x) name = Proc (putSrcPkgName' x name)
 -- More - we need a traversal - is it Typeable yet?
 putSrcPkgName' p _ = p
