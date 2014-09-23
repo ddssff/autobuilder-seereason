@@ -44,6 +44,8 @@ makeSrcPkgName (Hackage n) = "ghcjs-" ++ map toLower n
 makeSrcPkgName (Debianize'' p s) = fromMaybe (makeSrcPkgName p) s
 makeSrcPkgName (Patch p _) = makeSrcPkgName p
 makeSrcPkgName (Git url _) = "ghcjs-" ++ takeFileName url -- applying this to an url is sketchy
+makeSrcPkgName (Cd dir p) = makeSrcPkgName p
+makeSrcPkgName (Darcs path) = "ghcjs-" ++ takeFileName path
 makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
 
 putSrcPkgName :: Package -> String -> Package
