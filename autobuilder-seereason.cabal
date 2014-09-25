@@ -104,6 +104,6 @@ Executable seereason-darcs-backups
  Build-depends: base, Extra, network-uri
  if flag (local-process-listlike)
    Hs-Source-Dirs: ../../darcs/archive, ../../git/debian-haskell, ../../darcs/mirror, ../../git/process-listlike
-   Build-Depends: applicative-extras, bytestring, utf8-string, Unixutils, directory, unix, process, ListLike >= 4, old-locale, regex-compat, HUnit, regex-posix, zlib, text, pureMD5, containers, time, parsec, template-haskell, exceptions, deepseq, filepath, pretty, help, bzlib, mtl
+   Build-Depends: applicative-extras, bytestring, utf8-string, Unixutils, directory, unix, process, ListLike >= 4, old-locale, regex-compat, HUnit, regex-posix, zlib, text, pureMD5, containers, time, parsec, template-haskell, exceptions, deepseq, filepath, pretty, help, bzlib, mtl, prettyclass
  else
    Build-Depends: archive >= 1.7
