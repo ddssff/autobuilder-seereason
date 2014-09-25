@@ -67,7 +67,7 @@ diff --git a/ghcjs.cabal b/ghcjs.cabal
 index 2417a0a..81118bd 100644
 --- a/ghcjs.cabal
 +++ b/ghcjs.cabal
-@@ -136,7 +136,7 @@
+@@ -135,7 +135,7 @@
                     cryptohash     >= 0.11     && < 0.12,
                     hashable,
                     unordered-containers,
@@ -76,7 +76,7 @@ index 2417a0a..81118bd 100644
                     stringsearch               >= 0.3 && < 0.4,
                     base16-bytestring          >= 0.1 && < 0.2,
                     -- for JMacro
-@@ -138,10 +138,6 @@ Library
+@@ -144,10 +144,6 @@
                     parsec                     >= 3.1  && < 3.2,
                     haskell-src-exts           >= 1.15 && < 1.16,
                     haskell-src-meta           >= 0.6.0.3  && < 0.7
@@ -87,16 +87,7 @@ index 2417a0a..81118bd 100644
      exposed: True
      buildable: True
      hs-source-dirs: src
-@@ -243,7 +243,7 @@
-                       system-filepath      >= 0.4    && < 0.5,
-                       shelly               >= 1.5    && < 1.6,
-                       system-fileio        >= 0.3    && < 0.4,
--                      optparse-applicative >= 0.9    && < 0.10,
-+                      optparse-applicative >= 0.9    && < 0.11,
-                       tar                  >= 0.4    && < 0.5,
-                       HTTP                 >= 4000.2 && < 5000,
-                       yaml                 >= 0.8    && < 0.9,
-@@ -280,7 +280,7 @@
+@@ -242,7 +238,7 @@
                        system-filepath      >= 0.4    && < 0.5,
                        shelly               >= 1.5    && < 1.6,
                        system-fileio        >= 0.3    && < 0.4,
