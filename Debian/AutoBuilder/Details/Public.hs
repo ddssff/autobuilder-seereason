@@ -29,7 +29,7 @@ localRepo = "file:///home/dsf/darcs/"
 -- them to a suitable group.
 new :: P.Packages
 new = named "new" $ map APackage $
-                  [ debianize (darcs ("http://src.seereason.com/showplease"))
+                  [ debianize (git "https://github.com/ddssff/showplease" [])
                   , debianize (hackage "pseudomacros")
                   , debianize (hackage "aeson-pretty")
                   , debianize (hackage "wai-middleware-static")
