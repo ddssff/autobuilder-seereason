@@ -697,6 +697,9 @@ main _home release =
              , debianize (hackage "csv"
                             `pflag` P.DebVersion "0.1.2-2"
                             `tflag` P.DebVersion "0.1.2-5build1")
+             , debianize (hackage "regexpr" `flag` P.DebVersion "0.5.4-5build1")
+             , debianize (hackage "mtlparse" `flag` P.DebVersion "0.1.2-5")
+             , debianize (git "https://github.com/simonmichael/hledger" [] `cd` "hledger-lib")
          {-
              -- Needs a build dependency on libXrandr-dev and the cabal package x11.
              , P.Package { P.spec = Debianize (Hackage "xmobar")
@@ -1462,7 +1465,8 @@ darcsGroup =
       debianize (darcs "http://darcs.net/reviewed"
                    `flag` P.CabalDebian ["--source-package-name=darcs"]
                    `flag` P.CabalDebian ["--default-package=darcs"]
-                   `patch` $(embedFile "patches/darcs.diff"))
+                   -- `patch` $(embedFile "patches/darcs.diff")
+                )
     ]
 
 

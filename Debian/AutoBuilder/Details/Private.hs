@@ -27,6 +27,7 @@ libraries _home =
     -- parent environment, except making it a dependency of the
     -- autobuilder itself.
     , debianize (git "ssh://git@github.com/seereason/mimo.git" []) -- Disabled until safecopy instances are fixed
+    , debianize (git "ssh://git@github.com/seereason/task-manager.git" [])
     , ghcjs_flags (debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-client"))
     , debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-server")
     ] {- ++ clckwrks14 -}
