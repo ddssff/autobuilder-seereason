@@ -384,7 +384,8 @@ main _home release =
              -- Built into ghc-7.8.3
              -- , debianize (hackage "haskeline")
              , debianize (hackage "th-orphans")
-             , debianize (hackage "haskell-src-meta")
+             , debianize (hackage "haskell-src-meta"
+                           `flag` P.CabalPin "0.6.0.7") -- Waiting for haskell-src-exts to be unpinned
              -- Because we specify an exact debian version here, this package
              -- needs to be forced to rebuilt when its build dependencies (such
              -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
