@@ -1300,7 +1300,7 @@ sunroof release =
   , debianize (hackage "data-reify")
   , debianize (hackage "Boolean")
   , debianize (hackage "vector-space")
-  , debianize (hackage "NumInstances" `tflag` P.DebVersion "1.3-1")
+  , debianize (hackage "NumInstances")
   , debianize (hackage "MemoTrie")
   , debianize (hackage "value-supply")
   , debianize (hackage "reified-records")
