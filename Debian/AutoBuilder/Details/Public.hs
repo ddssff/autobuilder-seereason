@@ -217,7 +217,7 @@ main _home release =
                                                   "--build-dep", "happy",
                                                   "--revision", ""])
              -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
-             , debianize (hackage "aeson")
+             , debianize (hackage "aeson" `flag` P.CabalPin "0.8.0.0") -- avoid rebuild
              , darcs ("http://src.seereason.com/haskell-agi")
              , debianize (hackage "ansi-terminal")
              , debianize (hackage "ansi-wl-pprint" `tflag` P.DebVersion "0.6.7.1-1")
