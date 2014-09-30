@@ -37,8 +37,8 @@ flag local-debian
   Default: False
   Manual: True
 
-flag local-process-listlike
-  Description: Link directly to the source of the process-listlike library
+flag local-process-extras
+  Description: Link directly to the source of the process-extras library
   Default: False
   Manual: True
 
@@ -92,18 +92,18 @@ Executable autobuilder-seereason
  else
    Build-Depends: debian >= 3.82
 
- if flag (local-process-listlike)
-   Hs-Source-Dirs: ../../git/process-listlike, ../../darcs/archive
+ if flag (local-process-extras)
+   Hs-Source-Dirs: ../../git/process-extras, ../../darcs/archive
  else
-   Build-Depends: process-listlike >= 0.9, archive
+   Build-Depends: process-extras >= 0.2.1, archive
 
 Executable seereason-darcs-backups
  Main-Is: Backups.hs
  Hs-Source-Dirs: .
  GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
  Build-depends: base, Extra, network-uri
- if flag (local-process-listlike)
-   Hs-Source-Dirs: ../../darcs/archive, ../../git/debian-haskell, ../../darcs/mirror, ../../git/process-listlike
+ if flag (local-process-extras)
+   Hs-Source-Dirs: ../../darcs/archive, ../../git/debian-haskell, ../../darcs/mirror, ../../git/process-extras
    Build-Depends: applicative-extras, bytestring, utf8-string, Unixutils, directory, unix, process, ListLike >= 4, old-locale, regex-compat, HUnit, regex-posix, zlib, text, pureMD5, containers, time, parsec, template-haskell, exceptions, deepseq, filepath, pretty, help, bzlib, mtl, prettyclass
  else
    Build-Depends: archive >= 1.7
