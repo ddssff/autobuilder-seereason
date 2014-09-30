@@ -93,7 +93,7 @@ Executable autobuilder-seereason
    Build-Depends: debian >= 3.82
 
  if flag (local-process-extras)
-   Hs-Source-Dirs: ../../git/process-extras, ../../darcs/archive
+   Hs-Source-Dirs: ../../git/process-extras/src, ../../darcs/archive
  else
    Build-Depends: process-extras >= 0.2.1, archive
 
@@ -103,7 +103,7 @@ Executable seereason-darcs-backups
  GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
  Build-depends: base, Extra, network-uri
  if flag (local-process-extras)
-   Hs-Source-Dirs: ../../darcs/archive, ../../git/debian-haskell, ../../darcs/mirror, ../../git/process-extras
+   Hs-Source-Dirs: ../../darcs/archive, ../../git/debian-haskell, ../../darcs/mirror, ../../git/process-extras/src
    Build-Depends: applicative-extras, bytestring, utf8-string, Unixutils, directory, unix, process, ListLike >= 4, old-locale, regex-compat, HUnit, regex-posix, zlib, text, pureMD5, containers, time, parsec, template-haskell, exceptions, deepseq, filepath, pretty, help, bzlib, mtl, prettyclass
  else
    Build-Depends: archive >= 1.7

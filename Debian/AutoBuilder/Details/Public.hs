@@ -120,10 +120,7 @@ autobuilder home =
              , debianize (git "https://github.com/ddssff/autobuilder" [])
                  `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
              , git "https://github.com/seereason/archive" []
-{-
-             , -- we don't want this in our repository because we need everything to work
-               -- with process-listlike.
-               debianize (hackage "process-extras")
+             , debianize (git "https://github.com/seereason/process-extras" [])
                  `flag` P.CabalDebian [ "--conflicts=libghc-process-extras-dev:libghc-process-listlike-dev"
                                       , "--provides=libghc-process-extras-dev:libghc-process-listlike-dev"
                                       , "--replaces=libghc-process-extras-dev:libghc-process-listlike-dev"
@@ -133,7 +130,6 @@ autobuilder home =
                                       , "--conflicts=libghc-process-extras-doc:libghc-process-listlike-doc"
                                       , "--provides=libghc-process-extras-doc:libghc-process-listlike-doc"
                                       , "--replaces=libghc-process-extras-doc:libghc-process-listlike-doc" ]
--}
              , debianize (git "https://github.com/ddssff/process-listlike" [])
                  `flag` P.CabalDebian [ "--conflicts=libghc-process-listlike-dev:libghc-process-extras-dev"
                                       , "--provides=libghc-process-listlike-dev:libghc-process-extras-dev"
