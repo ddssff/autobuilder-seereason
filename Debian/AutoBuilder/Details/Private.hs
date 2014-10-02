@@ -34,7 +34,7 @@ libraries _home =
 
 applications _home =
     named "applications" $ map APackage $
-    [ debianize (darcs (privateRepo </> "appraisalscribe"))
+    [ debianize (git "ssh://git@github.com/seereason/appraisalscribe" [])
     , debianize (git "ssh://git@github.com/seereason/appraisalscribe-data" [])
 
     -- appraisalscribe-data-tests is a huge package because it

@@ -1,31 +1,11 @@
---- old/hsx2hs.cabal	2014-02-18 21:18:09.000000000 -0800
-+++ new/hsx2hs.cabal	2014-02-19 06:08:14.222054803 -0800
-@@ -42,9 +42,9 @@
+--- old/hsx2hs.cabal	2014-07-21 16:37:51.546838703 -0700
++++ new/hsx2hs.cabal	2014-10-02 06:19:43.900008518 -0700
+@@ -42,7 +42,7 @@
  
  Library
-   Build-depends:	mtl              >= 2.0 && < 2.2,
--                        haskell-src-exts == 1.14.*,
-+                        haskell-src-exts >= 1.14,
-                         haskell-src-meta >= 0.6,
--                        template-haskell >= 2.7 && < 2.9,
-+                        template-haskell >= 2.7,
+   Build-depends:	mtl              >= 2.0  && < 2.3,
+-                        haskell-src-exts >= 1.14 && < 1.16,
++                        haskell-src-exts >= 1.14 && < 1.17,
+                         haskell-src-meta >= 0.6  && < 0.7,
+                         template-haskell >= 2.7  && < 2.10,
                          utf8-string      == 0.3.*
- 
-   if flag(base4)
-@@ -71,3 +71,4 @@
- Executable hsx2hs
-   Main-Is:                hsx2hs.hs
-   Hs-Source-Dirs:         src
-+  Extensions:             CPP
---- old/src/Language/Haskell/HSX/Transform.hs	2014-06-05 06:12:36.242773784 -0700
-+++ new/src/Language/Haskell/HSX/Transform.hs	2014-06-05 06:14:52.182777581 -0700
-@@ -994,7 +994,9 @@
-     PWildCard          -> return p
-     PIrrPat p          -> tr1pat p PIrrPat (trPattern s)
-     PatTypeSig s p t   -> tr1pat p (\p -> PatTypeSig s p t) (trPattern s)
-+#if !MIN_VERSION_haskell_src_exts(1,15,0)
-     PExplTypeArg _ _   -> return p
-+#endif
-     PQuasiQuote _ _    -> return p
-     PBangPat p         -> tr1pat p PBangPat (trPattern s)
-     PNPlusK _ _        -> return p

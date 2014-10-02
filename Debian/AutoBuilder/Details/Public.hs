@@ -42,6 +42,7 @@ new = named "new" $ map APackage $
                   , debianize (hackage "simple-sendfile")
                   , debianize (hackage "auto-update")
                   , debianize (hackage "warp")
+                  , debianize (hackage "atomic-primops")
                   , debianize (hackage "shakespeare")
                   , debianize (hackage "monad-parallel")
                   , debianize (hackage "data-stringmap")
@@ -130,6 +131,7 @@ autobuilder home =
                                       , "--conflicts=libghc-process-extras-doc:libghc-process-listlike-doc"
                                       , "--provides=libghc-process-extras-doc:libghc-process-listlike-doc"
                                       , "--replaces=libghc-process-extras-doc:libghc-process-listlike-doc" ]
+         {-
              , debianize (git "https://github.com/ddssff/process-listlike" [])
                  `flag` P.CabalDebian [ "--conflicts=libghc-process-listlike-dev:libghc-process-extras-dev"
                                       , "--provides=libghc-process-listlike-dev:libghc-process-extras-dev"
@@ -140,7 +142,6 @@ autobuilder home =
                                       , "--conflicts=libghc-process-listlike-doc:libghc-process-extras-doc"
                                       , "--provides=libghc-process-listlike-doc:libghc-process-extras-doc"
                                       , "--replaces=libghc-process-listlike-doc:libghc-process-extras-doc" ]
-         {-
              , darcs ("http://src.seereason.com/process-progress")
              , debianize (darcs ("http://src.seereason.com/process-verbosity"))
          -}
@@ -217,12 +218,12 @@ main _home release =
                                                   "--build-dep", "happy",
                                                   "--revision", ""])
              -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
-             , debianize (hackage "aeson" `flag` P.CabalPin "0.8.0.0") -- avoid rebuild
+             , debianize (hackage "aeson" {- `flag` P.CabalPin "0.8.0.0" -}) -- avoid rebuild
              , darcs ("http://src.seereason.com/haskell-agi")
              , debianize (hackage "ansi-terminal")
              , debianize (hackage "ansi-wl-pprint" `tflag` P.DebVersion "0.6.7.1-1")
              , debianize (hackage "wl-pprint")
-             , debianize (hackage "wl-pprint-text")
+             , debianize (hackage "wl-pprint-text" `patch` $(embedFile "patches/wl-pprint-text.diff")) -- relax text dependency
              -- Our applicative-extras repository has several important patches.
              , debianize (hackage "applicative-extras" `flag` P.DebVersion "0.1.8-1")
              , debianize (hackage "asn1-data" `tflag` P.DebVersion "0.7.1-4build1")
@@ -248,7 +249,7 @@ main _home release =
              , debianize (hackage "bytestring-trie")
              , debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev" `tflag` P.DebVersion "0.5.0.4-2")
              -- , debianize (hackage "cairo-pdf")
-             , debianize (hackage "case-insensitive" `flag` P.CabalPin "1.2.0.0") -- avoid rebuild
+             , debianize (hackage "case-insensitive")
              -- Here is an example of creating a debian/Debianize.hs file with an
              -- autobuilder patch.  The autobuilder then automatically runs this
              -- script to create the debianization.
@@ -350,7 +351,7 @@ main _home release =
              , debianize (hackage "indents")
              , debianize (hackage "concatenative")
              , debianize (hackage "either")
-             , debianize (hackage "MonadRandom" `flag` P.CabalPin "0.1.13") -- 0.2 requires transformers >= 0.4, we don't currently build transformers
+             , debianize (hackage "MonadRandom" `flag` P.CabalPin "0.1.13") -- 0.2 requires transformers >= 0.4, but 0.3 is built into ghc-7.8.3
              , debianize (hackage "formlets"
                              `patch` $(embedFile "patches/formlets.diff")
                              `flag` P.DebVersion "0.8-1~hackage1")
@@ -381,7 +382,7 @@ main _home release =
              -- , debianize (hackage "haskeline")
              , debianize (hackage "th-orphans")
              , debianize (hackage "haskell-src-meta"
-                           `flag` P.CabalPin "0.6.0.7") -- Waiting for haskell-src-exts to be unpinned
+                           `flag` P.CabalPin "0.6.0.7") -- Waiting for haskell-src-exts >= 0.16
              -- Because we specify an exact debian version here, this package
              -- needs to be forced to rebuilt when its build dependencies (such
              -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -446,7 +447,7 @@ main _home release =
              , debianize (hackage "MaybeT" `flag` P.DebVersion "1.2-6")
              , darcs ("http://src.seereason.com/haskell-mime")
              , debianize (hackage "mmap")
-             , debianize (hackage "monad-control" `flag` P.CabalPin "0.3.2.3")
+             , debianize (hackage "monad-control" {- `flag` P.CabalPin "0.3.2.3" -})
              , debianize (hackage "monad-par-extras")
              , debianize (hackage "abstract-deque")
              , debianize (hackage "abstract-par")
@@ -483,7 +484,7 @@ main _home release =
              , debianize (hackage "parse-dimacs")
              , debianize (hackage "parseargs")
              -- , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
-             , debianize (hackage "PBKDF2" `patch` $(embedFile "patches/PBKDF2.diff"))
+             , debianize (hackage "PBKDF2")
              -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
              , debianize (hackage "pcre-light"
                             `patch` $(embedFile "patches/pcre-light.diff")
@@ -511,13 +512,13 @@ main _home release =
              , debianize (hackage "RJson"
                             `patch` $(embedFile "patches/RJson.diff")
                             `wflag` P.DebVersion "0.3.7-1~hackage1")
-             , debianize (hackage "safe" `flag` P.CabalPin "0.3.7") -- avoid a rebuild
+             , debianize (hackage "safe")
              , debianize (hackage "safecopy")
              , debianize (hackage "SafeSemaphore")
              , debianize (hackage "sat"
                             `patch` $(embedFile "patches/sat.diff")
                             `flag` P.DebVersion "1.1.1-1~hackage1")
-             , debianize (hackage "semigroups" `flag` P.CabalPin "0.15.1")
+             , debianize (hackage "semigroups")
              , debianize (hackage "nats")
              , debianize (hackage "sendfile" `tflag` P.DebVersion "0.7.9-1")
              , darcs ("http://src.seereason.com/set-extra")
@@ -534,7 +535,7 @@ main _home release =
              -- Version 1.14, which is in darcs, is too new for the current haskell-src-meta and haskell-derive
              , debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
                           hackage "haskell-src-exts"
-                            `flag` P.CabalPin "1.15.0.1" -- Waiting for new haskell-src-meta
+                            `flag` P.CabalPin "1.15.0.1" -- Waiting for hsx2hs > 0.13.2
                             `flag` P.BuildDep "happy")
              , debianize (hackage "stb-image")
              , debianize (hackage "strict"
@@ -570,12 +571,7 @@ main _home release =
              -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
              , debianize (hackage "th-expand-syns")
              , debianize (hackage "th-lift")
-             , debianize (hackage "transformers-base"
-                                      `flag` P.CabalPin "0.4.1" -- prevent rebuilds
-                                      `pflag` P.DebVersion "0.4.1-2"
-                                      `qflag` P.DebVersion "0.4.1-2build2"
-                                      `wflag` P.DebVersion "0.4.1-2"
-                                      `tflag` P.DebVersion "0.4.1-5")
+             , debianize (hackage "transformers-base")
              , debianize (hackage "unicode-names" `flag` P.DebVersion "3.2.0.0-1~hackage1")
              , debianize (hackage "unicode-properties"
                             `patch` $(embedFile "patches/unicode-properties.diff")
@@ -628,7 +624,7 @@ main _home release =
              , debianize (hackage "xml") -- apt (rel release "wheezy" "quantal") "haskell-xml"
              , debianize (hackage "cookie")
              , debianize (hackage "lifted-base")
-             , debianize (hackage "system-filepath" `flag` P.CabalPin "0.4.11") -- avoid a rebuild
+             , debianize (hackage "system-filepath")
              , P.Package { P.spec = Debianize'' (Patch (Hackage "xml-enumerator") $(embedFile "patches/xml-enumerator.diff")) Nothing
                          , P.flags = [] }
              , debianize (hackage "xml-types" `tflag` P.DebVersion "0.3.4-1")
@@ -710,7 +706,7 @@ main _home release =
                          `wflag` P.DebVersion "0.5.6-2"
                          `flag` P.ModifyAtoms (execDebM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
              , debianize (hackage "urlencoded" `patch` $(embedFile "patches/urlencoded.diff"))
-             , debianize (hackage "hxt" `patch` $(embedFile "patches/hxt.diff") `flag` P.CabalPin "9.3.1.6") -- avoid rebuild
+             , debianize (hackage "hxt" `patch` $(embedFile "patches/hxt.diff"))
              , debianize (hackage "hxt-charproperties")
              , debianize (hackage "hxt-regex-xmlschema")
              , debianize (hackage "hxt-unicode")
@@ -795,12 +791,13 @@ platform release =
             , debianize (hackage "stm")
             , debianize (hackage "stm-chans")
             , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev" `tflag` P.DebVersion "0.5.4.1-1")
-            , debianize (hackage "mtl" `flag` P.CabalPin "2.1.3.1") -- minimize rebuild
+            , debianize (hackage "mtl" `flag` P.CabalPin "2.1.3.1") -- 2.2.1 requires transformers-0.4, but 0.3 is built into ghc-7.8.3
+            -- transformers-0.3 is built into ghc
             , wskip $ debianize (hackage "transformers" `flag` P.CabalPin "0.3.0.0" `tflag` P.DebVersion "0.3.0.0-5" `qflag` P.DebVersion "0.3.0.0-1build3")
             , debianize (hackage "parallel")
             , debianize (hackage "syb")
-            , debianize (hackage "fgl" `flag` P.CabalPin "5.5.0.1") -- Minimizing rebuild
-            , debianize (hackage "text" `flag` P.CabalPin "1.1.1.3") -- Avoid rebuild
+            , debianize (hackage "fgl")
+            , debianize (hackage "text" `flag` P.CabalPin "1.1.1.3") -- Waiting for updated dependencies
             , P.Package { P.spec = Debianize'' (Hackage "alex") Nothing
                           -- alex shouldn't rebuild just because alex seems newer, but alex does require
                           -- an installed alex binary to build
@@ -938,10 +935,12 @@ happstack _home release =
             , debianize (hackage "happstack")
             , debianize (darcs (darcsHub ++ "/happstack") `cd` "happstack-foundation")
             , debianize (hackage "cryptohash-cryptoapi")
-            , debianize (hackage "hsx2hs" `flag` P.CabalDebian ["--executable", "hsx2hs",
-                                                                "--conflicts=hsx2hs:haskell-hsx-utils",
-                                                                "--replaces=hsx2hs:haskell-hsx-utils",
-                                                                "--provides=hsx2hs:haskell-hsx-utils"])
+            , debianize (hackage "hsx2hs"
+                           -- `patch` $(embedFile "patches/hsx2hs.diff")
+                           `flag` P.CabalDebian ["--executable", "hsx2hs",
+                                                 "--conflicts=hsx2hs:haskell-hsx-utils",
+                                                 "--replaces=hsx2hs:haskell-hsx-utils",
+                                                 "--provides=hsx2hs:haskell-hsx-utils"])
             -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
             , debianize (hackage "sourcemap")
             -- , debianize (hackage "haskell-packages" `flag` P.CabalPin "0.2.4.1") -- 0.2.4.2 waiting for optparse-applicative 0.10.  Btw, 0.2.4.1 doesn't build with Cabal-1.21
@@ -1092,7 +1091,7 @@ conduit release =
   let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
   named "conduit" $ map APackage $
     [ debianize (hackage "streaming-commons")
-    , debianize (hackage "conduit") -- waiting for newer xml-conduit
+    , debianize (hackage "conduit")
     , debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
     , debianize (hackage "connection")
     , debianize (hackage "http-conduit")
@@ -1104,7 +1103,7 @@ conduit release =
     -- , debianize (hackage "attoparsec-conduit" {- `flag` P.CabalPin "1.0.1.2" `tflag` P.DebVersion "1.0.1.2-1build2" -})
     -- , debianize (hackage "blaze-builder-conduit" {- `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build4" -})
     -- , debianize (hackage "zlib-conduit" {- `flag` P.CabalPin "1.0.0" `tflag` P.DebVersion "1.0.0-2build3" -})
-    , debianize (hackage "xml-conduit" `patch` $(embedFile "patches/xml-conduit.diff"))
+    , debianize (hackage "xml-conduit")
     , debianize (hackage "tagstream-conduit")
     , debianize (hackage "conduit-extra")
     , debianize (hackage "mime-types")
@@ -1217,13 +1216,12 @@ algebra release =
         pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
         tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     named "algebra" $ map APackage $
-    [ debianize (hackage "data-lens")
+    [ debianize (hackage "data-lens" `patch` $(embedFile "patches/data-lens.diff"))
     , debianize (hackage "data-lens-template")
     , debianize (hackage "bifunctors")
     , broken $ debianize (hackage "categories" `tflag` P.DebVersion "1.0.6-1")
     -- comonad now includes comonad-transformers and comonads-fd
     , debianize (hackage "comonad"
-                   `flag` P.CabalPin "4.0.1" -- 4.2 is too new for data-lens-2.10.4
                    `flag`  P.CabalDebian [ "--conflicts=libghc-comonad-dev:libghc-comonad-transformers-dev"
                                          , "--replaces=libghc-comonad-dev:libghc-comonad-transformers-dev"
                                          , "--provides=libghc-comonad-dev:libghc-comonad-transformers-dev"
@@ -1232,8 +1230,8 @@ algebra release =
                                          , "--provides=libghc-comonad-dev:libghc-comonads-fd-dev" ])
     , debianize (hackage "control-monad-free")
     , debianize (hackage "transformers-free")
-    , debianize (hackage "contravariant" `flag` P.CabalPin "0.5") -- minimize rebuild
-    , debianize (hackage "distributive" `flag` P.CabalPin "0.4.4") -- minimize rebuild
+    , debianize (hackage "contravariant")
+    , debianize (hackage "distributive")
     -- This package fails to build in several different ways because it has no modules.
     -- I am just going to patch the packages that use it to require transformers >= 0.3.
     -- Specifically, distributive and lens.
@@ -1250,7 +1248,7 @@ algebra release =
     , debianize (hackage "keys")
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
-    , debianize (hackage "lens" `flag` P.CabalPin "4.3.2") -- avoid rebuild
+    , debianize (hackage "lens")
     , debianize (hackage "constraints")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
@@ -1264,11 +1262,10 @@ algebra release =
     , debianize (hackage "algebra")
     , debianize (hackage "universe" {- `patch` $(embedFile "patches/universe.diff") -})
     -}
-    , debianize (hackage "adjunctions" `flag` P.CabalPin "4.1.0.1") -- waiting for contravariant>=1
+    , debianize (hackage "adjunctions")
     , debianize (hackage "linear")
 
     , debianize (hackage "semigroupoids"
-                   `flag` P.CabalPin "4.0.4" -- avoid rebuild
                    `flag` P.CabalDebian [ "--conflicts=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"
                                         , "--replaces=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"
                                         , "--provides=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"])
@@ -1280,7 +1277,7 @@ units = named "units" $ map APackage $
     [ debianize (hackage "quickcheck-instances")
     , debianize (hackage "mainland-pretty")
     , debianize (hackage "srcloc")
-    , debianize ((hackage "singletons") `flag` P.CabalPin "0.10.0")
+    , debianize (hackage "singletons")
     , debianize (hackage "th-desugar")
     , debianize (hackage "processing")
     , debianize (hackage "units") ]
@@ -1343,10 +1340,8 @@ haste = named "haste" $ map APackage $
   , git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
   , hack "data-binary-ieee754"
   , hack "shellmate"
-  , debianize (git "https://github.com/ddssff/websockets" [])
-  , debianize (hackage "io-streams"
-                 `flag` P.CabalPin "1.1.4.6" -- avoid rebuild
-                 `patch` $(embedFile "patches/io-streams.diff"))
+  , debianize (git "https://github.com/jaspervdj/websockets.git" [])
+  , debianize (hackage "io-streams")
   ]
     where hack = debianize . hackage
           git' r c = debianize $ git r c
@@ -1424,6 +1419,7 @@ ghcjs release =
              --                      p0 ["alex", "happy", "make", "patch", "autoconf",
              --                          "cpp", "git", "cabal-install-ghcjs"] in
              , debdir (git "https://github.com/ghcjs/ghcjs" []
+                               -- Apply some patches that upstream is not comfortable with
                                `patch` $(embedFile "patches/ghcjs-tools.diff")
                                `flag` P.CabalDebian ["--source-package-name=ghcjs-tools"]
                                `flag` P.CabalDebian ["--default-package=ghcjs-tools"]
@@ -1462,7 +1458,7 @@ darcsGroup =
       debianize (darcs "http://darcs.net/reviewed"
                    `flag` P.CabalDebian ["--source-package-name=darcs"]
                    `flag` P.CabalDebian ["--default-package=darcs"]
-                   -- `patch` $(embedFile "patches/darcs.diff")
+                   `patch` $(embedFile "patches/darcs.diff")
                 )
     ]
 
