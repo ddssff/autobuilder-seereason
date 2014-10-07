@@ -29,7 +29,10 @@ localRepo = "file:///home/dsf/darcs/"
 -- them to a suitable group.
 new :: P.Packages
 new = named "new" $ map APackage $
-                  [ debianize (git "https://github.com/ddssff/showplease" [])
+                  [ debianize (hackage "spine")
+                  , debianize (git "https://github.com/ddssff/showplease" [])
+                  , debianize (git "https://github.com/ddssff/FileLocation.hs" [])
+                      `flag` P.CabalDebian [ "--source-package-name", "file-location" ]
                   , debianize (hackage "pseudomacros")
                   , debianize (hackage "aeson-pretty")
                   , debianize (hackage "wai-middleware-static")
