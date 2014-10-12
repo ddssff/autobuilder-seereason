@@ -143,10 +143,11 @@ myKnownTargets home params =
 --myDebianMirrorHost = "http://mirror.anl.gov"
 myDebianMirrorHost = "http://ftp.debian.org"
 --myUbuntuMirrorHost = "http://mirror.anl.gov"
-myUbuntuMirrorHost = "http://mirror.calvin.edu/ubuntu" --  "mirror://mirrors.ubuntu.com/mirrors.txt" -- "http://us.archive.ubuntu.com/ubuntu"
+--myUbuntuMirrorHost = "http://mirror.calvin.edu/ubuntu" --  "mirror://mirrors.ubuntu.com/mirrors.txt" -- "http://us.archive.ubuntu.com/ubuntu"
 --myUbuntuMirrorHost = "http://ubuntu.cs.utah.edu"
 --myDebianMirrorHost = "http://mirrors.usc.edu/pub/linux/distributions"
 --myUbuntuMirrorHost = "http://mirrors.usc.edu/pub/linux/distributions"
+myUbuntuMirrorHost = "http://ubuntu.mirrors.tds.net/pub/ubuntu"
 
 -- There is a debian standard for constructing the version numbers of
 -- packages backported to older releases.  To follow this standard we
