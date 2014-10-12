@@ -674,7 +674,9 @@ main _home release =
              , darcs ("http://src.seereason.com/vc-darcs")
              , git "https://github.com/ddssff/vc-git-dired" []
              , debianize (hackage "wl-pprint-extras")
-             , debianize (git "https://github.com/Daniel-Diaz/HaTeX" []) -- debianize (hackage "HaTeX")
+             , debianize (git "https://github.com/Daniel-Diaz/HaTeX" []
+                              `patch` $(embedFile "patches/HaTeX-texty.diff")
+                              `patch` $(embedFile "patches/HaTeX-doc.diff"))
              , debianize (hackage "loop")
              , debianize (hackage "matrix")
              -- , debianize (hackage "hlatex")
