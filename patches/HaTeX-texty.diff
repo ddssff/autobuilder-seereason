@@ -1,0 +1,17 @@
+diff --git a/Text/LaTeX/Base/Commands.hs b/Text/LaTeX/Base/Commands.hs
+index 9e792eb..d6b932a 100644
+--- a/Text/LaTeX/Base/Commands.hs
++++ b/Text/LaTeX/Base/Commands.hs
+@@ -231,6 +231,12 @@ import Paths_HaTeX
+ raw :: LaTeXC l => Text -> l
+ raw = fromLaTeX . TeXRaw
+ 
++-- | If you are using OverloadedStrings this restricted version of
++-- texy is nice to use with string constants.  Otherwise you have
++-- to cast the argument to type Text.
++texty :: LaTeXC l => Text -> l
++texty = texy
++
+ -- | Calling 'between' @c l1 l2@ puts @c@ between @l1@ and @l2@ and
+ --   appends them.
+ --

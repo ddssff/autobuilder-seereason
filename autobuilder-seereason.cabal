@@ -10,12 +10,7 @@ Description:      The autobuilder executable configured for the seereason reposi
 		  to perform automated timed incremental backups.
 Build-Type:       Custom
 Category:         Web, Language
-Cabal-version:    >= 1.8
-
-flag local-autobuilder-seereason
-  Description: Link directly to the source of the autobuilder-seereason library
-  Default: False
-  Manual: True
+Cabal-version:    >= 1.13
 
 flag local-autobuilder
   Description: Link directly to the source of the autobuilder library
@@ -43,11 +38,17 @@ flag local-process-extras
   Manual: True
 
 Library
-  if flag(local-autobuilder-seereason)
-    Buildable: False
-  else
-    Build-Depends: debian >= 3.82, cabal-debian >= 4.17.1, debian-repo >= 5.66, AutoBuilder >= 6.69
-  Build-depends: base, bytestring, Cabal, containers, filepath, file-embed, process, text, unix
+  Hs-Source-Dirs: .
+  Build-Depends:
+    base >= 4,
+    bytestring,
+    Cabal,
+    containers,
+    filepath,
+    file-embed,
+    process,
+    text,
+    unix
   Exposed-Modules:
     Debian.AutoBuilder.Details
     Debian.AutoBuilder.Details.Atoms
@@ -58,52 +59,288 @@ Library
     Debian.AutoBuilder.Details.GHC
     Debian.AutoBuilder.Details.Distros
 
+  if !flag (local-autobuilder)
+    Build-Depends: AutoBuilder >= 6.69
+  else
+    Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen
+    Build-Depends:
+      applicative-extras,
+      directory,
+      exceptions,
+      Extra,
+      magic,
+      mtl,
+      network-uri,
+      prettyclass,
+      pureMD5,
+      regex-compat,
+      syb,
+      tar,
+      time,
+      Unixutils,
+      utf8-string,
+      zlib
+    Exposed-modules:
+      Debian.AutoBuilder.BuildEnv,
+      Debian.AutoBuilder.BuildTarget,
+      Debian.AutoBuilder.BuildTarget.Apt,
+      Debian.AutoBuilder.BuildTarget.Bzr,
+      Debian.AutoBuilder.BuildTarget.Cd,
+      Debian.AutoBuilder.BuildTarget.Darcs,
+      Debian.AutoBuilder.BuildTarget.DebDir,
+      Debian.AutoBuilder.BuildTarget.Debianize,
+      Debian.AutoBuilder.BuildTarget.Git,
+      Debian.AutoBuilder.BuildTarget.Hackage,
+      Debian.AutoBuilder.BuildTarget.Hg,
+      Debian.AutoBuilder.BuildTarget.Patch,
+      Debian.AutoBuilder.BuildTarget.Proc,
+      Debian.AutoBuilder.BuildTarget.Quilt,
+      Debian.AutoBuilder.BuildTarget.SourceDeb,
+      Debian.AutoBuilder.BuildTarget.Svn,
+      Debian.AutoBuilder.BuildTarget.Tla,
+      Debian.AutoBuilder.BuildTarget.Twice,
+      Debian.AutoBuilder.BuildTarget.Uri,
+      Debian.AutoBuilder.LocalRepo,
+      Debian.AutoBuilder.Main,
+      Debian.AutoBuilder.Params,
+      Debian.AutoBuilder.Prelude,
+      Debian.AutoBuilder.Target,
+      Debian.AutoBuilder.Types.Buildable
+      Debian.AutoBuilder.Types.CacheRec
+      Debian.AutoBuilder.Types.DefaultParams
+      Debian.AutoBuilder.Types.Download
+      Debian.AutoBuilder.Types.Fingerprint
+      Debian.AutoBuilder.Types.Packages,
+      Debian.AutoBuilder.Types.ParamRec
+      Debian.AutoBuilder.Version
+      Paths_AutoBuilder
+
+  if !flag (local-debian-repo)
+    Build-Depends: debian-repo >= 5.66
+  else
+    Hs-Source-Dirs: ../debian-repo
+    Build-Depends:
+      bzlib,
+      data-lens,
+      data-lens-template,
+      deepseq,
+      template-haskell,
+      old-locale,
+      old-time
+    Exposed-Modules:
+      Debian.Repo,
+      Debian.Repo.AptImage,
+      Debian.Repo.Changes,
+      Debian.Repo.Dependencies,
+      Debian.Repo.EnvPath,
+      Debian.Repo.Internal.Apt,
+      Debian.Repo.Internal.IO,
+      Debian.Repo.Internal.Repos,
+      Debian.Repo.Fingerprint,
+      Debian.Repo.LocalRepository,
+      Debian.Repo.MonadOS,
+      Debian.Repo.OSImage,
+      Debian.Repo.Package,
+      Debian.Repo.PackageID,
+      Debian.Repo.PackageIndex,
+      Debian.Repo.Prelude,
+      Debian.Repo.Prelude.Bool,
+      Debian.Repo.Prelude.Files,
+      Debian.Repo.Prelude.GPGSign,
+      Debian.Repo.Prelude.List,
+      Debian.Repo.Prelude.Lock,
+      Debian.Repo.Prelude.Misc,
+      Debian.Repo.Prelude.SSH,
+      Debian.Repo.Prelude.Time,
+      Debian.Repo.Prelude.Verbosity,
+      Debian.Repo.Release,
+      Debian.Repo.RemoteRepository,
+      Debian.Repo.Repo,
+      Debian.Repo.Slice,
+      Debian.Repo.SourceTree,
+      Debian.Repo.State.AptImage,
+      Debian.Repo.State.OSImage,
+      Debian.Repo.State.Package,
+      Debian.Repo.State.PackageIndex,
+      Debian.Repo.State.Release,
+      Debian.Repo.State.Repository,
+      Debian.Repo.State.Slice,
+      Debian.Repo.Top,
+      Debian.VersionPolicy
+
+  if !flag (local-cabal-debian)
+    Build-Depends: cabal-debian >= 4.17.1
+  else
+    Hs-Source-Dirs: ../cabal-debian/src
+    Build-Depends:
+      Diff,
+      hsemail,
+      memoize,
+      parsec,
+      pretty,
+      regex-tdfa,
+      set-extra
+    Exposed-Modules:
+      Data.Algorithm.Diff.Context
+      Data.Algorithm.Diff.Pretty
+      Debian.Debianize
+      Debian.GHC
+      Debian.Policy
+      Distribution.Version.Invert
+      Debian.Debianize.BuildDependencies
+      Debian.Debianize.Bundled
+      Debian.Debianize.Changelog
+      Debian.Debianize.DebianName
+      Debian.Debianize.Details
+      Debian.Debianize.Files
+      Debian.Debianize.Finalize
+      Debian.Debianize.Goodies
+      Debian.Debianize.Input
+      Debian.Debianize.Interspersed
+      Debian.Debianize.Monad
+      Debian.Debianize.Options
+      Debian.Debianize.Output
+      Debian.Debianize.Prelude
+      Debian.Debianize.SubstVars
+      Debian.Debianize.Types
+      Debian.Debianize.Types.Atoms
+      Debian.Debianize.Types.BinaryDebDescription
+      Debian.Debianize.Types.SourceDebDescription
+      Debian.Debianize.VersionSplits
+    Other-Modules:
+      Debian.Orphans
+
+  if !flag (local-debian)
+    Build-Depends: debian >= 3.82
+  else
+    Hs-Source-Dirs: ../debian-haskell
+    Build-Depends:
+      HaXml,
+      HUnit,
+      ListLike,
+      network
+    Exposed-modules:
+      Debian.Apt.Dependencies,
+      Debian.Apt.Index,
+      Debian.Apt.Methods,
+      Debian.Apt.Package,
+      Debian.Arch,
+      Debian.Changes,
+      Debian.Control,
+      Debian.Control.Common,
+      Debian.Control.ByteString,
+      Debian.Control.Policy,
+      Debian.Control.String,
+      Debian.Control.Text,
+      Debian.Deb,
+      Debian.Extra.Files,
+      Debian.GenBuildDeps,
+      Debian.Loc,
+      Debian.Pretty,
+      Debian.Relation,
+      Debian.Relation.ByteString,
+      Debian.Relation.Common,
+      Debian.Relation.String,
+      Debian.Relation.Text,
+      Debian.Release,
+      Debian.Sources,
+      Debian.Version,
+      Debian.Version.ByteString,
+      Debian.Version.Common,
+      Debian.Version.String,
+      Debian.Version.Text,
+      Debian.Report,
+      Debian.Time,
+      Debian.URI,
+      Debian.UTF8,
+      Debian.Util.FakeChanges
+    Other-Modules:
+      Debian.Version.Internal,
+      Test.Changes,
+      Test.Dependencies,
+      Test.SourcesList,
+      Test.Versions
+
+  if !flag (local-process-extras)
+    Build-Depends: process-extras >= 0.2.1
+  else
+    Hs-Source-Dirs: ../process-extras/src
+    Exposed-Modules:
+      System.Process.ByteString
+      System.Process.ByteString.Lazy
+      System.Process.Chunks
+      System.Process.ListLike
+      System.Process.ListLike.Classes
+      System.Process.ListLike.Instances
+      System.Process.ListLike.LazyString
+      System.Process.ListLike.Read
+      System.Process.ListLike.ReadNoThreads
+      System.Process.ListLike.StrictString
+      System.Process.String
+      System.Process.Text
+      System.Process.Text.Lazy
+    Other-modules:
+      Utils
+
 Executable autobuilder-seereason
- Main-Is: autobuilder.hs
- GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
- Build-Depends: base, bytestring, Cabal, containers, either, file-embed, filepath, process, text
- Hs-Source-Dirs: .
- if !flag(local-autobuilder-seereason)
-   Build-Depends: autobuilder-seereason
-
- if flag(local-autobuilder)
-   Hs-Source-Dirs: ../../git/autobuilder, ../../git/autobuilder/dist/build/autogen
-   Build-Depends: applicative-extras, data-lens, directory, exceptions, Extra, magic, mtl, network-uri,
-                  pureMD5, regex-compat, tar, time, unix,
-                  Unixutils, utf8-string, zlib, prettyclass
- else
-   Build-Depends: AutoBuilder >= 6.69
-
- if flag (local-debian-repo)
-   Hs-Source-Dirs: ../../git/debian-repo
-   Build-Depends: bzlib, data-lens-template, deepseq, old-locale, old-time, template-haskell
- else
-   Build-Depends: debian-repo >= 5.66
-
- if flag (local-cabal-debian)
-   Hs-Source-Dirs: ../../git/cabal-debian/src
-   Build-Depends: Diff, hsemail, parsec, pretty, regex-tdfa, set-extra, syb, memoize
- else
-   Build-Depends: cabal-debian >= 4.17.1, syb
-
- if flag (local-debian)
-   Hs-Source-Dirs: ../../git/debian-haskell
-   Build-Depends: either, ListLike
- else
-   Build-Depends: debian >= 3.82
-
- if flag (local-process-extras)
-   Hs-Source-Dirs: ../../git/process-extras/src, ../../darcs/archive
- else
-   Build-Depends: process-extras >= 0.2.1, archive
+  Hs-Source-Dirs: Tools
+  Main-Is: AutoBuilder.hs
+  GHC-Options: -threaded -Wall -Wwarn -O2
+  Build-Depends:
+    autobuilder-seereason,
+    base >= 4,
+    bytestring,
+    Cabal,
+    containers,
+    file-embed,
+    filepath,
+    process,
+    text
+  if !flag (local-autobuilder)
+    Build-Depends: AutoBuilder
+  if !flag (local-debian-repo)
+    Build-Depends: debian-repo
+  if !flag (local-cabal-debian)
+    Build-Depends: cabal-debian
+  if !flag (local-debian)
+    Build-Depends: debian
+  if !flag (local-process-extras)
+    Build-Depends: process-extras
 
 Executable seereason-darcs-backups
- Main-Is: Backups.hs
- Hs-Source-Dirs: .
- GHC-Options: -threaded -Wall -Wwarn -O2 -fno-warn-name-shadowing -fno-warn-missing-signatures -fwarn-tabs -fno-warn-unused-binds -fno-warn-orphans -fwarn-unused-imports -fno-spec-constr
- Build-depends: base, Extra, network-uri
- if flag (local-process-extras)
-   Hs-Source-Dirs: ../../darcs/archive, ../../git/debian-haskell, ../../darcs/mirror, ../../git/process-extras/src
-   Build-Depends: applicative-extras, bytestring, utf8-string, Unixutils, directory, unix, process, ListLike >= 4, old-locale, regex-compat, HUnit, regex-posix, zlib, text, pureMD5, containers, time, parsec, template-haskell, exceptions, deepseq, filepath, pretty, help, bzlib, mtl, prettyclass
- else
-   Build-Depends: archive >= 1.7
+  Hs-Source-Dirs: Tools
+  Main-Is: Backups.hs
+  GHC-Options: -threaded -Wall -Wwarn -O2
+  Build-depends: base, Extra, network-uri
+  if flag (local-process-extras)
+    Hs-Source-Dirs: ../../darcs/archive, ../debian-haskell, ../mirror, ../process-extras/src
+    Build-Depends:
+      applicative-extras,
+      bytestring,
+      utf8-string,
+      Unixutils,
+      directory,
+      unix,
+      process,
+      ListLike >= 4,
+      old-locale,
+      regex-compat,
+      HUnit,
+      regex-posix,
+      zlib,
+      text,
+      pureMD5,
+      containers,
+      time,
+      parsec,
+      template-haskell,
+      exceptions,
+      deepseq,
+      filepath,
+      pretty,
+      help,
+      bzlib,
+      mtl,
+      prettyclass
+  else
+    Build-Depends: archive >= 1.7

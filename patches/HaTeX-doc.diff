@@ -1,0 +1,83 @@
+diff --git a/Text/LaTeX/Base/Commands.hs b/Text/LaTeX/Base/Commands.hs
+index 9e792eb..d6b932a 100644
+--- a/Text/LaTeX/Base/Commands.hs
++++ b/Text/LaTeX/Base/Commands.hs
+@@ -612,46 +618,60 @@ markright :: LaTeXC l => l -> l
+ markright = liftL $ \l -> TeXComm "markright" [FixArg l]
+ 
+ -- | Start a new line. In a 'tabular', it starts a new row, so use 'newline' instead.
++-- (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005c_005c LaTeX2e: \\\\>)
+ lnbk  :: LaTeXC l => l
+ lnbk = fromLaTeX $ TeXLineBreak Nothing False
+ 
++-- | Linebreak (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005c_005c LaTeX2e: \\\\*>)
+ lnbk_ :: LaTeXC l => l
+ lnbk_ = fromLaTeX $ TeXLineBreak Nothing True
+ 
++-- | Discretionary hyphen. (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005c_002d-_0028hyphenation_0029 LaTeX2e: \\->)
+ hyp :: LaTeXC l => l
+ hyp = fromLaTeX $ TeXCommS "-"
+ 
++-- | (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005ccleardoublepage LaTeX2e: \\cleardoublepage>)
+ cleardoublepage :: LaTeXC l => l
+ cleardoublepage = comm0 "cleardoublepage"
+ 
++-- | (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005cclearpage LaTeX2e: \\clearpage>)
+ clearpage :: LaTeXC l => l
+ clearpage = comm0 "clearpage"
+ 
++-- | (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005cnewpage LaTeX2e: \\newpage>)
+ newpage :: LaTeXC l => l
+ newpage = comm0 "newpage"
+ 
++-- | (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005clinebreak-_0026-_005cnolinebreak LaTeX2e: \\linebreak>)
+ linebreak :: LaTeXC l => l -> l
+ linebreak = liftL $ \l -> TeXComm "linebreak" [OptArg l]
+ 
++-- | (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005clinebreak-_0026-_005cnolinebreak LaTeX2e: \\nolinebreak>)
+ nolinebreak :: LaTeXC l => l -> l
+ nolinebreak = liftL $ \l -> TeXComm "nolinebreak" [OptArg l]
+ 
++-- | (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005cpagebreak-_0026-_005cnopagebreak LaTeX2e: \\nopagebreak>)
+ nopagebreak :: LaTeXC l => l -> l
+ nopagebreak = liftL $ \l -> TeXComm "nopagebreak" [OptArg l]
+ 
++-- | (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005cpagebreak-_0026-_005cnopagebreak LaTeX2e: \\pagebreak>)
+ pagebreak :: LaTeXC l => l -> l
+ pagebreak = liftL $ \l -> TeXComm "pagebreak" [OptArg l]
+ 
++-- | (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005chyphenation LaTeX2e: \\hyphenation>)
+ hyphenation :: LaTeXC l => l -> l
+ hyphenation = liftL $ \l -> TeXComm "hyphenation" [FixArg l]
+ 
++-- | (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005cmbox LaTeX2e: \\mbox>)
+ mbox :: LaTeXC l => l -> l
+ mbox = liftL $ \l -> TeXComm "mbox" [FixArg l]
+ 
++-- | (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005cfbox-and-_005cframebox LaTeX2e: \\fbox>)
+ fbox :: LaTeXC l => l -> l
+ fbox = liftL $ \l -> TeXComm "fbox" [FixArg l]
+ 
+ -- | Render the date at compilation time.
++-- (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005ctoday LaTeX2e: \\today>)
+ today :: LaTeXC l => l
+ today = comm0 "today"
+ 
+@@ -682,7 +702,8 @@ vdots = comm0 "vdots"
+ ddots :: LaTeXC l => l
+ ddots = comm0 "ddots"
+ 
+--- | Quotation marks.
++-- | Surround with open and close double quotation marks.
++-- (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#index-_005ctextquotedblleft-_0028or-_0060_0060_0029 LaTeX2e: `` and ''>)
+ qts :: LaTeXC l => l -> l
+ qts l = between l (raw "``") (raw "''")
+ 
+@@ -864,6 +885,7 @@ hline :: LaTeXC l => l
+ hline = commS "hline "
+ 
+ -- | Cell taking multiple columns.
++-- (<http://www.tex.ac.uk/ctan/info/latex2e-help-texinfo/latex2e.html#g_t_005cmulticolumn LaTeX2e: multicolumn>)
+ multicolumn :: LaTeXC l => Int -> [TableSpec] -> l -> l
+ multicolumn n c = liftL $ \l -> TeXComm "multicolumn"
+   [ FixArg $ rendertex n
