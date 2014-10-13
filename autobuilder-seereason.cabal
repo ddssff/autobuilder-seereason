@@ -312,8 +312,10 @@ Executable seereason-darcs-backups
   Main-Is: Backups.hs
   GHC-Options: -threaded -Wall -Wwarn -O2
   Build-depends: base, Extra, network-uri
-  if flag (local-process-extras)
-    Hs-Source-Dirs: ../../darcs/archive, ../debian-haskell, ../mirror, ../process-extras/src
+  if !flag (local-process-extras)
+    Build-Depends: archive >= 1.7
+  else
+    Hs-Source-Dirs: ../archive, ../debian-haskell, ../mirror, ../process-extras/src
     Build-Depends:
       applicative-extras,
       bytestring,
@@ -342,5 +344,3 @@ Executable seereason-darcs-backups
       bzlib,
       mtl,
       prettyclass
-  else
-    Build-Depends: archive >= 1.7
