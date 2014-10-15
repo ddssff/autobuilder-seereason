@@ -1005,9 +1005,7 @@ happstack _home release =
             , debianize (hackage "HJScript")
             , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform")
             , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform-blaze")
-            , debianize (darcs (darcsHub ++ "/reform")
-                           `cd` "reform-happstack"
-                           `patch` $(embedFile "patches/reform-happstack.diff"))
+            , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-happstack")
             -- , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-heist")
             , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform-hsp" `flag` P.BuildDep "hsx2hs")
             , debianize (hackage "blaze-builder")
