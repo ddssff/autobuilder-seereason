@@ -12,7 +12,7 @@ libraries _home =
     [ -- Retired, should be withdrawn from repos
       -- darcs "haskell-generic-formlets3" (privateRepo </> "generic-formlets3")
     -- , darcs "haskell-document" (privateRepo </> "haskell-document")
-      darcs (privateRepo </> "haskell-ontology")
+      git "ssh://git@github.com/seereason/ontology.git" []
     , debianize (darcs (privateRepo </> "stripe")
                    `cd` "stripe-core"
                    `patch` $(embedFile "patches/stripe-core.diff"))
@@ -44,8 +44,8 @@ applications _home =
     -- , debianize (git "ssh://git@github.com/seereason/appraisalscribe-data-tests" [])
 
     , debianize (git "https://github.com/seereason/image-cache.git" [])
-    , darcs (privateRepo </> "seereason")
-    , debianize (darcs (privateRepo </> "happstack-ontology")
+    , git "ssh://git@github.com/seereason/seereason" []
+    , debianize (git "ssh://git@github.com/seereason/happstack-ontology" []
                    `flag` P.BuildDep "hsx2hs")
     -- Obsolete
     -- , darcs "haskell-creativeprompts" (privateRepo </> "creativeprompts")

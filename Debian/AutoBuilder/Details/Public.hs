@@ -290,7 +290,7 @@ main _home release =
              -- , apt "wheezy" "haskell-configfile"
              , debianize (hackage "ConfigFile")
              , darcs ("http://src.seereason.com/haskell-consumer")
-             -- , debianize (git "https://github.com/seereason/module-management" [] `flag` P.BuildDep "rsync")
+             , debianize (git "https://github.com/seereason/module-management" [] `flag` P.BuildDep "rsync")
              , debianize (hackage "securemem" `tflag` P.DebVersion "0.1.3-1")
              , debianize (hackage "cipher-aes")
              , debianize (hackage "cipher-des" `tflag` P.DebVersion "0.0.6-1")
@@ -442,7 +442,7 @@ main _home release =
              -- , debianize (git "haskell-logic-hs" "https://github.com/smichal/hs-logic")
          {-  , apt "wheezy" "haskell-leksah"
              , apt "wheezy" "haskell-leksah-server" -- for leksah -}
-             , darcs ("http://src.seereason.com/haskell-logic")
+             , git "https://github.com/seereason/logic-classes" []
              , debianize (hackage "pointed")
              , P.Package { P.spec = Debianize'' (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) Nothing
                          , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
@@ -669,7 +669,7 @@ main _home release =
                          , P.flags = [] } -}
              , debianize (hackage "MissingH")
              , darcs ("http://src.seereason.com/seereason-keyring") `flag` P.UDeb "seereason-keyring-udeb"
-             , debianize (darcs ("http://src.seereason.com/seereason-ports"))
+             , debianize (git "https://github.com/seereason/seereason-ports" [])
              , apt "wheezy" "tinymce"
              , darcs ("http://src.seereason.com/vc-darcs")
              , git "https://github.com/ddssff/vc-git-dired" []
@@ -936,7 +936,7 @@ happstack _home release =
       tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p
       packages =
           Packages $ map APackage $
-            [ debianize (darcs ("http://src.seereason.com/seereason-base"))
+            [ debianize (git "https://github.com/seereason/seereason-base" [])
             , debianize (hackage "happstack")
             , debianize (darcs (darcsHub ++ "/happstack") `cd` "happstack-foundation")
             , debianize (hackage "cryptohash-cryptoapi")
