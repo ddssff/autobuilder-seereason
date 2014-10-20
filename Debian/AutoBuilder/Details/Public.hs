@@ -303,6 +303,7 @@ main _home release =
              , debianize (hackage "crypto-pubkey-types")
              -- crypto-pubkey-types-0.3.2 depends on older asn1-types
              , debianize (hackage "asn1-types")
+             , debianize (hackage "hourglass")
              , debianize (hackage "byteable" `tflag` P.DebVersion "0.1.1-1")
              , debianize (hackage "cryptohash")
              , wskip $ debianize (hackage "cpu" `tflag` P.DebVersion "0.1.2-1")
@@ -385,7 +386,8 @@ main _home release =
              -- , debianize (hackage "haskeline")
              , debianize (hackage "th-orphans")
              , debianize (hackage "haskell-src-meta"
-                           `flag` P.CabalPin "0.6.0.7") -- Waiting for haskell-src-exts >= 0.16
+                           -- `flag` P.CabalPin "0.6.0.7" -- Waiting for haskell-src-exts >= 0.16
+                         )
              -- Because we specify an exact debian version here, this package
              -- needs to be forced to rebuilt when its build dependencies (such
              -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -434,7 +436,7 @@ main _home release =
              , broken $ debianize (hackage "instant-generics" `flag` P.SkipVersion "0.3.7")
              , debianize (hackage "generic-deriving")
              , debianize (hackage "irc")
-             , debianize (hackage "ixset" `patch` $(embedFile "patches/ixset.diff") `tflag` P.DebVersion "1.0.5-1")
+             , debianize (hackage "ixset")
              , debianize (hackage "json") -- darcs "haskell-json" (repo ++ "/haskell-json")
              , debianize (hackage "language-css" `flag` P.DebVersion "0.0.4.1-1~hackage1")
              , debianize (hackage "largeword")
@@ -538,7 +540,7 @@ main _home release =
              -- Version 1.14, which is in darcs, is too new for the current haskell-src-meta and haskell-derive
              , debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
                           hackage "haskell-src-exts"
-                            `flag` P.CabalPin "1.15.0.1" -- Waiting for hsx2hs > 0.13.2
+                            -- `flag` P.CabalPin "1.15.0.1" -- Waiting for hsx2hs > 0.13.2
                             `flag` P.BuildDep "happy")
              , debianize (hackage "stb-image")
              , debianize (hackage "strict"
