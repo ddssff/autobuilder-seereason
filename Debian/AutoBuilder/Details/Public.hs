@@ -945,7 +945,7 @@ happstack _home release =
             , debianize (darcs (darcsHub ++ "/happstack") `cd` "happstack-foundation")
             , debianize (hackage "cryptohash-cryptoapi")
             , debianize (hackage "hsx2hs"
-                           -- `patch` $(embedFile "patches/hsx2hs.diff")
+                           `patch` $(embedFile "patches/hsx2hs.diff")
                            `flag` P.CabalDebian ["--executable", "hsx2hs",
                                                  "--conflicts=hsx2hs:haskell-hsx-utils",
                                                  "--replaces=hsx2hs:haskell-hsx-utils",
