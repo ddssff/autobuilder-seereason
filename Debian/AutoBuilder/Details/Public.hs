@@ -699,6 +699,7 @@ main _home release =
                             `tflag` P.DebVersion "0.1.2-5build1")
              , debianize (hackage "regexpr" `flag` P.DebVersion "0.5.4-5build1")
              , debianize (hackage "mtlparse" `flag` P.DebVersion "0.1.2-5")
+             , debianize (hackage "Decimal") -- for hledger
              , debianize (git "https://github.com/simonmichael/hledger" [] `cd` "hledger-lib")
          {-
              -- Needs a build dependency on libXrandr-dev and the cabal package x11.
@@ -713,7 +714,7 @@ main _home release =
                          `wflag` P.DebVersion "0.5.6-2"
                          `flag` P.ModifyAtoms (execDebM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
              , debianize (hackage "urlencoded" `patch` $(embedFile "patches/urlencoded.diff"))
-             , debianize (hackage "hxt" `patch` $(embedFile "patches/hxt.diff"))
+             , debianize (hackage "hxt" `flag` P.CabalPin "9.3.1.7" `patch` $(embedFile "patches/hxt.diff")) -- 9.3.1.9 requires newer mtl
              , debianize (hackage "hxt-charproperties")
              , debianize (hackage "hxt-regex-xmlschema")
              , debianize (hackage "hxt-unicode")
@@ -1007,11 +1008,11 @@ happstack _home release =
             , debianize (darcs ("http://src.seereason.com/happstack-scaffolding")
                            `flag` P.BuildDep "hsx2hs")
             , debianize (hackage "HJScript")
-            , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform")
-            , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform-blaze")
+            , debianize (darcs (darcsHub ++ "/reform") `cd` "reform")
+            , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-blaze")
             , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-happstack")
             -- , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-heist")
-            , debianize (darcs ("http://src.seereason.com/reform") `cd` "reform-hsp" `flag` P.BuildDep "hsx2hs")
+            , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-hsp" `flag` P.BuildDep "hsx2hs")
             , debianize (hackage "blaze-builder")
             , debianize (hackage "blaze-markup")
             -- , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
