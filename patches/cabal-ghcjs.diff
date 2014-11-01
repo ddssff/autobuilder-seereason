@@ -26,3 +26,16 @@
  
  showFields :: [FieldDescr a] -> a -> String
  showFields fields = render . ($+$ text "") . ppFields fields
+--- old/src/Debian/Orphans.hs	2014-09-18 07:06:01.000000000 -0700
++++ new/src/Debian/Orphans.hs	2014-10-31 16:29:26.036764749 -0700
+@@ -44,8 +44,10 @@
+ #endif
+ 
+ deriving instance Ord Language
++#if !MIN_VERSION_Cabal(1,21,1)
+ deriving instance Ord KnownExtension
+ deriving instance Ord Extension
++#endif
+ deriving instance Eq Compiler
+ deriving instance Ord Compiler
+ deriving instance Ord NameAddr

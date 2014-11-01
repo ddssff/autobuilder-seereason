@@ -1,0 +1,14 @@
+--- old/src/System/Plugins/Env.hs	2014-09-02 15:01:28.000000000 -0700
++++ new/src/System/Plugins/Env.hs	2014-10-31 08:38:05.704358678 -0700
+@@ -69,7 +69,11 @@
+ 
+ import Control.Concurrent.MVar  ( MVar(), newMVar, withMVar )
+ 
++#if MIN_VERSION_Cabal(1,21,0)
++import Distribution.Package hiding (depends, installedPackageId, packageName, PackageName(..))
++#else
+ import Distribution.Package hiding (depends, packageName, PackageName(..))
++#endif
+ import Distribution.Text
+ 
+ import Distribution.InstalledPackageInfo

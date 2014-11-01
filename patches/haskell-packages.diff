@@ -1,0 +1,62 @@
+--- old/src/Distribution/HaskellSuite/Packages.hs.orig	2014-11-01 11:31:50.000000000 -0700
++++ new/src/Distribution/HaskellSuite/Packages.hs	2014-11-01 14:55:37.021924521 -0700
+@@ -356,6 +356,9 @@
+   toJSON i = object
+     [ "id" .= Info.installedPackageId i
+     , "name" .= Info.sourcePackageId i
++#if MIN_VERSION_Cabal(1,21,0)
++    , "package-key" .= Info.packageKey i
++#endif
+     , "license" .= Info.license i
+     , "copyright" .= Info.copyright i
+     , "maintainer" .= Info.maintainer i
+@@ -368,6 +371,9 @@
+     , "category" .= Info.category i
+     , "exposed" .= Info.exposed i
+     , "exposed-modules" .= Info.exposedModules i
++#if MIN_VERSION_Cabal(1,21,0)
++    , "reexported-modules" .= Info.reexportedModules i
++#endif
+     , "hidden-modules" .= Info.hiddenModules i
+     , "trusted" .= Info.trusted i
+     , "import-dirs" .= Info.importDirs i
+@@ -378,7 +384,9 @@
+     , "include-dirs" .= Info.includeDirs i
+     , "includes" .= Info.includes i
+     , "depends" .= Info.depends i
++#if !MIN_VERSION_Cabal(1,21,1)
+     , "hugs-options" .= Info.hugsOptions i
++#endif
+     , "cc-options" .= Info.ccOptions i
+     , "ld-options" .= Info.ldOptions i
+     , "framework-dirs" .= Info.frameworkDirs i
+@@ -393,6 +401,9 @@
+   parseJSON (Object v) = Info.InstalledPackageInfo <$>
+     v .: "id" <*>
+     v .: "name" <*>
++#if MIN_VERSION_Cabal(1,21,1)
++    v .: "package-key" <*>
++#endif
+     v .: "license" <*>
+     v .: "copyright" <*>
+     v .: "maintainer" <*>
+@@ -405,6 +416,9 @@
+     v .: "category" <*>
+     v .: "exposed" <*>
+     v .: "exposed-modules" <*>
++#if MIN_VERSION_Cabal(1,21,1)
++    v .: "reexported-modules" <*>
++#endif
+     v .: "hidden-modules" <*>
+     v .: "trusted" <*>
+     v .: "import-dirs" <*>
+@@ -415,7 +429,9 @@
+     v .: "include-dirs" <*>
+     v .: "includes" <*>
+     v .: "depends" <*>
++#if !MIN_VERSION_Cabal(1,21,1)
+     v .: "hugs-options" <*>
++#endif
+     v .: "cc-options" <*>
+     v .: "ld-options" <*>
+     v .: "framework-dirs" <*>
