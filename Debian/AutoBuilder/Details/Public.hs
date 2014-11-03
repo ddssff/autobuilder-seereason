@@ -954,7 +954,7 @@ happstack _home release =
                                                  "--provides=hsx2hs:haskell-hsx-utils"])
             -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
             , debianize (hackage "sourcemap")
-            -- , debianize (hackage "haskell-packages" `flag` P.CabalPin "0.2.4.1") -- 0.2.4.2 waiting for optparse-applicative 0.10.  Btw, 0.2.4.1 doesn't build with Cabal-1.21
+            , debianize (hackage "haskell-packages" `patch` $(embedFile "patches/haskell-packages.diff"))
             , debianize (hackage "hse-cpp")
             , debianize (darcs ("http://src.seereason.com/happstack-extra"))
         {-  , debianize (git "haskell-haskell-names" "https://github.com/haskell-suite/haskell-names")
@@ -1326,7 +1326,7 @@ idris release =
     let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     named "idris" $ map APackage $
         [ debianize (hackage "idris"
-                       -- `patch` $(embedFile "patches/idris.diff")
+                       `patch` $(embedFile "patches/idris.diff") -- adds *.idr to extra-source-files
                        `flag` P.BuildDep "libgc-dev"
                        `flag` P.CabalDebian ["--default-package=idris"])
         , hack "vector-binary-instances"

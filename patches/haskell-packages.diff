@@ -1,6 +1,48 @@
---- old/src/Distribution/HaskellSuite/Packages.hs.orig	2014-11-01 11:31:50.000000000 -0700
-+++ new/src/Distribution/HaskellSuite/Packages.hs	2014-11-01 14:55:37.021924521 -0700
-@@ -356,6 +356,9 @@
+--- old/src/Distribution/HaskellSuite/Compiler.hs	2014-11-01 11:31:50.000000000 -0700
++++ new/src/Distribution/HaskellSuite/Compiler.hs	2014-11-03 05:12:57.127999971 -0800
+@@ -1,4 +1,4 @@
+-{-# LANGUAGE TypeFamilies, FlexibleContexts, ScopedTypeVariables #-}
++{-# LANGUAGE CPP, TypeFamilies, FlexibleContexts, ScopedTypeVariables #-}
+ -- | This module is designed to be imported qualified:
+ --
+ -- >import qualified Distribution.HaskellSuite.Compiler as Compiler
+@@ -28,7 +28,11 @@
+ import Distribution.Simple.Compiler
+ import Distribution.Simple.Utils
+ import Distribution.Verbosity
++#if MIN_VERSION_Cabal(1,21,1)
++import Distribution.InstalledPackageInfo hiding (installedPackageId)
++#else
+ import Distribution.InstalledPackageInfo
++#endif
+ import Distribution.Package
+ import Distribution.Text
+ import Distribution.ModuleName (ModuleName)
+--- old/src/Distribution/HaskellSuite/Packages.hs	2014-11-01 11:31:50.000000000 -0700
++++ new/src/Distribution/HaskellSuite/Packages.hs	2014-11-02 08:56:31.003647215 -0800
+@@ -1,4 +1,4 @@
+-{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveDataTypeable,
++{-# LANGUAGE CPP, GeneralizedNewtypeDeriving, DeriveDataTypeable,
+              TemplateHaskell, ScopedTypeVariables, OverloadedStrings #-}
+ {-# OPTIONS_GHC -fno-warn-orphans #-}
+ module Distribution.HaskellSuite.Packages
+@@ -352,10 +352,25 @@
+ instance FromJSON InstalledPackageId where
+   parseJSON = stdFromJSON
+ 
++#if MIN_VERSION_Cabal(1,21,1)
++instance ToJSON Info.ModuleReexport where
++  toJSON = stdToJSON
++instance FromJSON Info.ModuleReexport where
++  parseJSON = stdFromJSON
++
++instance ToJSON PackageKey where
++  toJSON = stdToJSON
++instance FromJSON PackageKey where
++  parseJSON = stdFromJSON
++#endif
++
+ instance ToJSON a => ToJSON (Info.InstalledPackageInfo_ a) where
    toJSON i = object
      [ "id" .= Info.installedPackageId i
      , "name" .= Info.sourcePackageId i
@@ -10,7 +52,7 @@
      , "license" .= Info.license i
      , "copyright" .= Info.copyright i
      , "maintainer" .= Info.maintainer i
-@@ -368,6 +371,9 @@
+@@ -368,6 +383,9 @@
      , "category" .= Info.category i
      , "exposed" .= Info.exposed i
      , "exposed-modules" .= Info.exposedModules i
@@ -20,7 +62,7 @@
      , "hidden-modules" .= Info.hiddenModules i
      , "trusted" .= Info.trusted i
      , "import-dirs" .= Info.importDirs i
-@@ -378,7 +384,9 @@
+@@ -378,7 +396,9 @@
      , "include-dirs" .= Info.includeDirs i
      , "includes" .= Info.includes i
      , "depends" .= Info.depends i
@@ -30,7 +72,7 @@
      , "cc-options" .= Info.ccOptions i
      , "ld-options" .= Info.ldOptions i
      , "framework-dirs" .= Info.frameworkDirs i
-@@ -393,6 +401,9 @@
+@@ -393,6 +413,9 @@
    parseJSON (Object v) = Info.InstalledPackageInfo <$>
      v .: "id" <*>
      v .: "name" <*>
@@ -40,7 +82,7 @@
      v .: "license" <*>
      v .: "copyright" <*>
      v .: "maintainer" <*>
-@@ -405,6 +416,9 @@
+@@ -405,6 +428,9 @@
      v .: "category" <*>
      v .: "exposed" <*>
      v .: "exposed-modules" <*>
@@ -50,7 +92,7 @@
      v .: "hidden-modules" <*>
      v .: "trusted" <*>
      v .: "import-dirs" <*>
-@@ -415,7 +429,9 @@
+@@ -415,7 +441,9 @@
      v .: "include-dirs" <*>
      v .: "includes" <*>
      v .: "depends" <*>
