@@ -30,6 +30,8 @@ asciiToString = map (chr . fromIntegral) . B.unpack
 named :: String -> [P.Packages] -> P.Packages
 named s = P.Named (fromString s) . P.Packages
 
+-- | Suitable flags for ghcjs library packages.  Won't work
+-- for anything complicated (like happstack-ghcjs-client.)
 ghcjs_flags :: P.Package -> P.Package
 ghcjs_flags p =
     p `putSrcPkgName` makeSrcPkgName (P.spec p)

@@ -3,7 +3,7 @@
 module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
 import Data.FileEmbed (embedFile)
-import Debian.AutoBuilder.Types.Packages as P (Packages(APackage), PackageFlag(BuildDep, NoDoc), flag, patch, debianize, darcs, git, cd)
+import Debian.AutoBuilder.Types.Packages as P (Packages(APackage), PackageFlag(BuildDep, CabalDebian, NoDoc), flag, patch, debianize, darcs, git, cd)
 import Debian.AutoBuilder.Details.Common (privateRepo, named, ghcjs_flags)
 import System.FilePath ((</>))
 
@@ -28,7 +28,12 @@ libraries _home =
     -- autobuilder itself.
     , debianize (git "ssh://git@github.com/seereason/mimo.git" []) -- Disabled until safecopy instances are fixed
     , debianize (git "ssh://git@github.com/seereason/task-manager.git" [])
-    , ghcjs_flags (debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-client"))
+    , debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-client"
+                   `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
+                   `flag` P.BuildDep "ghcjs"
+                   `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
+                   `flag` P.CabalDebian ["--ghcjs", "--no-ghc",
+                                         "--source-package=ghcjs-happstack-ghcjs-client"])
     , debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-server")
     ] {- ++ clckwrks14 -}
 
