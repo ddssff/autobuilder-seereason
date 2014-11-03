@@ -320,6 +320,7 @@ main _home release =
              , debianize (hackage "data-default-instances-old-locale")
              , debianize (hackage "data-object" `patch` $(embedFile "patches/data-object.diff"))
              , debianize (hackage "dataenc" {- `patch` $(embedFile "patches/dataenc.diff") -})
+             , debianize (hackage "sandi") -- replaces dataenc
              , debianize (hackage "Diff" `tflag` P.DebVersion "0.3.0-1")
              , debianize (hackage "executable-path"
                             `pflag` P.DebVersion "0.0.3-1"
