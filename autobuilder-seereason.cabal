@@ -270,6 +270,7 @@ Library
       System.Process.ByteString
       System.Process.ByteString.Lazy
       System.Process.Chunks
+      System.Process.ChunkE
       System.Process.ListLike
       System.Process.ListLike.Classes
       System.Process.ListLike.Instances
