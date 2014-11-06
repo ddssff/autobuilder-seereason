@@ -116,7 +116,7 @@ Library
       Paths_AutoBuilder
 
   if !flag (local-debian-repo)
-    Build-Depends: debian-repo >= 5.66
+    Build-Depends: debian-repo >= 5.69
   else
     Hs-Source-Dirs: ../debian-repo
     Build-Depends:
@@ -150,6 +150,7 @@ Library
       Debian.Repo.Prelude.List,
       Debian.Repo.Prelude.Lock,
       Debian.Repo.Prelude.Misc,
+      Debian.Repo.Prelude.Process,
       Debian.Repo.Prelude.SSH,
       Debian.Repo.Prelude.Time,
       Debian.Repo.Prelude.Verbosity,
