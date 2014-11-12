@@ -1483,6 +1483,7 @@ darcsGroup =
                    `flag` P.CabalDebian ["--default-package=darcs"]
                    `patch` $(embedFile "patches/darcs.diff")
                 )
+    , debianize (hackage "regex-applicative")
     ]
 
 
