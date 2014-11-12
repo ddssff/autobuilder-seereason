@@ -119,6 +119,7 @@ Library
     Build-Depends: debian-repo >= 5.69
   else
     Hs-Source-Dirs: ../debian-repo
+    CPP-Options: -DFIXED_VERBOSITY_LEVEL -UNO_VERBOSITY_CONTROL
     Build-Depends:
       bzlib,
       data-lens,
@@ -126,7 +127,9 @@ Library
       deepseq,
       template-haskell,
       old-locale,
-      old-time
+      old-time,
+      transformers,
+      transformers-compat
     Exposed-Modules:
       Debian.Repo,
       Debian.Repo.AptImage,
@@ -263,14 +266,12 @@ Library
       Test.Versions
 
   if !flag (local-process-extras)
-    Build-Depends: process-extras >= 0.2.1
+    Build-Depends: process-extras >= 0.2.1, process-chunk
   else
-    Hs-Source-Dirs: ../process-extras/src
+    Hs-Source-Dirs: ../process-extras/src, ../process-chunk
     Exposed-Modules:
       System.Process.ByteString
       System.Process.ByteString.Lazy
-      System.Process.Chunks
-      System.Process.ChunkE
       System.Process.ListLike
       System.Process.ListLike.Classes
       System.Process.ListLike.Instances
@@ -281,6 +282,8 @@ Library
       System.Process.String
       System.Process.Text
       System.Process.Text.Lazy
+      System.Process.ChunkE
+      System.Process.Chunks
     Other-modules:
       Utils
 
@@ -302,6 +305,8 @@ Executable autobuilder-seereason
     Build-Depends: AutoBuilder
   if !flag (local-debian-repo)
     Build-Depends: debian-repo
+  else
+    CPP-Options: -DNO_VERBOSITY_CONTROL
   if !flag (local-cabal-debian)
     Build-Depends: cabal-debian
   if !flag (local-debian)
