@@ -33,7 +33,7 @@ flag local-debian
   Manual: True
 
 flag local-process-extras
-  Description: Link directly to the source of the process-extras library
+  Description: Link directly to the source of the process-extras and process-chunk libraries
   Default: False
   Manual: True
 
@@ -116,7 +116,7 @@ Library
       Paths_AutoBuilder
 
   if !flag (local-debian-repo)
-    Build-Depends: debian-repo >= 5.69
+    Build-Depends: debian-repo >= 5.70
   else
     Hs-Source-Dirs: ../debian-repo
     CPP-Options: -DFIXED_VERBOSITY_LEVEL -UNO_VERBOSITY_CONTROL
@@ -266,7 +266,7 @@ Library
       Test.Versions
 
   if !flag (local-process-extras)
-    Build-Depends: process-extras >= 0.2.1, process-chunk
+    Build-Depends: process-extras >= 0.2.1, process-chunk >= 0.3
   else
     Hs-Source-Dirs: ../process-extras/src, ../process-chunk
     Exposed-Modules:
@@ -312,7 +312,7 @@ Executable autobuilder-seereason
   if !flag (local-debian)
     Build-Depends: debian
   if !flag (local-process-extras)
-    Build-Depends: process-extras, process-chunk
+    Build-Depends: process-extras, process-chunk >= 0.3
 
 Executable seereason-darcs-backups
   Hs-Source-Dirs: Tools
