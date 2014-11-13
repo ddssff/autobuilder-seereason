@@ -312,7 +312,7 @@ Executable autobuilder-seereason
   if !flag (local-debian)
     Build-Depends: debian
   if !flag (local-process-extras)
-    Build-Depends: process-extras
+    Build-Depends: process-extras, process-chunk
 
 Executable seereason-darcs-backups
   Hs-Source-Dirs: Tools
@@ -322,7 +322,7 @@ Executable seereason-darcs-backups
   if !flag (local-process-extras)
     Build-Depends: archive >= 1.7
   else
-    Hs-Source-Dirs: ../archive, ../debian-haskell, ../mirror, ../process-extras/src
+    Hs-Source-Dirs: ../archive, ../debian-haskell, ../mirror, ../process-extras/src, ../process-chunk
     Build-Depends:
       applicative-extras,
       bytestring,
