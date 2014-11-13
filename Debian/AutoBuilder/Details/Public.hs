@@ -292,7 +292,7 @@ main _home release =
              , debianize (hackage "ConfigFile")
              , darcs ("http://src.seereason.com/haskell-consumer")
              , debianize (git "https://github.com/seereason/module-management" [] `flag` P.BuildDep "rsync")
-             , debianize (hackage "securemem" `tflag` P.DebVersion "0.1.3-1")
+             , debianize (hackage "securemem")
              , debianize (hackage "cipher-aes")
              , debianize (hackage "cipher-des" `tflag` P.DebVersion "0.0.6-1")
              , debianize (hackage "cprng-aes")
