@@ -1,0 +1,12 @@
+diff -ru old/Language/Haskell/TH/Desugar/Sweeten.hs new/Language/Haskell/TH/Desugar/Sweeten.hs
+--- old/Language/Haskell/TH/Desugar/Sweeten.hs	2014-11-20 08:27:49.435155474 -0800
++++ new/Language/Haskell/TH/Desugar/Sweeten.hs	2014-11-19 10:49:51.830779077 -0800
+@@ -188,7 +167,7 @@
+     go _   (DVarPr _)
+       = error "Template Haskell in GHC <= 7.8 does not support variable constraints."
+     go acc (DConPr n) 
+-      | nameBase n == "(~)" || nameBase n == "~"
++      | nameBase n == "(~)"
+       , [t1, t2] <- acc
+       = EqualP t1 t2
+       | otherwise

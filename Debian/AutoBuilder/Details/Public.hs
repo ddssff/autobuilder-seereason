@@ -578,6 +578,8 @@ main _home release =
              --
              -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
              , debianize (hackage "th-expand-syns")
+             -- , debianize (hackage "th-desugar")
+             , debianize (git "http://github.com/goldfirere/th-desugar" [])
              , debianize (hackage "th-lift")
              , debianize (hackage "transformers-base")
              , debianize (hackage "unicode-names" `flag` P.DebVersion "3.2.0.0-1~hackage1")
