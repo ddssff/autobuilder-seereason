@@ -209,6 +209,7 @@ Library
       Debian.Debianize.Types
       Debian.Debianize.Types.Atoms
       Debian.Debianize.Types.BinaryDebDescription
+      Debian.Debianize.Types.CopyrightDescription
       Debian.Debianize.Types.SourceDebDescription
       Debian.Debianize.VersionSplits
     Other-Modules:
