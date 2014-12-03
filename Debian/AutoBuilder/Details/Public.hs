@@ -134,7 +134,7 @@ autobuilder home =
                                       , "--conflicts=libghc-process-extras-doc:libghc-process-listlike-doc"
                                       , "--provides=libghc-process-extras-doc:libghc-process-listlike-doc"
                                       , "--replaces=libghc-process-extras-doc:libghc-process-listlike-doc" ]
-             , debianize (git "https://github.com/seereason/process-chunk" [])
+             -- , debianize (git "https://github.com/seereason/process-chunk" [])
          {-
              , debianize (git "https://github.com/ddssff/process-listlike" [])
                  `flag` P.CabalDebian [ "--conflicts=libghc-process-listlike-dev:libghc-process-extras-dev"

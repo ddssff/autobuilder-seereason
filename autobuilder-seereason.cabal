@@ -267,24 +267,16 @@ Library
       Test.Versions
 
   if !flag (local-process-extras)
-    Build-Depends: process-extras >= 0.2.1, process-chunk >= 0.3
+    Build-Depends: process-extras >= 0.2.1
   else
-    Hs-Source-Dirs: ../process-extras/src, ../process-chunk
+    Hs-Source-Dirs: ../process-extras/src
     Exposed-Modules:
       System.Process.ByteString
       System.Process.ByteString.Lazy
+      System.Process.Extras
       System.Process.ListLike
-      System.Process.ListLike.Classes
-      System.Process.ListLike.Instances
-      System.Process.ListLike.LazyString
-      System.Process.ListLike.Read
-      System.Process.ListLike.ReadNoThreads
-      System.Process.ListLike.StrictString
-      System.Process.String
       System.Process.Text
       System.Process.Text.Lazy
-      System.Process.ChunkE
-      System.Process.Chunks
     Other-modules:
       Utils
 
@@ -313,7 +305,7 @@ Executable autobuilder-seereason
   if !flag (local-debian)
     Build-Depends: debian
   if !flag (local-process-extras)
-    Build-Depends: process-extras, process-chunk >= 0.3
+    Build-Depends: process-extras >= 0.2.1
 
 Executable seereason-darcs-backups
   Hs-Source-Dirs: Tools
@@ -323,7 +315,7 @@ Executable seereason-darcs-backups
   if !flag (local-process-extras)
     Build-Depends: archive >= 1.7
   else
-    Hs-Source-Dirs: ../archive, ../debian-haskell, ../mirror, ../process-extras/src, ../process-chunk
+    Hs-Source-Dirs: ../archive, ../debian-haskell, ../mirror, ../process-extras/src
     Build-Depends:
       applicative-extras,
       bytestring,
