@@ -279,7 +279,7 @@ main _home release =
              , debianize (hackage "hexpat")
              , debianize (hackage "List")
              , debianize (hackage "network-info")
-             , debianize (hackage "uuid" `patch` $(embedFile "patches/uuid.diff"))
+             , debianize (hackage "uuid")
              , debianize (hackage "maccatcher"
                             `pflag` P.DebVersion "2.1.5-3"
                             `tflag` P.DebVersion "2.1.5-5build1")
@@ -396,7 +396,7 @@ main _home release =
              -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
              -- sound right...
              , debianize (hackage "HaXml")
-             , debianize (hackage "heap" `flag` P.DebVersion "1.0.0-1~hackage1")
+             , debianize (hackage "heap")
              -- , debianize (hackage "heist" `patch` $(embedFile "patches/heist.diff"))
              , debianize (hackage "xmlhtml")
              , debianize (hackage "directory-tree")
@@ -526,7 +526,7 @@ main _home release =
              , debianize (hackage "sat"
                             `patch` $(embedFile "patches/sat.diff")
                             `flag` P.DebVersion "1.1.1-1~hackage1")
-             , debianize (hackage "semigroups" `flag` P.CabalPin "0.15.3") -- avoid rebuild
+             , debianize (hackage "semigroups")
              , debianize (hackage "nats")
              , debianize (hackage "sendfile" `tflag` P.DebVersion "0.7.9-1")
              , darcs ("http://src.seereason.com/set-extra")
@@ -755,7 +755,7 @@ compiler release =
                 , apt "wheezy" "debhelper" `patch` $(embedFile "patches/debhelper.diff")
                 , apt "wheezy" "dpkg" `patch` $(embedFile "patches/dpkg.diff")
                 , apt "wheezy" "makedev" ]
-              _ -> [ ghcFlags ghc78 ]
+              _ -> [ {- ghcFlags ghc78 -} ] -- Don't build ghc78 right now, the version we have is fine
       -- Pin ghc to revision 3, revision 4 still conflicts with
       -- libghc-cabal-dev so it doesn't buy us anything.  Watch for
       -- revision 5.
@@ -803,7 +803,7 @@ platform release =
                                      P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
             , debianize (hackage "stm")
             , debianize (hackage "stm-chans")
-            , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev" `tflag` P.DebVersion "0.5.4.1-1")
+            , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
             , debianize (hackage "mtl" `flag` P.CabalPin "2.1.3.1") -- 2.2.1 requires transformers-0.4, but 0.3 is built into ghc-7.8.3
             -- transformers-0.3 is built into ghc
             , wskip $ debianize (hackage "transformers" `flag` P.CabalPin "0.3.0.0" `tflag` P.DebVersion "0.3.0.0-5" `qflag` P.DebVersion "0.3.0.0-1build3")
@@ -986,7 +986,7 @@ happstack _home release =
             , debianize (hackage "time-compat")
             , debianize (hackage "base64-bytestring" `tflag` P.DebVersion "1.0.0.1-1")
             , debianize (hackage "threads")
-            , debianize (hackage "list-tries" `patch` $(embedFile "patches/list-tries.diff"))
+            , debianize (hackage "list-tries")
             , debianize (hackage "happstack-static-routing")
             , debianize (hackage "happstack-util"
                            `patch` $(embedFile "patches/happstack-util.diff")
@@ -998,7 +998,6 @@ happstack _home release =
             , debianize (hackage "hslua")
             , debianize (hackage "JuicyPixels")
             , debianize (hackage "pandoc"
-                           `patch` $(embedFile "patches/pandoc.diff")
                            `flag` P.RelaxDep "libghc-pandoc-doc"
                            `flag` P.BuildDep "alex"
                            `flag` P.BuildDep "happy")
@@ -1054,7 +1053,7 @@ authenticate _home release =
             , debianize (hackage "cipher-aes128")
             , debianize (hackage "resourcet")
             , debianize (hackage "mmorph")
-            , debianize (hackage "void" `tflag` P.DebVersion "0.6.1-1build1")
+            , debianize (hackage "void")
             , debianize (hackage "certificate" `tflag` P.DebVersion "1.3.9-1build4")
             , debianize (hackage "pem")
             , debianize (hackage "zlib-bindings")
@@ -1068,7 +1067,7 @@ authenticate _home release =
             , debianize (hackage "x509-system")
             , debianize (hackage "x509-validation")
             , debianize (hackage "cipher-rc4" `tflag` P.DebVersion "0.1.4-1")
-            , debianize (hackage "crypto-pubkey" `tflag` P.DebVersion "0.2.4-1build1")
+            , debianize (hackage "crypto-pubkey")
             , debianize (hackage "crypto-numbers"
                            `patch` $(embedFile "patches/crypto-numbers.diff")
                            `tflag` P.DebVersion "0.2.3-1")
