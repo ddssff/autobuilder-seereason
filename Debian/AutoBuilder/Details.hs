@@ -315,6 +315,7 @@ myGlobalRelaxInfo =
      "dpkg-dev",
      "gcc",
      "g++",
+     "libc-bin",
      "make",
      "mount",
      "base-passwd",
