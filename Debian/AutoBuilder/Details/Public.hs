@@ -998,6 +998,7 @@ happstack _home release =
             , debianize (hackage "hslua")
             , debianize (hackage "JuicyPixels")
             , debianize (hackage "pandoc"
+                           `patch` $(embedFile "patches/pandoc.diff")
                            `flag` P.RelaxDep "libghc-pandoc-doc"
                            `flag` P.BuildDep "alex"
                            `flag` P.BuildDep "happy")
@@ -1445,6 +1446,7 @@ ghcjs release =
              , debdir (git "https://github.com/ghcjs/ghcjs" []
                                -- Apply some patches that upstream is not comfortable with
                                `patch` $(embedFile "patches/ghcjs-tools.diff")
+                               `patch` $(embedFile "patches/ghcjs-tools-dependencies.diff")
                                `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                                      "--default-package=ghcjs-tools",
                                                      "--depends=ghcjs-tools:haddock-api"]

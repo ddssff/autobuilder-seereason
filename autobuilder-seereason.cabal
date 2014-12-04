@@ -32,8 +32,8 @@ flag local-debian
   Default: False
   Manual: True
 
-flag local-process-extras
-  Description: Link directly to the source of the process-extras and process-chunk libraries
+flag local-process-listlike
+  Description: Link directly to the source of the process-listlike and process-chunk libraries
   Default: False
   Manual: True
 
@@ -266,10 +266,10 @@ Library
       Test.SourcesList,
       Test.Versions
 
-  if !flag (local-process-extras)
-    Build-Depends: process-extras >= 0.2.1
+  if !flag (local-process-listlike)
+    Build-Depends: process-listlike >= 1.0
   else
-    Hs-Source-Dirs: ../process-extras/src
+    Hs-Source-Dirs: ../process-listlike/src
     Exposed-Modules:
       System.Process.ByteString
       System.Process.ByteString.Lazy
@@ -304,18 +304,18 @@ Executable autobuilder-seereason
     Build-Depends: cabal-debian
   if !flag (local-debian)
     Build-Depends: debian
-  if !flag (local-process-extras)
-    Build-Depends: process-extras >= 0.2.1
+  if !flag (local-process-listlike)
+    Build-Depends: process-listlike >= 1.0
 
 Executable seereason-darcs-backups
   Hs-Source-Dirs: Tools
   Main-Is: Backups.hs
   GHC-Options: -threaded -Wall -Wwarn -O2
   Build-depends: base, Extra, network-uri
-  if !flag (local-process-extras)
+  if !flag (local-process-listlike)
     Build-Depends: archive >= 1.7
   else
-    Hs-Source-Dirs: ../archive, ../debian-haskell, ../mirror, ../process-extras/src
+    Hs-Source-Dirs: ../archive, ../debian-haskell, ../mirror, ../process-listlike/src
     Build-Depends:
       applicative-extras,
       bytestring,
