@@ -125,6 +125,7 @@ Library
       data-lens,
       data-lens-template,
       deepseq,
+      ListLike >= 4,
       template-haskell,
       old-locale,
       old-time,
@@ -160,6 +161,7 @@ Library
       Debian.Repo.Release,
       Debian.Repo.RemoteRepository,
       Debian.Repo.Repo,
+      Debian.Repo.Rsync,
       Debian.Repo.Slice,
       Debian.Repo.SourceTree,
       Debian.Repo.State.AptImage,
@@ -173,7 +175,7 @@ Library
       Debian.VersionPolicy
 
   if !flag (local-cabal-debian)
-    Build-Depends: cabal-debian >= 4.17.1
+    Build-Depends: cabal-debian >= 4.19
   else
     Hs-Source-Dirs: ../cabal-debian/src
     Build-Depends:
