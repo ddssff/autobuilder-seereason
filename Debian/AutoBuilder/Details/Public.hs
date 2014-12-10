@@ -310,7 +310,7 @@ main _home release =
              , debianize (hackage "byteable" `tflag` P.DebVersion "0.1.1-1")
              , debianize (hackage "cryptohash")
              , wskip $ debianize (hackage "cpu" `tflag` P.DebVersion "0.1.2-1")
-             , debianize (hackage "css" `flag` P.DebVersion "0.1-1~hackage1")
+             , debianize (hackage "css")
              , debianize (hackage "css-text")
              , debianize (hackage "curl" `tflag` P.DebVersion "1.3.8-2") -- apt (rel release "wheezy" "quantal") "haskell-curl"
              , debianize (hackage "data-accessor")
@@ -774,7 +774,7 @@ compiler release =
                 -- has bitten me a few times.
                 -- Trusty -> P.NoPackage
                 -- Precise -> P.NoPackage
-                _ -> proc (apt "experimental" "ghc")
+                _ -> apt "experimental" "ghc" `patch` $(embedFile "patches/trac9262.diff")
       ghc76 = apt "sid" "ghc" -- up to revision 13 now
       ghcFlags p = p `relax` "ghc"
                      `relax` "happy"
