@@ -9,7 +9,14 @@
                   extensible-exceptions >= 0.1 && < 0.2,
                   pandoc-types >= 1.12.4 && < 1.13,
                   aeson >= 0.7 && < 0.9,
-@@ -253,7 +253,7 @@
+@@ -247,13 +247,13 @@
+                  haddock-library >= 1.1 && < 1.2,
+                  old-time,
+                  deepseq-generics >= 0.1 && < 0.2,
+-                 JuicyPixels >= 3.1.6.1 && < 3.2
++                 JuicyPixels >= 3.1.6.1 && < 3.3
+   if flag(network-uri)
+      Build-Depends: network-uri >= 2.6 && < 2.7, network >= 2.6
    else
       Build-Depends: network >= 2 && < 2.6
    if flag(https)
