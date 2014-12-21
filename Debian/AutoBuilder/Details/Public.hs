@@ -580,9 +580,17 @@ main _home release =
              --
              -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
              , debianize (hackage "th-expand-syns")
+             , debianize (hackage "lucid")
+             , debianize (hackage "text-show")
+             , debianize (hackage "TYB")
              -- , debianize (hackage "th-desugar")
              -- , debianize (git "http://github.com/goldfirere/th-desugar" [])
              , debianize (git "http://github.com/seereason/th-desugar" [])
+             -- , debianize (git "https://github.com/nikita-volkov/th-instance-reification.git" [])
+             , debianize (git "https://github.com/seereason/th-instance-reification.git" [])
+             , debianize (hackage "list-extras")
+             , debianize (hackage "loch-th")
+             , debianize (hackage "placeholders")
              , debianize (hackage "quickcheck-io")
              , debianize (hackage "setenv")
              , debianize (hackage "hspec-core")
@@ -1455,7 +1463,6 @@ ghcjs release =
              , debdir (git "https://github.com/ghcjs/ghcjs" []
                                -- Apply some patches that upstream is not comfortable with
                                `patch` $(embedFile "patches/ghcjs-tools.diff")
-                               `patch` $(embedFile "patches/ghcjs-tools-dependencies.diff")
                                `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                                      "--default-package=ghcjs-tools",
                                                      "--depends=ghcjs-tools:haddock-api"]
@@ -1480,6 +1487,8 @@ ghcjs release =
              , ghcjs_flags (debianize (hackage "data-default-instances-containers"))
              , ghcjs_flags (debianize (hackage "data-default-instances-old-locale"))
              , ghcjs_flags (debianize (hackage "data-default"))
+             , ghcjs_flags (debianize (hackage "lucid"))
+             , ghcjs_flags (debianize (hackage "text-show"))
              -- We can't compute a reasonable source package name for a git
              -- target (without doing IO) so we set it here explicitly.
              , ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-jquery" []) `putSrcPkgName` "ghcjs-ghcjs-jquery")
