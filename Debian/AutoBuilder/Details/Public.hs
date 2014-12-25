@@ -706,7 +706,6 @@ main _home release =
              -- , debianize (hackage "hlatex")
              , debianize (hackage "latex")
              , debianize (hackage "texmath")
-             -- , debianize (hackage "derive")
              , debianize (hackage "frquotes")
              -- Usable versions of this package are available in some dists -
              -- e.g. trusty and wheezy.
@@ -746,6 +745,17 @@ main _home release =
              , debianize (hackage "currency")
              , debianize (hackage "iso3166-country-codes")
              , debianize (hackage "memoize")
+             , debianize (hackage "yi") -- requires alex >= 3.0.3
+             , debianize (hackage "yi-rope")
+             , debianize (hackage "word-trie")
+             , debianize (hackage "oo-prototypes")
+             , debianize (hackage "yi-language" `flag` P.BuildDep "alex")
+             , debianize (hackage "dynamic-state")
+             , debianize (hackage "vty")
+             , debianize (hackage "pointedlist")
+             , debianize (hackage "charsetdetect-ae")
+             , debianize (hackage "derive")
+             , debianize (hackage "concrete-typerep")
              ]
 
       qflag = case baseRelease release of Quantal -> flag; _ -> \ p _ -> p
