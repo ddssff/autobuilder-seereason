@@ -975,7 +975,8 @@ happstack _home release =
           Packages $ map APackage $
             [ debianize (git "https://github.com/seereason/seereason-base" [])
             , debianize (hackage "happstack")
-            , debianize (darcs (darcsHub ++ "/happstack") `cd` "happstack-foundation")
+            -- , debianize (darcs (darcsHub ++ "/happstack") `cd` "happstack-foundation")
+            , debianize (hackage "happstack-foundation" `patch` $(embedFile "patches/happstack-foundation.diff"))
             , debianize (hackage "cryptohash-cryptoapi")
             , debianize (hackage "hsx2hs"
                            `patch` $(embedFile "patches/hsx2hs.diff")
