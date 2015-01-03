@@ -229,7 +229,7 @@ main _home release =
              , debianize (hackage "ansi-terminal")
              , debianize (hackage "ansi-wl-pprint" `tflag` P.DebVersion "0.6.7.1-1")
              , debianize (hackage "wl-pprint")
-             , debianize (hackage "wl-pprint-text" `patch` $(embedFile "patches/wl-pprint-text.diff")) -- relax text dependency
+             , debianize (hackage "wl-pprint-text")
              -- Our applicative-extras repository has several important patches.
              , debianize (hackage "applicative-extras" `flag` P.DebVersion "0.1.8-1")
              , debianize (hackage "asn1-data" `tflag` P.DebVersion "0.7.1-4build1")
@@ -441,7 +441,7 @@ main _home release =
              , broken $ debianize (hackage "instant-generics" `flag` P.SkipVersion "0.3.7")
              , debianize (hackage "generic-deriving")
              , debianize (hackage "irc")
-             , debianize (hackage "ixset")
+             , debianize (git "https://github.com/Happstack/ixset.git" []) -- , debianize (hackage "ixset")
              , debianize (hackage "json") -- darcs "haskell-json" (repo ++ "/haskell-json")
              , debianize (hackage "language-css" `flag` P.DebVersion "0.0.4.1-1~hackage1")
              , debianize (hackage "largeword")
@@ -571,7 +571,7 @@ main _home release =
              , debianize (hackage "terminfo"
                                       `flag` P.DevelDep "libncurses5-dev"
                                       `flag` P.DevelDep "libncursesw5-dev") -}
-             , debianize (hackage "test-framework" `tflag` P.DebVersion "0.8.0.3-1build3")
+             , debianize (hackage "test-framework")
              , debianize (hackage "test-framework-hunit" `tflag` P.DebVersion "0.3.0.1-1build4")
              -- Retired
              -- , debianize (hackage "test-framework-quickcheck")
@@ -755,7 +755,14 @@ main _home release =
              , debianize (hackage "pointedlist")
              , debianize (hackage "charsetdetect-ae")
              , debianize (hackage "derive")
-             , debianize (hackage "concrete-typerep")
+             , debianize (hackage "concrete-typerep"
+                            `tflag` P.DebVersion "0.1.0.2-2build3")
+             , debianize (hackage "text-icu" `flag` P.DevelDep "libicu-dev")
+             , debianize (hackage "dyre")
+             , debianize (hackage "cautious-file")
+             , debianize (hackage "hint")
+             , debianize (hackage "xdg-basedir")
+             , debianize (hackage "ghc-mtl")
              ]
 
       qflag = case baseRelease release of Quantal -> flag; _ -> \ p _ -> p
@@ -935,7 +942,6 @@ clckwrks _home release =
                                `patch` $(embedFile "patches/clckwrks-dot-com.diff"))
             , debianize (gitrepo "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
             , debianize (hackage "jmacro")
-            , debianize (hackage "hsx-jmacro")
             , debianize (hackage "monadlist")
             , debianize (gitrepo "clckwrks-plugin-page"
                            -- `patch` $(embedFile "patches/clckwrks-plugin-page.diff")
@@ -975,8 +981,7 @@ happstack _home release =
           Packages $ map APackage $
             [ debianize (git "https://github.com/seereason/seereason-base" [])
             , debianize (hackage "happstack")
-            -- , debianize (darcs (darcsHub ++ "/happstack") `cd` "happstack-foundation")
-            , debianize (hackage "happstack-foundation" `patch` $(embedFile "patches/happstack-foundation.diff"))
+            , debianize (git "https://github.com/Happstack/happstack-foundation.git" []) -- , debianize (hackage "happstack-foundation" `patch` $(embedFile "patches/happstack-foundation.diff"))
             , debianize (hackage "cryptohash-cryptoapi")
             , debianize (hackage "hsx2hs"
                            `patch` $(embedFile "patches/hsx2hs.diff")
@@ -998,19 +1003,17 @@ happstack _home release =
             -- , debianize (hackage "cabal-install" `patch` $(embedFile "patches/cabal-install.diff"))
             , debianize (hackage "EitherT")
             , debianize (hackage "traverse-with-class")
-            , debianize (hackage "happstack-hsp"
-                           -- `patch` $(embedFile "patches/happstack-hsp.diff")
-                           `flag` P.BuildDep "hsx2hs")
-            , debianize (hackage "happstack-jmacro")
+            , debianize (git "https://github.com/Happstack/happstack-hsp.git" []) -- , debianize (hackage "happstack-hsp" {- `patch` $(embedFile "patches/happstack-hsp.diff") -} `flag` P.BuildDep "hsx2hs")
+            , debianize (git "https://github.com/Happstack/hsx-jmacro.git" [])
+            , debianize (git "https://github.com/Happstack/happstack-jmacro.git" [])            -- , debianize (hackage "happstack-jmacro")
             , broken $ debianize (hackage "jmacro-rpc-happstack" `flag` P.SkipVersion "0.2.1") -- Really just waiting for jmacro-rpc
             , broken $ debianize (hackage "jmacro-rpc")
             , darcs ("http://src.seereason.com/happstack-search")
             -- , debianize (hackage "happstack-server")
-            , debianize (darcs "http://hub.darcs.net/stepcut/happstack" `cd` "happstack-server")
+            , debianize (git "https://github.com/Happstack/happstack-server" [])
             -- , debianize (darcs ("http://src.seereason.com/happstack-server-debug") `cd` "happstack-server")
             , debianize (hackage "happstack-lite")
-            , debianize (darcs "http://hub.darcs.net/stepcut/happstack" `cd` "happstack-server-tls")
-            -- , debianize (darcs ("http://src.seereason.com/happstack-server-debug") `cd` "happstack-server-tls")
+            , debianize (git "https://github.com/Happstack/happstack-server-tls" [])
             , debianize (hackage "time-compat")
             , debianize (hackage "base64-bytestring" `tflag` P.DebVersion "1.0.0.1-1")
             , debianize (hackage "threads")
@@ -1026,26 +1029,28 @@ happstack _home release =
             , debianize (hackage "hslua")
             , debianize (hackage "JuicyPixels")
             , debianize (hackage "pandoc"
-                           `patch` $(embedFile "patches/pandoc.diff")
+                           -- `patch` $(embedFile "patches/pandoc.diff")
                            `flag` P.RelaxDep "libghc-pandoc-doc"
                            `flag` P.BuildDep "alex"
                            `flag` P.BuildDep "happy")
             , debianize (hackage "markdown" {- `patch` $(embedFile "patches/markdown.diff") -})
             , debianize (hackage "highlighting-kate")
-            , debianize (hackage "web-routes")
-            , debianize (hackage "web-routes-boomerang")
-            , debianize (hackage "web-routes-happstack")
-            , debianize (hackage "web-routes-hsp")
-            , debianize (hackage "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
-            , debianize (hackage "web-routes-th")
+            , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes")
+            , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-boomerang")
+            , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-happstack")
+            , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-hsp")
+            , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
+            , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-th")
+            , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-transformers")
+            , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-wai")
             , debianize (darcs ("http://src.seereason.com/happstack-scaffolding")
                            `flag` P.BuildDep "hsx2hs")
             , debianize (hackage "HJScript")
-            , debianize (darcs (darcsHub ++ "/reform") `cd` "reform")
-            , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-blaze")
-            , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-happstack")
-            -- , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-heist")
-            , debianize (darcs (darcsHub ++ "/reform") `cd` "reform-hsp" `flag` P.BuildDep "hsx2hs")
+            , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform")
+            , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform-blaze")
+            , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform-hamlet")
+            , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform-happstack")
+            , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform-hsp")
             , debianize (hackage "blaze-builder")
             , debianize (hackage "blaze-markup")
             -- , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
@@ -1097,16 +1102,12 @@ authenticate _home release =
             , debianize (hackage "x509-validation")
             , debianize (hackage "cipher-rc4" `tflag` P.DebVersion "0.1.4-1")
             , debianize (hackage "crypto-pubkey")
-            , debianize (hackage "crypto-numbers"
-                           `patch` $(embedFile "patches/crypto-numbers.diff")
-                           `tflag` P.DebVersion "0.2.3-1")
+            , debianize (hackage "crypto-numbers")
             , debianize (hackage "crypto-cipher-types" `tflag` P.DebVersion "0.0.9-1")
             , debianize (hackage "authenticate")
             , debianize (hackage "zlib-enum")
-            , debianize (darcs (darcsHub ++ "/happstack")
-                                   `cd` "happstack-authenticate"
-                                   -- `patch` $(embedFile "patches/happstack-authenticate.diff")
-                        )
+            , debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" []) -- , debianize (darcs (darcsHub ++ "/happstack") `cd` "happstack-authenticate" {- `patch` $(embedFile "patches/happstack-authenticate.diff") -})
+            , debianize (git "https://github.com/Happstack/happstack-authenticate.git" [])
             , debianize (hackage "fb")
             , debianize (hackage "monad-logger")
             , debianize (hackage "monad-loops")
@@ -1243,6 +1244,7 @@ opengl release = named "opengl" $ map APackage $
 plugins :: P.Packages
 plugins = named "plugins" $ map APackage $
     [ debianize (hackage "plugins" `patch` $(embedFile "patches/plugins.diff"))
+    , debianize (git "https://github.com/Happstack/plugins-ng" [])
     , debianize (hackage "plugins-auto" `patch` $(embedFile "patches/plugins-auto.diff"))
     , debianize (hackage "happstack-plugins" `patch` $(embedFile "patches/happstack-plugins.diff"))
     , debianize (git "http://github.com/clckwrks/web-plugins" [] `cd` "web-plugins")

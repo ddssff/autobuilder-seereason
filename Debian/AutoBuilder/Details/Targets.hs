@@ -86,7 +86,11 @@ applyDepMap release (P.APackage x) =
                   -- the libxrandr-dev-lts-quantal package installs
                   -- /usr/lib/x86_64-linux-gnu/libXrandr_ltsq.so.
                   -- P.MapDep "Xrandr_ltsq" (deb "libxrandr-dev-lts-quantal"),
-                  P.MapDep "freetype" (deb "libfreetype6-dev")]
+                  P.MapDep "freetype" (deb "libfreetype6-dev"),
+                  P.MapDep "icuuc" (deb "libicu-dev"),
+                  P.MapDep "icui18n" (deb "libicu-dev"),
+                  P.MapDep "icudata" (deb "libicu-dev")
+                 ]
       deb s = [[Rel (BinPkgName s) Nothing Nothing]]
       rel s = either (error $ "Parse error in debian relations: " ++ show s) id (parseRelations s)
 
