@@ -65,16 +65,3 @@ index a8817fa..ec28fdb 100644
      for the source distribution. These are required for doing a release installation (no --dev flag)
 diff --git a/ghcjs.cabal b/ghcjs.cabal
 index 2417a0a..81118bd 100644
---- a/ghcjs.cabal
-+++ b/ghcjs.cabal
-@@ -144,10 +144,6 @@ Library
-                    parsec                     >= 3.1  && < 3.2,
-                    haskell-src-exts           >= 1.16 && < 1.17,
-                    haskell-src-meta           >= 0.6.0.3  && < 0.7
--    -- we need the transformers version that comes with GHC.
--    -- this is a hack to (hopefully) help cabal solve the dependencies
--    if impl(ghc == 7.8.3) || impl(ghc == 7.8.2)
--      build-depends: transformers-compat == 0.3.3.3
-     exposed: True
-     buildable: True
-     hs-source-dirs: src

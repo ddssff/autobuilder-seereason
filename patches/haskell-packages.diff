@@ -26,16 +26,11 @@
               TemplateHaskell, ScopedTypeVariables, OverloadedStrings #-}
  {-# OPTIONS_GHC -fno-warn-orphans #-}
  module Distribution.HaskellSuite.Packages
-@@ -352,10 +352,25 @@
+@@ -352,10 +352,20 @@
  instance FromJSON InstalledPackageId where
    parseJSON = stdFromJSON
  
 +#if MIN_VERSION_Cabal(1,21,1)
-+instance ToJSON Info.ModuleReexport where
-+  toJSON = stdToJSON
-+instance FromJSON Info.ModuleReexport where
-+  parseJSON = stdFromJSON
-+
 +instance ToJSON PackageKey where
 +  toJSON = stdToJSON
 +instance FromJSON PackageKey where
@@ -52,16 +47,6 @@
      , "license" .= Info.license i
      , "copyright" .= Info.copyright i
      , "maintainer" .= Info.maintainer i
-@@ -368,6 +383,9 @@
-     , "category" .= Info.category i
-     , "exposed" .= Info.exposed i
-     , "exposed-modules" .= Info.exposedModules i
-+#if MIN_VERSION_Cabal(1,21,0)
-+    , "reexported-modules" .= Info.reexportedModules i
-+#endif
-     , "hidden-modules" .= Info.hiddenModules i
-     , "trusted" .= Info.trusted i
-     , "import-dirs" .= Info.importDirs i
 @@ -378,7 +396,9 @@
      , "include-dirs" .= Info.includeDirs i
      , "includes" .= Info.includes i

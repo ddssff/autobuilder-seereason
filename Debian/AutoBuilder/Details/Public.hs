@@ -210,7 +210,7 @@ main _home release =
              , debianize (hackage "hashtables")
              , broken $ apt "squeeze" "bugzilla" -- requires python-central (>= 0.5)
              , debianize (hackage "fmlist")
-             , debianize (hackage "ListLike")
+             , debianize (hackage "ListLike" `patch` $(embedFile "patches/ListLike.diff"))
              -- Merged into ListLike-4.0
              -- , debianize (hackage "listlike-instances")
              , debianize (hackage "cpphs") -- apt (rel release "wheezy" "quantal") "cpphs"
@@ -224,7 +224,7 @@ main _home release =
                                                   "--build-dep", "happy",
                                                   "--revision", ""])
              -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
-             , debianize (hackage "aeson" {- `flag` P.CabalPin "0.8.0.0" -}) -- avoid rebuild
+             , debianize (hackage "aeson")
              , darcs ("http://src.seereason.com/haskell-agi")
              , debianize (hackage "ansi-terminal")
              , debianize (hackage "ansi-wl-pprint" `tflag` P.DebVersion "0.6.7.1-1")
@@ -390,9 +390,7 @@ main _home release =
              -- , debianize (hackage "haskeline")
              , debianize (hackage "th-orphans")
              , debianize (hackage "th-reify-many")
-             , debianize (hackage "haskell-src-meta"
-                           -- `flag` P.CabalPin "0.6.0.7" -- Waiting for haskell-src-exts >= 0.16
-                         )
+             , debianize (hackage "haskell-src-meta")
              -- Because we specify an exact debian version here, this package
              -- needs to be forced to rebuilt when its build dependencies (such
              -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
@@ -451,13 +449,14 @@ main _home release =
              , apt "wheezy" "haskell-leksah-server" -- for leksah -}
              , git "https://github.com/seereason/logic-classes" []
              , debianize (hackage "pointed")
+             , debianize (hackage "kan-extensions")
              , P.Package { P.spec = Debianize'' (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) Nothing
                          , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
              -- , apt "sid" "haskell-maybet"
              , debianize (hackage "MaybeT" `flag` P.DebVersion "1.2-6")
              , darcs ("http://src.seereason.com/haskell-mime")
              , debianize (hackage "mmap")
-             , debianize (hackage "monad-control" {- `flag` P.CabalPin "0.3.2.3" -})
+             , debianize (hackage "monad-control")
              , debianize (hackage "monad-par-extras")
              , debianize (hackage "abstract-deque")
              , debianize (hackage "abstract-par")
@@ -536,6 +535,8 @@ main _home release =
              -- , debianize (darcs "haskell-old-exception" ("http://src.seereason.com/old-exception"))
              , debianize (hackage "SHA") -- apt (rel release "wheezy" "quantal") "haskell-sha"
              , debianize (hackage "shake")
+             , debianize (hackage "js-flot")
+             , debianize (hackage "js-jquery")
              , debianize (hackage "byteorder" `tflag` P.DebVersion "1.0.4-1")
              , debianize (hackage "word8")
              , debianize (hackage "system-fileio")
@@ -581,8 +582,8 @@ main _home release =
              -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
              , debianize (hackage "th-expand-syns")
              , debianize (hackage "lucid")
-             , debianize (hackage "text-show")
-             , debianize (hackage "TYB")
+             , debianize (hackage "text-show") -- Requires text >= 1.2.0.2
+             , skip (Reason "Needs update for current template-haskell") $ debianize (hackage "TYB")
              -- , debianize (hackage "th-desugar")
              -- , debianize (git "http://github.com/goldfirere/th-desugar" [])
              , debianize (git "http://github.com/seereason/th-desugar" [])
@@ -758,10 +759,11 @@ main _home release =
              , debianize (hackage "concrete-typerep"
                             `tflag` P.DebVersion "0.1.0.2-2build3")
              , debianize (hackage "text-icu" `flag` P.DevelDep "libicu-dev")
+             , debianize (hackage "io-storage" `tflag` P.DebVersion "0.3-5")
              , debianize (hackage "dyre")
-             , debianize (hackage "cautious-file")
+             , debianize (hackage "cautious-file" `tflag` P.DebVersion "1.0.2-2")
              , debianize (hackage "hint")
-             , debianize (hackage "xdg-basedir")
+             , debianize (hackage "xdg-basedir" `tflag` P.DebVersion "0.2.2-2")
              , debianize (hackage "ghc-mtl")
              ]
 
@@ -835,6 +837,10 @@ platform release =
               P.Package { P.spec = DebDir (Hackage "happy") (Darcs ("http://src.seereason.com/happy-debian")),
                           P.flags = [P.RelaxDep "happy", P.CabalDebian ["--executable", "happy"],
                                      P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
+            -- Build the latest hackage version of Cabal, rename the
+            -- binary debs so they don't conflict with the Provides:
+            -- line of ghc.
+            , debianize (hackage "Cabal" `flag` P.CabalDebian [ "--debian-name-base", "cabal-latest" ])
             , debianize (hackage "stm")
             , debianize (hackage "stm-chans")
             , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
@@ -981,7 +987,7 @@ happstack _home release =
           Packages $ map APackage $
             [ debianize (git "https://github.com/seereason/seereason-base" [])
             , debianize (hackage "happstack")
-            , debianize (git "https://github.com/Happstack/happstack-foundation.git" []) -- , debianize (hackage "happstack-foundation" `patch` $(embedFile "patches/happstack-foundation.diff"))
+            , debianize (git "https://github.com/Happstack/happstack-foundation.git" [] `patch` $(embedFile "patches/happstack-foundation.diff"))
             , debianize (hackage "cryptohash-cryptoapi")
             , debianize (hackage "hsx2hs"
                            `patch` $(embedFile "patches/hsx2hs.diff")
@@ -1001,7 +1007,7 @@ happstack _home release =
             , debianize (git "haskell-haskell-src-exts" "https://github.com/haskell-suite/haskell-src-exts")
             , debianize (git "haskell-cabal" "https://github.com/haskell/cabal" `cd` "Cabal") -}
             -- , debianize (hackage "cabal-install" `patch` $(embedFile "patches/cabal-install.diff"))
-            , debianize (hackage "EitherT")
+            -- , debianize (hackage "EitherT") -- deprecated in favor of either
             , debianize (hackage "traverse-with-class")
             , debianize (git "https://github.com/Happstack/happstack-hsp.git" []) -- , debianize (hackage "happstack-hsp" {- `patch` $(embedFile "patches/happstack-hsp.diff") -} `flag` P.BuildDep "hsx2hs")
             , debianize (git "https://github.com/Happstack/hsx-jmacro.git" [])
@@ -1017,7 +1023,7 @@ happstack _home release =
             , debianize (hackage "time-compat")
             , debianize (hackage "base64-bytestring" `tflag` P.DebVersion "1.0.0.1-1")
             , debianize (hackage "threads")
-            , debianize (hackage "list-tries")
+            , debianize (hackage "list-tries" `patch` $(embedFile "patches/list-tries.diff")) -- version 0.5.2 depends on dlist << 0.7
             , debianize (hackage "happstack-static-routing")
             , debianize (hackage "happstack-util"
                            `patch` $(embedFile "patches/happstack-util.diff")
@@ -1041,7 +1047,7 @@ happstack _home release =
             , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-hsp")
             , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-mtl" `flag` P.DebVersion "0.20.1-1~hackage1")
             , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-th")
-            , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-transformers")
+            -- , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-transformers") -- requires transformers ==0.2.*
             , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-wai")
             , debianize (darcs ("http://src.seereason.com/happstack-scaffolding")
                            `flag` P.BuildDep "hsx2hs")
@@ -1107,8 +1113,10 @@ authenticate _home release =
             , debianize (hackage "authenticate")
             , debianize (hackage "zlib-enum")
             , debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" []) -- , debianize (darcs (darcsHub ++ "/happstack") `cd` "happstack-authenticate" {- `patch` $(embedFile "patches/happstack-authenticate.diff") -})
-            , debianize (git "https://github.com/Happstack/happstack-authenticate.git" [])
-            , debianize (hackage "fb")
+            -- , debianize (git "https://github.com/Happstack/happstack-authenticate.git" []) -- Use authenticate-0 for now
+            -- , debianize (hackage "ixset-typed") -- dependency of authenticate-2
+            -- , debianize (hackage "jwt") -- dependency of authenticate-2
+            , debianize (git "https://github.com/ddssff/fb.git" [])
             , debianize (hackage "monad-logger")
             , debianize (hackage "monad-loops")
             , debianize (hackage "fast-logger")
@@ -1162,6 +1170,7 @@ shakespeare =
     named "shakespeare-group" $ map APackage $
     [ debianize (hackage "wai-extra")
     , debianize (hackage "warp")
+    , debianize (hackage "iproute")
     , debianize (hackage "cryptohash-conduit")
     , debianize (hackage "wai-app-static")
     , debianize (hackage "network-conduit")
@@ -1245,6 +1254,7 @@ plugins :: P.Packages
 plugins = named "plugins" $ map APackage $
     [ debianize (hackage "plugins" `patch` $(embedFile "patches/plugins.diff"))
     , debianize (git "https://github.com/Happstack/plugins-ng" [])
+    , debianize (hackage "fsnotify")
     , debianize (hackage "plugins-auto" `patch` $(embedFile "patches/plugins-auto.diff"))
     , debianize (hackage "happstack-plugins" `patch` $(embedFile "patches/happstack-plugins.diff"))
     , debianize (git "http://github.com/clckwrks/web-plugins" [] `cd` "web-plugins")
@@ -1431,20 +1441,13 @@ ghcjs release =
              , debianize (hackage "haddock-library")
              , debianize (hackage "lifted-async")
              -- Cabal library with ghcjs support.  The debs are named cabal-ghcjs
-             -- so packages that require ghcjs suppport can specify this.
-             -- , debdir (git "https://github.com/ghcjs/cabal" [Branch "ghcjs"] `cd` "Cabal") (Git "https://github.com/ddssff/cabal-ghcjs-debian" [])
-             , debianize (git "https://github.com/ghcjs/cabal" [Branch "ghcjs", Commit "d8958e32d1d95c0ec37aa5ea4ba35d527b1b5e50"] `cd` "Cabal")
-                 `flag` P.CabalDebian [ "--source-package-name", "haskell-cabal-ghcjs" ]
-             -- Options used to generate debianization:
-             --                       `flag` P.DebVersion "1.21.0.0-2"
-             --                       `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
-             --                                             "--conflicts=cabal-install-ghcjs:cabal-install",
-             --                                             "--replaces=cabal-install-ghcjs:cabal-install",
-             --                                             "--provides=cabal-install-ghcjs:cabal-install",
-             --                                             "--conflicts=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
-             --                                             "--replaces=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils",
-             --                                             "--provides=cabal-install-ghcjs:haskell-cabal-install-ghcjs-utils"]
-             , debianize (git "https://github.com/ghcjs/cabal" [Branch "ghcjs"]
+             -- so packages that require ghcjs suppport can specify this.  I think
+             -- this support has been merged into https://github.com/seereason/cabal
+             -- as of version 1.22, but I'm not 100% sure.
+             , debianize (git "https://github.com/seereason/cabal" []
+                               `cd` "Cabal")
+                 `flag` P.CabalDebian [ "--debian-name-base", "cabal-ghcjs" ]
+             , debianize (git "https://github.com/seereason/cabal" []
                                `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
                                                      "--conflicts=cabal-install-ghcjs:cabal-install",
                                                      "--replaces=cabal-install-ghcjs:cabal-install",
@@ -1454,28 +1457,11 @@ ghcjs release =
              --  let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
              --                      p0 ["alex", "happy", "make", "patch", "autoconf",
              --                          "cpp", "git", "cabal-install-ghcjs"] in
-#if 0
-             , debianize (git "https://github.com/ghcjs/ghcjs" [])
-                 -- Apply some patches that upstream is not comfortable with
-                 `patch` $(embedFile "patches/ghcjs-tools.diff")
-                 `flag` P.KeepRCS
-                 `flag` P.CabalDebian ["--deb-version=0.1.0-2",
-                                       "--source-package-name=ghcjs-tools",
-                                       "--default-package=ghcjs-tools",
-                                       "--build-dep=git",
-                                       "--build-dep=cpp",
-                                       "--build-dep=autoconf",
-                                       "--build-dep=libtool",
-                                       "--build-dep=patch",
-                                       "--build-dep=make",
-                                       "--build-dep=happy",
-                                       "--build-dep=alex",
-                                       "--build-dep=quilt",
-                                       "--depends=ghcjs-tools:haddock-api"]
-#else
-             , debdir (git "https://github.com/ghcjs/ghcjs" []
+             , debdir (git "https://github.com/ghcjs/ghcjs" [Commit "cf70739aeaabecb6b54dee99aec9c99bf405e284"]
                                -- Apply some patches that upstream is not comfortable with
                                `patch` $(embedFile "patches/ghcjs-tools.diff")
+                               -- `patch` $(embedFile "patches/ghcjs-tools-dependencies.diff")
+                               -- `patch` $(embedFile "patches/ghcjs-tools-initdb.diff")
                                `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                                      "--default-package=ghcjs-tools",
                                                      "--depends=ghcjs-tools:haddock-api"]
@@ -1483,7 +1469,6 @@ ghcjs release =
                                                                                   [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])
                                `flag` P.KeepRCS)
-#endif
                       (Git "https://github.com/ddssff/ghcjs-tools-debian" []) -- (Dir "/home/dsf/git/ghcjs-tools-debian")
              , git "https://github.com/ddssff/ghcjs-debian" [] ]
       libs = named "ghcjs-libs" $ map APackage $
@@ -1502,6 +1487,8 @@ ghcjs release =
              , ghcjs_flags (debianize (hackage "data-default"))
              , ghcjs_flags (debianize (hackage "lucid"))
              , ghcjs_flags (debianize (hackage "text-show"))
+             , ghcjs_flags (debianize (hackage "nats"))
+             , ghcjs_flags (debianize (hackage "void"))
              -- We can't compute a reasonable source package name for a git
              -- target (without doing IO) so we set it here explicitly.
              , ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-jquery" []) `putSrcPkgName` "ghcjs-ghcjs-jquery")
@@ -1525,8 +1512,10 @@ darcsGroup =
 broken :: P.Package -> P.Package
 broken _ = zero
 
-skip :: P.Package -> P.Package
-skip _ = zero
+skip :: Reason -> P.Package -> P.Package
+skip _ _ = zero
+
+newtype Reason = Reason String
 
 zero = Package Zero []
 

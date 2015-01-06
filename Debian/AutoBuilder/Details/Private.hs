@@ -14,8 +14,7 @@ libraries _home =
     -- , darcs "haskell-document" (privateRepo </> "haskell-document")
       git "ssh://git@github.com/seereason/ontology.git" []
     , debianize (darcs (privateRepo </> "stripe")
-                   `cd` "stripe-core"
-                   `patch` $(embedFile "patches/stripe-core.diff"))
+                   `cd` "stripe-core")
     , debianize (darcs (privateRepo </> "stripe")
                    `cd` "stripe-http-conduit")
     , debianize (darcs (privateRepo </> "clckwrks-plugin-stripe")

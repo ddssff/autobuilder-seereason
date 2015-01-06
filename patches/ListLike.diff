@@ -1,11 +1,11 @@
---- old/ListLike.cabal	2014-02-18 14:40:35.000000000 -0800
-+++ new/ListLike.cabal	2014-02-18 17:29:20.920978986 -0800
-@@ -47,7 +47,7 @@
-                 ,bytestring >= 0.9.1 && < 0.11
-                 ,array      >= 0.3   && < 0.6
+--- old/ListLike.cabal	2014-07-19 07:57:49.224461197 -0700
++++ new/ListLike.cabal	2015-01-04 05:20:25.113548578 -0800
+@@ -51,7 +51,7 @@
                  ,text       >= 0.11  && < 1.2
--                ,vector     >= 0.5   && < 0.11
-+                ,vector     >= 0.5
+                 ,vector     >= 0.5   && < 0.11
+                 ,dlist      >= 0.7   && < 0.9
+-                ,fmlist     >= 0.8   && < 0.9
++                ,fmlist     >= 0.8   && < 0.10
    
  Test-suite listlike-tests
    Hs-source-dirs: src testsrc
