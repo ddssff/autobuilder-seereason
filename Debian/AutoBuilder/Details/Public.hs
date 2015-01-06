@@ -210,7 +210,7 @@ main _home release =
              , debianize (hackage "hashtables")
              , broken $ apt "squeeze" "bugzilla" -- requires python-central (>= 0.5)
              , debianize (hackage "fmlist")
-             , debianize (hackage "ListLike" `patch` $(embedFile "patches/ListLike.diff"))
+             , debianize (hackage "ListLike")
              -- Merged into ListLike-4.0
              -- , debianize (hackage "listlike-instances")
              , debianize (hackage "cpphs") -- apt (rel release "wheezy" "quantal") "cpphs"
@@ -502,7 +502,7 @@ main _home release =
              , debianize (hackage "pipes")
              , debianize (hackage "polyparse")
              , debianize (hackage "primitive")
-             , debianize (hackage "PropLogic")
+             , debianize (git "https://github.com/ddssff/PropLogic" [])
              , wskip $
                debianize (hackage "PSQueue"
                             `pflag` P.DebVersion "1.1-2"
@@ -759,7 +759,7 @@ main _home release =
              , debianize (hackage "concrete-typerep"
                             `tflag` P.DebVersion "0.1.0.2-2build3")
              , debianize (hackage "text-icu" `flag` P.DevelDep "libicu-dev")
-             , debianize (hackage "io-storage" `tflag` P.DebVersion "0.3-5")
+             , debianize (hackage "io-storage" `tflag` P.DebVersion "0.3-2")
              , debianize (hackage "dyre")
              , debianize (hackage "cautious-file" `tflag` P.DebVersion "1.0.2-2")
              , debianize (hackage "hint")
@@ -987,7 +987,7 @@ happstack _home release =
           Packages $ map APackage $
             [ debianize (git "https://github.com/seereason/seereason-base" [])
             , debianize (hackage "happstack")
-            , debianize (git "https://github.com/Happstack/happstack-foundation.git" [] `patch` $(embedFile "patches/happstack-foundation.diff"))
+            , debianize (git "https://github.com/Happstack/happstack-foundation.git" [])
             , debianize (hackage "cryptohash-cryptoapi")
             , debianize (hackage "hsx2hs"
                            `patch` $(embedFile "patches/hsx2hs.diff")
@@ -1056,7 +1056,8 @@ happstack _home release =
             , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform-blaze")
             , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform-hamlet")
             , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform-happstack")
-            , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform-hsp")
+            , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform-hsp"
+                           `flag` P.BuildDep "hsx2hs")
             , debianize (hackage "blaze-builder")
             , debianize (hackage "blaze-markup")
             -- , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
