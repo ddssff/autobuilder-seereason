@@ -1460,7 +1460,7 @@ ghcjs release =
              , debdir (git "https://github.com/ghcjs/ghcjs" [Commit "cf70739aeaabecb6b54dee99aec9c99bf405e284"]
                                -- Apply some patches that upstream is not comfortable with
                                `patch` $(embedFile "patches/ghcjs-tools.diff")
-                               -- `patch` $(embedFile "patches/ghcjs-tools-dependencies.diff")
+                               `patch` $(embedFile "patches/ghcjs-tools-dependencies.diff")
                                -- `patch` $(embedFile "patches/ghcjs-tools-initdb.diff")
                                `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                                      "--default-package=ghcjs-tools",
