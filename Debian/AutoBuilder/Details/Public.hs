@@ -850,7 +850,7 @@ platform release =
             , debianize (hackage "parallel")
             , debianize (hackage "syb")
             , debianize (hackage "fgl")
-            , debianize (hackage "text" `flag` P.CabalPin "1.1.1.3") -- Waiting for updated dependencies
+            , debianize (hackage "text" `flag` P.CabalPin "1.1.1.3") -- Need 1.2.0.3 to build text-show, but waiting for updated dependencies
             , P.Package { P.spec = Debianize'' (Hackage "alex") Nothing
                           -- alex shouldn't rebuild just because alex seems newer, but alex does require
                           -- an installed alex binary to build
@@ -986,7 +986,6 @@ happstack _home release =
       packages =
           Packages $ map APackage $
             [ debianize (git "https://github.com/seereason/seereason-base" [])
-            , debianize (hackage "happstack")
             , debianize (git "https://github.com/Happstack/happstack-foundation.git" [])
             , debianize (hackage "cryptohash-cryptoapi")
             , debianize (hackage "hsx2hs"
@@ -1113,7 +1112,7 @@ authenticate _home release =
             , debianize (hackage "crypto-cipher-types" `tflag` P.DebVersion "0.0.9-1")
             , debianize (hackage "authenticate")
             , debianize (hackage "zlib-enum")
-            , debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" []) -- , debianize (darcs (darcsHub ++ "/happstack") `cd` "happstack-authenticate" {- `patch` $(embedFile "patches/happstack-authenticate.diff") -})
+            , debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" [])
             -- , debianize (git "https://github.com/Happstack/happstack-authenticate.git" []) -- Use authenticate-0 for now
             -- , debianize (hackage "ixset-typed") -- dependency of authenticate-2
             -- , debianize (hackage "jwt") -- dependency of authenticate-2
@@ -1430,7 +1429,7 @@ ghcjs release =
              [ debianize (hackage "shelly")
              , debianize (hackage "text-binary")
              , debianize (hackage "enclosed-exceptions")
-             , apt "sid" "nodejs"
+             , skip (Reason "test failure on switch from 0.10.29~dfsg-1 to 0.10.29~dfsg-1.1") (apt "sid" "nodejs")
              , debdir (git "https://github.com/ghcjs/ghcjs-prim.git" [])
                           (Git "https://github.com/ddssff/ghcjs-prim-debian" [])
              , debianize (hackage "haddock-api"
@@ -1487,9 +1486,10 @@ ghcjs release =
              , ghcjs_flags (debianize (hackage "data-default-instances-old-locale"))
              , ghcjs_flags (debianize (hackage "data-default"))
              , ghcjs_flags (debianize (hackage "lucid"))
-             , ghcjs_flags (debianize (hackage "text-show"))
+             , ghcjs_flags (debianize (hackage "text-show")) -- requires text-1.2.0.3
              , ghcjs_flags (debianize (hackage "nats"))
              , ghcjs_flags (debianize (hackage "void"))
+             , ghcjs_flags (debianize (hackage "semigroups"))
              -- We can't compute a reasonable source package name for a git
              -- target (without doing IO) so we set it here explicitly.
              , ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-jquery" []) `putSrcPkgName` "ghcjs-ghcjs-jquery")
