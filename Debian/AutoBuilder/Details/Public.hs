@@ -69,7 +69,7 @@ targets _home release =
     named "all" $
     [ new
     , main _home release
-    , autobuilder _home
+    , autobuilder _home release
     , clckwrks _home release
     , sunroof release
     , haste
@@ -112,8 +112,8 @@ fixme =
     , debianize (darcs "http://hub.darcs.net/kowey/GenI" `patch` $(embedFile "patches/GenI.diff"))
     ]
 
-autobuilder :: FilePath -> P.Packages
-autobuilder home =
+autobuilder :: FilePath -> Release -> P.Packages
+autobuilder home release =
     named "autobuilder-group" [unixutils home, libs]
     where
       libs = Packages $ map APackage $
@@ -124,8 +124,9 @@ autobuilder home =
              , debianize (git "https://github.com/ddssff/autobuilder" [])
                  `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
              , git "https://github.com/seereason/archive" []
-{-
-             , debianize (git "https://github.com/seereason/process-extras" [])
+
+             , debianize (git "https://github.com/davidlazar/process-extras" [])
+                 `tflag` P.DebVersion "0.2.0-2build1"
                  `flag` P.CabalDebian [ "--conflicts=libghc-process-extras-dev:libghc-process-listlike-dev"
                                       , "--provides=libghc-process-extras-dev:libghc-process-listlike-dev"
                                       , "--replaces=libghc-process-extras-dev:libghc-process-listlike-dev"
@@ -135,7 +136,7 @@ autobuilder home =
                                       , "--conflicts=libghc-process-extras-doc:libghc-process-listlike-doc"
                                       , "--provides=libghc-process-extras-doc:libghc-process-listlike-doc"
                                       , "--replaces=libghc-process-extras-doc:libghc-process-listlike-doc" ]
--}
+
              -- , debianize (git "https://github.com/seereason/process-chunk" [])
              , debianize (git "https://github.com/ddssff/process-listlike" [])
                  `flag` P.CabalDebian [ "--conflicts=libghc-process-listlike-dev:libghc-process-extras-dev"
@@ -193,6 +194,8 @@ autobuilder home =
                  `flag` P.CabalDebian [ "--executable", "seereason-darcs-backups" ]
                  `flag` P.CabalDebian [ "--source-package-name", "autobuilder-seereason" ]
              ]
+      pflag = case baseRelease release of Precise -> flag; _ -> \ p _ -> p
+      tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p
 
 unixutils :: FilePath-> P.Packages
 unixutils _home =
