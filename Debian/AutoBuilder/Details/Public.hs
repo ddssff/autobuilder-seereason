@@ -138,6 +138,7 @@ autobuilder home release =
                                       , "--replaces=libghc-process-extras-doc:libghc-process-listlike-doc" ]
 
              -- , debianize (git "https://github.com/seereason/process-chunk" [])
+{-
              , debianize (git "https://github.com/ddssff/process-listlike" [])
                  `flag` P.CabalDebian [ "--conflicts=libghc-process-listlike-dev:libghc-process-extras-dev"
                                       , "--provides=libghc-process-listlike-dev:libghc-process-extras-dev"
@@ -148,6 +149,7 @@ autobuilder home release =
                                       , "--conflicts=libghc-process-listlike-doc:libghc-process-extras-doc"
                                       , "--provides=libghc-process-listlike-doc:libghc-process-extras-doc"
                                       , "--replaces=libghc-process-listlike-doc:libghc-process-extras-doc" ]
+-}
          {-
              , darcs ("http://src.seereason.com/process-progress")
              , debianize (darcs ("http://src.seereason.com/process-verbosity"))
