@@ -764,7 +764,7 @@ main _home release =
              , debianize (hackage "concrete-typerep"
                             `tflag` P.DebVersion "0.1.0.2-2build3")
              , debianize (hackage "text-icu" `flag` P.DevelDep "libicu-dev")
-             , debianize (hackage "io-storage" `tflag` P.DebVersion "0.3-2")
+             , debianize (hackage "io-storage" `pflag` P.DebVersion "0.3-2" `tflag` P.DebVersion "0.3-5")
              , debianize (hackage "dyre")
              , debianize (hackage "cautious-file" `tflag` P.DebVersion "1.0.2-2")
              , debianize (hackage "hint")
