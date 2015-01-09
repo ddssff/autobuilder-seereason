@@ -279,7 +279,7 @@ main _home release =
              --                      `patch` $(embedFile "patches/cabal-install.diff"))
              , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
              -- , apt (rel release "wheezy" "quantal") "haskell-cereal"
-             , debianize (hackage "cereal")
+             , debianize (hackage "cereal" `flag` P.CabalPin "0.4.1.0")
              , debianize (hackage "citeproc-hs"
                             `patch` $(embedFile "patches/citeproc-hs.diff")
                             `tflag` P.DebVersion "0.3.9-1build2")
@@ -311,7 +311,7 @@ main _home release =
              , debianize (hackage "crypto-pubkey-types")
              -- crypto-pubkey-types-0.3.2 depends on older asn1-types
              , debianize (hackage "asn1-types")
-             , debianize (hackage "hourglass")
+             , debianize (hackage "hourglass" `flag` P.CabalPin "0.2.6")
              , debianize (hackage "byteable" `tflag` P.DebVersion "0.1.1-1")
              , debianize (hackage "cryptohash")
              , wskip $ debianize (hackage "cpu" `tflag` P.DebVersion "0.1.2-1")
