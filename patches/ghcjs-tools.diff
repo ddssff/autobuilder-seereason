@@ -63,5 +63,26 @@ index a8817fa..ec28fdb 100644
  {- |
      Build tar cache archives for ghcjs-boot libraries, shims (the runtime system) and the test suite
      for the source distribution. These are required for doing a release installation (no --dev flag)
-diff --git a/ghcjs.cabal b/ghcjs.cabal
+diff --git a/utils/update_archives.sh b/utils/update_archives.sh
 index 2417a0a..81118bd 100644
+--- a/utils/update_archives.sh	2015-01-07 05:35:08.910768295 -0800
++++ b/utils/update_archives.sh	2015-01-07 05:43:16.274770651 -0800
+@@ -135,12 +135,12 @@
+ 
+ # fixme this is actually not enough to ensure that there is no cruft in the
+ # test tree, since git may ignore files
+-STATUS=`git status --porcelain`
+-if [ ${#STATUS} -gt 0 ]
+-then
+-    echo "working tree is dirty, run from a clean working tree"
+-    exit 1
+-fi
++# STATUS=`git status --porcelain`
++# if [ ${#STATUS} -gt 0 ]
++# then
++#     echo "working tree is dirty, run from a clean working tree"
++#     exit 1
++# fi
+ 
+ # This is a simulation of git symbolic-ref --short -q HEAD, which doesn't work with
+ # older versions of git.  The --short option is supported by git-1.9.1.
