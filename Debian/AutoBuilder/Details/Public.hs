@@ -125,8 +125,7 @@ autobuilder home release =
                  `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
              , git "https://github.com/seereason/archive" []
 
-             , debianize (git "https://github.com/davidlazar/process-extras" [])
-                 `tflag` P.DebVersion "0.2.0-2build1"
+             , debianize (git "https://github.com/seereason/process-extras" [])
                  `flag` P.CabalDebian [ "--conflicts=libghc-process-extras-dev:libghc-process-listlike-dev"
                                       , "--provides=libghc-process-extras-dev:libghc-process-listlike-dev"
                                       , "--replaces=libghc-process-extras-dev:libghc-process-listlike-dev"
@@ -717,7 +716,7 @@ main _home release =
              -- e.g. trusty and wheezy.
              -- , apt "trusty" "foo2zjs"
              , debianize (hackage "stringsearch")
-             , debianize (hackage "rss" `patch` $(embedFile "patches/rss.diff"))
+             , debianize (hackage "rss" {- `patch` $(embedFile "patches/rss.diff") -})
              , debianize (hackage "async")
              -- Waiting for a newer GHC
              -- , debianize (hackage "units" `flag` P.CabalPin "1.0.0" {- `patch` $(embedFile "patches/units.diff") -})
@@ -735,11 +734,8 @@ main _home release =
          -}
              -- Needs update for current http-conduit
              -- , debianize $ (hackage "dropbox-sdk") `patch` $(embedFile "patches/dropbox-sdk.diff")
-             , debianize (darcs ("http://src.seereason.com/hS3"))
-                         `tflag` P.DebVersion "0.5.7-3build1"
-                         `pflag` P.DebVersion "0.5.6-2"
-                         `wflag` P.DebVersion "0.5.6-2"
-                         `flag` P.ModifyAtoms (execDebM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
+             , debianize (git "https://github.com/scsibug/hS3.git" [])
+                             `flag` P.ModifyAtoms (execDebM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
              , debianize (hackage "urlencoded" `patch` $(embedFile "patches/urlencoded.diff"))
              , debianize (hackage "hxt" `flag` P.CabalPin "9.3.1.7" `patch` $(embedFile "patches/hxt.diff")) -- 9.3.1.9 requires newer mtl
              , debianize (hackage "hxt-charproperties")
@@ -896,7 +892,7 @@ platform release =
             , debianize (hackage "HUnit" `tflag` P.DebVersion "1.2.5.2-1")
             , debianize (hackage "tf-random")
             , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
-            , debianize (hackage "parsec" `flag` P.CabalDebian (replacementLibrary "parsec2" "parsec3"))
+            , debianize (hackage "parsec" `flag` P.CabalDebian (replacementLibrary "parsec2" "parsec3") `flag` P.CabalPin "3.1.7")
             , debianize (hackage "html"
                            `tflag` P.DebVersion "1.0.1.2-7"
                            `pflag` P.DebVersion "1.0.1.2-5") -- apt (rel release "wheezy" "quantal") "haskell-html"
@@ -1304,7 +1300,7 @@ algebra release =
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
     , debianize (hackage "lens")
-    , debianize (hackage "constraints")
+    , debianize (hackage "constraints" `flag` P.CabalPin "0.4.1.2")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
     , debianize (hackage "lens-family-th")
