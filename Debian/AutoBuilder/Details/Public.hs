@@ -1491,6 +1491,7 @@ ghcjs release =
              , ghcjs_flags (debianize (hackage "nats"))
              , ghcjs_flags (debianize (hackage "void"))
              , ghcjs_flags (debianize (hackage "semigroups"))
+             , ghcjs_flags (debianize (hackage "value-supply"))
              -- We can't compute a reasonable source package name for a git
              -- target (without doing IO) so we set it here explicitly.
              , ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-jquery" []) `putSrcPkgName` "ghcjs-ghcjs-jquery")
