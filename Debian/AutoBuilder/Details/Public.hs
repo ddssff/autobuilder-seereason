@@ -257,7 +257,7 @@ main _home release =
              , debianize (hackage "bitset")
              , debianize (hackage "bytestring-nums") -- apt (rel release "wheezy" "quantal") "haskell-bytestring-nums"
              , debianize (hackage "bytestring-trie")
-             , debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev" `tflag` P.DebVersion "0.5.0.4-2")
+             , debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
              -- , debianize (hackage "cairo-pdf")
              , debianize (hackage "case-insensitive")
              -- Here is an example of creating a debian/Debianize.hs file with an
@@ -571,7 +571,7 @@ main _home release =
                             `tflag` P.DebVersion "0.0.1-6build1")
              , debianize (hackage "tagged")
              , debianize (hackage "tagsoup")
-             , debianize (hackage "tar" `tflag` P.DebVersion "0.4.0.1-3")
+             , debianize (hackage "tar")
          {-  -- This is built into ghc-7.8.3
              , debianize (hackage "terminfo"
                                       `flag` P.DevelDep "libncurses5-dev"
@@ -1072,11 +1072,11 @@ happstack _home release =
             , debianize (hackage "blaze-textual-native"
                            `patch` $(embedFile "patches/blaze-textual-native.diff")
                            `flag` P.Revision "")
-            , debianize (darcs ("https://github.com/Happstack/happstack-clckwrks")
+            , debianize (git ("https://github.com/Happstack/happstack-clckwrks") []
                            `cd` "clckwrks-theme-happstack"
                            -- `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
                            `flag` P.BuildDep "hsx2hs")
-            , debianize (darcs ("https://github.com/Happstack/happstack-clckwrks")
+            , debianize (git ("https://github.com/Happstack/happstack-clckwrks") []
                            `cd` "happstack-dot-com"
                            -- This is a change that only relates to the autobuilder
                            `patch` $(embedFile "patches/happstack-dot-com.diff"))
@@ -1167,7 +1167,7 @@ conduit release =
 -- ircbot needs a dependency on containers
 happstackdotcom _home =
     named "happstackdotcom" $ map APackage $
-    [ debianize (hackage "ircbot" `patch` $(embedFile "patches/ircbot.diff"))
+    [ debianize (hackage "ircbot")
     , debianize (hackage "SafeSemaphore")
     , darcs ("http://src.seereason.com/happstackDotCom-doc") ]
 
