@@ -588,9 +588,7 @@ main _home release =
              , debianize (hackage "lucid")
              , debianize (hackage "text-show") -- Requires text >= 1.2.0.2
              , skip (Reason "Needs update for current template-haskell") $ debianize (hackage "TYB")
-             -- , debianize (hackage "th-desugar")
-             -- , debianize (git "http://github.com/goldfirere/th-desugar" [])
-             , debianize (git "http://github.com/seereason/th-desugar" [])
+             , debianize (git "http://github.com/goldfirere/th-desugar" [])
              -- , debianize (git "https://github.com/nikita-volkov/th-instance-reification.git" [])
              , debianize (git "https://github.com/seereason/th-instance-reification.git" [])
              , debianize (hackage "list-extras")
@@ -1074,11 +1072,11 @@ happstack _home release =
             , debianize (hackage "blaze-textual-native"
                            `patch` $(embedFile "patches/blaze-textual-native.diff")
                            `flag` P.Revision "")
-            , debianize (darcs ("http://src.seereason.com/happstack-clckwrks")
+            , debianize (darcs ("https://github.com/Happstack/happstack-clckwrks")
                            `cd` "clckwrks-theme-happstack"
                            -- `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
                            `flag` P.BuildDep "hsx2hs")
-            , debianize (darcs ("http://src.seereason.com/happstack-clckwrks")
+            , debianize (darcs ("https://github.com/Happstack/happstack-clckwrks")
                            `cd` "happstack-dot-com"
                            -- This is a change that only relates to the autobuilder
                            `patch` $(embedFile "patches/happstack-dot-com.diff"))
