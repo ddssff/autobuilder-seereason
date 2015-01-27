@@ -72,7 +72,7 @@ targets _home release =
     , autobuilder _home release
     , clckwrks _home release
     , sunroof release
-    -- , haste
+    , haste
     , darcsGroup
     , ghcjs release
     , idris release
@@ -531,7 +531,7 @@ main _home release =
              , debianize (hackage "sat"
                             `patch` $(embedFile "patches/sat.diff")
                             `flag` P.DebVersion "1.1.1-1~hackage1")
-             , debianize (hackage "semigroups")
+             , debianize (hackage "semigroups" `flag` P.CabalPin "0.16.0.1")
              , debianize (hackage "nats")
              , debianize (hackage "sendfile" `tflag` P.DebVersion "0.7.9-1")
              , darcs ("http://src.seereason.com/set-extra")
@@ -1023,7 +1023,6 @@ happstack _home release =
             , darcs ("http://src.seereason.com/happstack-search")
             -- , debianize (hackage "happstack-server")
             , debianize (git "https://github.com/Happstack/happstack-server" [])
-            -- , debianize (darcs ("http://src.seereason.com/happstack-server-debug") `cd` "happstack-server")
             , debianize (hackage "happstack-lite")
             , debianize (git "https://github.com/Happstack/happstack-server-tls" [])
             , debianize (hackage "time-compat")
@@ -1055,7 +1054,7 @@ happstack _home release =
             , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-th")
             -- , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-transformers") -- requires transformers ==0.2.*
             , debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-wai")
-            , debianize (darcs ("http://src.seereason.com/happstack-scaffolding")
+            , debianize (git "https://github.com/seereason/happstack-scaffolding" []
                            `flag` P.BuildDep "hsx2hs")
             , debianize (hackage "HJScript")
             , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform")
@@ -1393,17 +1392,17 @@ idris release =
         ]
     where hack = debianize . hackage
 
--- haste :: P.Packages
--- haste = named "haste" $ map APackage $
---   [ hack "haste-compiler" `flag` P.CabalDebian ["--default-package=haste-compiler"]
---   , git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
---   , hack "data-binary-ieee754"
---   , hack "shellmate"
---   , debianize (git "https://github.com/jaspervdj/websockets.git" [])
---   , debianize (hackage "io-streams")
---   ]
---     where hack = debianize . hackage
---           git' r c = debianize $ git r c
+haste :: P.Packages
+haste = named "haste" $ map APackage $
+  [ hack "haste-compiler" `flag` P.CabalDebian ["--default-package=haste-compiler"]
+  , git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
+  , hack "data-binary-ieee754"
+  , hack "shellmate"
+  , debianize (git "https://github.com/jaspervdj/websockets.git" [])
+  , debianize (hackage "io-streams")
+  ]
+    where hack = debianize . hackage
+          git' r c = debianize $ git r c
 
 -- agda = P.Packages (singleton "agda")
 --   [ hack "agda"
