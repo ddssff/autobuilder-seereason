@@ -72,7 +72,7 @@ targets _home release =
     , autobuilder _home release
     , clckwrks _home release
     , sunroof release
-    , haste
+    -- , haste
     , darcsGroup
     , ghcjs release
     , idris release
@@ -1385,17 +1385,17 @@ idris release =
         ]
     where hack = debianize . hackage
 
-haste :: P.Packages
-haste = named "haste" $ map APackage $
-  [ hack "haste-compiler" `flag` P.CabalDebian ["--default-package=haste-compiler"]
-  , git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
-  , hack "data-binary-ieee754"
-  , hack "shellmate"
-  , debianize (git "https://github.com/jaspervdj/websockets.git" [])
-  , debianize (hackage "io-streams")
-  ]
-    where hack = debianize . hackage
-          git' r c = debianize $ git r c
+-- haste :: P.Packages
+-- haste = named "haste" $ map APackage $
+--   [ hack "haste-compiler" `flag` P.CabalDebian ["--default-package=haste-compiler"]
+--   , git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
+--   , hack "data-binary-ieee754"
+--   , hack "shellmate"
+--   , debianize (git "https://github.com/jaspervdj/websockets.git" [])
+--   , debianize (hackage "io-streams")
+--   ]
+--     where hack = debianize . hackage
+--           git' r c = debianize $ git r c
 
 -- agda = P.Packages (singleton "agda")
 --   [ hack "agda"
