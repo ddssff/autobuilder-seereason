@@ -257,7 +257,7 @@ main _home release =
              , debianize (hackage "bitset")
              , debianize (hackage "bytestring-nums") -- apt (rel release "wheezy" "quantal") "haskell-bytestring-nums"
              , debianize (hackage "bytestring-trie")
-             , debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev" `tflag` P.DebVersion "0.5.0.4-2")
+             , debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
              -- , debianize (hackage "cairo-pdf")
              , debianize (hackage "case-insensitive")
              -- Here is an example of creating a debian/Debianize.hs file with an
@@ -298,7 +298,7 @@ main _home release =
              , debianize (hackage "ConfigFile")
              , darcs ("http://src.seereason.com/haskell-consumer")
              , debianize (git "https://github.com/seereason/module-management" [] `flag` P.BuildDep "rsync")
-             , debianize (hackage "securemem")
+             , debianize (hackage "securemem" `flag` P.CabalPin "0.1.4") -- avoid rebuild
              , debianize (hackage "cipher-aes")
              , debianize (hackage "cipher-des" `tflag` P.DebVersion "0.0.6-1")
              , debianize (hackage "cprng-aes")
@@ -346,7 +346,7 @@ main _home release =
              , P.Package { P.spec = Debianize'' (Hackage "EdisonAPI") Nothing
                          , P.flags = rel release [] [P.DebVersion "1.2.1-18build2"] }
              , (debianize (hackage "EdisonCore" `qflag` P.DebVersion "1.2.1.3-9build2"))
-             , debianize (hackage "entropy" {- `tflag` P.DebVersion "0.2.1-5" -}) -- apt (rel release "wheezy" "quantal") "haskell-entropy"
+             , debianize (hackage "entropy" `flag` P.CabalPin "0.3.4.1") -- avoid rebuild for 0.3.5
              , debianize (hackage "enumerator" `qflag` P.DebVersion "0.4.19-1build2")
              , debianize (git "https://github.com/madhadron/hdaemonize" [])
              , debianize (hackage "hsyslog")
@@ -359,7 +359,7 @@ main _home release =
              , debianize (hackage "datetime" `pflag` P.DebVersion "0.2.1-2" `tflag` P.DebVersion "0.2.1-5build1")
              , debianize (hackage "regex-compat-tdfa")
              , debianize (hackage "file-embed")
-             , debianize (hackage "filemanip" `tflag` P.DebVersion "0.3.6.2-3")
+             , debianize (hackage "filemanip")
              , debianize (hackage "indents")
              , debianize (hackage "concatenative")
              , debianize (hackage "either")
@@ -460,7 +460,7 @@ main _home release =
              , debianize (hackage "MaybeT" `flag` P.DebVersion "1.2-6")
              , darcs ("http://src.seereason.com/haskell-mime")
              , debianize (hackage "mmap")
-             , debianize (hackage "monad-control")
+             , debianize (hackage "monad-control" `flag` P.CabalPin "1.0.0.1") -- avoid rebuild
              , debianize (hackage "monad-par-extras")
              , debianize (hackage "abstract-deque")
              , debianize (hackage "abstract-par")
@@ -571,7 +571,7 @@ main _home release =
                             `tflag` P.DebVersion "0.0.1-6build1")
              , debianize (hackage "tagged")
              , debianize (hackage "tagsoup")
-             , debianize (hackage "tar" `tflag` P.DebVersion "0.4.0.1-3")
+             , debianize (hackage "tar")
          {-  -- This is built into ghc-7.8.3
              , debianize (hackage "terminfo"
                                       `flag` P.DevelDep "libncurses5-dev"
@@ -588,9 +588,7 @@ main _home release =
              , debianize (hackage "lucid")
              , debianize (hackage "text-show") -- Requires text >= 1.2.0.2
              , skip (Reason "Needs update for current template-haskell") $ debianize (hackage "TYB")
-             -- , debianize (hackage "th-desugar")
-             -- , debianize (git "http://github.com/goldfirere/th-desugar" [])
-             , debianize (git "http://github.com/seereason/th-desugar" [])
+             , debianize (git "http://github.com/goldfirere/th-desugar" [])
              -- , debianize (git "https://github.com/nikita-volkov/th-instance-reification.git" [])
              , debianize (git "https://github.com/seereason/th-instance-reification.git" [])
              , debianize (hackage "list-extras")
@@ -634,6 +632,7 @@ main _home release =
              -- The GHC in wheezy conflicts with libghc-containers-dev, so we can't build this.
              -- , wonly $ debianize (hackage "containers")
              , debianize (hackage "utf8-string"
+                            `flag` P.CabalPin "0.3.8" -- avoid rebuild for version 1
                             `flag` P.RelaxDep "hscolour"
                             `flag` P.RelaxDep "cpphs")
              -- , P.Package { P.spec = Apt (rel release "wheezy" "quantal") "haskell-utf8-string"
@@ -668,7 +667,7 @@ main _home release =
                             `pflag` P.DebVersion "0.1.4-2"
                             `qflag` P.DebVersion "0.1.4-2build1"
                             `tflag` P.DebVersion "0.1.4-5build1")
-             , debianize (hackage "zip-archive")
+             , debianize (hackage "zip-archive" `flag` P.CabalPin "0.2.3.5") -- avoid rebuild
              , debianize (hackage "regex-pcre-builtin"
                             -- Need to email Audrey Tang <audreyt@audreyt.org> about this.
                             `patch` $(embedFile "patches/regex-pcre-builtin.diff")
@@ -724,7 +723,7 @@ main _home release =
                             `pflag` P.DebVersion "0.1.2-2"
                             `tflag` P.DebVersion "0.1.2-5build1")
              , debianize (hackage "regexpr" `flag` P.DebVersion "0.5.4-5build1")
-             , debianize (hackage "mtlparse" `flag` P.DebVersion "0.1.2-5")
+             , debianize (hackage "mtlparse")
              , debianize (hackage "Decimal") -- for hledger
              , debianize (git "https://github.com/simonmichael/hledger" [] `cd` "hledger-lib")
          {-
@@ -766,6 +765,8 @@ main _home release =
              , debianize (hackage "hint")
              , debianize (hackage "xdg-basedir" `tflag` P.DebVersion "0.2.2-2")
              , debianize (hackage "ghc-mtl")
+             , debianize (hackage "webdriver")
+             , debianize (hackage "cond")
              ]
 
       qflag = case baseRelease release of Quantal -> flag; _ -> \ p _ -> p
@@ -916,7 +917,8 @@ clckwrks _home release =
                        , authenticate _home release
                        , happstackdotcom _home
                        , plugins
-                       , packages ]
+                       , packages
+                       , new ]
     where
       gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
       -- repo = "http://hub.darcs.net/stepcut/clckwrks-dev"
@@ -988,6 +990,10 @@ happstack _home release =
           Packages $ map APackage $
             [ debianize (git "https://github.com/seereason/seereason-base" [])
             , debianize (git "https://github.com/Happstack/happstack-foundation.git" [])
+            , debianize (git "https://github.com/Happstack/happstack-foundation.git" []
+                                 `cd` "examples/ControlVAuth"
+                                 `flag` P.CabalDebian ["--source-package-name=happstack-foundation-example",
+                                                       "--default-package=happstack-foundation-example"])
             , debianize (hackage "cryptohash-cryptoapi")
             , debianize (hackage "hsx2hs"
                            `patch` $(embedFile "patches/hsx2hs.diff")
@@ -1068,11 +1074,11 @@ happstack _home release =
             , debianize (hackage "blaze-textual-native"
                            `patch` $(embedFile "patches/blaze-textual-native.diff")
                            `flag` P.Revision "")
-            , debianize (darcs ("http://src.seereason.com/happstack-clckwrks")
+            , debianize (git ("https://github.com/Happstack/happstack-clckwrks") []
                            `cd` "clckwrks-theme-happstack"
                            -- `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
                            `flag` P.BuildDep "hsx2hs")
-            , debianize (darcs ("http://src.seereason.com/happstack-clckwrks")
+            , debianize (git ("https://github.com/Happstack/happstack-clckwrks") []
                            `cd` "happstack-dot-com"
                            -- This is a change that only relates to the autobuilder
                            `patch` $(embedFile "patches/happstack-dot-com.diff"))
@@ -1114,9 +1120,11 @@ authenticate _home release =
             , debianize (hackage "authenticate")
             , debianize (hackage "zlib-enum")
             , debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" [])
-            -- , debianize (git "https://github.com/Happstack/happstack-authenticate.git" []) -- Use authenticate-0 for now
-            -- , debianize (hackage "ixset-typed") -- dependency of authenticate-2
-            -- , debianize (hackage "jwt") -- dependency of authenticate-2
+            , debianize (git "https://github.com/Happstack/happstack-authenticate.git" []) -- Use authenticate-0 for now
+            , debianize (hackage "ixset-typed") -- dependency of happstack-authenticate-2
+            , debianize (hackage "jwt") -- dependency of happstack-authenticate-2
+            , debianize (hackage "mime-mail")
+            , debianize (hackage "aeson-qq")
             , debianize (git "https://github.com/ddssff/fb.git" [])
             , debianize (hackage "monad-logger")
             , debianize (hackage "monad-loops")
@@ -1163,7 +1171,7 @@ conduit release =
 -- ircbot needs a dependency on containers
 happstackdotcom _home =
     named "happstackdotcom" $ map APackage $
-    [ debianize (hackage "ircbot" `patch` $(embedFile "patches/ircbot.diff"))
+    [ debianize (hackage "ircbot")
     , debianize (hackage "SafeSemaphore")
     , darcs ("http://src.seereason.com/happstackDotCom-doc") ]
 
@@ -1293,7 +1301,7 @@ algebra release =
                    `flag` P.CabalDebian [ "--conflicts=libghc-profunctors-dev:libghc-profunctors-extras-dev"
                                         , "--replaces=libghc-profunctors-dev:libghc-profunctors-extras-dev"
                                         , "--provides=libghc-profunctors-dev:libghc-profunctors-extras-dev"])
-    , debianize (hackage "reflection")
+    , debianize (hackage "reflection" `flag` P.CabalPin "1.5.1") -- avoid rebuild
     , debianize (hackage "prelude-extras")
     , debianize (hackage "free")
     , debianize (hackage "keys")
@@ -1371,7 +1379,7 @@ idris release =
     let tflag = case baseRelease release of Trusty -> flag; _ -> \ p _ -> p in
     named "idris" $ map APackage $
         [ debianize (hackage "idris"
-                       `patch` $(embedFile "patches/idris.diff") -- adds *.idr to extra-source-files
+                       -- `patch` $(embedFile "patches/idris.diff") -- adds *.idr to extra-source-files
                        `flag` P.BuildDep "libgc-dev"
                        `flag` P.CabalDebian ["--default-package=idris"])
         , hack "vector-binary-instances"
