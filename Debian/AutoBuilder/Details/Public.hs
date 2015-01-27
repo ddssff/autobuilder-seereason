@@ -632,6 +632,7 @@ main _home release =
              -- The GHC in wheezy conflicts with libghc-containers-dev, so we can't build this.
              -- , wonly $ debianize (hackage "containers")
              , debianize (hackage "utf8-string"
+                            `flag` P.CabalPin "0.3.8" -- avoid rebuild for version 1
                             `flag` P.RelaxDep "hscolour"
                             `flag` P.RelaxDep "cpphs")
              -- , P.Package { P.spec = Apt (rel release "wheezy" "quantal") "haskell-utf8-string"
