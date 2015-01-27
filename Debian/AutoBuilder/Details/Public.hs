@@ -917,7 +917,8 @@ clckwrks _home release =
                        , authenticate _home release
                        , happstackdotcom _home
                        , plugins
-                       , packages ]
+                       , packages
+                       , new ]
     where
       gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
       -- repo = "http://hub.darcs.net/stepcut/clckwrks-dev"
@@ -1119,9 +1120,11 @@ authenticate _home release =
             , debianize (hackage "authenticate")
             , debianize (hackage "zlib-enum")
             , debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" [])
-            -- , debianize (git "https://github.com/Happstack/happstack-authenticate.git" []) -- Use authenticate-0 for now
-            -- , debianize (hackage "ixset-typed") -- dependency of authenticate-2
-            -- , debianize (hackage "jwt") -- dependency of authenticate-2
+            , debianize (git "https://github.com/Happstack/happstack-authenticate.git" []) -- Use authenticate-0 for now
+            , debianize (hackage "ixset-typed") -- dependency of happstack-authenticate-2
+            , debianize (hackage "jwt") -- dependency of happstack-authenticate-2
+            , debianize (hackage "mime-mail")
+            , debianize (hackage "aeson-qq")
             , debianize (git "https://github.com/ddssff/fb.git" [])
             , debianize (hackage "monad-logger")
             , debianize (hackage "monad-loops")
