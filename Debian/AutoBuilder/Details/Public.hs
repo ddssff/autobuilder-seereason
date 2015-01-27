@@ -1499,6 +1499,19 @@ ghcjs release =
              , ghcjs_flags (debianize (hackage "void"))
              , ghcjs_flags (debianize (hackage "semigroups"))
              , ghcjs_flags (debianize (hackage "value-supply"))
+             , ghcjs_flags (debianize (hackage "base16-bytestring"))
+             , ghcjs_flags (debianize (hackage "cryptohash"))
+             , ghcjs_flags (debianize (hackage "data-lens"))
+             , ghcjs_flags (debianize (hackage "data-lens-template"))
+             , ghcjs_flags (debianize (hackage "file-embed"))
+             , ghcjs_flags (debianize (hackage "happstack-server"))
+             , ghcjs_flags (debianize (hackage "hslogger"))
+             , ghcjs_flags (debianize (hackage "network"))
+             , ghcjs_flags (debianize (hackage "network-uri"))
+             , ghcjs_flags (debianize (hackage "th-lift"))
+             , ghcjs_flags (debianize (hackage "web-routes"))
+             , ghcjs_flags (debianize (hackage "web-routes-th"))
+
              -- We can't compute a reasonable source package name for a git
              -- target (without doing IO) so we set it here explicitly.
              , ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-jquery" []) `putSrcPkgName` "ghcjs-ghcjs-jquery")
