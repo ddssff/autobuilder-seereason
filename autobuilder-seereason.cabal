@@ -38,6 +38,7 @@ flag local-process-extras
   Manual: True
 
 Library
+  Default-Language: Haskell2010
   Hs-Source-Dirs: .
   Build-Depends:
     base >= 4,
@@ -283,6 +284,7 @@ Library
       Utils
 
 Executable autobuilder-seereason
+  Default-Language: Haskell2010
   Hs-Source-Dirs: Tools
   Main-Is: AutoBuilder.hs
   GHC-Options: -threaded -Wall -Wwarn -O2
@@ -310,6 +312,7 @@ Executable autobuilder-seereason
     Build-Depends: process-extras >= 0.2.0
 
 Executable seereason-darcs-backups
+  Default-Language: Haskell2010
   Hs-Source-Dirs: Tools
   Main-Is: Backups.hs
   GHC-Options: -threaded -Wall -Wwarn -O2
