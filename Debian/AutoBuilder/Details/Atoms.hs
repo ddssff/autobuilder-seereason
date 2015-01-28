@@ -27,7 +27,7 @@ seereasonDefaultAtoms =
        splitCabal (PackageName "blaze-html") (DebBase "blaze-html-5") (Version [0, 6] [])
 
        mapCabal (PackageName "happstack-authenticate") (DebBase "happstack-authenticate")
-       splitCabal (PackageName "happstack-authenticate") (DebBase "happstack-authenticate-9") (Version [0, 10] [])
+       splitCabal (PackageName "happstack-authenticate") (DebBase "happstack-authenticate-0") (Version [2] [])
 
        mapCabal (PackageName "http-types") (DebBase "http-types")
        splitCabal (PackageName "http-types") (DebBase "http-types-7") (Version [0, 8] [])

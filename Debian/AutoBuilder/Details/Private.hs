@@ -5,6 +5,7 @@ module Debian.AutoBuilder.Details.Private (libraries, applications) where
 import Data.FileEmbed (embedFile)
 import Debian.AutoBuilder.Types.Packages as P (Packages(APackage), PackageFlag(BuildDep, CabalDebian, NoDoc), flag, patch, debianize, darcs, git, cd)
 import Debian.AutoBuilder.Details.Common (privateRepo, named, ghcjs_flags)
+import Debian.Repo.Fingerprint (GitSpec(Branch))
 import System.FilePath ((</>))
 
 libraries _home =
@@ -13,10 +14,12 @@ libraries _home =
       -- darcs "haskell-generic-formlets3" (privateRepo </> "generic-formlets3")
     -- , darcs "haskell-document" (privateRepo </> "haskell-document")
       git "ssh://git@github.com/seereason/ontology.git" []
-    , debianize (darcs (privateRepo </> "stripe")
+    , debianize (git "https://github.com/stepcut/stripe-haskell" [Branch "stripe-has-param"]
                    `cd` "stripe-core")
-    , debianize (darcs (privateRepo </> "stripe")
-                   `cd` "stripe-http-conduit")
+    , debianize (git "https://github.com/stepcut/stripe-haskell" [Branch "stripe-has-param"]
+                   `cd` "stripe-http-streams"
+                   `patch` $(embedFile "patches/stripe-http-streams.diff"))
+    -- , debianize (darcs (privateRepo </> "stripe") `cd` "stripe-http-conduit")
     , debianize (darcs (privateRepo </> "clckwrks-plugin-stripe")
                    `flag` P.BuildDep "hsx2hs")
     -- The debian/Debianize.hs script has a dependency on

@@ -853,6 +853,9 @@ platform release =
             , debianize (hackage "syb")
             , debianize (hackage "fgl")
             , debianize (hackage "text" `flag` P.CabalPin "1.1.1.3") -- Need 1.2.0.3 to build text-show, but waiting for updated dependencies
+            , debianize (hackage "http-streams")
+            , debianize (hackage "http-common")
+            , debianize (hackage "openssl-streams")
             , P.Package { P.spec = Debianize'' (Hackage "alex") Nothing
                           -- alex shouldn't rebuild just because alex seems newer, but alex does require
                           -- an installed alex binary to build
@@ -1118,7 +1121,8 @@ authenticate _home release =
             , debianize (hackage "crypto-cipher-types" `tflag` P.DebVersion "0.0.9-1")
             , debianize (hackage "authenticate")
             , debianize (hackage "zlib-enum")
-            , debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" [])
+            , debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" []
+                           `flag` P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0" ])
             , debianize (git "https://github.com/Happstack/happstack-authenticate.git" []) -- Use authenticate-0 for now
             , debianize (hackage "ixset-typed") -- dependency of happstack-authenticate-2
             , debianize (hackage "jwt") -- dependency of happstack-authenticate-2
