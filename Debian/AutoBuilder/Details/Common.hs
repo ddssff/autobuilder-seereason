@@ -35,7 +35,7 @@ named s = P.Named (fromString s) . P.Packages
 ghcjs_flags :: P.Package -> P.Package
 ghcjs_flags p =
     p `putSrcPkgName` makeSrcPkgName (P.spec p)
-      `flag` P.CabalDebian ["--ghcjs", "--no-ghc"]
+      `flag` P.CabalDebian ["--ghcjs"]
       `flag` P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)]
       `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
       `flag` P.BuildDep "ghcjs"
