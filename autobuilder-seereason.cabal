@@ -45,6 +45,7 @@ Library
     bytestring,
     Cabal,
     containers,
+    data-lens,
     filepath,
     file-embed,
     process,
@@ -123,7 +124,6 @@ Library
     CPP-Options: -DFIXED_VERBOSITY_LEVEL -UNO_VERBOSITY_CONTROL
     Build-Depends:
       bzlib,
-      data-lens,
       data-lens-template,
       deepseq,
       ListLike >= 4,
