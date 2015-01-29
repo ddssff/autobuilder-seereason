@@ -7,13 +7,13 @@ import Data.Version (Version(Version))
 import Debian.Debianize.DebianName (mapCabal, remapCabal, splitCabal)
 import Debian.Debianize.Details (debianDefaultAtoms)
 import Debian.Debianize.Types.Atoms as T (missingDependencies)
-import Debian.Debianize.Monad (DebT)
+import Debian.Debianize.Monad (CabalT)
 import Debian.Debianize.Prelude ((+=))
 import Debian.Debianize.VersionSplits (DebBase(DebBase))
 import Debian.Relation (BinPkgName(BinPkgName))
 import Distribution.Package (PackageName(PackageName))
 
-seereasonDefaultAtoms :: Monad m => DebT m ()
+seereasonDefaultAtoms :: Monad m => CabalT m ()
 seereasonDefaultAtoms =
     do debianDefaultAtoms
 

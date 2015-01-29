@@ -2,8 +2,11 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
+import Control.Category ((.))
 import Data.FileEmbed (embedFile)
+import Data.Lens.Lazy ((%=))
 import Data.List (intercalate, isPrefixOf)
+import Data.Set as Set (insert)
 import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..), Release(..))
@@ -11,9 +14,11 @@ import Debian.AutoBuilder.Details.GHC (ghc)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, KeepRCS),
                                                Packages(..), Package(..), flags, spec, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir)
-import Debian.Debianize (compat, doExecutable, execDebM, installData, rulesFragments, InstallFile(..), (+=), (~=))
+import Debian.Debianize (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), (+=), (~=))
+import Debian.Debianize.Types.Atoms (debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
-import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git, Zero), GitSpec(Branch, Commit))
+import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git, Zero) {-, GitSpec(Branch, Commit)-})
+import Prelude hiding ((.))
 import System.FilePath((</>))
 
 patchTag :: String
@@ -734,7 +739,7 @@ main _home release =
              -- Needs update for current http-conduit
              -- , debianize $ (hackage "dropbox-sdk") `patch` $(embedFile "patches/dropbox-sdk.diff")
              , debianize (git "https://github.com/scsibug/hS3.git" [])
-                             `flag` P.ModifyAtoms (execDebM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
+                             `flag` P.ModifyAtoms (execCabalM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
              , debianize (hackage "urlencoded" `patch` $(embedFile "patches/urlencoded.diff"))
              , debianize (hackage "hxt" `flag` P.CabalPin "9.3.1.7" `patch` $(embedFile "patches/hxt.diff")) -- 9.3.1.9 requires newer mtl
              , debianize (hackage "hxt-charproperties")
@@ -863,8 +868,9 @@ platform release =
                                      P.BuildDep "alex",
                                      P.BuildDep "happy",
                                      P.CabalDebian ["--executable", "alex"],
-                                     P.ModifyAtoms (execDebM $ do compat ~= Just 9
-                                                                  mapM_ (\ name -> installData (BinPkgName "alex") name name)
+                                     P.ModifyAtoms (execCabalM $
+                                                               do (compat . debInfo) ~= Just 9
+                                                                  mapM_ (\ name -> (atomSet . debInfo) %= (Set.insert $ InstallData (BinPkgName "alex") name name))
                                                                        [ "AlexTemplate"
                                                                        , "AlexTemplate-debug"
                                                                        , "AlexTemplate-ghc"
@@ -1447,7 +1453,7 @@ ghcjs release =
              , debianize (hackage "haddock-api"
                             `flag` P.CabalDebian ["--default-package=haddock-api"]
                             -- FIXME - This cabal-debian stuff does nothing because this isn't a Debianize target
-                            `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
+                            `flag` P.ModifyAtoms (execCabalM $ (rulesFragments . debInfo) += Text.unlines
                                                                [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
              , debianize (hackage "haddock-library")
@@ -1477,7 +1483,8 @@ ghcjs release =
                                `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                                      "--default-package=ghcjs-tools",
                                                      "--depends=ghcjs-tools:haddock-api"]
-                               `flag` P.ModifyAtoms (execDebM $ rulesFragments += Text.unlines
+                               `flag` P.ModifyAtoms (execCabalM $ (rulesFragments . debInfo) +=
+                                                                                Text.unlines
                                                                                   [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])
                                `flag` P.KeepRCS)

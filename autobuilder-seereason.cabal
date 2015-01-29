@@ -176,7 +176,7 @@ Library
       Debian.VersionPolicy
 
   if !flag (local-cabal-debian)
-    Build-Depends: cabal-debian >= 4.19
+    Build-Depends: cabal-debian >= 4.21
   else
     Hs-Source-Dirs: ../cabal-debian/src
     Build-Depends:
@@ -203,6 +203,7 @@ Library
       Debian.Debianize.Finalize
       Debian.Debianize.Goodies
       Debian.Debianize.Input
+      Debian.Debianize.InputCabalPackageDescription
       Debian.Debianize.Interspersed
       Debian.Debianize.Monad
       Debian.Debianize.Options
