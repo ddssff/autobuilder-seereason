@@ -1128,7 +1128,9 @@ authenticate _home release =
             , debianize (hackage "authenticate")
             , debianize (hackage "zlib-enum")
             , debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" []
-                           `flag` P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0" ])
+                           `flag` P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0",
+                                                  "--cabal-flags", "migrate",
+                                                  "--executable", "happstack-authenticate-migrate" ])
             , debianize (git "https://github.com/Happstack/happstack-authenticate.git" []) -- Use authenticate-0 for now
             , debianize (hackage "ixset-typed") -- dependency of happstack-authenticate-2
             , debianize (hackage "jwt") -- dependency of happstack-authenticate-2
