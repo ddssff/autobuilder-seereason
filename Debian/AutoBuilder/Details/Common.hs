@@ -11,7 +11,7 @@ import Data.String (IsString(fromString))
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages (flag, Package(spec))
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
-import System.FilePath (takeFileName)
+import System.FilePath (takeBaseName)
 
 data Build = Production | Testing
 build = Production
@@ -45,9 +45,9 @@ makeSrcPkgName :: RetrieveMethod -> String
 makeSrcPkgName (Hackage n) = "ghcjs-" ++ map toLower n
 makeSrcPkgName (Debianize'' p s) = fromMaybe (makeSrcPkgName p) s
 makeSrcPkgName (Patch p _) = makeSrcPkgName p
-makeSrcPkgName (Git url _) = "ghcjs-" ++ takeFileName url -- applying this to an url is sketchy
-makeSrcPkgName (Cd dir p) = makeSrcPkgName p
-makeSrcPkgName (Darcs path) = "ghcjs-" ++ takeFileName path
+makeSrcPkgName (Git url _) = "ghcjs-" ++ takeBaseName url
+makeSrcPkgName (Cd dir _) = "ghcjs-" ++ takeBaseName dir
+makeSrcPkgName (Darcs path) = "ghcjs-" ++ takeBaseName path
 makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
 
 putSrcPkgName :: Package -> String -> Package
