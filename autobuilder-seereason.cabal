@@ -53,7 +53,7 @@ Library
     unix
   Exposed-Modules:
     Debian.AutoBuilder.Details
-    Debian.AutoBuilder.Details.Atoms
+    Debian.AutoBuilder.Details.CabalInfo
     Debian.AutoBuilder.Details.Targets
     Debian.AutoBuilder.Details.Private
     Debian.AutoBuilder.Details.Public
@@ -176,10 +176,11 @@ Library
       Debian.VersionPolicy
 
   if !flag (local-cabal-debian)
-    Build-Depends: cabal-debian >= 4.21
+    Build-Depends: cabal-debian >= 4.22
   else
     Hs-Source-Dirs: ../cabal-debian/src
     Build-Depends:
+      data-default,
       Diff,
       hsemail,
       memoize,
@@ -225,27 +226,28 @@ Library
       Debian.GHC
       Debian.Policy
       Distribution.Version.Invert
+      Debian.Debianize.BasicInfo
+      Debian.Debianize.BinaryDebDescription
       Debian.Debianize.BuildDependencies
       Debian.Debianize.Bundled
+      Debian.Debianize.CabalInfo
       Debian.Debianize.Changelog
+      Debian.Debianize.CopyrightDescription
       Debian.Debianize.DebianName
+      Debian.Debianize.DebInfo
       Debian.Debianize.Details
       Debian.Debianize.Files
       Debian.Debianize.Finalize
       Debian.Debianize.Goodies
-      Debian.Debianize.Input
-      Debian.Debianize.InputCabalPackageDescription
+      Debian.Debianize.InputCabal
+      Debian.Debianize.InputDebian
       Debian.Debianize.Interspersed
       Debian.Debianize.Monad
       Debian.Debianize.Options
       Debian.Debianize.Output
       Debian.Debianize.Prelude
       Debian.Debianize.SubstVars
-      Debian.Debianize.Types
-      Debian.Debianize.Types.Atoms
-      Debian.Debianize.Types.BinaryDebDescription
-      Debian.Debianize.Types.CopyrightDescription
-      Debian.Debianize.Types.SourceDebDescription
+      Debian.Debianize.SourceDebDescription
       Debian.Debianize.VersionSplits
     Other-Modules:
       Debian.Orphans

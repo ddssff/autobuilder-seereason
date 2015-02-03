@@ -1,23 +1,20 @@
 {-# OPTIONS -Wall #-}
-module Debian.AutoBuilder.Details.Atoms
-    ( seereasonDefaultAtoms
+module Debian.AutoBuilder.Details.CabalInfo
+    ( seereasonDefaults
     ) where
 
+import Control.Category ((.))
 import Data.Version (Version(Version))
-import Debian.Debianize.DebianName (mapCabal, remapCabal, splitCabal)
-import Debian.Debianize.Details (debianDefaultAtoms)
-import Debian.Debianize.Types.Atoms as T (missingDependencies)
-import Debian.Debianize.Monad (CabalT)
-import Debian.Debianize.Prelude ((+=))
-import Debian.Debianize.VersionSplits (DebBase(DebBase))
+import Debian.Debianize (CabalT, (+=), DebBase(DebBase), debInfo, missingDependencies, mapCabal, splitCabal, debianDefaults)
 import Debian.Relation (BinPkgName(BinPkgName))
 import Distribution.Package (PackageName(PackageName))
+import Prelude hiding ((.))
 
-seereasonDefaultAtoms :: Monad m => CabalT m ()
-seereasonDefaultAtoms =
-    do debianDefaultAtoms
+seereasonDefaults :: Monad m => CabalT m ()
+seereasonDefaults =
+    do debianDefaults
 
-       missingDependencies += BinPkgName "libghc-happstack-authenticate-9-doc"
+       (missingDependencies . debInfo) += BinPkgName "libghc-happstack-authenticate-9-doc"
 
        mapCabal (PackageName "clckwrks") (DebBase "clckwrks")
        splitCabal (PackageName "clckwrks") (DebBase "clckwrks-13") (Version [0, 14] [])

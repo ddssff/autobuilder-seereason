@@ -14,8 +14,7 @@ import Debian.AutoBuilder.Details.GHC (ghc)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, KeepRCS),
                                                Packages(..), Package(..), flags, spec, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir)
-import Debian.Debianize (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), (+=), (~=))
-import Debian.Debianize.Types.Atoms (debInfo, atomSet, Atom(InstallData))
+import Debian.Debianize (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), (+=), (~=), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
 import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git, Zero) {-, GitSpec(Branch, Commit)-})
 import Prelude hiding ((.))
