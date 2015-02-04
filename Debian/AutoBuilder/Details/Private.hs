@@ -27,7 +27,7 @@ libraries _home =
     -- really have a mechanism to ensure this is installed in the
     -- parent environment, except making it a dependency of the
     -- autobuilder itself.
-    , debianize (git "ssh://git@github.com/seereason/mimo.git" []) -- Disabled until safecopy instances are fixed
+    -- , debianize (git "ssh://git@github.com/seereason/mimo.git" []) -- Disabled until upgraded for happstack-authenticate-2
     , debianize (git "ssh://git@github.com/seereason/task-manager.git" [])
     , debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-client"
                    `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
