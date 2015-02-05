@@ -901,7 +901,7 @@ platform release =
             , debianize (hackage "HUnit" `tflag` P.DebVersion "1.2.5.2-1")
             , debianize (hackage "tf-random")
             , debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
-            , debianize (hackage "parsec" `flag` P.CabalDebian (replacementLibrary "parsec2" "parsec3") `flag` P.CabalPin "3.1.7")
+            , debianize (hackage "parsec" `flag` P.CabalDebian (replacementLibrary "parsec2" "parsec3") `flag` P.CabalPin "3.1.8")
             , debianize (hackage "html"
                            `tflag` P.DebVersion "1.0.1.2-7"
                            `pflag` P.DebVersion "1.0.1.2-5") -- apt (rel release "wheezy" "quantal") "haskell-html"
@@ -1318,7 +1318,7 @@ algebra release =
     , debianize (hackage "intervals")
     , debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
     , debianize (hackage "lens")
-    , debianize (hackage "constraints" `flag` P.CabalPin "0.4.1.2")
+    , debianize (hackage "constraints" `flag` P.CabalPin "0.4.1.3")
     , debianize (hackage "lens-family-core")
     , debianize (hackage "lens-family")
     , debianize (hackage "lens-family-th")
