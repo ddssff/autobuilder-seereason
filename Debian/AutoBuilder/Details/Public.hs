@@ -363,6 +363,11 @@ main _home release =
              , debianize (hackage "datetime" `pflag` P.DebVersion "0.2.1-2" `tflag` P.DebVersion "0.2.1-5build1")
              , debianize (hackage "regex-compat-tdfa")
              , debianize (hackage "file-embed")
+             , debianize (hackage "tasty")
+             , debianize (hackage "unbounded-delays")
+             , debianize (hackage "regex-tdfa-rc")
+             , debianize (hackage "tasty-quickcheck")
+             , debianize (hackage "tasty-smallcheck")
              , debianize (hackage "filemanip")
              , debianize (hackage "indents")
              , debianize (hackage "concatenative")
@@ -575,7 +580,7 @@ main _home release =
                             `tflag` P.DebVersion "0.0.1-6build1")
              , debianize (hackage "tagged")
              , debianize (hackage "tagsoup")
-             , debianize (hackage "tar")
+             , debianize (hackage "tar" `flag` P.CabalPin "0.4.1.0")
          {-  -- This is built into ghc-7.8.3
              , debianize (hackage "terminfo"
                                       `flag` P.DevelDep "libncurses5-dev"
@@ -600,10 +605,15 @@ main _home release =
              , debianize (hackage "placeholders")
              , debianize (hackage "quickcheck-io")
              , debianize (hackage "setenv")
-             , debianize (hackage "hspec-core")
+             , debianize (hackage "hspec-meta")
+             , debianize (hackage "silently")
+             , debianize (hackage "stringbuilder")
+             , debianize (hackage "nanospec"
+                            `flag` P.CabalDebian ["--no-test-suite"]) -- avoid circular dependency nanospec <-> silently
+             , debianize (hackage "hspec")
              , debianize (hackage "hspec-discover")
              , debianize (hackage "hspec-expectations")
-             , debianize (hackage "hspec") -- for th-desugur test suite
+             , debianize (hackage "markdown-unlit")
              , debianize (hackage "th-lift")
              , debianize (hackage "transformers-base")
              , debianize (hackage "unicode-names" `flag` P.DebVersion "3.2.0.0-1~hackage1")
@@ -1301,6 +1311,7 @@ algebra release =
     , debianize (hackage "transformers-free")
     , debianize (hackage "contravariant")
     , debianize (hackage "distributive")
+    , debianize (hackage "doctest")
     -- This package fails to build in several different ways because it has no modules.
     -- I am just going to patch the packages that use it to require transformers >= 0.3.
     -- Specifically, distributive and lens.
@@ -1398,7 +1409,7 @@ idris release =
         , debianize (hackage "language-java" `flag` P.BuildDep "alex")
         , hack "cheapskate"
         , hack "annotated-wl-pprint"
-        , hack "fingertree" `tflag` P.DebVersion "0.1.0.0-1"
+        , hack "fingertree"
         , hack "reducers"
         ]
     where hack = debianize . hackage
@@ -1522,6 +1533,9 @@ ghcjs release =
              , ghcjs_flags (debianize (hackage "data-lens" `patch` $(embedFile "patches/data-lens.diff")))
              , ghcjs_flags (debianize (hackage "data-lens-template"))
              , ghcjs_flags (debianize (hackage "file-embed"))
+             , ghcjs_flags (debianize (hackage "tasty"))
+             , ghcjs_flags (debianize (hackage "tasty-quickcheck"))
+             , ghcjs_flags (debianize (hackage "tasty-smallcheck"))
              , ghcjs_flags (debianize (hackage "hslogger"))
              , ghcjs_flags (debianize (hackage "network"))
              , ghcjs_flags (debianize (hackage "network-uri"))
@@ -1537,6 +1551,7 @@ ghcjs release =
              , ghcjs_flags (debianize (hackage "tagged"))
              , ghcjs_flags (debianize (hackage "contravariant"))
              , ghcjs_flags (debianize (hackage "distributive"))
+             , ghcjs_flags (debianize (hackage "doctest"))
              , ghcjs_flags (debianize (hackage "transformers-compat" `patch` $(embedFile "patches/transformers-compat.diff")))
              , ghcjs_flags (debianize (hackage "split"))
              , ghcjs_flags (debianize (hackage "utf8-string"))

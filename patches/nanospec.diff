@@ -1,0 +1,11 @@
+--- old/nanospec.cabal	2015-02-06 15:52:24.502730554 -0800
++++ new/nanospec.cabal	2015-02-06 16:13:29.850736670 -0800
+@@ -29,6 +29,8 @@
+       base >= 4 && <= 5
+ 
+ test-suite spec
++  Buildable:
++      False
+   type:
+       exitcode-stdio-1.0
+   cpp-options:
