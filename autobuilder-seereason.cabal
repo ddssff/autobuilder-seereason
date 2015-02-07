@@ -178,7 +178,7 @@ Library
   if !flag (local-cabal-debian)
     Build-Depends: cabal-debian >= 4.22
   else
-    Hs-Source-Dirs: ../cabal-debian/src
+    Hs-Source-Dirs: ../cabal-debian/src, ../cabal-debian/dist/build/autogen
     Build-Depends:
       data-default,
       Diff,
@@ -249,6 +249,7 @@ Library
       Debian.Debianize.SubstVars
       Debian.Debianize.SourceDebDescription
       Debian.Debianize.VersionSplits
+      Paths_cabal_debian
     Other-Modules:
       Debian.Orphans
 
