@@ -1487,11 +1487,11 @@ ghcjs release =
              --  let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
              --                      p0 ["alex", "happy", "make", "patch", "autoconf",
              --                          "cpp", "git", "cabal-install-ghcjs"] in
-             , debdir (git "https://github.com/ddssff/ghcjs" [{-Commit "cf70739aeaabecb6b54dee99aec9c99bf405e284"-}]
+             , debdir (git "https://github.com/ghcjs/ghcjs" [{-Commit "cf70739aeaabecb6b54dee99aec9c99bf405e284"-}]
                                -- Apply some patches that upstream is not comfortable with
-                               -- `patch` $(embedFile "patches/ghcjs-tools.diff")
-                               -- `patch` $(embedFile "patches/ghcjs-tools-dependencies.diff")
-                               -- `patch` $(embedFile "patches/ghcjs-tools-initdb.diff")
+                               `patch` $(embedFile "patches/ghcjs-update-archives.diff")
+                               `patch` $(embedFile "patches/ghcjs-setup.diff")
+                               `patch` $(embedFile "patches/ghcjs-depends.diff")
                                `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                                      "--default-package=ghcjs-tools",
                                                      "--depends=ghcjs-tools:haddock-api"]

@@ -1,34 +1,31 @@
---- old/Setup.hs	2014-07-08 07:38:57.781088293 -0700
-+++ new/Setup.hs	2014-07-08 08:17:32.013152934 -0700
-@@ -27,6 +27,7 @@
+--- old/utils/update_archives.sh	2015-02-09 16:34:24.519995497 -0800
++++ new/utils/update_archives.sh	2015-01-07 06:12:25.050779103 -0800
+@@ -22,7 +22,7 @@
+ #
+ ###############################################################################
  
- ghcjsHooks :: UserHooks
- ghcjsHooks = simpleUserHooks { preSDist = ghcjsSDist
-+                             , preBuild = \ _ _ -> updateArchives normal >> return emptyHookedBuildInfo
-                              , postCopy = ghcjsPostCopy
-                              }
+-set -e
++set -e -x
  
-@@ -37,9 +37,12 @@
-  -}
- ghcjsSDist :: Args -> SDistFlags -> IO HookedBuildInfo
- ghcjsSDist as flags = do
--  rawSystemExit (fromFlagOrDefault normal $ sDistVerbosity flags) "bash" ["utils/update_archives.sh"]
-+  updateArchives (fromFlagOrDefault normal $ sDistVerbosity flags)
-   return emptyHookedBuildInfo
+ SHIMS_ORIGIN=https://github.com/ghcjs/shims.git
+ BOOT_ORIGIN=https://github.com/ghcjs/ghcjs-boot.git
+@@ -110,9 +110,9 @@
+     echo "import Distribution.Simple"                    >  setupAutoconf.hs
+     echo "main = defaultMainWithHooks autoconfUserHooks" >> setupAutoconf.hs
+     cp   ../boot/ghc-prim/Setup.hs setupGhcPrim.hs
+-    ghcjs -o setupSimple   -O setupSimple.hs
+-    ghcjs -o setupAutoconf -O setupAutoconf.hs
+-    ghcjs -o setupGhcPrim  -O setupGhcPrim.hs
++    ghc -o setupSimple   -O setupSimple.hs
++    ghc -o setupAutoconf -O setupAutoconf.hs
++    ghc -o setupGhcPrim  -O setupGhcPrim.hs
+     ccjs setupSimple.jsexe/all.js > ../boot/SetupSimple.precompiled.js
+     ccjs setupAutoconf.jsexe/all.js > ../boot/SetupAutoconf.precompiled.js
+     ccjs setupGhcPrim.jsexe/all.js > ../boot/ghc-prim/Setup.hs.precompiled.js
+@@ -135,12 +135,12 @@
  
-+updateArchives :: Verbosity -> IO ()
-+updateArchives v = rawSystemExit v "bash" ["utils/update_archives.sh"]
-+
- ghcjsPostCopy :: Args -> CopyFlags -> PackageDescription -> LocalBuildInfo -> IO ()
- ghcjsPostCopy args flags descr lbi
-   | (FlagName "no-wrapper-install", True) `elem` configConfigurationsFlags (configFlags lbi) =
-
---- old/utils/update_archives.sh	2014-07-05 11:23:05.938224014 -0700
-+++ new/utils/update_archives.sh	2014-07-05 11:30:31.590236462 -0700
-@@ -105,12 +105,12 @@
- git update-index --assume-unchanged lib/cache/shims.tar
- git update-index --assume-unchanged lib/cache/test.tar
- 
+ # fixme this is actually not enough to ensure that there is no cruft in the
+ # test tree, since git may ignore files
 -STATUS=`git status --porcelain`
 -if [ ${#STATUS} -gt 0 ]
 -then
@@ -42,6 +39,14 @@
 +#     exit 1
 +# fi
  
- if BRANCH=$(git symbolic-ref --short -q HEAD)
- then
-
+ # This is a simulation of git symbolic-ref --short -q HEAD, which doesn't work with
+ # older versions of git.  The --short option is supported by git-1.9.1.
+@@ -171,7 +171,7 @@
+     prepare_packages "boot"
+     
+     prepare_primops
+-    prepare_setup_scripts
++    prepare_setup_scripts || true
+     cd ..
+     echo "${BOOT_EXCLUDE}" > boot.exclude    
+     tar -X boot.exclude -cf boot.tar ghcjs-boot
