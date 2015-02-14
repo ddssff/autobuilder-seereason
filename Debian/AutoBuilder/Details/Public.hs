@@ -1314,7 +1314,9 @@ algebra release =
     -- This package fails to build in several different ways because it has no modules.
     -- I am just going to patch the packages that use it to require transformers >= 0.3.
     -- Specifically, distributive and lens.
-    , debianize (hackage "transformers-compat" `patch` $(embedFile "patches/transformers-compat.diff"))
+    , debianize (hackage "transformers-compat"
+                   `flag` P.CabalPin "0.3.3.4" -- Our ghc provides transformers-0.3.0.0, so keep this below 0.4
+                   `patch` $(embedFile "patches/transformers-compat.diff"))
 
     -- profuctors now includes profunctor-extras
     , debianize (hackage "profunctors"
