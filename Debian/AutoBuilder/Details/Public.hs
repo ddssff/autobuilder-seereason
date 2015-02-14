@@ -405,9 +405,9 @@ main _home release =
              , debianize (hackage "hashed-storage")
              -- Built into ghc-7.8.3
              -- , debianize (hackage "haskeline")
-             , debianize (hackage "th-orphans")
+             , debianize (git "https://github.com/ddssff/th-orphans" [] {-hackage "th-orphans"-})
              , debianize (hackage "th-reify-many")
-             , debianize (hackage "haskell-src-meta")
+             , debianize (git "https://github.com/ddssff/haskell-src-meta" [] {- hackage "haskell-src-meta" -})
              -- Because we specify an exact debian version here, this package
              -- needs to be forced to rebuilt when its build dependencies (such
              -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
