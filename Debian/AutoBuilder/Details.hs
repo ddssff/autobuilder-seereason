@@ -117,7 +117,7 @@ myIncludePackages myBuildRelease =
     , "pkg-config"              -- Some packages now depend on this package via new cabal options.
     , "debian-keyring"
     , "locales"
-    , "autobuilder-seereason"   -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
+    -- , "autobuilder-seereason"   -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
     -- , "perl-base"
     -- , "gnupg"
     -- , "dpkg"
