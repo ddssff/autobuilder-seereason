@@ -34,8 +34,8 @@ new :: P.Packages
 new = named "new" $ map APackage $
                   [ debianize (hackage "spine")
                   , debianize (git "https://github.com/ddssff/showplease" [])
-                  , debianize (git "https://github.com/ddssff/FileLocation.hs" [])
-                      `flag` P.CabalDebian [ "--source-package-name", "file-location" ]
+                  , debianize (hackage "file-location"
+                      `flag` P.CabalDebian [ "--source-package-name", "file-location" ])
                   , debianize (hackage "pseudomacros")
                   , debianize (hackage "aeson-pretty")
                   , debianize (hackage "wai-middleware-static")
@@ -48,6 +48,8 @@ new = named "new" $ map APackage $
                   , debianize (hackage "simple-sendfile")
                   , debianize (hackage "auto-update")
                   , debianize (hackage "warp")
+                  , debianize (hackage "iproute")
+                  , debianize (hackage "appar" `flag` P.DebVersion "1.1.4-1")
                   , debianize (hackage "atomic-primops")
                   , debianize (hackage "shakespeare")
                   , debianize (hackage "monad-parallel")
