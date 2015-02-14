@@ -287,7 +287,7 @@ main _home release =
              , debianize (hackage "citeproc-hs"
                             `patch` $(embedFile "patches/citeproc-hs.diff")
                             `tflag` P.DebVersion "0.3.9-1build2")
-             , debianize (hackage "hexpat")
+             , debianize (git "https://github.com/ddssff/hexpat.git" []) -- debianize (hackage "hexpat")
              , debianize (hackage "List")
              , debianize (hackage "network-info")
              , debianize (hackage "uuid")
