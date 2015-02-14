@@ -5,7 +5,7 @@
      comonad              >= 4.0     && < 4.3,
      containers           >= 0.3     && < 0.6,
 -    semigroupoids        >= 4.0     && < 4.1,
-+    semigroupoids        >= 4.0     && < 4.3,
++    semigroupoids        >= 4.0     && < 4.4,
      transformers         >= 0.2.0   && < 0.5
  
    if flag(DeriveDataTypeable)
