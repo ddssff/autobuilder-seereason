@@ -36,8 +36,7 @@ libraries _home =
                    `flag` P.CabalDebian ["--ghcjs", "--source-package=ghcjs-happstack-ghcjs-client"])
     , debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-server")
     , debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-webmodule") -- for GHC
-    , ghcjs_flags $
-      debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-webmodule") -- for GHCJS
+    , ghcjs_flags $ debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-webmodule") -- for GHCJS
 
     ] {- ++ clckwrks14 -}
 
