@@ -1,0 +1,20 @@
+--- old/blaze-markup.cabal	2015-01-22 13:17:00.656421674 -0800
++++ new/blaze-markup.cabal	2015-02-14 09:22:41.530373237 -0800
+@@ -35,7 +35,7 @@
+ 
+   Build-depends:
+     base          >= 4    && < 5,
+-    blaze-builder >= 0.2  && < 0.4,
++    blaze-builder >= 0.2  && < 0.5,
+     text          >= 0.10 && < 1.3,
+     bytestring    >= 0.9  && < 0.11
+ 
+@@ -58,7 +58,7 @@
+     test-framework-quickcheck2 >= 0.3 && < 0.4,
+     -- Copied from regular dependencies...
+     base          >= 4    && < 5,
+-    blaze-builder >= 0.2  && < 0.4,
++    blaze-builder >= 0.2  && < 0.5,
+     text          >= 0.10 && < 1.3,
+     bytestring    >= 0.9  && < 0.11
+ 

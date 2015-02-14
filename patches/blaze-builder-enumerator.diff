@@ -1,0 +1,11 @@
+--- old/blaze-builder-enumerator.cabal	2014-07-21 16:37:05.142837201 -0700
++++ new/blaze-builder-enumerator.cabal	2015-02-14 09:44:45.794364011 -0800
+@@ -36,7 +36,7 @@
+   GHC-options: -Wall
+   Build-depends:
+       base          >= 4       && < 5
+-    , blaze-builder >= 0.2.1.4 && < 0.4
++    , blaze-builder >= 0.2.1.4 && < 0.5
+     , bytestring    >= 0.9     && < 0.11
+     , enumerator    >= 0.4.3.1 && < 0.5
+     , transformers  >= 0.2     && < 0.5
