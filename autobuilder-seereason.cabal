@@ -57,6 +57,7 @@ Library
     Debian.AutoBuilder.Details.Targets
     Debian.AutoBuilder.Details.Private
     Debian.AutoBuilder.Details.Public
+    Debian.AutoBuilder.Details.Sources
     Debian.AutoBuilder.Details.Common
     Debian.AutoBuilder.Details.GHC
     Debian.AutoBuilder.Details.Distros

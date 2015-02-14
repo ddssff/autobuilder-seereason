@@ -1,0 +1,61 @@
+--- old/happstack-ghcjs-webmodule.cabal	2015-02-10 09:07:31.878302297 -0800
++++ new/happstack-ghcjs-webmodule.cabal	2015-02-10 09:07:31.922302295 -0800
+@@ -17,9 +17,12 @@
+   Manual: True
+ 
+ Library
+-  cpp-options: -DCLIENT
++  if impl(ghcjs)
++     cpp-options: -DCLIENT
++  else 
++     cpp-options: -DSERVER
+   Hs-Source-Dirs: .
+-  GHC-options: -threaded -O2 -Wall
++  GHC-options: -threaded -O2 -Wall -Wwarn -fno-warn-name-shadowing -fno-warn-type-defaults
+   Extensions:
+     CPP,
+     PackageImports,
+@@ -41,21 +44,24 @@
+                    WebModule.Template
+                    WebModule.WebModule
+                    WebModule.WebModuleM
+-                   ClientStub.Happstack.Server
+-  Build-Depends: ghcjs-base,
+-                 base >=4.2 && <5,
+-                 ghcjs-jquery
+-  Build-Depends: aeson,
+-                 blaze-html,
+-                 bytestring,
+-                 data-default,
+-                 data-lens,
+-                 data-lens-template,
+-                 filepath,
+-                 lucid,
+-                 mtl,
+-                 network-uri,
+-                 template-haskell,
+-                 text,
+-                 th-lift,
+-                 transformers
++
++  Build-Depends:
++     aeson,
++     base >=4.2 && <5,
++     blaze-html,
++     bytestring,
++     containers,
++     data-default,
++     data-lens-template,
++     directory-tree,
++     filepath,
++     file-embed,
++     happstack-server,
++     lucid,
++     mtl,
++     network-uri,
++     text,
++     template-haskell,
++     th-lift,
++     transformers,
++     unix
+\ No newline at end of file
