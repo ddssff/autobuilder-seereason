@@ -366,7 +366,10 @@ main _home release =
              , debianize (hackage "file-embed")
              , debianize (hackage "tasty")
              , debianize (hackage "unbounded-delays")
-             , debianize (hackage "regex-tdfa-rc")
+             , debianize (hackage "regex-tdfa-rc"
+                            `flag` P.CabalDebian [ "--conflicts=libghc-regex-tdfa-rc-dev:libghc-regex-tdfa-dev"
+                                                 , "--replaces=libghc-regex-tdfa-rc-dev:libghc-regex-tdfa-dev"
+                                                 , "--provides=libghc-regex-tdfa-rc-dev:libghc-regex-tdfa-dev" ])
              , debianize (hackage "tasty-quickcheck")
              , debianize (hackage "tasty-smallcheck")
              , debianize (hackage "filemanip")
@@ -530,7 +533,10 @@ main _home release =
                          )
              -- Retired
              -- , apt (rel release "wheezy" "quantal") "haskell-quickcheck1"
-             , debianize (hackage "regex-tdfa")
+             , debianize (hackage "regex-tdfa"
+                            `flag` P.CabalDebian [ "--conflicts=libghc-regex-tdfa-dev:libghc-regex-tdfa-rc-dev"
+                                                 , "--replaces=libghc-regex-tdfa-dev:libghc-regex-tdfa-rc-dev"
+                                                 , "--provides=libghc-regex-tdfa-dev:libghc-regex-tdfa-rc-dev" ])
              , darcs ("http://src.seereason.com/haskell-revision")
              , debianize (hackage "RJson"
                             `patch` $(embedFile "patches/RJson.diff")
