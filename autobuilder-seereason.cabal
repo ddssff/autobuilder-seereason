@@ -296,11 +296,7 @@ Library
       Debian.UTF8,
       Debian.Util.FakeChanges
     Other-Modules:
-      Debian.Version.Internal,
-      Test.Changes,
-      Test.Dependencies,
-      Test.SourcesList,
-      Test.Versions
+      Debian.Version.Internal
 
   if !flag (local-process-extras)
     Build-Depends: process-extras >= 0.2.0
