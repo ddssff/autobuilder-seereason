@@ -2,9 +2,9 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
-import Control.Category ((.))
+import OldLens hiding ((~=))
+
 import Data.FileEmbed (embedFile)
-import Data.Lens.Lazy ((%=))
 import Data.List (intercalate, isPrefixOf)
 import Data.Set as Set (insert)
 import Data.Text as Text (unlines)
@@ -17,7 +17,6 @@ import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, D
 import Debian.Debianize (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), (+=), (~=), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
 import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git, Zero) {-, GitSpec(Branch, Commit)-})
-import Prelude hiding ((.))
 import System.FilePath((</>))
 
 patchTag :: String
@@ -878,8 +877,8 @@ platform release =
                                      P.BuildDep "happy",
                                      P.CabalDebian ["--executable", "alex"],
                                      P.ModifyAtoms (execCabalM $
-                                                               do (compat . debInfo) ~= Just 9
-                                                                  mapM_ (\ name -> (atomSet . debInfo) %= (Set.insert $ InstallData (BinPkgName "alex") name name))
+                                                               do (debInfo . compat) ~= Just 9
+                                                                  mapM_ (\ name -> (debInfo . atomSet) %= (Set.insert $ InstallData (BinPkgName "alex") name name))
                                                                        [ "AlexTemplate"
                                                                        , "AlexTemplate-debug"
                                                                        , "AlexTemplate-ghc"
@@ -1465,7 +1464,7 @@ ghcjs release =
              , debianize (hackage "haddock-api"
                             `flag` P.CabalDebian ["--default-package=haddock-api"]
                             -- FIXME - This cabal-debian stuff does nothing because this isn't a Debianize target
-                            `flag` P.ModifyAtoms (execCabalM $ (rulesFragments . debInfo) += Text.unlines
+                            `flag` P.ModifyAtoms (execCabalM $ (debInfo . rulesFragments) += Text.unlines
                                                                [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
              , debianize (hackage "haddock-library")
@@ -1495,7 +1494,7 @@ ghcjs release =
                                `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                                      "--default-package=ghcjs-tools",
                                                      "--depends=ghcjs-tools:haddock-api"]
-                               `flag` P.ModifyAtoms (execCabalM $ (rulesFragments . debInfo) +=
+                               `flag` P.ModifyAtoms (execCabalM $ (debInfo . rulesFragments) +=
                                                                                 Text.unlines
                                                                                   [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])

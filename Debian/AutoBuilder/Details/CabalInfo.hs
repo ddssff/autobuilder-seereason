@@ -3,18 +3,16 @@ module Debian.AutoBuilder.Details.CabalInfo
     ( seereasonDefaults
     ) where
 
-import Control.Category ((.))
 import Data.Version (Version(Version))
 import Debian.Debianize (CabalT, (+=), DebBase(DebBase), debInfo, missingDependencies, mapCabal, splitCabal, debianDefaults)
 import Debian.Relation (BinPkgName(BinPkgName))
 import Distribution.Package (PackageName(PackageName))
-import Prelude hiding ((.))
 
 seereasonDefaults :: Monad m => CabalT m ()
 seereasonDefaults =
     do debianDefaults
 
-       (missingDependencies . debInfo) += BinPkgName "libghc-happstack-authenticate-9-doc"
+       (debInfo . missingDependencies) += BinPkgName "libghc-happstack-authenticate-9-doc"
 
        mapCabal (PackageName "clckwrks") (DebBase "clckwrks")
        splitCabal (PackageName "clckwrks") (DebBase "clckwrks-13") (Version [0, 14] [])
