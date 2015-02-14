@@ -283,7 +283,7 @@ main _home release =
              --                      `patch` $(embedFile "patches/cabal-install.diff"))
              , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
              -- , apt (rel release "wheezy" "quantal") "haskell-cereal"
-             , debianize (hackage "cereal" `flag` P.CabalPin "0.4.1.0")
+             , debianize (hackage "cereal")
              , debianize (hackage "citeproc-hs"
                             `patch` $(embedFile "patches/citeproc-hs.diff")
                             `tflag` P.DebVersion "0.3.9-1build2")
@@ -500,7 +500,7 @@ main _home release =
              , debianize (hackage "optparse-applicative")
              , debianize (hackage "ordered")
              , debianize (hackage "multiset" `ghc74flag` P.CabalPin "0.2.1") -- 0.2.2 requires containers >= 0.5, which comes with ghc 7.6.
-             , debianize (hackage "exceptions")
+             , debianize (hackage "exceptions" `flag` P.CabalPin "0.6.1" ) -- version 0.7 adds an stm dependency, so --ignore-new-versions doesn't work
              , debianize (hackage "temporary")
              , debianize (hackage "pandoc-types")
              , debianize (hackage "deepseq-generics")
@@ -549,6 +549,7 @@ main _home release =
              -- , debianize (darcs "haskell-old-exception" ("http://src.seereason.com/old-exception"))
              , debianize (hackage "SHA") -- apt (rel release "wheezy" "quantal") "haskell-sha"
              , debianize (hackage "shake")
+             , debianize (hackage "extra")
              , debianize (hackage "js-flot")
              , debianize (hackage "js-jquery")
              , debianize (hackage "byteorder" `tflag` P.DebVersion "1.0.4-1")
@@ -596,7 +597,7 @@ main _home release =
              -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
              , debianize (hackage "th-expand-syns")
              , debianize (hackage "lucid")
-             , debianize (hackage "text-show") -- Requires text >= 1.2.0.2
+             , debianize (hackage "text-show")
              , skip (Reason "Needs update for current template-haskell") $ debianize (hackage "TYB")
              , debianize (git "http://github.com/goldfirere/th-desugar" [])
              -- , debianize (git "https://github.com/nikita-volkov/th-instance-reification.git" [])
@@ -612,6 +613,7 @@ main _home release =
              , debianize (hackage "nanospec"
                             `flag` P.CabalDebian ["--no-test-suite"]) -- avoid circular dependency nanospec <-> silently
              , debianize (hackage "hspec")
+             , debianize (hackage "hspec-core")
              , debianize (hackage "hspec-discover")
              , debianize (hackage "hspec-expectations")
              , debianize (hackage "markdown-unlit")
@@ -1196,11 +1198,11 @@ happstackdotcom _home =
     , debianize (hackage "SafeSemaphore")
     , darcs ("http://src.seereason.com/happstackDotCom-doc") ]
 
+#if 0
 shakespeare =
     named "shakespeare-group" $ map APackage $
     [ debianize (hackage "wai-extra")
     , debianize (hackage "warp")
-    , debianize (hackage "iproute")
     , debianize (hackage "cryptohash-conduit")
     , debianize (hackage "wai-app-static")
     , debianize (hackage "network-conduit")
@@ -1210,7 +1212,7 @@ shakespeare =
     , debianize (hackage "http-date")
     , debianize (hackage "shakespeare")
     ]
-
+#endif
 
 -- May work with these added dependencies (statevar thru openglraw)
 opengl release = named "opengl" $ map APackage $
