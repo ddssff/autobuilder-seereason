@@ -1091,7 +1091,7 @@ happstack _home release =
             , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform-happstack")
             , debianize (git "https://github.com/Happstack/reform.git" [] `cd` "reform-hsp"
                            `flag` P.BuildDep "hsx2hs")
-            , debianize (hackage "blaze-builder")
+            , debianize (hackage "blaze-builder" `flag` P.CabalPin "0.3.3.4") -- 0.4.0.0 has no significant changes and breaks many packages
             , debianize (hackage "blaze-markup" `patch` $(embedFile "patches/blaze-markup.diff"))
             -- , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
             , debianize (hackage "blaze-builder-enumerator" `patch` $(embedFile "patches/blaze-builder-enumerator.diff"))
