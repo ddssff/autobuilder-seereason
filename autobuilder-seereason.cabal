@@ -125,6 +125,7 @@ Library
     Build-Depends:
       bzlib,
       deepseq,
+      lens,
       ListLike >= 4,
       template-haskell,
       old-locale,
