@@ -624,6 +624,7 @@ main _home release =
              , debianize (hackage "hspec-expectations")
              , debianize (hackage "markdown-unlit")
              , debianize (hackage "th-lift")
+             , debianize (hackage "th-alpha")
              , debianize (hackage "transformers-base")
              , debianize (hackage "unicode-names" `flag` P.DebVersion "3.2.0.0-1~hackage1")
              , debianize (hackage "unicode-properties"
