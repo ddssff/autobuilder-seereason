@@ -5,10 +5,10 @@ module Debian.AutoBuilder.Details.Public ( targets ) where
 import OldLens hiding ((~=))
 
 import Data.FileEmbed (embedFile)
-import Data.List (intercalate, isPrefixOf)
+import Data.List (intercalate)
 import Data.Set as Set (insert)
 import Data.Text as Text (unlines)
-import Debian.AutoBuilder.Details.Common (named, ghcjs_flags, putSrcPkgName)
+import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..), Release(..))
 import Debian.AutoBuilder.Details.GHC (ghc)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
@@ -16,7 +16,7 @@ import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, D
                                                Packages(..), Package(..), flags, spec, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir)
 import Debian.Debianize (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), (+=), (~=), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
-import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git, Zero) {-, GitSpec(Branch, Commit)-})
+import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git) {-, GitSpec(Branch, Commit)-})
 import System.FilePath((</>))
 
 patchTag :: String
@@ -1607,18 +1607,3 @@ darcsGroup =
                 )
     , debianize (hackage "regex-applicative")
     ]
-
-
-broken :: P.Package -> P.Package
-broken _ = zero
-
-skip :: Reason -> P.Package -> P.Package
-skip _ _ = zero
-
-newtype Reason = Reason String
-
-zero = Package Zero []
-
-dropPrefix :: Monad m => String -> String -> m String
-dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
-dropPrefix pre str = fail $ "Expected prefix " ++ show pre ++ ", found " ++ show str

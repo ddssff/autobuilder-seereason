@@ -4,7 +4,7 @@ module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
 import Data.FileEmbed (embedFile)
 import Debian.AutoBuilder.Types.Packages as P (Packages(APackage), PackageFlag(BuildDep, CabalDebian, NoDoc), flag, patch, debianize, darcs, git, cd)
-import Debian.AutoBuilder.Details.Common (privateRepo, named, ghcjs_flags)
+import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 import Debian.Repo.Fingerprint (GitSpec(Branch))
 import System.FilePath ((</>))
 

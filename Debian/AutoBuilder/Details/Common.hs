@@ -9,7 +9,7 @@ import Data.Maybe (fromMaybe)
 import Data.Monoid ((<>))
 import Data.String (IsString(fromString))
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages (flag, Package(spec))
+import Debian.AutoBuilder.Types.Packages (flag, Package(Package, spec))
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
 
@@ -62,3 +62,13 @@ putSrcPkgName' p _ = p
 dropPrefix :: Monad m => String -> String -> m String
 dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
 dropPrefix pre str = fail $ "Expected prefix " ++ show pre ++ ", found " ++ show str
+
+skip :: Reason -> P.Package -> P.Package
+skip _ _ = zero
+
+newtype Reason = Reason String
+
+broken :: P.Package -> P.Package
+broken _ = zero
+
+zero = Package Zero []
