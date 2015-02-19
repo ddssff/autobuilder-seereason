@@ -268,19 +268,6 @@ main _home release =
              -- Here is an example of creating a debian/Debianize.hs file with an
              -- autobuilder patch.  The autobuilder then automatically runs this
              -- script to create the debianization.
-             , broken $
-               debianize (if | ghc release >= 708 ->
-                                 hackage "cabal-install"
-                                             `flag` P.CabalPin "1.18.0.3"
-                                             `patch` $(embedFile "patches/cabal-install.diff")
-                             | otherwise ->
-                                 hackage "cabal-install"
-                                             -- Waiting for Cabal 1.18.0, shipped with ghc-7.8
-                                             `flag` P.CabalPin "1.16.0.2"
-                                             `patch` $(embedFile "patches/cabal-install.diff"))
-             -- , debianize (git "haskell-cabal-install" "https://github.com/haskell/cabal"
-             --                      `cd` "cabal-install"
-             --                      `patch` $(embedFile "patches/cabal-install.diff"))
              , debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
              -- , apt (rel release "wheezy" "quantal") "haskell-cereal"
              , debianize (hackage "cereal")
@@ -867,6 +854,7 @@ platform release =
             -- binary debs so they don't conflict with the Provides:
             -- line of ghc.
             , debianize (hackage "Cabal" `flag` P.CabalDebian [ "--debian-name-base", "cabal-latest" ])
+            , debianize (hackage "cabal-install" `flag` P.CabalDebian ["--executable", "cabal-install"])
             , debianize (hackage "stm")
             , debianize (hackage "stm-chans")
             , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
@@ -1034,14 +1022,6 @@ happstack _home release =
             , debianize (hackage "haskell-packages" `patch` $(embedFile "patches/haskell-packages.diff"))
             , debianize (hackage "hse-cpp")
             , debianize (darcs ("http://src.seereason.com/happstack-extra"))
-        {-  , debianize (git "haskell-haskell-names" "https://github.com/haskell-suite/haskell-names")
-            , debianize (git "haskell-haskell-packages" "https://github.com/haskell-suite/haskell-packages")
-            , debianize (git "haskell-hse-cpp" "https://github.com/haskell-suite/hse-cpp")
-              -- These will break everything
-            , debianize (git "haskell-haskell-src-exts" "https://github.com/haskell-suite/haskell-src-exts")
-            , debianize (git "haskell-cabal" "https://github.com/haskell/cabal" `cd` "Cabal") -}
-            -- , debianize (hackage "cabal-install" `patch` $(embedFile "patches/cabal-install.diff"))
-            -- , debianize (hackage "EitherT") -- deprecated in favor of either
             , debianize (hackage "traverse-with-class")
             , debianize (git "https://github.com/Happstack/happstack-hsp.git" []) -- , debianize (hackage "happstack-hsp" {- `patch` $(embedFile "patches/happstack-hsp.diff") -} `flag` P.BuildDep "hsx2hs")
             , debianize (git "https://github.com/Happstack/hsx-jmacro.git" [])
@@ -1482,23 +1462,6 @@ ghcjs release =
                                                                , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
              , debianize (hackage "haddock-library")
              , debianize (hackage "lifted-async")
-             -- Cabal library with ghcjs support.  The debs are named cabal-ghcjs
-             -- so packages that require ghcjs suppport can specify this.  I think
-             -- this support has been merged into https://github.com/seereason/cabal
-             -- as of version 1.22, but I'm not 100% sure.
-             , debianize (git "https://github.com/seereason/cabal" []
-                               `cd` "Cabal")
-                 `flag` P.CabalDebian [ "--debian-name-base", "cabal-ghcjs" ]
-             , debianize (git "https://github.com/seereason/cabal" []
-                               `flag` P.CabalDebian ["--default-package=cabal-install-ghcjs",
-                                                     "--conflicts=cabal-install-ghcjs:cabal-install",
-                                                     "--replaces=cabal-install-ghcjs:cabal-install",
-                                                     "--provides=cabal-install-ghcjs:cabal-install"]
-                               `cd` "cabal-install")
-             -- Options used to debianize:
-             --  let deps p0 = foldl (\ p s -> p `flag` P.BuildDep s)
-             --                      p0 ["alex", "happy", "make", "patch", "autoconf",
-             --                          "cpp", "git", "cabal-install-ghcjs"] in
              , debdir (git "https://github.com/ghcjs/ghcjs" [{-Commit "cf70739aeaabecb6b54dee99aec9c99bf405e284"-}]
                                -- Apply some patches that upstream is not comfortable with
                                `patch` $(embedFile "patches/ghcjs-update-archives.diff")
