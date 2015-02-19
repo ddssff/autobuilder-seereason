@@ -405,7 +405,7 @@ main _home release =
              , debianize (hackage "hashed-storage")
              -- Built into ghc-7.8.3
              -- , debianize (hackage "haskeline")
-             , debianize (git "https://github.com/ddssff/th-orphans" [] {-hackage "th-orphans"-})
+             , debianize (git "https://github.com/seereason/th-orphans" {-"https://github.com/mgsloan/th-orphans"-} [])
              , debianize (hackage "th-reify-many")
              , debianize (git "https://github.com/ddssff/haskell-src-meta" [] {- hackage "haskell-src-meta" -})
              -- Because we specify an exact debian version here, this package
