@@ -1,5 +1,5 @@
 {-# OPTIONS -Wall #-}
-module Debian.AutoBuilder.Details.CabalInfo
+module Debian.AutoBuilder.Details.Versions
     ( seereasonDefaults
     ) where
 

@@ -52,7 +52,7 @@ Library
     unix
   Exposed-Modules:
     Debian.AutoBuilder.Details
-    Debian.AutoBuilder.Details.CabalInfo
+    Debian.AutoBuilder.Details.Versions
     Debian.AutoBuilder.Details.Targets
     Debian.AutoBuilder.Details.Private
     Debian.AutoBuilder.Details.Public

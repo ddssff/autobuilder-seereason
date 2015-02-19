@@ -4,7 +4,7 @@
 import qualified Debian.AutoBuilder.Main as M
 import Debian.AutoBuilder.Details (myParams)
 import Debian.AutoBuilder.Details.Distros (parseReleaseName)
-import Debian.AutoBuilder.Details.CabalInfo (seereasonDefaults)
+import Debian.AutoBuilder.Details.Versions (seereasonDefaults)
 import Debian.Release (ReleaseName(ReleaseName))
 import System.Environment (getEnv, getExecutablePath, getArgs)
 import System.Exit (exitWith)
