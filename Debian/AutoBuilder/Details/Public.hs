@@ -478,7 +478,7 @@ main _home release =
              , debianize (hackage "abstract-deque")
              , debianize (hackage "abstract-par")
              , debianize (hackage "monad-par")
-             , debianize (hackage "IORefCAS" `flag` P.SkipVersion "0.2.0.1")
+             , skip (Reason "Version 0.2.0.1 build fails") $ debianize (hackage "IORefCAS")
              , debianize (hackage "bits-atomic")
              , debianize (hackage "monadLib")
              -- Putting this in our repo can cause problems, because when it is

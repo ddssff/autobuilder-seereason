@@ -248,6 +248,7 @@ Library
       Debian.Debianize.SubstVars
       Debian.Debianize.SourceDebDescription
       Debian.Debianize.VersionSplits
+      OldLens
       Paths_cabal_debian
     Other-Modules:
       Debian.Orphans
