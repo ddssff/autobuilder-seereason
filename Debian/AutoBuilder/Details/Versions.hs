@@ -18,6 +18,11 @@ seereasonDefaults =
        splitCabal (PackageName "clckwrks") (DebBase "clckwrks-13") (Version [0, 14] [])
        splitCabal (PackageName "clckwrks") (DebBase "clckwrks-14") (Version [0, 15] [])
 
+       -- We want a different name for *newer* versions of transformers, the normal
+       -- name is built into ghc.
+       mapCabal (PackageName "transformers") (DebBase "transformers-4")
+       splitCabal (PackageName "transformers") (DebBase "transformers") (Version [0, 4] [])
+
        mapCabal (PackageName "blaze-html") (DebBase "blaze-html")
        splitCabal (PackageName "blaze-html") (DebBase "blaze-html-5") (Version [0, 6] [])
 
@@ -32,3 +37,6 @@ seereasonDefaults =
 
        mapCabal (PackageName "case-insensitive") (DebBase "case-insensitive")
        splitCabal (PackageName "case-insensitive") (DebBase "case-insensitive-0") (Version [1] [])
+
+       mapCabal (PackageName "Cabal") (DebBase "cabal-122")
+       splitCabal (PackageName "Cabal") (DebBase "cabal") (Version [1,22] [])

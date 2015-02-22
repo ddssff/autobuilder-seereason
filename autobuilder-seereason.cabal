@@ -176,7 +176,7 @@ Library
       Debian.VersionPolicy
 
   if !flag (local-cabal-debian)
-    Build-Depends: cabal-debian >= 4.22
+    Build-Depends: cabal-debian >= 4.24.1
   else
     Hs-Source-Dirs: ../cabal-debian/src, ../cabal-debian/dist/build/autogen
     Build-Depends:

@@ -30,7 +30,7 @@ libraries _home =
     , debianize (git "ssh://git@github.com/seereason/mimo.git" [])
     , debianize (git "ssh://git@github.com/seereason/task-manager.git" [])
     , debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-client"
-                   `flag` P.BuildDep "libghc-cabal-ghcjs-dev"
+                   `flag` P.BuildDep "libghc-cabal-122-dev"
                    `flag` P.BuildDep "ghcjs"
                    `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
                    `flag` P.CabalDebian ["--ghcjs", "--source-package=ghcjs-happstack-ghcjs-client"])

@@ -1,11 +1,11 @@
---- old/reified-records.cabal	2014-02-18 21:20:05.000000000 -0800
-+++ new/reified-records.cabal	2014-02-19 05:48:01.982026161 -0800
+--- old/reified-records.cabal	2015-02-20 11:51:05.714937318 -0800
++++ new/reified-records.cabal	2015-02-20 11:51:03.502937382 -0800
 @@ -21,7 +21,7 @@
                         Data.Generics.Record.Reify,
                         Data.Generics.Record.Subtype
    other-extensions:    ScopedTypeVariables
--  build-depends:       base >=4.6 && <4.7, containers >=0.5 && <0.6, mtl >=2.1 && <2.2
-+  build-depends:       base >=4.6, containers >=0.5 && <0.6, mtl >=2.1 && <2.2
+-  build-depends:       base ==4.*, containers >=0.5 && <0.6, mtl >=2.1 && <2.2
++  build-depends:       base ==4.*, containers >=0.5 && <0.6, mtl >=2.1 && <2.3
    hs-source-dirs:      src
    default-language:    Haskell2010
    
