@@ -391,7 +391,7 @@ main _home release =
              , debianize (hackage "hashable")
              , debianize (hackage "hashed-storage")
              -- Built into ghc-7.8.3
-             -- , debianize (hackage "haskeline")
+             , debianize (hackage "haskeline")
              , debianize (hackage "th-orphans")
              , debianize (hackage "th-reify-many")
              , debianize (git "https://github.com/ddssff/haskell-src-meta" [] {- hackage "haskell-src-meta" -})

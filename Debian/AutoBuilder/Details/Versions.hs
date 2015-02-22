@@ -40,3 +40,6 @@ seereasonDefaults =
 
        mapCabal (PackageName "Cabal") (DebBase "cabal-122")
        splitCabal (PackageName "Cabal") (DebBase "cabal") (Version [1,22] [])
+
+       mapCabal (PackageName "haskeline") (DebBase "haskeline-0713")
+       splitCabal (PackageName "haskeline") (DebBase "haskeline") (Version [0, 7, 1, 3] []) -- shipped with ghc-7.8
