@@ -851,7 +851,7 @@ platform release =
             -- binary debs so they don't conflict with the Provides:
             -- line of ghc.
             , debianize (hackage "Cabal") -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
-            , debianize (hackage "cabal-install" `flag` P.CabalDebian ["--executable", "cabal-install"])
+            , debianize (hackage "cabal-install" `flag` P.CabalDebian ["--default-package=cabal-install"])
             , debianize (hackage "stm")
             , debianize (hackage "stm-chans")
             , debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
