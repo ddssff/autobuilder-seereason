@@ -392,7 +392,7 @@ main _home release =
              , debianize (hackage "hashed-storage")
              -- Built into ghc-7.8.3
              -- , debianize (hackage "haskeline")
-             , debianize (git "https://github.com/seereason/th-orphans" {-"https://github.com/mgsloan/th-orphans"-} [])
+             , debianize (hackage "th-orphans")
              , debianize (hackage "th-reify-many")
              , debianize (git "https://github.com/ddssff/haskell-src-meta" [] {- hackage "haskell-src-meta" -})
              -- Because we specify an exact debian version here, this package
@@ -773,7 +773,7 @@ main _home release =
              , debianize (hackage "hint")
              , debianize (hackage "xdg-basedir" `tflag` P.DebVersion "0.2.2-2")
              , debianize (hackage "ghc-mtl")
-             , debianize (hackage "webdriver")
+             , debianize (git "https://github.com/kallisti-dev/hs-webdriver.git" [])
              , debianize (hackage "cond")
              ]
 
