@@ -47,6 +47,7 @@ Library
     containers,
     filepath,
     file-embed,
+    mtl,
     process,
     text,
     unix
@@ -331,10 +332,12 @@ Executable autobuilder-seereason
     text
   if flag (local-autobuilder)
     Build-Depends: mtl, tar, time, magic, Extra, directory, Unixutils, utf8-string, syb, network-uri, bzlib, unix, regex-compat, prettyclass, transformers, zlib, pureMD5, ListLike, old-locale, applicative-extras, lens, template-haskell, old-time, deepseq, exceptions
-  if !flag (local-debian-repo)
-    Build-Depends: debian-repo >= 5.73
   else
+    Build-Depends: AutoBuilder
+  if flag (local-debian-repo)
     CPP-Options: -DNO_VERBOSITY_CONTROL
+  else
+    Build-Depends: debian-repo >= 5.73
   if !flag (local-cabal-debian)
     Build-Depends: cabal-debian
   if !flag (local-debian)
