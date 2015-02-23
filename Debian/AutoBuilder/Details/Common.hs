@@ -2,6 +2,7 @@
 {-# OPTIONS_GHC -Wall -fno-warn-missing-signatures #-}
 module Debian.AutoBuilder.Details.Common where
 
+import Control.Applicative (pure, (<$>))
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
@@ -9,7 +10,7 @@ import Data.Maybe (fromMaybe)
 import Data.Monoid ((<>))
 import Data.String (IsString(fromString))
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages (flag, Package(Package, spec))
+import Debian.AutoBuilder.Types.Packages (flag, Package(Package, spec), TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
 
@@ -27,19 +28,20 @@ happstackRepo = "http://hub.darcs.net/stepcut/happstack" :: String
 asciiToString :: B.ByteString -> String
 asciiToString = map (chr . fromIntegral) . B.unpack
 
-named :: String -> [P.Packages] -> P.Packages
-named s = P.Named (fromString s) . P.Packages
+named :: String -> [P.Packages] -> TSt P.Packages
+named s = pure . P.Named (fromString s) . P.Packages
 
 -- | Suitable flags for ghcjs library packages.  Won't work
 -- for anything complicated (like happstack-ghcjs-client.)
-ghcjs_flags :: P.Package -> P.Package
-ghcjs_flags p =
-    p `putSrcPkgName` makeSrcPkgName (P.spec p)
-      `flag` P.CabalDebian ["--ghcjs"]
-      `flag` P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)]
-      `flag` P.BuildDep "libghc-cabal-122-dev"
-      `flag` P.BuildDep "ghcjs"
-      `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
+ghcjs_flags :: TSt P.Package -> TSt P.Package
+ghcjs_flags mp =
+    mp >>= \ p ->
+    mp `putSrcPkgName` makeSrcPkgName (P.spec p)
+       `flag` P.CabalDebian ["--ghcjs"]
+       `flag` P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)]
+       `flag` P.BuildDep "libghc-cabal-122-dev"
+       `flag` P.BuildDep "ghcjs"
+       `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
 
 makeSrcPkgName :: RetrieveMethod -> String
 makeSrcPkgName (Hackage n) = "ghcjs-" ++ map toLower n
@@ -50,8 +52,8 @@ makeSrcPkgName (Cd dir _) = "ghcjs-" ++ takeBaseName dir
 makeSrcPkgName (Darcs path) = "ghcjs-" ++ takeBaseName path
 makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
 
-putSrcPkgName :: Package -> String -> Package
-putSrcPkgName p name = p {spec = putSrcPkgName' (spec p) name}
+putSrcPkgName :: TSt Package -> String -> TSt Package
+putSrcPkgName mp name = (\ p -> p {spec = putSrcPkgName' (spec p) name}) <$> mp
 
 putSrcPkgName' :: RetrieveMethod -> String -> RetrieveMethod
 putSrcPkgName' (Debianize'' cabal _) name = Debianize'' cabal (Just name)
@@ -63,12 +65,12 @@ dropPrefix :: Monad m => String -> String -> m String
 dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
 dropPrefix pre str = fail $ "Expected prefix " ++ show pre ++ ", found " ++ show str
 
-skip :: Reason -> P.Package -> P.Package
+skip :: Reason -> TSt P.Package -> TSt P.Package
 skip _ _ = zero
 
 newtype Reason = Reason String
 
-broken :: P.Package -> P.Package
+broken :: TSt P.Package -> TSt P.Package
 broken _ = zero
 
-zero = Package Zero []
+zero = pure $ Package Zero []

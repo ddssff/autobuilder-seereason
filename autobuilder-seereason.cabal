@@ -59,7 +59,6 @@ Library
     Debian.AutoBuilder.Details.Sources
     Debian.AutoBuilder.Details.Common
     Debian.AutoBuilder.Details.GHC
-    Debian.AutoBuilder.Details.Distros
 
   if !flag (local-autobuilder)
     Build-Depends: AutoBuilder >= 6.69
@@ -118,7 +117,7 @@ Library
       Paths_AutoBuilder
 
   if !flag (local-debian-repo)
-    Build-Depends: debian-repo >= 5.70
+    Build-Depends: debian-repo >= 5.73
   else
     Hs-Source-Dirs: ../debian-repo
     CPP-Options: -DFIXED_VERBOSITY_LEVEL -UNO_VERBOSITY_CONTROL
@@ -133,6 +132,7 @@ Library
       transformers,
       transformers-compat
     Exposed-Modules:
+      Debian.Releases,
       Debian.Repo,
       Debian.Repo.AptImage,
       Debian.Repo.Changes,
@@ -329,10 +329,10 @@ Executable autobuilder-seereason
     filepath,
     process,
     text
-  if !flag (local-autobuilder)
-    Build-Depends: AutoBuilder
+  if flag (local-autobuilder)
+    Build-Depends: mtl, tar, time, magic, Extra, directory, Unixutils, utf8-string, syb, network-uri, bzlib, unix, regex-compat, prettyclass, transformers, zlib, pureMD5, ListLike, old-locale, applicative-extras, lens, template-haskell, old-time, deepseq, exceptions
   if !flag (local-debian-repo)
-    Build-Depends: debian-repo
+    Build-Depends: debian-repo >= 5.73
   else
     CPP-Options: -DNO_VERBOSITY_CONTROL
   if !flag (local-cabal-debian)

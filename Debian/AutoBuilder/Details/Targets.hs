@@ -6,12 +6,14 @@ module Debian.AutoBuilder.Details.Targets
     , private
     ) where
 
+import Control.Applicative ((<$>), (<*>))
+import Control.Monad.State (evalState)
 import Data.Monoid (mappend)
-import Debian.AutoBuilder.Details.Distros (BaseRelease(..), baseRelease, Release)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
 import Debian.Relation (Relation(..), BinPkgName(..))
 import Debian.Relation.String (parseRelations)
+import Debian.Releases (BaseRelease(..), baseRelease, Release)
 import qualified Debian.Repo.Fingerprint as P
 import Debian.AutoBuilder.Details.GHC (ghc)
 import qualified Debian.AutoBuilder.Details.Public as Public
@@ -24,14 +26,14 @@ import qualified Debian.AutoBuilder.Details.Private as Private
 public :: String -> Release -> P.Packages
 public home release =
     proc' (ghc release) $
-    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ Public.targets home release
+    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ evalState (Public.targets) (TargetState {release = release, home = home})
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     --          ++ private home
 
 private :: String -> Release -> P.Packages
 private home release =
     proc' (ghc release) $
-    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ mappend (Private.libraries home) (Private.applications home)
+    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ evalState (mappend <$> Private.libraries <*> Private.applications) (TargetState {release = release, home = home})
 
 proc' :: Int -> P.Packages -> P.Packages
 proc' n p | n < 708 = p

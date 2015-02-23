@@ -12,19 +12,12 @@ module Debian.AutoBuilder.Details.Sources
 
 import Data.List as List (map)
 import Data.Maybe
-import Data.Monoid (mappend)
 -- import Data.Set as Set (Set, empty)
-import Debian.AutoBuilder.Details.Distros (Release(..), BaseRelease(..), allReleases, baseReleaseString,
-                                           releaseString, parseReleaseName, isPrivateRelease,
-                                           baseRelease, baseReleaseDistro, Distro(..), distroString)
-import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
-import Debian.AutoBuilder.Types.Packages (Packages(NoPackage))
-import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
+import Debian.Releases (Release(..), BaseRelease(..), allReleases, baseReleaseString,
+                        releaseString, isPrivateRelease,
+                        baseRelease, baseReleaseDistro, Distro(..), distroString)
 import Debian.Sources (DebSource, parseSourceLine)
 import Debian.URI
-import Debian.Version (parseDebianVersion)
-import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
 import System.FilePath ((</>))
 
@@ -113,7 +106,7 @@ releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
           releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
           List.map parseSourceLine [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
                                    , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]
-      ExtendedRelease r d ->
+      ExtendedRelease r _d ->
           releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
           List.map parseSourceLine [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
                                    , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]

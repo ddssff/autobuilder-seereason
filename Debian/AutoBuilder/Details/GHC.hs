@@ -6,7 +6,7 @@ module Debian.AutoBuilder.Details.GHC
     ) where
 
 import Data.Maybe (fromMaybe)
-import Debian.AutoBuilder.Details.Distros (Release, baseRelease, BaseRelease(..))
+import Debian.Releases (Release, baseRelease, BaseRelease(..))
 
 -- | Unfortunately, we need to tell the autobuilder what version of ghc
 -- is going to be in our release so that cabal-debian knows what packages

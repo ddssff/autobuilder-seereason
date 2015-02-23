@@ -9,24 +9,20 @@ module Debian.AutoBuilder.Details
     ( myParams
     ) where
 
-import Data.List as List (map)
 import Data.Maybe
 import Data.Monoid (mappend)
 -- import Data.Set as Set (Set, empty)
-import Debian.AutoBuilder.Details.Distros (Release(..), BaseRelease(..), allReleases, baseReleaseString,
-                                           releaseString, parseReleaseName, isPrivateRelease,
-                                           baseRelease, baseReleaseDistro, Distro(..), distroString)
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, releaseRepoName, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.Packages (Packages(NoPackage))
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
-import Debian.Sources (DebSource, parseSourceLine)
-import Debian.URI
+import Debian.Releases (Release(..), BaseRelease(..),
+                        releaseString, parseReleaseName, isPrivateRelease,
+                        baseRelease, Distro(..))
 import Debian.Version (parseDebianVersion)
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
-import System.FilePath ((</>))
 
 myParams :: FilePath -> Release -> ParamRec
 myParams home myBuildRelease =
