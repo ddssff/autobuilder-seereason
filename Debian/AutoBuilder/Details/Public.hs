@@ -1328,7 +1328,7 @@ ghcjs_dom_hello = ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
 ghcjs_exceptions = ghcjs_flags exceptions
 ghcjs_file_embed = ghcjs_flags file_embed
 ghcjs_free = ghcjs_flags free
-ghcjs = git "https://github.com/ddssff/ghcjs-debian" []
+ghcjs = git "https://github.com/ddssff/ghcjs-debian" [] `relax` "cabal-install"
 ghcjs_hslogger = ghcjs_flags hslogger
 ghcjs_html = ghcjs_flags html
 ghcjs_http_types = ghcjs_flags http_types
@@ -1372,6 +1372,7 @@ ghcjs_tools = debdir (git "https://github.com/seereason/ghcjs" []
                                `patch` $(embedFile "patches/ghcjs-update-archives.diff")
                                `patch` $(embedFile "patches/ghcjs-setup.diff")
                                `patch` $(embedFile "patches/ghcjs-depends.diff")
+                               `relax` "cabal-install"
                                `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
                                                      "--default-package=ghcjs-tools",
                                                      "--depends=ghcjs-tools:haddock-api"]
@@ -1393,7 +1394,7 @@ ghcjs_xhtml = ghcjs_flags xhtml
 ghcjs_zlib = ghcjs_flags zlib
              -- We can't compute a reasonable source package name for a git
              -- target (without doing IO) so we set it here explicitly.
-ghc_mtl = debianize (hackage "ghc-mtl")
+ghc_mtl = skip (Reason "No instance for (MonadIO GHC.Ghc)") $ debianize (hackage "ghc-mtl")
 ghc_paths = debianize (hackage "ghc-paths" `tflag` P.DebVersion "0.1.0.9-3") -- apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah
              -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
              -- dpkg: error processing /work/localpool/haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb (--unpack):
@@ -2035,7 +2036,7 @@ wai = debianize (hackage "wai" {- `patch` $(embedFile "patches/wai.diff") -})
 wai_extra = debianize (hackage "wai-extra")
 wai_logger = debianize (hackage "wai-logger")
 wai_middleware_static = debianize (hackage "wai-middleware-static")
-warp = debianize (hackage "warp")
+warp = skip (Reason "waiting for streaming-commons 0.1.10") $ debianize (hackage "warp")
 webdriver = debianize (git "https://github.com/kallisti-dev/hs-webdriver.git" [])
 web_encodings = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff")) Nothing
                                 , P.flags = [] }
