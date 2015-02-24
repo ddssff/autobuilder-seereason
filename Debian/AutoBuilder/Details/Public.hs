@@ -7,7 +7,6 @@ import OldLens hiding ((~=), lens)
 import Control.Applicative ((<$>), pure)
 import Control.Monad.State (get)
 import Data.FileEmbed (embedFile)
-import Data.List (intercalate)
 import Data.Set as Set (insert)
 import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
@@ -15,81 +14,11 @@ import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState(release),
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, KeepRCS),
                                                Packages(..), Package(..), flags, spec, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir)
-import Debian.Debianize (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), (+=), (~=), debInfo, atomSet, Atom(InstallData))
+import Debian.Debianize as D
+    (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), (+=), (~=), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
-import Debian.Releases (baseRelease, BaseRelease(..), Release(..))
+import Debian.Releases (baseRelease, BaseRelease(..))
 import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git) {-, GitSpec(Branch, Commit)-})
-import System.FilePath((</>))
-
-patchTag :: String
-patchTag = "http://patch-tag.com/r/stepcut"
-darcsHub :: String
-darcsHub = "http://hub.darcs.net/stepcut"
--- seereason :: String
--- seereason = "http://src.seereason.com"
-localRepo :: String
-localRepo = "file:///home/dsf/darcs/"
-
-ghcFlags p = p `relax` "ghc"
-               `relax` "happy"
-               `relax` "alex"
-               `relax` "xsltproc"
-               `relax` "debhelper"
-               `relax` "quilt"
-               `relax` "python-minimal"
-               `relax` "libgmp-dev"
-
-rel :: Release -> a -> a -> a
-rel release precise quantal =
-    case baseRelease release of
-      Quantal -> quantal
-      _ -> precise
-
--- | We don't currently support ghc 7.4
-ghc74flag :: P.Package -> P.PackageFlag -> P.Package
-ghc74flag p _ = p
-
-sflag :: TSt Package -> PackageFlag -> TSt Package
-sflag mp fl = (baseRelease . release <$> get) >>= \ r -> (case r of Squeeze -> flag; _ -> noflag) mp fl
-pflag :: TSt Package -> PackageFlag -> TSt Package
-pflag mp fl = (baseRelease . release <$> get) >>= \ r -> (case r of Precise -> flag; _ -> noflag) mp fl
-tflag :: TSt Package -> PackageFlag -> TSt Package
-tflag mp fl = (baseRelease . release <$> get) >>= \ r -> (case r of Trusty -> flag; _ -> noflag) mp fl
-qflag :: TSt Package -> PackageFlag -> TSt Package
-qflag mp fl = (baseRelease . release <$> get) >>= \ r -> (case r of Quantal -> flag; _ -> noflag) mp fl
-wflag :: TSt Package -> PackageFlag -> TSt Package
-wflag mp fl = (baseRelease . release <$> get) >>= \ r -> (case r of Wheezy -> flag; _ -> noflag) mp fl
-wskip :: TSt P.Package -> TSt P.Package
-wskip t = (baseRelease . release <$> get) >>= \ r -> case r of Wheezy -> zero; _ -> t
-wonly t = (baseRelease . release <$> get) >>= \ r -> case r of Wheezy -> t; _ -> zero
-
-noflag :: TSt Package -> PackageFlag -> TSt Package
-noflag mp _ = mp
-
-relax :: TSt P.Package -> String -> TSt P.Package
-relax mp x = (\ p -> p {P.flags = P.flags p ++ [P.RelaxDep x]}) <$> mp
-
-gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
--- repo = "http://hub.darcs.net/stepcut/clckwrks-dev"
--- repo = "http://src.seereason.com/mirrors/clckwrks-dev"
-
--- | Create a flag that tells cabal debian the package @name@ is a replacement for @orig@,
--- so that when it is installed the @orig@ package is uninstalled.  (This may be buggy, the
--- use in semigroupoids caused problems.)
-replacementLibrary :: String -> String -> [String]
-replacementLibrary orig name =
-    ["--conflicts", deps, "--provides", deps, "--replaces", deps]
-    where
-      deps = intercalate "," [dev name ++ ":" ++ dev orig,
-                              prof name ++ ":" ++ prof orig,
-                              doc name ++ ":" ++ prof orig]
-      dev x = "libghc-" ++ x ++ "-dev"
-      prof x = "libghc-" ++ x ++ "-dev"
-      doc x = "libghc-" ++ x ++ "-dev"
-
-hack = debianize . hackage
-
-git' r c = debianize $ git r c
 
 --------------------
 -- PACKAGE GROUPS --
@@ -1154,7 +1083,7 @@ bytestring_trie = debianize (hackage "bytestring-trie")
 bzlib = debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
              -- , debianize (hackage "cairo-pdf")
 cabal_debian = git "https://github.com/ddssff/cabal-debian" []
-cabal = debianize (hackage "Cabal") -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
+cabal = debianize (hackage "Cabal" `flag` P.CabalPin "1.22.1.0" {- avoid rebuild -}) -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
 cabal_install = debianize (hackage "cabal-install" `flag` P.CabalDebian ["--default-package=cabal-install"])
 cabal_macosx = debianize (hackage "cabal-macosx" `patch` $(embedFile "patches/cabal-macosx.diff"))
 c_ares = apt "sid" "c-ares"
@@ -1215,12 +1144,8 @@ colour = debianize (hackage "colour"
                             `tflag` P.DebVersion "2.3.3-4")
              -- , apt "wheezy" "haskell-configfile"
 comonad = debianize (hackage "comonad"
-                   `flag`  P.CabalDebian [ "--conflicts=libghc-comonad-dev:libghc-comonad-transformers-dev"
-                                         , "--replaces=libghc-comonad-dev:libghc-comonad-transformers-dev"
-                                         , "--provides=libghc-comonad-dev:libghc-comonad-transformers-dev"
-                                         , "--conflicts=libghc-comonad-dev:libghc-comonads-fd-dev"
-                                         , "--replaces=libghc-comonad-dev:libghc-comonads-fd-dev"
-                                         , "--provides=libghc-comonad-dev:libghc-comonads-fd-dev" ])
+                   `flag`  P.ModifyAtoms (replacement "comonad" "comonad-transformers")
+                   `flag`  P.ModifyAtoms (replacement "comonad" "comonad-fd"))
 concatenative = debianize (hackage "concatenative")
 concrete_typerep = debianize (hackage "concrete-typerep"
                             `tflag` P.DebVersion "0.1.0.2-2build3")
@@ -1851,7 +1776,7 @@ pandoc_types = debianize (hackage "pandoc-types")
 parallel = debianize (hackage "parallel")
 parseargs = debianize (hackage "parseargs")
              -- , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
-parsec = debianize (hackage "parsec" `flag` P.CabalDebian (replacementLibrary "parsec2" "parsec3") `flag` P.CabalPin "3.1.8")
+parsec = debianize (hackage "parsec" `flag` P.ModifyAtoms (replacement "parsec2" "parsec3") `flag` P.CabalPin "3.1.8")
 parse_dimacs = debianize (hackage "parse-dimacs")
 parsers = debianize (hackage "parsers" {- `patch` $(embedFile "patches/parsers.diff") -})
 pbkdf2 = debianize (hackage "PBKDF2")
@@ -1879,20 +1804,10 @@ pretty_show = debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
 primitive = debianize (hackage "primitive")
 process_extras =
     debianize (git "https://github.com/seereason/process-extras" [])
-                 `flag` P.CabalDebian [ "--conflicts=libghc-process-extras-dev:libghc-process-listlike-dev"
-                                      , "--provides=libghc-process-extras-dev:libghc-process-listlike-dev"
-                                      , "--replaces=libghc-process-extras-dev:libghc-process-listlike-dev"
-                                      , "--conflicts=libghc-process-extras-prof:libghc-process-listlike-prof"
-                                      , "--provides=libghc-process-extras-prof:libghc-process-listlike-prof"
-                                      , "--replaces=libghc-process-extras-prof:libghc-process-listlike-prof"
-                                      , "--conflicts=libghc-process-extras-doc:libghc-process-listlike-doc"
-                                      , "--provides=libghc-process-extras-doc:libghc-process-listlike-doc"
-                                      , "--replaces=libghc-process-extras-doc:libghc-process-listlike-doc" ]
+                 `flag` P.ModifyAtoms (replacement "process-extras" "process-listlike")
 processing = debianize (hackage "processing")
 profunctors = debianize (hackage "profunctors"
-                   `flag` P.CabalDebian [ "--conflicts=libghc-profunctors-dev:libghc-profunctors-extras-dev"
-                                        , "--replaces=libghc-profunctors-dev:libghc-profunctors-extras-dev"
-                                        , "--provides=libghc-profunctors-dev:libghc-profunctors-extras-dev"])
+                   `flag` P.ModifyAtoms (replacement "profunctors" "profunctors-extras"))
 propLogic = debianize (git "https://github.com/ddssff/PropLogic" [])
 pseudomacros = debianize (hackage "pseudomacros")
 psQueue = wskip $
@@ -1936,13 +1851,9 @@ regex_pcre_builtin = debianize (hackage "regex-pcre-builtin"
 regex_posix = debianize (hackage "regex-posix" `tflag` P.DebVersion "0.95.2-3")
 regexpr = debianize (hackage "regexpr" `flag` P.DebVersion "0.5.4-5build1")
 regex_tdfa = debianize (hackage "regex-tdfa"
-                            `flag` P.CabalDebian [ "--conflicts=libghc-regex-tdfa-dev:libghc-regex-tdfa-rc-dev"
-                                                 , "--replaces=libghc-regex-tdfa-dev:libghc-regex-tdfa-rc-dev"
-                                                 , "--provides=libghc-regex-tdfa-dev:libghc-regex-tdfa-rc-dev" ])
+                            `flag` P.ModifyAtoms (replacement "regex-tdfa" "regex-tdfa-rc"))
 regex_tdfa_rc = debianize (hackage "regex-tdfa-rc"
-                            `flag` P.CabalDebian [ "--conflicts=libghc-regex-tdfa-rc-dev:libghc-regex-tdfa-dev"
-                                                 , "--replaces=libghc-regex-tdfa-rc-dev:libghc-regex-tdfa-dev"
-                                                 , "--provides=libghc-regex-tdfa-rc-dev:libghc-regex-tdfa-dev" ])
+                            `flag` P.ModifyAtoms (replacement "regex-tdfa-rc" "regex-tdfa"))
 reified_records = debianize (hackage "reified-records" `patch` $(embedFile "patches/reified-records.diff"))
 resourcet = debianize (hackage "resourcet")
 rJson = debianize (hackage "RJson"
@@ -1967,9 +1878,7 @@ seereason_base =
 seereason_keyring = darcs ("http://src.seereason.com/seereason-keyring") `flag` P.UDeb "seereason-keyring-udeb"
 seereason_ports = debianize (git "https://github.com/seereason/seereason-ports" [])
 semigroupoids = debianize (hackage "semigroupoids"
-                   `flag` P.CabalDebian [ "--conflicts=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"
-                                        , "--replaces=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"
-                                        , "--provides=libghc-semigroupoids-dev:libghc-semigroupoid-extras-dev"])
+                   `flag` P.ModifyAtoms (replacement "semigroupoids" "semigroupoid-extras"))
 semigroups = debianize (hackage "semigroups")
 sendfile = debianize (hackage "sendfile" `tflag` P.DebVersion "0.7.9-1")
 setenv = debianize (hackage "setenv")
