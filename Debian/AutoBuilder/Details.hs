@@ -20,7 +20,7 @@ import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.Releases (Release(..), BaseRelease(..),
                         releaseString, parseReleaseName, isPrivateRelease,
                         baseRelease, Distro(..))
-import Debian.Repo.Slice (Slice(PersonalPackageArchive, ppaUser, ppaName))
+import Debian.Repo.Slice (Slice, PPASlice(PersonalPackageArchive, ppaUser, ppaName))
 import Debian.Version (parseDebianVersion)
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
@@ -60,7 +60,8 @@ myParams home myBuildRelease =
     }
 
 -- https://launchpad.net/~hvr/+archive/ubuntu/ghc
-myExtraRepos = [PersonalPackageArchive {ppaUser = "hvr", ppaName = "ghc"}]
+myExtraRepos :: [Either Slice PPASlice]
+myExtraRepos = [{-Right (PersonalPackageArchive {ppaUser = "hvr", ppaName = "ghc"})-}]
 
 -- This section has all the definitions relating to the particular
 -- suffixes we will use on our build releases.
