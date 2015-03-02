@@ -18,7 +18,7 @@ import Debian.Debianize as D
     (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), (+=), (~=), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
 import Debian.Releases (baseRelease, BaseRelease(..))
-import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git) {-, GitSpec(Branch, Commit)-})
+import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git), GitSpec(Commit))
 
 --------------------
 -- PACKAGE GROUPS --
@@ -1078,6 +1078,7 @@ boomerang = debianize (hackage "boomerang")
 bugzilla = broken $ apt "squeeze" "bugzilla" -- requires python-central (>= 0.5)
 byteable = debianize (hackage "byteable" `tflag` P.DebVersion "0.1.1-1")
 byteorder = debianize (hackage "byteorder" `tflag` P.DebVersion "1.0.4-1")
+bytestring_builder = debianize (hackage "bytestring-builder")
 bytestring_nums = debianize (hackage "bytestring-nums") -- apt (rel release "wheezy" "quantal") "haskell-bytestring-nums"
 bytestring_trie = debianize (hackage "bytestring-trie")
 bzlib = debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
@@ -1098,7 +1099,7 @@ cc_delcont = debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1
              -- , apt (rel release "wheezy" "quantal") "haskell-cereal"
 cereal = debianize (hackage "cereal")
 certificate = debianize (hackage "certificate" `tflag` P.DebVersion "1.3.9-1build4")
-cgi = debianize (hackage "cgi" {- `patch` $(embedFile "patches/cgi.diff") -})
+cgi = skip (Reason "Depends on exceptions < 0.7") $ debianize (hackage "cgi" {- `patch` $(embedFile "patches/cgi.diff") -})
 charset = debianize (hackage "charset")
 charsetdetect_ae = debianize (hackage "charsetdetect-ae")
 cheapskate = hack "cheapskate"
@@ -1483,6 +1484,7 @@ haskeline = debianize (hackage "haskeline")
 haskell_darcs = debianize (darcs "http://darcs.net/reviewed"
                    `flag` P.CabalDebian ["--source-package-name=darcs"]
                    `flag` P.CabalDebian ["--default-package=darcs"]
+                   `flag` P.CabalDebian ["--cabal-flags", "-http"] -- the http flag forces network < 2.5
                    -- `patch` $(embedFile "patches/darcs.diff")
                   )
 haskell_devscripts = darcs "http://hub.darcs.net/ddssff/haskell-devscripts" `flag` P.RelaxDep "python-minimal"
@@ -1509,7 +1511,7 @@ haskell_src_meta = debianize (git "https://github.com/ddssff/haskell-src-meta" [
              -- sound right...
 haste_compiler = hack "haste-compiler" `flag` P.CabalDebian ["--default-package=haste-compiler"]
 haste_ffi_parser = git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
-haTeX = debianize (git "https://github.com/Daniel-Diaz/HaTeX" []
+haTeX = debianize (git "https://github.com/Daniel-Diaz/HaTeX" [Commit "cc66573a0587094667a9150411ea748d6592db36" {-avoid rebuild-}]
                               `patch` $(embedFile "patches/HaTeX-texty.diff")
                               `patch` $(embedFile "patches/HaTeX-doc.diff"))
 haXml = debianize (hackage "HaXml")
@@ -1969,7 +1971,7 @@ th_alpha = debianize (git "https://github.com/jkarni/th-alpha.git" [])
 th_desugar = debianize (git "http://github.com/goldfirere/th-desugar" [])
 th_expand_syns = debianize (hackage "th-expand-syns")
 th_instance_reification = debianize (git "https://github.com/seereason/th-instance-reification.git" [])
-th_lift = debianize (hackage "th-lift")
+th_lift = debianize (git "https://github.com/seereason/th-lift" []) -- changes for template-haskell-2.10 and ghc-7.8
 th_orphans = debianize (hackage "th-orphans")
 threads = debianize (hackage "threads")
 th_reify_many = debianize (hackage "th-reify-many")
@@ -2037,7 +2039,7 @@ wai_extra = debianize (hackage "wai-extra")
 wai_logger = debianize (hackage "wai-logger")
 wai_middleware_static = debianize (hackage "wai-middleware-static")
 warp = skip (Reason "waiting for streaming-commons 0.1.10") $ debianize (hackage "warp")
-webdriver = debianize (git "https://github.com/kallisti-dev/hs-webdriver.git" [])
+webdriver = debianize (git "https://github.com/kallisti-dev/hs-webdriver.git" [Commit "0251579c4dd5aebc26a7ac5b300190f3370dbf9d" {- avoid rebuild -}])
 web_encodings = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff")) Nothing
                                 , P.flags = [] }
 web_plugins = debianize (git "http://github.com/clckwrks/web-plugins" [] `cd` "web-plugins")
@@ -2049,7 +2051,7 @@ web_routes_mtl = debianize (git "https://github.com/Happstack/web-routes.git" []
 web_routes_th = debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-th")
             -- web_routes_transformers = debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-transformers") -- requires transformers ==0.2.*
 web_routes_wai = debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-wai")
-websockets = debianize (git "https://github.com/jaspervdj/websockets.git" [])
+websockets = debianize (git "https://github.com/jaspervdj/websockets.git" [Commit "60705a97baa26888e3517a8bfe73e4b6e5d38a59" {- avoid rebuilds -}])
 wl_pprint = debianize (hackage "wl-pprint")
 wl_pprint_extras = debianize (hackage "wl-pprint-extras")
 wl_pprint_text = debianize (hackage "wl-pprint-text")
