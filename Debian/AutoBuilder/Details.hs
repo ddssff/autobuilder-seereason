@@ -20,6 +20,7 @@ import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.Releases (Release(..), BaseRelease(..),
                         releaseString, parseReleaseName, isPrivateRelease,
                         baseRelease, Distro(..))
+import Debian.Repo.Slice (Slice, PPASlice(PersonalPackageArchive, ppaUser, ppaName))
 import Debian.Version (parseDebianVersion)
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
@@ -37,6 +38,7 @@ myParams home myBuildRelease =
     , oldVendorTags = ["seereason"]
     , autobuilderEmail = "SeeReason Autobuilder <partners@seereason.com>"
     , releaseSuffixes = myReleaseSuffixes
+    , extraRepos = myExtraRepos
     , uploadURI = myUploadURI myBuildRelease
     , buildURI = myBuildURI myBuildRelease
     , sources = mySources myBuildRelease
@@ -56,6 +58,10 @@ myParams home myBuildRelease =
     , requiredVersion = [(parseDebianVersion ("6.64" :: String), Nothing)]
     , hackageServer = myHackageServer
     }
+
+-- https://launchpad.net/~hvr/+archive/ubuntu/ghc
+myExtraRepos :: [Either Slice PPASlice]
+myExtraRepos = [{-Right (PersonalPackageArchive {ppaUser = "hvr", ppaName = "ghc"})-}]
 
 -- This section has all the definitions relating to the particular
 -- suffixes we will use on our build releases.
@@ -113,6 +119,7 @@ myIncludePackages myBuildRelease =
     , "pkg-config"              -- Some packages now depend on this package via new cabal options.
     , "debian-keyring"
     , "locales"
+    , "software-properties-common" -- Required to run add-apt-repository to use a PPA.
     -- , "autobuilder-seereason"   -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
     -- , "perl-base"
     -- , "gnupg"
