@@ -72,7 +72,11 @@ mimo = debianize (git "ssh://git@github.com/seereason/mimo.git" [])
 ontology = git "ssh://git@github.com/seereason/ontology.git" []
 seereason = git "ssh://git@github.com/seereason/seereason" []
 seereasonpartners_dot_com = debianize (darcs (privateRepo </> "seereasonpartners-clckwrks") `cd` "seereasonpartners-dot-com" `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
-stripe_core = debianize (git "https://github.com/stepcut/stripe-haskell" [Branch "stripe-has-param"] `cd` "stripe-core")
-stripe_haskell = debianize (git "https://github.com/stepcut/stripe-haskell" [Branch "stripe-has-param"] `cd` "stripe-http-streams")
+stripe_core = debianize (git "https://github.com/stepcut/stripe-haskell" [Branch "stripe-has-param"]
+                                 `cd` "stripe-core"
+                                 `flag` P.CabalDebian ["--executable", "stripe-tests"])
+stripe_haskell = debianize (git "https://github.com/stepcut/stripe-haskell" [Branch "stripe-has-param"]
+                                    `cd` "stripe-http-streams"
+                                    `flag` P.CabalDebian ["--no-test-suite"])
 -- stripe_http_conduit = debianize (darcs (privateRepo </> "stripe") `cd` "stripe-http-conduit")
 task_manager = debianize (git "ssh://git@github.com/seereason/task-manager.git" [])
