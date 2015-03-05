@@ -10,7 +10,7 @@ import Data.FileEmbed (embedFile)
 import Data.Set as Set (insert)
 import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
-import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState(release),
+import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState(release), mapPackages,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, KeepRCS),
                                                Packages(..), Package(..), flags, spec, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir)
@@ -24,43 +24,15 @@ import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Deb
 -- PACKAGE GROUPS --
 --------------------
 
--- Stick new packages here to get an initial build, then move
--- them to a suitable group.
-new :: TSt P.Packages
-new = (named "new" . map APackage) =<<
-      sequence
-      [ aeson_pretty
-      , appar
-      , atomic_primops
-      , auto_update
-      , data_r_tree
-      , data_stringmap
-      , easy_file
-      , ekg_core
-      , fast_logger
-      , file_location
-      , hamlet
-      , http_date
-      , hunt
-      , iproute
-      , monad_parallel
-      , pseudomacros
-      , scotty
-      , shakespeare
-      , shakespeare_js
-      , showplease
-      , simple_sendfile
-      , spine
-      , wai_extra
-      , wai_logger
-      , wai_middleware_static
-      , warp ]
+noTests :: TSt Packages -> TSt Packages
+noTests = mapPackages (\ p -> p `flag` P.CabalDebian ["--no-test-suite"])
 
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
 -- the repo location.
 targets :: TSt P.Packages
 targets =
+    noTests $
     named "all" =<<
     sequence
     [ new
