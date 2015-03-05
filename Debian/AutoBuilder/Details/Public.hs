@@ -48,8 +48,7 @@ targets =
     -- , happstackdotcom
     -- , happstack release
     , digestive_functors_group
-
-    , algebra
+     , algebra
     -- , units_group
     -- , diagrams
     , fixme
@@ -92,6 +91,38 @@ autobuilder_group =
 unixutils_group :: TSt P.Packages
 unixutils_group = (named "Unixutils" . map APackage) =<< sequence [unixutils, haskell_extra, haskell_help]
 
+-- Stick new packages here to get an initial build, then move
+-- them to a suitable group.
+new :: TSt P.Packages
+new = (named "new" . map APackage) =<<
+      sequence
+      [ aeson_pretty
+      , appar
+      , atomic_primops
+      , auto_update
+      , data_r_tree
+      , data_stringmap
+      , easy_file
+      , ekg_core
+      , fast_logger
+      , file_location
+      , hamlet
+      , http_date
+      , hunt
+      , iproute
+      , monad_parallel
+      , pseudomacros
+      , scotty
+      , shakespeare
+      , shakespeare_js
+      , showplease
+      , simple_sendfile
+      , spine
+      , wai_extra
+      , wai_logger
+      , wai_middleware_static
+      , warp ]
+
 main :: TSt P.Packages
 main =
     Packages <$> sequence [compiler, platform, main]
@@ -122,6 +153,7 @@ main =
              , bugzilla
              , byteable
              , byteorder
+             , bytestring_builder
              , bytestring_nums
              , bytestring_trie
              , bzlib
@@ -135,6 +167,7 @@ main =
              , cipher_aes
              , cipher_des
              , citeproc_hs
+             , clock
              , cmdargs
              , colour
              , concatenative
@@ -242,6 +275,7 @@ main =
              , hsSyck
              , hStringTemplate
              , hsyslog
+             , htf
              , html_entities
              , html_xml_utils
              , http_types
@@ -332,6 +366,7 @@ main =
              , propLogic
              , psQueue
              , pwstore_purehaskell
+             , quickcheck_gent
              , quickcheck_io
              , regex_compat_tdfa
              , regex_pcre_builtin
@@ -1056,7 +1091,7 @@ bytestring_trie = debianize (hackage "bytestring-trie")
 bzlib = debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
              -- , debianize (hackage "cairo-pdf")
 cabal_debian = git "https://github.com/ddssff/cabal-debian" []
-cabal = debianize (hackage "Cabal" `flag` P.CabalPin "1.22.1.0" {- avoid rebuild -}) -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
+cabal = debianize (hackage "Cabal" `flag` P.CabalPin "1.22.1.1" {- avoid rebuild -}) -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
 cabal_install = debianize (hackage "cabal-install" `flag` P.CabalDebian ["--default-package=cabal-install"])
 cabal_macosx = debianize (hackage "cabal-macosx" `patch` $(embedFile "patches/cabal-macosx.diff"))
 c_ares = apt "sid" "c-ares"
@@ -1109,6 +1144,7 @@ clckwrks = pure (P.Package { P.spec = Debianize'' (Patch
                         , P.flags = [P.BuildDep "hsx2hs"] })
 clckwrks_theme_bootstrap = debianize (gitrepo "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
 clckwrks_theme_clckwrks = debianize (gitrepo "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
+clock = debianize (hackage "clock")
 cmdargs = debianize (hackage "cmdargs")
 colour = debianize (hackage "colour"
                             `pflag` P.DebVersion "2.3.3-1build1"
@@ -1532,8 +1568,8 @@ hsOpenSSL = debianize (hackage "HsOpenSSL"
                             `flag` P.DevelDep "libssl-dev"
                             `flag` P.DevelDep "libcrypto++-dev")
 hsp = debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
-hspec_core = debianize (hackage "hspec-core")
 hspec = debianize (hackage "hspec")
+hspec_core = debianize (hackage "hspec-core")
 hspec_discover = debianize (hackage "hspec-discover")
 hspec_expectations = debianize (hackage "hspec-expectations")
 hspec_meta = debianize (hackage "hspec-meta")
@@ -1548,6 +1584,7 @@ hsx2hs = debianize (git "https://github.com/seereason/hsx2hs.git" []
             -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
 hsx_jmacro = debianize (git "https://github.com/Happstack/hsx-jmacro.git" [])
 hsyslog = debianize (hackage "hsyslog")
+htf = debianize (hackage "HTF")
 html = debianize (hackage "html"
                            `tflag` P.DebVersion "1.0.1.2-7"
                            `pflag` P.DebVersion "1.0.1.2-5") -- apt (rel release "wheezy" "quantal") "haskell-html"
@@ -1674,7 +1711,7 @@ magic = debianize (hackage "magic" `flag` P.DevelDep "libmagic-dev")
 mainland_pretty = debianize (hackage "mainland-pretty")
 makedev = apt "wheezy" "makedev"
 markdown = debianize (hackage "markdown" {- `patch` $(embedFile "patches/markdown.diff") -})
-markdown_unlit = debianize (hackage "markdown-unlit")
+markdown_unlit = debianize (hackage "markdown-unlit" `flag` P.CabalDebian ["--no-test-suite"])
 matrix = debianize (hackage "matrix")
              -- , debianize (hackage "hlatex")
 maybeT = debianize (hackage "MaybeT" `flag` P.DebVersion "1.2-6")
@@ -1800,7 +1837,8 @@ pwstore_purehaskell = debianize (hackage "pwstore-purehaskell"
                          )
              -- Retired
              -- , apt (rel release "wheezy" "quantal") "haskell-quickcheck1"
-quickCheck = debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof")
+quickCheck = debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof" `flag` P.CabalDebian ["--no-test-suite"])
+quickcheck_gent = debianize (hackage "QuickCheck-GenT")
 quickcheck_instances = debianize (hackage "quickcheck-instances")
 quickcheck_io = debianize (hackage "quickcheck-io")
 random = debianize (hackage "random" `flag` P.SkipVersion "1.0.1.3") -- 1.1.0.3 fixes the build for ghc-7.4.2 / base < 4.6
@@ -1934,7 +1972,7 @@ test_framework_th = debianize (hackage "test-framework-th" `tflag` P.DebVersion 
 testing_feat = debianize (hackage "testing-feat")
 texmath = debianize (hackage "texmath")
 text_binary = debianize (hackage "text-binary")
-text = debianize (hackage "text" `flag` P.CabalDebian ["--cabal-flags", "-integer-simple"])
+text = debianize (hackage "text" `flag` P.CabalDebian ["--cabal-flags", "-integer-simple"] `flag` P.CabalDebian ["--no-test-suite"])
 text_icu = debianize (hackage "text-icu" `flag` P.DevelDep "libicu-dev")
 text_show = debianize (hackage "text-show")
 text_stream_decode = debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
