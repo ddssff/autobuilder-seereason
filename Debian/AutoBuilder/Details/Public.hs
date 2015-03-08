@@ -423,9 +423,10 @@ main =
              , text_icu
              , text_show
              , th_alpha
+             , th_context
              , th_desugar
              , th_expand_syns
-             , th_instance_reification
+             -- , th_instance_reification -- deprecated
              , th_lift
              , th_orphans
              , th_reify_many
@@ -753,6 +754,7 @@ algebra =
              , control_monad_free
              , transformers_free
              , contravariant
+             , foreign_var
              , distributive
              , doctest
              , transformers_compat
@@ -926,6 +928,7 @@ ghcjs_group =
              , ghcjs_semigroupoids
              , ghcjs_tagged
              , ghcjs_contravariant
+             , ghcjs_foreign_var
              , ghcjs_distributive
              , ghcjs_transformers_compat
              , ghcjs_split
@@ -1281,6 +1284,7 @@ file_location = debianize (hackage "file-location" `flag` P.CabalDebian [ "--sou
 filemanip = debianize (hackage "filemanip")
 fingertree = hack "fingertree"
 fmlist = debianize (hackage "fmlist")
+foreign_var = debianize (hackage "foreign-var")
 formlets = debianize (hackage "formlets"
                              `patch` $(embedFile "patches/formlets.diff")
                              `flag` P.DebVersion "0.8-1~hackage1")
@@ -1336,6 +1340,7 @@ ghcjs_dom_hello = ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
                                                        `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]))
 ghcjs_exceptions = ghcjs_flags exceptions
 ghcjs_file_embed = ghcjs_flags file_embed
+ghcjs_foreign_var = ghcjs_flags foreign_var
 ghcjs_free = ghcjs_flags free
 ghcjs = git "https://github.com/ddssff/ghcjs-debian" [] `relax` "cabal-install"
 ghcjs_hslogger = ghcjs_flags hslogger
@@ -1978,11 +1983,12 @@ text_show = debianize (hackage "text-show")
 text_stream_decode = debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
 tf_random = debianize (hackage "tf-random")
 th_alpha = debianize (git "https://github.com/jkarni/th-alpha.git" [])
-th_desugar = debianize (git "http://github.com/goldfirere/th-desugar" [])
+th_context = debianize (git "http://github.com/seereason/th-context" [])
+th_desugar = debianize (git "http://github.com/ddssff/th-desugar" [])
 th_expand_syns = debianize (hackage "th-expand-syns")
-th_instance_reification = debianize (git "https://github.com/seereason/th-instance-reification.git" [])
+-- th_instance_reification = debianize (git "https://github.com/seereason/th-instance-reification.git" [])
 th_lift = debianize (git "https://github.com/seereason/th-lift" []) -- changes for template-haskell-2.10 and ghc-7.8
-th_orphans = debianize (hackage "th-orphans")
+th_orphans = debianize (git "https://github.com/seereason/th-orphans.git" []) -- debianize (hackage "th-orphans")
 threads = debianize (hackage "threads")
 th_reify_many = debianize (hackage "th-reify-many")
 time_compat = debianize (hackage "time-compat")
@@ -2076,6 +2082,7 @@ xdg_basedir = debianize (hackage "xdg-basedir" `tflag` P.DebVersion "0.2.2-2")
 xhtml = debianize (hackage "xhtml" `wflag` P.DebVersion "3000.2.1-1" `qflag` P.DebVersion "3000.2.1-1build2" `tflag` P.DebVersion "3000.2.1-4")
 xml_conduit = debianize (hackage "xml-conduit")
 xml = debianize (hackage "xml") -- apt (rel release "wheezy" "quantal") "haskell-xml"
+xmlgen = debianize (hackage "xmlgen")
 xmlhtml = debianize (hackage "xmlhtml")
 xml_types = debianize (hackage "xml-types" `tflag` P.DebVersion "0.3.4-1")
 xss_sanitize = debianize (hackage "xss-sanitize" `qflag` P.DebVersion "0.3.2-1build1")
