@@ -18,7 +18,7 @@ import Debian.Debianize as D
     (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), (+=), (~=), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
 import Debian.Releases (baseRelease, BaseRelease(..))
-import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git), GitSpec(Commit))
+import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git), GitSpec(Commit, Branch))
 
 --------------------
 -- PACKAGE GROUPS --
@@ -168,6 +168,7 @@ main =
              , cipher_des
              , citeproc_hs
              , clock
+             , closure_compiler
              , cmdargs
              , colour
              , concatenative
@@ -1148,6 +1149,7 @@ clckwrks = pure (P.Package { P.spec = Debianize'' (Patch
 clckwrks_theme_bootstrap = debianize (gitrepo "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
 clckwrks_theme_clckwrks = debianize (gitrepo "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
 clock = debianize (hackage "clock")
+closure_compiler = apt "sid" "closure-compiler"
 cmdargs = debianize (hackage "cmdargs")
 colour = debianize (hackage "colour"
                             `pflag` P.DebVersion "2.3.3-1build1"
