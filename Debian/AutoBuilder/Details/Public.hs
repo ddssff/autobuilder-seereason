@@ -873,80 +873,81 @@ ghcjs_group =
              , ghcjs_tools
              , ghcjs ]
       libs = (named "ghcjs-libs" . map APackage) =<<
-             sequence
-             [ ghcjs_dom
-             , ghcjs_dom_hello
-             , ghcjs_blaze_builder
-             , ghcjs_blaze_markup
-             , ghcjs_blaze_html
-             , ghcjs_data_default_class
-             , ghcjs_data_default_instances_base
-             , ghcjs_data_default_instances_dlist
-             , ghcjs_data_default_instances_containers
-             , ghcjs_data_default_instances_old_locale
-             , ghcjs_data_default
-             , ghcjs_lucid
-             , ghcjs_text_show
-             , ghcjs_nats
-             , ghcjs_void
-             , ghcjs_semigroups
-             , ghcjs_value_supply
-             , ghcjs_base16_bytestring
-             , ghcjs_cryptohash
-             , ghcjs_exceptions
-             , ghcjs_free
-             , ghcjs_prelude_extras
-             , ghcjs_profunctors
-             , ghcjs_reflection
-             , ghcjs_bifunctors
-             , ghcjs_lens
-             , ghcjs_data_lens
-             , ghcjs_data_lens_template
-             , ghcjs_file_embed
-             , ghcjs_tasty
-             , ghcjs_ansi_terminal
-             , ghcjs_unbounded_delays
-             , ghcjs_optparse_applicative
-             , ghcjs_ansi_wl_pprint
-             , ghcjs_regex_base
-             , ghcjs_regex_tdfa_rc
-             , ghcjs_random
-             , ghcjs_logict
-             , ghcjs_tf_random
-             , ghcjs_tasty_smallcheck
-             , ghcjs_smallcheck
-             , ghcjs_hslogger
-             , ghcjs_network
-             , ghcjs_network_uri
-             , ghcjs_th_lift
-             , ghcjs_web_routes
-             , ghcjs_web_routes_th
-             , ghcjs_web_routes
-             , ghcjs_web_routes_th
-             , ghcjs_parsec
-             , ghcjs_byteable
-             , ghcjs_comonad
-             , ghcjs_semigroupoids
-             , ghcjs_tagged
-             , ghcjs_contravariant
-             , ghcjs_foreign_var
-             , ghcjs_distributive
-             , ghcjs_transformers_compat
-             , ghcjs_split
-             , ghcjs_utf8_string
-             , ghcjs_http_types
-             , ghcjs_base64_bytestring
-             , ghcjs_html
-             , ghcjs_monad_control
-             , ghcjs_sendfile
-             , ghcjs_system_filepath
-             , ghcjs_threads
-             , ghcjs_time_compat
-             , ghcjs_transformers_base
-             , ghcjs_xhtml
-             , ghcjs_zlib
-             , ghcjs_jquery
-             ]
+             (sequence $
+              (map ghcjs_flags
+                  [ adjunctions
+                  , ansi_terminal
+                  , ansi_wl_pprint
+                  , base16_bytestring
+                  , base64_bytestring
+                  , bifunctors
+                  , blaze_builder
+                  , blaze_html
+                  , blaze_markup
+                  , byteable
+                  , comonad
+                  , contravariant
+                  , cryptohash
+                  , data_default_class
+                  , data_default
+                  , data_default_instances_base
+                  , data_default_instances_containers
+                  , data_default_instances_dlist
+                  , data_default_instances_old_locale
+                  , data_lens
+                  , data_lens_template
+                  , distributive
+                  , exceptions
+                  , file_embed
+                  , foreign_var
+                  , free
+                  , hslogger
+                  , html
+                  , http_types
+                  , lens
+                  , kan_extensions
+                  , logict
+                  , lucid
+                  , monad_control
+                  , nats
+                  , network
+                  , network_uri
+                  , optparse_applicative
+                  , parsec
+                  , prelude_extras
+                  , profunctors
+                  , random
+                  , reflection
+                  , regex_base
+                  , regex_tdfa_rc
+                  , semigroupoids
+                  , semigroups
+                  , sendfile
+                  , smallcheck
+                  , split
+                  , system_filepath
+                  , tagged
+                  , tasty
+                  , tasty_smallcheck
+                  , text_show
+                  , tf_random
+                  , th_lift
+                  , threads
+                  , time_compat
+                  , transformers_base
+                  , transformers_compat
+                  , unbounded_delays
+                  , utf8_string
+                  , value_supply
+                  , void
+                  , web_routes
+                  , web_routes_th
+                  , xhtml
+                  , zlib
+                  ]) ++
+              [ ghcjs_dom
+              , ghcjs_dom_hello
+              , ghcjs_jquery ])
 
 darcs_group =
     (named "darcs" . map APackage) =<<
@@ -1315,99 +1316,33 @@ generic_deriving = debianize (hackage "generic-deriving")
 genI = debianize (darcs "http://hub.darcs.net/kowey/GenI" `patch` $(embedFile "patches/GenI.diff"))
 ghc76 = ghcFlags $ apt "sid" "ghc" `patch` $(embedFile "patches/ghc.diff")
 ghc78 = ghcFlags $ apt "experimental" "ghc" `patch` $(embedFile "patches/trac9262.diff")
-ghcjs_ansi_terminal = ghcjs_flags ansi_terminal
-ghcjs_ansi_wl_pprint = ghcjs_flags ansi_wl_pprint
-ghcjs_base16_bytestring = ghcjs_flags base16_bytestring
-ghcjs_base64_bytestring = ghcjs_flags base64_bytestring
-ghcjs_bifunctors = ghcjs_flags bifunctors
-ghcjs_blaze_builder = ghcjs_flags blaze_builder
-ghcjs_blaze_html = ghcjs_flags blaze_html
-ghcjs_blaze_markup = ghcjs_flags blaze_markup
-ghcjs_byteable = ghcjs_flags byteable
-ghcjs_comonad = ghcjs_flags comonad
-ghcjs_contravariant = ghcjs_flags contravariant
-ghcjs_cryptohash = ghcjs_flags cryptohash
-ghcjs_data_default_class = ghcjs_flags data_default_class
-ghcjs_data_default = ghcjs_flags data_default
-ghcjs_data_default_instances_base = ghcjs_flags data_default_instances_base
-ghcjs_data_default_instances_containers = ghcjs_flags data_default_instances_containers
-ghcjs_data_default_instances_dlist = ghcjs_flags data_default_instances_dlist
-ghcjs_data_default_instances_old_locale = ghcjs_flags data_default_instances_old_locale
-ghcjs_data_lens = ghcjs_flags data_lens
-ghcjs_data_lens_template = ghcjs_flags data_lens_template
-ghcjs_distributive = ghcjs_flags distributive
+ghcjs_jquery = ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-jquery" []) `putSrcPkgName` "ghcjs-ghcjs-jquery")
 ghcjs_dom = ghcjs_flags (debianize (hackage "ghcjs-dom"))
 ghcjs_dom_hello = ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
                                                       `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
                                                        `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]))
-ghcjs_exceptions = ghcjs_flags exceptions
-ghcjs_file_embed = ghcjs_flags file_embed
-ghcjs_foreign_var = ghcjs_flags foreign_var
-ghcjs_free = ghcjs_flags free
 ghcjs = git "https://github.com/ddssff/ghcjs-debian" [] `relax` "cabal-install"
-ghcjs_hslogger = ghcjs_flags hslogger
-ghcjs_html = ghcjs_flags html
-ghcjs_http_types = ghcjs_flags http_types
-ghcjs_jquery = ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-jquery" []) `putSrcPkgName` "ghcjs-ghcjs-jquery")
-ghcjs_lens = ghcjs_flags lens
-ghcjs_logict = ghcjs_flags logict
-ghcjs_lucid = ghcjs_flags lucid
-ghcjs_monad_control = ghcjs_flags monad_control
-ghcjs_nats = ghcjs_flags nats
-ghcjs_network = ghcjs_flags network
-ghcjs_network_uri = ghcjs_flags network_uri
-ghcjs_optparse_applicative = ghcjs_flags optparse_applicative
-ghcjs_parsec = ghcjs_flags parsec
-ghcjs_prelude_extras = ghcjs_flags prelude_extras
 ghcjs_prim = debdir (git "https://github.com/ghcjs/ghcjs-prim.git" [])
                           (Git "https://github.com/ddssff/ghcjs-prim-debian" [])
 
-ghcjs_profunctors = ghcjs_flags profunctors
-ghcjs_random = ghcjs_flags random
-ghcjs_reflection = ghcjs_flags reflection
-ghcjs_regex_base = ghcjs_flags regex_base
-ghcjs_regex_tdfa_rc = ghcjs_flags regex_tdfa_rc
-ghcjs_semigroupoids = ghcjs_flags semigroupoids
-ghcjs_semigroups = ghcjs_flags semigroups
-ghcjs_sendfile = ghcjs_flags sendfile
-ghcjs_smallcheck = ghcjs_flags smallcheck
-ghcjs_split = ghcjs_flags split
-ghcjs_system_filepath = ghcjs_flags system_filepath
-ghcjs_tagged = ghcjs_flags tagged
-ghcjs_tasty = ghcjs_flags tasty
-ghcjs_tasty_smallcheck = ghcjs_flags tasty_smallcheck
-ghcjs_text_show = ghcjs_flags text_show
-ghcjs_tf_random = ghcjs_flags tf_random
              -- , ghcjs_flags (debianize (hackage "QuickCheck")) -- The cabal file has lots of references like impl(ghc > 7.8) that need to be fixed for this to work
              -- , ghcjs_flags (debianize (hackage "tasty-quickcheck"))
-ghcjs_th_lift = ghcjs_flags th_lift
-ghcjs_threads = ghcjs_flags threads
-ghcjs_time_compat = ghcjs_flags time_compat
-ghcjs_tools = debdir (git "https://github.com/seereason/ghcjs" []
-                               -- Apply some patches that upstream is not comfortable with
-                               `patch` $(embedFile "patches/ghcjs-update-archives.diff")
-                               `patch` $(embedFile "patches/ghcjs-setup.diff")
-                               `patch` $(embedFile "patches/ghcjs-depends.diff")
-                               `relax` "cabal-install"
-                               `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
-                                                     "--default-package=ghcjs-tools",
-                                                     "--depends=ghcjs-tools:haddock-api"]
-                               `flag` P.ModifyAtoms (execCabalM $ (debInfo . rulesFragments) +=
-                                                                                Text.unlines
-                                                                                  [ "# Force the Cabal dependency to be the version provided by GHC"
-                                                                                  , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])
-                               `flag` P.KeepRCS)
-                     (Git "https://github.com/ddssff/ghcjs-tools-debian" []) -- (Dir "/home/dsf/git/ghcjs-tools-debian")
-ghcjs_transformers_base = ghcjs_flags transformers_base
-ghcjs_transformers_compat = ghcjs_flags transformers_compat
-ghcjs_unbounded_delays = ghcjs_flags unbounded_delays
-ghcjs_utf8_string = ghcjs_flags utf8_string
-ghcjs_value_supply = ghcjs_flags value_supply
-ghcjs_void = ghcjs_flags void
-ghcjs_web_routes = ghcjs_flags web_routes
-ghcjs_web_routes_th = ghcjs_flags web_routes_th
-ghcjs_xhtml = ghcjs_flags xhtml
-ghcjs_zlib = ghcjs_flags zlib
+ghcjs_tools = git "https://github.com/seereason/ghcjs" [Branch "debianized"]
+                -- Apply some patches that upstream is not comfortable with
+                -- `patch` $(embedFile "patches/ghcjs-update-archives.diff")
+                -- `patch` $(embedFile "patches/ghcjs-setup.diff")
+                `relax` "cabal-install"
+                `flag` P.KeepRCS
+                -- Wait, we are not running debianize...
+#if 0
+                `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
+                                      "--default-package=ghcjs-tools",
+                                      "--depends=ghcjs-tools:haddock-api"]
+                `flag` P.ModifyAtoms (execCabalM $ (debInfo . rulesFragments) +=
+                                        Text.unlines
+                                                [ "# Force the Cabal dependency to be the version provided by GHC"
+                                                , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])
+#endif
              -- We can't compute a reasonable source package name for a git
              -- target (without doing IO) so we set it here explicitly.
 ghc_mtl = skip (Reason "No instance for (MonadIO GHC.Ghc)") $ debianize (hackage "ghc-mtl")
