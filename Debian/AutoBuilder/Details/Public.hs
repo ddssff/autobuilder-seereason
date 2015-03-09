@@ -108,7 +108,7 @@ new = (named "new" . map APackage) =<<
       , file_location
       , hamlet
       , http_date
-      , hunt
+      -- , hunt -- depends on text << 1.2
       , iproute
       , monad_parallel
       , pseudomacros
@@ -366,7 +366,7 @@ main =
              , propLogic
              , psQueue
              , pwstore_purehaskell
-             , quickcheck_gent
+             -- , quickcheck_gent -- depends on quickcheck << 2.7
              , quickcheck_io
              , regex_compat_tdfa
              , regex_pcre_builtin
@@ -455,7 +455,7 @@ main =
              , vector
              , vector_algorithms
              , virthualenv
-             , vty
+             -- , vty -- depends on utf8-string << 0.4
              , wai
              , webdriver
              , web_encodings
