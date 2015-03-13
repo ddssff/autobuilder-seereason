@@ -256,7 +256,7 @@ main =
              , heap
              , hexpat
              , hinotify
-             , hint
+             -- , hint -- failing
              , hJavaScript
              , hledger
              , hostname
@@ -284,7 +284,7 @@ main =
              , hxt_charproperties
              , hxt_regex_xmlschema
              , hxt_unicode
-             , i18n
+             -- , i18n -- failing
              , iconv
              , incremental_sat_solver
              , indents
@@ -396,6 +396,7 @@ main =
              , smtpClient
              , socks
              , split
+             , stateVar
              , stb_image
              , strict
              , strict_io
@@ -472,7 +473,7 @@ main =
              , xss_sanitize
              , yaml
              , yaml_light
-             , yi
+             -- , yi -- depends on failing package hint
              , yi_language
              , yi_rope
              , zip_archive
@@ -925,6 +926,7 @@ ghcjs_group =
                   , sendfile
                   , smallcheck
                   , split
+                  , stateVar
                   , system_filepath
                   , tagged
                   , tasty
@@ -1921,11 +1923,11 @@ text_stream_decode = debianize (hackage "text-stream-decode" `patch` $(embedFile
 tf_random = debianize (hackage "tf-random")
 th_alpha = debianize (git "https://github.com/jkarni/th-alpha.git" [])
 th_context = debianize (git "http://github.com/seereason/th-context" [])
-th_desugar = debianize (git "http://github.com/ddssff/th-desugar" [])
+th_desugar = debianize $ git "http://github.com/ddssff/th-desugar" []
 th_expand_syns = debianize (hackage "th-expand-syns")
 -- th_instance_reification = debianize (git "https://github.com/seereason/th-instance-reification.git" [])
 th_lift = debianize (git "https://github.com/seereason/th-lift" []) -- changes for template-haskell-2.10 and ghc-7.8
-th_orphans = debianize (git "https://github.com/seereason/th-orphans.git" []) -- debianize (hackage "th-orphans")
+th_orphans = debianize (hackage "th-orphans")
 threads = debianize (hackage "threads")
 th_reify_many = debianize (hackage "th-reify-many")
 time_compat = debianize (hackage "time-compat")
