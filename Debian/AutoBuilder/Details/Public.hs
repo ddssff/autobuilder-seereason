@@ -1330,23 +1330,8 @@ ghcjs_prim = debdir (git "https://github.com/ghcjs/ghcjs-prim.git" [])
              -- , ghcjs_flags (debianize (hackage "QuickCheck")) -- The cabal file has lots of references like impl(ghc > 7.8) that need to be fixed for this to work
              -- , ghcjs_flags (debianize (hackage "tasty-quickcheck"))
 ghcjs_tools = git "https://github.com/seereason/ghcjs" [Branch "debianized"]
-                -- Apply some patches that upstream is not comfortable with
-                -- `patch` $(embedFile "patches/ghcjs-update-archives.diff")
-                -- `patch` $(embedFile "patches/ghcjs-setup.diff")
                 `relax` "cabal-install"
                 `flag` P.KeepRCS
-                -- Wait, we are not running debianize...
-#if 0
-                `flag` P.CabalDebian ["--source-package-name=ghcjs-tools",
-                                      "--default-package=ghcjs-tools",
-                                      "--depends=ghcjs-tools:haddock-api"]
-                `flag` P.ModifyAtoms (execCabalM $ (debInfo . rulesFragments) +=
-                                        Text.unlines
-                                                [ "# Force the Cabal dependency to be the version provided by GHC"
-                                                , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])
-#endif
-             -- We can't compute a reasonable source package name for a git
-             -- target (without doing IO) so we set it here explicitly.
 ghc_mtl = skip (Reason "No instance for (MonadIO GHC.Ghc)") $ debianize (hackage "ghc-mtl")
 ghc_paths = debianize (hackage "ghc-paths" `tflag` P.DebVersion "0.1.0.9-3") -- apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah
              -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
