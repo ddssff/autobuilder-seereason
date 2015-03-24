@@ -1,27 +1,13 @@
---- old/pandoc.cabal	2014-09-03 16:47:48.678536062 -0700
-+++ new/pandoc.cabal	2014-09-11 10:49:29.439259709 -0700
-@@ -226,7 +226,7 @@
-                  HTTP >= 4000.0.5 && < 4000.3,
-                  texmath >= 0.8 && < 0.9,
-                  xml >= 1.3.12 && < 1.4,
--                 random >= 1 && < 1.1,
-+                 random >= 1 && < 1.2,
-                  extensible-exceptions >= 0.1 && < 0.2,
-                  pandoc-types >= 1.12.4 && < 1.13,
-                  aeson >= 0.7 && < 0.9,
-@@ -247,13 +247,13 @@
-                  haddock-library >= 1.1 && < 1.2,
-                  old-time,
-                  deepseq-generics >= 0.1 && < 0.2,
--                 JuicyPixels >= 3.1.6.1 && < 3.2
-+                 JuicyPixels >= 3.1.6.1 && < 3.3
-   if flag(network-uri)
-      Build-Depends: network-uri >= 2.6 && < 2.7, network >= 2.6
-   else
-      Build-Depends: network >= 2 && < 2.6
-   if flag(https)
--     Build-Depends: http-client >= 0.3.2 && < 0.4,
-+     Build-Depends: http-client >= 0.3.2 && < 0.5,
-                     http-client-tls >= 0.2 && < 0.3,
-                     http-types >= 0.8 && < 0.9
-      cpp-options:   -DHTTP_CLIENT
+--- old/pandoc.cabal	2014-12-25 04:40:29.833361123 -0800
++++ new/pandoc.cabal	2015-03-24 11:45:52.372544927 -0700
+@@ -242,8 +242,8 @@
+                  highlighting-kate >= 0.5.11.1 && < 0.6,
+                  data-default >= 0.4 && < 0.6,
+                  temporary >= 1.1 && < 1.3,
+-                 blaze-html >= 0.5 && < 0.8,
+-                 blaze-markup >= 0.5.1 && < 0.7,
++                 blaze-html >= 0.5 && < 0.9,
++                 blaze-markup >= 0.5.1 && < 0.8,
+                  yaml >= 0.8.8.2 && < 0.9,
+                  scientific >= 0.2 && < 0.4,
+                  vector >= 0.10 && < 0.11,

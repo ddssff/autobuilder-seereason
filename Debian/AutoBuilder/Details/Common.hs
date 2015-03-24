@@ -138,22 +138,36 @@ gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
 -- repo = "http://hub.darcs.net/stepcut/clckwrks-dev"
 -- repo = "http://src.seereason.com/mirrors/clckwrks-dev"
 
--- | Create a flag that tells cabal debian the package @newer@ is a replacement for @older@,
--- so that when it is installed the @older@ package is uninstalled.
+-- | Create a flag that tells cabal debian the package @newer@ may
+-- substitute for @older@, so that when it is installed the @older@
+-- package is uninstalled.  For example, process-listlike has the same
+-- API as process-extras, most packages can build with either one.
+substitute :: String -> String -> CabalInfo -> CabalInfo
+substitute newer older = execCabalM $ do
+  prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> access (debInfo . D.flags . compilerFlavor)
+  addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . conflicts)
+  addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . provides)
+  addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . replaces)
+
+-- | Like 'substitute', but doesn't mark the packages as providing
+-- one another.  The one in the dependency list will be installed and
+-- the other uninstalled.  For example, regex-tdfa-rc is a fork of
+-- regex-tfda - they can't both be installed at the same time, but you
+-- can't build packages that expect regex-tdfa using regex-tdfa-rc.
 replacement :: String -> String -> CabalInfo -> CabalInfo
 replacement newer older = execCabalM $ do
   prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> access (debInfo . D.flags . compilerFlavor)
-  addDeps prefix (\ b -> debInfo . binaryDebDescription b . relations . conflicts)
-  addDeps prefix (\ b -> debInfo . binaryDebDescription b . relations . provides)
-  addDeps prefix (\ b -> debInfo . binaryDebDescription b . relations . replaces)
+  addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . conflicts)
+  addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . replaces)
+
+addDeps :: String -> String -> String -> (BinPkgName -> Lens CabalInfo Relations) -> CabalM ()
+addDeps newer older pre lns = do
+  addDeps' "-dev"
+  addDeps' "-prof"
+  addDeps' "-doc"
     where
-      addDeps :: String -> (BinPkgName -> Lens CabalInfo Relations) -> CabalM ()
-      addDeps pre lns =
-          do addDeps' pre "-dev" lns
-             addDeps' pre "-prof" lns
-             addDeps' pre "-doc" lns
-      addDeps' :: String -> String -> (BinPkgName -> Lens CabalInfo Relations) -> CabalM ()
-      addDeps' pre suf lns =
+      addDeps' :: String -> CabalM ()
+      addDeps' suf =
           let lns' :: Lens CabalInfo Relations
               lns' = lns (BinPkgName (pre ++ newer ++ suf)) in
           do lns' %= (++ [[Rel (BinPkgName (pre ++ older ++ suf)) Nothing Nothing]])

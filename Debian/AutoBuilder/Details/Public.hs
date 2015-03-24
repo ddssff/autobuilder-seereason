@@ -25,7 +25,7 @@ import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Deb
 --------------------
 
 noTests :: TSt Packages -> TSt Packages
-noTests = mapPackages (\ p -> p `flag` P.CabalDebian ["--no-test-suite"])
+noTests = mapPackages (\ p -> p `flag` P.CabalDebian ["--no-tests"])
 
 -- |the _home parameter has an underscore because normally it is unused, but when
 -- we need to build from a local darcs repo we use @localRepo _home@ to compute
@@ -153,6 +153,7 @@ main =
              , bugzilla
              , byteable
              , byteorder
+             , bytes
              , bytestring_builder
              , bytestring_nums
              , bytestring_trie
@@ -449,6 +450,7 @@ main =
              , utf8_string
              , utility_ht
              , uuid
+             , uuid_types
              , vacuum
              , validation
              , vault
@@ -469,6 +471,7 @@ main =
              , xdg_basedir
              , xml
              , xmlhtml
+             , xmlgen
              , xml_types
              , xss_sanitize
              , yaml
@@ -600,6 +603,7 @@ happstack =
             , hsp
             , hslua
             , juicyPixels
+            , cmark
             , pandoc
             , markdown
             , highlighting_kate
@@ -886,6 +890,7 @@ ghcjs_group =
                   , blaze_html
                   , blaze_markup
                   , byteable
+                  , bytestring_builder
                   , comonad
                   , contravariant
                   , cryptohash
@@ -942,7 +947,7 @@ ghcjs_group =
                   , utf8_string
                   , value_supply
                   , void
-                  , web_routes
+                  , (web_routes `flag` P.BuildDep "libghcjs-split-dev") -- the ghcjs version doesn't understand "if impl(ghc >= 7.2) build-depends: split"
                   , web_routes_th
                   , xhtml
                   , zlib
@@ -995,7 +1000,7 @@ alex = pure $ P.Package { P.spec = Debianize'' (Hackage "alex") Nothing
                                                                        , "AlexWrapper-strict-bytestring"]) ] }
 annotated_wl_pprint = hack "annotated-wl-pprint"
 ansi_terminal = debianize (hackage "ansi-terminal")
-ansi_wl_pprint = debianize (hackage "ansi-wl-pprint" `tflag` P.DebVersion "0.6.7.1-1")
+ansi_wl_pprint = debianize (hackage "ansi-wl-pprint")
 appar = debianize (hackage "appar" `flag` P.DebVersion "1.1.4-1")
 applicative_extras = debianize (hackage "applicative-extras" `flag` P.DebVersion "0.1.8-1")
 archive = git "https://github.com/seereason/archive" []
@@ -1063,7 +1068,7 @@ base16_bytestring = debianize (hackage "base16-bytestring")
 base64_bytestring = debianize (hackage "base64-bytestring" `tflag` P.DebVersion "1.0.0.1-1")
 base_unicode_symbols = debianize (hackage "base-unicode-symbols" `tflag` P.DebVersion "0.2.2.4-3")
 bifunctors = debianize (hackage "bifunctors")
-bimap = debianize (hackage "bimap" `flag` P.DebVersion "0.2.4-1~hackage1")
+bimap = debianize (hackage "bimap")
 bindings_dSL = debianize (hackage "bindings-DSL")
 bindings_gLFW = debianize (hackage "bindings-GLFW"
                              -- `patch` $(embedFile "patches/bindings-GLFW.diff")
@@ -1077,12 +1082,10 @@ bitmap_opengl = debianize (hackage "bitmap-opengl"
                    `flag` P.DevelDep "libglu1-mesa-dev")
 bits_atomic = debianize (hackage "bits-atomic")
 bitset = debianize (hackage "bitset")
-blaze_builder = debianize (hackage "blaze-builder" `flag` P.CabalPin "0.3.3.4") -- 0.4.0.0 conflicts with streaming-commons-0.1.9
+blaze_builder = debianize (hackage "blaze-builder")
 blaze_from_html = debianize (hackage "blaze-from-html")
-blaze_html = debianize (hackage "blaze-html" `flag` P.CabalPin "0.7.1.0" `patch` $(embedFile "patches/blaze-html.diff"))
-blaze_markup = debianize (hackage "blaze-markup" `flag` P.CabalPin "0.6.3.0" `patch` $(embedFile "patches/blaze-markup.diff"))
-            -- , apt (rel release "wheezy" "quantal") "haskell-blaze-builder"
-            -- , debianize (hackage "blaze-builder-enumerator" `patch` $(embedFile "patches/blaze-builder-enumerator.diff"))
+blaze_html = debianize (hackage "blaze-html")
+blaze_markup = debianize (hackage "blaze-markup")
 blaze_textual = debianize (hackage "blaze-textual")
 blaze_textual_native = debianize (hackage "blaze-textual-native"
                            `patch` $(embedFile "patches/blaze-textual-native.diff")
@@ -1092,13 +1095,14 @@ boomerang = debianize (hackage "boomerang")
 bugzilla = broken $ apt "squeeze" "bugzilla" -- requires python-central (>= 0.5)
 byteable = debianize (hackage "byteable" `tflag` P.DebVersion "0.1.1-1")
 byteorder = debianize (hackage "byteorder" `tflag` P.DebVersion "1.0.4-1")
+bytes = debianize (hackage "bytes")
 bytestring_builder = debianize (hackage "bytestring-builder")
 bytestring_nums = debianize (hackage "bytestring-nums") -- apt (rel release "wheezy" "quantal") "haskell-bytestring-nums"
 bytestring_trie = debianize (hackage "bytestring-trie")
 bzlib = debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
              -- , debianize (hackage "cairo-pdf")
 cabal_debian = git "https://github.com/ddssff/cabal-debian" []
-cabal = debianize (hackage "Cabal" `flag` P.CabalPin "1.22.1.1" {- avoid rebuild -}) -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
+cabal = debianize (hackage "Cabal" `flag` P.CabalPin "1.22.2.0" {- avoid rebuild -}) -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
 cabal_install = debianize (hackage "cabal-install" `flag` P.CabalDebian ["--default-package=cabal-install"])
 cabal_macosx = debianize (hackage "cabal-macosx" `patch` $(embedFile "patches/cabal-macosx.diff"))
 c_ares = apt "sid" "c-ares"
@@ -1121,9 +1125,7 @@ cipher_aes128 = debianize (hackage "cipher-aes128")
 cipher_aes = debianize (hackage "cipher-aes")
 cipher_des = debianize (hackage "cipher-des" `tflag` P.DebVersion "0.0.6-1")
 cipher_rc4 = debianize (hackage "cipher-rc4" `tflag` P.DebVersion "0.1.4-1")
-citeproc_hs = debianize (hackage "citeproc-hs"
-                            `patch` $(embedFile "patches/citeproc-hs.diff")
-                            `tflag` P.DebVersion "0.3.9-1build2")
+citeproc_hs = debianize (hackage "citeproc-hs")
 clckwrks_cli = debianize (gitrepo "clckwrks-cli")
 clckwrks_dot_com = debianize (gitrepo "clckwrks-dot-com"
                                -- This is a change that only relates to the autobuilder
@@ -1153,6 +1155,7 @@ clckwrks_theme_bootstrap = debianize (gitrepo "clckwrks-theme-bootstrap" `flag` 
 clckwrks_theme_clckwrks = debianize (gitrepo "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
 clock = debianize (hackage "clock")
 closure_compiler = apt "sid" "closure-compiler"
+cmark = debianize (hackage "cmark")
 cmdargs = debianize (hackage "cmdargs")
 colour = debianize (hackage "colour"
                             `pflag` P.DebVersion "2.3.3-1build1"
@@ -1168,7 +1171,7 @@ concrete_typerep = debianize (hackage "concrete-typerep"
                             `tflag` P.DebVersion "0.1.0.2-2build3")
 cond = debianize (hackage "cond")
 conduit = debianize (hackage "conduit")
-conduit_extra = debianize (hackage "conduit-extra" `flag` P.CabalPin "1.1.6.2") -- unpin with blaze-builder
+conduit_extra = debianize (hackage "conduit-extra")
 configFile = debianize (hackage "ConfigFile")
 connection = debianize (hackage "connection")
 constrained_normal = debianize (hackage "constrained-normal")
@@ -1230,7 +1233,7 @@ debootstrap = apt "sid" "debootstrap" `flag` P.UDeb "debootstrap-udeb"
 decimal = debianize (hackage "Decimal") -- for hledger
 deepseq_generics = debianize (hackage "deepseq-generics")
 derive = debianize (hackage "derive")
-diff = debianize (hackage "Diff" `tflag` P.DebVersion "0.3.0-1")
+diff = debianize (hackage "Diff")
 digest = debianize (hackage "digest")
 digestive_functors = debianize (hackage "digestive-functors" `flag` P.CabalPin "0.2.1.0")  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
     -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
@@ -1558,7 +1561,7 @@ instant_generics = broken $ debianize (hackage "instant-generics" `flag` P.SkipV
 intervals = debianize (hackage "intervals")
 ioRefCAS = skip (Reason "Version 0.2.0.1 build fails") $ debianize (hackage "IORefCAS")
 io_storage = debianize (hackage "io-storage" `pflag` P.DebVersion "0.3-2" `tflag` P.DebVersion "0.3-5")
-io_streams = debianize (hackage "io-streams")
+io_streams = debianize (git "https://github.com/snapframework/io-streams" [] {-hackage "io-streams"-})
 iproute = debianize (hackage "iproute")
 ircbot = debianize (hackage "ircbot")
 irc = debianize (hackage "irc")
@@ -1640,11 +1643,11 @@ magic = debianize (hackage "magic" `flag` P.DevelDep "libmagic-dev")
 mainland_pretty = debianize (hackage "mainland-pretty")
 makedev = apt "wheezy" "makedev"
 markdown = debianize (hackage "markdown" {- `patch` $(embedFile "patches/markdown.diff") -})
-markdown_unlit = debianize (hackage "markdown-unlit" `flag` P.CabalDebian ["--no-test-suite"])
+markdown_unlit = debianize (hackage "markdown-unlit" `flag` P.CabalDebian ["--no-tests"])
 matrix = debianize (hackage "matrix")
              -- , debianize (hackage "hlatex")
 maybeT = debianize (hackage "MaybeT" `flag` P.DebVersion "1.2-6")
-memoize = debianize (hackage "memoize")
+memoize = debianize (git "https://github.com/ddssff/memoize" [] {-hackage "memoize"-})
 memoTrie = debianize (hackage "MemoTrie")
 mime = darcs ("http://src.seereason.com/haskell-mime")
 mime_mail = debianize (git "https://github.com/snoyberg/mime-mail.git" [] `cd` "mime-mail")
@@ -1684,7 +1687,7 @@ murmur_hash = debianize (hackage "murmur-hash")
 mwc_random = debianize (hackage "mwc-random")
 nano_hmac = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff")) Nothing
                              , P.flags = [P.DebVersion "0.2.0ubuntu1"] }
-nanospec = debianize (hackage "nanospec" `flag` P.CabalDebian ["--no-test-suite"]) -- avoid circular dependency nanospec <-> silently
+nanospec = debianize (hackage "nanospec" `flag` P.CabalDebian ["--no-tests"]) -- avoid circular dependency nanospec <-> silently
 nats = debianize (hackage "nats")
 network_conduit = debianize (hackage "network-conduit")
 network = debianize (hackage "network")
@@ -1708,16 +1711,17 @@ operational = pure $ P.Package { P.spec = Debianize'' (Hackage "operational") No
          --    , debianize (hackage "options")
 optparse_applicative = debianize (hackage "optparse-applicative")
 ordered = debianize (hackage "ordered")
-pandoc = debianize (hackage "pandoc"
-                           -- `patch` $(embedFile "patches/pandoc.diff")
-                           `flag` P.RelaxDep "libghc-pandoc-doc"
+pandoc = debianize (-- git "https://github.com/jgm/pandoc" [Commit "d649acc146b9868fe23e0773654e5a95d88b156d"]
+                    -- d649acc fails: hlibrary.setup: data/templates/default.html: does not exist
+                    hackage "pandoc" `patch` $(embedFile "patches/pandoc.diff") -- hackage 1.13.2 is commit ccf081d32cc418e1d01f023059060aa22207d6e6
+                           -- `flag` P.RelaxDep "libghc-pandoc-doc"
                            `flag` P.BuildDep "alex"
                            `flag` P.BuildDep "happy")
 pandoc_types = debianize (hackage "pandoc-types")
 parallel = debianize (hackage "parallel")
 parseargs = debianize (hackage "parseargs")
              -- , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
-parsec = debianize (hackage "parsec" `flag` P.ModifyAtoms (replacement "parsec2" "parsec3") `flag` P.CabalPin "3.1.8")
+parsec = debianize (hackage "parsec" `flag` P.ModifyAtoms (substitute "parsec2" "parsec3") `flag` P.CabalPin "3.1.8")
 parse_dimacs = debianize (hackage "parse-dimacs")
 parsers = debianize (hackage "parsers" {- `patch` $(embedFile "patches/parsers.diff") -})
 pbkdf2 = debianize (hackage "PBKDF2")
@@ -1745,7 +1749,7 @@ pretty_show = debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
 primitive = debianize (hackage "primitive")
 process_extras =
     debianize (git "https://github.com/seereason/process-extras" [])
-                 `flag` P.ModifyAtoms (replacement "process-extras" "process-listlike")
+                 `flag` P.ModifyAtoms (substitute "process-extras" "process-listlike")
 processing = debianize (hackage "processing")
 profunctors = debianize (hackage "profunctors"
                    `flag` P.ModifyAtoms (replacement "profunctors" "profunctors-extras"))
@@ -1766,7 +1770,7 @@ pwstore_purehaskell = debianize (hackage "pwstore-purehaskell"
                          )
              -- Retired
              -- , apt (rel release "wheezy" "quantal") "haskell-quickcheck1"
-quickCheck = debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof" `flag` P.CabalDebian ["--no-test-suite"])
+quickCheck = debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof" `flag` P.CabalDebian ["--no-tests"])
 quickcheck_gent = debianize (hackage "QuickCheck-GenT")
 quickcheck_instances = debianize (hackage "quickcheck-instances")
 quickcheck_io = debianize (hackage "quickcheck-io")
@@ -1844,13 +1848,12 @@ socks = debianize (hackage "socks")
 sourcemap = debianize (hackage "sourcemap")
 spine = debianize (hackage "spine")
 split = debianize (hackage "split" `tflag` P.DebVersion "0.2.2-1")
-             -- Version 1.14, which is in darcs, is too new for the current haskell-src-meta and haskell-derive
 srcloc = debianize (hackage "srcloc")
 stateVar = debianize (hackage "StateVar")
 stb_image = debianize (hackage "stb-image")
 stm_chans = debianize (hackage "stm-chans")
 stm = debianize (hackage "stm")
-streaming_commons = debianize (hackage "streaming-commons" `flag` P.CabalPin "0.1.9.1") -- unpin with blaze-builder
+streaming_commons = debianize (hackage "streaming-commons")
 strict = debianize (hackage "strict"
                             `pflag` P.DebVersion "0.3.2-2"
                             `tflag` P.DebVersion "0.3.2-7") -- apt (rel release "wheezy" "quantal") "haskell-strict" -- for leksah
@@ -1861,10 +1864,7 @@ stringbuilder = debianize (hackage "stringbuilder")
 stringsearch = debianize (hackage "stringsearch")
 sunroof_compiler = debianize (git "http://github.com/ku-fpg/sunroof-compiler" [] `patch` $(embedFile "patches/sunroof-compiler.diff"))
 syb = debianize (hackage "syb")
-syb_with_class = debianize (hackage "syb-with-class"
-                                      `patch` $(embedFile "patches/syb-with-class.diff")
-                                      `tflag` P.DebVersion "0.6.1.4-2"
-                                      `flag` P.CabalPin "0.6.1.4") -- Version 0.6.1.5 tries to derive typeable instances when building rjson, which is an error for ghc-7.8
+syb_with_class = debianize (git "http://github.com/seereason/syb-with-class" []) -- Version 0.6.1.5 tries to derive typeable instances when building rjson, which is an error for ghc-7.8
 syb_with_class_instances_text = broken $
                debianize (hackage "syb-with-class-instances-text"
                             `pflag` P.DebVersion "0.0.1-3"
@@ -1901,14 +1901,14 @@ test_framework_th = debianize (hackage "test-framework-th" `tflag` P.DebVersion 
 testing_feat = debianize (hackage "testing-feat")
 texmath = debianize (hackage "texmath")
 text_binary = debianize (hackage "text-binary")
-text = debianize (hackage "text" `flag` P.CabalDebian ["--cabal-flags", "-integer-simple"] `flag` P.CabalDebian ["--no-test-suite"])
+text = debianize (hackage "text" `flag` P.CabalDebian ["--cabal-flags", "-integer-simple"] `flag` P.CabalDebian ["--no-tests"])
 text_icu = debianize (hackage "text-icu" `flag` P.DevelDep "libicu-dev")
 text_show = debianize (hackage "text-show")
 text_stream_decode = debianize (hackage "text-stream-decode" `patch` $(embedFile "patches/text-stream-decode.diff"))
 tf_random = debianize (hackage "tf-random")
 th_alpha = debianize (git "https://github.com/jkarni/th-alpha.git" [])
 th_context = debianize (git "http://github.com/seereason/th-context" [])
-th_desugar = debianize $ git "http://github.com/ddssff/th-desugar" []
+th_desugar = debianize $ git "http://github.com/goldfirere/th-desugar" []
 th_expand_syns = debianize (hackage "th-expand-syns")
 -- th_instance_reification = debianize (git "https://github.com/seereason/th-instance-reification.git" [])
 th_lift = debianize (git "https://github.com/seereason/th-lift" []) -- changes for template-haskell-2.10 and ghc-7.8
@@ -1942,8 +1942,8 @@ union_find = debianize (hackage "union-find")
 uniplate = debianize (hackage "uniplate")
 units = debianize (hackage "units")
 unix_compat = debianize (hackage "unix-compat")
-unix_time = debianize (hackage "unix-time")
-unixutils = git "https://github.com/seereason/haskell-unixutils" []
+unix_time = debianize (hackage "unix-time" `flag` P.CabalDebian ["--no-run-tests"]) -- doctest assumes cabal build dir is dist
+unixutils = debianize (git "https://github.com/seereason/haskell-unixutils" [])
 unixutils_shadow = debianize (hackage "Unixutils-shadow")
 unordered_containers = debianize (hackage "unordered-containers")
              -- Obsolete after ghc-6.10
@@ -1959,6 +1959,7 @@ utf8_string = debianize (hackage "utf8-string"
              --             , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
 utility_ht = debianize (hackage "utility-ht")
 uuid = debianize (hackage "uuid")
+uuid_types = debianize (hackage "uuid-types")
 vacuum = debianize (hackage "vacuum" `flag` P.SkipVersion "2.1.0.1")
 validation = debianize (hackage "Validation" `patch` $(embedFile "patches/validation.diff"))
 value_supply = debianize (hackage "value-supply")
