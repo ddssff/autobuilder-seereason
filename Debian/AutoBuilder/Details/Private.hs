@@ -3,13 +3,17 @@
 module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
 import Data.FileEmbed (embedFile)
-import Debian.AutoBuilder.Types.Packages as P (Packages(APackage), PackageFlag(BuildDep, CabalDebian, NoDoc), flag, patch, debianize, darcs, git, cd, TSt)
+import Debian.AutoBuilder.Types.Packages as P (Packages(APackage), PackageFlag(BuildDep, CabalDebian, NoDoc), flag, mapPackages, patch, debianize, darcs, git, cd, TSt)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 import Debian.Repo.Fingerprint (GitSpec(Branch))
 import System.FilePath ((</>))
 
+noTests :: TSt Packages -> TSt Packages
+noTests = mapPackages (\ p -> p `flag` P.CabalDebian ["--no-tests"])
+
 libraries :: TSt P.Packages
 libraries =
+    noTests $
     (named "libraries" . map APackage) =<<
     sequence
     [ ontology
@@ -26,6 +30,7 @@ libraries =
 
 applications :: TSt P.Packages
 applications =
+    noTests $
     (named "applications" . map APackage) =<<
     sequence
     [ appraisalscribe
@@ -74,7 +79,8 @@ seereason = git "ssh://git@github.com/seereason/seereason" []
 seereasonpartners_dot_com = debianize (darcs (privateRepo </> "seereasonpartners-clckwrks") `cd` "seereasonpartners-dot-com" `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
 stripe_core = debianize (git "https://github.com/stepcut/stripe-haskell" [Branch "stripe-has-param"]
                                  `cd` "stripe-core"
-                                 `flag` P.CabalDebian ["--executable", "stripe-tests"])
+                                 -- `flag` P.CabalDebian ["--executable", "stripe-tests"]
+                        )
 stripe_haskell = debianize (git "https://github.com/stepcut/stripe-haskell" [Branch "stripe-has-param"]
                                     `cd` "stripe-http-streams"
                                     `flag` P.CabalDebian [{-"--no-tests"-}])
