@@ -1429,8 +1429,8 @@ haskell_darcs = debianize (darcs "http://darcs.net/reviewed"
                   )
 haskell_devscripts = darcs "http://hub.darcs.net/ddssff/haskell-devscripts" `flag` P.RelaxDep "python-minimal"
 haskell_either = debianize (hackage "either")
-haskell_extra = darcs ("http://src.seereason.com/haskell-extra") `flag` P.RelaxDep "cabal-debian"
-haskell_help = darcs ("http://src.seereason.com/haskell-help")
+haskell_extra = debianize (git ("https://github.com/seereason/sr-extra") [])
+haskell_help = debianize (git ("https://github.com/seereason/sr-help") [])
 haskell_lexer = debianize (hackage "haskell-lexer"
                             `pflag` P.DebVersion "1.0-3build2"
                             `wflag` P.DebVersion "1.0-3+b1"
@@ -1439,7 +1439,7 @@ haskell_list = debianize (hackage "List")
 haskell_names = debianize (hackage "haskell-names")
 haskell_newtype = debianize (hackage "newtype" `wflag` P.DebVersion "0.2-1" `tflag` P.DebVersion "0.2-3")
 haskell_packages = debianize (hackage "haskell-packages" `patch` $(embedFile "patches/haskell-packages.diff"))
-haskell_revision = darcs ("http://src.seereason.com/haskell-revision")
+haskell_revision = debianize (git ("https://github.com/seereason/sr-revision") [])
 haskell_src = debianize (hackage "haskell-src" `flag` P.BuildDep "happy")
 haskell_src_exts = debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
                           hackage "haskell-src-exts"
@@ -1652,7 +1652,8 @@ memoTrie = debianize (hackage "MemoTrie")
 mime = darcs ("http://src.seereason.com/haskell-mime")
 mime_mail = debianize (git "https://github.com/snoyberg/mime-mail.git" [] `cd` "mime-mail")
 mime_types = debianize (hackage "mime-types")
-mirror = git "https://github.com/seereason/mirror" []
+mirror = debianize (git "https://github.com/seereason/mirror" []
+                      `flag` P.CabalDebian ["--executable", "debian-mirror"])
 missingH = debianize (hackage "MissingH")
 mmap = debianize (hackage "mmap")
 mmorph = debianize (hackage "mmorph")

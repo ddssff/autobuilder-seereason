@@ -69,7 +69,7 @@ Library
       applicative-extras,
       directory,
       exceptions,
-      Extra,
+      sr-extra,
       magic,
       mtl,
       network-uri,
@@ -331,7 +331,7 @@ Executable autobuilder-seereason
     process,
     text
   if flag (local-autobuilder)
-    Build-Depends: mtl, tar, time, magic, Extra, directory, Unixutils, utf8-string, syb, network-uri, bzlib, unix, regex-compat, prettyclass, transformers, zlib, pureMD5, ListLike, old-locale, applicative-extras, lens, template-haskell, old-time, deepseq, exceptions
+    Build-Depends: mtl, tar, time, magic, sr-extra, directory, Unixutils, utf8-string, syb, network-uri, bzlib, unix, regex-compat, prettyclass, transformers, zlib, pureMD5, ListLike, old-locale, applicative-extras, lens, template-haskell, old-time, deepseq, exceptions
   else
     Build-Depends: AutoBuilder
   if flag (local-debian-repo)
@@ -350,7 +350,7 @@ Executable seereason-darcs-backups
   Hs-Source-Dirs: Tools
   Main-Is: Backups.hs
   GHC-Options: -threaded -Wall -Wwarn -O2
-  Build-depends: base, Extra, network-uri
+  Build-depends: base, sr-extra, network-uri
   if !flag (local-process-extras)
     Build-Depends: archive >= 1.7
   else

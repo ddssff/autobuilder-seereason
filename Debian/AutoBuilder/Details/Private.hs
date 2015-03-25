@@ -83,6 +83,7 @@ stripe_core = debianize (git "https://github.com/stepcut/stripe-haskell" [Branch
                         )
 stripe_haskell = debianize (git "https://github.com/stepcut/stripe-haskell" [Branch "stripe-has-param"]
                                     `cd` "stripe-http-streams"
+                                    `patch` $(embedFile "patches/stripe-http-streams.diff")
                                     `flag` P.CabalDebian [{-"--no-tests"-}])
 -- stripe_http_conduit = debianize (darcs (privateRepo </> "stripe") `cd` "stripe-http-conduit")
 task_manager = debianize (git "ssh://git@github.com/seereason/task-manager.git" [])
