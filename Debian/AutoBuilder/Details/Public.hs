@@ -1003,7 +1003,7 @@ ansi_terminal = debianize (hackage "ansi-terminal")
 ansi_wl_pprint = debianize (hackage "ansi-wl-pprint")
 appar = debianize (hackage "appar" `flag` P.DebVersion "1.1.4-1")
 applicative_extras = debianize (hackage "applicative-extras" `flag` P.DebVersion "0.1.8-1")
-archive = git "https://github.com/seereason/archive" []
+archive = debianize (git "https://github.com/seereason/archive" [] `flag` P.CabalDebian ["--default-package=archive"])
 asn1_data = debianize (hackage "asn1-data" `tflag` P.DebVersion "0.7.1-4build1")
 asn1_encoding = debianize (hackage "asn1-encoding")
 asn1_parse = debianize (hackage "asn1-parse")
@@ -1429,7 +1429,8 @@ haskell_darcs = debianize (darcs "http://darcs.net/reviewed"
                   )
 haskell_devscripts = darcs "http://hub.darcs.net/ddssff/haskell-devscripts" `flag` P.RelaxDep "python-minimal"
 haskell_either = debianize (hackage "either")
-haskell_extra = debianize (git ("https://github.com/seereason/sr-extra") [])
+haskell_extra = debianize (git ("https://github.com/seereason/sr-extra") []
+                            `flag` P.ModifyAtoms (replacement "sr-extra" "Extra"))
 haskell_help = debianize (git ("https://github.com/seereason/sr-help") [])
 haskell_lexer = debianize (hackage "haskell-lexer"
                             `pflag` P.DebVersion "1.0-3build2"

@@ -33,7 +33,7 @@ flag local-debian
   Manual: True
 
 flag local-process-extras
-  Description: Link directly to the source of the process-extras library
+  Description: Link directly to the source of the process-extras library (and several others)
   Default: False
   Manual: True
 
@@ -308,7 +308,6 @@ Library
     Exposed-Modules:
       System.Process.ByteString
       System.Process.ByteString.Lazy
-      System.Process.Extras
       System.Process.ListLike
       System.Process.Text
       System.Process.Text.Lazy
