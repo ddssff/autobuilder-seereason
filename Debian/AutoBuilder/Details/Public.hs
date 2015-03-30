@@ -375,7 +375,7 @@ main =
              , regexpr
              , regex_tdfa
              , regex_tdfa_rc
-             , rJson
+             -- , rJson -- we don't use this, it doesn't build, has no rcs url, and was last updated six years ago
              , rss
              , safe
              , safecopy
@@ -413,12 +413,14 @@ main =
              , tagsoup
              , tar
              , tasty
+             , tasty_hunit
              , tasty_quickcheck
              , tasty_smallcheck
              , template_default
              , temporary
              , test_framework
              , test_framework_hunit
+             , test_framework_quickcheck
              , test_framework_quickcheck2
              , test_framework_th
              , testing_feat
@@ -1327,14 +1329,18 @@ ghcjs_dom_hello = ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
                                                       `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
                                                        `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]))
 ghcjs = git "https://github.com/ddssff/ghcjs-debian" [] `relax` "cabal-install"
-ghcjs_prim = debdir (git "https://github.com/ghcjs/ghcjs-prim.git" [])
-                          (Git "https://github.com/ddssff/ghcjs-prim-debian" [])
-
-             -- , ghcjs_flags (debianize (hackage "QuickCheck")) -- The cabal file has lots of references like impl(ghc > 7.8) that need to be fixed for this to work
-             -- , ghcjs_flags (debianize (hackage "tasty-quickcheck"))
-ghcjs_tools = git "https://github.com/seereason/ghcjs" [Branch "debianized"]
-                `relax` "cabal-install"
-                `flag` P.KeepRCS
+ghcjs_prim = debianize (git "https://github.com/ghcjs/ghcjs-prim.git" [])
+ghcjs_tools = git "https://github.com/ghcjs/ghcjs" []
+                 `patch` $(embedFile "patches/ghcjs-0002-Force-HOME-to-be-usr-lib-ghcjs-during-build.patch")
+                 `patch` $(embedFile "patches/ghcjs-0003-Allow-builds-even-if-repository-has-uncommitted-chan.patch")
+                 `patch` $(embedFile "patches/ghcjs-0004-Add-debianization.patch")
+                 `patch` $(embedFile "patches/ghcjs-0005-Use-the-value-of-BRANCH-inherited-from-the-parent-pr.patch")
+                 `patch` $(embedFile "patches/ghcjs-0006-Force-the-use-of-branch-master-of-the-shims-repo.patch")
+                 `patch` $(embedFile "patches/ghcjs-0007-Use-ghc-in-prepare_setup_scripts-if-ghcjs-not-availa.patch")
+                 `patch` $(embedFile "patches/ghcjs-0008-Restrict-the-transformers-package-to-the-exact-versi.patch")
+                 `patch` $(embedFile "patches/ghcjs-0009-Add-a-MonadTrans-instance-for-ReaderT-and-a-liftRead.patch")
+                 `relax` "cabal-install"
+                 `flag` P.KeepRCS
 ghc_mtl = skip (Reason "No instance for (MonadIO GHC.Ghc)") $ debianize (hackage "ghc-mtl")
 ghc_paths = debianize (hackage "ghc-paths" `tflag` P.DebVersion "0.1.0.9-3") -- apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah
              -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
@@ -1363,12 +1369,13 @@ gtk2hs_buildtools = debianize (hackage "gtk2hs-buildtools"
              -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
 gyp = apt "sid" "gyp"
 haddock_api = debianize (hackage "haddock-api"
+                            `flag` P.CabalPin "2.15.0.2" -- 2.16 requires ghc-7.10
                             `flag` P.CabalDebian ["--default-package=haddock-api"]
                             -- FIXME - This cabal-debian stuff does nothing because this isn't a Debianize target
                             `flag` P.ModifyAtoms (execCabalM $ (debInfo . rulesFragments) += Text.unlines
                                                                [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
-haddock_library = debianize (hackage "haddock-library")
+haddock_library = debianize (hackage "haddock-library"`flag` P.CabalPin "1.1.1") -- 1.2.0 is too new for haddock-api-2.15.0.2
 hamlet = debianize (hackage "hamlet")
 happstack_authenticate_0 = debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" []
                            `flag` P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0",
@@ -1427,10 +1434,11 @@ haskell_darcs = debianize (darcs "http://darcs.net/reviewed"
                    `flag` P.CabalDebian ["--cabal-flags", "-http"] -- the http flag forces network < 2.5
                    -- `patch` $(embedFile "patches/darcs.diff")
                   )
-haskell_devscripts = darcs "http://hub.darcs.net/ddssff/haskell-devscripts" `flag` P.RelaxDep "python-minimal"
+haskell_devscripts = git "https://github.com/seereason/haskell-devscripts" [] `flag` P.RelaxDep "python-minimal"
 haskell_either = debianize (hackage "either")
 haskell_extra = debianize (git ("https://github.com/seereason/sr-extra") []
-                            `flag` P.ModifyAtoms (replacement "sr-extra" "Extra"))
+                            -- Don't push out libghc-extra-dev, it now comes from Neil Mitchell's repo
+                            {- `flag` P.ModifyAtoms (replacement "sr-extra" "Extra") -})
 haskell_help = debianize (git ("https://github.com/seereason/sr-help") [])
 haskell_lexer = debianize (hackage "haskell-lexer"
                             `pflag` P.DebVersion "1.0-3build2"
@@ -1517,7 +1525,7 @@ hsx2hs = debianize (git "https://github.com/seereason/hsx2hs.git" []
             -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
 hsx_jmacro = debianize (git "https://github.com/Happstack/hsx-jmacro.git" [])
 hsyslog = debianize (hackage "hsyslog")
-htf = debianize (hackage "HTF")
+htf = debianize (hackage "HTF" `flag` P.BuildDep "cpphs")
 html = debianize (hackage "html"
                            `tflag` P.DebVersion "1.0.1.2-7"
                            `pflag` P.DebVersion "1.0.1.2-5") -- apt (rel release "wheezy" "quantal") "haskell-html"
@@ -1539,7 +1547,7 @@ http_common = debianize (hackage "http-common")
 http_conduit = debianize (hackage "http-conduit")
 http_date = debianize (hackage "http-date")
 http = debianize (hackage "HTTP")
-http_streams = debianize (hackage "http-streams" `patch` $(embedFile "patches/http-streams.diff"))
+http_streams = debianize (hackage "http-streams" {- `patch` $(embedFile "patches/http-streams.diff") -})
 http_types = debianize (hackage "http-types" {- `patch` $(embedFile "patches/http-types.diff") -})
 hUnit = debianize (hackage "HUnit" `tflag` P.DebVersion "1.2.5.2-1")
 hunt = debianize (git "https://github.com/hunt-framework/hunt.git" [] `cd` "hunt-searchengine" )
@@ -1626,7 +1634,7 @@ list_extras = debianize (hackage "list-extras")
 listLike = debianize (hackage "ListLike")
              -- Merged into ListLike-4.0
              -- , debianize (hackage "listlike-instances")
-list_tries = debianize (hackage "list-tries" `patch` $(embedFile "patches/list-tries.diff")) -- version 0.5.2 depends on dlist << 0.7
+list_tries = debianize (hackage "list-tries" {- `patch` $(embedFile "patches/list-tries.diff") -}) -- version 0.5.2 depends on dlist << 0.7
 loch_th = debianize (hackage "loch-th")
 logic_classes = git "https://github.com/seereason/logic-classes" []
 logic_TPTP = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) Nothing
@@ -1648,7 +1656,7 @@ markdown_unlit = debianize (hackage "markdown-unlit" `flag` P.CabalDebian ["--no
 matrix = debianize (hackage "matrix")
              -- , debianize (hackage "hlatex")
 maybeT = debianize (hackage "MaybeT" `flag` P.DebVersion "1.2-6")
-memoize = debianize (git "https://github.com/ddssff/memoize" [] {-hackage "memoize"-})
+memoize = debianize (hackage "memoize")
 memoTrie = debianize (hackage "MemoTrie")
 mime = darcs ("http://src.seereason.com/haskell-mime")
 mime_mail = debianize (git "https://github.com/snoyberg/mime-mail.git" [] `cd` "mime-mail")
@@ -1748,7 +1756,7 @@ polyparse = debianize (hackage "polyparse")
 prelude_extras = debianize (hackage "prelude-extras")
 prettyclass = debianize (hackage "prettyclass")
 pretty_show = debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
-primitive = debianize (hackage "primitive")
+primitive = debianize (hackage "primitive" `flag` P.CabalPin "0.5.4.0") -- Waiting for newer lens
 process_extras =
     debianize (git "https://github.com/seereason/process-extras" [])
                  `flag` P.ModifyAtoms (substitute "process-extras" "process-listlike")
@@ -1776,6 +1784,7 @@ quickCheck = debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-pr
 quickcheck_gent = debianize (hackage "QuickCheck-GenT")
 quickcheck_instances = debianize (hackage "quickcheck-instances")
 quickcheck_io = debianize (hackage "quickcheck-io")
+quickCheck1 = debianize (hackage "QuickCheck" `flag` P.CabalPin "1.2.0.1" `flag` P.CabalDebian ["--no-tests"])
 random = debianize (hackage "random" `flag` P.SkipVersion "1.0.1.3") -- 1.1.0.3 fixes the build for ghc-7.4.2 / base < 4.6
 reducers = hack "reducers"
 reflection = debianize (hackage "reflection") -- avoid rebuild
@@ -1799,9 +1808,12 @@ regex_pcre_builtin = debianize (hackage "regex-pcre-builtin"
 regex_posix = debianize (hackage "regex-posix" `tflag` P.DebVersion "0.95.2-3")
 regexpr = debianize (hackage "regexpr" `flag` P.DebVersion "0.5.4-5build1")
 regex_tdfa = debianize (hackage "regex-tdfa"
-                            `flag` P.ModifyAtoms (replacement "regex-tdfa" "regex-tdfa-rc"))
+                        -- Although it might be nice to start using regex-tdfa-rc everywhere
+                        -- we are using regex-tdfa, the cabal package names are different so
+                        -- packages can't automatically start using regex-tdfa-rc.
+                        `flag` P.ModifyAtoms (substitute "regex-tdfa" "regex-tdfa-rc"))
 regex_tdfa_rc = debianize (hackage "regex-tdfa-rc"
-                            `flag` P.ModifyAtoms (replacement "regex-tdfa-rc" "regex-tdfa"))
+                            `flag` P.ModifyAtoms (substitute "regex-tdfa-rc" "regex-tdfa"))
 reified_records = debianize (hackage "reified-records" `patch` $(embedFile "patches/reified-records.diff"))
 resourcet = debianize (hackage "resourcet")
 rJson = debianize (hackage "RJson"
@@ -1886,6 +1898,7 @@ tar = debianize (hackage "tar")
                                       `flag` P.DevelDep "libncurses5-dev"
                                       `flag` P.DevelDep "libncursesw5-dev") -}
 tasty = debianize (hackage "tasty")
+tasty_hunit = debianize (hackage "tasty-hunit")
 tasty_quickcheck = debianize (hackage "tasty-quickcheck")
 tasty_smallcheck = debianize (hackage "tasty-smallcheck")
 template_default = debianize (hackage "template-default" `patch` $(embedFile "patches/template-default.diff"))
@@ -1895,7 +1908,12 @@ test_framework = debianize (hackage "test-framework")
 test_framework_hunit = debianize (hackage "test-framework-hunit" `tflag` P.DebVersion "0.3.0.1-1build4")
              -- Retired
              -- , debianize (hackage "test-framework-quickcheck")
-test_framework_quickcheck2 = debianize (hackage "test-framework-quickcheck2" `flag` P.SkipVersion "0.3.0.2") -- waiting for quickcheck2-2.7 support
+test_framework_quickcheck2 = debianize (git "https://github.com/seereason/test-framework" [] {-hackage "test-framework-quickcheck2"-}
+                                                `cd` "quickcheck2"
+                                                {-`flag` P.SkipVersion "0.3.0.2"-})
+test_framework_quickcheck = debianize (git "https://github.com/seereason/test-framework" [] {-hackage "test-framework-quickcheck2"-}
+                                                `cd` "quickcheck"
+                                                {-`flag` P.SkipVersion "0.3.0.2"-})
 test_framework_smallcheck = debianize (hackage "test-framework-smallcheck")
 test_framework_th = debianize (hackage "test-framework-th" `tflag` P.DebVersion "0.2.4-1build4")
              --
@@ -1970,7 +1988,7 @@ vc_darcs = darcs ("http://src.seereason.com/vc-darcs")
 vc_git_dired = git "https://github.com/ddssff/vc-git-dired" []
 vector_algorithms = debianize (hackage "vector-algorithms")
 vector_binary_instances = hack "vector-binary-instances"
-vector = debianize (hackage "vector" `patch` $(embedFile "patches/vector.diff"))
+vector = debianize (hackage "vector" {- `patch` $(embedFile "patches/vector.diff")-})
 vector_space = debianize (hackage "vector-space")
 virthualenv = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff")) Nothing
                                 , P.flags =  [] }
