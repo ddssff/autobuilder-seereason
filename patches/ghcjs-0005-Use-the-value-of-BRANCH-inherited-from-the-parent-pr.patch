@@ -1,0 +1,13 @@
+diff --git a/utils/update_archives.sh b/utils/update_archives.sh
+index b5e46e6..b17cb57 100755
+--- a/utils/update_archives.sh
++++ b/utils/update_archives.sh
+@@ -144,7 +144,7 @@ fi
+ 
+ # This is a simulation of git symbolic-ref --short -q HEAD, which doesn't work with
+ # older versions of git.  The --short option is supported by git-1.9.1.
+-if BRANCH=$(git symbolic-ref -q HEAD | sed 's:^.*/\([^/]*\)$:\1:')
++if BRANCH=${BRANCH:-$(git symbolic-ref -q HEAD | sed 's:^.*/\([^/]*\)$:\1:')}
+ then
+     echo "using git branch: ${BRANCH}"
+ else

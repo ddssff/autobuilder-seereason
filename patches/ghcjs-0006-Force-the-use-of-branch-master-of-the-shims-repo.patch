@@ -1,0 +1,13 @@
+diff --git a/debian/rules b/debian/rules
+index 6d29f55..bc7e809 100755
+--- a/debian/rules
++++ b/debian/rules
+@@ -15,7 +15,7 @@ configure/ghcjs-tools::
+ 	 echo "/usr/bin/ghcjs-pkg-$$SUFFIX /usr/bin/ghcjs-pkg"; \
+ 	 echo "/usr/bin/haddock-ghcjs-$$SUFFIX /usr/bin/haddock-ghcjs") \
+ 	  > debian/ghcjs-tools.links
+-	if [ ! \( -s "lib/cache/boot.tar" -a -s "lib/cache/boot.tar" -a -s "lib/cache/boot.tar" \) ]; then utils/update_archives.sh; fi
++	if [ ! \( -s "lib/cache/boot.tar" -a -s "lib/cache/boot.tar" -a -s "lib/cache/boot.tar" \) ]; then BRANCH=master utils/update_archives.sh; fi
+ 
+ build/ghcjs-tools:: build-ghc-stamp
+ binary-fixup/ghcjs-tools::

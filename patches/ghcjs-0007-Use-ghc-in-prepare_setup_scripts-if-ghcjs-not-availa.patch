@@ -1,0 +1,35 @@
+diff --git a/utils/update_archives.sh b/utils/update_archives.sh
+index b5e46e6..e0097e6 100755
+--- a/utils/update_archives.sh
++++ b/utils/update_archives.sh
+@@ -110,12 +110,24 @@ prepare_setup_scripts() {
+     echo "import Distribution.Simple"                    >  setupAutoconf.hs
+     echo "main = defaultMainWithHooks autoconfUserHooks" >> setupAutoconf.hs
+     cp   ../boot/ghc-prim/Setup.hs setupGhcPrim.hs
+-    ghcjs -o setupSimple   -O setupSimple.hs
+-    ghcjs -o setupAutoconf -O setupAutoconf.hs
+-    ghcjs -o setupGhcPrim  -O setupGhcPrim.hs
+-    ccjs setupSimple.jsexe/all.js > ../boot/SetupSimple.precompiled.js
+-    ccjs setupAutoconf.jsexe/all.js > ../boot/SetupAutoconf.precompiled.js
+-    ccjs setupGhcPrim.jsexe/all.js > ../boot/ghc-prim/Setup.hs.precompiled.js
++    if [ -x /usr/bin/ghcjs -a \( -x /usr/bin/ccjs -o -x /usr/bin/closure-compiler \) ]; then
++      ghcjs -o setupSimple   -O setupSimple.hs
++      ghcjs -o setupAutoconf -O setupAutoconf.hs
++      ghcjs -o setupGhcPrim  -O setupGhcPrim.hs
++      if [ -x ccjs ]; then
++        ccjs setupSimple.jsexe/all.js > ../boot/SetupSimple.precompiled.js
++        ccjs setupAutoconf.jsexe/all.js > ../boot/SetupAutoconf.precompiled.js
++        ccjs setupGhcPrim.jsexe/all.js > ../boot/ghc-prim/Setup.hs.precompiled.js
++      elif [ -x closure-compiler ]; then
++        closure-compiler setupSimple.jsexe/all.js > ../boot/SetupSimple.precompiled.js
++        closure-compiler setupAutoconf.jsexe/all.js > ../boot/SetupAutoconf.precompiled.js
++        closure-compiler setupGhcPrim.jsexe/all.js > ../boot/ghc-prim/Setup.hs.precompiled.js
++      fi
++    else
++      ghc -o setupSimple   -O setupSimple.hs
++      ghc -o setupAutoconf -O setupAutoconf.hs
++      ghc -o setupGhcPrim  -O setupGhcPrim.hs
++    fi
+     cd ..
+     rm -r "setup-tmp"
+   )

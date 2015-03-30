@@ -1,0 +1,21 @@
+diff --git a/Setup.hs b/Setup.hs
+index b191684..c9415f7 100644
+--- a/Setup.hs
++++ b/Setup.hs
+@@ -15,6 +15,7 @@ import           Distribution.Simple.Utils
+ import           Distribution.System
+ import           Distribution.Verbosity
+ 
++import           System.Environment    (setEnv)
+ import           System.Exit           (ExitCode(..))
+ import           System.Directory      (doesFileExist, removeFile, renameFile)
+ import           System.FilePath       ((</>), (<.>), splitExtensions, dropExtensions)
+@@ -28,7 +29,7 @@ notWrapped :: [String]
+ notWrapped = ["ghcjs-boot", "ghcjs-run"]
+ 
+ main :: IO ()
+-main = defaultMainWithHooks ghcjsHooks
++main = setEnv "HOME" "/usr/lib/ghcjs" >> defaultMainWithHooks ghcjsHooks
+ 
+ ghcjsHooks :: UserHooks
+ ghcjsHooks = simpleUserHooks { preSDist = ghcjsSDist
