@@ -956,6 +956,8 @@ ghcjs_group =
                   ]) ++
               [ ghcjs_dom
               , ghcjs_dom_hello
+              , ghcjs_vdom
+              , ghcjs_ffiqq
               , ghcjs_jquery ])
 
 darcs_group =
@@ -1324,6 +1326,8 @@ genI = debianize (darcs "http://hub.darcs.net/kowey/GenI" `patch` $(embedFile "p
 ghc76 = ghcFlags $ apt "sid" "ghc" `patch` $(embedFile "patches/ghc.diff")
 ghc78 = ghcFlags $ apt "experimental" "ghc" `patch` $(embedFile "patches/trac9262.diff")
 ghcjs_jquery = ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-jquery" []) `putSrcPkgName` "ghcjs-ghcjs-jquery")
+ghcjs_vdom = ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-vdom" []) `putSrcPkgName` "ghcjs-ghcjs-vdom")
+ghcjs_ffiqq = ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-ffiqq" []) `putSrcPkgName` "ghcjs-ghcjs-ffiqq")
 ghcjs_dom = ghcjs_flags (debianize (hackage "ghcjs-dom"))
 ghcjs_dom_hello = ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
                                                       `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
