@@ -120,6 +120,8 @@ myIncludePackages myBuildRelease =
     , "debian-keyring"
     , "locales"
     , "software-properties-common" -- Required to run add-apt-repository to use a PPA.
+    , "ghc"
+    , "ghcjs"
     -- , "autobuilder-seereason"   -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
     -- , "perl-base"
     -- , "gnupg"
