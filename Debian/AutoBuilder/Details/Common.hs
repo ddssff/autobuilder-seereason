@@ -138,26 +138,38 @@ gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
 -- repo = "http://hub.darcs.net/stepcut/clckwrks-dev"
 -- repo = "http://src.seereason.com/mirrors/clckwrks-dev"
 
--- | Create a flag that tells cabal debian the package @newer@ may
--- substitute for @older@, so that when it is installed the @older@
--- package is uninstalled.  For example, process-listlike has the same
--- API as process-extras, most packages can build with either one.
-substitute :: String -> String -> CabalInfo -> CabalInfo
-substitute newer older = execCabalM $ do
-  prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> access (debInfo . D.flags . compilerFlavor)
-  addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . conflicts)
-  addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . provides)
-  addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . replaces)
-
--- | Like 'substitute', but doesn't mark the packages as providing
+-- | When the newer is installed apt will uninstall older.  However,
+-- because newer doesn't provid
 -- one another.  The one in the dependency list will be installed and
 -- the other uninstalled.  For example, regex-tdfa-rc is a fork of
 -- regex-tfda - they can't both be installed at the same time, but you
 -- can't build packages that expect regex-tdfa using regex-tdfa-rc.
+substitute :: String -> String -> CabalInfo -> CabalInfo
+substitute newer older = execCabalM $ do
+  prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> access (debInfo . D.flags . compilerFlavor)
+  addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . conflicts)
+  addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . replaces)
+
+-- | Create a flag that tells cabal debian the package @newer@ may
+-- substitute for @older@, so that when it is installed the @older@
+-- package is uninstalled.  For example, process-listlike has the same
+-- API as process-extras, most packages can build with either one.  For
+-- this to work the packages must have the same cabal name, which is
+-- not usually the case.
+--
+-- Note that apt will not install older if newer is already installed,
+-- because newer looks to apt like it will do the job (due to provides.)
+-- The 'replacement' function is probably more suitable in most cases.
 replacement :: String -> String -> CabalInfo -> CabalInfo
 replacement newer older = execCabalM $ do
   prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> access (debInfo . D.flags . compilerFlavor)
   addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . conflicts)
+  -- If we include the Provides: relationship then we will never
+  -- switch between these packages - it will look to apt like whatever
+  -- is installed will do the job just fine.  That is not useful
+  -- behavior.  This is only useful for a package that has been retired,
+  -- has the same cabal package name, but different debian names.
+  -- addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . provides)
   addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . replaces)
 
 addDeps :: String -> String -> String -> (BinPkgName -> Lens CabalInfo Relations) -> CabalM ()
