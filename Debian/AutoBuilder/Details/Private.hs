@@ -18,6 +18,7 @@ libraries =
     sequence
     [ ontology
     , stripe_core
+    , stripe_http_streams
     , stripe_haskell
     , clckwrks_plugin_stripe
     , mimo
