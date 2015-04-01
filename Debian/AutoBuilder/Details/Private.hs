@@ -82,7 +82,6 @@ stripe_core = debianize (git "ssh://git@github.com/stripe-haskell/stripe" [Branc
                                  `cd` "stripe-core")
 stripe_http_streams = debianize (git "ssh://git@github.com/stripe-haskell/stripe" [Branch "stripe-haskell-transition"]
                                     `cd` "stripe-http-streams"
-                                    `patch` $(embedFile "patches/stripe-http-streams.diff")
                                     `flag` P.CabalDebian [{-"--no-tests"-}])
 stripe_haskell = debianize (git "ssh://git@github.com/stripe-haskell/stripe" [Branch "stripe-haskell-transition"]
                                     `cd` "stripe"

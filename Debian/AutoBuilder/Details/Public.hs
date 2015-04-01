@@ -260,6 +260,7 @@ main =
              -- , hint -- failing
              , hJavaScript
              , hledger
+             , mtl_compat
              , hostname
              , hourglass
              , hpdf
@@ -472,7 +473,7 @@ main =
              , word_trie
              , xdg_basedir
              , xml
-             , xmlhtml
+             -- , xmlhtml
              , xmlgen
              , xml_types
              , xss_sanitize
@@ -525,6 +526,7 @@ platform =
             , hUnit
             , tf_random
             , quickCheck
+            , quickCheck1
             , parsec
             , html
             , regex_compat
@@ -1124,7 +1126,7 @@ certificate = debianize (hackage "certificate" `tflag` P.DebVersion "1.3.9-1buil
 cgi = skip (Reason "Depends on exceptions < 0.7") $ debianize (hackage "cgi" {- `patch` $(embedFile "patches/cgi.diff") -})
 charset = debianize (hackage "charset")
 charsetdetect_ae = debianize (hackage "charsetdetect-ae")
-cheapskate = hack "cheapskate"
+cheapskate = debianize (git "https://github.com/seereason/cheapskate" [] {-hackage "cheapskate"-})
 cipher_aes128 = debianize (hackage "cipher-aes128")
 cipher_aes = debianize (hackage "cipher-aes")
 cipher_des = debianize (hackage "cipher-des" `tflag` P.DebVersion "0.0.6-1")
@@ -1694,6 +1696,7 @@ monads_tf = debianize (hackage "monads-tf")
 monad_task = debianize (hackage "monad-task")
 monoid_transformer = debianize (hackage "monoid-transformer") -- apt (rel release "wheezy" "quantal") "haskell-monoid-transformer"
 mtl = debianize (hackage "mtl")
+mtl_compat = debianize (hackage "mtl-compat")
 mtlparse = debianize (hackage "mtlparse")
 multipart = debianize (hackage "multipart")
 multiset = debianize (hackage "multiset")
