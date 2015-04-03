@@ -58,14 +58,12 @@ appraisalscribe_data = debianize (git "ssh://git@github.com/seereason/appraisals
 clckwrks_plugin_stripe = debianize (darcs (privateRepo </> "clckwrks-plugin-stripe") `flag` P.BuildDep "hsx2hs")
 clckwrks_theme_seereasonpartners = debianize (darcs (privateRepo </> "seereasonpartners-clckwrks") `cd` "clckwrks-theme-seereasonpartners" `flag` P.BuildDep "hsx2hs" `flag` P.NoDoc)
 clckwrks_theme_appraisalscribe = debianize (darcs (privateRepo </> "clckwrks-theme-appraisalscribe") `flag` P.BuildDep "hsx2hs")
-ghcjs_ghcjs_webmodule = ghcjs_flags $ debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-webmodule")
-happstack_ghcjs_client = debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-client"
-                                      `flag` P.BuildDep "libghc-cabal-122-dev"
-                                      `flag` P.BuildDep "ghcjs"
-                                      `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
-                                      `flag` P.CabalDebian ["--ghcjs", "--source-package=ghcjs-happstack-ghcjs-client"])
-happstack_ghcjs_server = debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-server")
-happstack_ghcjs_webmodule = debianize (darcs (privateRepo </> "happstack-ghcjs") `cd` "happstack-ghcjs-webmodule")
+
+happstack_ghcjs_client = ghcjs_flags $ debianize (git "ssh://git@github.com/seereason/happstack-ghcjs" [] `cd` "happstack-ghcjs-client")
+happstack_ghcjs_server =               debianize (git "ssh://git@github.com/seereason/happstack-ghcjs" [] `cd` "happstack-ghcjs-server")
+ghcjs_ghcjs_webmodule =  ghcjs_flags $ debianize (git "ssh://git@github.com/seereason/happstack-ghcjs" [] `cd` "happstack-ghcjs-webmodule")
+happstack_ghcjs_webmodule =            debianize (git "ssh://git@github.com/seereason/happstack-ghcjs" [] `cd` "happstack-ghcjs-webmodule")
+
 happstack_ontology = debianize (git "ssh://git@github.com/seereason/happstack-ontology" [] `flag` P.BuildDep "hsx2hs")
 image_cache = debianize (git "https://github.com/seereason/image-cache.git" [])
 -- The debian/Debianize.hs script has a dependency on

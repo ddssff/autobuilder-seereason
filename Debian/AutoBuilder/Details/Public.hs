@@ -909,6 +909,7 @@ ghcjs_group =
                   , distributive
                   , exceptions
                   , file_embed
+                  , filemanip
                   , foreign_var
                   , free
                   , hslogger
@@ -948,6 +949,7 @@ ghcjs_group =
                   , transformers_base
                   , transformers_compat
                   , unbounded_delays
+                  , unix_compat
                   , utf8_string
                   , value_supply
                   , void
