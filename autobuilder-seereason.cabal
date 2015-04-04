@@ -220,8 +220,6 @@ Library
       mtl,
       prettyclass
     Exposed-Modules:
-      Data.Algorithm.Diff.Context
-      Data.Algorithm.Diff.Pretty
       Debian.Debianize
       Debian.GHC
       Debian.Policy
@@ -246,7 +244,6 @@ Library
       Debian.Debianize.Options
       Debian.Debianize.Output
       Debian.Debianize.Prelude
-      Debian.Debianize.SubstVars
       Debian.Debianize.SourceDebDescription
       Debian.Debianize.VersionSplits
       OldLens

@@ -83,9 +83,7 @@ autobuilder_group =
              , autobuilder
              , archive
              , process_extras
-             -- , process_listlike
-             -- , process_progress
-             -- , process_verbosity
+             , filemanip_extra
              , autobuilder_seereason ]
 
 unixutils_group :: TSt P.Packages
@@ -230,7 +228,6 @@ main =
              , feed
              , file_embed
              , filemanip
-             , filemanip_extra
              , fmlist
              , formlets
              , frquotes
