@@ -230,6 +230,7 @@ main =
              , feed
              , file_embed
              , filemanip
+             , filemanip_extra
              , fmlist
              , formlets
              , frquotes
@@ -1298,6 +1299,7 @@ fgl = debianize (hackage "fgl")
 file_embed = debianize (hackage "file-embed")
 file_location = debianize (hackage "file-location" `flag` P.CabalDebian [ "--source-package-name", "file-location" ])
 filemanip = debianize (hackage "filemanip")
+filemanip_extra = debianize (git "https://github.com/seereason/filemanip-extra" [])
 fingertree = hack "fingertree"
 fmlist = debianize (hackage "fmlist")
 foreign_var = debianize (hackage "foreign-var")
