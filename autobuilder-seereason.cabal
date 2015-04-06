@@ -32,6 +32,16 @@ flag local-debian
   Default: False
   Manual: True
 
+flag local-filemanip-extra
+  Description: Link directly to the source of the filemanip-extra library
+  Default: False
+  Manual: True
+
+flag local-unixutils
+  Description: Link directly to the source of the Unixutils library
+  Default: False
+  Manual: True
+
 flag local-process-extras
   Description: Link directly to the source of the process-extras library (and several others)
   Default: False
@@ -80,7 +90,6 @@ Library
       syb,
       tar,
       time,
-      Unixutils,
       utf8-string,
       zlib
     Exposed-modules:
@@ -193,7 +202,6 @@ Library
       applicative-extras,
       bytestring,
       utf8-string,
-      Unixutils,
       directory,
       unix,
       process,
@@ -310,6 +318,24 @@ Library
       System.Process.Text.Lazy
     Other-modules:
       Utils
+
+  if flag(local-filemanip-extra)
+    Hs-Source-Dirs: ../filemanip-extra
+    Exposed-Modules:
+      System.FilePath.Extra
+      System.FilePath.Extra2
+      System.FilePath.Extra3
+  else
+    Build-Depends: filemanip-extra
+
+  if flag(local-unixutils)
+    Hs-Source-Dirs: ../haskell-unixutils.seereason
+    Exposed-Modules:
+      System.Unix.Chroot
+      System.Unix.Directory
+      System.Unix.Mount
+  else
+    Build-Depends: Unixutils
 
 Executable autobuilder-seereason
   Default-Language: Haskell2010
