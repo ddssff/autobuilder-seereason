@@ -1613,7 +1613,7 @@ largeword = debianize (hackage "largeword")
          {-  , apt "wheezy" "haskell-leksah"
              , apt "wheezy" "haskell-leksah-server" -- for leksah -}
 latex = debianize (hackage "latex")
-lens = debianize (hackage "lens")
+lens = debianize (hackage "lens" `flag` P.CabalPin "4.8")
 lens_family_core = debianize (hackage "lens-family-core")
 lens_family = debianize (hackage "lens-family")
 lens_family_th = debianize (hackage "lens-family-th")
@@ -1792,7 +1792,7 @@ quickCheck = debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-pr
 quickcheck_gent = debianize (hackage "QuickCheck-GenT")
 quickcheck_instances = debianize (hackage "quickcheck-instances")
 quickcheck_io = debianize (hackage "quickcheck-io")
-quickCheck1 = debianize (hackage "QuickCheck" `flag` P.CabalPin "1.2.0.1" `flag` P.CabalDebian ["--no-tests"])
+quickCheck1 = debianize (hackage "QuickCheck" `flag` P.CabalPin "1.2.0.1" `flag` P.DebVersion "1.2.0.1-2" `flag` P.CabalDebian ["--no-tests"])
 random = debianize (hackage "random" `flag` P.SkipVersion "1.0.1.3") -- 1.1.0.3 fixes the build for ghc-7.4.2 / base < 4.6
 reducers = hack "reducers"
 reflection = debianize (hackage "reflection") -- avoid rebuild
