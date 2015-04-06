@@ -329,7 +329,7 @@ Library
     Build-Depends: filemanip-extra
 
   if flag(local-unixutils)
-    Hs-Source-Dirs: ../haskell-unixutils.seereason
+    Hs-Source-Dirs: ../haskell-unixutils
     Exposed-Modules:
       System.Unix.Chroot
       System.Unix.Directory
