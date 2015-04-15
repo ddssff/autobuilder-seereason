@@ -1346,7 +1346,6 @@ ghcjs_tools = git "https://github.com/ghcjs/ghcjs" []
                  `patch` $(embedFile "patches/ghcjs-0007-Use-ghc-in-prepare_setup_scripts-if-ghcjs-not-availa.patch")
                  `patch` $(embedFile "patches/ghcjs-0008-Restrict-the-transformers-package-to-the-exact-versi.patch")
                  `patch` $(embedFile "patches/ghcjs-0009-Add-a-MonadTrans-instance-for-ReaderT-and-a-liftRead.patch")
-                 `patch` $(embedFile "patches/ghcjs-0010-alternate-ghcjs-boot-repo.patch")
                  `relax` "cabal-install"
                  `flag` P.KeepRCS
 ghc_mtl = skip (Reason "No instance for (MonadIO GHC.Ghc)") $ debianize (hackage "ghc-mtl")
