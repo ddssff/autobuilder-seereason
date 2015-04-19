@@ -774,6 +774,7 @@ algebra =
              , intervals
              , numeric_extras
              , lens
+             , lens_compat
              , constraints
              , lens_family_core
              , lens_family
@@ -1614,6 +1615,7 @@ largeword = debianize (hackage "largeword")
              , apt "wheezy" "haskell-leksah-server" -- for leksah -}
 latex = debianize (hackage "latex")
 lens = debianize (hackage "lens" `flag` P.CabalPin "4.8")
+lens_compat = debianize (git "https://github.com/ddssff/lens-compat" [])
 lens_family_core = debianize (hackage "lens-family-core")
 lens_family = debianize (hackage "lens-family")
 lens_family_th = debianize (hackage "lens-family-th")
