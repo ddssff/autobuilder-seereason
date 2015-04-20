@@ -1109,8 +1109,8 @@ bytestring_trie = debianize (hackage "bytestring-trie")
 bzlib = debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
              -- , debianize (hackage "cairo-pdf")
 cabal_debian = git "https://github.com/ddssff/cabal-debian" []
-cabal = debianize (hackage "Cabal" `flag` P.CabalPin "1.22.2.0" {- avoid rebuild -}) -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
-cabal_install = debianize (hackage "cabal-install" `flag` P.CabalDebian ["--default-package=cabal-install"])
+cabal = debianize (hackage "Cabal" `flag` P.CabalPin "1.22.3.0" {- avoid rebuild -}) -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
+cabal_install = debianize (hackage "cabal-install" `flag` P.CabalPin "1.22.3.0" `flag` P.CabalDebian ["--default-package=cabal-install"])
 cabal_macosx = debianize (hackage "cabal-macosx" `patch` $(embedFile "patches/cabal-macosx.diff"))
 c_ares = apt "sid" "c-ares"
 case_insensitive = debianize (hackage "case-insensitive")
