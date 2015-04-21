@@ -211,6 +211,7 @@ main =
              , dlist
              , double_conversion
              , dynamic_state
+             , dropbox_sdk
              , dyre
              , edisonAPI
              , edisonCore
@@ -1258,6 +1259,7 @@ doctest = debianize (hackage "doctest")
 double_conversion = debianize (hackage "double-conversion")
 dpkg = apt "wheezy" "dpkg" `patch` $(embedFile "patches/dpkg.diff")
 drbg = debianize (hackage "DRBG")
+dropbox_sdk = debianize (hackage "dropbox-sdk") -- `patch` $(embedFile "patches/dropbox-sdk.diff")
 dynamic_state = debianize (hackage "dynamic-state")
 dyre = debianize (hackage "dyre")
 easy_file = debianize (hackage "easy-file")
@@ -1491,8 +1493,6 @@ hledger = debianize (git "https://github.com/simonmichael/hledger" [] `cd` "hled
              , P.Package { P.spec = Debianize (Hackage "xmobar")
                          , P.flags = [] }
          -}
-             -- Needs update for current http-conduit
-             -- , debianize $ (hackage "dropbox-sdk") `patch` $(embedFile "patches/dropbox-sdk.diff")
 hostname = debianize (hackage "hostname"
                             `wflag` P.DebVersion "1.0-4"
                             `pflag` P.DebVersion "1.0-4build1"
@@ -1732,7 +1732,8 @@ optparse_applicative = debianize (hackage "optparse-applicative")
 ordered = debianize (hackage "ordered")
 pandoc = debianize (-- git "https://github.com/jgm/pandoc" [Commit "d649acc146b9868fe23e0773654e5a95d88b156d"]
                     -- d649acc fails: hlibrary.setup: data/templates/default.html: does not exist
-                    hackage "pandoc" `patch` $(embedFile "patches/pandoc.diff") -- hackage 1.13.2 is commit ccf081d32cc418e1d01f023059060aa22207d6e6
+                    hackage "pandoc" -- hackage 1.13.2 is commit ccf081d32cc418e1d01f023059060aa22207d6e6
+                           `patch` $(embedFile "patches/pandoc.diff")
                            -- `flag` P.RelaxDep "libghc-pandoc-doc"
                            `flag` P.BuildDep "alex"
                            `flag` P.BuildDep "happy")
