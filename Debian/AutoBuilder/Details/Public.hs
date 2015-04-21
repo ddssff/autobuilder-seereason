@@ -2,12 +2,11 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
-import OldLens hiding ((~=), lens)
-
 import Control.Applicative ((<$>), pure)
+import Control.Lens ((.=), (%=))
 import Control.Monad.State (get)
 import Data.FileEmbed (embedFile)
-import Data.Set as Set (insert)
+import Data.Set as Set (insert, union)
 import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState(release), mapPackages,
@@ -15,7 +14,7 @@ import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState(release), mapPac
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, KeepRCS),
                                                Packages(..), Package(..), flags, spec, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir)
 import Debian.Debianize as D
-    (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), (+=), (~=), debInfo, atomSet, Atom(InstallData))
+    (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
 import Debian.Releases (baseRelease, BaseRelease(..))
 import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git), GitSpec(Commit, Branch))
@@ -988,7 +987,7 @@ alex = pure $ P.Package { P.spec = Debianize'' (Hackage "alex") Nothing
                                      P.BuildDep "happy",
                                      P.CabalDebian ["--executable", "alex"],
                                      P.ModifyAtoms (execCabalM $
-                                                               do (debInfo . compat) ~= Just 9
+                                                               do (debInfo . compat) .= (Just 9)
                                                                   mapM_ (\ name -> (debInfo . atomSet) %= (Set.insert $ InstallData (BinPkgName "alex") name name))
                                                                        [ "AlexTemplate"
                                                                        , "AlexTemplate-debug"
@@ -1380,9 +1379,9 @@ haddock_api = debianize (hackage "haddock-api"
                             `flag` P.CabalPin "2.15.0.2" -- 2.16 requires ghc-7.10
                             `flag` P.CabalDebian ["--default-package=haddock-api"]
                             -- FIXME - This cabal-debian stuff does nothing because this isn't a Debianize target
-                            `flag` P.ModifyAtoms (execCabalM $ (debInfo . rulesFragments) += Text.unlines
+                            `flag` P.ModifyAtoms (execCabalM $ (debInfo . rulesFragments) %= Set.insert (Text.unlines
                                                                [ "# Force the Cabal dependency to be the version provided by GHC"
-                                                               , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
+                                                               , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])))
 haddock_library = debianize (hackage "haddock-library"`flag` P.CabalPin "1.1.1") -- 1.2.0 is too new for haddock-api-2.15.0.2
 hamlet = debianize (hackage "hamlet")
 happstack_authenticate_0 = debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" []

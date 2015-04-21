@@ -3,6 +3,7 @@
 module Debian.AutoBuilder.Details.Common where
 
 import Control.Applicative (pure, (<$>))
+import Control.Lens.Compat (Lens, (%=), access)
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
@@ -13,8 +14,6 @@ import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages (flag, Package(Package, spec), TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
-
-import OldLens hiding ((~=), lens)
 
 import Control.Monad.State (get)
 import Debian.AutoBuilder.Types.Packages as P (TargetState(release), PackageFlag, hackage, debianize, git)

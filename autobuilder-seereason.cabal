@@ -57,6 +57,8 @@ Library
     containers,
     filepath,
     file-embed,
+    lens,
+    lens-compat,
     mtl,
     process,
     text,
@@ -135,7 +137,6 @@ Library
     Build-Depends:
       bzlib,
       deepseq,
-      lens,
       ListLike >= 4,
       template-haskell,
       old-locale,
@@ -254,7 +255,6 @@ Library
       Debian.Debianize.Prelude
       Debian.Debianize.SourceDebDescription
       Debian.Debianize.VersionSplits
-      OldLens
       Paths_cabal_debian
     Other-Modules:
       Debian.Orphans

@@ -3,8 +3,10 @@ module Debian.AutoBuilder.Details.Versions
     ( seereasonDefaults
     ) where
 
+import Control.Lens ((%=))
+import Data.Set as Set (insert)
 import Data.Version (Version(Version))
-import Debian.Debianize (CabalT, (+=), DebBase(DebBase), debInfo, missingDependencies, mapCabal, splitCabal, debianDefaults)
+import Debian.Debianize (CabalT, DebBase(DebBase), debInfo, missingDependencies, mapCabal, splitCabal, debianDefaults)
 import Debian.Relation (BinPkgName(BinPkgName))
 import Distribution.Package (PackageName(PackageName))
 
@@ -12,7 +14,7 @@ seereasonDefaults :: Monad m => CabalT m ()
 seereasonDefaults =
     do debianDefaults
 
-       (debInfo . missingDependencies) += BinPkgName "libghc-happstack-authenticate-9-doc"
+       (debInfo . missingDependencies) %= Set.insert (BinPkgName "libghc-happstack-authenticate-9-doc")
 
        mapCabal (PackageName "clckwrks") (DebBase "clckwrks")
        splitCabal (PackageName "clckwrks") (DebBase "clckwrks-13") (Version [0, 14] [])
