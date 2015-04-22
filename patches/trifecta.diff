@@ -1,0 +1,11 @@
+--- old/trifecta.cabal	2015-02-21 05:23:22.389115879 -0800
++++ new/trifecta.cabal	2015-04-22 09:23:53.449103622 -0700
+@@ -47,7 +47,7 @@
+     base                 >= 4.4     && < 5,
+     blaze-builder        >= 0.3.0.1 && < 0.4,
+     blaze-html           >= 0.5     && < 0.9,
+-    blaze-markup         >= 0.5     && < 0.7,
++    blaze-markup         >= 0.5     && < 0.8,
+     bytestring           >= 0.9.1   && < 0.11,
+     charset              >= 0.3.5.1 && < 1,
+     comonad              >= 4       && < 5,

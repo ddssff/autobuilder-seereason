@@ -65,7 +65,7 @@ ghcjs_ghcjs_webmodule =  ghcjs_flags $ debianize (git "ssh://git@github.com/seer
 happstack_ghcjs_webmodule =            debianize (git "ssh://git@github.com/seereason/happstack-ghcjs" [] `cd` "happstack-ghcjs-webmodule")
 
 happstack_ontology = debianize (git "ssh://git@github.com/seereason/happstack-ontology" [] `flag` P.BuildDep "hsx2hs")
-image_cache = debianize (git "https://github.com/seereason/image-cache.git" [])
+image_cache = debianize (git "https://github.com/seereason/image-cache.git" [] {- `flag` P.CabalDebian ["--cabal-flags", "-pretty-112"] -} )
 -- The debian/Debianize.hs script has a dependency on
 -- happstack-foundation, which must be installed in the parent
 -- environment *before* we can create the debianization.  We don't
