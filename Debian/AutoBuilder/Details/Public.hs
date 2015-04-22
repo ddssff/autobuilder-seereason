@@ -1733,7 +1733,6 @@ ordered = debianize (hackage "ordered")
 pandoc = debianize (-- git "https://github.com/jgm/pandoc" [Commit "d649acc146b9868fe23e0773654e5a95d88b156d"]
                     -- d649acc fails: hlibrary.setup: data/templates/default.html: does not exist
                     hackage "pandoc" -- hackage 1.13.2 is commit ccf081d32cc418e1d01f023059060aa22207d6e6
-                           `patch` $(embedFile "patches/pandoc.diff")
                            -- `flag` P.RelaxDep "libghc-pandoc-doc"
                            `flag` P.BuildDep "alex"
                            `flag` P.BuildDep "happy")
@@ -1941,7 +1940,7 @@ th_context = debianize (git "http://github.com/seereason/th-context" [])
 th_desugar = debianize $ git "http://github.com/goldfirere/th-desugar" []
 th_expand_syns = debianize (hackage "th-expand-syns")
 -- th_instance_reification = debianize (git "https://github.com/seereason/th-instance-reification.git" [])
-th_lift = debianize (git "https://github.com/seereason/th-lift" []) -- changes for template-haskell-2.10 and ghc-7.8
+th_lift = debianize (hackage "th-lift")
 th_orphans = debianize (hackage "th-orphans")
 threads = debianize (hackage "threads")
 th_reify_many = debianize (hackage "th-reify-many")
