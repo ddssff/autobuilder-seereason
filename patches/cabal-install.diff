@@ -1,15 +1,11 @@
-diff -ruN old/debian/Debianize.hs new/debian/Debianize.hs
---- old/debian/Debianize.hs	1969-12-31 16:00:00.000000000 -0800
-+++ new/debian/Debianize.hs	2013-12-18 10:50:53.390180184 -0800
-@@ -0,0 +1,11 @@
-+import Debian.Debianize ((+=), debianization, DebT, evalDebT, newAtoms, Top(Top), utilsPackageNames, writeDebianization)
-+import Debian.Relation (BinPkgName(BinPkgName))
-+import Debian.AutoBuilder.Details.Atoms (seereasonDefaultAtoms)
-+top :: Top
-+top = Top "."
-+
-+main :: IO ()
-+main = newAtoms >>= evalDebT (debianization top seereasonDefaultAtoms customize >> writeDebianization top)
-+
-+customize :: DebT IO ()
-+customize = utilsPackageNames += BinPkgName "cabal-install"
+--- old/cabal-install.cabal	2015-04-20 08:56:13.894790339 -0700
++++ new/cabal-install.cabal	2015-04-22 12:57:11.065165475 -0700
+@@ -138,7 +138,7 @@
+         random     >= 1        && < 1.2,
+         stm        >= 2.0      && < 3,
+         time       >= 1.1      && < 1.6,
+-        zlib       >= 0.5.3    && < 0.6
++        zlib       >= 0.5.3    && < 0.7
+ 
+     if flag(old-directory)
+       build-depends: directory >= 1 && < 1.2, old-time >= 1 && < 1.2,
