@@ -1403,7 +1403,7 @@ happstack_dot_com = debianize (git ("https://github.com/Happstack/happstack-clck
                                  -- This is a change that only relates to the autobuilder
                                  `patch` $(embedFile "patches/happstack-dot-com.diff"))
 happstackDotCom_doc = darcs ("http://src.seereason.com/happstackDotCom-doc")
-happstack_extra = debianize (darcs ("http://src.seereason.com/happstack-extra"))
+happstack_extra = debianize (git "https://github.com/seereason/happstack-extra.git" [])
 happstack_fay_ajax = debianize (hackage "happstack-fay-ajax" `patch` $(embedFile "patches/happstack-fay-ajax.diff"))
     -- , debianize (hackage "fay-hsx" `patch` $(embedFile "patches/fay-hsx.diff"))
 happstack_fay = debianize (hackage "happstack-fay" `patch` $(embedFile "patches/happstack-fay.diff"))
@@ -1736,6 +1736,7 @@ ordered = debianize (hackage "ordered")
 pandoc = debianize (-- git "https://github.com/jgm/pandoc" [Commit "d649acc146b9868fe23e0773654e5a95d88b156d"]
                     -- d649acc fails: hlibrary.setup: data/templates/default.html: does not exist
                     hackage "pandoc" -- hackage 1.13.2 is commit ccf081d32cc418e1d01f023059060aa22207d6e6
+                           `patch` $(embedFile "patches/pandoc.diff")
                            -- `flag` P.RelaxDep "libghc-pandoc-doc"
                            `flag` P.BuildDep "alex"
                            `flag` P.BuildDep "happy")
