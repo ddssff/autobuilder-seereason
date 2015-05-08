@@ -434,6 +434,7 @@ main =
              -- , th_instance_reification -- deprecated
              , th_lift
              , th_orphans
+             , th_typegraph
              , th_reify_many
              , tinymce
              , transformers_base
@@ -1948,6 +1949,7 @@ th_expand_syns = debianize (hackage "th-expand-syns")
 -- th_instance_reification = debianize (git "https://github.com/seereason/th-instance-reification.git" [])
 th_lift = debianize (hackage "th-lift")
 th_orphans = debianize (hackage "th-orphans")
+th_typegraph = debianize (git "http://github.com/seereason/th-typegraph" [])
 threads = debianize (hackage "threads")
 th_reify_many = debianize (hackage "th-reify-many")
 time_compat = debianize (hackage "time-compat")
