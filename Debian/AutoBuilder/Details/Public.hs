@@ -6,7 +6,7 @@ import Control.Applicative ((<$>), pure)
 import Control.Lens ((.=), (%=))
 import Control.Monad.State (get)
 import Data.FileEmbed (embedFile)
-import Data.Set as Set (insert, union)
+import Data.Set as Set (insert)
 import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState(release), mapPackages,
@@ -77,6 +77,7 @@ autobuilder_group =
              sequence
              [ debian_haskell
              , cabal_debian
+             , newtype_generics
              , mirror
              , debian_repo
              , autobuilder
@@ -432,6 +433,7 @@ main =
              , th_desugar
              , th_expand_syns
              -- , th_instance_reification -- deprecated
+             , th_kinds
              , th_lift
              , th_orphans
              , th_typegraph
@@ -908,6 +910,7 @@ ghcjs_group =
                   , data_lens
                   , data_lens_template
                   , distributive
+                  , double_conversion
                   , exceptions
                   , file_embed
                   , filemanip
@@ -1718,6 +1721,7 @@ network_conduit = debianize (hackage "network-conduit")
 network = debianize (hackage "network")
 network_info = debianize (hackage "network-info")
 network_uri = debianize (hackage "network-uri")
+newtype_generics = debianize (hackage "newtype-generics" `flag` P.CabalPin "0.4")
 nodejs = skip (Reason "test failure on switch from 0.10.29~dfsg-1 to 0.10.29~dfsg-1.1") (apt "sid" "nodejs")
 numeric_extras = debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
 numInstances = debianize (hackage "NumInstances")
@@ -1947,6 +1951,7 @@ th_context = debianize (git "http://github.com/seereason/th-context" [])
 th_desugar = debianize $ git "http://github.com/goldfirere/th-desugar" []
 th_expand_syns = debianize (hackage "th-expand-syns")
 -- th_instance_reification = debianize (git "https://github.com/seereason/th-instance-reification.git" [])
+th_kinds = debianize (git "http://github.com/seereason/th-kinds" [])
 th_lift = debianize (hackage "th-lift")
 th_orphans = debianize (hackage "th-orphans")
 th_typegraph = debianize (git "http://github.com/seereason/th-typegraph" [])

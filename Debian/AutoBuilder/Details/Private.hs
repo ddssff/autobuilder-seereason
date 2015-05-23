@@ -22,6 +22,7 @@ libraries =
     , stripe_haskell
     , clckwrks_plugin_stripe
     , mimo
+    , th_path
     , task_manager
     , happstack_ghcjs_client
     , happstack_ghcjs_server
@@ -86,3 +87,4 @@ stripe_haskell = debianize (git "ssh://git@github.com/stripe-haskell/stripe" [Br
                                     `flag` P.CabalDebian [{-"--no-tests"-}])
 -- stripe_http_conduit = debianize (darcs (privateRepo </> "stripe") `cd` "stripe-http-conduit")
 task_manager = debianize (git "ssh://git@github.com/seereason/task-manager.git" [])
+th_path = debianize (git "ssh://git@github.com/seereason/th-path.git" [])
