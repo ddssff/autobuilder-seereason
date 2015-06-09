@@ -120,8 +120,10 @@ myIncludePackages myBuildRelease =
     , "debian-keyring"
     , "locales"
     , "software-properties-common" -- Required to run add-apt-repository to use a PPA.
-    -- , "ghc"                     -- Not a good idea if you want to upgrade ghcs
-    -- , "ghcjs"                   -- Terrible idea
+    , "ghc", "ghcjs"               -- We need ghc and ghcjs to figure out bundled package lists.
+                                   -- Just be careful when trying to upgrade the compiler, if
+                                   -- you need to back a build out you will tear your hair out
+                                   -- figureing why the new compiler is still there!
     -- , "autobuilder-seereason"   -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
     -- , "perl-base"
     -- , "gnupg"
