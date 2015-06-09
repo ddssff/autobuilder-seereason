@@ -15,5 +15,4 @@ main = backup (BackupTarget { app = "darcs"
                             , bwLimit = Just 20
                             , cleanHour = (== 2)
                             , backupHour = even
-                            , abortLock = Just "/srv/backups/autobuilder/lock"
-                            , sequenceLock = Nothing })
+                            , delay = 0 })
