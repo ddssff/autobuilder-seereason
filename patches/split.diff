@@ -1,0 +1,11 @@
+--- old/split.cabal	2014-07-19 07:59:16.060463622 -0700
++++ new/split.cabal	2015-06-06 09:25:43.359895602 -0700
+@@ -51,7 +51,7 @@
+ 
+ Library
+   ghc-options:       -Wall
+-  build-depends:     base <4.8
++  build-depends:     base <4.9
+   exposed-modules:   Data.List.Split, Data.List.Split.Internals
+   default-language:  Haskell2010
+   Hs-source-dirs:    src
