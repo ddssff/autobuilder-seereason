@@ -86,9 +86,11 @@ Library
       magic,
       mtl,
       network-uri,
+      parsec,
       prettyclass,
       pureMD5,
       regex-compat,
+      regex-tdfa,
       syb,
       tar,
       time,
@@ -190,44 +192,7 @@ Library
     Build-Depends: cabal-debian >= 4.24.5
   else
     Hs-Source-Dirs: ../cabal-debian/src, ../cabal-debian/dist/build/autogen
-    Build-Depends:
-      data-default,
-      Diff,
-      hsemail,
-      memoize,
-      mtl,
-      parsec,
-      pretty,
-      regex-tdfa,
-      set-extra,
-      applicative-extras,
-      bytestring,
-      utf8-string,
-      directory,
-      unix,
-      process,
-      ListLike >= 4,
-      old-locale,
-      regex-compat,
-      network-uri,
-      syb,
-      HUnit,
-      regex-posix,
-      zlib,
-      text,
-      pureMD5,
-      containers,
-      time,
-      parsec,
-      template-haskell,
-      exceptions,
-      deepseq,
-      filepath,
-      pretty,
-      help,
-      bzlib,
-      mtl,
-      prettyclass
+    Build-Depends: data-default, set-extra, Diff, memoize, hsemail, newtype-generics, bifunctors, ansi-wl-pprint, optparse-applicative
     Exposed-Modules:
       Debian.Debianize
       Debian.GHC
@@ -250,7 +215,7 @@ Library
       Debian.Debianize.InputDebian
       Debian.Debianize.Interspersed
       Debian.Debianize.Monad
-      Debian.Debianize.Options
+      Debian.Debianize.Optparse
       Debian.Debianize.Output
       Debian.Debianize.Prelude
       Debian.Debianize.SourceDebDescription
