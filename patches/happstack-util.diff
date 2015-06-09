@@ -103,3 +103,32 @@
                    exitWith ExitSuccess  >> return ()
          periodic (repeat 1) $ writeFile name "daemon" 
  
+--- old/src/Happstack/Util/FileManip.hs	2014-07-21 16:37:45.074838493 -0700
++++ new/src/Happstack/Util/FileManip.hs	2015-06-08 11:36:10.268507825 -0700
+@@ -33,7 +33,11 @@
+ -- construction of combinators.  Wraps the 'State' monad, but doesn't
+ -- allow 'get' or 'put'.
+ newtype FindClause a = FC { runFC :: State FileInfo a }
+-    deriving (Functor, Monad)
++    deriving (
++#if MIN_VERSION_base(4,8,0)
++              Applicative,
++#endif
++                           Functor, Monad)
+ 
+ -- | Run the given 'FindClause' on the given 'FileInfo' and return its
+ -- result.  This can be useful if you are writing a function to pass
+--- old/src/Happstack/Util/LogFormat.hs	2014-07-21 16:37:45.074838493 -0700
++++ new/src/Happstack/Util/LogFormat.hs	2015-06-08 11:34:52.136510079 -0700
+@@ -3,7 +3,11 @@
+   , formatRequestCombined
+   ) where
+ 
++#if MIN_VERSION_time(1,5,0)
++import Data.Time (defaultTimeLocale)
++#else
+ import System.Locale (defaultTimeLocale)
++#endif
+ import Data.Time.Format (FormatTime(..), formatTime)
+ 
+ -- | Format the time as describe in the Apache combined log format.

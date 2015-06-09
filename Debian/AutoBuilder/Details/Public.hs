@@ -141,6 +141,7 @@ main =
              , attempt
              , attoparsec
              , attoparsec_enumerator
+             , base_orphans
              , base16_bytestring
              , base_unicode_symbols
              , bimap
@@ -223,6 +224,7 @@ main =
              , errors
              , exceptions
              , executable_path
+             , expiring_cache_map
              , extensible_exceptions
              , extra
              , failure
@@ -326,6 +328,7 @@ main =
              , matrix
              , maybeT
              , memoize
+             , memory
              , mime
              , missingH
              , mmap
@@ -528,7 +531,7 @@ platform =
             , hUnit
             , tf_random
             , quickCheck
-            , quickCheck1
+            -- , quickCheck1
             , parsec
             , html
             , regex_compat
@@ -758,9 +761,7 @@ opengl =
 algebra :: TSt P.Packages
 algebra =
     (named "algebra" . map APackage) =<<
-    sequence [ data_lens
-             , data_lens_template
-             , bifunctors
+    sequence [ bifunctors
              , categories
              , comonad
              , control_monad_free
@@ -1015,7 +1016,7 @@ ansi_terminal = debianize (hackage "ansi-terminal")
 ansi_wl_pprint = debianize (hackage "ansi-wl-pprint")
 appar = debianize (hackage "appar" `flag` P.DebVersion "1.1.4-1")
 applicative_extras = debianize (hackage "applicative-extras" `flag` P.DebVersion "0.1.8-1")
-archive = debianize (git "https://github.com/seereason/archive" [] `flag` P.CabalDebian ["--default-package=archive"])
+archive = debianize (git "https://github.com/seereason/archive" [] `flag` P.CabalDebian ["--default-package", "archive"])
 asn1_data = debianize (hackage "asn1-data" `tflag` P.DebVersion "0.7.1-4build1")
 asn1_encoding = debianize (hackage "asn1-encoding")
 asn1_parse = debianize (hackage "asn1-parse")
@@ -1036,46 +1037,47 @@ autobuilder = debianize (git "https://github.com/ddssff/autobuilder" []) `flag` 
 autobuilder_seereason =
     debianize (git "https://github.com/ddssff/autobuilder-seereason" [])
                  -- It would be nice if these dependencies were in the cabal file
-                 `flag` P.CabalDebian [ "--depends=autobuilder-seereason:libghc-autobuilder-seereason-dev"
-                                      , "--depends=autobuilder-seereason:ghc"
-                                      , "--depends=autobuilder-seereason:debhelper"
-                                      , "--depends=autobuilder-seereason:apt-file"
-                                      , "--depends=autobuilder-seereason:apt-utils"
-                                      , "--depends=autobuilder-seereason:debootstrap"
-                                      , "--depends=autobuilder-seereason:rsync"
-                                      , "--depends=autobuilder-seereason:dupload"
-                                      , "--depends=autobuilder-seereason:darcs"
-                                      , "--depends=autobuilder-seereason:git"
-                                      , "--depends=autobuilder-seereason:tla"
-                                      , "--depends=autobuilder-seereason:mercurial"
-                                      , "--depends=autobuilder-seereason:subversion"
-                                      , "--depends=autobuilder-seereason:apt"
-                                      , "--depends=autobuilder-seereason:build-essential"
-                                      , "--depends=autobuilder-seereason:quilt"
-                                      , "--depends=autobuilder-seereason:curl"
-                                      , "--depends=autobuilder-seereason:debian-archive-keyring"
-                                      , "--depends=autobuilder-seereason:seereason-keyring"
+                 `flag` P.CabalDebian [ "--depends", "autobuilder-seereason:libghc-autobuilder-seereason-dev"
+                                      , "--depends", "autobuilder-seereason:ghc"
+                                      , "--depends", "autobuilder-seereason:debhelper"
+                                      , "--depends", "autobuilder-seereason:apt-file"
+                                      , "--depends", "autobuilder-seereason:apt-utils"
+                                      , "--depends", "autobuilder-seereason:debootstrap"
+                                      , "--depends", "autobuilder-seereason:rsync"
+                                      , "--depends", "autobuilder-seereason:dupload"
+                                      , "--depends", "autobuilder-seereason:darcs"
+                                      , "--depends", "autobuilder-seereason:git"
+                                      , "--depends", "autobuilder-seereason:tla"
+                                      , "--depends", "autobuilder-seereason:mercurial"
+                                      , "--depends", "autobuilder-seereason:subversion"
+                                      , "--depends", "autobuilder-seereason:apt"
+                                      , "--depends", "autobuilder-seereason:build-essential"
+                                      , "--depends", "autobuilder-seereason:quilt"
+                                      , "--depends", "autobuilder-seereason:curl"
+                                      , "--depends", "autobuilder-seereason:debian-archive-keyring"
+                                      , "--depends", "autobuilder-seereason:seereason-keyring"
                                       -- Pull in the autobuilder-seereason library so the target's
                                       -- debian/Debianize.hs scripts can run.
                                       -- This is needed if the release vendor is ubuntu.  I need
                                       -- to use a real type for the release value instead of a string,
                                       -- then I can just ask the release who its vendor is.
-                                      -- , "--depends=autobuilder-seereason:ubuntu-keyring"
+                                      -- , "--depends", "autobuilder-seereason:ubuntu-keyring"
                                       -- These are dependencies used by certain debian/Debianize.hs scripts
-                                      , "--recommends=autobuilder-seereason:libghc-text-dev"
-                                      , "--recommends=autobuilder-seereason:libghc-seereason-ports-dev" -- used by most (all?) of our web apps
-                                      , "--recommends=autobuilder-seereason:libghc-happstack-authenticate-dev" -- used by mimo
-                                      , "--recommends=autobuilder-seereason:libghc-happstack-foundation-dev" -- used by mimo
-                                      , "--recommends=autobuilder-seereason:libghc-safecopy-dev" -- used by mimo
-                                      , "--recommends=autobuilder-seereason:libghc-hsp-dev" -- used by mimo
-                                      , "--recommends=autobuilder-seereason:libghc-utility-ht-dev" -- used by mimo
+                                      , "--recommends", "autobuilder-seereason:libghc-text-dev"
+                                      , "--recommends", "autobuilder-seereason:libghc-seereason-ports-dev" -- used by most (all?) of our web apps
+                                      , "--recommends", "autobuilder-seereason:libghc-happstack-authenticate-dev" -- used by mimo
+                                      , "--recommends", "autobuilder-seereason:libghc-happstack-foundation-dev" -- used by mimo
+                                      , "--recommends", "autobuilder-seereason:libghc-safecopy-dev" -- used by mimo
+                                      , "--recommends", "autobuilder-seereason:libghc-hsp-dev" -- used by mimo
+                                      , "--recommends", "autobuilder-seereason:libghc-utility-ht-dev" -- used by mimo
                                       ]
-                 `flag` P.CabalDebian [ "--conflicts=autobuilder-seereason:autobuilder"
-                                      , "--replaces=autobuilder-seereason:autobuilder" ]
+                 `flag` P.CabalDebian [ "--conflicts", "autobuilder-seereason:autobuilder"
+                                      , "--replaces", "autobuilder-seereason:autobuilder" ]
                  `flag` P.CabalDebian [ "--executable", "autobuilder-seereason" ]
                  `flag` P.CabalDebian [ "--executable", "seereason-darcs-backups" ]
                  `flag` P.CabalDebian [ "--source-package-name", "autobuilder-seereason" ]
 auto_update = debianize (hackage "auto-update")
+base_orphans = debianize (hackage "base-orphans")
 base16_bytestring = debianize (hackage "base16-bytestring")
 base64_bytestring = debianize (hackage "base64-bytestring" `tflag` P.DebVersion "1.0.0.1-1")
 base_unicode_symbols = debianize (hackage "base-unicode-symbols" `tflag` P.DebVersion "0.2.2.4-3")
@@ -1114,10 +1116,10 @@ bytestring_trie = debianize (hackage "bytestring-trie")
 bzlib = debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
              -- , debianize (hackage "cairo-pdf")
 cabal_debian = git "https://github.com/ddssff/cabal-debian" []
-cabal = debianize (hackage "Cabal" `flag` P.CabalPin "1.22.3.0" {- avoid rebuild -}) -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
+cabal = debianize (hackage "Cabal") -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
 cabal_install = debianize (hackage "cabal-install"
-                             `patch` $(embedFile "patches/cabal-install.diff")
-                             `flag` P.CabalPin "1.22.3.0"
+                             -- `patch` $(embedFile "patches/cabal-install.diff")
+                             -- `flag` P.CabalPin "1.22.3.0"
                              `flag` P.CabalDebian ["--default-package=cabal-install"])
 cabal_macosx = debianize (hackage "cabal-macosx" `patch` $(embedFile "patches/cabal-macosx.diff"))
 c_ares = apt "sid" "c-ares"
@@ -1229,8 +1231,8 @@ data_default_instances_base = debianize (hackage "data-default-instances-base")
 data_default_instances_containers = debianize (hackage "data-default-instances-containers")
 data_default_instances_dlist = debianize (hackage "data-default-instances-dlist")
 data_default_instances_old_locale = debianize (hackage "data-default-instances-old-locale")
-dataenc = debianize (hackage "dataenc" {- `patch` $(embedFile "patches/dataenc.diff") -})
-data_lens = debianize (hackage "data-lens" `patch` $(embedFile "patches/data-lens.diff"))
+dataenc = debianize (hackage "dataenc" `patch` $(embedFile "patches/dataenc.diff"))
+data_lens = debianize (hackage "data-lens" {- `patch` $(embedFile "patches/data-lens.diff") -})
 data_lens_template = debianize (hackage "data-lens-template")
 data_object = debianize (hackage "data-object" `patch` $(embedFile "patches/data-object.diff"))
 data_ordlist = debianize (hackage "data-ordlist")
@@ -1246,7 +1248,7 @@ debootstrap = apt "sid" "debootstrap" `flag` P.UDeb "debootstrap-udeb"
              -- Build fails due to some debianization issue
              -- , apt "wheezy" "geneweb"
 decimal = debianize (hackage "Decimal") -- for hledger
-deepseq_generics = debianize (hackage "deepseq-generics")
+deepseq_generics = debianize (hackage "deepseq-generics" `patch` $(embedFile "patches/deepseq-generics.diff"))
 derive = debianize (hackage "derive")
 diff = debianize (hackage "Diff")
 digest = debianize (hackage "digest")
@@ -1285,6 +1287,7 @@ erf = debianize (hackage "erf"
                             `tflag` P.DebVersion "2.0.0.0-5")
 errors = debianize (hackage "errors")
 exceptions = debianize (hackage "exceptions")
+expiring_cache_map = debianize (hackage "expiring-cache-map")
 executable_path = debianize (hackage "executable-path"
                             `pflag` P.DebVersion "0.0.3-1"
                             `tflag` P.DebVersion "0.0.3-3")
@@ -1296,7 +1299,7 @@ extra = debianize (hackage "extra")
 failure = debianize (hackage "failure")
 fast_logger = debianize (hackage "fast-logger")
 fay_base = debianize (hackage "fay-base")
-fay = debianize (hackage "fay" {- `patch` $(embedFile "patches/fay.diff") -}) `flag` P.CabalDebian [ "--depends=haskell-fay-utils:cpphs" ]
+fay = debianize (hackage "fay" {- `patch` $(embedFile "patches/fay.diff") -}) `flag` P.CabalDebian [ "--depends", "haskell-fay-utils:cpphs" ]
 fay_jquery = debianize (git "https://github.com/faylang/fay-jquery" [])
     -- , debianize (hackage "fay-jquery" `flag` P.CabalPin "0.3.0.0")
 fay_text = debianize (hackage "fay-text")
@@ -1417,8 +1420,8 @@ happstack_foundation = debianize (git "https://github.com/Happstack/happstack-fo
 happstack_foundation_example =
     debianize (git "https://github.com/Happstack/happstack-foundation.git" []
                                  `cd` "examples/ControlVAuth"
-                                 `flag` P.CabalDebian ["--source-package-name=happstack-foundation-example",
-                                                       "--default-package=happstack-foundation-example"])
+                                 `flag` P.CabalDebian ["--source-package-name", "happstack-foundation-example",
+                                                       "--default-package", "happstack-foundation-example"])
 happstack_hsp = debianize (git "https://github.com/Happstack/happstack-hsp.git" []) -- , debianize (hackage "happstack-hsp" {- `patch` $(embedFile "patches/happstack-hsp.diff") -} `flag` P.BuildDep "hsx2hs")
 happstack_jmacro = debianize (git "https://github.com/Happstack/happstack-jmacro.git" [])            -- , debianize (hackage "happstack-jmacro")
 happstack_lite = debianize (hackage "happstack-lite")
@@ -1435,20 +1438,36 @@ happstack_util = debianize (hackage "happstack-util"
             -- This target puts the trhsx binary in its own package, while the
             -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
             -- use debianize for natty and apt:sid for lucid.
-happy = broken $ pure $ P.Package { P.spec = DebDir (Hackage "happy") (Darcs ("http://src.seereason.com/happy-debian")),
-                                    P.flags = [P.RelaxDep "happy", P.CabalDebian ["--executable", "happy"],
-                                               P.Maintainer "SeeReason Autobuilder <partners@seereason.com>"] }
-harp = debianize (hackage "harp"
+happy = pure $ P.Package { P.spec = Debianize'' (Hackage "happy") Nothing
+                         , P.flags = [P.RelaxDep "happy",
+                                      P.CabalDebian ["--executable", "happy"],
+                                      -- P.Maintainer "SeeReason Autobuilder <partners@seereason.com>",
+                                      P.ModifyAtoms (execCabalM $ do
+                                                       mapM_ (\ name -> (debInfo . atomSet) %= (Set.insert $ InstallData (BinPkgName "happy") name name))
+                                                             [ "HappyTemplate-arrays-coerce"
+                                                             , "GLR_Lib-ghc"
+                                                             , "HappyTemplate-arrays-ghc-debug"
+                                                             , "HappyTemplate"
+                                                             , "GLR_Lib"
+                                                             , "HappyTemplate-arrays-debug"
+                                                             , "GLR_Base"
+                                                             , "HappyTemplate-ghc"
+                                                             , "HappyTemplate-arrays-ghc"
+                                                             , "HappyTemplate-coerce"
+                                                             , "HappyTemplate-arrays"
+                                                             , "HappyTemplate-arrays-coerce-debug"
+                                                             , "GLR_Lib-ghc-debug" ] ) ] }
+harp = debianize (git "https://github.com/seereason/harp" []
                             `pflag` P.DebVersion "0.4-3"
-                            `tflag` P.DebVersion "0.4-6") -- apt (rel release "wheezy" "quantal") "haskell-harp"
+                            `tflag` P.DebVersion "0.4-6")
 hashable = debianize (hackage "hashable")
 hashed_storage = debianize (hackage "hashed-storage")
              -- Built into ghc-7.8.3
 hashtables = debianize (hackage "hashtables")
 haskeline = debianize (hackage "haskeline")
 haskell_darcs = debianize (darcs "http://darcs.net/reviewed"
-                   `flag` P.CabalDebian ["--source-package-name=darcs"]
-                   `flag` P.CabalDebian ["--default-package=darcs"]
+                   `flag` P.CabalDebian ["--source-package-name", "darcs"]
+                   `flag` P.CabalDebian ["--default-package", "darcs"]
                    `flag` P.CabalDebian ["--cabal-flags", "-http"] -- the http flag forces network < 2.5
                    -- `patch` $(embedFile "patches/darcs.diff")
                   )
@@ -1465,18 +1484,16 @@ haskell_lexer = debianize (hackage "haskell-lexer"
 haskell_list = debianize (hackage "List")
 haskell_names = debianize (hackage "haskell-names")
 haskell_newtype = debianize (hackage "newtype" `wflag` P.DebVersion "0.2-1" `tflag` P.DebVersion "0.2-3")
-haskell_packages = debianize (hackage "haskell-packages" `patch` $(embedFile "patches/haskell-packages.diff"))
+haskell_packages = debianize (hackage "haskell-packages" {-`patch` $(embedFile "patches/haskell-packages.diff")-})
 haskell_revision = debianize (git ("https://github.com/seereason/sr-revision") [])
 haskell_src = debianize (hackage "haskell-src" `flag` P.BuildDep "happy")
 haskell_src_exts = debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
                           hackage "haskell-src-exts"
                             `flag` P.BuildDep "happy")
-haskell_src_meta = debianize (git "https://github.com/ddssff/haskell-src-meta" [] {- hackage "haskell-src-meta" -})
-             -- Because we specify an exact debian version here, this package
-             -- needs to be forced to rebuilt when its build dependencies (such
-             -- as ghc) change.  Autobuilder bug I suppose.  Wait, this doesn't
-             -- sound right...
-haste_compiler = hack "haste-compiler" `flag` P.CabalDebian ["--default-package=haste-compiler"]
+-- haskell_src_meta = debianize (git "https://github.com/bmillwood/haskell-src-meta" [] {- hackage "haskell-src-meta" -})
+haskell_src_meta = debianize (git "https://github.com/seereason/haskell-src-meta" []) -- pull request to allow th-orphans-0.12
+-- haskell_src_meta = debianize (hackage "haskell-src-meta")
+haste_compiler = hack "haste-compiler" `flag` P.CabalDebian ["--default-package", "haste-compiler"]
 haste_ffi_parser = git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
 haTeX = debianize (git "https://github.com/Daniel-Diaz/HaTeX" [Commit "cc66573a0587094667a9150411ea748d6592db36" {-avoid rebuild-}]
                               `patch` $(embedFile "patches/HaTeX-texty.diff")
@@ -1535,9 +1552,9 @@ hStringTemplate = skip (Reason "Needs time-1.5") (debianize (hackage "HStringTem
 hsx2hs = debianize (git "https://github.com/seereason/hsx2hs.git" []
                          -- hackage "hsx2hs" `patch` $(embedFile "patches/hsx2hs.diff")
                            `flag` P.CabalDebian ["--executable", "hsx2hs",
-                                                 "--conflicts=hsx2hs:haskell-hsx-utils",
-                                                 "--replaces=hsx2hs:haskell-hsx-utils",
-                                                 "--provides=hsx2hs:haskell-hsx-utils"])
+                                                 "--conflicts", "hsx2hs:haskell-hsx-utils",
+                                                 "--replaces", "hsx2hs:haskell-hsx-utils",
+                                                 "--provides", "hsx2hs:haskell-hsx-utils"])
             -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
 hsx_jmacro = debianize (git "https://github.com/Happstack/hsx-jmacro.git" [])
 hsyslog = debianize (hackage "hsyslog")
@@ -1578,7 +1595,7 @@ iconv = debianize (hackage "iconv")
 idris = debianize (hackage "idris"
                        -- `patch` $(embedFile "patches/idris.diff") -- adds *.idr to extra-source-files
                        `flag` P.BuildDep "libgc-dev"
-                       `flag` P.CabalDebian ["--default-package=idris"])
+                       `flag` P.CabalDebian ["--default-package", "idris"])
 incremental_sat_solver = pure $ P.Package { P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs ("http://src.seereason.com/haskell-incremental-sat-solver-debian"))
                                 , P.flags = [] }
 indents = debianize (hackage "indents")
@@ -1586,7 +1603,7 @@ instant_generics = broken $ debianize (hackage "instant-generics" `flag` P.SkipV
 intervals = debianize (hackage "intervals")
 ioRefCAS = skip (Reason "Version 0.2.0.1 build fails") $ debianize (hackage "IORefCAS")
 io_storage = debianize (hackage "io-storage" `pflag` P.DebVersion "0.3-2" `tflag` P.DebVersion "0.3-5")
-io_streams = debianize (git "https://github.com/snapframework/io-streams" [] {-hackage "io-streams"-})
+io_streams = debianize (git "https://github.com/seereason/io-streams" []) -- pull request to allow atto-parsec-0.13
 iproute = debianize (hackage "iproute")
 ircbot = debianize (hackage "ircbot")
 irc = debianize (hackage "irc")
@@ -1622,7 +1639,7 @@ largeword = debianize (hackage "largeword")
          {-  , apt "wheezy" "haskell-leksah"
              , apt "wheezy" "haskell-leksah-server" -- for leksah -}
 latex = debianize (hackage "latex")
-lens = debianize (hackage "lens" `flag` P.CabalPin "4.8")
+lens = debianize (hackage "lens")
 lens_compat = debianize (git "https://github.com/ddssff/lens-compat" [])
 lens_family_core = debianize (hackage "lens-family-core")
 lens_family = debianize (hackage "lens-family")
@@ -1654,8 +1671,11 @@ listLike = debianize (hackage "ListLike")
 list_tries = debianize (hackage "list-tries" {- `patch` $(embedFile "patches/list-tries.diff") -}) -- version 0.5.2 depends on dlist << 0.7
 loch_th = debianize (hackage "loch-th")
 logic_classes = git "https://github.com/seereason/logic-classes" []
-logic_TPTP = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) Nothing
-                                , P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
+logic_TPTP = debianize (hackage "logic-TPTP")
+               `patch` $(embedFile "patches/logic-TPTP.diff")
+               `flag` P.BuildDep "alex"
+               `flag` P.BuildDep "happy"
+-- logic_TPTP = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) Nothing, P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
              -- , apt "sid" "haskell-maybet"
 logict = pure $ P.Package { P.spec = Debianize'' (Hackage "logict") Nothing, P.flags = [] }
 loop = debianize (hackage "loop")
@@ -1674,6 +1694,7 @@ matrix = debianize (hackage "matrix")
              -- , debianize (hackage "hlatex")
 maybeT = debianize (hackage "MaybeT" `flag` P.DebVersion "1.2-6")
 memoize = debianize (hackage "memoize")
+memory = debianize (hackage "memory")
 memoTrie = debianize (hackage "MemoTrie")
 mime = darcs ("http://src.seereason.com/haskell-mime")
 mime_mail = debianize (git "https://github.com/snoyberg/mime-mail.git" [] `cd` "mime-mail")
@@ -1721,7 +1742,7 @@ network_conduit = debianize (hackage "network-conduit")
 network = debianize (hackage "network")
 network_info = debianize (hackage "network-info")
 network_uri = debianize (hackage "network-uri")
-newtype_generics = debianize (hackage "newtype-generics" `flag` P.CabalPin "0.4")
+newtype_generics = debianize (hackage "newtype-generics" {-`flag` P.CabalPin "0.4"-})
 nodejs = skip (Reason "test failure on switch from 0.10.29~dfsg-1 to 0.10.29~dfsg-1.1") (apt "sid" "nodejs")
 numeric_extras = debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
 numInstances = debianize (hackage "NumInstances")
@@ -1743,7 +1764,7 @@ ordered = debianize (hackage "ordered")
 pandoc = debianize (-- git "https://github.com/jgm/pandoc" [Commit "d649acc146b9868fe23e0773654e5a95d88b156d"]
                     -- d649acc fails: hlibrary.setup: data/templates/default.html: does not exist
                     hackage "pandoc" -- hackage 1.13.2 is commit ccf081d32cc418e1d01f023059060aa22207d6e6
-                           `patch` $(embedFile "patches/pandoc.diff")
+                           -- `patch` $(embedFile "patches/pandoc.diff")
                            -- `flag` P.RelaxDep "libghc-pandoc-doc"
                            `flag` P.BuildDep "alex"
                            `flag` P.BuildDep "happy")
@@ -1776,7 +1797,7 @@ polyparse = debianize (hackage "polyparse")
 prelude_extras = debianize (hackage "prelude-extras")
 prettyclass = debianize (hackage "prettyclass")
 pretty_show = debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
-primitive = debianize (hackage "primitive" `flag` P.CabalPin "0.5.4.0") -- Waiting for newer lens
+primitive = debianize (hackage "primitive")
 process_extras =
     debianize (git "https://github.com/seereason/process-extras" [])
                  `flag` P.ModifyAtoms (substitute "process-extras" "process-listlike")
@@ -1784,7 +1805,7 @@ processing = debianize (hackage "processing")
 profunctors = debianize (hackage "profunctors"
                    `flag` P.ModifyAtoms (replacement "profunctors" "profunctors-extras"))
 propLogic = debianize (git "https://github.com/ddssff/PropLogic" [])
-pseudomacros = debianize (hackage "pseudomacros")
+pseudomacros = debianize (hackage "pseudomacros" `flag` P.CabalPin "0.0.1") -- 0.0.2 requires time>=1.5
 psQueue = wskip $
                debianize (hackage "PSQueue"
                             `pflag` P.DebVersion "1.1-2"
@@ -1800,11 +1821,11 @@ pwstore_purehaskell = debianize (hackage "pwstore-purehaskell"
                          )
              -- Retired
              -- , apt (rel release "wheezy" "quantal") "haskell-quickcheck1"
-quickCheck = debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof" `flag` P.CabalDebian ["--no-tests"])
+quickCheck = debianize (hackage "QuickCheck" `flag` P.BuildDep "libghc-random-prof" {-`flag` P.CabalDebian ["--no-tests"]-})
 quickcheck_gent = debianize (hackage "QuickCheck-GenT")
 quickcheck_instances = debianize (hackage "quickcheck-instances")
 quickcheck_io = debianize (hackage "quickcheck-io")
-quickCheck1 = debianize (hackage "QuickCheck" `flag` P.CabalPin "1.2.0.1" `flag` P.DebVersion "1.2.0.1-2" `flag` P.CabalDebian ["--no-tests"])
+-- quickCheck1 = debianize (hackage "QuickCheck" `flag` P.CabalPin "1.2.0.1" `flag` P.DebVersion "1.2.0.1-2" `flag` P.CabalDebian ["--no-tests"])
 random = debianize (hackage "random" `flag` P.SkipVersion "1.0.1.3") -- 1.1.0.3 fixes the build for ghc-7.4.2 / base < 4.6
 reducers = hack "reducers"
 reflection = debianize (hackage "reflection") -- avoid rebuild
@@ -1881,7 +1902,7 @@ smtpClient = debianize (hackage "SMTPClient")
 socks = debianize (hackage "socks")
 sourcemap = debianize (hackage "sourcemap")
 spine = debianize (hackage "spine")
-split = debianize (hackage "split" `tflag` P.DebVersion "0.2.2-1")
+split = debianize (hackage "split" `patch` $(embedFile "patches/split.diff") `tflag` P.DebVersion "0.2.2-1")
 srcloc = debianize (hackage "srcloc")
 stateVar = debianize (hackage "StateVar")
 stb_image = debianize (hackage "stb-image")
@@ -1912,7 +1933,7 @@ tagged = debianize (hackage "tagged")
 tagshare = debianize (hackage "tagshare")
 tagsoup = debianize (hackage "tagsoup")
 tagstream_conduit = debianize (hackage "tagstream-conduit")
-tar = debianize (hackage "tar")
+tar = debianize (hackage "tar" `flag` P.CabalDebian ["--cabal-flags", "-old-time"])
          {-  -- This is built into ghc-7.8.3
              , debianize (hackage "terminfo"
                                       `flag` P.DevelDep "libncurses5-dev"
@@ -1951,7 +1972,7 @@ th_context = debianize (git "http://github.com/seereason/th-context" [])
 th_desugar = debianize $ git "http://github.com/goldfirere/th-desugar" []
 th_expand_syns = debianize (hackage "th-expand-syns")
 -- th_instance_reification = debianize (git "https://github.com/seereason/th-instance-reification.git" [])
-th_kinds = debianize (git "http://github.com/seereason/th-kinds" [])
+th_kinds = debianize (git "http://github.com/ddssff/th-kinds" [])
 th_lift = debianize (hackage "th-lift")
 th_orphans = debianize (hackage "th-orphans")
 th_typegraph = debianize (git "http://github.com/seereason/th-typegraph" [])
@@ -1966,6 +1987,8 @@ transformers_base = debianize (hackage "transformers-base")
 transformers_compat = debianize (hackage "transformers-compat"
                    `patch` $(embedFile "patches/transformers-compat.diff"))
     -- profuctors now includes profunctor-extras
+-- ghc-7.10.1 ships transformsers-0.4.2.0, but 0.4.3.0 is available in hackage.
+-- So having this is not quite pointless.
 transformers = debianize (hackage "transformers" `flag` P.CabalDebian [ "--debian-name-base", "transformers-4", "--cabal-flags", "-three" ])
 transformers_free = debianize (hackage "transformers-free")
 traverse_with_class = debianize (hackage "traverse-with-class")
@@ -1973,10 +1996,8 @@ trifecta = debianize (hackage "trifecta" `patch` $(embedFile "patches/trifecta.d
 tyb = skip (Reason "Needs update for current template-haskell") $ debianize (hackage "TYB")
 type_eq = debianize (hackage "type-eq")
 unbounded_delays = debianize (hackage "unbounded-delays")
-unicode_names = debianize (hackage "unicode-names" `flag` P.DebVersion "3.2.0.0-1~hackage1")
-unicode_properties = debianize (hackage "unicode-properties"
-                            `patch` $(embedFile "patches/unicode-properties.diff")
-                            `flag` P.DebVersion "3.2.0.0-1~hackage1")
+unicode_names = debianize (git "https://github.com/seereason/unicode-names" [] `flag` P.DebVersion "3.2.0.0-1~hackage1")
+unicode_properties = debianize (git "https://github.com/seereason/unicode-properties" [] `flag` P.DebVersion "3.2.0.0-1~hackage1")
 unification_fd = debianize (hackage "unification-fd" `flag` P.SkipVersion "0.8.0")
 union_find = debianize (hackage "union-find")
              -- , debianize (hackage "Elm")
@@ -1984,7 +2005,7 @@ union_find = debianize (hackage "union-find")
 uniplate = debianize (hackage "uniplate")
 units = debianize (hackage "units")
 unix_compat = debianize (hackage "unix-compat")
-unix_time = debianize (hackage "unix-time" `flag` P.CabalDebian ["--no-run-tests"]) -- doctest assumes cabal build dir is dist
+unix_time = debianize (hackage "unix-time" {-`flag` P.CabalDebian ["--no-run-tests"]-}) -- doctest assumes cabal build dir is dist
 unixutils = debianize (git "https://github.com/seereason/haskell-unixutils" [])
 unixutils_shadow = debianize (hackage "Unixutils-shadow")
 unordered_containers = debianize (hackage "unordered-containers")
@@ -2021,8 +2042,8 @@ wai = debianize (hackage "wai" {- `patch` $(embedFile "patches/wai.diff") -})
 wai_extra = debianize (hackage "wai-extra")
 wai_logger = debianize (hackage "wai-logger")
 wai_middleware_static = debianize (hackage "wai-middleware-static")
-warp = skip (Reason "waiting for streaming-commons 0.1.10") $ debianize (hackage "warp")
-webdriver = debianize (git "https://github.com/kallisti-dev/hs-webdriver.git" [Commit "0251579c4dd5aebc26a7ac5b300190f3370dbf9d" {- avoid rebuild -}])
+warp = debianize (hackage "warp")
+webdriver = debianize (git "https://github.com/kallisti-dev/hs-webdriver.git" [{-Commit "0251579c4dd5aebc26a7ac5b300190f3370dbf9d"-} {- avoid rebuild -}])
 web_encodings = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff")) Nothing
                                 , P.flags = [] }
 web_plugins = debianize (git "http://github.com/clckwrks/web-plugins" [] `cd` "web-plugins")
@@ -2034,7 +2055,7 @@ web_routes_mtl = debianize (git "https://github.com/Happstack/web-routes.git" []
 web_routes_th = debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-th")
             -- web_routes_transformers = debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-transformers") -- requires transformers ==0.2.*
 web_routes_wai = debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-wai")
-websockets = debianize (git "https://github.com/jaspervdj/websockets.git" [Commit "60705a97baa26888e3517a8bfe73e4b6e5d38a59" {- avoid rebuilds -}])
+websockets = debianize (git "https://github.com/jaspervdj/websockets.git" [Commit "1b87107c9a4f5db9b05c828de1e80368bc0d3bba" {- avoid rebuilds -}])
 wl_pprint = debianize (hackage "wl-pprint")
 wl_pprint_extras = debianize (hackage "wl-pprint-extras")
 wl_pprint_text = debianize (hackage "wl-pprint-text")
@@ -2064,5 +2085,7 @@ yi_language = debianize (hackage "yi-language" `flag` P.BuildDep "alex")
 yi_rope = debianize (hackage "yi-rope")
 zip_archive = debianize (hackage "zip-archive")
 zlib_bindings = debianize (hackage "zlib-bindings")
-zlib = debianize (hackage "zlib" `flag` P.DevelDep "zlib1g-dev")
+zlib = debianize (hackage "zlib"
+                    `flag` P.CabalPin "0.5.4.2" -- Cabal-1.22.4.0 is not ready for zlib-0.6
+                    `flag` P.DevelDep "zlib1g-dev")
 zlib_enum = debianize (hackage "zlib-enum")

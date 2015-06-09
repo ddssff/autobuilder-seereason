@@ -1,3 +1,13 @@
+--- old/unicode-properties.cabal	2015-06-07 07:20:09.008276775 -0700
++++ new/unicode-properties.cabal	2014-07-19 07:59:52.992464654 -0700
+@@ -12,6 +12,7 @@
+ 	containers>=0.1,
+ 	array>=0.1
+ build-type: Simple
++ghc-options: -fno-warn-tabs
+ extensions:
+ 	EmptyDataDecls
+ exposed-modules:
 --- haskell-unicode-properties-3.2.0.0/Data/Char/Properties/MiscData.hs~	2011-12-04 10:25:17.000000000 -0800
 +++ haskell-unicode-properties-3.2.0.0/Data/Char/Properties/MiscData.hs	2011-12-04 11:25:53.000000000 -0800
 @@ -1,4 +1,3 @@

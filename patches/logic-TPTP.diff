@@ -1,12 +1,12 @@
 --- old/logic-TPTP.cabal	2011-09-15 16:31:03.000000000 -0700
 +++ new/logic-TPTP.cabal	2011-09-16 13:40:26.458725487 -0700
-@@ -51,7 +51,7 @@
-  
+@@ -53,7 +53,7 @@
+ 
  
  Library
 - ghc-options: -Wall -O2
 + ghc-options: -Wall -O2 -XBangPatterns
-  
+ 
   build-depends:      base >=4 && < 5
                     , array
 --- old/Parser.y	2012-01-20 11:54:31.000000000 -0800
