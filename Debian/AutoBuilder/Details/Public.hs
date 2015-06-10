@@ -1127,7 +1127,7 @@ cabal = debianize (hackage "Cabal") -- the settings in Debian.AutoBuilder.Detail
 cabal_install = debianize (hackage "cabal-install"
                              -- `patch` $(embedFile "patches/cabal-install.diff")
                              -- `flag` P.CabalPin "1.22.3.0"
-                             `flag` P.CabalDebian ["--default-package=cabal-install"])
+                             `flag` P.CabalDebian ["--default-package", "cabal-install"])
 cabal_macosx = debianize (hackage "cabal-macosx" `patch` $(embedFile "patches/cabal-macosx.diff"))
 c_ares = apt "sid" "c-ares"
 case_insensitive = debianize (hackage "case-insensitive")
@@ -1355,7 +1355,7 @@ ghcjs_ffiqq = ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-ffiqq"
 ghcjs_dom = ghcjs_flags (debianize (hackage "ghcjs-dom"))
 ghcjs_dom_hello = ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
                                                       `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
-                                                       `flag` P.CabalDebian ["--default-package=ghcjs-dom-hello"]))
+                                                       `flag` P.CabalDebian ["--default-package", "ghcjs-dom-hello"]))
 ghcjs = git "https://github.com/ddssff/ghcjs-debian" [] `relax` "cabal-install"
 ghcjs_prim = debianize (git "https://github.com/ghcjs/ghcjs-prim.git" [])
 ghcjs_tools = git "https://github.com/ghcjs/ghcjs" []
@@ -1398,7 +1398,7 @@ gtk2hs_buildtools = debianize (hackage "gtk2hs-buildtools"
 gyp = apt "sid" "gyp"
 haddock_api = debianize (hackage "haddock-api"
                             `flag` P.CabalPin "2.15.0.2" -- 2.16 requires ghc-7.10
-                            `flag` P.CabalDebian ["--default-package=haddock-api"]
+                            `flag` P.CabalDebian ["--default-package", "haddock-api"]
                             -- FIXME - This cabal-debian stuff does nothing because this isn't a Debianize target
                             `flag` P.ModifyAtoms (execCabalM $ (debInfo . rulesFragments) %= Set.insert (Text.unlines
                                                                [ "# Force the Cabal dependency to be the version provided by GHC"
