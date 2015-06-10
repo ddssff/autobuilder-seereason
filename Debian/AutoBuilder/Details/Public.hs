@@ -1077,6 +1077,7 @@ autobuilder_seereason =
                  `flag` P.CabalDebian [ "--executable", "seereason-darcs-backups" ]
                  `flag` P.CabalDebian [ "--source-package-name", "autobuilder-seereason" ]
 auto_update = debianize (hackage "auto-update")
+base_compat = debianize (hackage "base-compat")
 base_orphans = debianize (hackage "base-orphans")
 base16_bytestring = debianize (hackage "base16-bytestring")
 base64_bytestring = debianize (hackage "base64-bytestring" `tflag` P.DebVersion "1.0.0.1-1")
