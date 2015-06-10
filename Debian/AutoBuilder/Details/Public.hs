@@ -891,6 +891,7 @@ ghcjs_group =
                   [ adjunctions
                   , ansi_terminal
                   , ansi_wl_pprint
+                  , base_orphans
                   , base16_bytestring
                   , base64_bytestring
                   , bifunctors
