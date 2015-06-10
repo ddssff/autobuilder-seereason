@@ -972,7 +972,8 @@ ghcjs_group =
 
 darcs_group =
     (named "darcs" . map APackage) =<<
-    sequence [haskell_darcs, regex_applicative]
+    sequence [{-haskell_darcs,-} -- Disabled because it is constantly changing
+              regex_applicative]
 
 --------------------------------------------------
 -- INDIVIDUAL PACKAGES (alphabetized by symbol) --
