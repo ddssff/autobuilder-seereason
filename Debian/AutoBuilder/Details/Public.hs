@@ -141,6 +141,7 @@ main =
              , attempt
              , attoparsec
              , attoparsec_enumerator
+             , base_compat
              , base_orphans
              , base16_bytestring
              , base_unicode_symbols
@@ -604,6 +605,7 @@ happstack =
             , happstack_lite
             , happstack_server_tls
             , time_compat
+            , time_locale_compat
             , base64_bytestring
             , threads
             , list_tries
@@ -891,6 +893,7 @@ ghcjs_group =
                   [ adjunctions
                   , ansi_terminal
                   , ansi_wl_pprint
+                  , base_compat
                   , base_orphans
                   , base16_bytestring
                   , base64_bytestring
@@ -952,6 +955,7 @@ ghcjs_group =
                   , th_lift
                   , threads
                   , time_compat
+                  , time_locale_compat
                   , transformers_base
                   , transformers_compat
                   , unbounded_delays
@@ -1982,6 +1986,7 @@ th_typegraph = debianize (git "http://github.com/seereason/th-typegraph" [])
 threads = debianize (hackage "threads")
 th_reify_many = debianize (hackage "th-reify-many")
 time_compat = debianize (hackage "time-compat")
+time_locale_compat = debianize (hackage "time-locale-compat")
 tinymce = apt "wheezy" "tinymce"
 tls = debianize (hackage "tls")
             -- tls-extra deprecated in favor of tls
