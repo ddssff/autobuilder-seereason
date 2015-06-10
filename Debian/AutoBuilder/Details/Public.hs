@@ -1478,7 +1478,7 @@ haskell_darcs = debianize (darcs "http://darcs.net/reviewed"
                    `flag` P.CabalDebian ["--cabal-flags", "-http"] -- the http flag forces network < 2.5
                    -- `patch` $(embedFile "patches/darcs.diff")
                   )
-haskell_devscripts = git "https://github.com/seereason/haskell-devscripts" [] `flag` P.RelaxDep "python-minimal"
+haskell_devscripts = git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [] `flag` P.RelaxDep "python-minimal"
 haskell_either = debianize (hackage "either")
 haskell_extra = debianize (git ("https://github.com/seereason/sr-extra") []
                             -- Don't push out libghc-extra-dev, it now comes from Neil Mitchell's repo
