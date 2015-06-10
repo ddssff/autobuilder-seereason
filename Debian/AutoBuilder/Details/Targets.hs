@@ -15,7 +15,7 @@ import Debian.Relation (Relation(..), BinPkgName(..))
 import Debian.Relation.String (parseRelations)
 import Debian.Releases (BaseRelease(..), baseRelease, Release)
 import qualified Debian.Repo.Fingerprint as P
-import Debian.AutoBuilder.Details.GHC (ghc)
+-- import Debian.AutoBuilder.Details.GHC (ghc)
 import qualified Debian.AutoBuilder.Details.Public as Public
 import qualified Debian.AutoBuilder.Details.Private as Private
 
@@ -25,23 +25,22 @@ import qualified Debian.AutoBuilder.Details.Private as Private
 -- don't wish to build.
 public :: String -> Release -> P.Packages
 public home release =
-    proc' (ghc release) $
+    proc' $
     {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ evalState (Public.targets) (TargetState {release = release, home = home})
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     --          ++ private home
 
 private :: String -> Release -> P.Packages
 private home release =
-    proc' (ghc release) $
+    proc' $
     {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ evalState (mappend <$> Private.libraries <*> Private.applications) (TargetState {release = release, home = home})
 
-proc' :: Int -> P.Packages -> P.Packages
-proc' n p | n < 708 = p
-proc' n p@(Named {}) = p {packages = proc' n (packages p)}
-proc' n p@(Packages {}) = p {list = map (proc' n) (list p)}
-proc' _ a@(APackage (Package {spec = P.Proc _})) = a
-proc' _ (APackage p) = APackage (p {spec = P.Proc (spec p)})
-proc' _ p = p
+proc' :: P.Packages -> P.Packages
+proc' p@(Named {}) = p {packages = proc' (packages p)}
+proc' p@(Packages {}) = p {list = map proc' (list p)}
+proc' a@(APackage (Package {spec = P.Proc _})) = a
+proc' (APackage p) = APackage (p {spec = P.Proc (spec p)})
+proc' p = p
 
 -- | This prevents every package that uses cabal-debian for
 -- debianization from rebuilding every time the library is revved.

@@ -71,7 +71,6 @@ Library
     Debian.AutoBuilder.Details.Public
     Debian.AutoBuilder.Details.Sources
     Debian.AutoBuilder.Details.Common
-    Debian.AutoBuilder.Details.GHC
 
   if !flag (local-autobuilder)
     Build-Depends: AutoBuilder >= 6.71
