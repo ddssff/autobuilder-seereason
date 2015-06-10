@@ -1358,7 +1358,7 @@ ghcjs_dom_hello = ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
                                                        `flag` P.CabalDebian ["--default-package", "ghcjs-dom-hello"]))
 ghcjs = git "https://github.com/ddssff/ghcjs-debian" [] `relax` "cabal-install"
 ghcjs_prim = debianize (git "https://github.com/ghcjs/ghcjs-prim.git" [])
-ghcjs_tools = git "https://github.com/ghcjs/ghcjs" []
+ghcjs_tools = git "https://github.com/seereason/ghcjs" [Commit "a1f0cb5c28953c243a640995d9abd6179a321bc7"]
                  `patch` $(embedFile "patches/ghcjs-0002-Force-HOME-to-be-usr-lib-ghcjs-during-build.patch")
                  `patch` $(embedFile "patches/ghcjs-0003-Allow-builds-even-if-repository-has-uncommitted-chan.patch")
                  `patch` $(embedFile "patches/ghcjs-0004-Add-debianization.patch")
