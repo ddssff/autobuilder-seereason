@@ -2057,7 +2057,7 @@ web_routes_th = debianize (git "https://github.com/Happstack/web-routes.git" [] 
 web_routes_wai = debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-wai")
 websockets = debianize (git "https://github.com/jaspervdj/websockets.git" [Commit "1b87107c9a4f5db9b05c828de1e80368bc0d3bba" {- avoid rebuilds -}])
 wl_pprint = debianize (hackage "wl-pprint")
-wl_pprint_extras = debianize (hackage "wl-pprint-extras")
+wl_pprint_extras = debianize (git {-"https://github.com/ekmett/wl-pprint-extras"-}"https://github.com/seereason/wl-pprint-extras" [])
 wl_pprint_text = debianize (hackage "wl-pprint-text")
              -- Our applicative-extras repository has several important patches.
 word8 = debianize (hackage "word8")
