@@ -201,6 +201,8 @@ main =
              , data_default_instances_dlist
              , data_default_instances_old_locale
              , dataenc
+             , data_lens
+             , data_lens_template
              , data_object
              , data_ordlist
              , datetime
@@ -912,8 +914,8 @@ ghcjs_group =
                   , data_default_instances_containers
                   , data_default_instances_dlist
                   , data_default_instances_old_locale
-                  -- , data_lens
-                  -- , data_lens_template
+                  , data_lens
+                  , data_lens_template
                   , distributive
                   , double_conversion
                   , exceptions
@@ -1239,8 +1241,8 @@ data_default_instances_containers = debianize (hackage "data-default-instances-c
 data_default_instances_dlist = debianize (hackage "data-default-instances-dlist")
 data_default_instances_old_locale = debianize (hackage "data-default-instances-old-locale")
 dataenc = debianize (hackage "dataenc" `patch` $(embedFile "patches/dataenc.diff"))
--- data_lens = debianize (hackage "data-lens" {- `patch` $(embedFile "patches/data-lens.diff") -})
--- data_lens_template = debianize (hackage "data-lens-template")
+data_lens = debianize (hackage "data-lens" `patch` $(embedFile "patches/data-lens.diff"))
+data_lens_template = debianize (hackage "data-lens-template")
 data_object = debianize (hackage "data-object" `patch` $(embedFile "patches/data-object.diff"))
 data_ordlist = debianize (hackage "data-ordlist")
 data_reify = debianize (hackage "data-reify")
