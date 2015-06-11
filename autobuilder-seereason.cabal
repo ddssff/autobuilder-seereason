@@ -75,7 +75,7 @@ Library
   if !flag (local-autobuilder)
     Build-Depends: AutoBuilder >= 6.71
   else
-    Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen
+    Hs-Source-Dirs: autobuilder, autobuilder/dist/build/autogen
     Build-Depends:
       applicative-extras,
       directory,
@@ -133,7 +133,7 @@ Library
   if !flag (local-debian-repo)
     Build-Depends: debian-repo >= 5.73
   else
-    Hs-Source-Dirs: ../debian-repo
+    Hs-Source-Dirs: debian-repo
     CPP-Options: -DFIXED_VERBOSITY_LEVEL -UNO_VERBOSITY_CONTROL
     Build-Depends:
       bzlib,
@@ -190,7 +190,7 @@ Library
   if !flag (local-cabal-debian)
     Build-Depends: cabal-debian >= 4.24.5
   else
-    Hs-Source-Dirs: ../cabal-debian/src, ../cabal-debian/dist/build/autogen
+    Hs-Source-Dirs: cabal-debian/src, cabal-debian/dist/build/autogen
     Build-Depends: data-default, set-extra, Diff, memoize, hsemail, newtype-generics, bifunctors, ansi-wl-pprint, optparse-applicative
     Exposed-Modules:
       Debian.Debianize
@@ -226,7 +226,7 @@ Library
   if !flag (local-debian)
     Build-Depends: debian >= 3.82
   else
-    Hs-Source-Dirs: ../debian-haskell
+    Hs-Source-Dirs: debian-haskell
     Build-Depends:
       HaXml,
       HUnit,
@@ -273,7 +273,7 @@ Library
   if !flag (local-process-extras)
     Build-Depends: process-extras >= 0.2.0
   else
-    Hs-Source-Dirs: ../process-extras/src
+    Hs-Source-Dirs: process-extras/src
     Exposed-Modules:
       System.Process.ByteString
       System.Process.ByteString.Lazy
@@ -284,7 +284,7 @@ Library
       Utils
 
   if flag(local-filemanip-extra)
-    Hs-Source-Dirs: ../filemanip-extra
+    Hs-Source-Dirs: filemanip-extra
     Exposed-Modules:
       System.FilePath.Extra
       System.FilePath.Extra2
@@ -293,7 +293,7 @@ Library
     Build-Depends: filemanip-extra
 
   if flag(local-unixutils)
-    Hs-Source-Dirs: ../haskell-unixutils
+    Hs-Source-Dirs: haskell-unixutils
     Exposed-Modules:
       System.Unix.Chroot
       System.Unix.Directory
@@ -340,7 +340,7 @@ Executable seereason-darcs-backups
   if !flag (local-process-extras)
     Build-Depends: archive >= 1.7
   else
-    Hs-Source-Dirs: ../archive, ../debian-haskell, ../mirror, ../process-extras/src
+    Hs-Source-Dirs: archive, debian-haskell, mirror, process-extras/src
     Build-Depends:
       applicative-extras,
       bytestring,
