@@ -75,7 +75,7 @@ image_cache = debianize (git "https://github.com/seereason/image-cache.git" [] {
 -- itself.
 mimo = debianize (git "ssh://git@github.com/seereason/mimo.git" [])
 ontology = git "ssh://git@github.com/seereason/ontology.git" []
-seereason = git "ssh://git@github.com/seereason/seereason" []
+seereason = debianize (git "ssh://git@github.com/seereason/seereason" [])
 seereasonpartners_dot_com = debianize (darcs (privateRepo </> "seereasonpartners-clckwrks") `cd` "seereasonpartners-dot-com" `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
 stripe_core = debianize (git "ssh://git@github.com/stripe-haskell/stripe" [Branch "stripe-haskell-transition"]
                                  `cd` "stripe-core")
