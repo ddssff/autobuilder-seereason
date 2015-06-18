@@ -1125,10 +1125,10 @@ bytestring_trie = debianize (hackage "bytestring-trie")
 bzlib = debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
              -- , debianize (hackage "cairo-pdf")
 cabal_debian = git "https://github.com/ddssff/cabal-debian" []
-cabal = debianize (hackage "Cabal") -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
+cabal = debianize (hackage "Cabal" `flag` P.CabalPin "1.22.3.0" {-avoid rebuild-}) -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
 cabal_install = debianize (hackage "cabal-install"
                              -- `patch` $(embedFile "patches/cabal-install.diff")
-                             -- `flag` P.CabalPin "1.22.3.0"
+                             `flag` P.CabalPin "1.22.4.0" {-avoid rebuild-}
                              `flag` P.CabalDebian ["--default-package", "cabal-install"])
 cabal_macosx = debianize (hackage "cabal-macosx" `patch` $(embedFile "patches/cabal-macosx.diff"))
 c_ares = apt "sid" "c-ares"
@@ -1288,7 +1288,7 @@ edisonAPI = (release <$> get) >>= \ r ->
 edisonCore = (debianize (hackage "EdisonCore" `qflag` P.DebVersion "1.2.1.3-9build2"))
 ekg_core = debianize (hackage "ekg-core")
 enclosed_exceptions = debianize (hackage "enclosed-exceptions")
-entropy = debianize (hackage "entropy")
+entropy = debianize (hackage "entropy" `flag` P.CabalPin "0.3.6" {-avoid rebuild-})
 enumerator = debianize (hackage "enumerator" `qflag` P.DebVersion "0.4.19-1build2")
 erf = debianize (hackage "erf"
                             `pflag` P.DebVersion "2.0.0.0-3"
@@ -1577,7 +1577,7 @@ html_xml_utils = (baseRelease . release <$> get) >>= \ r ->
                  Quantal -> zero -- This build hangs when performing tests
                  Wheezy -> zero -- This build hangs when performing tests
                  _ -> apt "sid" "html-xml-utils"
-http_client = debianize (hackage "http-client")
+http_client = debianize (hackage "http-client" `flag` P.CabalPin "0.4.11.3" {-avoid rebuild-})
 http_client_tls = debianize (hackage "http-client-tls")
     -- Deprecated in favor of http-conduit
     -- , debianize (hackage "http-client-conduit" {- `flag` P.CabalPin "0.2.0.1" -})
@@ -1589,7 +1589,9 @@ http_common = debianize (hackage "http-common")
 http_conduit = debianize (hackage "http-conduit")
 http_date = debianize (hackage "http-date")
 http = debianize (hackage "HTTP")
-http_streams = debianize (hackage "http-streams" {- `patch` $(embedFile "patches/http-streams.diff") -})
+http_streams = debianize (hackage "http-streams"
+                            `flag` P.CabalPin "0.8.3.2" {-avoid rebuild-}
+                            {- `patch` $(embedFile "patches/http-streams.diff") -} )
 http_types = debianize (hackage "http-types" {- `patch` $(embedFile "patches/http-types.diff") -})
 hUnit = debianize (hackage "HUnit" `tflag` P.DebVersion "1.2.5.2-1")
 hunt = debianize (git "https://github.com/hunt-framework/hunt.git" [] `cd` "hunt-searchengine" )
@@ -1904,7 +1906,7 @@ shellmate = hack "shellmate"
 shelly = debianize (hackage "shelly")
 showplease = debianize (git "https://github.com/ddssff/showplease" [])
 silently = debianize (hackage "silently")
-simple_sendfile = debianize (hackage "simple-sendfile")
+simple_sendfile = debianize (hackage "simple-sendfile" `flag` P.CabalPin "0.2.20" {-avoid rebuild-})
 singletons = debianize (hackage "singletons")
 smallcheck = debianize (hackage "smallcheck")
 smtpClient = debianize (hackage "SMTPClient")
