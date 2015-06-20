@@ -12,6 +12,10 @@ Build-Type:       Custom
 Category:         Web, Language
 Cabal-version:    >= 1.13
 
+flag pretty112
+  Description: Is Text.PrettyPrint.HughesPJClass available?
+  Default: True
+
 flag local-autobuilder
   Description: Link directly to the source of the autobuilder library
   Default: False
@@ -86,7 +90,6 @@ Library
       mtl,
       network-uri,
       parsec,
-      prettyclass,
       pureMD5,
       regex-compat,
       regex-tdfa,
@@ -95,6 +98,10 @@ Library
       time,
       utf8-string,
       zlib
+    if flag(pretty112)
+      Build-Depends: pretty >= 1.1.2
+    else
+      Build-Depends: prettyclass
     Exposed-modules:
       Debian.AutoBuilder.BuildEnv,
       Debian.AutoBuilder.BuildTarget,
@@ -317,7 +324,11 @@ Executable autobuilder-seereason
     process,
     text
   if flag (local-autobuilder)
-    Build-Depends: mtl, tar, time, magic, sr-extra, directory, Unixutils, utf8-string, syb, network-uri, bzlib, unix, regex-compat, prettyclass, transformers, zlib, pureMD5, ListLike, old-locale, applicative-extras, lens, template-haskell, old-time, deepseq, exceptions
+    Build-Depends: mtl, tar, time, magic, sr-extra, directory, Unixutils, utf8-string, syb, network-uri, bzlib, unix, regex-compat, transformers, zlib, pureMD5, ListLike, old-locale, applicative-extras, lens, template-haskell, old-time, deepseq, exceptions
+    if flag(pretty112)
+      Build-Depends: pretty >= 1.1.2
+    else
+      Build-Depends: prettyclass
   else
     Build-Depends: AutoBuilder
   if flag (local-debian-repo)
@@ -364,8 +375,10 @@ Executable seereason-darcs-backups
       exceptions,
       deepseq,
       filepath,
-      pretty,
       help,
       bzlib,
-      mtl,
-      prettyclass
+      mtl
+    if flag(pretty112)
+      Build-Depends: pretty >= 1.1.2
+    else
+      Build-Depends: prettyclass

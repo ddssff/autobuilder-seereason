@@ -1,0 +1,63 @@
+--- old/src-bin/Haddock.hs
++++ new/src-bin/Haddock.hs
+@@ -7,7 +7,8 @@
+ module Main where
+ 
+ import           Control.Exception
+-import           Control.Monad.IO.Class
++import           Control.Monad.IO.Class hiding (liftIO)
++import           GhcMonad
+ import           Data.Monoid
+ import           System.Exit
+ 
+@@ -61,7 +62,7 @@ withGhcjs' libDir flags ghcActs = runGhc (Just libDir) $ do
+       Ghcjs.fixNameCache
+       ghcActs dynflags''
+   where
+-    parseGhcFlags :: MonadIO m => DynFlags -> m DynFlags
++    parseGhcFlags :: GhcMonad m => DynFlags -> m DynFlags
+     parseGhcFlags dynflags = do
+       -- TODO: handle warnings?
+ 
+--- old/src/Compiler/GhcjsProgram.hs	2015-01-05 12:59:37.581183933 -0800
++++ new/src/Compiler/GhcjsProgram.hs	2015-06-20 07:11:29.767780813 -0700
+@@ -29,7 +29,7 @@
+ import           Control.Applicative
+ import           Control.Concurrent.MVar (readMVar)
+ import           Control.Monad
+-import           Control.Monad.IO.Class
++import           Control.Monad.IO.Class hiding (liftIO)
+ 
+ import qualified Data.ByteString as B
+ import           Data.IORef
+@@ -306,7 +306,7 @@
+ 
+ -- | make sure we don't show panic messages with the "report GHC bug" text, since
+ --   those are probably our fault.
+-ghcjsErrorHandler :: (ExceptionMonad m, MonadIO m)
++ghcjsErrorHandler :: (ExceptionMonad m)
+                     => FatalMessager -> FlushOut -> m a -> m a
+ ghcjsErrorHandler fm (FlushOut flushOut) inner =
+   -- top-level exception handler: any unrecognised exception is a compiler bug.
+@@ -354,7 +354,7 @@
+                   ++ s ++ "\n"
+   _ -> show e
+ 
+-ghcjsCleanupHandler :: (ExceptionMonad m, MonadIO m)
++ghcjsCleanupHandler :: (ExceptionMonad m)
+                     => DynFlags -> GhcjsEnv -> m a -> m a
+ ghcjsCleanupHandler dflags env inner =
+       defaultCleanupHandler dflags inner `gfinally`
+diff --git a/utils/update_archives.sh b/utils/update_archives.sh
+index b5e46e6..1b16f3d 100755
+--- old/utils/update_archives.sh
++++ new/utils/update_archives.sh
+@@ -166,7 +166,7 @@ echo "preparing boot and shims cache in ${BUILDDIR}"
+   # prepare ghcjs-boot repository
+   ( git clone "${BOOT_ORIGIN}"
+     cd ghcjs-boot
+-    git checkout "${BRANCH}"
++    git checkout "ghc-7.10"
+     git submodule update --init --recursive
+     prepare_packages "boot"
+     
