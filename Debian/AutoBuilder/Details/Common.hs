@@ -8,7 +8,6 @@ import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
-import Data.Monoid ((<>))
 import Data.String (IsString(fromString))
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages (flag, Package(Package, spec), TSt)
@@ -18,7 +17,7 @@ import System.FilePath (takeBaseName)
 import Control.Monad.State (get)
 import Debian.AutoBuilder.Types.Packages as P (TargetState(release), PackageFlag, hackage, debianize, git)
 import Debian.Debianize as D
-    (CabalInfo, CabalM, execCabalM, debInfo, compilerFlavor, binaryDebDescription, flags, relations, conflicts, provides, replaces)
+    (CabalInfo, CabalM, execCabalM, debInfo, compilerFlavor, binaryDebDescription, flags, relations, conflicts, replaces)
 import Debian.Relation (BinPkgName(..), Relation(Rel), Relations)
 import Debian.Releases (baseRelease, BaseRelease(..), Release(..))
 import Distribution.Compiler (CompilerFlavor(GHCJS))

@@ -184,6 +184,7 @@ main =
              , crypto
              , crypto_api
              , cryptohash
+             , cryptonite
              , crypto_pubkey_types
              , crypto_random
              , crypto_random_api
@@ -988,7 +989,8 @@ darcs_group =
 abstract_deque :: TSt Package
 abstract_deque = debianize (hackage "abstract-deque")
 abstract_par = debianize (hackage "abstract-par")
-acid_state = debianize (hackage "acid-state" {- `patch` $(embedFile "patches/acid-state.diff") -})
+-- acid_state = debianize (hackage "acid-state" {- `patch` $(embedFile "patches/acid-state.diff") -})
+acid_state = debianize (git "https://github.com/acid-state/acid-state" [])
 adjunctions = debianize (hackage "adjunctions")
 aeson = debianize (hackage "aeson")
 aeson_pretty = debianize (hackage "aeson-pretty")
@@ -1218,6 +1220,7 @@ crypto = debianize (hackage "Crypto")
 cryptohash_conduit = debianize (hackage "cryptohash-conduit")
 cryptohash_cryptoapi = debianize (hackage "cryptohash-cryptoapi")
 cryptohash = debianize (hackage "cryptohash")
+cryptonite = debianize (hackage "cryptonite")
 crypto_numbers = debianize (hackage "crypto-numbers")
 crypto_pubkey = debianize (hackage "crypto-pubkey")
 crypto_pubkey_types = debianize (hackage "crypto-pubkey-types")
@@ -2084,7 +2087,7 @@ xml_conduit = debianize (hackage "xml-conduit")
 xml = debianize (hackage "xml") -- apt (rel release "wheezy" "quantal") "haskell-xml"
 xmlgen = debianize (hackage "xmlgen")
 xmlhtml = debianize (hackage "xmlhtml")
-xml_types = debianize (hackage "xml-types" `tflag` P.DebVersion "0.3.4-1")
+xml_types = debianize (hackage "xml-types")
 xss_sanitize = debianize (hackage "xss-sanitize" `qflag` P.DebVersion "0.3.2-1build1")
 yaml = debianize (hackage "yaml")
 yaml_light = debianize (hackage "yaml-light"

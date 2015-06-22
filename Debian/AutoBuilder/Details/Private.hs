@@ -77,14 +77,11 @@ mimo = debianize (git "ssh://git@github.com/seereason/mimo.git" [])
 ontology = git "ssh://git@github.com/seereason/ontology.git" []
 seereason = debianize (git "ssh://git@github.com/seereason/seereason" [])
 seereasonpartners_dot_com = debianize (darcs (privateRepo </> "seereasonpartners-clckwrks") `cd` "seereasonpartners-dot-com" `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
-stripe_core = debianize (git "ssh://git@github.com/stripe-haskell/stripe" [Branch "stripe-haskell-transition"]
-                                 `cd` "stripe-core")
-stripe_http_streams = debianize (git "ssh://git@github.com/stripe-haskell/stripe" [Branch "stripe-haskell-transition"]
-                                    `cd` "stripe-http-streams"
-                                    `flag` P.CabalDebian [{-"--no-tests"-}])
-stripe_haskell = debianize (git "ssh://git@github.com/stripe-haskell/stripe" [Branch "stripe-haskell-transition"]
-                                    `cd` "stripe"
-                                    `flag` P.CabalDebian [{-"--no-tests"-}])
+-- stripeRepo = "ssh://git@github.com/stripe-haskell/stripe"
+stripeRepo = "file:///home/dsf/git/stripe"
+stripe_core = debianize (git stripeRepo [] `cd` "stripe-core")
+stripe_http_streams = debianize (git stripeRepo [] `cd` "stripe-http-streams" `flag` P.CabalDebian [{-"--no-tests"-}])
+stripe_haskell = debianize (git stripeRepo [] `cd` "stripe" `flag` P.CabalDebian [{-"--no-tests"-}])
 -- stripe_http_conduit = debianize (darcs (privateRepo </> "stripe") `cd` "stripe-http-conduit")
 task_manager = debianize (git "ssh://git@github.com/seereason/task-manager.git" [])
 th_path = debianize (git "ssh://git@github.com/seereason/th-path.git" [])
