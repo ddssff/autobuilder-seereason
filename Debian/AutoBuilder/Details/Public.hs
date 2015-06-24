@@ -12,7 +12,7 @@ import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState(release), mapPackages,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, KeepRCS),
-                                               Packages(..), Package(..), flags, spec, hackage, debianize, flag, patch, darcs, apt, git, cd, proc, debdir)
+                                               Packages(..), Package(..), flags, spec, hackage, debianize, flag, patch, darcs, apt, git, hg, cd, proc, debdir)
 import Debian.Debianize as D
     (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
@@ -992,7 +992,7 @@ abstract_deque :: TSt Package
 abstract_deque = debianize (hackage "abstract-deque")
 abstract_par = debianize (hackage "abstract-par")
 -- acid_state = debianize (hackage "acid-state" {- `patch` $(embedFile "patches/acid-state.diff") -})
-acid_state = debianize (git "https://github.com/acid-state/acid-state" [])
+acid_state = debianize (git "https://github.com/seereason/acid-state" [])
 adjunctions = debianize (hackage "adjunctions")
 aeson = debianize (hackage "aeson")
 aeson_pretty = debianize (hackage "aeson-pretty")
@@ -1505,9 +1505,10 @@ haskell_src = debianize (hackage "haskell-src" `flag` P.BuildDep "happy")
 haskell_src_exts = debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
                           hackage "haskell-src-exts"
                             `flag` P.BuildDep "happy")
--- haskell_src_meta = debianize (git "https://github.com/bmillwood/haskell-src-meta" [] {- hackage "haskell-src-meta" -})
-haskell_src_meta = debianize (git "https://github.com/seereason/haskell-src-meta" []) -- pull request to allow th-orphans-0.12
 -- haskell_src_meta = debianize (hackage "haskell-src-meta")
+-- haskell_src_meta = debianize (git "https://github.com/bmillwood/haskell-src-meta" [])
+haskell_src_meta = debianize (git "https://github.com/seereason/haskell-src-meta" [])
+    -- This pull request has been merged, should switch back to hackage
 haste_compiler = hack "haste-compiler" `flag` P.CabalDebian ["--default-package", "haste-compiler"]
 haste_ffi_parser = git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
 haTeX = debianize (git "https://github.com/Daniel-Diaz/HaTeX" [Commit "cc66573a0587094667a9150411ea748d6592db36" {-avoid rebuild-}]
@@ -1613,8 +1614,8 @@ idris = debianize (hackage "idris"
                        -- `patch` $(embedFile "patches/idris.diff") -- adds *.idr to extra-source-files
                        `flag` P.BuildDep "libgc-dev"
                        `flag` P.CabalDebian ["--default-package", "idris"])
-incremental_sat_solver = pure $ P.Package { P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs ("http://src.seereason.com/haskell-incremental-sat-solver-debian"))
-                                , P.flags = [] }
+-- incremental_sat_solver = pure $ P.Package { P.spec = DebDir (Hackage "incremental-sat-solver") (Darcs ("http://src.seereason.com/haskell-incremental-sat-solver-debian")) , P.flags = [] }
+incremental_sat_solver = debianize (git "https://github.com/seereason/incremental-sat-solver" [])
 indents = debianize (hackage "indents")
 instant_generics = broken $ debianize (hackage "instant-generics" `flag` P.SkipVersion "0.3.7")
 intervals = debianize (hackage "intervals")
@@ -1874,7 +1875,8 @@ regex_tdfa = debianize (hackage "regex-tdfa"
                         `flag` P.ModifyAtoms (substitute "regex-tdfa" "regex-tdfa-rc"))
 regex_tdfa_rc = debianize (hackage "regex-tdfa-rc"
                             `flag` P.ModifyAtoms (substitute "regex-tdfa-rc" "regex-tdfa"))
-reified_records = debianize (hackage "reified-records" `patch` $(embedFile "patches/reified-records.diff"))
+-- reified_records = debianize (hackage "reified-records" `patch` $(embedFile "patches/reified-records.diff"))
+reified_records = debianize (hg "https://bitbucket.org/ddssff/reified-records")
 resourcet = debianize (hackage "resourcet")
 rJson = debianize (hackage "RJson"
                             `patch` $(embedFile "patches/RJson.diff")
