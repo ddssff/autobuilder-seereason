@@ -62,7 +62,6 @@ Library
     filepath,
     file-embed,
     lens,
-    lens-compat,
     mtl,
     process,
     text,

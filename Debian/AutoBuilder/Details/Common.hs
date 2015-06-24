@@ -3,7 +3,7 @@
 module Debian.AutoBuilder.Details.Common where
 
 import Control.Applicative (pure, (<$>))
-import Control.Lens.Compat (Lens, (%=), access)
+import Control.Lens (use, Lens', (%=))
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
@@ -144,7 +144,7 @@ gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
 -- can't build packages that expect regex-tdfa using regex-tdfa-rc.
 substitute :: String -> String -> CabalInfo -> CabalInfo
 substitute newer older = execCabalM $ do
-  prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> access (debInfo . D.flags . compilerFlavor)
+  prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> use (debInfo . D.flags . compilerFlavor)
   addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . conflicts)
   addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . replaces)
 
@@ -160,7 +160,7 @@ substitute newer older = execCabalM $ do
 -- The 'replacement' function is probably more suitable in most cases.
 replacement :: String -> String -> CabalInfo -> CabalInfo
 replacement newer older = execCabalM $ do
-  prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> access (debInfo . D.flags . compilerFlavor)
+  prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> use (debInfo . D.flags . compilerFlavor)
   addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . conflicts)
   -- If we include the Provides: relationship then we will never
   -- switch between these packages - it will look to apt like whatever
@@ -170,7 +170,7 @@ replacement newer older = execCabalM $ do
   -- addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . provides)
   addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . replaces)
 
-addDeps :: String -> String -> String -> (BinPkgName -> Lens CabalInfo Relations) -> CabalM ()
+addDeps :: String -> String -> String -> (BinPkgName -> Lens' CabalInfo Relations) -> CabalM ()
 addDeps newer older pre lns = do
   addDeps' "-dev"
   addDeps' "-prof"
@@ -178,7 +178,7 @@ addDeps newer older pre lns = do
     where
       addDeps' :: String -> CabalM ()
       addDeps' suf =
-          let lns' :: Lens CabalInfo Relations
+          let lns' :: Lens' CabalInfo Relations
               lns' = lns (BinPkgName (pre ++ newer ++ suf)) in
           do lns' %= (++ [[Rel (BinPkgName (pre ++ older ++ suf)) Nothing Nothing]])
              lns' %= (++ [[Rel (BinPkgName (pre ++ older ++ suf)) Nothing Nothing]])
