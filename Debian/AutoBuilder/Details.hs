@@ -120,19 +120,11 @@ myIncludePackages myBuildRelease =
     , "debian-keyring"
     , "locales"
     , "software-properties-common" -- Required to run add-apt-repository to use a PPA.
-    , "ghc", "ghcjs"               -- We need ghc and ghcjs to figure out bundled package lists.
-                                   -- Just be careful when trying to upgrade the compiler, if
-                                   -- you need to back a build out you will tear your hair out
-                                   -- figureing why the new compiler is still there!
-    -- , "autobuilder-seereason"   -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
     -- , "perl-base"
     -- , "gnupg"
     -- , "dpkg"
     -- , "locales"
     -- , "language-pack-en"
-    -- , "ghc6"
-    -- , "ghc6-doc"
-    -- , "ghc6-prof"
     -- , "makedev"
     ] ++
     -- Private releases generally have ssh URIs in their sources.list,
@@ -141,29 +133,19 @@ myIncludePackages myBuildRelease =
     (if isPrivateRelease myBuildRelease then ["ssh"] else []) ++
     case releaseRepoName (baseRelease myBuildRelease) of
       Debian -> []
-      Ubuntu ->
-          ["ubuntu-keyring"] ++
-          case baseRelease myBuildRelease of
-            Trusty -> []
-            Saucy -> []
-            Raring -> []
-            Quantal -> []
-            Precise -> []
-            Oneiric -> []
-            Natty -> []
-            Maverick -> []
-            Lucid -> []
-            Karmic -> [{-"upstart"-}]
-            Jaunty -> [{-"upstart-compat-sysv"-}]
-            Intrepid -> [{-"upstart-compat-sysv", "belocs-locales-bin"-}]
-            Hardy -> [{-"upstart-compat-sysv", "belocs-locales-bin"-}]
-            _ -> [{-"belocs-locales-bin"-}]
+      Ubuntu -> ["ubuntu-keyring"]
       _ -> error $ "Invalid base distro: " ++ show myBuildRelease
 
 -- This will not be available when a new release is created, so we
--- have to make due until it gets built and uploaded.
+-- have to make do until it gets built and uploaded.
 myOptionalIncludePackages _myBuildRelease =
-    [ "seereason-keyring" ]
+    [ "seereason-keyring"
+    , "ghc"                        -- We need ghc and ghcjs to figure out bundled package lists.
+    , "ghcjs"                      -- Just be careful when trying to upgrade the compiler, if
+                                   -- you need to back a build out you will tear your hair out
+                                   -- figureing why the new compiler is still there!
+    , "autobuilder-seereason"      -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
+    ]
 
 myExcludePackages _ = []
 
