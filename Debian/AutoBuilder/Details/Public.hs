@@ -355,6 +355,8 @@ main =
              , nats
              , network_info
              , network_uri
+             , old_locale
+             , old_time
              , oo_prototypes
              , broken openid
              , operational
@@ -500,7 +502,7 @@ compiler =
     (named "ghc" . map APackage) =<<
     case r of
       Squeeze -> sequence [ ghc76 , po4a, debhelper, dpkg, makedev ]
-      _ -> sequence [{-ghc78-}] -- Don't build ghc78 right now, the version we have is fine
+      _ -> sequence [ghc710]
 
 platform :: TSt P.Packages
 platform =
@@ -1354,16 +1356,18 @@ generic_deriving = debianize (hackage "generic-deriving")
 genI = debianize (darcs "http://hub.darcs.net/kowey/GenI" `patch` $(embedFile "patches/GenI.diff"))
 ghc76 = ghcFlags $ apt "sid" "ghc" `patch` $(embedFile "patches/ghc.diff")
 ghc78 = ghcFlags $ apt "experimental" "ghc" `patch` $(embedFile "patches/trac9262.diff")
-ghcjs_jquery = ghcjs_flags (debianize (git "https://github.com/cliffordbeshers/ghcjs-jquery" []) `putSrcPkgName` "ghcjs-ghcjs-jquery")
-ghcjs_vdom = ghcjs_flags (debianize (git "https://github.com/seereason/ghcjs-vdom" []) `putSrcPkgName` "ghcjs-ghcjs-vdom")
+ghc710 = ghcFlags $ apt "experimental" "ghc"
+                      `patch` $(embedFile "patches/ghc.diff")
+ghcjs_jquery = ghcjs_flags (debianize (git "https://github.com/seereason/ghcjs-jquery" [Branch "base48"]) `putSrcPkgName` "ghcjs-ghcjs-jquery")
+ghcjs_vdom = ghcjs_flags (debianize (git "https://github.com/seereason/ghcjs-vdom" [Branch "base48"]) `putSrcPkgName` "ghcjs-ghcjs-vdom")
 ghcjs_ffiqq = ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-ffiqq" []) `putSrcPkgName` "ghcjs-ghcjs-ffiqq")
 ghcjs_dom = ghcjs_flags (debianize (hackage "ghcjs-dom"))
 ghcjs_dom_hello = ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
                                                       `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
                                                        `flag` P.CabalDebian ["--default-package", "ghcjs-dom-hello"]))
 ghcjs = git "https://github.com/ddssff/ghcjs-debian" [] `relax` "cabal-install"
-ghcjs_prim = debianize (git "https://github.com/ghcjs/ghcjs-prim.git" [])
-ghcjs_tools = git "https://github.com/seereason/ghcjs" [Commit "a1f0cb5c28953c243a640995d9abd6179a321bc7"]
+ghcjs_prim = debianize (git "https://github.com/ghcjs/ghcjs-prim.git" [Branch "ghc-7.10"])
+ghcjs_tools = git "https://github.com/ghcjs/ghcjs" []
                  `patch` $(embedFile "patches/ghcjs-0002-Force-HOME-to-be-usr-lib-ghcjs-during-build.patch")
                  `patch` $(embedFile "patches/ghcjs-0003-Allow-builds-even-if-repository-has-uncommitted-chan.patch")
                  `patch` $(embedFile "patches/ghcjs-0004-Add-debianization.patch")
@@ -1371,7 +1375,7 @@ ghcjs_tools = git "https://github.com/seereason/ghcjs" [Commit "a1f0cb5c28953c24
                  `patch` $(embedFile "patches/ghcjs-0006-Force-the-use-of-branch-master-of-the-shims-repo.patch")
                  `patch` $(embedFile "patches/ghcjs-0007-Use-ghc-in-prepare_setup_scripts-if-ghcjs-not-availa.patch")
                  `patch` $(embedFile "patches/ghcjs-0008-Restrict-the-transformers-package-to-the-exact-versi.patch")
-                 `patch` $(embedFile "patches/ghcjs-0009-Add-a-MonadTrans-instance-for-ReaderT-and-a-liftRead.patch")
+                 `patch` $(embedFile "patches/ghcjs-0011-hide-liftio.patch")
                  `relax` "cabal-install"
                  `flag` P.KeepRCS
 ghc_mtl = skip (Reason "No instance for (MonadIO GHC.Ghc)") $ debianize (hackage "ghc-mtl")
@@ -1402,13 +1406,12 @@ gtk2hs_buildtools = debianize (hackage "gtk2hs-buildtools"
              -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
 gyp = apt "sid" "gyp"
 haddock_api = debianize (hackage "haddock-api"
-                            `flag` P.CabalPin "2.15.0.2" -- 2.16 requires ghc-7.10
                             `flag` P.CabalDebian ["--default-package", "haddock-api"]
                             -- FIXME - This cabal-debian stuff does nothing because this isn't a Debianize target
                             `flag` P.ModifyAtoms (execCabalM $ (debInfo . rulesFragments) %= Set.insert (Text.unlines
                                                                [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])))
-haddock_library = debianize (hackage "haddock-library"`flag` P.CabalPin "1.1.1") -- 1.2.0 is too new for haddock-api-2.15.0.2
+haddock_library = debianize (hackage "haddock-library")
 hamlet = debianize (hackage "hamlet")
 happstack_authenticate_0 = debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" []
                            `flag` P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0",
@@ -1619,7 +1622,7 @@ ioRefCAS = skip (Reason "Version 0.2.0.1 build fails") $ debianize (hackage "IOR
 io_storage = debianize (hackage "io-storage" `pflag` P.DebVersion "0.3-2" `tflag` P.DebVersion "0.3-5")
 io_streams = debianize (git "https://github.com/seereason/io-streams" []) -- pull request to allow atto-parsec-0.13
 iproute = debianize (hackage "iproute")
-ircbot = debianize (hackage "ircbot" `flag` P.CabalPin "0.6.2")
+ircbot = debianize (hackage "ircbot")
 irc = debianize (hackage "irc")
 iso3166_country_codes = debianize (hackage "iso3166-country-codes")
 ixset = debianize (git "https://github.com/Happstack/ixset.git" []) -- , debianize (hackage "ixset")
@@ -1761,6 +1764,8 @@ nodejs = skip (Reason "test failure on switch from 0.10.29~dfsg-1 to 0.10.29~dfs
 numeric_extras = debianize (hackage "numeric-extras" `tflag` P.DebVersion "0.0.3-1")
 numInstances = debianize (hackage "NumInstances")
 objectName = debianize (hackage "ObjectName")
+old_locale = debianize (hackage "old-locale")
+old_time = debianize (hackage "old-time")
 oo_prototypes = debianize (hackage "oo-prototypes")
 openGL = debianize (hackage "OpenGL"
                    `flag` P.DevelDep "libglu1-mesa-dev")

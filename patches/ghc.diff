@@ -18,16 +18,3 @@
  Pre-Depends: dpkg (>= 1.16.1)
  Provides:
    haskell-compiler,
---- old/debian/rules	2015-05-13 02:17:55.000000000 -0700
-+++ new/debian/rules	2015-06-06 15:54:17.416008283 -0700
-@@ -166,8 +166,8 @@
- 	    echo 'ghci=ghc-ghci' >> debian/ghc.substvars ; fi
- 
- 	# Add haddock substvars
--	echo "haddock:Depends=haddock-interface-$$(debian/tmp/usr/bin/haddock --interface-version)" >> debian/ghc-doc.substvars
--	echo "haddock:Provides=haddock-interface-$$(debian/tmp/usr/bin/haddock --interface-version)" >> debian/ghc.substvars
-+	echo "haddock:Depends=haddock-interface-$$(debian/tmp/usr/lib/ghc/bin/haddock --interface-version)" >> debian/ghc-doc.substvars
-+	echo "haddock:Provides=haddock-interface-$$(debian/tmp/usr/lib/ghc/bin/haddock --interface-version)" >> debian/ghc.substvars
- 
- ifeq (YES,$(BUILD_HADDOCK_DOCS))
- 	mkdir -p debian/tmp/usr/lib/ghc-doc
