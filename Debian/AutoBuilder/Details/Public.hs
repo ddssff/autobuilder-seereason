@@ -109,11 +109,11 @@ new = (named "new" . map APackage) =<<
       -- , hunt -- depends on text << 1.2
       , iproute
       , monad_parallel
-      , pseudomacros
+      , broken pseudomacros
       , scotty
       , shakespeare
       , shakespeare_js
-      , showplease
+      , broken showplease
       , simple_sendfile
       , spine
       , wai_extra
@@ -131,11 +131,11 @@ main =
              [ abstract_deque
              , abstract_par
              , aeson
-             , agi
+             , broken agi
              , ansi_terminal
              , ansi_wl_pprint
              , applicative_extras
-             , asn1_data
+             , broken asn1_data
              , asn1_types
              , async
              , attempt
@@ -148,7 +148,7 @@ main =
              , bimap
              , bitmap
              , bits_atomic
-             , bitset
+             , broken bitset
              , boomerang
              , bugzilla
              , byteable
@@ -160,23 +160,23 @@ main =
              , bzlib
              , cabal_macosx
              , case_insensitive
-             , cautious_file
-             , cc_delcont
+             , broken cautious_file
+             , broken cc_delcont
              , cereal
              , charset
              , charsetdetect_ae
              , cipher_aes
              , cipher_des
-             , citeproc_hs
+             , broken citeproc_hs
              , clock
              , closure_compiler
              , cmdargs
              , colour
              , concatenative
-             , concrete_typerep
+             , broken concrete_typerep
              , cond
              , configFile
-             , consumer
+             , broken consumer
              , cookie
              , cpphs
              , cprng_aes
@@ -188,7 +188,7 @@ main =
              , crypto_pubkey_types
              , crypto_random
              , crypto_random_api
-             , css
+             , broken css
              , css_text
              , csv
              , curl
@@ -206,7 +206,7 @@ main =
              , data_lens_template
              , data_object
              , data_ordlist
-             , datetime
+             , broken datetime
              , debootstrap
              , decimal
              , deepseq_generics
@@ -217,10 +217,10 @@ main =
              , dlist
              , double_conversion
              , dynamic_state
-             , dropbox_sdk
+             , broken dropbox_sdk
              , dyre
              , edisonAPI
-             , edisonCore
+             , broken edisonCore
              , haskell_either
              , entropy
              , enumerator
@@ -248,7 +248,7 @@ main =
              , gtk2hs_buildtools
              , harp
              , hashable
-             , hashed_storage
+             , broken hashed_storage
              , hashtables
              , haskeline
              , haskell_devscripts
@@ -261,7 +261,7 @@ main =
              , haXml
              , hdaemonize
              , heap
-             , hexpat
+             , broken hexpat
              , hinotify
              -- , hint -- failing
              , hJavaScript
@@ -269,7 +269,7 @@ main =
              , mtl_compat
              , hostname
              , hourglass
-             , hpdf
+             , broken hpdf
              , hS3
              , hs_bibutils
              , hscolour
@@ -310,7 +310,7 @@ main =
              , json
              , kan_extensions
              , language_css
-             , language_ecmascript
+             , broken language_ecmascript
              , language_haskell_extract
              , language_javascript
              , largeword
@@ -330,7 +330,7 @@ main =
              , magic
              , markdown_unlit
              , matrix
-             , maybeT
+             , broken maybeT
              , memoize
              , memory
              , mime
@@ -356,14 +356,14 @@ main =
              , network_info
              , network_uri
              , oo_prototypes
-             , openid
+             , broken openid
              , operational
              , optparse_applicative
              , ordered
              , pandoc_types
              , parseargs
              , parse_dimacs
-             , pbkdf2
+             , broken pbkdf2
              , pcre_light
              , permutation
              , pipes
@@ -408,7 +408,7 @@ main =
              , stateVar
              , stb_image
              , strict
-             , strict_io
+             , broken strict_io
              , stringable
              , stringbuilder
              , stringsearch
@@ -424,14 +424,14 @@ main =
              , tasty_hunit
              , tasty_quickcheck
              , tasty_smallcheck
-             , template_default
+             , broken template_default
              , temporary
              , test_framework
              , test_framework_hunit
-             , test_framework_quickcheck
+             , broken test_framework_quickcheck
              , test_framework_quickcheck2
              , test_framework_th
-             , testing_feat
+             , broken testing_feat
              , texmath
              , text_icu
              , text_show
@@ -463,18 +463,18 @@ main =
              , utility_ht
              , uuid
              , uuid_types
-             , vacuum
+             , broken vacuum
              , validation
              , vault
              , vc_darcs
              , vc_git_dired
              , vector
              , vector_algorithms
-             , virthualenv
+             , broken virthualenv
              -- , vty -- depends on utf8-string << 0.4
              , wai
              , webdriver
-             , web_encodings
+             , broken web_encodings
              , wl_pprint
              , wl_pprint_extras
              , wl_pprint_text
@@ -661,7 +661,7 @@ authenticate_group =
             , resourcet
             , mmorph
             , void
-            , certificate
+            , broken certificate
             , pem
             , zlib_bindings
             , tls
@@ -723,7 +723,7 @@ conduit_group =
 happstackdotcom =
     (named "happstackdotcom" . map APackage) =<<
     sequence
-    [ ircbot
+    [ broken ircbot
     , safeSemaphore
     , happstackDotCom_doc ]
 
@@ -812,7 +812,7 @@ sunroof :: TSt P.Packages
 sunroof =
   (named "sunroof" . map APackage) =<<
   sequence
-  [ sunroof_compiler
+  [ broken sunroof_compiler
   , constrained_normal
   , set_monad
   , data_reify
@@ -822,14 +822,14 @@ sunroof =
   , memoTrie
   , value_supply
   , reified_records
-  , seclib
+  , broken seclib
   ]
 
 idris_group :: TSt P.Packages
 idris_group =
     (named "idris" . map APackage) =<<
         sequence
-        [ idris
+        [ broken idris
         , vector_binary_instances
         , trifecta
         , parsers
@@ -843,7 +843,7 @@ idris_group =
 haste :: TSt P.Packages
 haste = (named "haste" . map APackage) =<<
   sequence
-  [ haste_compiler
+  [ broken haste_compiler
   , haste_ffi_parser
   , data_binary_ieee754
   , shellmate
@@ -916,7 +916,7 @@ ghcjs_group =
                   , data_default_instances_dlist
                   , data_default_instances_old_locale
                   , data_lens
-                  , data_lens_template
+                  , broken data_lens_template
                   , distributive
                   , double_conversion
                   , exceptions
@@ -1801,7 +1801,7 @@ placeholders = debianize (hackage "placeholders")
 plugins_auto = debianize (hackage "plugins-auto" `patch` $(embedFile "patches/plugins-auto.diff"))
 plugins = debianize (hackage "plugins" `patch` $(embedFile "patches/plugins.diff"))
 plugins_group = (named "plugins" . map APackage) =<<
-    sequence [ plugins, plugins_ng, fsnotify, plugins_auto, happstack_plugins, web_plugins ]
+    sequence [ plugins, broken plugins_ng, fsnotify, broken plugins_auto, broken happstack_plugins, web_plugins ]
 plugins_group :: TSt P.Packages
 plugins_ng = debianize (git "https://github.com/ddssff/plugins-ng" [])
 po4a = apt "wheezy" "po4a"
