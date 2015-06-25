@@ -203,7 +203,7 @@ main =
              , data_default_instances_old_locale
              , dataenc
              , data_lens
-             , data_lens_template
+             , broken data_lens_template
              , data_object
              , data_ordlist
              , broken datetime
@@ -232,7 +232,7 @@ main =
              , extensible_exceptions
              , extra
              , failure
-             , feed
+             , broken feed
              , file_embed
              , filemanip
              , flock
@@ -475,7 +475,7 @@ main =
              , broken virthualenv
              -- , vty -- depends on utf8-string << 0.4
              , wai
-             , webdriver
+             , broken webdriver
              , broken web_encodings
              , wl_pprint
              , wl_pprint_extras
@@ -518,7 +518,6 @@ platform =
             , stm_chans
             , zlib
             , mtl
-            , transformers
             , parallel
             , syb
             , fgl
@@ -598,7 +597,7 @@ happstack =
             , sourcemap
             , haskell_packages
             , hse_cpp
-            , happstack_extra
+            , broken happstack_extra -- requires feed
             , traverse_with_class
             , happstack_hsp
             , hsx_jmacro
@@ -725,7 +724,7 @@ conduit_group =
 happstackdotcom =
     (named "happstackdotcom" . map APackage) =<<
     sequence
-    [ broken ircbot
+    [ ircbot
     , safeSemaphore
     , happstackDotCom_doc ]
 
@@ -2008,10 +2007,6 @@ tls = debianize (hackage "tls")
 transformers_base = debianize (hackage "transformers-base")
 transformers_compat = debianize (hackage "transformers-compat"
                    `patch` $(embedFile "patches/transformers-compat.diff"))
-    -- profuctors now includes profunctor-extras
--- ghc-7.10.1 ships transformsers-0.4.2.0, but 0.4.3.0 is available in hackage.
--- So having this is not quite pointless.
-transformers = debianize (hackage "transformers" `flag` P.CabalDebian [ "--debian-name-base", "transformers-4", "--cabal-flags", "-three" ])
 transformers_free = debianize (hackage "transformers-free")
 traverse_with_class = debianize (hackage "traverse-with-class")
 trifecta = debianize (hackage "trifecta" `patch` $(embedFile "patches/trifecta.diff"))
