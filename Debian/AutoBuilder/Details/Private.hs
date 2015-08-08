@@ -22,6 +22,9 @@ libraries =
     -- , stripe_haskell
     , clckwrks_plugin_stripe
     , mimo
+    , mimo_bootstrap
+    , mimo_optimum
+    , mimo_paste
     , th_path
     , task_manager
     , happstack_ghcjs_client
@@ -74,6 +77,9 @@ image_cache = debianize (git "https://github.com/seereason/image-cache.git" [] {
 -- environment, except making it a dependency of the autobuilder
 -- itself.
 mimo = debianize (git "ssh://git@github.com/seereason/mimo.git" [])
+mimo_bootstrap = debianize (git "ssh://git@github.com/seereason/mimo-bootstrap.git" [])
+mimo_optimum = debianize (git "ssh://git@github.com/seereason/mimo-optimum.git" [])
+mimo_paste = debianize (git "ssh://git@github.com/seereason/mimo-paste.git" [])
 ontology = git "ssh://git@github.com/seereason/ontology.git" []
 seereason = debianize (git "ssh://git@github.com/seereason/seereason" [])
 seereasonpartners_dot_com = debianize (darcs (privateRepo </> "seereasonpartners-clckwrks") `cd` "seereasonpartners-dot-com" `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
