@@ -63,7 +63,7 @@ clckwrks_plugin_stripe = debianize (darcs (privateRepo </> "clckwrks-plugin-stri
 clckwrks_theme_seereasonpartners = debianize (darcs (privateRepo </> "seereasonpartners-clckwrks") `cd` "clckwrks-theme-seereasonpartners" `flag` P.BuildDep "hsx2hs" `flag` P.NoDoc)
 clckwrks_theme_appraisalscribe = debianize (darcs (privateRepo </> "clckwrks-theme-appraisalscribe") `flag` P.BuildDep "hsx2hs")
 
-happstack_ghcjs_client = ghcjs_flags $ debianize (git "ssh://git@github.com/seereason/happstack-ghcjs" [] `cd` "happstack-ghcjs-client")
+happstack_ghcjs_client = ghcjs_flags $ debianize (git "ssh://git@github.com/ddssff/happstack-ghcjs" [] `cd` "happstack-ghcjs-client")
 happstack_ghcjs_server =               debianize (git "ssh://git@github.com/seereason/happstack-ghcjs" [] `cd` "happstack-ghcjs-server")
 ghcjs_ghcjs_webmodule =  ghcjs_flags $ debianize (git "ssh://git@github.com/seereason/happstack-ghcjs" [] `cd` "happstack-ghcjs-webmodule")
 happstack_ghcjs_webmodule =            debianize (git "ssh://git@github.com/seereason/happstack-ghcjs" [] `cd` "happstack-ghcjs-webmodule")
