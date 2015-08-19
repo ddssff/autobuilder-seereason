@@ -1176,7 +1176,7 @@ clckwrks = pure (P.Package { P.spec = Debianize'' (Patch
                                                      "e211065e573ea0239d6449882c9d860d")
                                                 "jstree")
                                                (Uri "https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"
-                                                    "5eecb009ae16dc54f261f31da01dbbac")
+                                                    "a6d5fdbbcb076dd9385dd2135dbfb589" {-previouly: "5eecb009ae16dc54f261f31da01dbbac"-})
                                                "json2")
                                               $(embedFile "patches/clckwrks.diff")) Nothing
                         , P.flags = [P.BuildDep "hsx2hs"] })
