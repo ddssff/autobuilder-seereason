@@ -1245,7 +1245,7 @@ data_default_instances_containers = debianize (hackage "data-default-instances-c
 data_default_instances_dlist = debianize (hackage "data-default-instances-dlist")
 data_default_instances_old_locale = debianize (hackage "data-default-instances-old-locale")
 dataenc = debianize (hackage "dataenc" `patch` $(embedFile "patches/dataenc.diff"))
-data_lens = debianize (hackage "data-lens" `patch` $(embedFile "patches/data-lens.diff"))
+data_lens = debianize (hackage "data-lens" {-`patch` $(embedFile "patches/data-lens.diff")-})
 data_lens_template = debianize (hackage "data-lens-template")
 data_object = debianize (hackage "data-object" `patch` $(embedFile "patches/data-object.diff"))
 data_ordlist = debianize (hackage "data-ordlist")
@@ -1447,7 +1447,7 @@ happstack_server = debianize (git "https://github.com/Happstack/happstack-server
 happstack_server_tls = debianize (git "https://github.com/Happstack/happstack-server-tls" [])
 happstack_static_routing = debianize (hackage "happstack-static-routing")
 happstack_util = debianize (hackage "happstack-util"
-                           `patch` $(embedFile "patches/happstack-util.diff")
+                           -- `patch` $(embedFile "patches/happstack-util.diff")
                            `flag` P.DebVersion "6.0.3-1")
             -- This target puts the trhsx binary in its own package, while the
             -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
@@ -1471,9 +1471,7 @@ happy = pure $ P.Package { P.spec = Debianize'' (Hackage "happy") Nothing
                                                              , "HappyTemplate-arrays"
                                                              , "HappyTemplate-arrays-coerce-debug"
                                                              , "GLR_Lib-ghc-debug" ] ) ] }
-harp = debianize (git "https://github.com/seereason/harp" []
-                            `pflag` P.DebVersion "0.4-3"
-                            `tflag` P.DebVersion "0.4-6")
+harp = debianize (git "https://github.com/seereason/harp" [])
 hashable = debianize (hackage "hashable")
 hashed_storage = debianize (hackage "hashed-storage")
              -- Built into ghc-7.8.3
@@ -1560,7 +1558,8 @@ hsp = debianize (hackage "hsp" `flag` P.BuildDep "hsx2hs")
 hspec = debianize (hackage "hspec")
 hspec_core = debianize (hackage "hspec-core")
 hspec_discover = debianize (hackage "hspec-discover")
-hspec_expectations = debianize (hackage "hspec-expectations")
+hspec_expectations = debianize (hackage "hspec-expectations"
+                                  `flag` P.CabalPin "0.7.0" {- 0.7.1 tries to use GHC.SrcLoc, which is not exported until ghc-7.10.1 -})
 hspec_meta = debianize (hackage "hspec-meta")
 hsSyck = debianize (hackage "HsSyck")
 hStringTemplate = skip (Reason "Needs time-1.5") (debianize (hackage "HStringTemplate"))
@@ -2030,7 +2029,7 @@ unordered_containers = debianize (hackage "unordered-containers")
              -- , debianize (hackage "utf8-prelude" `flag` P.DebVersion "0.1.6-1~hackage1")
              -- The GHC in wheezy conflicts with libghc-containers-dev, so we can't build this.
              -- , wonly $ debianize (hackage "containers")
-urlencoded = debianize (hackage "urlencoded" `patch` $(embedFile "patches/urlencoded.diff"))
+urlencoded = debianize (hackage "urlencoded" {-`patch` $(embedFile "patches/urlencoded.diff")-})
 utf8_light = debianize (hackage "utf8-light")
 utf8_string = debianize (hackage "utf8-string"
                             `flag` P.RelaxDep "hscolour"

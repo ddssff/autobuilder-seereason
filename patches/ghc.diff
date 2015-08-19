@@ -1,20 +1,20 @@
 --- old/debian/control	2013-01-29 10:48:34.000000000 -0800
 +++ new/debian/control	2013-04-10 16:53:53.897605223 -0700
-@@ -7,7 +7,7 @@
- Standards-Version: 3.9.5
- Build-Depends:
-   debhelper (>= 9),
+@@ -12,7 +12,7 @@
+   grep-dctrl,
+   pkg-config,
+   ghc,
 -  libgmp-dev,
 +  libgmp3-dev,
-   devscripts,
-   ghc,
-   grep-dctrl,
-@@ -33,7 +33,7 @@
- 
- Package: ghc
- Architecture: any
--Depends: llvm-3.5 [arm64 armel armhf], gcc, libgmp-dev, libffi-dev, libbsd-dev, libc6-dev, libncurses5-dev, ${shlibs:Depends}, ${misc:Depends}
-+Depends: llvm-3.5 [arm64 armel armhf], gcc, libgmp3-dev, libffi-dev, libbsd-dev, libc6-dev, libncurses5-dev, ${shlibs:Depends}, ${misc:Depends}
- Pre-Depends: dpkg (>= 1.16.1)
- Provides:
-   haskell-compiler,
+   llvm-3.5 [arm64 armel armhf],
+   libffi-dev,
+   binutils [arm64 armel armhf],
+@@ -35,7 +35,7 @@
+ Depends:
+   llvm-3.5 [arm64 armel armhf],
+   gcc,
+-  libgmp-dev,
++  libgmp3-dev,
+   libffi-dev,
+   libbsd-dev,
+   libc6-dev,
