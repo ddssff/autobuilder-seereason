@@ -61,15 +61,6 @@ diff -ru old/src/NLP/GenI/Console.hs new/src/NLP/GenI/Console.hs
 diff -ru old/src/NLP/GenI/General.hs new/src/NLP/GenI/General.hs
 --- old/src/NLP/GenI/General.hs	2015-06-20 11:03:05.892109138 -0700
 +++ new/src/NLP/GenI/General.hs	2015-06-24 16:07:19.946246952 -0700
-@@ -109,7 +109,7 @@
- -- ----------------------------------------------------------------------
- 
- isGeniIdentLetter :: Char -> Bool
--isGeniIdentLetter x = isAlphaNum x || x `elem` "_'+-."
-+isGeniIdentLetter x = isAlphaNum x || x `elem` ("_'+-." :: String)
- 
- trim :: String -> String
- trim = reverse . (dropWhile isSpace) . reverse . (dropWhile isSpace)
 @@ -145,7 +145,7 @@
      | T.any naughty x = quoteText x
      | otherwise       = x
