@@ -50,7 +50,7 @@ ghcjs_flags mp =
     mp `putSrcPkgName` makeSrcPkgName (P.spec p)
        `flag` P.CabalDebian ["--ghcjs"]
        -- `flag` P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)]
-       `flag` P.BuildDep "libghc-cabal-122-dev"
+       `flag` P.BuildDep "libghc-cabal-dev" -- Not libghcjs-cabal-dev?
        `flag` P.BuildDep "ghcjs"
        `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
 
