@@ -924,6 +924,7 @@ ghcjs_group =
                   , cereal
                   , comonad
                   , contravariant
+                  , cpphs
                   , cryptohash
                   , data_default_class
                   , data_default
@@ -955,6 +956,7 @@ ghcjs_group =
                   , network_uri
                   , optparse_applicative
                   , parsec
+                  , polyparse
                   , prelude_extras
                   , profunctors
                   , random
@@ -969,6 +971,7 @@ ghcjs_group =
                   , set_extra
                   , smallcheck
                   , split
+                  , haskell_src_exts
                   , stateVar
                   , system_filepath
                   , tagged
@@ -1235,9 +1238,8 @@ consumer = darcs ("http://src.seereason.com/haskell-consumer")
 contravariant = debianize (hackage "contravariant")
 control_monad_free = debianize (hackage "control-monad-free")
 cookie = debianize (hackage "cookie")
-cpphs = debianize (hackage "cpphs") -- apt (rel release "wheezy" "quantal") "cpphs"
-             -- No longer available
-             -- , apt "sid" "debian-keyring=2014.03.03" -- The current version (2014.04.25) seems to be missing some keys that we need
+cpphs = debianize (hackage "cpphs" `flag` P.CabalPin "1.19.2") -- avoid rebuild
+-- apt "sid" "debian-keyring=2014.03.03" -- The current version (2014.04.25) seems to be missing some keys that we need
 cprng_aes = debianize (hackage "cprng-aes")
 cpu = debianize (hackage "cpu" `tflag` P.DebVersion "0.1.2-1")
 crypto_api = debianize (hackage "crypto-api" `qflag` P.DebVersion "0.10.2-1build3")
@@ -1936,7 +1938,7 @@ semigroupoids = debianize (hackage "semigroupoids"
 semigroups = debianize (hackage "semigroups")
 sendfile = debianize (hackage "sendfile" `tflag` P.DebVersion "0.7.9-1")
 setenv = debianize (hackage "setenv")
-set_extra = darcs ("http://src.seereason.com/set-extra")
+set_extra = debianize (darcs ("http://src.seereason.com/set-extra"))
              -- I don't think we use this any more
              -- , debianize (darcs "haskell-old-exception" ("http://src.seereason.com/old-exception"))
 set_monad = debianize (hackage "set-monad")
