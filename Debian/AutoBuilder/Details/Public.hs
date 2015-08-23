@@ -909,6 +909,7 @@ ghcjs_group =
                   [ adjunctions
                   , ansi_terminal
                   , ansi_wl_pprint
+                  , applicative_extras
                   , base_compat
                   , base_orphans
                   , base16_bytestring
@@ -917,8 +918,10 @@ ghcjs_group =
                   , blaze_builder
                   , blaze_html
                   , blaze_markup
+                  , boomerang
                   , byteable
                   , bytestring_builder
+                  , cereal
                   , comonad
                   , contravariant
                   , cryptohash
@@ -937,6 +940,7 @@ ghcjs_group =
                   , filemanip
                   , foreign_var
                   , free
+                  , generic_deriving
                   , hslogger
                   , html
                   , http_types
@@ -945,6 +949,7 @@ ghcjs_group =
                   , logict
                   , lucid
                   , monad_control
+                  , mtl_unleashed
                   , nats
                   , network
                   , network_uri
@@ -956,9 +961,12 @@ ghcjs_group =
                   , reflection
                   , regex_base
                   , regex_tdfa_rc
+                  , safe
+                  , safecopy
                   , semigroupoids
                   , semigroups
                   , sendfile
+                  , set_extra
                   , smallcheck
                   , split
                   , stateVar
@@ -966,9 +974,16 @@ ghcjs_group =
                   , tagged
                   , tasty
                   , tasty_smallcheck
-                  , text_show
+                  -- , text_show
                   , tf_random
+                  , th_context
+                  , th_desugar
+                  , th_expand_syns
+                  , th_kinds
                   , th_lift
+                  , th_orphans
+                  , th_reify_many
+                  , th_typegraph
                   , threads
                   , time_compat
                   , time_locale_compat
@@ -976,6 +991,7 @@ ghcjs_group =
                   , transformers_compat
                   , unbounded_delays
                   , unix_compat
+                  , userid
                   , utf8_string
                   , value_supply
                   , void
@@ -1369,9 +1385,12 @@ ghc710 = ghcFlags $ apt "experimental" "ghc"
 ghcjs_jquery = ghcjs_flags (debianize (git "https://github.com/seereason/ghcjs-jquery" [Branch "base48"]) `putSrcPkgName` "ghcjs-ghcjs-jquery")
 ghcjs_vdom = ghcjs_flags (debianize (git "https://github.com/seereason/ghcjs-vdom" [Branch "base48"]) `putSrcPkgName` "ghcjs-ghcjs-vdom")
 ghcjs_ffiqq = ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-ffiqq" []) `putSrcPkgName` "ghcjs-ghcjs-ffiqq")
-ghcjs_dom = ghcjs_flags (debianize (hackage "ghcjs-dom"))
+ghcjs_dom = ghcjs_flags (debianize (hackage "ghcjs-dom"
+                                      `flag` P.CabalPin "0.1.1.3" -- Version 0.2.* is for the improved-base version of ghcjs
+                                   ))
 ghcjs_dom_hello = ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
                                                       `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
+                                                       `flag` P.CabalPin "1.2.0.0"
                                                        `flag` P.CabalDebian ["--default-package", "ghcjs-dom-hello"]))
 ghcjs = git "https://github.com/ddssff/ghcjs-debian" [] `relax` "cabal-install"
 ghcjs_prim = debianize (git "https://github.com/ghcjs/ghcjs-prim.git" [Branch "ghc-7.10"])
