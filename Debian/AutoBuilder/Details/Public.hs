@@ -919,6 +919,7 @@ ghcjs_group =
                   , blaze_html
                   , blaze_markup
                   , boomerang
+                  , bzlib
                   , byteable
                   , bytestring_builder
                   , cereal
@@ -926,6 +927,7 @@ ghcjs_group =
                   , contravariant
                   , cpphs
                   , cryptohash
+                  , crypto_api
                   , data_default_class
                   , data_default
                   , data_default_instances_base
@@ -936,9 +938,12 @@ ghcjs_group =
                   , broken data_lens_template
                   , distributive
                   , double_conversion
+                  , entropy
                   , exceptions
                   , file_embed
                   , filemanip
+                  , filemanip_extra
+                  , fmlist
                   , foreign_var
                   , free
                   , generic_deriving
@@ -947,6 +952,7 @@ ghcjs_group =
                   , http_types
                   , lens
                   , kan_extensions
+                  , listLike
                   , logict
                   , lucid
                   , monad_control
@@ -957,11 +963,14 @@ ghcjs_group =
                   , optparse_applicative
                   , parsec
                   , polyparse
+                  , pureMD5
                   , prelude_extras
+                  , process_extras
                   , profunctors
                   , random
                   , reflection
                   , regex_base
+                  , regex_tdfa
                   , regex_tdfa_rc
                   , safe
                   , safecopy
@@ -994,6 +1003,7 @@ ghcjs_group =
                   , transformers_compat
                   , unbounded_delays
                   , unix_compat
+                  , unixutils
                   , userid
                   , utf8_string
                   , value_supply

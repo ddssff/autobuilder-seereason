@@ -58,9 +58,9 @@ makeSrcPkgName :: RetrieveMethod -> String
 makeSrcPkgName (Hackage n) = "ghcjs-" ++ map toLower n
 makeSrcPkgName (Debianize'' p s) = fromMaybe (makeSrcPkgName p) s
 makeSrcPkgName (Patch p _) = makeSrcPkgName p
-makeSrcPkgName (Git url _) = "ghcjs-" ++ takeBaseName url
-makeSrcPkgName (Cd dir _) = "ghcjs-" ++ takeBaseName dir
-makeSrcPkgName (Darcs path) = "ghcjs-" ++ takeBaseName path
+makeSrcPkgName (Git url _) = "ghcjs-" ++ map toLower (takeBaseName url)
+makeSrcPkgName (Cd dir _) = "ghcjs-" ++ map toLower (takeBaseName dir)
+makeSrcPkgName (Darcs path) = "ghcjs-" ++ map toLower (takeBaseName path)
 makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
 
 putSrcPkgName :: TSt Package -> String -> TSt Package
