@@ -1486,12 +1486,6 @@ happstack_search = darcs ("http://src.seereason.com/happstack-search")
 happstack_server = debianize (git "https://github.com/Happstack/happstack-server" [])
 happstack_server_tls = debianize (git "https://github.com/Happstack/happstack-server-tls" [])
 happstack_static_routing = debianize (hackage "happstack-static-routing")
-happstack_util = debianize (hackage "happstack-util"
-                           -- `patch` $(embedFile "patches/happstack-util.diff")
-                           `flag` P.DebVersion "6.0.3-1")
-            -- This target puts the trhsx binary in its own package, while the
-            -- sid version puts it in libghc-hsx-dev.  This makes it inconvenient to
-            -- use debianize for natty and apt:sid for lucid.
 happy = pure $ P.Package { P.spec = Debianize'' (Hackage "happy") Nothing
                          , P.flags = [P.RelaxDep "happy",
                                       P.CabalDebian ["--executable", "happy"],
