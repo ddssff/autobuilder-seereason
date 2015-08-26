@@ -3,7 +3,7 @@
 module Debian.AutoBuilder.Details.Common where
 
 import Control.Applicative (pure, (<$>))
-import Control.Lens (use, Lens', (%=))
+import Control.Lens (Lens', use, view, (%=))
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
@@ -15,7 +15,7 @@ import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
 
 import Control.Monad.State (get)
-import Debian.AutoBuilder.Types.Packages as P (TargetState(release), PackageFlag, hackage, debianize, git)
+import Debian.AutoBuilder.Types.Packages as P (TargetState, release, PackageFlag, hackage, debianize, git)
 import Debian.Debianize as D
     (CabalInfo, CabalM, execCabalM, debInfo, compilerFlavor, binaryDebDescription, flags, relations, conflicts, replaces)
 import Debian.Relation (BinPkgName(..), Relation(Rel), Relations)
@@ -84,7 +84,7 @@ newtype Reason = Reason String
 broken :: TSt P.Package -> TSt P.Package
 broken _ = zero
 
-zero = pure $ Package Zero []
+zero = pure $ Package Zero [] []
 
 patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"
@@ -113,18 +113,18 @@ ghc74flag :: P.Package -> P.PackageFlag -> P.Package
 ghc74flag p _ = p
 
 sflag :: TSt Package -> PackageFlag -> TSt Package
-sflag mp fl = (baseRelease . release <$> get) >>= \ r -> (case r of Squeeze -> flag; _ -> noflag) mp fl
+sflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Squeeze -> flag; _ -> noflag) mp fl
 pflag :: TSt Package -> PackageFlag -> TSt Package
-pflag mp fl = (baseRelease . release <$> get) >>= \ r -> (case r of Precise -> flag; _ -> noflag) mp fl
+pflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Precise -> flag; _ -> noflag) mp fl
 tflag :: TSt Package -> PackageFlag -> TSt Package
-tflag mp fl = (baseRelease . release <$> get) >>= \ r -> (case r of Trusty -> flag; _ -> noflag) mp fl
+tflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Trusty -> flag; _ -> noflag) mp fl
 qflag :: TSt Package -> PackageFlag -> TSt Package
-qflag mp fl = (baseRelease . release <$> get) >>= \ r -> (case r of Quantal -> flag; _ -> noflag) mp fl
+qflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Quantal -> flag; _ -> noflag) mp fl
 wflag :: TSt Package -> PackageFlag -> TSt Package
-wflag mp fl = (baseRelease . release <$> get) >>= \ r -> (case r of Wheezy -> flag; _ -> noflag) mp fl
+wflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Wheezy -> flag; _ -> noflag) mp fl
 wskip :: TSt P.Package -> TSt P.Package
-wskip t = (baseRelease . release <$> get) >>= \ r -> case r of Wheezy -> zero; _ -> t
-wonly t = (baseRelease . release <$> get) >>= \ r -> case r of Wheezy -> t; _ -> zero
+wskip t = (baseRelease . view release <$> get) >>= \ r -> case r of Wheezy -> zero; _ -> t
+wonly t = (baseRelease . view release <$> get) >>= \ r -> case r of Wheezy -> t; _ -> zero
 
 noflag :: TSt Package -> PackageFlag -> TSt Package
 noflag mp _ = mp

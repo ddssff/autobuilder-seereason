@@ -26,14 +26,14 @@ import qualified Debian.AutoBuilder.Details.Private as Private
 public :: String -> Release -> P.Packages
 public home release =
     proc' $
-    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ evalState (Public.targets) (TargetState {release = release, home = home})
+    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ evalState (Public.targets) (targetState release home)
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     --          ++ private home
 
 private :: String -> Release -> P.Packages
 private home release =
     proc' $
-    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ evalState (mappend <$> Private.libraries <*> Private.applications) (TargetState {release = release, home = home})
+    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ evalState (mappend <$> Private.libraries <*> Private.applications) (targetState release home)
 
 proc' :: P.Packages -> P.Packages
 proc' p@(Named {}) = p {packages = proc' (packages p)}

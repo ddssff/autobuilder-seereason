@@ -3,16 +3,16 @@
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
 import Control.Applicative ((<$>), pure)
-import Control.Lens ((.=), (%=))
+import Control.Lens (use, view, (.=), (%=))
 import Control.Monad.State (get)
 import Data.FileEmbed (embedFile)
 import Data.Set as Set (insert)
 import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
-import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState(release), mapPackages,
+import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState, release, mapPackages, edge,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
-                                                           ModifyAtoms, UDeb, OmitLTDeps, SkipVersion, KeepRCS),
-                                               Packages(..), Package(..), flags, spec, hackage, debianize, flag, patch, darcs, apt, git, hg, cd, proc, debdir)
+                                                           UDeb, OmitLTDeps, SkipVersion, KeepRCS),
+                                               Packages(..), Package(..), flags, spec, hackage, debianize, flag, apply, patch, darcs, apt, git, hg, cd, proc, debdir)
 import Debian.Debianize as D
     (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
@@ -501,7 +501,7 @@ main =
 
 compiler :: TSt P.Packages
 compiler =
-    (baseRelease . release <$> get) >>= \ r ->
+    (baseRelease . view release <$> get) >>= \ r ->
     (named "ghc" . map APackage) =<<
     case r of
       Squeeze -> sequence [ ghc76 , po4a, debhelper, dpkg, makedev ]
@@ -884,10 +884,15 @@ haste = (named "haste" . map APackage) =<<
 --   9. Enable -prof packages(?)
 
 ghcjs_group :: TSt P.Packages
-ghcjs_group =
-    named "ghcjs-group" =<< sequence [deps, comp, libs]
+ghcjs_group = do
+  P.edge asn1_types hourglass
+  P.edge x509 pem
+  P.edge x509 asn1_parse
+  P.edge connection x509_system
+  P.edge connection socks
+  named "ghcjs-group" =<< sequence [deps, comp, libs]
     where
-      deps = (baseRelease . release <$> get) >>= \ r ->
+      deps = (baseRelease . view release <$> get) >>= \ r ->
              case r of
                Precise -> (named "ghcjs-deps" . map APackage) =<< sequence [c_ares, gyp, libv8]
                _ -> pure P.NoPackage
@@ -1038,31 +1043,29 @@ aeson = debianize (hackage "aeson")
 aeson_pretty = debianize (hackage "aeson-pretty")
 aeson_qq = debianize (hackage "aeson-qq")
 agi = darcs ("http://src.seereason.com/haskell-agi")
-alex = pure $ P.Package { P.spec = Debianize'' (Hackage "alex") Nothing
-                        -- alex shouldn't rebuild just because alex seems newer, but alex does require
-                        -- an installed alex binary to build
-                        , P.flags = [P.RelaxDep "alex",
-                                     P.BuildDep "alex",
-                                     P.BuildDep "happy",
-                                     P.CabalDebian ["--executable", "alex"],
-                                     P.ModifyAtoms (execCabalM $
-                                                               do (debInfo . compat) .= (Just 9)
-                                                                  mapM_ (\ name -> (debInfo . atomSet) %= (Set.insert $ InstallData (BinPkgName "alex") name name))
-                                                                       [ "AlexTemplate"
-                                                                       , "AlexTemplate-debug"
-                                                                       , "AlexTemplate-ghc"
-                                                                       , "AlexTemplate-ghc-debug"
-                                                                       , "AlexTemplate-ghc-nopred"
-                                                                       , "AlexWrapper-basic"
-                                                                       , "AlexWrapper-basic-bytestring"
-                                                                       , "AlexWrapper-gscan"
-                                                                       , "AlexWrapper-monad"
-                                                                       , "AlexWrapper-monad-bytestring"
-                                                                       , "AlexWrapper-monadUserState"
-                                                                       , "AlexWrapper-monadUserState-bytestring"
-                                                                       , "AlexWrapper-posn"
-                                                                       , "AlexWrapper-posn-bytestring"
-                                                                       , "AlexWrapper-strict-bytestring"]) ] }
+alex = debianize (hackage "alex")
+         `flag` P.RelaxDep "alex"
+         `flag` P.BuildDep "alex"
+         `flag` P.BuildDep "happy"
+         `flag` P.CabalDebian ["--executable", "alex"]
+         `apply` (execCabalM $ do
+                                 (debInfo . compat) .= (Just 9)
+                                 mapM_ (\ name -> (debInfo . atomSet) %= (Set.insert $ InstallData (BinPkgName "alex") name name))
+                                       [ "AlexTemplate"
+                                       , "AlexTemplate-debug"
+                                       , "AlexTemplate-ghc"
+                                       , "AlexTemplate-ghc-debug"
+                                       , "AlexTemplate-ghc-nopred"
+                                       , "AlexWrapper-basic"
+                                       , "AlexWrapper-basic-bytestring"
+                                       , "AlexWrapper-gscan"
+                                       , "AlexWrapper-monad"
+                                       , "AlexWrapper-monad-bytestring"
+                                       , "AlexWrapper-monadUserState"
+                                       , "AlexWrapper-monadUserState-bytestring"
+                                       , "AlexWrapper-posn"
+                                       , "AlexWrapper-posn-bytestring"
+                                       , "AlexWrapper-strict-bytestring"])
 annotated_wl_pprint = hack "annotated-wl-pprint"
 ansi_terminal = debianize (hackage "ansi-terminal")
 ansi_wl_pprint = debianize (hackage "ansi-wl-pprint")
@@ -1218,7 +1221,8 @@ clckwrks = pure (P.Package { P.spec = Debianize'' (Patch
                                                     "a6d5fdbbcb076dd9385dd2135dbfb589" {-previouly: "5eecb009ae16dc54f261f31da01dbbac"-})
                                                "json2")
                                               $(embedFile "patches/clckwrks.diff")) Nothing
-                        , P.flags = [P.BuildDep "hsx2hs"] })
+                           , P.flags = [P.BuildDep "hsx2hs"]
+                           , P.post = [] })
 clckwrks_theme_bootstrap = debianize (gitrepo "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
 clckwrks_theme_clckwrks = debianize (gitrepo "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
 clock = debianize (hackage "clock")
@@ -1232,8 +1236,8 @@ colour = debianize (hackage "colour"
                             `tflag` P.DebVersion "2.3.3-4")
              -- , apt "wheezy" "haskell-configfile"
 comonad = debianize (hackage "comonad"
-                   `flag`  P.ModifyAtoms (replacement "comonad" "comonad-transformers")
-                   `flag`  P.ModifyAtoms (replacement "comonad" "comonad-fd"))
+                   `apply`  (replacement "comonad" "comonad-transformers")
+                   `apply`  (replacement "comonad" "comonad-fd"))
 concatenative = debianize (hackage "concatenative")
 concrete_typerep = debianize (hackage "concrete-typerep"
                             `tflag` P.DebVersion "0.1.0.2-2build3")
@@ -1324,9 +1328,10 @@ dropbox_sdk = debianize (hackage "dropbox-sdk") -- `patch` $(embedFile "patches/
 dynamic_state = debianize (hackage "dynamic-state")
 dyre = debianize (hackage "dyre")
 easy_file = debianize (hackage "easy-file")
-edisonAPI = (release <$> get) >>= \ r ->
+edisonAPI = use release >>= \ r ->
                pure (P.Package { P.spec = Debianize'' (Hackage "EdisonAPI") Nothing
-                               , P.flags = rel r [] [P.DebVersion "1.2.1-18build2"] })
+                               , P.flags = rel r [] [P.DebVersion "1.2.1-18build2"]
+                               , P.post = [] })
 edisonCore = (debianize (hackage "EdisonCore" `qflag` P.DebVersion "1.2.1.3-9build2"))
 ekg_core = debianize (hackage "ekg-core")
 enclosed_exceptions = debianize (hackage "enclosed-exceptions")
@@ -1447,9 +1452,9 @@ gyp = apt "sid" "gyp"
 haddock_api = debianize (hackage "haddock-api"
                             `flag` P.CabalDebian ["--default-package", "haddock-api"]
                             -- FIXME - This cabal-debian stuff does nothing because this isn't a Debianize target
-                            `flag` P.ModifyAtoms (execCabalM $ (debInfo . rulesFragments) %= Set.insert (Text.unlines
-                                                               [ "# Force the Cabal dependency to be the version provided by GHC"
-                                                               , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])))
+                            `apply` (execCabalM $ (debInfo . rulesFragments) %= Set.insert (Text.unlines
+                                                                                            [ "# Force the Cabal dependency to be the version provided by GHC"
+                                                                                            , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])))
 haddock_library = debianize (hackage "haddock-library")
 hamlet = debianize (hackage "hamlet")
 happstack_authenticate_0 = debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" []
@@ -1486,25 +1491,24 @@ happstack_search = darcs ("http://src.seereason.com/happstack-search")
 happstack_server = debianize (git "https://github.com/Happstack/happstack-server" [])
 happstack_server_tls = debianize (git "https://github.com/Happstack/happstack-server-tls" [])
 happstack_static_routing = debianize (hackage "happstack-static-routing")
-happy = pure $ P.Package { P.spec = Debianize'' (Hackage "happy") Nothing
-                         , P.flags = [P.RelaxDep "happy",
-                                      P.CabalDebian ["--executable", "happy"],
-                                      -- P.Maintainer "SeeReason Autobuilder <partners@seereason.com>",
-                                      P.ModifyAtoms (execCabalM $ do
-                                                       mapM_ (\ name -> (debInfo . atomSet) %= (Set.insert $ InstallData (BinPkgName "happy") name name))
-                                                             [ "HappyTemplate-arrays-coerce"
-                                                             , "GLR_Lib-ghc"
-                                                             , "HappyTemplate-arrays-ghc-debug"
-                                                             , "HappyTemplate"
-                                                             , "GLR_Lib"
-                                                             , "HappyTemplate-arrays-debug"
-                                                             , "GLR_Base"
-                                                             , "HappyTemplate-ghc"
-                                                             , "HappyTemplate-arrays-ghc"
-                                                             , "HappyTemplate-coerce"
-                                                             , "HappyTemplate-arrays"
-                                                             , "HappyTemplate-arrays-coerce-debug"
-                                                             , "GLR_Lib-ghc-debug" ] ) ] }
+happy = debianize (hackage "happy")
+          `flag` P.RelaxDep "happy"
+          `flag` P.CabalDebian ["--executable", "happy"]
+           -- `flag` P.Maintainer "SeeReason Autobuilder <partners@seereason.com>",
+          `apply` (execCabalM $ do mapM_ (\ name -> (debInfo . atomSet) %= (Set.insert $ InstallData (BinPkgName "happy") name name))
+                                             [ "HappyTemplate-arrays-coerce"
+                                             , "GLR_Lib-ghc"
+                                             , "HappyTemplate-arrays-ghc-debug"
+                                             , "HappyTemplate"
+                                             , "GLR_Lib"
+                                             , "HappyTemplate-arrays-debug"
+                                             , "GLR_Base"
+                                             , "HappyTemplate-ghc"
+                                             , "HappyTemplate-arrays-ghc"
+                                             , "HappyTemplate-coerce"
+                                             , "HappyTemplate-arrays"
+                                             , "HappyTemplate-arrays-coerce-debug"
+                                             , "GLR_Lib-ghc-debug" ] )
 harp = debianize (git "https://github.com/seereason/harp" [])
 hashable = debianize (hackage "hashable")
 hashed_storage = debianize (hackage "hashed-storage")
@@ -1521,7 +1525,7 @@ haskell_devscripts = git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-dev
 haskell_either = debianize (hackage "either")
 haskell_extra = debianize (git ("https://github.com/seereason/sr-extra") []
                             -- Don't push out libghc-extra-dev, it now comes from Neil Mitchell's repo
-                            {- `flag` P.ModifyAtoms (replacement "sr-extra" "Extra") -})
+                            {- `apply` (replacement "sr-extra" "Extra") -})
 haskell_help = debianize (git ("https://github.com/seereason/sr-help") [])
 haskell_lexer = debianize (hackage "haskell-lexer"
                             `pflag` P.DebVersion "1.0-3build2"
@@ -1579,7 +1583,7 @@ hostname = debianize (hackage "hostname"
 hourglass = debianize (hackage "hourglass")
 hpdf = debianize (hackage "HPDF")
 hS3 = debianize (git "https://github.com/scsibug/hS3.git" [])
-                             `flag` P.ModifyAtoms (execCabalM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
+                             `apply` (execCabalM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
 hs_bibutils = debianize (hackage "hs-bibutils")
 hscolour = debianize (hackage "hscolour") `flag` P.RelaxDep "hscolour"
 hse_cpp = debianize (hackage "hse-cpp")
@@ -1613,7 +1617,7 @@ html = debianize (hackage "html"
                            `tflag` P.DebVersion "1.0.1.2-7"
                            `pflag` P.DebVersion "1.0.1.2-5") -- apt (rel release "wheezy" "quantal") "haskell-html"
 html_entities = darcs ("http://src.seereason.com/html-entities")
-html_xml_utils = (baseRelease . release <$> get) >>= \ r ->
+html_xml_utils = (baseRelease . view release <$> get) >>= \ r ->
                case r of
                  Quantal -> zero -- This build hangs when performing tests
                  Wheezy -> zero -- This build hangs when performing tests
@@ -1707,7 +1711,7 @@ lens_family_th = debianize (hackage "lens-family-th")
     , debianize (hackage "algebra")
     , debianize (hackage "universe" {- `patch` $(embedFile "patches/universe.diff") -})
     -}
-libjs_jcrop = (baseRelease . release <$> get) >>= \ r ->
+libjs_jcrop = (baseRelease . view release <$> get) >>= \ r ->
                case r of
                  Precise -> proc (apt "trusty" "libjs-jcrop")
                  _ -> zero
@@ -1730,7 +1734,7 @@ logic_TPTP = debianize (hackage "logic-TPTP")
                `flag` P.BuildDep "happy"
 -- logic_TPTP = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) Nothing, P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
              -- , apt "sid" "haskell-maybet"
-logict = pure $ P.Package { P.spec = Debianize'' (Hackage "logict") Nothing, P.flags = [] }
+logict = pure $ P.Package { P.spec = Debianize'' (Hackage "logict") Nothing, P.flags = [], P.post = [] }
 loop = debianize (hackage "loop")
 lucid = debianize (hackage "lucid")
 maccatcher = debianize (hackage "maccatcher"
@@ -1789,7 +1793,8 @@ multiset = debianize (hackage "multiset")
 murmur_hash = debianize (hackage "murmur-hash")
 mwc_random = debianize (hackage "mwc-random")
 nano_hmac = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff")) Nothing
-                             , P.flags = [P.DebVersion "0.2.0ubuntu1"] }
+                             , P.flags = [P.DebVersion "0.2.0ubuntu1"]
+                             , P.post = [] }
 nanospec = debianize (hackage "nanospec" `flag` P.CabalDebian ["--no-tests"]) -- avoid circular dependency nanospec <-> silently
 nats = debianize (hackage "nats")
 network_conduit = debianize (hackage "network-conduit")
@@ -1813,7 +1818,8 @@ openid = debianize (hackage "openid" `patch` $(embedFile "patches/openid.diff"))
                          , P.flags = [] } -}
 openssl_streams = debianize (hackage "openssl-streams")
 operational = pure $ P.Package { P.spec = Debianize'' (Hackage "operational") Nothing
-                                , P.flags = [P.OmitLTDeps] }
+                               , P.flags = [P.OmitLTDeps]
+                               , P.post = [] }
          --    , debianize (hackage "options")
 optparse_applicative = debianize (hackage "optparse-applicative")
 ordered = debianize (hackage "ordered")
@@ -1828,7 +1834,7 @@ pandoc_types = debianize (hackage "pandoc-types")
 parallel = debianize (hackage "parallel")
 parseargs = debianize (hackage "parseargs")
              -- , apt (rel release "wheezy" "quantal") "haskell-parsec2" `patch` $(embedFile "patches/parsec2.diff")
-parsec = debianize (hackage "parsec" `flag` P.ModifyAtoms (substitute "parsec2" "parsec3") `flag` P.CabalPin "3.1.8") -- why is this pinned?
+parsec = debianize (hackage "parsec" `apply` (substitute "parsec2" "parsec3") `flag` P.CabalPin "3.1.8") -- why is this pinned?
 parse_dimacs = debianize (hackage "parse-dimacs")
 parsers = debianize (hackage "parsers" {- `patch` $(embedFile "patches/parsers.diff") -})
 pbkdf2 = debianize (hackage "PBKDF2")
@@ -1856,10 +1862,10 @@ pretty_show = debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
 primitive = debianize (hackage "primitive")
 process_extras =
     debianize (git "https://github.com/seereason/process-extras" [])
-                 `flag` P.ModifyAtoms (substitute "process-extras" "process-listlike")
+                 `apply` (substitute "process-extras" "process-listlike")
 processing = debianize (hackage "processing")
 profunctors = debianize (hackage "profunctors"
-                   `flag` P.ModifyAtoms (replacement "profunctors" "profunctors-extras"))
+                   `apply` (replacement "profunctors" "profunctors-extras"))
 propLogic = debianize (git "https://github.com/ddssff/PropLogic" [])
 pseudomacros = debianize (hackage "pseudomacros"
                             -- `flag` P.CabalPin "0.0.1" -- 0.0.2 requires time>=1.5
@@ -1910,9 +1916,9 @@ regex_tdfa = debianize (hackage "regex-tdfa"
                         -- Although it might be nice to start using regex-tdfa-rc everywhere
                         -- we are using regex-tdfa, the cabal package names are different so
                         -- packages can't automatically start using regex-tdfa-rc.
-                        `flag` P.ModifyAtoms (substitute "regex-tdfa" "regex-tdfa-rc"))
+                        `apply` (substitute "regex-tdfa" "regex-tdfa-rc"))
 regex_tdfa_rc = debianize (hackage "regex-tdfa-rc"
-                            `flag` P.ModifyAtoms (substitute "regex-tdfa-rc" "regex-tdfa"))
+                            `apply` (substitute "regex-tdfa-rc" "regex-tdfa"))
 -- reified_records = debianize (hackage "reified-records" `patch` $(embedFile "patches/reified-records.diff"))
 reified_records = debianize (hg "https://bitbucket.org/ddssff/reified-records")
 resourcet = debianize (hackage "resourcet")
@@ -1938,7 +1944,7 @@ seereason_base =
 seereason_keyring = darcs ("http://src.seereason.com/seereason-keyring") `flag` P.UDeb "seereason-keyring-udeb"
 seereason_ports = debianize (git "https://github.com/seereason/seereason-ports" [])
 semigroupoids = debianize (hackage "semigroupoids"
-                   `flag` P.ModifyAtoms (replacement "semigroupoids" "semigroupoid-extras"))
+                   `apply` (replacement "semigroupoids" "semigroupoid-extras"))
 semigroups = debianize (hackage "semigroups")
 sendfile = debianize (hackage "sendfile" `tflag` P.DebVersion "0.7.9-1")
 setenv = debianize (hackage "setenv")
@@ -2091,7 +2097,8 @@ vector_binary_instances = hack "vector-binary-instances"
 vector = debianize (hackage "vector")
 vector_space = debianize (hackage "vector-space")
 virthualenv = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff")) Nothing
-                                , P.flags =  [] }
+                               , P.flags =  []
+                               , P.post = [] }
 void = debianize (hackage "void")
 vty = debianize (hackage "vty")
 wai_app_static = debianize (hackage "wai-app-static")
@@ -2102,7 +2109,8 @@ wai_middleware_static = debianize (hackage "wai-middleware-static")
 warp = debianize (hackage "warp")
 webdriver = debianize (git "https://github.com/kallisti-dev/hs-webdriver.git" [{-Commit "0251579c4dd5aebc26a7ac5b300190f3370dbf9d"-} {- avoid rebuild -}])
 web_encodings = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff")) Nothing
-                                , P.flags = [] }
+                                 , P.flags = []
+                                 , P.post = [] }
 web_plugins = debianize (git "http://github.com/clckwrks/web-plugins" [] `cd` "web-plugins")
 web_routes_boomerang = debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-boomerang")
 web_routes = debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes")
