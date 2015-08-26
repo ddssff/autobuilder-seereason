@@ -23,6 +23,7 @@ import Debian.Debianize as D
 import Debian.Relation (BinPkgName(..))
 import Debian.Releases (baseRelease, BaseRelease(..))
 import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git), GitSpec(Commit, Branch))
+--import Debug.Trace (trace)
 
 --------------------
 -- PACKAGE GROUPS --
@@ -897,10 +898,10 @@ plist ps = mapM reach ps >>= return . Set.toList . Set.unions
       reach' p n = do
         g <- use deps
         -- fromJust because we know these nodes have labels
-        return $ Set.fromList $ map (fromJust . lab g) $ tr p n $ reachable n g
-      tr _p _n ns@[_] = ns
-      tr p _n [] = error ("No self edge to " ++ show p)
-      tr _p n ns = trace ("edges: " ++ show n ++ " -> " ++ show ns) ns
+        return $ Set.fromList $ map (fromJust . lab g) $ {-tr p n $-} reachable n g
+      -- tr _p _n ns@[_] = ns
+      -- tr p _n [] = error ("No self edge to " ++ show p)
+      -- tr _p n ns = trace ("edges: " ++ show n ++ " -> " ++ show ns) ns
 
 ghcjs_group :: TSt P.Packages
 ghcjs_group = do
