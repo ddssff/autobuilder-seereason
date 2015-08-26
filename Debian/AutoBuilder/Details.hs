@@ -20,10 +20,10 @@ import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.Packages (Packages(NoPackage))
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
-import Debian.Releases (Release(..), BaseRelease(..),
+import Debian.Releases (Release(..),
                         releaseString, parseReleaseName, isPrivateRelease,
                         baseRelease, Distro(..))
-import Debian.Repo.Slice (Slice, PPASlice(PersonalPackageArchive, ppaUser, ppaName))
+import Debian.Repo.Slice (Slice, PPASlice{-(PersonalPackageArchive, ppaUser, ppaName)-})
 import Debian.Version (parseDebianVersion)
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)

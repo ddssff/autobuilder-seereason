@@ -8,21 +8,18 @@ import Control.Applicative ((<$>), pure)
 import Control.Lens (use, view, (.=), (%=))
 import Control.Monad.State (get)
 import Data.FileEmbed (embedFile)
-import Data.Graph.Inductive (lab, reachable)
-import Data.Map as Map (lookup)
-import Data.Maybe (fromJust)
-import Data.Set as Set (fromList, insert, Set, singleton, toList, unions)
+import Data.Set as Set (insert)
 import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
-import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState, release, mapPackages, depends, deps, nodes,
-                                               PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
+import Debian.AutoBuilder.Types.Packages as P (TSt, release, mapPackages, depends, plist,
+                                               PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            UDeb, OmitLTDeps, SkipVersion, KeepRCS),
-                                               Packages(..), Package(..), flags, spec, hackage, debianize, flag, apply, patch, darcs, apt, git, hg, cd, proc, debdir)
+                                               Packages(..), Package(..), flags, spec, hackage, debianize, flag, apply, patch, darcs, apt, git, hg, cd, proc)
 import Debian.Debianize as D
     (compat, doExecutable, execCabalM, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
 import Debian.Releases (baseRelease, BaseRelease(..))
-import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Darcs, Debianize'', Hackage, DebDir, Git), GitSpec(Commit, Branch))
+import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage, Git), GitSpec(Commit, Branch))
 --import Debug.Trace (trace)
 
 --------------------
@@ -888,20 +885,6 @@ haste = (named "haste" . map APackage) =<<
 --   7. Build cabal-debian with Cabal >= 1.21 - otherwise there's no GHCJS constructor.  Remove ifdefs.  Add note about where to find cabal-ghcjs.
 --   8. Enable documentation packages in haskell-devscripts
 --   9. Enable -prof packages(?)
-
--- Expand a package list using the suspected dependency graph
-plist :: [P.Package] -> TSt [P.Package]
-plist ps = mapM reach ps >>= return . Set.toList . Set.unions
-    where
-      reach :: P.Package -> TSt (Set P.Package)
-      reach p = use nodes >>= maybe (return (singleton p)) (reach' p) . Map.lookup p
-      reach' p n = do
-        g <- use deps
-        -- fromJust because we know these nodes have labels
-        return $ Set.fromList $ map (fromJust . lab g) $ {-tr p n $-} reachable n g
-      -- tr _p _n ns@[_] = ns
-      -- tr p _n [] = error ("No self edge to " ++ show p)
-      -- tr _p n ns = trace ("edges: " ++ show n ++ " -> " ++ show ns) ns
 
 ghcjs_group :: TSt P.Packages
 ghcjs_group = do
