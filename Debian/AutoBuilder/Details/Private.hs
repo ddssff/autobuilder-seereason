@@ -26,6 +26,7 @@ libraries =
     , mimo_optimum
     , mimo_paste
     , th_path
+    , ghcjs_flags th_path
     , task_manager
     , happstack_ghcjs_client
     , happstack_ghcjs_server

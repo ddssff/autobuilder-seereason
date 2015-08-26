@@ -1,15 +1,20 @@
-{-# LANGUAGE CPP, MultiWayIf, OverloadedStrings, RecordWildCards, TemplateHaskell #-}
+{-# LANGUAGE CPP, FlexibleContexts, MultiWayIf, OverloadedStrings, RecordWildCards, TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
 module Debian.AutoBuilder.Details.Public ( targets ) where
 
+#if !MIN_VERSION_base(4,8,0)
 import Control.Applicative ((<$>), pure)
+#endif
 import Control.Lens (use, view, (.=), (%=))
 import Control.Monad.State (get)
 import Data.FileEmbed (embedFile)
-import Data.Set as Set (insert)
+import Data.Graph.Inductive (lab, reachable)
+import Data.Map as Map (lookup)
+import Data.Maybe (fromJust)
+import Data.Set as Set (fromList, insert, Set, singleton, toList, unions)
 import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
-import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState, release, mapPackages, edge,
+import Debian.AutoBuilder.Types.Packages as P (TSt, TargetState, release, mapPackages, depends, deps, nodes,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision, Maintainer,
                                                            UDeb, OmitLTDeps, SkipVersion, KeepRCS),
                                                Packages(..), Package(..), flags, spec, hackage, debianize, flag, apply, patch, darcs, apt, git, hg, cd, proc, debdir)
@@ -883,34 +888,38 @@ haste = (named "haste" . map APackage) =<<
 --   8. Enable documentation packages in haskell-devscripts
 --   9. Enable -prof packages(?)
 
+-- Expand a package list using the suspected dependency graph
+plist :: [P.Package] -> TSt [P.Package]
+plist ps = mapM reach ps >>= return . Set.toList . Set.unions
+    where
+      reach :: P.Package -> TSt (Set P.Package)
+      reach p = use nodes >>= maybe (return (singleton p)) (reach' p) . Map.lookup p
+      reach' p n = do
+        g <- use deps
+        -- fromJust because we know these nodes have labels
+        return $ Set.fromList $ map (fromJust . lab g) $ tr p n $ reachable n g
+      tr _p _n ns@[_] = ns
+      tr p _n [] = error ("No self edge to " ++ show p)
+      tr _p n ns = trace ("edges: " ++ show n ++ " -> " ++ show ns) ns
+
 ghcjs_group :: TSt P.Packages
 ghcjs_group = do
-  P.edge asn1_types hourglass
-  P.edge x509 pem
-  P.edge x509 asn1_parse
-  P.edge connection x509_system
-  P.edge connection socks
-  named "ghcjs-group" =<< sequence [deps, comp, libs]
-    where
-      deps = (baseRelease . view release <$> get) >>= \ r ->
+  deps <- (baseRelease . view release <$> get) >>= \ r ->
              case r of
                Precise -> (named "ghcjs-deps" . map APackage) =<< sequence [c_ares, gyp, libv8]
                _ -> pure P.NoPackage
-      comp = (named "ghcjs-comp" . map APackage) =<<
-             sequence
+  comp <- sequence
              [ shelly
              , text_binary
              , enclosed_exceptions
              , nodejs
              , ghcjs_prim
              , haddock_api
-             , haddock_library
+              , haddock_library
              , lifted_async
              , ghcjs_tools
-             , ghcjs ]
-      libs = (named "ghcjs-libs" . map APackage) =<<
-             (sequence $
-              (map ghcjs_flags
+             , ghcjs ] >>= plist >>= named "ghcjs-comp" . map APackage
+  libs <- sequence
                   [ adjunctions
                   , ansi_terminal
                   , ansi_wl_pprint
@@ -1017,12 +1026,15 @@ ghcjs_group = do
                   , web_routes_th
                   , xhtml
                   , zlib
-                  ]) ++
-              [ ghcjs_dom
-              , ghcjs_dom_hello
-              , ghcjs_vdom
-              , ghcjs_ffiqq
-              , ghcjs_jquery ])
+                  , ghcjs_dom
+                  , ghcjs_dom_hello
+                  -- , ghcjs_vdom
+                  , ghcjs_ffiqq
+                  , ghcjs_jquery
+                  ] >>= sequence . map (ghcjs_flags . pure) >>= plist >>= named "ghcjs-libs" . map APackage
+
+  named "ghcjs-group" =<< sequence [pure deps, pure comp, pure libs]
+    where
 
 darcs_group =
     (named "darcs" . map APackage) =<<
@@ -1075,7 +1087,7 @@ archive = debianize (git "https://github.com/seereason/archive" [] `flag` P.Caba
 asn1_data = debianize (hackage "asn1-data" `tflag` P.DebVersion "0.7.1-4build1")
 asn1_encoding = debianize (hackage "asn1-encoding")
 asn1_parse = debianize (hackage "asn1-parse")
-asn1_types = debianize (hackage "asn1-types")
+asn1_types = debianize (hackage "asn1-types") `depends` [hourglass]
 async = debianize (hackage "async")
 atomic_primops = debianize (hackage "atomic-primops")
 attempt = debianize (hackage "attempt")
@@ -1245,7 +1257,7 @@ cond = debianize (hackage "cond")
 conduit = debianize (hackage "conduit")
 conduit_extra = debianize (hackage "conduit-extra")
 configFile = debianize (hackage "ConfigFile")
-connection = debianize (hackage "connection")
+connection = debianize (hackage "connection") `depends` [x509_system, socks]
 constrained_normal = debianize (hackage "constrained-normal")
 constraints = debianize (hackage "constraints")
 consumer = darcs ("http://src.seereason.com/haskell-consumer")
@@ -1399,16 +1411,16 @@ ghc76 = ghcFlags $ apt "sid" "ghc" `patch` $(embedFile "patches/ghc.diff")
 ghc78 = ghcFlags $ apt "experimental" "ghc" `patch` $(embedFile "patches/trac9262.diff")
 ghc710 = ghcFlags $ apt "experimental" "ghc"
                       `patch` $(embedFile "patches/ghc.diff")
-ghcjs_jquery = ghcjs_flags (debianize (git "https://github.com/seereason/ghcjs-jquery" [Branch "base48"]) `putSrcPkgName` "ghcjs-ghcjs-jquery")
-ghcjs_vdom = ghcjs_flags (debianize (git "https://github.com/seereason/ghcjs-vdom" [Branch "base48"]) `putSrcPkgName` "ghcjs-ghcjs-vdom")
-ghcjs_ffiqq = ghcjs_flags (debianize (git "https://github.com/ghcjs/ghcjs-ffiqq" []) `putSrcPkgName` "ghcjs-ghcjs-ffiqq")
-ghcjs_dom = ghcjs_flags (debianize (hackage "ghcjs-dom"
-                                      `flag` P.CabalPin "0.1.1.3" -- Version 0.2.* is for the improved-base version of ghcjs
-                                   ))
-ghcjs_dom_hello = ghcjs_flags (debianize (hackage "ghcjs-dom-hello"
-                                                      `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
-                                                       `flag` P.CabalPin "1.2.0.0"
-                                                       `flag` P.CabalDebian ["--default-package", "ghcjs-dom-hello"]))
+ghcjs_jquery = debianize (git "https://github.com/seereason/ghcjs-jquery" [Branch "base48"]) `putSrcPkgName` "ghcjs-ghcjs-jquery"
+-- ghcjs_vdom = ghcjs_flags (debianize (git "https://github.com/seereason/ghcjs-vdom" [Branch "base48"]) `putSrcPkgName` "ghcjs-ghcjs-vdom")
+ghcjs_ffiqq = debianize (git "https://github.com/ghcjs/ghcjs-ffiqq" []) `putSrcPkgName` "ghcjs-ghcjs-ffiqq"
+ghcjs_dom = debianize (hackage "ghcjs-dom"
+                         `flag` P.CabalPin "0.1.1.3" -- Version 0.2.* is for the improved-base version of ghcjs
+                      )
+ghcjs_dom_hello = debianize (hackage "ghcjs-dom-hello"
+                               `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
+                               `flag` P.CabalPin "1.2.0.0"
+                               `flag` P.CabalDebian ["--default-package", "ghcjs-dom-hello"])
 ghcjs = git "https://github.com/ddssff/ghcjs-debian" [] `relax` "cabal-install"
 ghcjs_prim = debianize (git "https://github.com/ghcjs/ghcjs-prim.git" [Branch "ghc-7.10"])
 ghcjs_tools = git "https://github.com/ghcjs/ghcjs" []
@@ -2127,7 +2139,7 @@ wl_pprint_text = debianize (hackage "wl-pprint-text")
              -- Our applicative-extras repository has several important patches.
 word8 = debianize (hackage "word8")
 word_trie = debianize (hackage "word-trie")
-x509 = debianize (hackage "x509")
+x509 = debianize (hackage "x509") `depends` [pem, asn1_parse]
 x509_store = debianize (hackage "x509-store")
 x509_system = debianize (hackage "x509-system")
 x509_validation = debianize (hackage "x509-validation")
