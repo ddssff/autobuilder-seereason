@@ -1,8 +1,10 @@
-{-# LANGUAGE OverloadedStrings, RankNTypes, RecordWildCards #-}
+{-# LANGUAGE CPP, OverloadedStrings, RankNTypes, RecordWildCards #-}
 {-# OPTIONS_GHC -Wall -fno-warn-missing-signatures #-}
 module Debian.AutoBuilder.Details.Common where
 
+#if !MIN_VERSION_base(4,8,0)
 import Control.Applicative (pure, (<$>))
+#endif
 import Control.Lens (Lens', use, view, (%=))
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
@@ -15,7 +17,7 @@ import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
 
 import Control.Monad.State (get)
-import Debian.AutoBuilder.Types.Packages as P (TargetState, release, PackageFlag, hackage, debianize, git)
+import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, hackage, debianize, git)
 import Debian.Debianize as D
     (CabalInfo, CabalM, execCabalM, debInfo, compilerFlavor, binaryDebDescription, flags, relations, conflicts, replaces)
 import Debian.Relation (BinPkgName(..), Relation(Rel), Relations)
@@ -103,8 +105,8 @@ ghcFlags p = p `relax` "ghc"
                `relax` "libgmp-dev"
 
 rel :: Release -> a -> a -> a
-rel release precise quantal =
-    case baseRelease release of
+rel r precise quantal =
+    case baseRelease r of
       Quantal -> quantal
       _ -> precise
 

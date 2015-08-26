@@ -4,13 +4,16 @@
 -- building.  If you find yourself modifying other files I would like
 -- to hear about it.
 
+{-# LANGUAGE CPP #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Debian.AutoBuilder.Details
     ( myParams
     ) where
 
 import Data.Maybe
+#if !MIN_VERSION_base(4,8,0)
 import Data.Monoid (mappend)
+#endif
 -- import Data.Set as Set (Set, empty)
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, releaseRepoName, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
