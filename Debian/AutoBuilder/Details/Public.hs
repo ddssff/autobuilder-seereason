@@ -529,7 +529,7 @@ platform =
           (named "platform" . map APackage) =<<
             sequence
             [ happy
-            , cabal
+            -- , cabal -- Do not build the version shipped with ghc (1.22.4.0 for ghc-7.10.2)
             , cabal_install
             , stm
             , stm_chans
@@ -1181,7 +1181,7 @@ bytestring_trie = debianize (hackage "bytestring-trie")
 bzlib = debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
              -- , debianize (hackage "cairo-pdf")
 cabal_debian = git "https://github.com/ddssff/cabal-debian" []
-cabal = debianize (hackage "Cabal" {-`flag` P.CabalPin "1.22.3.0"-} {-repin after build-}) -- the settings in Debian.AutoBuilder.Details.Versions will name this cabal-122
+-- cabal = debianize (hackage "Cabal")
 cabal_install = debianize (hackage "cabal-install"
                              -- `patch` $(embedFile "patches/cabal-install.diff")
                              -- `flag` P.CabalPin "1.22.4.0" {-repin after build-}
