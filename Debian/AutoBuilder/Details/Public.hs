@@ -1102,8 +1102,7 @@ autobuilder = debianize (git "https://github.com/ddssff/autobuilder" []) `flag` 
 autobuilder_seereason =
     debianize (git "https://github.com/ddssff/autobuilder-seereason" [])
                  -- It would be nice if these dependencies were in the cabal file
-                 `flag` P.CabalDebian [ "--depends", "autobuilder-seereason:libghc-autobuilder-seereason-dev"
-                                      , "--depends", "autobuilder-seereason:ghc"
+                 `flag` P.CabalDebian [ "--depends", "autobuilder-seereason:ghc"
                                       , "--depends", "autobuilder-seereason:debhelper"
                                       , "--depends", "autobuilder-seereason:apt-file"
                                       , "--depends", "autobuilder-seereason:apt-utils"
