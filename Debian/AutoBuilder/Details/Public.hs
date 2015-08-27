@@ -90,7 +90,7 @@ autobuilder_group =
              , autobuilder_seereason ]
 
 unixutils_group :: TSt P.Packages
-unixutils_group = (named "Unixutils" . map APackage) =<< sequence [unixutils, haskell_extra, haskell_help]
+unixutils_group = (named "Unixutils" . map APackage) =<< sequence [unixutils, sr_extra, haskell_help]
 
 -- Stick new packages here to get an initial build, then move
 -- them to a suitable group.
@@ -259,7 +259,7 @@ main =
              , haskell_devscripts
              , haskell_lexer
              , haskell_newtype
-             , haskell_revision
+             , sr_revision
              , haskell_src_exts
              , haskell_src_meta
              , haTeX
@@ -945,9 +945,13 @@ ghcjs_group = do
                   , foreign_var
                   , free
                   , generic_deriving
+                  , haTeX
+                  , haXml
                   , hslogger
                   , html
                   , http_types
+                  , ixset
+                  , jmacro
                   , lens
                   , kan_extensions
                   , listLike
@@ -978,6 +982,7 @@ ghcjs_group = do
                   , set_extra
                   , smallcheck
                   , split
+                  , sr_extra
                   , haskell_src_exts
                   , stateVar
                   , system_filepath
@@ -1015,6 +1020,8 @@ ghcjs_group = do
                   -- , ghcjs_vdom
                   , ghcjs_ffiqq
                   , ghcjs_jquery
+                  -- These dependencies should be discovered
+                  , parseargs, wl_pprint_text, wl_pprint_extras, haskell_src_meta, quickCheck, matrix, loop, sr_revision
                   ] >>= sequence . map (ghcjs_flags . pure) >>= plist >>= named "ghcjs-libs" . map APackage
 
   named "ghcjs-group" =<< sequence [pure deps, pure comp, pure libs]
@@ -1071,7 +1078,7 @@ archive = debianize (git "https://github.com/seereason/archive" [] `flag` P.Caba
 asn1_data = debianize (hackage "asn1-data" `tflag` P.DebVersion "0.7.1-4build1")
 asn1_encoding = debianize (hackage "asn1-encoding")
 asn1_parse = debianize (hackage "asn1-parse")
-asn1_types = debianize (hackage "asn1-types") `depends` [hourglass]
+asn1_types = debianize (hackage "asn1-types" `depends` [hourglass])
 async = debianize (hackage "async")
 atomic_primops = debianize (hackage "atomic-primops")
 attempt = debianize (hackage "attempt")
@@ -1104,6 +1111,8 @@ autobuilder_seereason =
                                       , "--depends", "autobuilder-seereason:curl"
                                       , "--depends", "autobuilder-seereason:debian-archive-keyring"
                                       , "--depends", "autobuilder-seereason:seereason-keyring"
+                                      -- Why?
+                                      -- , "--depends", "autobuilder-seereason:libghc-autobuilder-seereason-dev"
                                       -- Pull in the autobuilder-seereason library so the target's
                                       -- debian/Debianize.hs scripts can run.
                                       -- This is needed if the release vendor is ubuntu.  I need
@@ -1240,7 +1249,7 @@ cond = debianize (hackage "cond")
 conduit = debianize (hackage "conduit")
 conduit_extra = debianize (hackage "conduit-extra")
 configFile = debianize (hackage "ConfigFile")
-connection = debianize (hackage "connection") `depends` [x509_system, socks]
+connection = debianize (hackage "connection" `depends` [x509_system, socks])
 constrained_normal = debianize (hackage "constrained-normal")
 constraints = debianize (hackage "constraints")
 consumer = darcs ("http://src.seereason.com/haskell-consumer")
@@ -1518,9 +1527,11 @@ haskell_darcs = debianize (darcs "http://darcs.net/reviewed"
                   )
 haskell_devscripts = git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [] `flag` P.RelaxDep "python-minimal"
 haskell_either = debianize (hackage "either")
-haskell_extra = debianize (git ("https://github.com/seereason/sr-extra") []
+sr_extra = debianize (git ("https://github.com/seereason/sr-extra") []
+                        `depends` [quickCheck]
                             -- Don't push out libghc-extra-dev, it now comes from Neil Mitchell's repo
-                            {- `apply` (replacement "sr-extra" "Extra") -})
+                            {- `apply` (replacement "sr-extra" "Extra") -}
+                     )
 haskell_help = debianize (git ("https://github.com/seereason/sr-help") [])
 haskell_lexer = debianize (hackage "haskell-lexer"
                             `pflag` P.DebVersion "1.0-3build2"
@@ -1530,7 +1541,7 @@ haskell_list = debianize (hackage "List")
 haskell_names = debianize (hackage "haskell-names")
 haskell_newtype = debianize (hackage "newtype" `wflag` P.DebVersion "0.2-1" `tflag` P.DebVersion "0.2-3")
 haskell_packages = debianize (hackage "haskell-packages" {-`patch` $(embedFile "patches/haskell-packages.diff")-})
-haskell_revision = debianize (git ("https://github.com/seereason/sr-revision") [])
+sr_revision = debianize (git ("https://github.com/seereason/sr-revision") [])
 haskell_src = debianize (hackage "haskell-src" `flag` P.BuildDep "happy")
 haskell_src_exts = debianize (-- darcs "haskell-haskell-src-exts" "http://code.haskell.org/haskell-src-exts"
                           hackage "haskell-src-exts"
@@ -1543,7 +1554,9 @@ haste_compiler = hack "haste-compiler" `flag` P.CabalDebian ["--default-package"
 haste_ffi_parser = git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
 haTeX = debianize (git "https://github.com/Daniel-Diaz/HaTeX" [Commit "cc66573a0587094667a9150411ea748d6592db36" {-avoid rebuild-}]
                               `patch` $(embedFile "patches/HaTeX-texty.diff")
-                              `patch` $(embedFile "patches/HaTeX-doc.diff"))
+                              `patch` $(embedFile "patches/HaTeX-doc.diff")
+                              `depends` [quickCheck, wl_pprint_extras, matrix]
+                  )
 haXml = debianize (hackage "HaXml")
 hdaemonize = debianize (git "https://github.com/madhadron/hdaemonize" [])
 heap = debianize (hackage "heap")
@@ -1664,7 +1677,7 @@ irc = debianize (hackage "irc")
 iso3166_country_codes = debianize (hackage "iso3166-country-codes")
 ixset = debianize (git "https://github.com/Happstack/ixset.git" []) -- , debianize (hackage "ixset")
 ixset_typed = debianize (hackage "ixset-typed") -- dependency of happstack-authenticate-2
-jmacro = debianize (hackage "jmacro")
+jmacro = debianize (hackage "jmacro" `depends` [parseargs, wl_pprint_text, haskell_src_meta])
 jmacro_rpc = broken $ debianize (hackage "jmacro-rpc")
 jmacro_rpc_happstack = broken $ debianize (hackage "jmacro-rpc-happstack" `flag` P.SkipVersion "0.2.1") -- Really just waiting for jmacro-rpc
 jquery = apt "sid" "jquery" `patch` $(embedFile "patches/jquery.diff") -- Revert to version 1.7.2+dfsg-3, version 1.7.2+dfsg-3.2 gives us a nearly empty jquery.min.js 
@@ -1742,7 +1755,7 @@ mainland_pretty = debianize (hackage "mainland-pretty")
 makedev = apt "wheezy" "makedev"
 markdown = debianize (hackage "markdown" {- `patch` $(embedFile "patches/markdown.diff") -})
 markdown_unlit = debianize (hackage "markdown-unlit" `flag` P.CabalDebian ["--no-tests"])
-matrix = debianize (hackage "matrix")
+matrix = debianize (hackage "matrix" `depends` [loop])
              -- , debianize (hackage "hlatex")
 maybeT = debianize (hackage "MaybeT" `flag` P.DebVersion "1.2-6")
 memoize = debianize (hackage "memoize")
