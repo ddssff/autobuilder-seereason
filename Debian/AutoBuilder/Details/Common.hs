@@ -5,14 +5,14 @@ module Debian.AutoBuilder.Details.Common where
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative (pure, (<$>))
 #endif
-import Control.Lens (Lens', use, view, (%=))
+import Control.Lens (Lens', over, use, view, (%=))
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
 import Data.String (IsString(fromString))
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages (flag, Package(Package, spec), TSt)
+import Debian.AutoBuilder.Types.Packages (flag, Package(Package), spec, TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
 
@@ -49,7 +49,7 @@ named s = pure . P.Named (fromString s) . P.Packages
 ghcjs_flags :: TSt P.Package -> TSt P.Package
 ghcjs_flags mp =
     mp >>= \ p ->
-    mp `putSrcPkgName` makeSrcPkgName (P.spec p)
+    mp `putSrcPkgName` makeSrcPkgName (view P.spec p)
        `flag` P.CabalDebian ["--ghcjs"]
        -- `flag` P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)]
        `flag` P.BuildDep "libghc-cabal-dev" -- Not libghcjs-cabal-dev?
@@ -66,7 +66,7 @@ makeSrcPkgName (Darcs path) = "ghcjs-" ++ map toLower (takeBaseName path)
 makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
 
 putSrcPkgName :: TSt Package -> String -> TSt Package
-putSrcPkgName mp name = (\ p -> p {spec = putSrcPkgName' (spec p) name}) <$> mp
+putSrcPkgName mp name = over spec (\x -> putSrcPkgName' x name) <$> mp
 
 putSrcPkgName' :: RetrieveMethod -> String -> RetrieveMethod
 putSrcPkgName' (Debianize'' cabal _) name = Debianize'' cabal (Just name)
@@ -86,7 +86,7 @@ newtype Reason = Reason String
 broken :: TSt P.Package -> TSt P.Package
 broken _ = zero
 
-zero = pure $ Package Zero [] []
+zero = pure $ Package Zero mempty []
 
 patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"
@@ -132,7 +132,7 @@ noflag :: TSt Package -> PackageFlag -> TSt Package
 noflag mp _ = mp
 
 relax :: TSt P.Package -> String -> TSt P.Package
-relax mp x = (\ p -> p {P.flags = P.flags p ++ [P.RelaxDep x]}) <$> mp
+relax mp x = (\ p -> p {P._flags = P._flags p ++ [P.RelaxDep x]}) <$> mp
 
 gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
 -- repo = "http://hub.darcs.net/stepcut/clckwrks-dev"

@@ -38,8 +38,8 @@ private home release =
 proc' :: P.Packages -> P.Packages
 proc' p@(Named {}) = p {packages = proc' (packages p)}
 proc' p@(Packages {}) = p {list = map proc' (list p)}
-proc' a@(APackage (Package {spec = P.Proc _})) = a
-proc' (APackage p) = APackage (p {spec = P.Proc (spec p)})
+proc' a@(APackage (Package {_spec = P.Proc _})) = a
+proc' (APackage p) = APackage (p {_spec = P.Proc (_spec p)})
 proc' p = p
 
 -- | This prevents every package that uses cabal-debian for
@@ -49,8 +49,8 @@ relaxCabalDebian :: P.Packages -> P.Packages
 relaxCabalDebian (P.Named n s) = P.Named n (relaxCabalDebian s)
 relaxCabalDebian (P.Packages s) = P.Packages (map relaxCabalDebian s)
 relaxCabalDebian (P.APackage p)
-    | isDebianizeSpec (P.spec p) =
-        P.APackage (p {P.flags = P.flags p ++ map P.RelaxDep ["libghc-cabal-debian-dev", "libghc-cabal-debian-prof", "libghc-cabal-debian-doc"]})
+    | isDebianizeSpec (P._spec p) =
+        P.APackage (p {P._flags = P._flags p ++ map P.RelaxDep ["libghc-cabal-debian-dev", "libghc-cabal-debian-prof", "libghc-cabal-debian-doc"]})
 relaxCabalDebian x = x
 
 -- FIXME - make this generic.  Not sure if the assumption that
@@ -65,7 +65,7 @@ applyDepMap _ P.NoPackage = P.NoPackage
 applyDepMap release (P.Named n s) = P.Named n (applyDepMap release s)
 applyDepMap release (P.Packages s) = P.Packages (map (applyDepMap release) s)
 applyDepMap release (P.APackage x) =
-    APackage (x {P.flags = P.flags x ++ mappings})
+    APackage (x {P._flags = P._flags x ++ mappings})
     where
       mappings = [P.MapDep "cryptopp" (deb "libcrypto++-dev"),
                   P.MapDep "crypto" (deb "libcrypto++-dev"),
@@ -100,7 +100,7 @@ applyEpochMap P.NoPackage = P.NoPackage
 applyEpochMap (P.Named n s) = P.Named n (applyEpochMap s)
 applyEpochMap (P.Packages s) = P.Packages (map applyEpochMap s)
 applyEpochMap (P.APackage x) =
-    P.APackage (x {P.flags = P.flags x ++ mappings})
+    P.APackage (x {P._flags = P._flags x ++ mappings})
     where
       mappings = [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]
 

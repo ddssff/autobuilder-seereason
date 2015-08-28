@@ -8,7 +8,7 @@ import Control.Applicative ((<$>), pure)
 import Control.Lens (use, view, (.=), (%=))
 import Control.Monad.State (get)
 import Data.FileEmbed (embedFile)
-import Data.Set as Set (insert)
+import Data.Set as Set (fromList, insert, singleton)
 import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Types.Packages as P (TSt, release, mapPackages, depends, plist,
@@ -1214,7 +1214,7 @@ clckwrks_plugin_media = debianize (gitrepo "clckwrks-plugin-media"
 clckwrks_plugin_page = debianize (gitrepo "clckwrks-plugin-page"
                            -- `patch` $(embedFile "patches/clckwrks-plugin-page.diff")
                            `flag` P.BuildDep "hsx2hs")
-clckwrks = pure (P.Package { P.spec = Debianize'' (Patch
+clckwrks = pure (P.Package { P._spec = Debianize'' (Patch
                                               (DataFiles
                                                (DataFiles
                                                 (Git "https://github.com/clckwrks/clckwrks" [])
@@ -1225,8 +1225,8 @@ clckwrks = pure (P.Package { P.spec = Debianize'' (Patch
                                                     "a6d5fdbbcb076dd9385dd2135dbfb589" {-previouly: "5eecb009ae16dc54f261f31da01dbbac"-})
                                                "json2")
                                               $(embedFile "patches/clckwrks.diff")) Nothing
-                           , P.flags = [P.BuildDep "hsx2hs"]
-                           , P.post = [] })
+                           , P._flags = [P.BuildDep "hsx2hs"]
+                           , P._post = [] })
 clckwrks_theme_bootstrap = debianize (gitrepo "clckwrks-theme-bootstrap" `flag` P.BuildDep "hsx2hs")
 clckwrks_theme_clckwrks = debianize (gitrepo "clckwrks-theme-clckwrks" `flag` P.BuildDep "hsx2hs")
 clock = debianize (hackage "clock")
@@ -1333,9 +1333,9 @@ dynamic_state = debianize (hackage "dynamic-state")
 dyre = debianize (hackage "dyre")
 easy_file = debianize (hackage "easy-file")
 edisonAPI = use release >>= \ r ->
-               pure (P.Package { P.spec = Debianize'' (Hackage "EdisonAPI") Nothing
-                               , P.flags = rel r [] [P.DebVersion "1.2.1-18build2"]
-                               , P.post = [] })
+               pure (P.Package { P._spec = Debianize'' (Hackage "EdisonAPI") Nothing
+                               , P._flags = rel r [] [P.DebVersion "1.2.1-18build2"]
+                               , P._post = [] })
 edisonCore = (debianize (hackage "EdisonCore" `qflag` P.DebVersion "1.2.1.3-9build2"))
 ekg_core = debianize (hackage "ekg-core")
 enclosed_exceptions = debianize (hackage "enclosed-exceptions")
@@ -1740,17 +1740,17 @@ logic_TPTP = debianize (hackage "logic-TPTP")
                `patch` $(embedFile "patches/logic-TPTP.diff")
                `flag` P.BuildDep "alex"
                `flag` P.BuildDep "happy"
--- logic_TPTP = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) Nothing, P.flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
+-- logic_TPTP = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) Nothing, P._flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
              -- , apt "sid" "haskell-maybet"
-logict = pure $ P.Package { P.spec = Debianize'' (Hackage "logict") Nothing, P.flags = [], P.post = [] }
+logict = pure $ P.Package { P._spec = Debianize'' (Hackage "logict") Nothing, P._flags = mempty, P._post = [] }
 loop = debianize (hackage "loop")
 lucid = debianize (hackage "lucid")
 maccatcher = debianize (hackage "maccatcher"
                             `pflag` P.DebVersion "2.1.5-3"
                             `tflag` P.DebVersion "2.1.5-5build1")
 magic = debianize (hackage "magic" `flag` P.DevelDep "libmagic-dev")
-         {-  , P.Package { P.spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs ("http://src.seereason.com/magic-quilt"))
-                         , P.flags = [] } -}
+         {-  , P.Package { P._spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs ("http://src.seereason.com/magic-quilt"))
+                         , P._flags = mempty } -}
 mainland_pretty = debianize (hackage "mainland-pretty")
 makedev = apt "wheezy" "makedev"
 markdown = debianize (hackage "markdown" {- `patch` $(embedFile "patches/markdown.diff") -})
@@ -1800,9 +1800,9 @@ multipart = debianize (hackage "multipart")
 multiset = debianize (hackage "multiset")
 murmur_hash = debianize (hackage "murmur-hash")
 mwc_random = debianize (hackage "mwc-random")
-nano_hmac = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff")) Nothing
-                             , P.flags = [P.DebVersion "0.2.0ubuntu1"]
-                             , P.post = [] }
+nano_hmac = pure $ P.Package { P._spec = Debianize'' (Patch (Hackage "nano-hmac") $(embedFile "patches/nano-hmac.diff")) Nothing
+                             , P._flags = [P.DebVersion "0.2.0ubuntu1"]
+                             , P._post = [] }
 nanospec = debianize (hackage "nanospec" `flag` P.CabalDebian ["--no-tests"]) -- avoid circular dependency nanospec <-> silently
 nats = debianize (hackage "nats")
 network_conduit = debianize (hackage "network-conduit")
@@ -1825,9 +1825,9 @@ openid = debianize (hackage "openid" `patch` $(embedFile "patches/openid.diff"))
          {-  , P.Package { P.spec = Debianize (Patch (Hackage "openid") $(embedFile "patches/openid-ghc76.diff"))
                          , P.flags = [] } -}
 openssl_streams = debianize (hackage "openssl-streams")
-operational = pure $ P.Package { P.spec = Debianize'' (Hackage "operational") Nothing
-                               , P.flags = [P.OmitLTDeps]
-                               , P.post = [] }
+operational = pure $ P.Package { P._spec = Debianize'' (Hackage "operational") Nothing
+                               , P._flags = [P.OmitLTDeps]
+                               , P._post = [] }
          --    , debianize (hackage "options")
 optparse_applicative = debianize (hackage "optparse-applicative")
 ordered = debianize (hackage "ordered")
@@ -2104,9 +2104,9 @@ vector_algorithms = debianize (hackage "vector-algorithms")
 vector_binary_instances = hack "vector-binary-instances"
 vector = debianize (hackage "vector")
 vector_space = debianize (hackage "vector-space")
-virthualenv = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff")) Nothing
-                               , P.flags =  []
-                               , P.post = [] }
+virthualenv = pure $ P.Package { P._spec = Debianize'' (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff")) Nothing
+                               , P._flags =  mempty
+                               , P._post = [] }
 void = debianize (hackage "void")
 vty = debianize (hackage "vty")
 wai_app_static = debianize (hackage "wai-app-static")
@@ -2116,9 +2116,9 @@ wai_logger = debianize (hackage "wai-logger")
 wai_middleware_static = debianize (hackage "wai-middleware-static")
 warp = debianize (hackage "warp")
 webdriver = debianize (git "https://github.com/kallisti-dev/hs-webdriver.git" [{-Commit "0251579c4dd5aebc26a7ac5b300190f3370dbf9d"-} {- avoid rebuild -}])
-web_encodings = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff")) Nothing
-                                 , P.flags = []
-                                 , P.post = [] }
+web_encodings = pure $ P.Package { P._spec = Debianize'' (Patch (Hackage "web-encodings") $(embedFile "patches/web-encodings.diff")) Nothing
+                                 , P._flags = mempty
+                                 , P._post = [] }
 web_plugins = debianize (git "http://github.com/clckwrks/web-plugins" [] `cd` "web-plugins")
 web_routes_boomerang = debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes-boomerang")
 web_routes = debianize (git "https://github.com/Happstack/web-routes.git" [] `cd` "web-routes")
