@@ -59,6 +59,7 @@ Library
     bytestring,
     Cabal,
     containers,
+    fgl,
     filepath,
     file-embed,
     lens,
