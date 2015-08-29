@@ -3,7 +3,7 @@
 module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
 import Data.FileEmbed (embedFile)
-import Debian.AutoBuilder.Types.Packages as P (Packages(APackage), PackageFlag(BuildDep, CabalDebian, NoDoc), flag, mapPackages, patch, debianize, darcs, git, cd, TSt)
+import Debian.AutoBuilder.Types.Packages as P (Packages(APackage), PackageFlag(BuildDep, CabalDebian, NoDoc, SetupDep), flag, mapPackages, patch, debianize, darcs, git, cd, TSt)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 -- import Debian.Repo.Fingerprint (GitSpec(Branch))
 import System.FilePath ((</>))
@@ -78,9 +78,9 @@ image_cache = debianize (git "https://github.com/seereason/image-cache.git" [] {
 -- environment, except making it a dependency of the autobuilder
 -- itself.
 mimo = debianize (git "ssh://git@github.com/seereason/mimo.git" [])
-mimo_bootstrap = debianize (git "ssh://git@github.com/seereason/mimo-bootstrap.git" [])
-mimo_optimum = debianize (git "ssh://git@github.com/seereason/mimo-optimum.git" [])
-mimo_paste = debianize (git "ssh://git@github.com/seereason/mimo-paste.git" [])
+mimo_bootstrap = debianize (git "ssh://git@github.com/seereason/mimo-bootstrap.git" [] `flag` P.SetupDep "libghc-mimo-dev")
+mimo_optimum = debianize (git "ssh://git@github.com/seereason/mimo-optimum.git" [] `flag` P.SetupDep "libghc-mimo-dev")
+mimo_paste = debianize (git "ssh://git@github.com/seereason/mimo-paste.git" [] `flag` P.SetupDep "libghc-mimo-dev")
 ontology = git "ssh://git@github.com/seereason/ontology.git" []
 seereason = debianize (git "ssh://git@github.com/seereason/seereason" [])
 seereasonpartners_dot_com = debianize (darcs (privateRepo </> "seereasonpartners-clckwrks") `cd` "seereasonpartners-dot-com" `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
