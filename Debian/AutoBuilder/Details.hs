@@ -117,7 +117,8 @@ myKnownTargets home params =
 --
 myIncludePackages :: Release -> [String]
 myIncludePackages myBuildRelease =
-    [ "debian-archive-keyring"
+    [ "cabal-install"
+    , "debian-archive-keyring"
     , "build-essential"         -- This is required by autobuilder code that opens the essential-packages list
     , "pkg-config"              -- Some packages now depend on this package via new cabal options.
     , "debian-keyring"
