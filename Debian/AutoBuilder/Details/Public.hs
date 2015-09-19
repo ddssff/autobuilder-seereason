@@ -140,6 +140,7 @@ main =
              , ansi_terminal
              , ansi_wl_pprint
              , applicative_extras
+             , atp_haskell
              , broken asn1_data
              , asn1_types
              , async
@@ -890,7 +891,7 @@ ghcjs_group :: TSt P.Packages
 ghcjs_group = do
   deps <- (baseRelease . view release <$> get) >>= \ r ->
              case r of
-               Precise -> (named "ghcjs-deps" . map APackage) =<< sequence [c_ares, gyp, libv8]
+               Precise -> (named "ghcjs-deps" . map APackage) =<< sequence [gyp]
                _ -> pure P.NoPackage
   comp <- sequence
              [ shelly
@@ -961,6 +962,7 @@ ghcjs_group = do
                   , mtl_unleashed
                   , nats
                   , network
+                  , network_info
                   , network_uri
                   , optparse_applicative
                   , parsec
@@ -1009,6 +1011,8 @@ ghcjs_group = do
                   , unixutils
                   , userid
                   , utf8_string
+                  , uuid
+                  , uuid_types
                   , value_supply
                   , void
                   , (web_routes `flag` P.BuildDep "libghcjs-split-dev") -- the ghcjs version doesn't understand "if impl(ghc >= 7.2) build-depends: split"
@@ -1042,7 +1046,7 @@ abstract_par = debianize (hackage "abstract-par")
 -- acid_state = debianize (hackage "acid-state" {- `patch` $(embedFile "patches/acid-state.diff") -})
 acid_state = debianize (git "https://github.com/seereason/acid-state" [])
 adjunctions = debianize (hackage "adjunctions")
-aeson = debianize (hackage "aeson")
+aeson = debianize (hackage "aeson" `flag` P.CabalPin "0.9.0.1")
 aeson_pretty = debianize (hackage "aeson-pretty")
 aeson_qq = debianize (hackage "aeson-qq")
 agi = darcs ("http://src.seereason.com/haskell-agi")
@@ -1081,6 +1085,7 @@ asn1_parse = debianize (hackage "asn1-parse")
 asn1_types = debianize (hackage "asn1-types" `depends` [hourglass])
 async = debianize (hackage "async")
 atomic_primops = debianize (hackage "atomic-primops")
+atp_haskell = debianize (git "https://github.com/seereason/atp-haskell" [])
 attempt = debianize (hackage "attempt")
 attoparsec = debianize (hackage "attoparsec")
 attoparsec_enumerator = debianize (hackage "attoparsec-enumerator")
@@ -1423,7 +1428,7 @@ happstack_authenticate_0 = debianize (git "https://github.com/Happstack/happstac
                            `flag` P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0",
                                                   "--cabal-flags", "migrate",
                                                   "--executable", "happstack-authenticate-migrate" ])
-happstack_authenticate = debianize (git "https://github.com/Happstack/happstack-authenticate.git" []) -- Use authenticate-0 for now
+happstack_authenticate = debianize (git "https://github.com/Happstack/happstack-authenticate.git" [])
 happstack_clckwrks = debianize (git ("https://github.com/Happstack/happstack-clckwrks") []
                            `cd` "clckwrks-theme-happstack"
                            -- `patch` $(embedFile "patches/clckwrks-theme-happstack.diff")
@@ -1664,7 +1669,7 @@ largeword = debianize (hackage "largeword")
          {-  , apt "wheezy" "haskell-leksah"
              , apt "wheezy" "haskell-leksah-server" -- for leksah -}
 latex = debianize (hackage "latex")
-lens = debianize (hackage "lens")
+lens = debianize (hackage "lens" `flag` P.CabalPin "4.13")
 lens_compat = debianize (git "https://github.com/ddssff/lens-compat" [])
 lens_family_core = debianize (hackage "lens-family-core")
 lens_family = debianize (hackage "lens-family")
@@ -1904,7 +1909,7 @@ sat = debianize (hackage "sat"
                             `flag` P.DebVersion "1.1.1-1~hackage1")
 scientific = debianize (hackage "scientific")
              -- , debianize (hackage "arithmoi" `flag` P.BuildDep "llvm-dev")
-scotty = debianize (hackage "scotty")
+scotty = debianize (hackage "scotty" `patch` "patches/scotty.diff") -- allow warp-3.1.3
 seclib = debianize (darcs ("http://src.seereason.com/seclib"))
 securemem = debianize (hackage "securemem")
 seereason_base =
@@ -1979,19 +1984,11 @@ template_default = debianize (hackage "template-default" `patch` $(embedFile "pa
 temporary = debianize (hackage "temporary")
 tensor = broken $ debianize (hackage "Tensor" `tflag` P.DebVersion "1.0.0.1-2")
 test_framework = debianize (hackage "test-framework")
-test_framework_hunit = debianize (hackage "test-framework-hunit" `tflag` P.DebVersion "0.3.0.1-1build4")
-             -- Retired
-             -- , debianize (hackage "test-framework-quickcheck")
-test_framework_quickcheck2 = debianize (git "https://github.com/seereason/test-framework" [] {-hackage "test-framework-quickcheck2"-}
-                                                `cd` "quickcheck2"
-                                                {-`flag` P.SkipVersion "0.3.0.2"-})
-test_framework_quickcheck = debianize (git "https://github.com/seereason/test-framework" [] {-hackage "test-framework-quickcheck2"-}
-                                                `cd` "quickcheck"
-                                                {-`flag` P.SkipVersion "0.3.0.2"-})
+test_framework_hunit = debianize (hackage "test-framework-hunit")
+test_framework_quickcheck2 = debianize (git "https://github.com/seereason/test-framework" [] `cd` "quickcheck2")
+test_framework_quickcheck = debianize (git "https://github.com/seereason/test-framework" [] `cd` "quickcheck")
 test_framework_smallcheck = debianize (hackage "test-framework-smallcheck")
 test_framework_th = debianize (hackage "test-framework-th" `tflag` P.DebVersion "0.2.4-1build4")
-             --
-             -- , debianize (hackage "testpack" `patch` $(embedFile "patches/testpack.diff"))
 testing_feat = debianize (hackage "testing-feat")
 texmath = debianize (hackage "texmath")
 text_binary = debianize (hackage "text-binary")
@@ -2022,7 +2019,7 @@ transformers_compat = debianize (hackage "transformers-compat"
                    `patch` $(embedFile "patches/transformers-compat.diff"))
 transformers_free = debianize (hackage "transformers-free")
 traverse_with_class = debianize (hackage "traverse-with-class")
-trifecta = debianize (hackage "trifecta" `patch` $(embedFile "patches/trifecta.diff"))
+trifecta = debianize (hackage "trifecta" {-`patch` $(embedFile "patches/trifecta.diff")-})
 tyb = skip (Reason "Needs update for current template-haskell") $ debianize (hackage "TYB")
 type_eq = debianize (hackage "type-eq")
 unbounded_delays = debianize (hackage "unbounded-delays")
@@ -2044,7 +2041,7 @@ unordered_containers = debianize (hackage "unordered-containers")
              -- The GHC in wheezy conflicts with libghc-containers-dev, so we can't build this.
              -- , wonly $ debianize (hackage "containers")
 urlencoded = debianize (hackage "urlencoded" {-`patch` $(embedFile "patches/urlencoded.diff")-})
-userid = debianize (hackage "userid")
+userid = debianize (git "https://github.com/Happstack/userid" [])
 utf8_light = debianize (hackage "utf8-light")
 utf8_string = debianize (hackage "utf8-string"
                             `flag` P.RelaxDep "hscolour"
