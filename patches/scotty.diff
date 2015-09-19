@@ -1,0 +1,11 @@
+--- old/scotty.cabal	2015-08-24 05:36:28.883983964 -0700
++++ new/scotty.cabal	2015-09-19 07:19:41.864182403 -0700
+@@ -86,7 +86,7 @@
+                        transformers-compat >= 0.4      && < 0.5,
+                        wai                 >= 3.0.0    && < 3.1,
+                        wai-extra           >= 3.0.0    && < 3.1,
+-                       warp                >= 3.0.0    && < 3.1
++                       warp                >= 3.0.0    && < 3.2
+ 
+   GHC-options: -Wall -fno-warn-orphans
+ 

@@ -1090,49 +1090,7 @@ attoparsec_enumerator = debianize (hackage "attoparsec-enumerator")
              -- , debianize (hackage "attoparsec-text-enumerator")
 authenticate = debianize (hackage "authenticate")
 autobuilder = debianize (git "https://github.com/ddssff/autobuilder" []) `flag` P.CabalDebian [ "--source-package-name", "autobuilder" ]
-autobuilder_seereason =
-    debianize (git "https://github.com/ddssff/autobuilder-seereason" [])
-                 -- It would be nice if these dependencies were in the cabal file
-                 `flag` P.CabalDebian [ "--depends", "autobuilder-seereason:ghc"
-                                      , "--depends", "autobuilder-seereason:debhelper"
-                                      , "--depends", "autobuilder-seereason:apt-file"
-                                      , "--depends", "autobuilder-seereason:apt-utils"
-                                      , "--depends", "autobuilder-seereason:debootstrap"
-                                      , "--depends", "autobuilder-seereason:rsync"
-                                      , "--depends", "autobuilder-seereason:dupload"
-                                      , "--depends", "autobuilder-seereason:darcs"
-                                      , "--depends", "autobuilder-seereason:git"
-                                      , "--depends", "autobuilder-seereason:tla"
-                                      , "--depends", "autobuilder-seereason:mercurial"
-                                      , "--depends", "autobuilder-seereason:subversion"
-                                      , "--depends", "autobuilder-seereason:apt"
-                                      , "--depends", "autobuilder-seereason:build-essential"
-                                      , "--depends", "autobuilder-seereason:quilt"
-                                      , "--depends", "autobuilder-seereason:curl"
-                                      , "--depends", "autobuilder-seereason:debian-archive-keyring"
-                                      , "--depends", "autobuilder-seereason:seereason-keyring"
-                                      -- Why?
-                                      -- , "--depends", "autobuilder-seereason:libghc-autobuilder-seereason-dev"
-                                      -- Pull in the autobuilder-seereason library so the target's
-                                      -- debian/Debianize.hs scripts can run.
-                                      -- This is needed if the release vendor is ubuntu.  I need
-                                      -- to use a real type for the release value instead of a string,
-                                      -- then I can just ask the release who its vendor is.
-                                      -- , "--depends", "autobuilder-seereason:ubuntu-keyring"
-                                      -- These are dependencies used by certain debian/Debianize.hs scripts
-                                      , "--recommends", "autobuilder-seereason:libghc-text-dev"
-                                      , "--recommends", "autobuilder-seereason:libghc-seereason-ports-dev" -- used by most (all?) of our web apps
-                                      , "--recommends", "autobuilder-seereason:libghc-happstack-authenticate-dev" -- used by mimo
-                                      , "--recommends", "autobuilder-seereason:libghc-happstack-foundation-dev" -- used by mimo
-                                      , "--recommends", "autobuilder-seereason:libghc-safecopy-dev" -- used by mimo
-                                      , "--recommends", "autobuilder-seereason:libghc-hsp-dev" -- used by mimo
-                                      , "--recommends", "autobuilder-seereason:libghc-utility-ht-dev" -- used by mimo
-                                      ]
-                 `flag` P.CabalDebian [ "--conflicts", "autobuilder-seereason:autobuilder"
-                                      , "--replaces", "autobuilder-seereason:autobuilder" ]
-                 `flag` P.CabalDebian [ "--executable", "autobuilder-seereason" ]
-                 `flag` P.CabalDebian [ "--executable", "seereason-darcs-backups" ]
-                 `flag` P.CabalDebian [ "--source-package-name", "autobuilder-seereason" ]
+autobuilder_seereason = debianize (git "https://github.com/ddssff/autobuilder-seereason" [])
 auto_update = debianize (hackage "auto-update")
 base_compat = debianize (hackage "base-compat")
 base_orphans = debianize (hackage "base-orphans")
