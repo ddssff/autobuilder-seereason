@@ -232,7 +232,7 @@ Library
       Debian.Orphans
 
   if !flag (local-debian)
-    Build-Depends: debian >= 3.82
+    Build-Depends: debian >= 3.89
   else
     Hs-Source-Dirs: debian-haskell
     Build-Depends:

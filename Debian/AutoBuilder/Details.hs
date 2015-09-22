@@ -24,7 +24,7 @@ import Debian.Releases (Release(..),
                         releaseString, parseReleaseName, isPrivateRelease,
                         baseRelease, Distro(..))
 import Debian.Repo.Slice (Slice, PPASlice{-(PersonalPackageArchive, ppaUser, ppaName)-})
-import Debian.Version (parseDebianVersion)
+import Debian.Version (parseDebianVersion')
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
 
@@ -58,7 +58,7 @@ myParams home myBuildRelease =
     -- 6.18 renames type Spec -> RetrieveMethod
     -- 6.35 added the CabalDebian flag
     -- 6.64 removes the myCompilerVersion argument from defaultParams
-    , requiredVersion = [(parseDebianVersion ("6.64" :: String), Nothing)]
+    , requiredVersion = [(parseDebianVersion' ("6.64" :: String), Nothing)]
     , hackageServer = myHackageServer
     }
 
