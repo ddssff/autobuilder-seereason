@@ -168,6 +168,7 @@ myHackageServer = "hackage.haskell.org"
 myGlobalRelaxInfo =
     ["base-files",
      "bash",
+     "binutils",
      "bsdutils",
      "cdbs",
      "devscripts",
