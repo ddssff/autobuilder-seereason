@@ -78,9 +78,18 @@ image_cache = debianize (git "https://github.com/seereason/image-cache.git" [] {
 -- environment, except making it a dependency of the autobuilder
 -- itself.
 mimo = debianize (git "ssh://git@github.com/seereason/mimo.git" [])
-mimo_bootstrap = debianize (git "ssh://git@github.com/seereason/mimo-bootstrap.git" [] `flag` P.SetupDep "libghc-mimo-dev")
-mimo_optimum = debianize (git "ssh://git@github.com/seereason/mimo-optimum.git" [] `flag` P.SetupDep "libghc-mimo-dev")
-mimo_paste = debianize (git "ssh://git@github.com/seereason/mimo-paste.git" [] `flag` P.SetupDep "libghc-mimo-dev")
+mimo_bootstrap =
+    debianize (git "ssh://git@github.com/seereason/mimo-bootstrap.git" []
+                `flag` P.SetupDep "libghc-mimo-dev"
+                `flag` P.BuildDep "haskell-mimo-utils")
+mimo_optimum =
+    debianize (git "ssh://git@github.com/seereason/mimo-optimum.git" []
+                 `flag` P.SetupDep "libghc-mimo-dev"
+                 `flag` P.BuildDep "haskell-mimo-utils")
+mimo_paste =
+    debianize (git "ssh://git@github.com/seereason/mimo-paste.git" []
+                 `flag` P.SetupDep "libghc-mimo-dev"
+                 `flag` P.BuildDep "haskell-mimo-utils")
 ontology = git "ssh://git@github.com/seereason/ontology.git" []
 seereason = debianize (git "ssh://git@github.com/seereason/seereason" [])
 seereasonpartners_dot_com = debianize (darcs (privateRepo </> "seereasonpartners-clckwrks") `cd` "seereasonpartners-dot-com" `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))

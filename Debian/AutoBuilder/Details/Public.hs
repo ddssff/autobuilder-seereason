@@ -457,6 +457,7 @@ main =
              , tinymce
              , transformers_base
              , tyb
+             , uglymemo
              , unbounded_delays
              , unicode_names
              , unicode_properties
@@ -471,6 +472,7 @@ main =
              , utf8_string
              , utility_ht
              , uuid
+             , uuid_orphans
              , uuid_types
              , broken vacuum
              , validation
@@ -1012,6 +1014,7 @@ ghcjs_group = do
                   , userid
                   , utf8_string
                   , uuid
+                  , uuid_orphans
                   , uuid_types
                   , value_supply
                   , void
@@ -1080,9 +1083,9 @@ appar = debianize (hackage "appar" `flag` P.DebVersion "1.1.4-1")
 applicative_extras = debianize (hackage "applicative-extras" `flag` P.DebVersion "0.1.8-1")
 archive = debianize (git "https://github.com/seereason/archive" [] `flag` P.CabalDebian ["--default-package", "archive"])
 asn1_data = debianize (hackage "asn1-data" `tflag` P.DebVersion "0.7.1-4build1")
-asn1_encoding = debianize (hackage "asn1-encoding")
+asn1_encoding = debianize (hackage "asn1-encoding" `flag` P.CabalPin "0.9.2") -- avoid rebuild pending unpin of asn1_types
 asn1_parse = debianize (hackage "asn1-parse")
-asn1_types = debianize (hackage "asn1-types" `depends` [hourglass])
+asn1_types = debianize (hackage "asn1-types" `depends` [hourglass] `flag` P.CabalPin "0.3.0") -- avoid rebuild
 async = debianize (hackage "async")
 atomic_primops = debianize (hackage "atomic-primops")
 atp_haskell = debianize (git "https://github.com/seereason/atp-haskell" [])
@@ -1137,6 +1140,7 @@ bytestring_trie = debianize (hackage "bytestring-trie")
 bzlib = debianize (hackage "bzlib" `flag` P.DevelDep "libbz2-dev")
              -- , debianize (hackage "cairo-pdf")
 cabal_debian = git "https://github.com/ddssff/cabal-debian" []
+                `flag` P.CabalDebian ["--cabal-flags", "-tests"] -- turn off test suite
 -- cabal = debianize (hackage "Cabal")
 cabal_install = debianize (hackage "cabal-install"
                              -- `patch` $(embedFile "patches/cabal-install.diff")
@@ -1378,7 +1382,7 @@ ghcjs_dom_hello = debianize (hackage "ghcjs-dom-hello"
                                `flag` P.CabalDebian ["--default-package", "ghcjs-dom-hello"])
 ghcjs = git "https://github.com/ddssff/ghcjs-debian" [] `relax` "cabal-install"
 ghcjs_prim = debianize (git "https://github.com/ghcjs/ghcjs-prim.git" [Branch "ghc-7.10"])
-ghcjs_tools = git "https://github.com/ghcjs/ghcjs" []
+ghcjs_tools = git "https://github.com/ddssff/ghcjs" []
                  `patch` $(embedFile "patches/ghcjs-0002-Force-HOME-to-be-usr-lib-ghcjs-during-build.patch")
                  `patch` $(embedFile "patches/ghcjs-0003-Allow-builds-even-if-repository-has-uncommitted-chan.patch")
                  `patch` $(embedFile "patches/ghcjs-0004-Add-debianization.patch")
@@ -1832,7 +1836,7 @@ polyparse = debianize (hackage "polyparse")
 prelude_extras = debianize (hackage "prelude-extras")
 prettyclass = debianize (hackage "prettyclass")
 pretty_show = debianize (hackage "pretty-show" `flag` P.BuildDep "happy")
-primitive = debianize (hackage "primitive")
+primitive = debianize (hackage "primitive" `flag` P.CabalPin "0.6")
 process_extras =
     debianize (git "https://github.com/seereason/process-extras" [])
                  `apply` (substitute "process-extras" "process-listlike")
@@ -1909,7 +1913,7 @@ sat = debianize (hackage "sat"
                             `flag` P.DebVersion "1.1.1-1~hackage1")
 scientific = debianize (hackage "scientific")
              -- , debianize (hackage "arithmoi" `flag` P.BuildDep "llvm-dev")
-scotty = debianize (hackage "scotty" `patch` "patches/scotty.diff") -- allow warp-3.1.3
+scotty = debianize (hackage "scotty" `patch` $(embedFile "patches/scotty.diff")) -- allow warp-3.1.3
 seclib = debianize (darcs ("http://src.seereason.com/seclib"))
 securemem = debianize (hackage "securemem")
 seereason_base =
@@ -1946,7 +1950,7 @@ stateVar = debianize (hackage "StateVar")
 stb_image = debianize (hackage "stb-image")
 stm_chans = debianize (hackage "stm-chans")
 stm = debianize (hackage "stm")
-streaming_commons = debianize (hackage "streaming-commons")
+streaming_commons = debianize (hackage "streaming-commons" `flag` P.CabalPin "0.1.14") -- avoid rebuild
 strict = debianize (hackage "strict"
                             `pflag` P.DebVersion "0.3.2-2"
                             `tflag` P.DebVersion "0.3.2-7") -- apt (rel release "wheezy" "quantal") "haskell-strict" -- for leksah
@@ -1956,7 +1960,7 @@ stringable = debianize (hackage "stringable") -- this can be done with listlike-
 stringbuilder = debianize (hackage "stringbuilder")
 stringsearch = debianize (hackage "stringsearch")
 sunroof_compiler = debianize (git "http://github.com/ku-fpg/sunroof-compiler" [] `patch` $(embedFile "patches/sunroof-compiler.diff"))
-syb = debianize (hackage "syb")
+syb = debianize (hackage "syb" `flag` P.CabalPin "0.5.1") -- avoid rebuild
 syb_with_class = debianize (git "http://github.com/seereason/syb-with-class" []) -- Version 0.6.1.5 tries to derive typeable instances when building rjson, which is an error for ghc-7.8
 syb_with_class_instances_text = broken $
                debianize (hackage "syb-with-class-instances-text"
@@ -2011,7 +2015,7 @@ th_reify_many = debianize (hackage "th-reify-many")
 time_compat = debianize (hackage "time-compat")
 time_locale_compat = debianize (hackage "time-locale-compat")
 tinymce = apt "wheezy" "tinymce"
-tls = debianize (hackage "tls")
+tls = debianize (hackage "tls" `flag` P.CabalPin "1.3.2" {-avoid rebuild-})
             -- tls-extra deprecated in favor of tls
             -- , debianize (hackage "tls-extra" `patch` $(embedFile "patches/tls-extra.diff"))
 transformers_base = debianize (hackage "transformers-base")
@@ -2022,6 +2026,7 @@ traverse_with_class = debianize (hackage "traverse-with-class")
 trifecta = debianize (hackage "trifecta" {-`patch` $(embedFile "patches/trifecta.diff")-})
 tyb = skip (Reason "Needs update for current template-haskell") $ debianize (hackage "TYB")
 type_eq = debianize (hackage "type-eq")
+uglymemo = debianize (hackage "uglymemo")
 unbounded_delays = debianize (hackage "unbounded-delays")
 unicode_names = debianize (git "https://github.com/seereason/unicode-names" [] `flag` P.DebVersion "3.2.0.0-1~hackage1")
 unicode_properties = debianize (git "https://github.com/seereason/unicode-properties" [] `flag` P.DebVersion "3.2.0.0-1~hackage1")
@@ -2050,6 +2055,7 @@ utf8_string = debianize (hackage "utf8-string"
              --             , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
 utility_ht = debianize (hackage "utility-ht")
 uuid = debianize (hackage "uuid")
+uuid_orphans = debianize (git "https://github.com/seereason/uuid" [] `cd` "uuid-orphans")
 uuid_types = debianize (hackage "uuid-types")
 vacuum = debianize (hackage "vacuum" `flag` P.SkipVersion "2.1.0.1")
 validation = debianize (hackage "Validation" `patch` $(embedFile "patches/validation.diff"))
@@ -2092,10 +2098,10 @@ wl_pprint_text = debianize (hackage "wl-pprint-text")
              -- Our applicative-extras repository has several important patches.
 word8 = debianize (hackage "word8")
 word_trie = debianize (hackage "word-trie")
-x509 = debianize (hackage "x509") `depends` [pem, asn1_parse]
+x509 = debianize (hackage "x509" `flag` P.CabalPin "1.6.1" {-avoid rebuild-}) `depends` [pem, asn1_parse]
 x509_store = debianize (hackage "x509-store")
 x509_system = debianize (hackage "x509-system")
-x509_validation = debianize (hackage "x509-validation")
+x509_validation = debianize (hackage "x509-validation" `flag` P.CabalPin "1.6.2" {-avoid rebuild-})
 xdg_basedir = debianize (hackage "xdg-basedir" `tflag` P.DebVersion "0.2.2-2")
 xhtml = debianize (hackage "xhtml" `wflag` P.DebVersion "3000.2.1-1" `qflag` P.DebVersion "3000.2.1-1build2" `tflag` P.DebVersion "3000.2.1-4")
 xml_conduit = debianize (hackage "xml-conduit")
