@@ -1,41 +1,35 @@
---- old/templates/GenericTemplate.hs	2014-03-04 23:23:42.000000000 -0800
-+++ new/templates/GenericTemplate.hs	2014-03-05 06:50:27.819066662 -0800
-@@ -12,6 +12,7 @@
- #define ALEX_IF_GHC_GT_500 #if __GLASGOW_HASKELL__ > 500
- #define ALEX_IF_GHC_LT_503 #if __GLASGOW_HASKELL__ < 503
- #define ALEX_IF_GHC_GT_706 #if __GLASGOW_HASKELL__ > 706
-+#define ALEX_IF_GHC_GT_707 #if __GLASGOW_HASKELL__ > 707
- #define ALEX_ELIF_GHC_500 #elif __GLASGOW_HASKELL__ == 500
- #define ALEX_IF_BIGENDIAN #ifdef WORDS_BIGENDIAN
- #define ALEX_ELSE #else
-@@ -24,13 +25,8 @@
- #define IBOX(n) (I# (n))
- #define FAST_INT Int#
- -- Do not remove this comment. Required to fix CPP parsing when using GCC and a clang-compiled alex.
--ALEX_IF_GHC_GT_706
--ALEX_DEFINE GTE(n,m) (tagToEnum# (n >=# m))
--ALEX_DEFINE EQ(n,m) (tagToEnum# (n ==# m))
--ALEX_ELSE
--ALEX_DEFINE GTE(n,m) (n >=# m)
--ALEX_DEFINE EQ(n,m) (n ==# m)
--ALEX_ENDIF
-+ALEX_DEFINE GTE(n,m) (isTrue# (n >=# m))
-+ALEX_DEFINE EQ(n,m) (isTrue# (n ==# m))
- #define PLUS(n,m) (n +# m)
- #define MINUS(n,m) (n -# m)
- #define TIMES(n,m) (n *# m)
---- old/src/Scan.hs	2014-03-05 06:53:05.000000000 -0800
-+++ new/src/Scan.hs	2014-03-05 06:55:47.219074209 -0800
-@@ -346,7 +346,11 @@
- 		(offset) = (base +# ord_c)
- 		(check)  = alexIndexInt16OffAddr alex_check offset
- 		
--		(new_s) = if (offset >=# 0#) && (check ==# ord_c)
-+#if __GLASGOW_HASKELL__ >= 708
-+		(new_s) = if isTrue# (offset >=# 0#) && isTrue# (check ==# ord_c)
-+#else
-+#error		(new_s) = if (offset >=# 0#) && (check ==# ord_c)
-+#endif
- 			  then alexIndexInt16OffAddr alex_table offset
- 			  else alexIndexInt16OffAddr alex_deflt s
- 	in
+diff -ru old/debian/Debianize.hs new/debian/Debianize.hs
+--- alex.old/debian/Debianize.hs	2015-09-27 10:10:36.482412648 -0700
++++ alex/debian/Debianize.hs	2015-09-27 10:09:29.102414591 -0700
+@@ -0,0 +1,31 @@
++import Control.Lens ((.=), (%=))
++import Data.Map as Map
++import Data.Set as Set
++import Debian.AutoBuilder.Details.Versions (seereasonDefaults)
++import Debian.Debianize hiding (backups)
++import Debian.Relation (BinPkgName(..), Relation(Rel), SrcPkgName(..))
++
++main :: IO ()
++main = performDebianization $ do
++         debianDefaults
++         (debInfo . allowDebianSelfBuildDeps) .= True
++         (debInfo . control . buildDepends) %= (++ [[Rel (BinPkgName "alex") Nothing Nothing]])
++         (debInfo . control . buildDepends) %= (++ [[Rel (BinPkgName "happy") Nothing Nothing]])
++         doExecutable (BinPkgName "alex") (InstallFile {execName = "alex", sourceDir = Nothing, destDir = Nothing, destName = "alex"})
++         (debInfo . compat) .= (Just 9)
++         mapM_ (\ name -> (debInfo . atomSet) %= (Set.insert $ InstallData (BinPkgName "alex") name name))
++                   [ "AlexTemplate"
++                   , "AlexTemplate-debug"
++                   , "AlexTemplate-ghc"
++                   , "AlexTemplate-ghc-debug"
++                   , "AlexTemplate-ghc-nopred"
++                   , "AlexWrapper-basic"
++                   , "AlexWrapper-basic-bytestring"
++                   , "AlexWrapper-gscan"
++                   , "AlexWrapper-monad"
++                   , "AlexWrapper-monad-bytestring"
++                   , "AlexWrapper-monadUserState"
++                   , "AlexWrapper-monadUserState-bytestring"
++                   , "AlexWrapper-posn"
++                   , "AlexWrapper-posn-bytestring"
++                   , "AlexWrapper-strict-bytestring"]
