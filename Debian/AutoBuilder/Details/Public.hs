@@ -904,7 +904,6 @@ ghcjs_group = do
              , haddock_api
               , haddock_library
              , lifted_async
-             , ghcjs_tools
              , ghcjs ] >>= plist >>= named "ghcjs-comp" . map APackage
   libs <- sequence
                   [ adjunctions
@@ -924,6 +923,7 @@ ghcjs_group = do
                   , byteable
                   , bytestring_builder
                   , cereal
+                  , cmdargs
                   , comonad
                   , contravariant
                   , cpphs
@@ -941,6 +941,7 @@ ghcjs_group = do
                   , double_conversion
                   , entropy
                   , exceptions
+                  , extra
                   , file_embed
                   , filemanip
                   , filemanip_extra
@@ -951,6 +952,7 @@ ghcjs_group = do
                   , haTeX
                   , haXml
                   , hlint
+                  , hscolour
                   , hslogger
                   , html
                   , http_types
@@ -988,6 +990,8 @@ ghcjs_group = do
                   , smallcheck
                   , split
                   , sr_extra
+                  , syb_with_class -- for ixset
+                  , syb_with_class_instances_text
                   , haskell_src_exts
                   , stateVar
                   , system_filepath
@@ -1010,6 +1014,7 @@ ghcjs_group = do
                   , transformers_base
                   , transformers_compat
                   , unbounded_delays
+                  , uniplate
                   , unix_compat
                   , unixutils
                   , userid
@@ -1358,18 +1363,7 @@ ghcjs_dom_hello = debianize (hackage "ghcjs-dom-hello"
                                `flag` P.CabalPin "1.2.0.0"
                                `flag` P.CabalDebian ["--default-package", "ghcjs-dom-hello"])
 ghcjs = git "https://github.com/ddssff/ghcjs-debian" [] `relax` "cabal-install"
-ghcjs_prim = debianize (git "https://github.com/ghcjs/ghcjs-prim.git" [Branch "ghc-7.10"])
-ghcjs_tools = git "https://github.com/ddssff/ghcjs" []
-                 `patch` $(embedFile "patches/ghcjs-0002-Force-HOME-to-be-usr-lib-ghcjs-during-build.patch")
-                 `patch` $(embedFile "patches/ghcjs-0003-Allow-builds-even-if-repository-has-uncommitted-chan.patch")
-                 `patch` $(embedFile "patches/ghcjs-0004-Add-debianization.patch")
-                 `patch` $(embedFile "patches/ghcjs-0005-Use-the-value-of-BRANCH-inherited-from-the-parent-pr.patch")
-                 `patch` $(embedFile "patches/ghcjs-0006-Force-the-use-of-branch-master-of-the-shims-repo.patch")
-                 `patch` $(embedFile "patches/ghcjs-0007-Use-ghc-in-prepare_setup_scripts-if-ghcjs-not-availa.patch")
-                 `patch` $(embedFile "patches/ghcjs-0008-Restrict-the-transformers-package-to-the-exact-versi.patch")
-                 `patch` $(embedFile "patches/ghcjs-0011-hide-liftio.patch")
-                 `relax` "cabal-install"
-                 `flag` P.KeepRCS
+ghcjs_prim = debianize (git "https://github.com/ghcjs/ghcjs-prim.git" [Branch "improved-base"])
 ghc_mtl = skip (Reason "No instance for (MonadIO GHC.Ghc)") $ debianize (hackage "ghc-mtl")
 ghc_paths = debianize (hackage "ghc-paths" `tflag` P.DebVersion "0.1.0.9-3") -- apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah
              -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
