@@ -28,10 +28,10 @@ libraries =
     , th_path
     , ghcjs_flags th_path
     , task_manager
-    , happstack_ghcjs_client
-    , happstack_ghcjs_server
-    , happstack_ghcjs_webmodule
-    , ghcjs_ghcjs_webmodule
+    -- , happstack_ghcjs_client
+    -- , happstack_ghcjs_server
+    -- , happstack_ghcjs_webmodule
+    -- , ghcjs_ghcjs_webmodule
     ]
 
 applications :: TSt P.Packages
@@ -40,8 +40,12 @@ applications =
     (named "applications" . map APackage) =<<
     sequence
     [ appraisalscribe
+    , appraisalscribe_paths
+    , ghcjs_flags appraisalscribe_paths
     , appraisalscribe_data
+    , ghcjs_flags appraisalscribe_data
     , image_cache
+    , ghcjs_flags image_cache
     , seereason
     , happstack_ontology
     , seereasonpartners_dot_com
@@ -52,6 +56,7 @@ applications =
 -- Individual packages, alphabetized
 
 appraisalscribe = debianize (git "ssh://git@github.com/seereason/appraisalscribe" [])
+appraisalscribe_paths = debianize (git "ssh://git@github.com/seereason/appraisalscribe-paths" [])
 appraisalscribe_data = debianize (git "ssh://git@github.com/seereason/appraisalscribe-data" [])
 -- appraisalscribe-data-tests is a huge package because it
 -- contains lots of test data, it makes more sense to just check

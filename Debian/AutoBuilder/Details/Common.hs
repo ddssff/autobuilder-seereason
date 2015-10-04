@@ -2,17 +2,14 @@
 {-# OPTIONS_GHC -Wall -fno-warn-missing-signatures #-}
 module Debian.AutoBuilder.Details.Common where
 
-#if !MIN_VERSION_base(4,8,0)
 import Control.Applicative (pure, (<$>))
-#endif
 import Control.Lens (Lens', over, use, view, (%=))
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
-import Data.String (IsString(fromString))
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages (flag, Package(Package), spec, TSt)
+import Debian.AutoBuilder.Types.Packages (flag, GroupName, Package(Package), spec, TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
 
@@ -41,8 +38,8 @@ happstackRepo = "http://hub.darcs.net/stepcut/happstack" :: String
 asciiToString :: B.ByteString -> String
 asciiToString = map (chr . fromIntegral) . B.unpack
 
-named :: String -> [P.Packages] -> TSt P.Packages
-named s = pure . P.Named (fromString s) . P.Packages
+named :: GroupName -> [P.Packages] -> TSt P.Packages
+named s = pure . P.Named s . P.Packages
 
 -- | Suitable flags for ghcjs library packages.  Won't work
 -- for anything complicated (like happstack-ghcjs-client.)
