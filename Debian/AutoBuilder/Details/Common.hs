@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, OverloadedStrings, RankNTypes, RecordWildCards #-}
+{-# LANGUAGE CPP, FlexibleContexts, FlexibleInstances, OverloadedStrings, RankNTypes, RecordWildCards, TypeSynonymInstances #-}
 {-# OPTIONS_GHC -Wall -fno-warn-missing-signatures #-}
 module Debian.AutoBuilder.Details.Common where
 
@@ -75,15 +75,15 @@ dropPrefix :: Monad m => String -> String -> m String
 dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
 dropPrefix pre str = fail $ "Expected prefix " ++ show pre ++ ", found " ++ show str
 
-skip :: Reason -> TSt P.Package -> TSt P.Package
+skip :: Reason -> P.Package -> P.Package
 skip _ _ = zero
 
 newtype Reason = Reason String
 
-broken :: TSt P.Package -> TSt P.Package
+broken :: P.Package -> P.Package
 broken _ = zero
 
-zero = pure $ Package Zero mempty []
+zero = Package Zero mempty []
 
 patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"
@@ -122,8 +122,8 @@ qflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Quantal
 wflag :: TSt Package -> PackageFlag -> TSt Package
 wflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Wheezy -> flag; _ -> noflag) mp fl
 wskip :: TSt P.Package -> TSt P.Package
-wskip t = (baseRelease . view release <$> get) >>= \ r -> case r of Wheezy -> zero; _ -> t
-wonly t = (baseRelease . view release <$> get) >>= \ r -> case r of Wheezy -> t; _ -> zero
+wskip t = (baseRelease . view release <$> get) >>= \ r -> case r of Wheezy -> return zero; _ -> t
+wonly t = (baseRelease . view release <$> get) >>= \ r -> case r of Wheezy -> t; _ -> return zero
 
 noflag :: TSt Package -> PackageFlag -> TSt Package
 noflag mp _ = mp
