@@ -83,7 +83,8 @@ newtype Reason = Reason String
 broken :: P.Package -> P.Package
 broken _ = zero
 
-zero = Package Zero mempty []
+zero :: P.Package
+zero = Package (toEnum 0) Zero mempty []
 
 patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"
