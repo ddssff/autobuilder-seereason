@@ -570,7 +570,7 @@ targets = do
   http <- debianize (hackage "HTTP") `inGroups` ["ghcjs-libs", "ghc-libs", "platform"]
   http2 <- debianize (hackage "http2")
   http_streams <- debianize (hackage "http-streams") `inGroups` ["platform"]
-  http_types <- debianize (hackage "http-types" {- `patch` $(embedFile "patches/http-types.diff") -}) `inGroups` ["ghcjs-libs", "ghc-libs"]
+  http_types <- debianize (hackage "http-types" `flag` P.CabalPin "0.8.6") `inGroups` ["ghcjs-libs", "ghc-libs"] -- web-routes specifies << 0.9
   hUnit <- debianize (hackage "HUnit") `inGroups` ["ghcjs-libs", "ghc-libs", "platform"]
   hunt <- debianize (git "https://github.com/hunt-framework/hunt.git" [] `cd` "hunt-searchengine" )
   hxt_charproperties <- debianize (hackage "hxt-charproperties") `inGroups` ["ghcjs-libs", "ghc-libs"]
@@ -597,7 +597,7 @@ targets = do
   ircbot <- debianize (hackage "ircbot") `inGroups` ["happstack"]
   irc <- debianize (hackage "irc")
   iso3166_country_codes <- debianize (hackage "iso3166-country-codes")
-  ixset <- debianize (git "https://github.com/Happstack/ixset.git" []) -- , debianize (hackage "ixset") `inGroups` ["ghcjs-libs", "ghc-libs"]
+  ixset <- debianize (git "https://github.com/Happstack/ixset.git" []) `inGroups` ["ghcjs-libs", "ghc-libs"] -- , debianize (hackage "ixset")
   ixset_typed <- debianize (hackage "ixset-typed") `inGroups` [ "authenticate"] -- dependency of happstack-authenticate-2
   jmacro <- debianize (hackage "jmacro") `inGroups` ["ghcjs-libs", "ghc-libs"] `inGroups` ["clckwrks"]
   jmacro_rpc <- broken <$> debianize (hackage "jmacro-rpc") `inGroups` ["happstack"]
@@ -654,7 +654,7 @@ targets = do
   lifted_base <- debianize (hackage "lifted-base") `inGroups` ["ghcjs-libs", "ghc-libs"]
   linear <- debianize (hackage "linear")
   list_extras <- debianize (hackage "list-extras")
-  listLike <- debianize (git "https://github.com/ddssff/ListLike" []) -- debianize (hackage "ListLike") `inGroups` ["ghcjs-libs", "ghc-libs"]
+  listLike <- debianize (git "https://github.com/ddssff/ListLike" []) `inGroups` ["ghcjs-libs", "ghc-libs"] -- debianize (hackage "ListLike")
   list_tries <- debianize (hackage "list-tries" {- `patch` $(embedFile "patches/list-tries.diff") -}) `inGroups` ["happstack"] -- version 0.5.2 depends on dlist << 0.7
   loch_th <- debianize (hackage "loch-th")
   logic_classes <- git "https://github.com/seereason/logic-classes" []
@@ -1092,6 +1092,8 @@ targets = do
   shakespeare `depends` [blaze_html, blaze_markup]
   web_routes_happstack `depends` [happstack_server]
   happstack_authenticate `depends` [authenticate, happstack_hsp, happstack_jmacro, shakespeare, web_routes_happstack]
+  pandoc `depends` [juicyPixels, pandoc_types, yaml]
+  ixset `depends` [safecopy]
 
   --------------------
   -- PACKAGE GROUPS --
