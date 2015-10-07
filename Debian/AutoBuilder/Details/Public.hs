@@ -342,8 +342,9 @@ targets = do
   ghc78 <- ghcFlags $ apt "experimental" "ghc" `patch` $(embedFile "patches/trac9262.diff")
   ghc710 <- ghcFlags $ apt "experimental" "ghc"
                         `patch` $(embedFile "patches/ghc.diff")
-  ghcjs_jquery <- debianize ({-git "https://github.com/seereason/ghcjs-jquery" [Branch "base48"]-}
-                            git "https://github.com/ghcjs/ghcjs-jquery" []) `putSrcPkgName` "ghcjs-ghcjs-jquery" `inGroups` [{-"ghcjs-libs",-} "ghc-libs"]
+  ghcjs_jquery <- debianize (git "https://github.com/seereason/ghcjs-jquery" [Branch "improved-base"])
+                    {-`putSrcPkgName` "ghcjs-ghcjs-jquery"-}
+                    `inGroups` ["ghcjs-libs", "ghc-libs"]
   -- ghcjs_vdom = ghcjs_flags (debianize (git "https://github.com/seereason/ghcjs-vdom" [Branch "base48"]) `putSrcPkgName` "ghcjs-ghcjs-vdom")
   ghcjs_ffiqq <- debianize (git "https://github.com/ghcjs/ghcjs-ffiqq" []) `putSrcPkgName` "ghcjs-ghcjs-ffiqq" `inGroups` ["ghcjs-libs", "ghc-libs"]
   ghcjs_dom <- debianize ({-hackage "ghcjs-dom"-}
