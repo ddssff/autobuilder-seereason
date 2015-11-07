@@ -285,7 +285,7 @@ targets = do
                               `pflag` P.DebVersion "2.0.0.0-3"
                               `wflag` P.DebVersion "2.0.0.0-3"
                               `tflag` P.DebVersion "2.0.0.0-5")
-  errors <- debianize (hackage "errors")
+  errors <- debianize (hackage "errors") `inGroups` ["ghcjs-libs", "ghc-libs"]
   exceptions <- debianize (hackage "exceptions") `inGroups` ["ghcjs-libs", "ghc-libs"]
   expiring_cache_map <- debianize (hackage "expiring-cache-map")
   executable_path <- debianize (hackage "executable-path"
