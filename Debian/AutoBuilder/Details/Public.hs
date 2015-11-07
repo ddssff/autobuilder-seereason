@@ -129,7 +129,7 @@ targets = do
   cautious_file <- debianize (hackage "cautious-file" `tflag` P.DebVersion "1.0.2-2")
   cc_delcont <- debianize (hackage "CC-delcont" `flag` P.DebVersion "0.2-1~hackage1")
                -- , apt (rel release "wheezy" "quantal") "haskell-cereal"
-  cereal <- debianize (hackage "cereal") `inGroups` ["ghcjs-libs", "ghc-libs"]
+  cereal <- debianize (hackage "cereal" `flag` P.CabalPin "0.4.1.1") `inGroups` ["ghcjs-libs", "ghc-libs"] -- Concerns about migration in 0.5
   certificate <- debianize (hackage "certificate" `tflag` P.DebVersion "1.3.9-1build4")
   cgi <- skip (Reason "Depends on exceptions < 0.7") <$> debianize (hackage "cgi" {- `patch` $(embedFile "patches/cgi.diff") -}) `inGroups` ["platform"]
   charset <- debianize (hackage "charset")
