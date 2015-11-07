@@ -95,7 +95,7 @@ mimo_paste =
     debianize (git "ssh://git@github.com/seereason/mimo-paste.git" []
                  `flag` P.SetupDep "libghc-mimo-dev"
                  `flag` P.BuildDep "haskell-mimo-utils")
-ontology = git "ssh://git@github.com/seereason/ontology.git" []
+ontology = debianize (git "ssh://git@github.com/seereason/ontology.git" [])
 seereason = debianize (git "ssh://git@github.com/seereason/seereason" [])
 seereasonpartners_dot_com = debianize (darcs (privateRepo </> "seereasonpartners-clckwrks") `cd` "seereasonpartners-dot-com" `patch` $(embedFile "patches/seereasonpartners-dot-com.diff"))
 -- stripeRepo = "ssh://git@github.com/stripe-haskell/stripe"

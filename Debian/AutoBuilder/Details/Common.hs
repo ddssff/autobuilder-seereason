@@ -3,13 +3,13 @@
 module Debian.AutoBuilder.Details.Common where
 
 import Control.Applicative (pure, (<$>))
-import Control.Lens (Lens', over, use, view, (%=))
+import Control.Lens (Lens', over, use, view, (%=), set)
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages (flag, GroupName, Package(Package), spec, TSt)
+import Debian.AutoBuilder.Types.Packages (flag, GroupName, Package(Package), newId, pid, spec, TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
 
@@ -44,14 +44,16 @@ named s = pure . P.Named s . P.Packages
 -- | Suitable flags for ghcjs library packages.  Won't work
 -- for anything complicated (like happstack-ghcjs-client.)
 ghcjs_flags :: TSt P.Package -> TSt P.Package
-ghcjs_flags mp =
-    mp >>= \ p ->
-    mp `putSrcPkgName` makeSrcPkgName (view P.spec p)
-       `flag` P.CabalDebian ["--ghcjs"]
-       -- `flag` P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)]
-       `flag` P.BuildDep "libghc-cabal-dev" -- Not libghcjs-cabal-dev?
-       `flag` P.BuildDep "ghcjs"
-       `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
+ghcjs_flags mp = do
+  p <- mp
+  i <- newId
+  p' <- mp `putSrcPkgName` makeSrcPkgName (view P.spec p)
+             `flag` P.CabalDebian ["--ghcjs"]
+             -- `flag` P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)]
+             `flag` P.BuildDep "libghc-cabal-dev" -- Not libghcjs-cabal-dev?
+             `flag` P.BuildDep "ghcjs"
+             `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
+  return $ set pid i p'
 
 makeSrcPkgName :: RetrieveMethod -> String
 makeSrcPkgName (Hackage n) = "ghcjs-" ++ map toLower n

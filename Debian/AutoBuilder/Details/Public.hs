@@ -118,7 +118,7 @@ targets = do
   -- cabal = debianize (hackage "Cabal")
   cabal_install <- debianize (hackage "cabal-install" -- cabal-install-1.22.6.0 fails with zlib>=0.6
                                `flag` P.CabalDebian ["--default-package", "cabal-install"]) `inGroups` ["platform"]
-  cabal_macosx <- debianize (hackage "cabal-macosx" `patch` $(embedFile "patches/cabal-macosx.diff"))
+  cabal_macosx <- debianize (hackage "cabal-macosx" {-`patch` $(embedFile "patches/cabal-macosx.diff")-})
   c_ares <- apt "sid" "c-ares"
   case_insensitive <- debianize (hackage "case-insensitive")
                -- Here is an example of creating a debian/Debianize.hs file with an
@@ -277,6 +277,7 @@ targets = do
                                  , P._post = [] }) :: TSt Package
   edisonCore <- (debianize (hackage "EdisonCore" `qflag` P.DebVersion "1.2.1.3-9build2"))
   ekg_core <- debianize (hackage "ekg-core")
+  email_validate <- debianize (hackage "email-validate")
   enclosed_exceptions <- debianize (hackage "enclosed-exceptions") `inGroups` ["ghcjs-libs", "ghcjs-comp"]
   entropy <- debianize (hackage "entropy") `inGroups` ["ghcjs-libs", "ghc-libs"]
   enumerator <- debianize (hackage "enumerator" `qflag` P.DebVersion "0.4.19-1build2")
@@ -342,17 +343,16 @@ targets = do
   ghc78 <- ghcFlags $ apt "experimental" "ghc" `patch` $(embedFile "patches/trac9262.diff")
   ghc710 <- ghcFlags $ apt "experimental" "ghc"
                         `patch` $(embedFile "patches/ghc.diff")
-  ghcjs_jquery <- debianize (git "https://github.com/seereason/ghcjs-jquery" [Branch "improved-base"])
+  ghcjs_jquery <- debianize (git "https://github.com/ghcjs/ghcjs-jquery" [])
                     {-`putSrcPkgName` "ghcjs-ghcjs-jquery"-}
                     `inGroups` ["ghcjs-libs", "ghc-libs"]
   -- ghcjs_vdom = ghcjs_flags (debianize (git "https://github.com/seereason/ghcjs-vdom" [Branch "base48"]) `putSrcPkgName` "ghcjs-ghcjs-vdom")
   ghcjs_ffiqq <- debianize (git "https://github.com/ghcjs/ghcjs-ffiqq" []) `putSrcPkgName` "ghcjs-ghcjs-ffiqq" `inGroups` ["ghcjs-libs", "ghc-libs"]
-  ghcjs_dom <- debianize ({-hackage "ghcjs-dom"-}
-                         git "https://github.com/ghcjs/ghcjs-dom" [Commit "3942dc1435e7833ee9e6cb12b93768bca6b405d0"]) `inGroups` ["ghcjs-libs", "ghc-libs"]
+  ghcjs_dom <- debianize (git "https://github.com/ddssff/ghcjs-dom" []) `inGroups` ["ghcjs-libs", "ghc-libs"]
   ghcjs_dom_hello <- debianize (hackage "ghcjs-dom-hello"
                                  `patch` $(embedFile "patches/ghcjs-dom-hello.diff")
                                  `flag` P.CabalDebian ["--default-package", "ghcjs-dom-hello"]) `inGroups` ["ghcjs-libs", "ghc-libs"]
-  ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [{-Branch "old-base-ghc-7.10"-}] `relax` "cabal-install" `inGroups` ["ghcjs-comp"]
+  ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghcjsi"] `relax` "cabal-install" `inGroups` ["ghcjs-comp"]
   -- ghcjs_prim <- debianize (git "https://github.com/ghcjs/ghcjs-prim.git" [{-Branch "improved-base"-}]) `inGroups` ["ghcjs-comp"]
   ghc_mtl <- skip (Reason "No instance for (MonadIO GHC.Ghc)") <$> debianize (hackage "ghc-mtl")
   ghc_paths <- debianize (hackage "ghc-paths" `tflag` P.DebVersion "0.1.0.9-3") -- apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah
@@ -389,6 +389,7 @@ targets = do
                                                                                               , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))) `inGroups` ["ghcjs-comp"]
   haddock_library <- debianize (hackage "haddock-library") `inGroups` ["ghcjs-libs", "ghcjs-comp"]
   hamlet <- debianize (hackage "hamlet")
+  -- seereason still depends on this
   happstack_authenticate_0 <- debianize (git "https://github.com/Happstack/happstack-authenticate-0.git" []
                              `flag` P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0",
                                                     "--cabal-flags", "migrate",
@@ -657,7 +658,7 @@ targets = do
   listLike <- debianize (git "https://github.com/ddssff/ListLike" []) `inGroups` ["ghcjs-libs", "ghc-libs"] -- debianize (hackage "ListLike")
   list_tries <- debianize (hackage "list-tries" {- `patch` $(embedFile "patches/list-tries.diff") -}) `inGroups` ["happstack"] -- version 0.5.2 depends on dlist << 0.7
   loch_th <- debianize (hackage "loch-th")
-  logic_classes <- git "https://github.com/seereason/logic-classes" []
+  logic_classes <- debianize (git "https://github.com/seereason/logic-classes" [])
   logic_TPTP <- debianize (hackage "logic-TPTP")
                  `patch` $(embedFile "patches/logic-TPTP.diff")
                  `flag` P.BuildDep "alex"
@@ -771,7 +772,7 @@ targets = do
   pbkdf2 <- debianize (hackage "PBKDF2")
                -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
   pcre_light <- debianize (hackage "pcre-light"
-                              `patch` $(embedFile "patches/pcre-light.diff")
+                              -- `patch` $(embedFile "patches/pcre-light.diff")
                               `flag` P.DevelDep "libpcre3-dev")
   pem <- debianize (hackage "pem") `inGroups` [ "authenticate"]
   permutation <- debianize (hackage "permutation")
@@ -1078,6 +1079,7 @@ targets = do
                       `flag` P.DevelDep "zlib1g-dev") `inGroups` ["ghcjs-libs", "ghc-libs", "platform"]
   zlib_enum <- debianize (hackage "zlib-enum") `inGroups` [ "authenticate"]
 
+  -- Specify suspected dependencies
   asn1_types `depends` [hourglass]
   connection `depends` [x509_system, socks]
   sr_extra `depends` [quickCheck]
@@ -1086,7 +1088,7 @@ targets = do
   matrix `depends` [loop]
   x509 `depends` [pem, asn1_parse]
   x509_validation `depends` [x509_store]
-  authenticate `depends` [tagstream_conduit, xml_conduit]
+  authenticate `depends` [tagstream_conduit, xml_conduit, http_conduit]
   happstack_hsp `depends` [happstack_server]
   happstack_jmacro `depends` [happstack_server]
   shakespeare `depends` [blaze_html, blaze_markup]
@@ -1094,6 +1096,9 @@ targets = do
   happstack_authenticate `depends` [authenticate, happstack_hsp, happstack_jmacro, shakespeare, web_routes_happstack]
   pandoc `depends` [juicyPixels, pandoc_types, yaml]
   ixset `depends` [safecopy]
+  happstack_authenticate `depends` [userid]
+  happstack_scaffolding `depends` [userid]
+  seereason_base `depends` [happstack_scaffolding]
 
   --------------------
   -- PACKAGE GROUPS --
@@ -1389,6 +1394,16 @@ targets = do
                    , concatenative
                    , broken concrete_typerep
                    , cond
+                   , conduit
+                   , conduit_extra
+                   , http_client
+                   , http_client_tls
+                   , mime_types
+                   , web_plugins
+                   , gd
+                   , connection
+                   , http_conduit
+                   , streaming_commons
                    , configFile
                    , broken consumer
                    , cookie
@@ -1436,6 +1451,7 @@ targets = do
                    , edisonAPI
                    , broken edisonCore
                    , haskell_either
+                   , email_validate
                    , entropy
                    , enumerator
                    , erf
@@ -1692,6 +1708,7 @@ targets = do
                    , broken virthualenv
                    -- , vty -- depends on utf8-string << 0.4
                    , wai
+                   , wai_extra
                    , broken webdriver
                    , broken web_encodings
                    , wl_pprint
