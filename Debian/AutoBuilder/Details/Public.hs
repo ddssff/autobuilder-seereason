@@ -477,7 +477,8 @@ targets = do
                               `flag` P.BuildDep "happy")
   -- haskell_src_meta = debianize (hackage "haskell-src-meta")
   -- haskell_src_meta = debianize (git "https://github.com/bmillwood/haskell-src-meta" [])
-  haskell_src_meta <- debianize (git "https://github.com/ddssff/haskell-src-meta" []) `inGroups` ["ghcjs-libs", "ghc-libs"]
+  -- haskell_src_meta <- debianize (git "https://github.com/ddssff/haskell-src-meta" []) `inGroups` ["ghcjs-libs", "ghc-libs"]
+  haskell_src_meta <- debianize (git "https://github.com/ababkin/haskell-src-meta" []) `inGroups` ["ghcjs-libs", "ghc-libs"]
       -- This pull request has been merged, should switch back to hackage
   haste_compiler <- hack "haste-compiler" `flag` P.CabalDebian ["--default-package", "haste-compiler"]
   haste_ffi_parser <- git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
