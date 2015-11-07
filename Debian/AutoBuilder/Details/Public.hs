@@ -39,7 +39,7 @@ targets = do
   abstract_deque <- debianize (hackage "abstract-deque") :: TSt Package
   abstract_par <- debianize (hackage "abstract-par")
   -- acid_state = debianize (hackage "acid-state" {- `patch` $(embedFile "patches/acid-state.diff") -})
-  acid_state <- debianize (git "https://github.com/seereason/acid-state" []) `inGroups` ["ghcjs-libs", "ghc-libs", "happstack"]
+  acid_state <- debianize (git "https://github.com/seereason/acid-state" [Branch "log-inspection"]) `inGroups` ["ghcjs-libs", "ghc-libs", "happstack"]
   adjunctions <- debianize (hackage "adjunctions") `inGroups` ["ghcjs-libs", "ghc-libs"]
   aeson <- debianize (hackage "aeson" `flag` P.CabalPin "0.9.0.1") `inGroups` ["ghcjs-libs", "ghc-libs"] -- pandoc 1.15.0.6 will not build with aeson 0.10.  Also, fb, jmacro, happstack-authenticate need updates
   aeson_pretty <- debianize (hackage "aeson-pretty")
