@@ -170,5 +170,6 @@ myDebianMirrorHost = "http://ftp.debian.org"
 --myDebianMirrorHost = "http://mirrors.usc.edu/pub/linux/distributions"
 --myUbuntuMirrorHost = "http://mirror.umd.edu" -- sources line looks like: deb http://mirror.umd.edu/ubuntu/ trusty main restricted universe multiverse
 --myUbuntuMirrorHost = "http://ubuntu.mirrors.tds.net/pub/ubuntu"
-myUbuntuMirrorHost = "http://ubuntu.cs.utah.edu"
+--myUbuntuMirrorHost = "http://ubuntu.cs.utah.edu"  -- Very slow!
 --myUbuntuMirrorHost = "http://archive.ubuntu.com/ubuntu"
+myUbuntuMirrorHost = "http://mirror.picosecond.org/ubuntu"
