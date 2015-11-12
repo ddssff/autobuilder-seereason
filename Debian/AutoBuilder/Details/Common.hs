@@ -56,6 +56,7 @@ ghcjs_flags mp = do
   return $ set pid i p'
 
 makeSrcPkgName :: RetrieveMethod -> String
+makeSrcPkgName (Hackage "haskell-src-exts") = "ghcjs-src-exts"
 makeSrcPkgName (Hackage n) = "ghcjs-" ++ map toLower n
 makeSrcPkgName (Debianize'' p s) = fromMaybe (makeSrcPkgName p) s
 makeSrcPkgName (Patch p _) = makeSrcPkgName p
