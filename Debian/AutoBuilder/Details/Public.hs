@@ -961,7 +961,7 @@ targets = do
   th_desugar <- debianize (git "http://github.com/goldfirere/th-desugar" []) `inGroups` ["ghcjs-libs", "ghc-libs"]
   th_expand_syns <- debianize (hackage "th-expand-syns") `inGroups` ["ghcjs-libs", "ghc-libs"]
   -- th_instance_reification = debianize (git "https://github.com/seereason/th-instance-reification.git" [])
-  th_kinds <- debianize (git "http://github.com/ddssff/th-kinds" []) `inGroups` ["ghcjs-libs", "ghc-libs"]
+  th_kinds_fork <- debianize (git "http://github.com/ddssff/th-kinds-fork" []) `inGroups` ["ghcjs-libs", "ghc-libs"]
   th_lift <- debianize (hackage "th-lift") `inGroups` ["ghcjs-libs", "ghc-libs"]
   th_orphans <- debianize (hackage "th-orphans") `inGroups` ["ghcjs-libs", "ghc-libs"]
   th_typegraph <- debianize (git "http://github.com/seereason/th-typegraph" []) `inGroups` ["ghcjs-libs", "ghc-libs"]
@@ -1675,7 +1675,7 @@ targets = do
                    , th_desugar
                    , th_expand_syns
                    -- , th_instance_reification -- deprecated
-                   , th_kinds
+                   , th_kinds_fork
                    , th_lift
                    , th_orphans
                    , th_typegraph
