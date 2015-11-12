@@ -426,7 +426,8 @@ targets = do
   happstack_static_routing <- debianize (hackage "happstack-static-routing") `inGroups` ["happstack"]
   happy <- debianize (hackage "happy")
             `flag` P.RelaxDep "happy"
-            `flag` P.CabalDebian ["--executable", "happy"]
+            `flag` P.BuildDep "happy"
+            `flag` P.CabalDebian ["--executable", "happy", "--build-dep", "happy"]
              -- `flag` P.Maintainer "SeeReason Autobuilder <partners@seereason.com>",
             `apply` (execCabalM $ do mapM_ (\ name -> (debInfo . atomSet) %= (Set.insert $ InstallData (BinPkgName "happy") name name))
                                                [ "HappyTemplate-arrays-coerce"
