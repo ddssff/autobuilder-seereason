@@ -7,6 +7,7 @@ import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
+import Data.Set as Set (delete)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages (deletePackage, flag, PackageId, spec, TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
@@ -37,9 +38,6 @@ happstackRepo = "http://hub.darcs.net/stepcut/happstack" :: String
 asciiToString :: B.ByteString -> String
 asciiToString = map (chr . fromIntegral) . B.unpack
 
--- named :: GroupName -> [P.Package] -> TSt ()
--- named s ps = mapM_ (\p -> P.groups %= Map.insertWith Set.union s (singleton (view pid p))) ps
-
 -- | Suitable flags for ghcjs library packages.  Won't work
 -- for anything complicated (like happstack-ghcjs-client.)
 ghcjs_flags :: P.PackageId -> TSt P.PackageId
@@ -48,10 +46,11 @@ ghcjs_flags i =
     where
       f p =
           P.clonePackage id i >>= \j ->
+          P.modifyPackage (over P.groups (Set.delete "ghc-libs")) j >>
+          P.modifyPackage (over P.groups (Set.delete "ghcjs-libs")) i >>
           putSrcPkgName (makeSrcPkgName (view P.spec p)) j >>=
              flag (P.CabalDebian ["--ghcjs"]) >>=
-             -- flag (P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)])
-             flag (P.BuildDep "libghc-cabal-dev") >>= -- Not libghcjs-cabal-dev?
+             flag (P.BuildDep "libghc-cabal-dev") >>=
              flag (P.BuildDep "ghcjs") >>=
              flag (P.BuildDep "haskell-devscripts (>= 0.8.21.3)")
 
@@ -71,7 +70,6 @@ putSrcPkgName name i = P.modifyPackage (over spec (\x -> putSrcPkgName' x name))
 putSrcPkgName' :: RetrieveMethod -> String -> RetrieveMethod
 putSrcPkgName' (Debianize'' cabal _) name = Debianize'' cabal (Just name)
 putSrcPkgName' (Proc x) name = Proc (putSrcPkgName' x name)
--- More - we need a traversal - is it Typeable yet?
 putSrcPkgName' p _ = p
 
 dropPrefix :: Monad m => String -> String -> m String
@@ -86,15 +84,10 @@ newtype Reason = Reason String
 broken :: P.PackageId -> TSt ()
 broken = deletePackage
 
--- zero :: P.PackageId
--- zero = Package (toEnum 0) Zero mempty []
-
 patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"
 darcsHub :: String
 darcsHub = "http://hub.darcs.net/stepcut"
--- seereason :: String
--- seereason = "http://src.seereason.com"
 
 ghcFlags :: P.PackageId -> TSt P.PackageId
 ghcFlags i = relax "ghc" i >>=
@@ -193,16 +186,6 @@ addDeps newer older pre lns = do
           do lns' %= (++ [[Rel (BinPkgName (pre ++ older ++ suf)) Nothing Nothing]])
              lns' %= (++ [[Rel (BinPkgName (pre ++ older ++ suf)) Nothing Nothing]])
              lns' %= (++ [[Rel (BinPkgName (pre ++ older ++ suf)) Nothing Nothing]])
-{-
-    ["--conflicts", deps, "--provides", deps, "--replaces", deps]
-    where
-      deps = intercalate "," [dev name ++ ":" ++ dev orig,
-                              prof name ++ ":" ++ prof orig,
-                              doc name ++ ":" ++ prof orig]
-      dev x = prefix ++ x ++ "-dev"
-      prof x = prefix ++ x ++ "-prof"
-      doc x = prefix ++ x ++ "-doc"
--}
 
 hack name = hackage name >>= debianize
 

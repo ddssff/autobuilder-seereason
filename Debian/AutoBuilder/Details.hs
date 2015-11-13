@@ -18,7 +18,7 @@ import Data.Maybe
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, releaseRepoName, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
-import Debian.AutoBuilder.Types.Packages (Packages(NoPackage), TSt)
+import Debian.AutoBuilder.Types.Packages (TSt)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.Releases (Release(..),
                         releaseString, parseReleaseName, isPrivateRelease,
@@ -62,7 +62,7 @@ myParams home myBuildRelease =
                  }
         rel = parseReleaseName (buildRelease params)
         st = execState (myKnownTargets params) (P.targetState rel home) in
-    params {knownPackages = P.Packages (Map.elems (Map.map P.APackage (view P.packageMap st)))}
+    params {knownPackages = view P.packageMap st}
 
 -- https://launchpad.net/~hvr/+archive/ubuntu/ghc
 myExtraRepos :: [Either Slice PPASlice]
