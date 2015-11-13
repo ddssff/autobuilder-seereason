@@ -225,7 +225,7 @@ buildTargets = do
   _crypto <-  (hackage "Crypto") >>= debianize
   _cryptohash_conduit <-  (hackage "cryptohash-conduit") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _cryptohash_cryptoapi <-  (hackage "cryptohash-cryptoapi") >>= debianize >>= inGroups ["happstack"]
-  _cryptohash <-  (hackage "cryptohash") >>= debianize
+  _cryptohash <-  (hackage "cryptohash") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _cryptonite <-  (hackage "cryptonite") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _crypto_numbers <-  (hackage "crypto-numbers") >>= debianize >>= inGroups [ "authenticate"]
   _crypto_pubkey <-  (hackage "crypto-pubkey") >>= debianize >>= inGroups [ "authenticate"]
@@ -279,7 +279,7 @@ buildTargets = do
   _distributive <-  (hackage "distributive") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _dlist <-  (hackage "dlist") >>= debianize
                -- Natty only(?)
-  _doctest <-  (hackage "doctest") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _doctest <-  (hackage "doctest") >>= debianize >>= inGroups [{-"ghcjs-libs",-} "ghc-libs"]
       -- This package fails to build in several different ways because it has no modules.
       -- I am just going to patch the packages that use it to require transformers >= 0.3.
       -- Specifically, distributive and lens.
@@ -788,7 +788,7 @@ buildTargets = do
   _pcre_light <-  (hackage "pcre-light"
                               -- >>= patch $(embedFile "patches/pcre-light.diff")
                               >>= flag (P.DevelDep "libpcre3-dev")) >>= debianize
-  _pem <-  (hackage "pem") >>= debianize >>= inGroups [ "authenticate"]
+  _pem <-  (hackage "pem") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"]
   _permutation <-  (hackage "permutation") >>= debianize
   _pipes <-  (hackage "pipes") >>= debianize
   _placeholders <-  (hackage "placeholders") >>= debianize
@@ -830,7 +830,7 @@ buildTargets = do
   _quickCheck <-  (hackage "QuickCheck" >>= flag (P.BuildDep "libghc-random-prof") {->>= flag (P.CabalDebian ["--no-tests"])-}) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   _quickcheck_gent <-  (hackage "QuickCheck-GenT") >>= debianize
   _quickcheck_instances <-  (hackage "quickcheck-instances") >>= debianize
-  _quickcheck_io <-  (hackage "quickcheck-io") >>= debianize
+  _quickcheck_io <-  (hackage "quickcheck-io") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   -- quickCheck1 =  (hackage "QuickCheck" >>= flag (P.CabalPin "1.2.0.1") >>= flag (P.DebVersion "1.2.0.1-2") >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize
   _random <-  (hackage "random" >>= flag (P.SkipVersion "1.0.1.3")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"] -- 1.1.0.3 fixes the build for ghc-7.4.2 / base < 4.6
   _reducers <- hack "reducers"
@@ -889,7 +889,7 @@ buildTargets = do
                      >>= apply (replacement "semigroupoids" "semigroupoid-extras")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _semigroups <-  (hackage "semigroups") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _sendfile <-  (hackage "sendfile" >>= tflag (P.DebVersion "0.7.9-1")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _setenv <-  (hackage "setenv") >>= debianize
+  _setenv <-  (hackage "setenv") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _set_extra <-  (darcs ("http://src.seereason.com/set-extra")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
                -- I don't think we use this any more
                -- ,  (darcs "haskell-old-exception" ("http://src.seereason.com/old-exception")) >>= debianize
@@ -1071,8 +1071,8 @@ buildTargets = do
   _word8 <-  (hackage "word8") >>= debianize
   _word_trie <-  (hackage "word-trie") >>= debianize
   _x509 <-  (hackage "x509") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"]
-  _x509_store <-  (hackage "x509-store") >>= debianize >>= inGroups [ "authenticate"]
-  _x509_system <-  (hackage "x509-system") >>= debianize >>= inGroups [ "authenticate"]
+  _x509_store <-  (hackage "x509-store") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"]
+  _x509_system <-  (hackage "x509-system") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"]
   _x509_validation <-  (hackage "x509-validation") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"] :: TSt PackageId
   _xdg_basedir <-  (hackage "xdg-basedir" >>= tflag (P.DebVersion "0.2.2-2")) >>= debianize
   _xhtml <-  (hackage "xhtml" >>= wflag (P.DebVersion "3000.2.1-1") >>= qflag (P.DebVersion "3000.2.1-1build2") >>= tflag (P.DebVersion "3000.2.1-4")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
