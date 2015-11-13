@@ -7,7 +7,10 @@ module Debian.AutoBuilder.Details.Targets
     ) where
 
 import Control.Applicative ((<$>), (<*>))
-import Control.Monad.State (evalState)
+import Control.Lens ((%=), use, view)
+import Control.Monad.State (execState)
+import Data.List as List (map)
+import Data.Map as Map (map)
 import Data.Monoid (mappend)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
@@ -23,35 +26,34 @@ import qualified Debian.AutoBuilder.Details.Private as Private
 -- and any sequence of groups can be built together as long as
 -- no intermediate group is omitted.  Comment out the ones you
 -- don't wish to build.
-public :: String -> Release -> P.Packages
-public home release =
-    proc' $
-    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ evalState (Public.targets) (targetState release home)
+public :: TSt ()
+public =
     -- Dangerous when uncommented - build private targets into public, do not upload!!
-    --          ++ private home
+    -- private >>
+    Public.buildTargets >> applyEpochMap >> use P.release >>= applyDepMap >> proc'
 
-private :: String -> Release -> P.Packages
-private home release =
-    proc' $
-    {- relaxCabalDebian $ fixFlags $ -} applyEpochMap $ applyDepMap release $ evalState (mappend <$> Private.libraries <*> Private.applications) (targetState release home)
+private :: TSt ()
+private =
+    Private.libraries >> Private.applications >> applyEpochMap >> use P.release >>= applyDepMap >> proc'
 
-proc' :: P.Packages -> P.Packages
-proc' p@(Named {}) = p {packages = proc' (packages p)}
-proc' p@(Packages {}) = p {list = map proc' (list p)}
-proc' a@(APackage (Package {_spec = P.Proc _})) = a
-proc' (APackage p) = APackage (p {_spec = P.Proc (_spec p)})
-proc' p = p
+proc' :: TSt ()
+proc' =
+    packageMap %= Map.map f
+    where
+      f p@(Package {_spec = P.Proc _}) = p
+      f p = p {_spec = P.Proc (_spec p)}
 
 -- | This prevents every package that uses cabal-debian for
 -- debianization from rebuilding every time the library is revved.
 -- Presumably the current build is working ok, right?
-relaxCabalDebian :: P.Packages -> P.Packages
-relaxCabalDebian (P.Named n s) = P.Named n (relaxCabalDebian s)
-relaxCabalDebian (P.Packages s) = P.Packages (map relaxCabalDebian s)
-relaxCabalDebian (P.APackage p)
-    | isDebianizeSpec (P._spec p) =
-        P.APackage (p {P._flags = P._flags p ++ map P.RelaxDep ["libghc-cabal-debian-dev", "libghc-cabal-debian-prof", "libghc-cabal-debian-doc"]})
-relaxCabalDebian x = x
+relaxCabalDebian :: TSt ()
+relaxCabalDebian =
+    packageMap %= Map.map f
+    where f p | isDebianizeSpec (P._spec p) =
+                  p {_flags = _flags p ++ (List.map P.RelaxDep ["libghc-cabal-debian-dev",
+                                                                "libghc-cabal-debian-prof",
+                                                                "libghc-cabal-debian-doc"])}
+          f p = p
 
 -- FIXME - make this generic.  Not sure if the assumption that
 -- Debianize is outermost is valid.
@@ -60,13 +62,11 @@ isDebianizeSpec (P.Debianize'' _ _) = True
 isDebianizeSpec _ = False
 
 -- | Add MapDep and DevelDep flags Supply some special cases to map cabal library names to debian.
-applyDepMap :: Release -> P.Packages -> P.Packages
-applyDepMap _ P.NoPackage = P.NoPackage
-applyDepMap release (P.Named n s) = P.Named n (applyDepMap release s)
-applyDepMap release (P.Packages s) = P.Packages (map (applyDepMap release) s)
-applyDepMap release (P.APackage x) =
-    APackage (x {P._flags = P._flags x ++ mappings})
+applyDepMap :: Release -> TSt ()
+applyDepMap release =
+    packageMap %= Map.map f
     where
+      f x = x {P._flags = P._flags x ++ mappings}
       mappings = [P.MapDep "cryptopp" (deb "libcrypto++-dev"),
                   P.MapDep "crypto" (deb "libcrypto++-dev"),
                   P.MapDep "crypt" (deb "libc6-dev"),
@@ -95,14 +95,12 @@ applyDepMap release (P.APackage x) =
       deb s = [[Rel (BinPkgName s) Nothing Nothing]]
       rel s = either (error $ "Parse error in debian relations: " ++ show s) id (parseRelations s)
 
-applyEpochMap :: P.Packages -> P.Packages
-applyEpochMap P.NoPackage = P.NoPackage
-applyEpochMap (P.Named n s) = P.Named n (applyEpochMap s)
-applyEpochMap (P.Packages s) = P.Packages (map applyEpochMap s)
-applyEpochMap (P.APackage x) =
-    P.APackage (x {P._flags = P._flags x ++ mappings})
+applyEpochMap :: TSt ()
+applyEpochMap =
+    packageMap %= (Map.map f)
     where
-      mappings = [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]
+      f :: P.Package -> Package
+      f x = x {P._flags = P._flags x ++ [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]}
 
 {-
 fixFlags :: P.Packages -> P.Packages 

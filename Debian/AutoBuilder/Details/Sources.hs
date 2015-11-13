@@ -129,8 +129,9 @@ ubuntuSourceLines ubuntuMirrorHost release =
     List.map parseSourceLine $
     [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
     , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
-    , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
-    , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
+    -- Right now there are checksum errors in the amd64 index of trusty updates
+    -- , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
+    -- , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
     , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
     , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
     , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse"

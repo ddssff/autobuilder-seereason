@@ -2,14 +2,15 @@
 {-# OPTIONS_GHC -Wall -fno-warn-missing-signatures #-}
 module Debian.AutoBuilder.Details.Common where
 
-import Control.Applicative (pure, (<$>))
 import Control.Lens (Lens', over, use, view, (%=), set)
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
+import Data.Map as Map (insertWith)
 import Data.Maybe (fromMaybe)
+import Data.Set as Set (singleton, union)
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages (flag, GroupName, Package(Package), newId, pid, spec, TSt)
+import Debian.AutoBuilder.Types.Packages (deletePackage, flag, GroupName, Package(Package), newId, pid, spec, TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
 
@@ -38,22 +39,20 @@ happstackRepo = "http://hub.darcs.net/stepcut/happstack" :: String
 asciiToString :: B.ByteString -> String
 asciiToString = map (chr . fromIntegral) . B.unpack
 
-named :: GroupName -> [P.Packages] -> TSt P.Packages
-named s = pure . P.Named s . P.Packages
+named :: GroupName -> [P.Package] -> TSt ()
+named s ps = mapM_ (\p -> P.groups %= Map.insertWith Set.union s (singleton (view pid p))) ps
 
 -- | Suitable flags for ghcjs library packages.  Won't work
 -- for anything complicated (like happstack-ghcjs-client.)
-ghcjs_flags :: TSt P.Package -> TSt P.Package
-ghcjs_flags mp = do
-  p <- mp
-  i <- newId
-  p' <- mp `putSrcPkgName` makeSrcPkgName (view P.spec p)
-             `flag` P.CabalDebian ["--ghcjs"]
-             -- `flag` P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)]
-             `flag` P.BuildDep "libghc-cabal-dev" -- Not libghcjs-cabal-dev?
-             `flag` P.BuildDep "ghcjs"
-             `flag` P.BuildDep "haskell-devscripts (>= 0.8.21.3)"
-  return $ set pid i p'
+ghcjs_flags :: P.Package -> TSt P.Package
+ghcjs_flags p = do
+  P.clonePackage id p >>=
+   putSrcPkgName (makeSrcPkgName (view P.spec p)) >>=
+             flag (P.CabalDebian ["--ghcjs"]) >>=
+             -- flag (P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)])
+             flag (P.BuildDep "libghc-cabal-dev") >>= -- Not libghcjs-cabal-dev?
+             flag (P.BuildDep "ghcjs") >>=
+             flag (P.BuildDep "haskell-devscripts (>= 0.8.21.3)")
 
 makeSrcPkgName :: RetrieveMethod -> String
 makeSrcPkgName (Hackage "haskell-src-exts") = "ghcjs-src-exts"
@@ -65,8 +64,8 @@ makeSrcPkgName (Cd dir _) = "ghcjs-" ++ map toLower (takeBaseName dir)
 makeSrcPkgName (Darcs path) = "ghcjs-" ++ map toLower (takeBaseName path)
 makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
 
-putSrcPkgName :: TSt Package -> String -> TSt Package
-putSrcPkgName mp name = over spec (\x -> putSrcPkgName' x name) <$> mp
+putSrcPkgName :: String -> Package -> TSt Package
+putSrcPkgName name p = P.modifyPackage (over spec (\x -> putSrcPkgName' x name)) p
 
 putSrcPkgName' :: RetrieveMethod -> String -> RetrieveMethod
 putSrcPkgName' (Debianize'' cabal _) name = Debianize'' cabal (Just name)
@@ -78,13 +77,13 @@ dropPrefix :: Monad m => String -> String -> m String
 dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
 dropPrefix pre str = fail $ "Expected prefix " ++ show pre ++ ", found " ++ show str
 
-skip :: Reason -> P.Package -> P.Package
-skip _ _ = zero
+skip :: Reason -> P.Package -> TSt ()
+skip _ = deletePackage
 
 newtype Reason = Reason String
 
-broken :: P.Package -> P.Package
-broken _ = zero
+broken :: P.Package -> TSt ()
+broken = deletePackage
 
 zero :: P.Package
 zero = Package (toEnum 0) Zero mempty []
@@ -96,14 +95,15 @@ darcsHub = "http://hub.darcs.net/stepcut"
 -- seereason :: String
 -- seereason = "http://src.seereason.com"
 
-ghcFlags p = p `relax` "ghc"
-               `relax` "happy"
-               `relax` "alex"
-               `relax` "xsltproc"
-               `relax` "debhelper"
-               `relax` "quilt"
-               `relax` "python-minimal"
-               `relax` "libgmp-dev"
+ghcFlags :: P.Package -> TSt P.Package
+ghcFlags p = relax "ghc" p >>=
+             relax "happy" >>=
+             relax "alex" >>=
+             relax "xsltproc" >>=
+             relax "debhelper" >>=
+             relax "quilt" >>=
+             relax "python-minimal" >>=
+             relax "libgmp-dev"
 
 rel :: Release -> a -> a -> a
 rel r precise quantal =
@@ -115,25 +115,31 @@ rel r precise quantal =
 ghc74flag :: P.Package -> P.PackageFlag -> P.Package
 ghc74flag p _ = p
 
-sflag :: TSt Package -> PackageFlag -> TSt Package
-sflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Squeeze -> flag; _ -> noflag) mp fl
-pflag :: TSt Package -> PackageFlag -> TSt Package
-pflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Precise -> flag; _ -> noflag) mp fl
-tflag :: TSt Package -> PackageFlag -> TSt Package
-tflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Trusty -> flag; _ -> noflag) mp fl
-qflag :: TSt Package -> PackageFlag -> TSt Package
-qflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Quantal -> flag; _ -> noflag) mp fl
-wflag :: TSt Package -> PackageFlag -> TSt Package
-wflag mp fl = (baseRelease . view release <$> get) >>= \ r -> (case r of Wheezy -> flag; _ -> noflag) mp fl
-wskip :: TSt P.Package -> TSt P.Package
-wskip t = (baseRelease . view release <$> get) >>= \ r -> case r of Wheezy -> return zero; _ -> t
-wonly t = (baseRelease . view release <$> get) >>= \ r -> case r of Wheezy -> t; _ -> return zero
+sflag :: PackageFlag -> Package -> TSt Package
+sflag fl p = (baseRelease . view release <$> get) >>= \ r -> (case r of Squeeze -> flag; _ -> noflag) fl p
+pflag :: PackageFlag -> Package -> TSt Package
+pflag fl p = (baseRelease . view release <$> get) >>= \ r -> (case r of Precise -> flag; _ -> noflag) fl p
+tflag :: PackageFlag -> Package -> TSt Package
+tflag fl p = (baseRelease . view release <$> get) >>= \ r -> (case r of Trusty -> flag; _ -> noflag) fl p
+qflag :: PackageFlag -> Package -> TSt Package
+qflag fl p = (baseRelease . view release <$> get) >>= \ r -> (case r of Quantal -> flag; _ -> noflag) fl p
+wflag :: PackageFlag -> Package -> TSt Package
+wflag fl p = (baseRelease . view release <$> get) >>= \ r -> (case r of Wheezy -> flag; _ -> noflag) fl p
+wskip :: P.Package -> TSt (Maybe P.Package)
+wskip p = do
+  r <- (baseRelease . view release <$> get)
+  case r of Wheezy -> deletePackage p >> return Nothing
+            _ -> return (Just p)
+wonly p = do
+  r <- (baseRelease . view release <$> get)
+  case r of Wheezy -> return (Just p)
+            _ -> deletePackage p >> return Nothing
 
-noflag :: TSt Package -> PackageFlag -> TSt Package
-noflag mp _ = mp
+noflag :: PackageFlag -> Package -> TSt Package
+noflag _ p = return p
 
-relax :: TSt P.Package -> String -> TSt P.Package
-relax mp x = (\ p -> p {P._flags = P._flags p ++ [P.RelaxDep x]}) <$> mp
+relax :: String -> P.Package -> TSt P.Package
+relax x p = P.modifyPackage (over P.flags (++ [P.RelaxDep x])) p
 
 gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
 -- repo = "http://hub.darcs.net/stepcut/clckwrks-dev"
@@ -197,6 +203,6 @@ addDeps newer older pre lns = do
       doc x = prefix ++ x ++ "-doc"
 -}
 
-hack = debianize . hackage
+hack name = hackage name >>= debianize
 
-git' r c = debianize $ git r c
+git' r c = git r c >>= debianize

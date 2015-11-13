@@ -10,15 +10,15 @@ module Debian.AutoBuilder.Details
     ( myParams
     ) where
 
+import Control.Lens (use, view)
+import Control.Monad (when)
+import Control.Monad.State (execState)
+import Data.Map as Map (elems, map)
 import Data.Maybe
-#if !MIN_VERSION_base(4,8,0)
-import Data.Monoid (mappend)
-#endif
--- import Data.Set as Set (Set, empty)
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, releaseRepoName, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
-import Debian.AutoBuilder.Types.Packages (Packages(NoPackage))
+import Debian.AutoBuilder.Types.Packages (Packages(NoPackage), TSt)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.Releases (Release(..),
                         releaseString, parseReleaseName, isPrivateRelease,
@@ -31,36 +31,38 @@ import Prelude hiding (map)
 myParams :: FilePath -> Release -> ParamRec
 myParams home myBuildRelease =
     let myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
-        myBuildURIPrefix = "http://deb.seereason.com" in
-    (\ params -> params {knownPackages = myKnownTargets home params}) $
-    (defaultParams (releaseString myBuildRelease)
+        myBuildURIPrefix = "http://deb.seereason.com"
+        params = (defaultParams (releaseString myBuildRelease)
                    myUploadURIPrefix
                    myBuildURIPrefix
                    myDevelopmentReleaseNames)
-    { vendorTag = myVendorTag
-    , oldVendorTags = ["seereason"]
-    , autobuilderEmail = "SeeReason Autobuilder <partners@seereason.com>"
-    , releaseSuffixes = myReleaseSuffixes
-    , extraRepos = myExtraRepos
-    , uploadURI = myUploadURI myBuildRelease
-    , buildURI = myBuildURI myBuildRelease
-    , sources = mySources myBuildRelease
-    , globalRelaxInfo = myGlobalRelaxInfo
-    , includePackages = myIncludePackages myBuildRelease
-    , optionalIncludePackages = myOptionalIncludePackages myBuildRelease
-    , excludePackages = myExcludePackages myBuildRelease
-    , components = myComponents myBuildRelease
-    , developmentReleaseNames = myDevelopmentReleaseNames
-    , releaseAliases = myReleaseAliases myBuildRelease
-    , newDistProgram = "newdist --sender-email=autobuilder@seereason.com --notify-email dsf@seereason.com --notify-email beshers@seereason.com --notify-email jeremy@seereason.com"
-    -- 6.14 adds the ExtraDevDep parameter.
-    -- 6.15 changes Epoch parameter arity to 2
-    -- 6.18 renames type Spec -> RetrieveMethod
-    -- 6.35 added the CabalDebian flag
-    -- 6.64 removes the myCompilerVersion argument from defaultParams
-    , requiredVersion = [(parseDebianVersion' ("6.64" :: String), Nothing)]
-    , hackageServer = myHackageServer
-    }
+                 { vendorTag = myVendorTag
+                 , oldVendorTags = ["seereason"]
+                 , autobuilderEmail = "SeeReason Autobuilder <partners@seereason.com>"
+                 , releaseSuffixes = myReleaseSuffixes
+                 , extraRepos = myExtraRepos
+                 , uploadURI = myUploadURI myBuildRelease
+                 , buildURI = myBuildURI myBuildRelease
+                 , sources = mySources myBuildRelease
+                 , globalRelaxInfo = myGlobalRelaxInfo
+                 , includePackages = myIncludePackages myBuildRelease
+                 , optionalIncludePackages = myOptionalIncludePackages myBuildRelease
+                 , excludePackages = myExcludePackages myBuildRelease
+                 , components = myComponents myBuildRelease
+                 , developmentReleaseNames = myDevelopmentReleaseNames
+                 , releaseAliases = myReleaseAliases myBuildRelease
+                 , newDistProgram = "newdist --sender-email=autobuilder@seereason.com --notify-email dsf@seereason.com --notify-email beshers@seereason.com --notify-email jeremy@seereason.com"
+                 -- 6.14 adds the ExtraDevDep parameter.
+                 -- 6.15 changes Epoch parameter arity to 2
+                 -- 6.18 renames type Spec -> RetrieveMethod
+                 -- 6.35 added the CabalDebian flag
+                 -- 6.64 removes the myCompilerVersion argument from defaultParams
+                 , requiredVersion = [(parseDebianVersion' ("6.64" :: String), Nothing)]
+                 , hackageServer = myHackageServer
+                 }
+        rel = parseReleaseName (buildRelease params)
+        st = execState (myKnownTargets params) (P.targetState rel home) in
+    params {knownPackages = P.Packages (Map.elems (Map.map P.APackage (view P.packageMap st)))}
 
 -- https://launchpad.net/~hvr/+archive/ubuntu/ghc
 myExtraRepos :: [Either Slice PPASlice]
@@ -93,13 +95,12 @@ myVendorTag = "+seereason"
 -- actually build are chosen from these.  The myBuildRelease argument
 -- comes from the autobuilder argument list.
 --
-myKnownTargets :: FilePath -> ParamRec -> P.Packages
-myKnownTargets home params =
-    if isPrivateRelease rel
-    then Targets.private home rel
-    else mappend (Targets.public home rel) (if testWithPrivate params then Targets.private home rel else NoPackage)
-    where
-      rel = parseReleaseName (buildRelease params)
+myKnownTargets :: ParamRec -> TSt ()
+myKnownTargets params = do
+  rel <- use P.release
+  if isPrivateRelease rel
+  then Targets.private
+  else (Targets.public >> when (testWithPrivate params) Targets.private)
 
 -- Additional packages to include in the clean build environment.
 -- Adding packages here can speed things up when you are building many
