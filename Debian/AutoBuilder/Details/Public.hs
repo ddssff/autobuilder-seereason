@@ -968,16 +968,16 @@ buildTargets = do
   _text_stream_decode <-  (hackage "text-stream-decode" >>= patch $(embedFile "patches/text-stream-decode.diff")) >>= debianize >>= inGroups ["conduit"]
   _tf_random <-  (hackage "tf-random") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   _th_alpha <-  (git "https://github.com/jkarni/th-alpha.git" []) >>= debianize
-  _th_context <-  (git "http://github.com/seereason/th-context" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe"]
-  _th_desugar <-  (git "http://github.com/goldfirere/th-desugar" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _th_expand_syns <-  (hackage "th-expand-syns") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _th_context <-  (git "http://github.com/seereason/th-context" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
+  _th_desugar <-  (git "http://github.com/goldfirere/th-desugar" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
+  _th_expand_syns <-  (hackage "th-expand-syns") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
   -- th_instance_reification =  (git "https://github.com/seereason/th-instance-reification.git" []) >>= debianize
   _th_kinds_fork <-  (git "http://github.com/ddssff/th-kinds-fork" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _th_lift <-  (hackage "th-lift") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _th_orphans <-  (hackage "th-orphans") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _th_typegraph <-  (git "http://github.com/seereason/th-typegraph" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe"]
+  _th_orphans <-  (hackage "th-orphans") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
+  _th_typegraph <-  (git "http://github.com/seereason/th-typegraph" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
   _threads <-  (hackage "threads") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
-  _th_reify_many <-  (hackage "th-reify-many") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _th_reify_many <-  (hackage "th-reify-many") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
   _time_compat <-  (hackage "time-compat") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
   _time_locale_compat <-  (hackage "time-locale-compat") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
   _tinymce <- apt "wheezy" "tinymce"
@@ -1121,7 +1121,7 @@ buildTargets = do
   _x509 `depends` [_pem, _asn1_parse]
   _x509_validation `depends` [_x509_store]
 
-  -- Create the ghcjs library packages
+  -- Create the ghcjs library package targets
   findGroup "ghcjs-libs" >>= mapM_ ghcjs_flags
   noTests -- Some package test suites fail, some hang, especially with ghcjs
 

@@ -2,9 +2,9 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Debian.AutoBuilder.Details.Private (libraries, applications) where
 
-import Control.Lens ((%=), use, view)
+import Control.Lens (use)
 import Data.FileEmbed (embedFile)
-import Data.Map as Map (keys, map)
+import Data.Map as Map (keys)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian, NoDoc, SetupDep), flag, patch, debianize, darcs, git, cd, TSt, packageMap)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 import Debian.Repo.Fingerprint (GitSpec(Branch))
@@ -83,7 +83,6 @@ libraries =
     [ ontology
     , stripe_core
     , stripe_http_streams
-    -- , stripe_haskell
     , clckwrks_plugin_stripe
     -- , mimo
     -- , mimo_bootstrap

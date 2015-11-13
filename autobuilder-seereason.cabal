@@ -79,7 +79,7 @@ Library
   if !flag (local-autobuilder)
     Build-Depends: AutoBuilder >= 6.71
   else
-    Hs-Source-Dirs: autobuilder, autobuilder/dist/build/autogen
+    Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen
     Build-Depends:
       applicative-extras,
       directory,
