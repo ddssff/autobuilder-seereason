@@ -558,9 +558,9 @@ buildTargets = do
                               >>= flag (P.DevelDep "libcrypto++-dev")) >>= debianize
   hsp <-  (hackage "hsp" >>= flag (P.BuildDep "hsx2hs")) >>= debianize >>= inGroups ["happstack"]
   hspec <-  (hackage "hspec") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  hspec_core <-  (hackage "hspec-core") >>= debianize
-  hspec_discover <-  (hackage "hspec-discover") >>= debianize
-  hspec_expectations <-  (hackage "hspec-expectations") >>= debianize
+  hspec_core <-  (hackage "hspec-core") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  hspec_discover <-  (hackage "hspec-discover") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  hspec_expectations <-  (hackage "hspec-expectations") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   hspec_meta <-  (hackage "hspec-meta") >>= debianize
   hsSyck <-  (hackage "HsSyck") >>= debianize
   hStringTemplate <-  (hackage "HStringTemplate") >>= debianize >>= skip (Reason "Needs time-1.5")
@@ -578,11 +578,7 @@ buildTargets = do
                              >>= tflag (P.DebVersion "1.0.1.2-7")
                              >>= pflag (P.DebVersion "1.0.1.2-5")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   html_entities <- darcs ("http://src.seereason.com/html-entities")
-  html_xml_utils <- (baseRelease . view release <$> get) >>= \ r ->
-                 case r of
-                   Quantal -> return zero -- This build hangs when performing tests
-                   Wheezy -> return zero -- This build hangs when performing tests
-                   _ -> apt "sid" "html-xml-utils"
+  html_xml_utils <- apt "sid" "html-xml-utils"
   http_client <-  (hackage "http-client") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit"]
   http_client_tls <-  (hackage "http-client-tls") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit"]
       -- Deprecated in favor of http-conduit
@@ -694,7 +690,7 @@ buildTargets = do
                  >>= flag (P.BuildDep "happy")
   -- logic_TPTP = pure $ P.Package { P.spec = Debianize'' (Patch (Hackage "logic-TPTP") $(embedFile "patches/logic-TPTP.diff")) Nothing, P._flags = [ P.BuildDep "alex", P.BuildDep "happy" ] }
                -- , apt "sid" "haskell-maybet"
-  logict <- createPackage (Debianize'' (Hackage "logict") Nothing) mempty [] >>= inGroups ["ghcjs-libs", "ghc-libs"] :: TSt Package
+  logict <- createPackage (Debianize'' (Hackage "logict") Nothing) mempty [] >>= inGroups ["ghcjs-libs", "ghc-libs"] :: TSt PackageId
   loop <-  (hackage "loop") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   lucid <-  (hackage "lucid") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   maccatcher <-  (hackage "maccatcher"
@@ -764,7 +760,7 @@ buildTargets = do
   newtype_generics <-  (hackage "newtype-generics") >>= debianize >>= inGroups ["autobuilder-group"]
   -- nodejs = skip (Reason "test failure on switch from 0.10.29~dfsg-1 to 0.10.29~dfsg-1.1") (apt "sid" "nodejs")
   nodejs <- uri "https://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz" "5523ec4347d7fe6b0f6dda1d1c7799d5" >>=
-            flip debdir (Git "https://github.com/seereason/nodejs-debian" []) >>= inGroups ["ghcjs-comp"]
+            debdir (Git "https://github.com/seereason/nodejs-debian" []) >>= inGroups ["ghcjs-comp"]
   numeric_extras <-  (hackage "numeric-extras") >>= debianize
   numInstances <-  (hackage "NumInstances") >>= debianize
   objectName <-  (hackage "ObjectName") >>= debianize
@@ -983,14 +979,14 @@ buildTargets = do
   text_stream_decode <-  (hackage "text-stream-decode" >>= patch $(embedFile "patches/text-stream-decode.diff")) >>= debianize >>= inGroups ["conduit"]
   tf_random <-  (hackage "tf-random") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   th_alpha <-  (git "https://github.com/jkarni/th-alpha.git" []) >>= debianize
-  th_context <-  (git "http://github.com/seereason/th-context" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  th_context <-  (git "http://github.com/seereason/th-context" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe"]
   th_desugar <-  (git "http://github.com/goldfirere/th-desugar" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   th_expand_syns <-  (hackage "th-expand-syns") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   -- th_instance_reification =  (git "https://github.com/seereason/th-instance-reification.git" []) >>= debianize
   th_kinds_fork <-  (git "http://github.com/ddssff/th-kinds-fork" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   th_lift <-  (hackage "th-lift") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   th_orphans <-  (hackage "th-orphans") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  th_typegraph <-  (git "http://github.com/seereason/th-typegraph" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  th_typegraph <-  (git "http://github.com/seereason/th-typegraph" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe"]
   threads <-  (hackage "threads") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
   th_reify_many <-  (hackage "th-reify-many") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   time_compat <-  (hackage "time-compat") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
@@ -1088,7 +1084,7 @@ buildTargets = do
   x509 <-  (hackage "x509") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"]
   x509_store <-  (hackage "x509-store") >>= debianize >>= inGroups [ "authenticate"]
   x509_system <-  (hackage "x509-system") >>= debianize >>= inGroups [ "authenticate"]
-  x509_validation <-  (hackage "x509-validation") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"] :: TSt Package
+  x509_validation <-  (hackage "x509-validation") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"] :: TSt PackageId
   xdg_basedir <-  (hackage "xdg-basedir" >>= tflag (P.DebVersion "0.2.2-2")) >>= debianize
   xhtml <-  (hackage "xhtml" >>= wflag (P.DebVersion "3000.2.1-1") >>= qflag (P.DebVersion "3000.2.1-1build2") >>= tflag (P.DebVersion "3000.2.1-4")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   xml_conduit <-  (hackage "xml-conduit") >>= debianize >>= inGroups ["conduit"]
@@ -1137,17 +1133,11 @@ buildTargets = do
   -- Create the ghcjs library packages
   use groups >>= \mp -> trace ("groups: " ++ show (Map.keys mp)) (return ())
   use groups >>= return . Map.lookup "ghcjs-libs" >>= \(Just s) -> trace ("ghcjs-libs packages: " ++ show s) (return ())
-  use groups >>= return . Map.lookup "ghcjs-libs" >>= \(Just s) -> mapM_ (\i -> use packageMap >>=
-                                                                                return . Map.lookup i >>=
-                                                                                maybe (trace ("No package " ++ show i ++ " in map") (return ()))
-                                                                                      (\p -> ghcjs_flags p >> return ()))
-                                                                         (Set.toList s)
+  use groups >>= return . Map.lookup "ghcjs-libs" >>= \(Just s) -> mapM_ ghcjs_flags (Set.toList s)
 
   noTests
 
   return ()
 
 noTests :: TSt ()
-noTests = do
-  ps <- Map.elems <$> use P.packageMap
-  mapM_ (flag (P.CabalDebian ["--no-tests"])) ps
+noTests = use P.packageMap >>= mapM_ (flag (P.CabalDebian ["--no-tests"])) . Map.keys
