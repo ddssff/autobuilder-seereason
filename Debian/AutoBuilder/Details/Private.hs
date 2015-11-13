@@ -5,7 +5,7 @@ module Debian.AutoBuilder.Details.Private (libraries, applications) where
 import Control.Lens ((%=), use, view)
 import Data.FileEmbed (embedFile)
 import Data.Map as Map (keys, map)
-import Debian.AutoBuilder.Types.Packages as P (Packages(APackage), PackageFlag(BuildDep, CabalDebian, NoDoc, SetupDep), flag, flag', mapPackages, patch, debianize, darcs, git, cd, TSt, packageMap)
+import Debian.AutoBuilder.Types.Packages as P (Packages(APackage), PackageFlag(BuildDep, CabalDebian, NoDoc, SetupDep), flag, mapPackages, patch, debianize, darcs, git, cd, TSt, packageMap)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 import Debian.Repo.Fingerprint (GitSpec(Branch))
 import System.FilePath ((</>))
@@ -74,7 +74,7 @@ th_path = git "ssh://git@github.com/seereason/th-path.git" [] >>= debianize
 noTests :: TSt ()
 noTests = do
   ids <- Map.keys <$> use P.packageMap
-  mapM_ (flag' (P.CabalDebian ["--no-tests"])) ids
+  mapM_ (flag (P.CabalDebian ["--no-tests"])) ids
 
 libraries :: TSt ()
 libraries =

@@ -2,15 +2,13 @@
 {-# OPTIONS_GHC -Wall -fno-warn-missing-signatures #-}
 module Debian.AutoBuilder.Details.Common where
 
-import Control.Lens (at, Lens', over, use, view, (%=), set)
+import Control.Lens (at, Lens', over, use, view, (%=))
 import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
-import Data.Map as Map (insertWith)
 import Data.Maybe (fromMaybe)
-import Data.Set as Set (singleton, union)
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages (deletePackage, flag, GroupName, Package(Package), PackageId, newId, pid, spec, TSt)
+import Debian.AutoBuilder.Types.Packages (deletePackage, flag, PackageId, spec, TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
 
@@ -39,8 +37,8 @@ happstackRepo = "http://hub.darcs.net/stepcut/happstack" :: String
 asciiToString :: B.ByteString -> String
 asciiToString = map (chr . fromIntegral) . B.unpack
 
-named :: GroupName -> [P.Package] -> TSt ()
-named s ps = mapM_ (\p -> P.groups %= Map.insertWith Set.union s (singleton (view pid p))) ps
+-- named :: GroupName -> [P.Package] -> TSt ()
+-- named s ps = mapM_ (\p -> P.groups %= Map.insertWith Set.union s (singleton (view pid p))) ps
 
 -- | Suitable flags for ghcjs library packages.  Won't work
 -- for anything complicated (like happstack-ghcjs-client.)
@@ -49,22 +47,13 @@ ghcjs_flags i =
   use (P.packageMap . at i) >>= maybe (return i) f
     where
       f p =
-          putSrcPkgName (makeSrcPkgName (view P.spec p)) i >>=
+          P.clonePackage id i >>= \j ->
+          putSrcPkgName (makeSrcPkgName (view P.spec p)) j >>=
              flag (P.CabalDebian ["--ghcjs"]) >>=
              -- flag (P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)])
              flag (P.BuildDep "libghc-cabal-dev") >>= -- Not libghcjs-cabal-dev?
              flag (P.BuildDep "ghcjs") >>=
              flag (P.BuildDep "haskell-devscripts (>= 0.8.21.3)")
-{-
-  Just p <- use (P.packageMap . at i)
-  P.clonePackage id i >>=
-   putSrcPkgName (makeSrcPkgName (view P.spec p)) >>=
-             flag (P.CabalDebian ["--ghcjs"]) >>=
-             -- flag (P.CabalDebian ["--source-package-name=" <> makeSrcPkgName (P.spec p)])
-             flag (P.BuildDep "libghc-cabal-dev") >>= -- Not libghcjs-cabal-dev?
-             flag (P.BuildDep "ghcjs") >>=
-             flag (P.BuildDep "haskell-devscripts (>= 0.8.21.3)")
--}
 
 makeSrcPkgName :: RetrieveMethod -> String
 makeSrcPkgName (Hackage "haskell-src-exts") = "ghcjs-src-exts"
