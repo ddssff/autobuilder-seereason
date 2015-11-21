@@ -34,7 +34,7 @@ public =
 
 private :: TSt ()
 private =
-    Private.libraries >> Private.applications >> applyEpochMap >> use P.release >>= applyDepMap >> proc'
+    Private.buildTargets >> applyEpochMap >> use P.release >>= applyDepMap >> proc'
 
 proc' :: TSt ()
 proc' =

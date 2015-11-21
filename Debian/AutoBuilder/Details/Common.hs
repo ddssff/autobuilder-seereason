@@ -7,7 +7,7 @@ import qualified Data.ByteString as B
 import Data.Char (chr, toLower)
 import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
-import Data.Set as Set (delete)
+import Data.Set as Set (delete, insert)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages (deletePackage, flag, PackageId, spec, TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
@@ -38,21 +38,26 @@ happstackRepo = "http://hub.darcs.net/stepcut/happstack" :: String
 asciiToString :: B.ByteString -> String
 asciiToString = map (chr . fromIntegral) . B.unpack
 
--- | Suitable flags for ghcjs library packages.  Won't work
--- for anything complicated (like happstack-ghcjs-client.)
+-- | Turn a GHC package into a GHCJS package.
+ghcjs_only :: P.PackageId -> TSt P.PackageId
+ghcjs_only i = do
+  P.modifyPackage (over P.groups (Set.delete "ghc-libs")) i
+  P.modifyPackage (over P.groups (Set.insert "ghcjs-libs")) i
+  Just p <- use (P.packageMap . at i)
+  putSrcPkgName (makeSrcPkgName (view P.spec p)) i
+  flag (P.CabalDebian ["--ghcjs"]) i
+  flag (P.BuildDep "libghc-cabal-dev") i
+  flag (P.BuildDep "ghcjs") i
+  flag (P.BuildDep "haskell-devscripts (>= 0.8.21.3)") i
+  flag P.NoDoc i -- sometimes the ghcjs haddock is super slow
+
+-- | Clone a GHC package and turn the clone into a GHCJS package.
 ghcjs_flags :: P.PackageId -> TSt P.PackageId
-ghcjs_flags i =
-  use (P.packageMap . at i) >>= maybe (return i) f
-    where
-      f p =
-          P.clonePackage id i >>= \j ->
-          P.modifyPackage (over P.groups (Set.delete "ghc-libs")) j >>
-          P.modifyPackage (over P.groups (Set.delete "ghcjs-libs")) i >>
-          putSrcPkgName (makeSrcPkgName (view P.spec p)) j >>=
-             flag (P.CabalDebian ["--ghcjs"]) >>=
-             flag (P.BuildDep "libghc-cabal-dev") >>=
-             flag (P.BuildDep "ghcjs") >>=
-             flag (P.BuildDep "haskell-devscripts (>= 0.8.21.3)")
+ghcjs_flags i = do
+  j <- P.clonePackage id i
+  ghcjs_only j
+  P.modifyPackage (over P.groups (Set.delete "ghcjs-libs")) i
+  P.modifyPackage (over P.groups (Set.insert "ghc-libs")) i
 
 makeSrcPkgName :: RetrieveMethod -> String
 makeSrcPkgName (Hackage "haskell-src-exts") = "ghcjs-src-exts"
