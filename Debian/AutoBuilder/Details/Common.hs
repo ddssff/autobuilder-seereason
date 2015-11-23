@@ -58,6 +58,7 @@ ghcjs_flags i = do
   ghcjs_only j
   P.modifyPackage (over P.groups (Set.delete "ghcjs-libs")) i
   P.modifyPackage (over P.groups (Set.insert "ghc-libs")) i
+  return j
 
 makeSrcPkgName :: RetrieveMethod -> String
 makeSrcPkgName (Hackage "haskell-src-exts") = "ghcjs-src-exts"
