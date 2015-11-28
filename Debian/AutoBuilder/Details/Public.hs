@@ -390,7 +390,12 @@ buildTargets = do
       -- ,  (hackage "GLFW-b") >>= debianize
       -- ,  (hackage "GLFW-b-demo" >>= flag (P.SkipPackage {- >>= patch $(embedFile "patches/GLFW-b-demo.diff") -})) >>= debianize
   _glfw_task <-  (hackage "GLFW-task" >>= inGroups ["gl"]) >>= debianize
-  _glib <- hackage "glib" >>= debianize
+  _glib <- hackage "glib" >>=
+           flag (P.BuildDep "gtk2hs-buildtools") >>=
+           flag (P.BuildDep "libpango1.0-dev") >>=
+           flag (P.BuildDep "libgtk2.0-dev") >>=
+           flag (P.BuildDep "libglib2.0-dev") >>=
+           debianize
   _gluRaw <- (hackage "GLURaw" >>= inGroups ["gl"]) >>= debianize
   _glut <-  (hackage "GLUT" >>= inGroups ["gl"]
                      >>= flag (P.DevelDep "freeglut3-dev")) >>= debianize
@@ -400,9 +405,10 @@ buildTargets = do
                -- Need this when we upgrade blaze-textual to 0.2.0.0
                -- , lucidNatty (hackage release "double-conversion" []) (debianize "double-conversion" [])
   _gtk2hs_buildtools <-  (hackage "gtk2hs-buildtools"
-                              >>= flag (P.CabalDebian ["--build-dep", "alex",
-                                                    "--build-dep", "happy",
-                                                    "--revision", ""])) >>= debianize
+                              >>= flag (P.CabalDebian ["--default-package", "gtk2hs-buildtools",
+                                                       "--build-dep", "alex",
+                                                       "--build-dep", "happy",
+                                                       "--revision", ""])) >>= debianize
                -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
   _gtk3 <- hackage "gtk3" >>= debianize
   _gyp <- apt "sid" "gyp" >>= skip (Reason "Use standard")
@@ -982,7 +988,7 @@ buildTargets = do
   _test_framework_quickcheck <-  (git "https://github.com/seereason/test-framework" [] >>= cd "quickcheck") >>= debianize
   _test_framework_smallcheck <-  (hackage "test-framework-smallcheck") >>= debianize
   _test_framework_th <-  (hackage "test-framework-th" >>= tflag (P.DebVersion "0.2.4-1build4")) >>= debianize
-  _testing_feat <-  (hackage "testing-feat") >>= debianize
+  _testing_feat <- hackage "testing-feat" >>= patch $(embedFile "patches/testing-feat.diff") >>= debianize
   _texmath <-  (hackage "texmath") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe"]
   _text_binary <-  (hackage "text-binary") >>= debianize >>= inGroups ["ghcjs-comp"]
   _text <-  (hackage "text" >>= flag (P.CabalDebian ["--cabal-flags", "-integer-simple"]) >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize >>= inGroups ["platform"]

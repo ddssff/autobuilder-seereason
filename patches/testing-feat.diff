@@ -1,0 +1,13 @@
+--- old/testing-feat.cabal	2014-07-19 07:59:38.872464259 -0700
++++ new/testing-feat.cabal	2015-11-28 06:47:18.814116538 -0800
+@@ -42,8 +42,8 @@
+ 
+   
+   Build-depends: 
+-    base >= 4.5 && <= 4.8,
+-    template-haskell >= 2.5 && < 2.10,
++    base >= 4.5 && <= 4.9,
++    template-haskell >= 2.5 && < 2.11,
+     mtl >= 1 && < 3,
+     QuickCheck > 2 && < 3,
+     tagshare<0.1
