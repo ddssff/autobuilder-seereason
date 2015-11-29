@@ -27,8 +27,8 @@ buildTargets = do
   _clckwrks_theme_seereasonpartners <- darcs (privateRepo </> "seereasonpartners-clckwrks") >>= cd "clckwrks-theme-seereasonpartners" >>= debianize >>= flag (P.BuildDep "hsx2hs") {- >>= flag P.NoDoc -}
   _clckwrks_theme_appraisalscribe <- darcs (privateRepo </> "clckwrks-theme-appraisalscribe") >>= flag (P.BuildDep "hsx2hs") >>= debianize
 
-  _happstack_ghcjs_client <-    git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "oct17checkpoint"] >>= cd "happstack-ghcjs-client" >>= debianize >>= inGroups ["private-libs"] >>= ghcjs_flags
-  _happstack_ghcjs_server <-    git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "oct17checkpoint"] >>= cd "happstack-ghcjs-server" >>= debianize >>= inGroups ["private-libs"]
+  _happstack_ghcjs_client <-    git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "oct17checkpoint"] >>= cd "happstack-ghcjs-client" >>= debianize >>= inGroups ["private-libs"] >>= ghcjs_flags >>= skip (Reason "Build failure")
+  _happstack_ghcjs_server <-    git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "oct17checkpoint"] >>= cd "happstack-ghcjs-server" >>= debianize >>= inGroups ["private-libs"] >>= skip (Reason "Build failure")
   _ghcjs_ghcjs_webmodule <-     git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "oct17checkpoint"] >>= cd "happstack-ghcjs-webmodule" >>= debianize >>= inGroups ["private-libs"] >>= ghcjs_flags
   _happstack_ghcjs_webmodule <- git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "oct17checkpoint"] >>= cd "happstack-ghcjs-webmodule" >>= debianize
 
@@ -41,6 +41,8 @@ buildTargets = do
   -- environment, except making it a dependency of the autobuilder
   -- itself.
   _mimo <- git "ssh://git@github.com/seereason/mimo.git" [] >>= debianize >>= inGroups ["private-libs"]
+  -- These won't build unless libghc-mimo-dev is installed.  Unfortunately,
+  -- when mimo's dependencies change the library often gets uninstalled.
   _mimo_bootstrap <-
       git "ssh://git@github.com/seereason/mimo-bootstrap.git" [] >>=
           flag (P.SetupDep "libghc-mimo-dev") >>=
