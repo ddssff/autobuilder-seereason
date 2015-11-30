@@ -78,6 +78,7 @@ buildTargets = do
   ghcjs_flags _image_cache
 
   ghcjs_flags _appraisalscribe_data
+  ghcjs_flags _appraisalscribe_paths
   noTests
 
 noTests :: TSt ()

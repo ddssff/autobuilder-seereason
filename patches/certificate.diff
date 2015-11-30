@@ -1,11 +1,18 @@
---- old/certificate.cabal	2013-05-24 23:13:24.000000000 -0700
-+++ new/certificate.cabal	2013-05-24 23:16:55.677299558 -0700
-@@ -31,7 +31,7 @@
-                    , mtl
-                    , pem >= 0.1 && < 0.2
-                    , asn1-data >= 0.7.1 && < 0.8.0
--                   , crypto-pubkey-types >= 0.3 && < 0.4
-+                   , crypto-pubkey-types >= 0.3
-                    , cryptohash
-                    , containers
-                    , directory
+diff -ru old/Data/Certificate/X509/Cert.hs new/Data/Certificate/X509/Cert.hs
+--- old/Data/Certificate/X509/Cert.hs	2015-11-29 10:53:21.497498607 -0800
++++ new/Data/Certificate/X509/Cert.hs	2015-11-29 10:41:19.489503017 -0800
+@@ -1,3 +1,5 @@
++{-# LANGUAGE FlexibleContexts #-}
++
+ module Data.Certificate.X509.Cert
+         (
+         -- * Data Structure
+diff -ru haskell-certificate-1.3.9.orig/Data/Certificate/X509/Ext.hs haskell-certificate-1.3.9/Data/Certificate/X509/Ext.hs
+--- old/Data/Certificate/X509/Ext.hs	2015-11-29 10:53:47.785498447 -0800
++++ new/Data/Certificate/X509/Ext.hs	2015-11-29 10:41:06.425503097 -0800
+@@ -1,3 +1,5 @@
++{-# LANGUAGE FlexibleContexts #-}
++
+ -- |
+ -- Module      : Data.Certificate.X509.Ext
+ -- License     : BSD-style
