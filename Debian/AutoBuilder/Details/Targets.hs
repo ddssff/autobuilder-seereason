@@ -67,7 +67,8 @@ applyDepMap release =
     packageMap %= Map.map f
     where
       f x = x {P._flags = P._flags x ++ mappings}
-      mappings = [P.MapDep "cryptopp" (deb "libcrypto++-dev"),
+      mappings = [P.MapDep "cairo" (deb "libcairo2-dev"),
+                  P.MapDep "cryptopp" (deb "libcrypto++-dev"),
                   P.MapDep "crypto" (deb "libcrypto++-dev"),
                   P.MapDep "crypt" (deb "libc6-dev"),
                   P.MapDep "GL" (deb "libgl1-mesa-dev"),

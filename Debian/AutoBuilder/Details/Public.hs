@@ -113,6 +113,7 @@ buildTargets = do
   _byteorder <-  (hackage "byteorder" >>= tflag (P.DebVersion "1.0.4-1")) >>= debianize
   _bytes <-  (hackage "bytes") >>= debianize >>= skip (Reason "Unmet build dependencies: libghc-cereal-dev (<< 0.5)")
   _bytestring_builder <-  (hackage "bytestring-builder") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _bytestring_conversion <- hackage "bytestring-conversion" >>= debianize >>= inGroups ["servant"]
   _bytestring_nums <-  (hackage "bytestring-nums") >>= debianize -- apt (rel release "wheezy" "quantal") "haskell-bytestring-nums"
   _bytestring_trie <-  (hackage "bytestring-trie") >>= debianize
   _bzlib <-  (hackage "bzlib" >>= flag (P.DevelDep "libbz2-dev")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -221,7 +222,7 @@ buildTargets = do
                         skip (Reason "Constructor ‘TypeRep’ should have 4 arguments, but has been given 3")
   _cond <-  (hackage "cond") >>= debianize
   _conduit <-  (hackage "conduit") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit"]
-  _conduit_extra <-  (hackage "conduit-extra") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit"]
+  _conduit_extra <-  (hackage "conduit-extra") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit", "servant"]
   _configFile <-  (hackage "ConfigFile") >>= debianize
   _connection <-  (hackage "connection") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit"]
   _constrained_normal <-  (hackage "constrained-normal") >>= debianize
@@ -238,7 +239,7 @@ buildTargets = do
                -- The certificate package may need to be updated for version 0.4
   _crypto_cipher_types <-  (hackage "crypto-cipher-types" >>= tflag (P.DebVersion "0.0.9-1")) >>= debianize >>= inGroups [ "authenticate"]
   _crypto <-  (hackage "Crypto") >>= debianize
-  _cryptohash_conduit <-  (hackage "cryptohash-conduit") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _cryptohash_conduit <-  (hackage "cryptohash-conduit") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "servant"]
   _cryptohash_cryptoapi <-  (hackage "cryptohash-cryptoapi") >>= debianize >>= inGroups ["happstack"]
   _cryptohash <-  (hackage "cryptohash") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _cryptonite <-  (hackage "cryptonite") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -330,10 +331,10 @@ buildTargets = do
   _extra <-  (hackage "extra") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _failure <-  (hackage "failure") >>= debianize
   _fast_logger <-  (hackage "fast-logger") >>= debianize >>= inGroups [ "authenticate"]
-  _fay_base <-  (hackage "fay-base") >>= debianize
-  _fay <-  (hackage "fay" {- >>= patch $(embedFile "patches/fay.diff") -}) >>= debianize >>= flag (P.CabalDebian [ "--depends", "haskell-fay-utils:cpphs" ])
-  _fay_jquery <-  (git "https://github.com/faylang/fay-jquery" []) >>= debianize
-  _fay_text <-  (hackage "fay-text") >>= debianize
+  _fay_base <-  (hackage "fay-base") >>= debianize >>= skip (Reason "Waiting for newer fay")
+  _fay <-  (hackage "fay" {- >>= patch $(embedFile "patches/fay.diff") -}) >>= debianize >>= flag (P.CabalDebian [ "--depends", "haskell-fay-utils:cpphs" ]) >>= skip (Reason "too old for current syb and optparse-applicative")
+  _fay_jquery <-  (git "https://github.com/faylang/fay-jquery" []) >>= debianize >>= skip (Reason "Waiting for newer fay")
+  _fay_text <-  (hackage "fay-text") >>= debianize >>= skip (Reason "Waiting for newer fay")
   _fb <-  (git "https://github.com/ddssff/fb.git" []) >>= debianize >>= inGroups [ "authenticate", "appraisalscribe"]
   _feed <- git "https://github.com/seereason/feed" [] {-hackage "feed"-} >>= tflag (P.DebVersion "0.3.9.2-1") >>= debianize
   _fgl <-  (hackage "fgl") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
@@ -449,9 +450,9 @@ buildTargets = do
                                    >>= patch $(embedFile "patches/happstack-dot-com.diff")) >>= debianize >>= inGroups ["clckwrks"]
   _happstackDotCom_doc <- darcs ("http://src.seereason.com/happstackDotCom-doc") >>= inGroups ["happstack"]
   _happstack_extra <-  (git "https://github.com/seereason/happstack-extra.git" []) >>= debianize
-  _happstack_fay_ajax <-  (hackage "happstack-fay-ajax" >>= patch $(embedFile "patches/happstack-fay-ajax.diff")) >>= debianize
+  _happstack_fay_ajax <-  (hackage "happstack-fay-ajax" >>= patch $(embedFile "patches/happstack-fay-ajax.diff")) >>= debianize >>= skip (Reason "Waiting for newer fay")
       -- ,  (hackage "fay-hsx" >>= patch $(embedFile "patches/fay-hsx.diff")) >>= debianize
-  _happstack_fay <-  (hackage "happstack-fay" >>= patch $(embedFile "patches/happstack-fay.diff")) >>= debianize
+  _happstack_fay <-  (hackage "happstack-fay" >>= patch $(embedFile "patches/happstack-fay.diff")) >>= debianize >>= skip (Reason "Waiting for newer fay")
   _happstack_foundation <-  (git "https://github.com/Happstack/happstack-foundation.git" []) >>= debianize >>= inGroups ["happstack"]
   _happstack_foundation_example <-
        (git "https://github.com/Happstack/happstack-foundation.git" []
@@ -554,7 +555,7 @@ buildTargets = do
                               >>= tflag (P.DebVersion "0.4.7-6")) >>= debianize
                -- Not used, and not building.
                -- ,  (hackage "hoauth") >>= debianize
-  _hJScript <-  (hackage "HJScript") >>= debianize >>= inGroups ["happstack"]
+  _hJScript <- git "https://github.com/seereason/HJScript" [] >>= debianize >>= inGroups ["happstack"]
   _hledger <-  (git "https://github.com/simonmichael/hledger" [] >>= cd "hledger-lib") >>= debianize
            {-
                -- Needs a build dependency on libXrandr-dev and the cabal package x11.
@@ -585,7 +586,7 @@ buildTargets = do
                               >>= flag (P.DevelDep "libssl-dev")
                               >>= flag (P.DevelDep "libcrypto++-dev")) >>= debianize
   _hsp <-  (hackage "hsp" >>= flag (P.BuildDep "hsx2hs")) >>= debianize >>= inGroups ["happstack"]
-  _hspec <-  (hackage "hspec") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _hspec <-  (hackage "hspec") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"] >>= skip (Reason "Requires hspec-core >= 2.2.1")
   _hspec_core <-  (hackage "hspec-core") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _hspec_discover <-  (hackage "hspec-discover") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _hspec_expectations <-  (hackage "hspec-expectations") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -618,6 +619,7 @@ buildTargets = do
   _http_common <-  (hackage "http-common") >>= debianize >>= inGroups ["platform"]
   _http_conduit <-  (hackage "http-conduit") >>= debianize >>= inGroups ["conduit"]
   _http_date <-  (hackage "http-date") >>= debianize
+  _http_media <-  (hackage "http-media") >>= debianize >>= inGroups ["servant"]
   _http <-  (hackage "HTTP") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   _http2 <-  (hackage "http2") >>= debianize
   _http_streams <-  (hackage "http-streams") >>= debianize >>= inGroups ["platform", "appraisalscribe"]
@@ -912,7 +914,7 @@ buildTargets = do
              skip (Reason "Ambiguous occurrence ‘escape’")
   _rsa <-  (hackage "RSA") >>= debianize >>= inGroups ["authenticate"]
   _rss <-  (hackage "rss" {- >>= patch $(embedFile "patches/rss.diff") -}) >>= debianize
-  _safecopy <-  (git "https://github.com/acid-state/safecopy" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"] --  (hackage "safecopy") >>= debianize
+  _safecopy <-  (git "https://github.com/acid-state/safecopy" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _safe <-  (hackage "safe") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _safeSemaphore <-  (hackage "SafeSemaphore") >>= debianize >>= inGroups ["happstack"]
   _sandi <-  (hackage "sandi") >>= debianize -- replaces dataenc
@@ -932,6 +934,8 @@ buildTargets = do
                      >>= apply (replacement "semigroupoids" "semigroupoid-extras")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _semigroups <-  (hackage "semigroups") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _sendfile <-  (hackage "sendfile" >>= tflag (P.DebVersion "0.7.9-1")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _servant <- hackage "servant" >>= debianize >>= inGroups ["servant"]
+  _servant_server <- hackage "servant-server" >>= debianize >>= inGroups ["servant-server"] >>= inGroups ["servant"]
   _setenv <-  (hackage "setenv") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _set_extra <-  (darcs ("http://src.seereason.com/set-extra")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
                -- I don't think we use this any more
@@ -967,6 +971,7 @@ buildTargets = do
                -- ,  (hackage "strict-concurrency" >>= wflag (P.DebVersion "0.2.4.1-2")) >>= debianize
   _strict_io <-  (hackage "strict-io") >>= debianize >>= inGroups ["GenI"] >>= skip (Reason "dependencies are missing: deepseq >=1.1 && <1.4")
   _stringable <-  (hackage "stringable") >>= debianize -- this can be done with listlike-instances
+  _string_conversions <- hackage "string-conversions" >>= debianize >>= inGroups ["servant"]
   _stringbuilder <-  (hackage "stringbuilder") >>= debianize
   _stringsearch <-  (hackage "stringsearch") >>= debianize
   _sunroof_compiler <-  (git "http://github.com/ku-fpg/sunroof-compiler" [] >>= patch $(embedFile "patches/sunroof-compiler.diff")) >>= debianize >>= skip (Reason "Setup.hs:3:1: parse error on input ‘import’")
@@ -1086,7 +1091,7 @@ buildTargets = do
 -}
   _void <-  (hackage "void") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"]
   _vty <-  (hackage "vty") >>= debianize
-  _wai_app_static <-  (hackage "wai-app-static") >>= debianize
+  _wai_app_static <-  (hackage "wai-app-static") >>= debianize >>= inGroups ["servant"]
   _wai <-  (hackage "wai" {- >>= patch $(embedFile "patches/wai.diff") -}) >>= debianize
   _wai_extra <-  (hackage "wai-extra") >>= debianize
   _wai_logger <-  (hackage "wai-logger") >>= debianize
@@ -1122,7 +1127,7 @@ buildTargets = do
   _x509_validation <-  (hackage "x509-validation") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"] :: TSt PackageId
   _xdg_basedir <-  (hackage "xdg-basedir" >>= tflag (P.DebVersion "0.2.2-2")) >>= debianize
   _xhtml <-  (hackage "xhtml" >>= wflag (P.DebVersion "3000.2.1-1") >>= qflag (P.DebVersion "3000.2.1-1build2") >>= tflag (P.DebVersion "3000.2.1-4")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _xml_conduit <-  (hackage "xml-conduit") >>= debianize >>= inGroups ["conduit"]
+  _xml_conduit <-  (hackage "xml-conduit") >>= debianize >>= inGroups ["conduit", "authenticate"]
   _xml <-  (hackage "xml") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"] -- apt (rel release "wheezy" "quantal") "haskell-xml"
   _xmlgen <-  (hackage "xmlgen") >>= debianize
   _xmlhtml <-  (hackage "xmlhtml") >>= debianize >>= skip (Reason "Unmet build dependencies: libghc-blaze-builder-dev (<< 0.4)")
