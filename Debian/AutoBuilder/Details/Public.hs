@@ -64,7 +64,7 @@ buildTargets = do
   _asn1_types <-  (hackage "asn1-types") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _async <-  (hackage "async") >>= debianize
   _atomic_primops <-  (hackage "atomic-primops") >>= debianize
-  _atp_haskell <-  (git "https://github.com/seereason/atp-haskell" []) >>= debianize >>= inGroups ["seereason"]
+  _atp_haskell <-  (git "https://github.com/seereason/atp-haskell" []) >>= debianize >>= inGroups ["seereason", "th-path"]
   _attempt <-  (hackage "attempt") >>= debianize
   _attoparsec <-  (hackage "attoparsec") >>= debianize
   _attoparsec_enumerator <-  (hackage "attoparsec-enumerator") >>= debianize
@@ -223,6 +223,7 @@ buildTargets = do
   _cond <-  (hackage "cond") >>= debianize
   _conduit <-  (hackage "conduit") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit"]
   _conduit_extra <-  (hackage "conduit-extra") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit", "servant"]
+  _configurator <- hackage "configurator" >>= debianize
   _configFile <-  (hackage "ConfigFile") >>= debianize
   _connection <-  (hackage "connection") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit"]
   _constrained_normal <-  (hackage "constrained-normal") >>= debianize
@@ -526,14 +527,11 @@ buildTargets = do
   -- The source package name is set to haskell-src-exts by the
   -- cabal-debian package, Debian.Debianize.Details.debianDefaults.
   -- But where does that leave ghcjs-haskell-src-exts?
-  _haskell_src_exts <-  (hackage "haskell-src-exts" >>= flag (P.BuildDep "happy")
-                                     >>= flag (P.CabalPin "1.16.0.1") -- 1.17.0 is too new for haskell-src-meta
-                        ) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _haskell_src_exts <- hackage "haskell-src-exts" >>= flag (P.BuildDep "happy") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   -- haskell_src_meta =  (hackage "haskell-src-meta") >>= debianize
   -- haskell_src_meta =  (git "https://github.com/bmillwood/haskell-src-meta" []) >>= debianize
   -- haskell_src_meta <-  (git "https://github.com/ddssff/haskell-src-meta" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _haskell_src_meta <-  (git "https://github.com/ababkin/haskell-src-meta" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
-      -- This pull request has been merged, should switch back to hackage
+  _haskell_src_meta <- hackage "haskell-src-meta" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
   _haste_compiler <- hack "haste-compiler" >>= flag (P.CabalDebian ["--default-package", "haste-compiler"])
   _haste_ffi_parser <- git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
   _haTeX <-  (git "https://github.com/Daniel-Diaz/HaTeX" [Commit "cc66573a0587094667a9150411ea748d6592db36" {-avoid rebuild-}]
@@ -593,13 +591,15 @@ buildTargets = do
   _hspec_meta <-  (hackage "hspec-meta") >>= debianize
   _hsSyck <-  (hackage "HsSyck") >>= debianize
   _hStringTemplate <-  (hackage "HStringTemplate") >>= debianize >>= skip (Reason "Needs time-1.5")
-  _hsx2hs <-  (git "https://github.com/seereason/hsx2hs.git" []
-                           -- hackage "hsx2hs" >>= patch $(embedFile "patches/hsx2hs.diff")
-                             >>= flag (P.CabalDebian ["--executable", "hsx2hs",
-                                                   "--conflicts", "hsx2hs:haskell-hsx-utils",
-                                                   "--replaces", "hsx2hs:haskell-hsx-utils",
-                                                   "--provides", "hsx2hs:haskell-hsx-utils"])) >>= debianize >>= inGroups ["happstack", "lens"]
-              -- maybe obsolete, src/HTML.hs:60:16: Not in scope: `selectElement'
+  _hsx2hs <- {- git "https://github.com/seereason/hsx2hs.git" [] -}
+             {- git "file:///home/dsf/git/hsx2hs" [] -}
+             hackage "hsx2hs" >>= {- patch $(embedFile "patches/hsx2hs.diff") >>= -}
+             flag (P.CabalDebian ["--executable", "hsx2hs",
+                                  "--conflicts", "hsx2hs:haskell-hsx-utils",
+                                  "--replaces", "hsx2hs:haskell-hsx-utils",
+                                  "--provides", "hsx2hs:haskell-hsx-utils"]) >>=
+             debianize >>=
+             inGroups ["happstack", "lens"]
   _hsx_jmacro <-  (git "https://github.com/Happstack/hsx-jmacro.git" []) >>= debianize >>= inGroups ["happstack", "lens"]
   _hsyslog <-  (hackage "hsyslog") >>= debianize
   _htf <-  (hackage "HTF" >>= flag (P.BuildDep "cpphs")) >>= debianize
@@ -784,6 +784,7 @@ buildTargets = do
   _multiset <-  (hackage "multiset") >>= debianize
   _murmur_hash <-  (hackage "murmur-hash") >>= debianize
   _mwc_random <-  (hackage "mwc-random") >>= debianize
+  _mysql_simple <- hackage "mysql-simple" >>= debianize
   _nano_hmac <- hackage "nano-hmac" >>= patch $(embedFile "patches/nano-hmac.diff") >>= flag (P.DebVersion "0.2.0ubuntu1") >>= debianize
   _nanospec <-  (hackage "nanospec" >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize -- avoid circular dependency nanospec <-> silently
   _nats <-  (hackage "nats") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -878,11 +879,11 @@ buildTargets = do
   _random <-  (hackage "random" >>= flag (P.SkipVersion "1.0.1.3")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"] -- 1.1.0.3 fixes the build for ghc-7.4.2 / base < 4.6
   _reducers <- hack "reducers"
   _reflection <-  (hackage "reflection") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"] -- avoid rebuild
-  _reform_blaze <-  (git "https://github.com/Happstack/reform.git" [] >>= cd "reform-blaze") >>= debianize >>= inGroups ["happstack"]
-  _reform <-  (git "https://github.com/Happstack/reform.git" [] >>= cd "reform") >>= debianize >>= inGroups ["happstack"]
-  _reform_hamlet <-  (git "https://github.com/Happstack/reform.git" [] >>= cd "reform-hamlet") >>= debianize >>= inGroups ["happstack"]
-  _reform_happstack <-  (git "https://github.com/Happstack/reform.git" [] >>= cd "reform-happstack") >>= debianize >>= inGroups ["happstack"]
-  _reform_hsp <-  (git "https://github.com/Happstack/reform.git" [] >>= cd "reform-hsp" >>= flag (P.BuildDep "hsx2hs")) >>= debianize >>= inGroups ["happstack"]
+  _reform_blaze <- git "https://github.com/Happstack/reform-blaze.git" [] >>= debianize >>= inGroups ["happstack"]
+  _reform <- git "https://github.com/Happstack/reform.git" [] >>= debianize >>= inGroups ["happstack"]
+  _reform_hamlet <- git "https://github.com/Happstack/reform-hamlet.git" [] >>= debianize >>= inGroups ["happstack"]
+  _reform_happstack <- git "https://github.com/Happstack/reform-happstack.git" [] >>= debianize >>= inGroups ["happstack"]
+  _reform_hsp <- git "https://github.com/Happstack/reform-hsp.git" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize >>= inGroups ["happstack"]
   _regex_applicative <-  (hackage "regex-applicative") >>= debianize
   _regex_base <-  (hackage "regex-base"
                              >>= tflag (P.DebVersion "0.93.2-4")
@@ -906,6 +907,7 @@ buildTargets = do
                               >>= apply (substitute "regex-tdfa-rc" "regex-tdfa")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   -- reified_records =  (hackage "reified-records" >>= patch $(embedFile "patches/reified-records.diff")) >>= debianize
   _reified_records <-  (hg "https://bitbucket.org/ddssff/reified-records") >>= debianize
+  _resource_pool <- hackage "resource-pool" >>= debianize
   _resourcet <-  (hackage "resourcet") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"]
   _rJson <-  hackage "RJson" >>=
              patch $(embedFile "patches/RJson.diff") >>=
@@ -954,6 +956,8 @@ buildTargets = do
   _singletons <-  (hackage "singletons") >>= debianize
   _smallcheck <-  (hackage "smallcheck") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _smtpClient <-  (hackage "SMTPClient") >>= debianize
+  _snap_core <- hackage "snap-core" >>= debianize
+  _snap_server <- hackage "snap-server" >>= debianize
   _socks <-  (hackage "socks") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _sourcemap <-  (hackage "sourcemap") >>= debianize >>= inGroups ["happstack"]
   _spine <-  (hackage "spine") >>= debianize
