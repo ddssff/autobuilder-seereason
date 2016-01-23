@@ -4,19 +4,19 @@ module Debian.AutoBuilder.Details.Public ( buildTargets ) where
 
 import Control.Lens (use, view, (%=))
 import Data.FileEmbed (embedFile)
-import Data.Map as Map (elems, insert, keys)
+import Data.Map as Map (elems, keys)
 import Data.Set as Set (fromList, insert, member, Set)
 import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
-import Debian.AutoBuilder.Types.Packages as P (TSt, depends, plist,
+import Debian.AutoBuilder.Types.Packages as P (TSt, depends,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
                                                darcs, apt, git, hg, cd, debdir, uri,
                                                GroupName, inGroups, createPackage)
 import Debian.Debianize as D
-    (doExecutable, execCabalM, execMap, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
-import Debian.Relation (BinPkgName(..), Relation(Rel))
+    (doExecutable, execCabalM, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
+import Debian.Relation (BinPkgName(..))
 import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage, Git), GitSpec(Commit, Branch))
 --import Debug.Trace (trace)
 
@@ -1021,7 +1021,7 @@ buildTargets = do
   _test_framework_quickcheck <-  (git "https://github.com/seereason/test-framework" [] >>= cd "quickcheck") >>= debianize >>= skip (Reason "confused debian dependencies")
   _test_framework_smallcheck <-  (hackage "test-framework-smallcheck") >>= debianize
   _test_framework_th <-  (hackage "test-framework-th" >>= tflag (P.DebVersion "0.2.4-1build4")) >>= debianize
-  _testing_feat <- hackage "testing-feat" >>= patch $(embedFile "patches/testing-feat.diff") >>= debianize
+  _testing_feat <- hackage "testing-feat" >>= {-patch $(embedFile "patches/testing-feat.diff") >>=-} debianize
   _texmath <-  (hackage "texmath") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe"]
   _text_binary <-  (hackage "text-binary") >>= debianize >>= inGroups ["ghcjs-comp"]
   _text <-  (hackage "text" >>= flag (P.CabalDebian ["--cabal-flags", "-integer-simple"]) >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize >>= inGroups ["platform"]
@@ -1120,14 +1120,14 @@ buildTargets = do
                                    , P._post = [] } :: TSt Package
 -}
   _web_plugins <-  (git "http://github.com/clckwrks/web-plugins" [] >>= cd "web-plugins") >>= debianize
-  _web_routes_boomerang <-  (git "https://github.com/Happstack/web-routes.git" [] >>= cd "web-routes-boomerang") >>= debianize >>= inGroups ["happstack"]
-  _web_routes <-  (git "https://github.com/Happstack/web-routes.git" [] >>= cd "web-routes") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
-  _web_routes_happstack <-  (git "https://github.com/Happstack/web-routes.git" [] >>= cd "web-routes-happstack") >>= debianize >>= inGroups ["happstack"]
-  _web_routes_hsp <-  (git "https://github.com/Happstack/web-routes.git" [] >>= cd "web-routes-hsp") >>= debianize >>= inGroups ["happstack"]
-  _web_routes_mtl <-  (git "https://github.com/Happstack/web-routes.git" [] >>= cd "web-routes-mtl" >>= flag (P.DebVersion "0.20.1-1~hackage1")) >>= debianize >>= inGroups ["happstack"]
-  _web_routes_th <-  (git "https://github.com/Happstack/web-routes.git" [] >>= cd "web-routes-th") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
+  _web_routes_boomerang <- git "https://github.com/Happstack/web-routes-boomerang.git" [] >>= debianize >>= inGroups ["happstack"]
+  _web_routes <- git "https://github.com/Happstack/web-routes.git" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
+  _web_routes_happstack <- git "https://github.com/Happstack/web-routes-happstack.git" [] >>= debianize >>= inGroups ["happstack"]
+  _web_routes_hsp <- git "https://github.com/Happstack/web-routes-hsp.git" [] >>= debianize >>= inGroups ["happstack"]
+  _web_routes_mtl <- git "https://github.com/Happstack/web-routes-mtl.git" [] >>= flag (P.DebVersion "0.20.1-1~hackage1") >>= debianize >>= inGroups ["happstack"]
+  _web_routes_th <- git "https://github.com/Happstack/web-routes-th.git" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
               -- web_routes_transformers =  (git "https://github.com/Happstack/web-routes.git" [] >>= cd "web-routes-transformers") >>= debianize -- requires transformers ==0.2.*
-  _web_routes_wai <-  (git "https://github.com/Happstack/web-routes.git" [] >>= cd "web-routes-wai") >>= debianize >>= inGroups ["happstack"]
+  _web_routes_wai <- git "https://github.com/Happstack/web-routes-wai.git" [] >>= debianize >>= inGroups ["happstack"]
   _webkit_sodium <- git "https://github.com/ghcjs/ghcjs-examples" [] >>= cd "webkit-sodium" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _webkitgtk3 <- hackage "webkitgtk3" >>= flag (P.CabalPin "0.13.1.3") >>= flag (P.BuildDep "libwebkitgtk-3.0-dev") >>= debianize >>= inGroups ["glib"]
   _webkitgtk3_javascriptcore <- hackage "webkitgtk3-javascriptcore" >>= debianize

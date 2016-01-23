@@ -123,7 +123,12 @@ myExecMap =
        ("happy",  [[Rel (BinPkgName "happy") Nothing Nothing]]),
        ("alex",   [[Rel (BinPkgName "alex") Nothing Nothing]]),
        ("hsx2hs", [[Rel (BinPkgName "hsx2hs") Nothing Nothing]]),
-       ("cpphs",  [[Rel (BinPkgName "cpphs") Nothing Nothing]])]
+       ("cpphs",  [[Rel (BinPkgName "cpphs") Nothing Nothing]]),
+       ("hsc2hs",  [[Rel (BinPkgName "ghc") Nothing Nothing]]),
+       ("gtk2hsC2hs",  [[Rel (BinPkgName "gtk2hs-buildtools") Nothing Nothing]]),
+       ("gtk2hsHookGenerator",  [[Rel (BinPkgName "gtk2hs-buildtools") Nothing Nothing]]),
+       ("gtk2hsTypeGen", [[Rel (BinPkgName "gtk2hs-buildtools") Nothing Nothing]])
+      ]
 
 {-
 fixFlags :: P.Packages -> P.Packages 
