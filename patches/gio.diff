@@ -1,0 +1,190 @@
+diff -ruN old/debian/changelog new/debian/changelog
+--- old/debian/changelog	1969-12-31 16:00:00.000000000 -0800
++++ new/debian/changelog	2016-01-11 15:56:39.252730820 -0800
+@@ -0,0 +1,58 @@
++haskell-gio (0.13.1.1-1) unstable; urgency=low
++
++  * New upstream release
++
++ -- David Fox <dsf@seereason.com>  Mon, 11 Jan 2016 15:56:39 -0800
++
++haskell-gio (0.12.4-3) unstable; urgency=low
++
++  * Move Haskell blurb to the end of the description, reduces the impact
++    of #708703
++
++ -- Joachim Breitner <nomeata@debian.org>  Sat, 25 May 2013 23:52:17 +0200
++
++haskell-gio (0.12.4-2) unstable; urgency=low
++
++  * Enable compat level 9
++  * Use substvars for Haskell description blurbs
++
++ -- Joachim Breitner <nomeata@debian.org>  Fri, 24 May 2013 12:50:41 +0200
++
++haskell-gio (0.12.4-1) experimental; urgency=low
++
++  * Depend on haskell-devscripts 0.8.13 to ensure this packages is built
++    against experimental
++  * Bump standards version, no change
++  * New upstream release
++
++ -- Joachim Breitner <nomeata@debian.org>  Mon, 26 Nov 2012 10:43:19 +0100
++
++haskell-gio (0.12.3-1) unstable; urgency=low
++
++  * New upstream version.
++  * Bump to Standards-Version 3.9.3.
++
++ -- Clint Adams <clint@debian.org>  Sun, 06 May 2012 00:10:14 -0400
++
++haskell-gio (0.12.2-1) unstable; urgency=low
++
++  * New upstream release
++
++ -- Joachim Breitner <nomeata@debian.org>  Mon, 13 Feb 2012 23:19:35 +0100
++
++haskell-gio (0.12.0-1) unstable; urgency=low
++
++  [ Marco Silva ]
++  * Use ghc instead of ghc6
++
++  [ Joachim Breitner ]
++  * New upstream release
++  * Remove preinst script, not require with clean ghc-pkg database
++
++ -- Joachim Breitner <nomeata@debian.org>  Tue, 29 Mar 2011 23:22:37 +0530
++
++haskell-gio (0.11.0-1) unstable; urgency=low
++
++  * Initial release. (Closes: #583157)
++
++ -- Marco Túlio Gontijo e Silva <marcot@debian.org>  Wed, 26 May 2010 12:03:29 -0300
+diff -ruN old/debian/compat new/debian/compat
+--- old/debian/compat	1969-12-31 16:00:00.000000000 -0800
++++ new/debian/compat	2013-05-24 00:53:34.000000000 -0700
+@@ -0,0 +1 @@
++9
+diff -ruN old/debian/control new/debian/control
+--- old/debian/control	1969-12-31 16:00:00.000000000 -0800
++++ new/debian/control	2016-01-11 15:47:21.940714713 -0800
+@@ -0,0 +1,74 @@
++Source: haskell-gio
++Section: haskell
++Priority: extra
++Maintainer: Debian Haskell Group <pkg-haskell-maintainers@lists.alioth.debian.org>
++Uploaders: Marco Túlio Gontijo e Silva <marcot@debian.org>
++Build-Depends: debhelper (>= 9)
++  , cdbs
++  , haskell-devscripts (>= 0.8.15)
++  , ghc
++  , ghc-prof
++  , libghc-mtl-dev
++  , libghc-mtl-prof
++  , libghc-glib-dev (>= 0.12)
++  , libghc-glib-prof
++  , libglib2.0-dev
++  , gtk2hs-buildtools
++Build-Depends-Indep: ghc-doc
++  , libghc-mtl-doc
++  , libghc-glib-doc
++Standards-Version: 3.9.4
++Homepage: http://hackage.haskell.org/package/gio
++Vcs-Darcs: http://darcs.debian.org/pkg-haskell/haskell-gio
++Vcs-Browser: http://darcs.debian.org/cgi-bin/darcsweb.cgi?r=pkg-haskell/haskell-gio
++
++Package: libghc-gio-dev
++Architecture: any
++Depends: ${haskell:Depends}
++  , ${shlibs:Depends}
++  , ${misc:Depends}
++Recommends: ${haskell:Recommends}
++Suggests: ${haskell:Suggests}
++Provides: ${haskell:Provides}
++Description: Binding to the GIO${haskell:ShortBlurb}
++ GIO is striving to provide a modern, easy-to-use VFS API that sits at the
++ right level in the library stack. The goal is to overcome the shortcomings of
++ GnomeVFS and provide an API that is so good that developers prefer it over raw
++ POSIX calls. Among other things that means using GObject. It also means not
++ cloning the POSIX API, but providing higher-level, document-centric
++ interfaces.
++ .
++ ${haskell:Blurb}
++
++Package: libghc-gio-prof
++Architecture: any
++Depends: ${haskell:Depends}
++  , ${misc:Depends}
++Recommends: ${haskell:Recommends}
++Suggests: ${haskell:Suggests}
++Provides: ${haskell:Provides}
++Description: Binding to the GIO${haskell:ShortBlurb}
++ GIO is striving to provide a modern, easy-to-use VFS API that sits at the
++ right level in the library stack. The goal is to overcome the shortcomings of
++ GnomeVFS and provide an API that is so good that developers prefer it over raw
++ POSIX calls. Among other things that means using GObject. It also means not
++ cloning the POSIX API, but providing higher-level, document-centric
++ interfaces.
++ .
++ ${haskell:Blurb}
++
++Package: libghc-gio-doc
++Section: doc
++Architecture: all
++Depends: ${misc:Depends}, ${haskell:Depends}
++Recommends: ${haskell:Recommends}
++Suggests: ${haskell:Suggests}
++Description: Binding to the GIO${haskell:ShortBlurb}
++ GIO is striving to provide a modern, easy-to-use VFS API that sits at the
++ right level in the library stack. The goal is to overcome the shortcomings of
++ GnomeVFS and provide an API that is so good that developers prefer it over raw
++ POSIX calls. Among other things that means using GObject. It also means not
++ cloning the POSIX API, but providing higher-level, document-centric
++ interfaces.
++ .
++ ${haskell:Blurb}
+diff -ruN old/debian/copyright new/debian/copyright
+--- old/debian/copyright	1969-12-31 16:00:00.000000000 -0800
++++ new/debian/copyright	2012-10-13 04:27:19.000000000 -0700
+@@ -0,0 +1,19 @@
++Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
++Name: gio
++Maintainer: gtk2hs-users@sourceforge.net
++Source: http://hackage.haskell.org/packages/archive/gio/0.11.0/gio-0.11.0.tar.gz
++
++Copyright: 2001-2010, The Gtk2Hs Team
++License: LGPL-2.1+
++ This library is free software; you can redistribute it and/or modify it under
++ the terms of the GNU Lesser General Public License as published by the Free
++ Software Foundation; either version 2.1 of the License, or (at your option)
++ any later version.
++ .
++ This library is distributed in the hope that it will be useful, but WITHOUT
++ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++ FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
++ details.
++ .
++ On Debian systems, the full text of the GNU Lesser General Public License
++ version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
+diff -ruN old/debian/rules new/debian/rules
+--- old/debian/rules	1969-12-31 16:00:00.000000000 -0800
++++ new/debian/rules	2012-10-13 04:27:19.000000000 -0700
+@@ -0,0 +1,4 @@
++#!/usr/bin/make -f
++
++include /usr/share/cdbs/1/rules/debhelper.mk
++include /usr/share/cdbs/1/class/hlibrary.mk
+diff -ruN old/debian/source/format new/debian/source/format
+--- old/debian/source/format	1969-12-31 16:00:00.000000000 -0800
++++ new/debian/source/format	2012-10-13 04:27:19.000000000 -0700
+@@ -0,0 +1 @@
++3.0 (quilt)
+diff -ruN old/debian/watch new/debian/watch
+--- old/debian/watch	1969-12-31 16:00:00.000000000 -0800
++++ new/debian/watch	2012-10-13 04:27:19.000000000 -0700
+@@ -0,0 +1,5 @@
++version=3
++opts="downloadurlmangle=s|archive/([\w\d_-]+)/([\d\.]+)/|archive/$1/$2/$1-$2.tar.gz|,\
++filenamemangle=s|(.*)/$|gio-$1.tar.gz|" \
++    http://hackage.haskell.org/packages/archive/gio \
++    ([\d\.]*\d)/
