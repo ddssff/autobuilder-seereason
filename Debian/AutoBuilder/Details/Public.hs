@@ -1055,7 +1055,7 @@ buildTargets = do
   _traverse_with_class <-  (hackage "traverse-with-class") >>= debianize >>= inGroups ["happstack"]
   _trifecta <-  (hackage "trifecta" {->>= patch $(embedFile "patches/trifecta.diff")-}) >>= debianize
   _tyb <- hackage "TYB" >>= debianize >>= skip (Reason "Needs update for current template-haskell")
-  _type_eq <- hackage "type-eq" >>= apply (execCabalM $ (debInfo . execMap) %= Map.insert "cpphs" [[Rel (BinPkgName "cpphs") Nothing Nothing]]) >>= flag (P.BuildDep "cpphs") >>= debianize
+  _type_eq <- hackage "type-eq" >>= flag (P.BuildDep "cpphs") >>= debianize
   _uglymemo <-  (hackage "uglymemo") >>= debianize
   _unbounded_delays <-  (hackage "unbounded-delays") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _unicode_names <-  (git "https://github.com/seereason/unicode-names" [] >>= flag (P.DebVersion "3.2.0.0-1~hackage1")) >>= debianize

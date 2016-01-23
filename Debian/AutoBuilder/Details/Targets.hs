@@ -7,18 +7,18 @@ module Debian.AutoBuilder.Details.Targets
     ) where
 
 import Control.Applicative ((<$>), (<*>))
-import Control.Lens ((%=), use, view)
-import Control.Monad.State (execState)
+import Control.Lens ((%=), (%~), use, view)
+import Control.Monad.State (execState, get, modify)
 import Data.List as List (map)
-import Data.Map as Map (map)
+import Data.Map as Map (insert, map)
 import Data.Monoid (mappend)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages
+import Debian.Debianize as D (CabalInfo, debInfo, execMap)
 import Debian.Relation (Relation(..), BinPkgName(..))
 import Debian.Relation.String (parseRelations)
 import Debian.Releases (BaseRelease(..), baseRelease, Release)
 import qualified Debian.Repo.Fingerprint as P
--- import Debian.AutoBuilder.Details.GHC (ghc)
 import qualified Debian.AutoBuilder.Details.Public as Public
 import qualified Debian.AutoBuilder.Details.Private as Private
 
@@ -30,11 +30,11 @@ public :: TSt ()
 public =
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     -- private >>
-    Public.buildTargets >> applyEpochMap >> use P.release >>= applyDepMap >> proc'
+    Public.buildTargets >> applyEpochMap >> applyExecMap  >> use P.release >>= applyDepMap >> proc'
 
 private :: TSt ()
 private =
-    Private.buildTargets >> applyEpochMap >> use P.release >>= applyDepMap >> proc'
+    Private.buildTargets >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
 
 proc' :: TSt ()
 proc' =
@@ -105,6 +105,25 @@ applyEpochMap =
     where
       f :: P.Package -> Package
       f x = x {P._flags = P._flags x ++ [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]}
+
+applyExecMap :: TSt ()
+applyExecMap =
+    packageMap %= Map.map f
+    where
+      f :: P.Package -> Package
+      f x = x {P._post = List.map (uncurry g) myExecMap ++ P._post x}
+      g :: String -> [[Relation]] -> CabalInfo -> CabalInfo
+      g p d = (debInfo . execMap) %~ (Map.insert p d)
+
+myExecMap =
+    -- mapM_
+      -- (\(p, dep) -> modify ((debInfo . execMap) %~ (Map.insert p dep)))
+      [("cpphs",  [[Rel (BinPkgName "cpphs") Nothing Nothing]]),
+       ("ghc",    [[Rel (BinPkgName "ghc") Nothing Nothing]]),
+       ("happy",  [[Rel (BinPkgName "happy") Nothing Nothing]]),
+       ("alex",   [[Rel (BinPkgName "alex") Nothing Nothing]]),
+       ("hsx2hs", [[Rel (BinPkgName "hsx2hs") Nothing Nothing]]),
+       ("cpphs",  [[Rel (BinPkgName "cpphs") Nothing Nothing]])]
 
 {-
 fixFlags :: P.Packages -> P.Packages 

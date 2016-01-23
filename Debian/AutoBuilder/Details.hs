@@ -4,22 +4,24 @@
 -- building.  If you find yourself modifying other files I would like
 -- to hear about it.
 
-{-# LANGUAGE CPP #-}
-{-# OPTIONS -Wall -fno-warn-missing-signatures #-}
+{-# LANGUAGE CPP, FlexibleContexts #-}
+{-# OPTIONS -Wall #-}
 module Debian.AutoBuilder.Details
     ( myParams
     ) where
 
-import Control.Lens (use, view)
+import Control.Lens -- (use, view, (%=))
 import Control.Monad (when)
-import Control.Monad.State (execState)
-import Data.Map as Map (elems, map)
+import Control.Monad.State (execState, modify, MonadState)
+import Data.Map as Map (elems, insert, map)
 import Data.Maybe
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, releaseRepoName, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.Packages (TSt)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
+import Debian.Debianize as D (CabalInfo, debInfo, execMap)
+import Debian.Relation (BinPkgName(..), Relation(Rel))
 import Debian.Releases (Release(..),
                         releaseString, parseReleaseName, isPrivateRelease,
                         baseRelease, Distro(..))
