@@ -177,8 +177,8 @@ diff -ruN old/debian/rules new/debian/rules
 diff -ruN old/debian/source/format new/debian/source/format
 --- old/debian/source/format	1969-12-31 16:00:00.000000000 -0800
 +++ new/debian/source/format	2012-10-13 04:27:19.000000000 -0700
-@@ -0,0 +1 @@
-+3.0 (quilt)
+@@ -0,0 +1,1 @@
++3.0 (native)
 diff -ruN old/debian/watch new/debian/watch
 --- old/debian/watch	1969-12-31 16:00:00.000000000 -0800
 +++ new/debian/watch	2012-10-13 04:27:19.000000000 -0700

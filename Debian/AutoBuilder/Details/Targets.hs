@@ -127,7 +127,8 @@ myExecMap =
        ("hsc2hs",  [[Rel (BinPkgName "ghc") Nothing Nothing]]),
        ("gtk2hsC2hs",  [[Rel (BinPkgName "gtk2hs-buildtools") Nothing Nothing]]),
        ("gtk2hsHookGenerator",  [[Rel (BinPkgName "gtk2hs-buildtools") Nothing Nothing]]),
-       ("gtk2hsTypeGen", [[Rel (BinPkgName "gtk2hs-buildtools") Nothing Nothing]])
+       ("gtk2hsTypeGen", [[Rel (BinPkgName "gtk2hs-buildtools") Nothing Nothing]]),
+       ("mysql_config", [[Rel (BinPkgName "libmysqlclient-dev") Nothing Nothing]])
       ]
 
 {-

@@ -349,6 +349,7 @@ buildTargets = do
   _filemanip <-  (hackage "filemanip") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _filemanip_extra <-  (git "https://github.com/seereason/filemanip-extra" []) >>= debianize >>= inGroups ["ghcjs-libs", "autobuilder-group"]
   _fingertree <- hack "fingertree"
+  _fixed <- hackage "fixed" >>= debianize
   _flock <- hack "flock"
   _fmlist <-  (hackage "fmlist") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _foreign_var <-  (hackage "foreign-var") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -393,7 +394,7 @@ buildTargets = do
   _ghcjs_dom_hello <-  (hackage "ghcjs-dom-hello"
                                  >>= patch $(embedFile "patches/ghcjs-dom-hello.diff")
                                  >>= flag (P.CabalDebian ["--default-package", "ghcjs-dom-hello"])) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "glib"]
-  _ghcjs <- git "git@github.com:ddssff/ghcjs-debian" [Branch "ghcjsi"] >>=  relax "cabal-install" >>= inGroups ["ghcjs-comp"]
+  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghcjsi"] >>=  relax "cabal-install" >>= inGroups ["ghcjs-comp"]
   -- _ghcjs_prim <- git "https://github.com/ghcjs/ghcjs-prim" [] >>= debianize >>= inGroups ["ghcjs-comp", "glib"]
   _ghc_mtl <- (hackage "ghc-mtl") >>= debianize >>= skip (Reason "No instance for (MonadIO GHC.Ghc)")
   _ghc_paths <-  (hackage "ghc-paths" >>= tflag (P.DebVersion "0.1.0.9-3")) >>= debianize -- apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah
@@ -792,6 +793,7 @@ buildTargets = do
   _multiset <-  (hackage "multiset") >>= debianize
   _murmur_hash <-  (hackage "murmur-hash") >>= debianize
   _mwc_random <-  (hackage "mwc-random") >>= debianize
+  _mysql <- hackage "mysql" >>= debianize
   _mysql_simple <- hackage "mysql-simple" >>= debianize
   _nano_hmac <- hackage "nano-hmac" >>= patch $(embedFile "patches/nano-hmac.diff") >>= flag (P.DebVersion "0.2.0ubuntu1") >>= debianize
   _nanospec <-  (hackage "nanospec" >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize -- avoid circular dependency nanospec <-> silently
@@ -847,7 +849,7 @@ buildTargets = do
   _plugins <-  hackage "plugins" {->>= patch $(embedFile "patches/plugins.diff")-} >>= debianize
   _plugins_ng <-  (git "https://github.com/ddssff/plugins-ng" []) >>= debianize >>= skip (Reason "needs fsnotify << 0.2")
   _po4a <- apt "wheezy" "po4a" >>= skip (Reason "use standard trusty version")
-  _pointed <-  (hackage "pointed") >>= debianize
+  _pointed <- hackage "pointed" >>= flag (P.CabalPin "4.2.0.2") >>= debianize -- waiting for kan-extensions >= 5
   _pointedlist <-  (hackage "pointedlist") >>= debianize
   _polyparse <-  (hackage "polyparse") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _prelude_extras <-  (hackage "prelude-extras") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -1048,6 +1050,7 @@ buildTargets = do
               -- ,  (hackage "tls-extra" >>= patch $(embedFile "patches/tls-extra.diff")) >>= debianize
   _transformers_base <- hackage "transformers-base" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _transformers_compat <- hackage "transformers-compat" >>=
+                          flag (P.CabalPin "0.4.0.4") >>= -- waiting for newer monad-control and monad-parallel
                           {-patch $(embedFile "patches/transformers-compat.diff") >>=-}
                           debianize >>=
                           inGroups ["ghcjs-libs", "ghc-libs"]
@@ -1058,6 +1061,7 @@ buildTargets = do
   _type_eq <- hackage "type-eq" >>= flag (P.BuildDep "cpphs") >>= debianize
   _uglymemo <-  (hackage "uglymemo") >>= debianize
   _unbounded_delays <-  (hackage "unbounded-delays") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _unexceptionalio <- hackage "unexceptionalio" >>= debianize
   _unicode_names <-  (git "https://github.com/seereason/unicode-names" [] >>= flag (P.DebVersion "3.2.0.0-1~hackage1")) >>= debianize
   _unicode_properties <-  (git "https://github.com/seereason/unicode-properties" [] >>= flag (P.DebVersion "3.2.0.0-1~hackage1")) >>= debianize
   _unification_fd <-  (hackage "unification-fd" >>= flag (P.SkipVersion "0.8.0")) >>= debianize
@@ -1107,7 +1111,7 @@ buildTargets = do
   _void <-  (hackage "void") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"]
   _vty <-  (hackage "vty") >>= debianize
   _wai_app_static <-  (hackage "wai-app-static") >>= debianize >>= inGroups ["servant"]
-  _wai <-  (hackage "wai" {- >>= patch $(embedFile "patches/wai.diff") -}) >>= debianize
+  _wai <- hackage "wai" {- >>= patch $(embedFile "patches/wai.diff") -} >>= debianize
   _wai_extra <-  (hackage "wai-extra") >>= debianize
   _wai_logger <-  (hackage "wai-logger") >>= debianize
   _wai_middleware_static <-  (hackage "wai-middleware-static") >>= debianize
@@ -1124,7 +1128,9 @@ buildTargets = do
   _web_routes <- git "https://github.com/Happstack/web-routes.git" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
   _web_routes_happstack <- git "https://github.com/Happstack/web-routes-happstack.git" [] >>= debianize >>= inGroups ["happstack"]
   _web_routes_hsp <- git "https://github.com/Happstack/web-routes-hsp.git" [] >>= debianize >>= inGroups ["happstack"]
+{-
   _web_routes_mtl <- git "https://github.com/Happstack/web-routes-mtl.git" [] >>= flag (P.DebVersion "0.20.1-1~hackage1") >>= debianize >>= inGroups ["happstack"]
+-}
   _web_routes_th <- git "https://github.com/Happstack/web-routes-th.git" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
               -- web_routes_transformers =  (git "https://github.com/Happstack/web-routes.git" [] >>= cd "web-routes-transformers") >>= debianize -- requires transformers ==0.2.*
   _web_routes_wai <- git "https://github.com/Happstack/web-routes-wai.git" [] >>= debianize >>= inGroups ["happstack"]
