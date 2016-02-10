@@ -124,7 +124,7 @@ buildTargets = do
   -- This is provided by ghc
   -- _cabal = hackage "Cabal" >>= debianize
   _cabal_install <- hackage "cabal-install" >>=
-                    patch $(embedFile "patches/cabal-install.diff") >>= -- Remove bound on HTTP dependency
+                    -- patch $(embedFile "patches/cabal-install.diff") >>= -- Remove bound on HTTP dependency
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>=
                     debianize >>=
                     inGroups ["platform"]
@@ -441,9 +441,9 @@ buildTargets = do
                                                                                                    [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                                                    , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
                     >>= debianize >>= inGroups ["ghcjs-comp"]
-  _haddock_library <-  (hackage "haddock-library") >>= debianize >>= inGroups ["ghcjs-libs", "ghcjs-comp"]
+  haddock_library <-  (hackage "haddock-library") >>= debianize >>= inGroups ["ghcjs-libs"]
   _half <-  (hackage "half" >>= inGroups ["gl"]) >>= debianize
-  _hamlet <-  (hackage "hamlet") >>= debianize >>= inGroups ["ghcjs-libs", "ghcjs-comp"]
+  _hamlet <-  (hackage "hamlet") >>= debianize >>= inGroups ["ghcjs-libs"]
   -- seereason still depends on this
   _happstack_authenticate_0 <-  (git "https://github.com/Happstack/happstack-authenticate-0.git" []
                              >>= flag (P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0",
@@ -579,7 +579,7 @@ buildTargets = do
                -- The Sid package has no profiling libraries, so dependent packages
                -- won't build.  Use our debianization instead.  This means keeping
                -- up with sid's version.
-  _hourglass <-  (hackage "hourglass") >>= debianize
+  _hourglass <-  (hackage "hourglass") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _hpdf <-  (hackage "HPDF") >>= debianize
   _hS3 <-  (git "https://github.com/scsibug/hS3.git" []) >>= debianize
                                >>= apply (execCabalM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
@@ -671,9 +671,9 @@ buildTargets = do
                -- We want to stick with jqueryui-1.8 for now, so create
                -- packages with the version number embedded in the name.
   _jqueryui18 <- darcs ("http://src.seereason.com/jqueryui18")
-  _js_flot <-  (hackage "js-flot") >>= debianize
-  _js_jquery <-  (hackage "js-jquery") >>= debianize
-  _jsaddle <- git "https://github.com/ghcjs/jsaddle" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghcjs-comp"]
+  _js_flot <-  (hackage "js-flot") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _js_jquery <-  (hackage "js-jquery") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _jsaddle <- git "https://github.com/ghcjs/jsaddle" [] >>= debianize >>= inGroups ["ghcjs-libs"]
   _json <-  (hackage "json") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "seereason"] -- darcs "haskell-json" (repo ++ "/haskell-json")
   _juicyPixels <-  (hackage "JuicyPixels") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
   _jwt <-  (hackage "jwt") >>= debianize >>= inGroups [ "authenticate"] -- dependency of happstack-authenticate-2
@@ -936,7 +936,7 @@ buildTargets = do
                               >>= flag (P.DebVersion "1.1.1-1~hackage1")) >>= debianize
   _scientific <-  (hackage "scientific") >>= debianize
                -- ,  (hackage "arithmoi" >>= flag (P.BuildDep "llvm-dev")) >>= debianize
-  _scotty <-  (hackage "scotty" >>= patch $(embedFile "patches/scotty.diff")) >>= debianize -- allow warp-3.1.3
+  _scotty <- hackage "scotty" {- >>= patch $(embedFile "patches/scotty.diff") -} >>= debianize -- allow warp-3.1.3
   _seclib <-  (darcs ("http://src.seereason.com/seclib")) >>= debianize >>= skip (Reason "No instance for (Applicative (Sec s))")
   _securemem <-  (hackage "securemem") >>= debianize
   _seereason_base <-
@@ -955,7 +955,7 @@ buildTargets = do
                -- ,  (darcs "haskell-old-exception" ("http://src.seereason.com/old-exception")) >>= debianize
   _set_monad <-  (hackage "set-monad") >>= debianize
   _sha <-  (hackage "SHA") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"] -- apt (rel release "wheezy" "quantal") "haskell-sha"
-  _shake <-  (hackage "shake") >>= debianize >>= inGroups ["ghcjs-libs", "ghcjs-comp"]
+  _shake <-  (hackage "shake") >>= debianize >>= inGroups ["ghcjs-libs"]
   _shakespeare <-  (hackage "shakespeare") >>= debianize >>= inGroups ["happstack", "ghcjs-libs"]
   _shakespeare_js <-  (hackage "shakespeare-js") >>= debianize
   _shellmate <- hack "shellmate"
@@ -1026,7 +1026,7 @@ buildTargets = do
   _test_framework_th <-  (hackage "test-framework-th" >>= tflag (P.DebVersion "0.2.4-1build4")) >>= debianize
   _testing_feat <- hackage "testing-feat" >>= {-patch $(embedFile "patches/testing-feat.diff") >>=-} debianize
   _texmath <-  (hackage "texmath") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe"]
-  _text_binary <-  (hackage "text-binary") >>= debianize >>= inGroups ["ghcjs-comp"]
+  _text_binary <- hackage "text-binary" >>= debianize >>= inGroups ["ghcjs-libs"]
   _text <-  (hackage "text" >>= flag (P.CabalDebian ["--cabal-flags", "-integer-simple"]) >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize >>= inGroups ["platform"]
   _text_icu <-  (hackage "text-icu" >>= flag (P.DevelDep "libicu-dev")) >>= debianize
   _text_show <-  (hackage "text-show") >>= debianize
@@ -1051,7 +1051,7 @@ buildTargets = do
               -- ,  (hackage "tls-extra" >>= patch $(embedFile "patches/tls-extra.diff")) >>= debianize
   _transformers_base <- hackage "transformers-base" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _transformers_compat <- hackage "transformers-compat" >>=
-                          flag (P.CabalPin "0.4.0.4") >>= -- waiting for newer monad-control and monad-parallel
+                          -- flag (P.CabalPin "0.4.0.4") >>= -- waiting for newer monad-control and monad-parallel
                           {-patch $(embedFile "patches/transformers-compat.diff") >>=-}
                           debianize >>=
                           inGroups ["ghcjs-libs", "ghc-libs"]
@@ -1062,7 +1062,7 @@ buildTargets = do
   _type_eq <- hackage "type-eq" >>= flag (P.BuildDep "cpphs") >>= debianize
   _uglymemo <-  (hackage "uglymemo") >>= debianize
   _unbounded_delays <-  (hackage "unbounded-delays") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _unexceptionalio <- hackage "unexceptionalio" >>= debianize
+  _unexceptionalio <- hackage "unexceptionalio" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _unicode_names <-  (git "https://github.com/seereason/unicode-names" [] >>= flag (P.DebVersion "3.2.0.0-1~hackage1")) >>= debianize
   _unicode_properties <-  (git "https://github.com/seereason/unicode-properties" [] >>= flag (P.DebVersion "3.2.0.0-1~hackage1")) >>= debianize
   _unification_fd <-  (hackage "unification-fd" >>= flag (P.SkipVersion "0.8.0")) >>= debianize
