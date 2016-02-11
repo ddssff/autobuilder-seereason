@@ -290,7 +290,7 @@ buildTargets = do
   _decimal <-  (hackage "Decimal") >>= debianize -- for hledger
   _deepseq_generics <- hackage "deepseq-generics" >>= {-patch $(embedFile "patches/deepseq-generics.diff") >>=-} debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _derive <-  (hackage "derive") >>= debianize >>= skip (Reason "[libghc-src-exts-prof (>= 1.17)] -> []")
-  _diff <-  (hackage "Diff") >>= debianize
+  _diff <- hackage "Diff" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _digest <-  (hackage "digest") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _digestive_functors <-  (hackage "digestive-functors" >>= flag (P.CabalPin "0.2.1.0")) >>= debianize >>= inGroups ["seereason"]  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
       -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
