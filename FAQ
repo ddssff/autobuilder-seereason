@@ -1,3 +1,8 @@
+Q0. How do you run the autobuilder?
+
+A0. generally, I install autobuilder-seereason, check out autobuilder-seereason, cabal build it, then say
+    dist/build/autobuilder-seereason/autobuilder-seereason trusty-seereason --pattern ghcjs --do-upload --do-newdist
+
 Q1.  How do I build a target that isn't checked into a VCS, just
      a directory on my local machine?
 
