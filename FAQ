@@ -9,3 +9,5 @@ Q1.  How do I build a target that isn't checked into a VCS, just
 A1.  Build the target using the dir function in
      Debian.AutoBuilder.Types.Packages.  Please don't upload anything
      built from such a target, though, check it in and build again.
+     Alternatively, you can create a local git repo and use a file: url
+     in the git target.
