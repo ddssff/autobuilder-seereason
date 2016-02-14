@@ -383,7 +383,8 @@ buildTargets = do
   _ghc710 <- apt "experimental" "ghc" >>= ghcFlags
                         >>= patch $(embedFile "patches/ghc.diff")
                             >>= skip (Reason "stick with current, avoid huge rebuild")
-  _ghcid <- (hackage "ghcid") >>= debianize
+  _terminal_size <- git "https://github.com/biegunka/terminal-size" []  >>= debianize  >>= inGroups ["ghcid"]
+  _ghcid <- git "https://github.com/ndmitchell/ghcid" [] >>= debianize  >>= inGroups ["ghcid"]
   _ghcjs_base <- git "https://github.com/ghcjs/ghcjs-base" [] >>= debianize >>= inGroups ["ghcjs-libs", "glib"]
   _ghcjs_jquery <-  (git "https://github.com/ghcjs/ghcjs-jquery" []) >>= debianize
                     {-`putSrcPkgName` "ghcjs-ghcjs-jquery"-}
