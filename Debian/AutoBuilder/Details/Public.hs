@@ -754,7 +754,10 @@ buildTargets = do
   _memoize <-  (hackage "memoize") >>= debianize
   _memory <-  (hackage "memory") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _memoTrie <-  (hackage "MemoTrie") >>= debianize
-  _microlens <- hackage "microlens" >>= debianize >>= inGroups ["ghc-libs"]
+  _microlens <- hackage "microlens" >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _microlens_mtl <- hackage "microlens-mtl" >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _microlens_th <- hackage "microlens-th" >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _microlens_compat <- git "https://github.com/seereason/microlens-compat.git" [] >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs", "th-path"]
   _mime <- darcs ("http://src.seereason.com/haskell-mime")
   _mime_mail <-  (git "https://github.com/snoyberg/mime-mail.git" [] >>= cd "mime-mail") >>= debianize >>= inGroups [ "authenticate"]
   _mime_types <-  (hackage "mime-types") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit"]
@@ -1084,7 +1087,7 @@ buildTargets = do
                -- The GHC in wheezy conflicts with libghc-containers-dev, so we can't build this.
                -- , wonly $  (hackage "containers") >>= debianize
   _urlencoded <-  (hackage "urlencoded" {->>= patch $(embedFile "patches/urlencoded.diff")-}) >>= debianize
-  _userid <-  (git "https://github.com/Happstack/userid" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "happstack"]
+  _userid <-  (git "https://github.com/seereason/userid" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "happstack"]
   _utf8_light <-  (hackage "utf8-light") >>= debianize
   _utf8_string <-  (hackage "utf8-string"
                               >>= flag (P.RelaxDep "hscolour")
