@@ -754,7 +754,10 @@ buildTargets = do
   _memoize <-  (hackage "memoize") >>= debianize
   _memory <-  (hackage "memory") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _memoTrie <-  (hackage "MemoTrie") >>= debianize
-  _microlens <- hackage "microlens" >>= debianize >>= inGroups ["ghc-libs"]
+  _microlens <- hackage "microlens" >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _microlens_mtl <- hackage "microlens-mtl" >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _microlens_th <- hackage "microlens-th" >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _microlens_compat <- git "https://github.com/seereason/microlens-compat.git" [] >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs", "th-path"]
   _mime <- darcs ("http://src.seereason.com/haskell-mime")
   _mime_mail <-  (git "https://github.com/snoyberg/mime-mail.git" [] >>= cd "mime-mail") >>= debianize >>= inGroups [ "authenticate"]
   _mime_types <-  (hackage "mime-types") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit"]
@@ -805,9 +808,10 @@ buildTargets = do
   _network_info <-  (hackage "network-info") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _network_uri <-  (hackage "network-uri") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _newtype_generics <-  (hackage "newtype-generics") >>= debianize >>= inGroups ["autobuilder-group"]
-  -- nodejs = skip (Reason "test failure on switch from 0.10.29~dfsg-1 to 0.10.29~dfsg-1.1") (apt "sid" "nodejs")
-  _nodejs <- uri "https://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz" "5523ec4347d7fe6b0f6dda1d1c7799d5" >>=
-            debdir (Git "https://github.com/seereason/nodejs-debian" []) >>= inGroups ["ghcjs-comp"]
+  -- _nodejs <- uri "https://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz" "5523ec4347d7fe6b0f6dda1d1c7799d5" >>=
+  --            debdir (Git "https://github.com/seereason/nodejs-debian" []) >>= inGroups ["ghcjs-comp"]
+  _nodejs <- uri "https://deb.nodesource.com/node_5.x/pool/main/n/nodejs/nodejs_5.6.0.orig.tar.gz" "6f7c2cec289a20bcd970240dd63c1395" >>=
+            debdir (Uri "https://deb.nodesource.com/node_5.x/pool/main/n/nodejs/nodejs_5.6.0-1nodesource1~trusty1.debian.tar.gz" "6272a4f41058ee7cf9fa1a1696beb343") >>= inGroups ["ghcjs-comp"]
   _numeric_extras <-  (hackage "numeric-extras") >>= debianize
   _numInstances <-  (hackage "NumInstances") >>= debianize
   _objectName <-  (hackage "ObjectName") >>= debianize
@@ -1083,7 +1087,7 @@ buildTargets = do
                -- The GHC in wheezy conflicts with libghc-containers-dev, so we can't build this.
                -- , wonly $  (hackage "containers") >>= debianize
   _urlencoded <-  (hackage "urlencoded" {->>= patch $(embedFile "patches/urlencoded.diff")-}) >>= debianize
-  _userid <-  (git "https://github.com/Happstack/userid" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "happstack"]
+  _userid <-  (git "https://github.com/seereason/userid" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "happstack"]
   _utf8_light <-  (hackage "utf8-light") >>= debianize
   _utf8_string <-  (hackage "utf8-string"
                               >>= flag (P.RelaxDep "hscolour")
