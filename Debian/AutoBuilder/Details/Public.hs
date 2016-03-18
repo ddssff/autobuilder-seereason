@@ -123,7 +123,7 @@ buildTargets = do
                   >>= inGroups ["autobuilder-group"]
   -- This is provided by ghc
   -- _cabal = hackage "Cabal" >>= debianize
-  _cabal_install <- hackage "cabal-install" >>=
+  _cabal_install <- hackage "cabal-install" >>= flag (P.CabalPin "1.22.7.0") >>=
                     -- patch $(embedFile "patches/cabal-install.diff") >>= -- Remove bound on HTTP dependency
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>=
                     debianize >>=
@@ -830,7 +830,7 @@ buildTargets = do
   _ordered <-  (hackage "ordered") >>= debianize
   _pandoc <-  (-- git "https://github.com/jgm/pandoc" [Commit "360e35459fb4bf2611ad414774485b8f553201dd"]
                       hackage "pandoc" -- For syb-0.6 and aeson-0.10 we need a release newer than 1.15.0.6
-                             -- >>= patch $(embedFile "patches/pandoc.diff")
+                             >>= patch $(embedFile "patches/pandoc.diff")
                              -- >>= flag (P.RelaxDep "libghc-pandoc-doc")
                              >>= flag (P.BuildDep "alex")
                              >>= flag (P.BuildDep "happy")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe"]

@@ -147,6 +147,7 @@ myIncludePackages myBuildRelease =
 -- have to make do until it gets built and uploaded.
 myOptionalIncludePackages _myBuildRelease =
     [ "seereason-keyring"
+      -- You may need to omit ghc and ghcjs and flush the root to build ghcjs.
     , "ghc"                        -- We need ghc and ghcjs to figure out bundled package lists.
     , "ghcjs"                      -- Just be careful when trying to upgrade the compiler, if
                                    -- you need to back a build out you will tear your hair out
