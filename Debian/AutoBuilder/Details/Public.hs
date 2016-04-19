@@ -541,7 +541,7 @@ buildTargets = do
   -- haskell_src_meta =  (hackage "haskell-src-meta") >>= debianize
   -- haskell_src_meta =  (git "https://github.com/bmillwood/haskell-src-meta" []) >>= debianize
   -- haskell_src_meta <-  (git "https://github.com/ddssff/haskell-src-meta" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _haskell_src_meta <- hackage "haskell-src-meta" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"]
+  _haskell_src_meta <- hackage "haskell-src-meta" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "th-path"]
   _haste_compiler <- hack "haste-compiler" >>= flag (P.CabalDebian ["--default-package", "haste-compiler"])
   _haste_ffi_parser <- git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
   _haTeX <-  (git "https://github.com/Daniel-Diaz/HaTeX" [Commit "cc66573a0587094667a9150411ea748d6592db36" {-avoid rebuild-}]
@@ -664,7 +664,7 @@ buildTargets = do
   _iso3166_country_codes <-  (hackage "iso3166-country-codes") >>= debianize
   _ixset <-  (git "https://github.com/Happstack/ixset.git" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"] -- ,  (hackage "ixset") >>= debianize
   _ixset_typed <-  (hackage "ixset-typed") >>= debianize >>= inGroups [ "authenticate"] -- dependency of happstack-authenticate-2
-  _jmacro <-  (hackage "jmacro") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"] >>= inGroups ["happstack", "lens"]
+  _jmacro <-  (hackage "jmacro") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"] >>= inGroups ["happstack", "lens", "th-path"]
   _jmacro_rpc <- hackage "jmacro-rpc" >>= inGroups ["happstack"] >>= debianize >>= broken
   _jmacro_rpc_happstack <- hackage "jmacro-rpc-happstack" >>= flag (P.SkipVersion "0.2.1") >>= debianize >>= broken -- Really just waiting for jmacro-rpc
   _jquery <- apt "sid" "jquery" >>= skip (Reason "Missing dependency node-source-map") {- >>= patch $(embedFile "patches/jquery.diff") -} -- Revert to version 1.7.2+dfsg-3, version 1.7.2+dfsg-3.2 gives us a nearly empty jquery.min.js 
@@ -695,7 +695,9 @@ buildTargets = do
                , apt "wheezy" "haskell-leksah-server" -- for leksah -}
   _latex <-  (hackage "latex") >>= debianize
   -- This commit adds the sequence numbers we need to generated function parameters
-  _lens <- (git "https://github.com/ekmett/lens" [Commit "950eb5be34fb40bf0111ded6bc91c1ffcd2a786b"]) >>= debianize >>= inGroups ["lens", "ghcjs-libs", "ghc-libs"]
+  _lens <- git "https://github.com/ekmett/lens" [Commit "950eb5be34fb40bf0111ded6bc91c1ffcd2a786b"] >>=
+           apply (replacement "lens" "microlens-compat") >>=
+           debianize >>= inGroups ["lens", "ghcjs-libs", "ghc-libs"]
   -- _lens <-  (hackage "lens") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _lens_compat <-  (git "https://github.com/ddssff/lens-compat" []) >>= debianize >>= inGroups ["lens"]
   _lens_family_core <-  (hackage "lens-family-core") >>= debianize
@@ -757,7 +759,9 @@ buildTargets = do
   _microlens <- hackage "microlens" >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs"]
   _microlens_mtl <- hackage "microlens-mtl" >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs"]
   _microlens_th <- hackage "microlens-th" >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs"]
-  _microlens_compat <- git "https://github.com/seereason/microlens-compat.git" [] >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs", "th-path"]
+  _microlens_compat <- git "https://github.com/seereason/microlens-compat.git" [] >>=
+                       apply (replacement "microlens-compat" "lens") >>=
+                       debianize >>= inGroups ["ghc-libs", "ghcjs-libs", "th-path"]
   _mime <- darcs ("http://src.seereason.com/haskell-mime")
   _mime_mail <-  (git "https://github.com/snoyberg/mime-mail.git" [] >>= cd "mime-mail") >>= debianize >>= inGroups [ "authenticate"]
   _mime_types <-  (hackage "mime-types") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit"]
@@ -791,7 +795,7 @@ buildTargets = do
   _monoid_transformer <-  (hackage "monoid-transformer") >>= debianize -- apt (rel release "wheezy" "quantal") "haskell-monoid-transformer"
   _mtl <-  (hackage "mtl") >>= debianize >>= inGroups ["platform"]
   _mtl_compat <-  (hackage "mtl-compat") >>= debianize
-  _mtl_unleashed <-  (git "https://github.com/seereason/mtl-unleashed" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _mtl_unleashed <-  (git "https://github.com/seereason/mtl-unleashed" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
   _mtlparse <-  (hackage "mtlparse") >>= debianize
   _multimap <-  (hackage "multimap") >>= debianize
   _multipart <-  (hackage "multipart") >>= debianize >>= inGroups ["platform"]
@@ -1042,7 +1046,7 @@ buildTargets = do
   _th_desugar <- {-(git "http://github.com/goldfirere/th-desugar" [])-} hackage "th-desugar" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
   _th_expand_syns <-  (hackage "th-expand-syns") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
   -- th_instance_reification =  (git "https://github.com/seereason/th-instance-reification.git" []) >>= debianize
-  _th_kinds_fork <-  (git "http://github.com/ddssff/th-kinds-fork" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _th_kinds_fork <-  (git "http://github.com/ddssff/th-kinds-fork" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
   _th_lift <-  (hackage "th-lift") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _th_orphans <-  (hackage "th-orphans") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
   _th_typegraph <-  (git "http://github.com/seereason/th-typegraph" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path"]
