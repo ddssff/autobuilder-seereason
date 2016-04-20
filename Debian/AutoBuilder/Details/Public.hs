@@ -236,7 +236,7 @@ buildTargets = do
   _consumer <- darcs ("http://src.seereason.com/haskell-consumer") >>= skip (Reason "build failure")
   _contravariant <-  (hackage "contravariant") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _control_monad_free <-  (hackage "control-monad-free") >>= debianize
-  _cookie <-  (hackage "cookie") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _cookie <-  (hackage "cookie") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"]
   _cpphs <-  (hackage "cpphs") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   -- apt "sid" "debian-keyring=2014.03.03" -- The current version (2014.04.25) seems to be missing some keys that we need
   _cprng_aes <-  (hackage "cprng-aes") >>= debianize
@@ -248,7 +248,7 @@ buildTargets = do
   _cryptohash_conduit <-  (hackage "cryptohash-conduit") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "servant"]
   _cryptohash_cryptoapi <-  (hackage "cryptohash-cryptoapi") >>= debianize >>= inGroups ["happstack"]
   _cryptohash <-  (hackage "cryptohash") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _cryptonite <-  (hackage "cryptonite") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _cryptonite <-  (hackage "cryptonite") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"]
   _crypto_numbers <-  (hackage "crypto-numbers") >>= debianize >>= inGroups [ "authenticate"]
   _crypto_pubkey <-  (hackage "crypto-pubkey") >>= debianize >>= inGroups [ "authenticate"]
   _crypto_pubkey_types <-  (hackage "crypto-pubkey-types") >>= debianize
@@ -479,7 +479,7 @@ buildTargets = do
               -- ,  (hackage "happstack-server") >>= debianize
   _happstack_server <-  (git "https://github.com/Happstack/happstack-server" []) >>= debianize >>= inGroups ["happstack"]
   _happstack_server_tls <-  (git "https://github.com/Happstack/happstack-server-tls" []) >>= debianize >>= inGroups ["happstack"]
-  _happstack_static_routing <-  (hackage "happstack-static-routing") >>= debianize >>= inGroups ["happstack"]
+  _happstack_static_routing <-  (hackage "happstack-static-routing") >>= debianize {->>= inGroups ["happstack"]-}
   _happstack_util <- hackage "happstack-util" >>=
                      patch $(embedFile "patches/happstack-util.diff") >>=
                      flag (P.DebVersion "6.0.3-1") >>=
@@ -633,7 +633,7 @@ buildTargets = do
   _http <-  (hackage "HTTP") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   _http2 <-  (hackage "http2") >>= debianize
   _http_streams <-  (hackage "http-streams") >>= debianize >>= inGroups ["platform", "appraisalscribe"]
-  _http_types <-  (hackage "http-types" >>= flag (P.CabalPin "0.8.6")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"] -- web-routes specifies << 0.9
+  _http_types <-  (hackage "http-types" >>= flag (P.CabalPin "0.8.6")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack"] -- web-routes specifies << 0.9
   _hUnit <-  (hackage "HUnit") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   _hunt <-  (git "https://github.com/hunt-framework/hunt.git" [] >>= cd "hunt-searchengine" ) >>= debianize >>= skip (Reason "No instance for (Foldable t0) arising from a use of ‘elem’")
   _hxt_charproperties <-  (hackage "hxt-charproperties") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -1100,7 +1100,7 @@ buildTargets = do
                --             , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
   _utility_ht <-  (hackage "utility-ht") >>= debianize
   _uuid <-  (hackage "uuid") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _uuid_orphans <-  (git "https://github.com/seereason/uuid" [] >>= cd "uuid-orphans") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _uuid_orphans <-  (git "https://github.com/seereason/uuid" [] >>= cd "uuid-orphans") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "clckwrks"]
   _uuid_types <-  (hackage "uuid-types") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _vacuum <-  (hackage "vacuum" >>= flag (P.SkipVersion "2.1.0.1")) >>= debianize >>= skip (Reason "#error Unsupported GHC version in ClosureTypes.hs!")
   _validation <-  (hackage "Validation" >>= patch $(embedFile "patches/validation.diff")) >>= debianize
@@ -1121,7 +1121,7 @@ buildTargets = do
   _void <-  (hackage "void") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate"]
   _vty <-  (hackage "vty") >>= debianize
   _wai_app_static <-  (hackage "wai-app-static") >>= debianize >>= inGroups ["servant"]
-  _wai <- hackage "wai" {- >>= patch $(embedFile "patches/wai.diff") -} >>= debianize
+  _wai <- hackage "wai" {- >>= patch $(embedFile "patches/wai.diff") -} >>= debianize >>= inGroups ["happstack"]
   _wai_extra <-  (hackage "wai-extra") >>= debianize
   _wai_logger <-  (hackage "wai-logger") >>= debianize
   _wai_middleware_static <-  (hackage "wai-middleware-static") >>= debianize
