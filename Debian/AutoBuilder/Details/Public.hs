@@ -626,7 +626,7 @@ buildTargets = do
       -- ,  (hackage "attoparsec-conduit") >>= debianize
       -- ,  (hackage "blaze-builder-conduit") >>= debianize
       -- ,  (hackage "zlib-conduit") >>= debianize
-  _http_common <-  (hackage "http-common") >>= debianize >>= inGroups ["platform"]
+  _http_common <-  (hackage "http-common") >>= debianize >>= inGroups ["platform", "happstack"]
   _http_conduit <-  (hackage "http-conduit") >>= debianize >>= inGroups ["conduit"]
   _http_date <-  (hackage "http-date") >>= debianize
   _http_media <-  (hackage "http-media") >>= debianize >>= inGroups ["servant"]
@@ -739,7 +739,7 @@ buildTargets = do
                -- , apt "sid" "haskell-maybet"
   _logict <- createPackage (Debianize'' (Hackage "logict") Nothing) mempty [] >>= inGroups ["ghcjs-libs", "ghc-libs"] :: TSt PackageId
   _loop <-  (hackage "loop") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _lucid <-  (hackage "lucid") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _lucid <-  (hackage "lucid") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe"]
   _maccatcher <-  (hackage "maccatcher"
                               >>= pflag (P.DebVersion "2.1.5-3")
                               >>= tflag (P.DebVersion "2.1.5-5build1")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -834,7 +834,7 @@ buildTargets = do
   _ordered <-  (hackage "ordered") >>= debianize
   _pandoc <-  (-- git "https://github.com/jgm/pandoc" [Commit "360e35459fb4bf2611ad414774485b8f553201dd"]
                       hackage "pandoc" -- For syb-0.6 and aeson-0.10 we need a release newer than 1.15.0.6
-                             >>= patch $(embedFile "patches/pandoc.diff")
+                             -- >>= patch $(embedFile "patches/pandoc.diff")
                              -- >>= flag (P.RelaxDep "libghc-pandoc-doc")
                              >>= flag (P.BuildDep "alex")
                              >>= flag (P.BuildDep "happy")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe"]
