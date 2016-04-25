@@ -27,10 +27,9 @@ buildTargets = do
   _clckwrks_theme_seereasonpartners <- darcs (privateRepo </> "seereasonpartners-clckwrks") >>= cd "clckwrks-theme-seereasonpartners" >>= debianize >>= flag (P.BuildDep "hsx2hs") {- >>= flag P.NoDoc -}
   _clckwrks_theme_appraisalscribe <- darcs (privateRepo </> "clckwrks-theme-appraisalscribe") >>= flag (P.BuildDep "hsx2hs") >>= debianize
 
-  _happstack_ghcjs_client <-    git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "markup"] >>= cd "happstack-ghcjs-client" >>= debianize >>= inGroups ["private-libs"] >>= ghcjs_flags
+  _happstack_ghcjs_client <-    git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "markup"] >>= cd "happstack-ghcjs-client" >>= debianize >>= inGroups ["private-libs"] >>= ghcjs_only
   _happstack_ghcjs_server <-    git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "markup"] >>= cd "happstack-ghcjs-server" >>= debianize >>= inGroups ["private-libs"]
-  _happstack_ghcjs_webmodule <- git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "markup"] >>= cd "happstack-ghcjs-webmodule" >>= debianize
-  _ghcjs_ghcjs_webmodule <-     git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "markup"] >>= cd "happstack-ghcjs-webmodule" >>= debianize >>= inGroups ["private-libs"] >>= ghcjs_flags
+  _happstack_ghcjs_webmodule <- git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "markup"] >>= cd "happstack-ghcjs-webmodule" >>= debianize >>= inGroups ["private-libs"] >>= ghcjs_flags
 
   _happstack_ontology <- git "ssh://git@github.com/seereason/happstack-ontology" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize
   _image_cache <- git "https://github.com/seereason/image-cache.git" [] {- >>= flag (P.CabalDebian ["--cabal-flags", "-pretty-112"]) -} >>= debianize

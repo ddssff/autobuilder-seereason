@@ -77,7 +77,7 @@ buildTargets = do
                   >>= flag (P.CabalDebian [ "--source-package-name", "autobuilder" ])
                   >>= inGroups ["autobuilder-group"]
   _autobuilder_seereason <-  (git "https://github.com/ddssff/autobuilder-seereason" []) >>= debianize >>= inGroups ["autobuilder-group"]
-  _auto_update <-  (hackage "auto-update") >>= debianize >>= inGroups [ "authenticate", "important"]
+  _auto_update <-  (hackage "auto-update") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"]
   _base_compat <-  (hackage "base-compat") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _base_orphans <-  (hackage "base-orphans") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _base16_bytestring <-  (hackage "base16-bytestring") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -312,7 +312,7 @@ buildTargets = do
   _dropbox_sdk <-  (hackage "dropbox-sdk") >>= debianize -- >>= patch $(embedFile "patches/dropbox-sdk.diff")
   _dynamic_state <-  (hackage "dynamic-state") >>= debianize
   _dyre <-  (hackage "dyre") >>= debianize
-  _easy_file <-  (hackage "easy-file") >>= debianize
+  _easy_file <-  (hackage "easy-file") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _edisonAPI <- hackage "EdisonAPI" >>= debianize
   _edisonCore <- ( (hackage "EdisonCore" >>= qflag (P.DebVersion "1.2.1.3-9build2")) >>= debianize)
   _ekg_core <-  (hackage "ekg-core") >>= debianize
@@ -336,7 +336,7 @@ buildTargets = do
                               >>= tflag (P.DebVersion "0.1.1.4-2")) >>= debianize
   _extra <-  (hackage "extra") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _failure <-  (hackage "failure") >>= debianize
-  _fast_logger <-  (hackage "fast-logger") >>= debianize >>= inGroups [ "authenticate", "important"]
+  _fast_logger <-  (hackage "fast-logger") >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs", "authenticate", "important"]
   _fay_base <-  (hackage "fay-base") >>= debianize >>= skip (Reason "Waiting for newer fay")
   _fay <-  (hackage "fay" {- >>= patch $(embedFile "patches/fay.diff") -}) >>= debianize >>= flag (P.CabalDebian [ "--depends", "haskell-fay-utils:cpphs" ]) >>= skip (Reason "too old for current syb and optparse-applicative")
   _fay_jquery <-  (git "https://github.com/faylang/fay-jquery" []) >>= debianize >>= skip (Reason "Waiting for newer fay")
@@ -478,7 +478,7 @@ buildTargets = do
   _happstack_search <- darcs ("http://src.seereason.com/happstack-search") >>= inGroups ["happstack", "important"]
               -- ,  (hackage "happstack-server") >>= debianize
   _happstack_server <- git "https://github.com/ddssff/happstack-server" [] >>=
-                       flag (P.CabalDebian ["--cabal-flags", "-hslogger"]) >>=
+                       -- flag (P.CabalDebian ["--cabal-flags", "-hslogger"]) >>=
                        debianize >>=
                        inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
   _happstack_server_tls <-  (git "https://github.com/Happstack/happstack-server-tls" []) >>= debianize >>= inGroups ["happstack", "important"]
@@ -854,7 +854,7 @@ buildTargets = do
                -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
   _pcre_light <-  (hackage "pcre-light"
                               -- >>= patch $(embedFile "patches/pcre-light.diff")
-                              >>= flag (P.DevelDep "libpcre3-dev")) >>= debianize
+                              >>= flag (P.DevelDep "libpcre3-dev")) >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs"]
   _pem <-  (hackage "pem") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"]
   _permutation <-  (hackage "permutation") >>= debianize
   _pipes <-  (hackage "pipes") >>= debianize
@@ -1086,7 +1086,7 @@ buildTargets = do
   _units <-  (hackage "units") >>= debianize >>= skip (Reason "[libghc-singletons-prof (<< 2)] -> []")
   _units_parser <-  (hackage "units-parser") >>= debianize
   _unix_compat <-  (hackage "unix-compat") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _unix_time <-  (hackage "unix-time" {->>= flag (P.CabalDebian ["--no-run-tests"])-}) >>= debianize >>= inGroups [ "authenticate", "important"] -- doctest assumes cabal build dir is dist
+  _unix_time <-  (hackage "unix-time" {->>= flag (P.CabalDebian ["--no-run-tests"])-}) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"] -- doctest assumes cabal build dir is dist
   _unixutils <-  (git "https://github.com/seereason/haskell-unixutils" []) >>= debianize >>= inGroups ["ghcjs-libs", "autobuilder-group"]
   _unixutils_shadow <-  (hackage "Unixutils-shadow") >>= debianize
   _unordered_containers <-  (hackage "unordered-containers") >>= debianize
