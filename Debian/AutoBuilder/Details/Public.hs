@@ -477,8 +477,8 @@ buildTargets = do
   _happstack_scaffolding <-  (git "https://github.com/seereason/happstack-scaffolding" [] >>= flag (P.BuildDep "hsx2hs")) >>= debianize >>= inGroups ["seereason", "important"]
   _happstack_search <- darcs ("http://src.seereason.com/happstack-search") >>= inGroups ["happstack", "important"]
               -- ,  (hackage "happstack-server") >>= debianize
-  _happstack_server <- git "https://github.com/ddssff/happstack-server" [] >>=
-                       -- flag (P.CabalDebian ["--cabal-flags", "-hslogger"]) >>=
+  _happstack_server <- git "https://github.com/Happstack/happstack-server" [] >>=
+                       -- flag (P.CabalDebian ["--cabal-flags", "hslogger"]) >>=
                        debianize >>=
                        inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
   _happstack_server_tls <-  (git "https://github.com/Happstack/happstack-server-tls" []) >>= debianize >>= inGroups ["happstack", "important"]
