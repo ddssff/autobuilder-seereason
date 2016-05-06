@@ -1,11 +1,11 @@
---- old/debian/control	2014-06-28 19:07:35.000000000 -0700
-+++ new/debian/control	2014-07-15 06:07:46.830623568 -0700
+--- old/debian/control	2016-03-26 07:24:41.000000000 -0700
++++ new/debian/control	2016-05-06 09:13:35.828295111 -0700
 @@ -5,7 +5,7 @@
- Uploaders: Marcelo Jorge Vieira (metal) <metal@debian.org>,
+ Uploaders: Marcelo Jorge Vieira <metal@debian.org>,
             Per Andersson <avtobiff@gmail.com>,
             Agustin Henze <tin@sluc.org.ar>
 -Build-Depends: debhelper (>= 7.0.50~), node-uglify
 +Build-Depends: debhelper (>= 7.0.50~), node-uglify, nodejs-legacy
- Standards-Version: 3.9.5
+ Standards-Version: 3.9.7
  Vcs-Browser: http://git.debian.org/?p=pkg-javascript/jquery-goodies.git
  Vcs-Git: git://git.debian.org/git/pkg-javascript/jquery-goodies.git

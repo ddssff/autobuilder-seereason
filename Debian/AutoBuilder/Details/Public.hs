@@ -591,7 +591,7 @@ buildTargets = do
   _hscolour <-  (hackage "hscolour") >>= debianize >>= flag (P.RelaxDep "hscolour") >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _hse_cpp <-  (hackage "hse-cpp") >>= debianize >>= inGroups ["happstack", "important"]
   _hsemail <-  (hackage "hsemail") >>= debianize -- (rel release [] [P.DebVersion "1.7.1-2build2"])
-  _hslogger <-  (hackage "hslogger") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _hslogger <-  (hackage "hslogger") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "important"]
   _hslua <-  (hackage "hslua") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
   _hsOpenSSL <-  (hackage "HsOpenSSL"
                               >>= flag (P.DevelDep "libssl-dev")
@@ -733,7 +733,7 @@ buildTargets = do
   _listLike <-  (git "https://github.com/ddssff/ListLike" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"] --  (hackage "ListLike") >>= debianize
   _list_tries <-  (hackage "list-tries" {- >>= patch $(embedFile "patches/list-tries.diff") -}) >>= debianize >>= inGroups ["happstack", "important"] -- version 0.5.2 depends on dlist << 0.7
   _loch_th <-  (hackage "loch-th") >>= debianize
-  _logging <- hackage "logging" >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _logging <- hackage "logging" >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs", "important"]
   _logic_classes <-  (git "https://github.com/seereason/logic-classes" []) >>= debianize >>= inGroups ["seereason", "important"]
   _logic_TPTP <-  (hackage "logic-TPTP") >>= debianize
                  >>= patch $(embedFile "patches/logic-TPTP.diff")
@@ -838,7 +838,7 @@ buildTargets = do
   _ordered <-  (hackage "ordered") >>= debianize
   _pandoc <-  (-- git "https://github.com/jgm/pandoc" [Commit "360e35459fb4bf2611ad414774485b8f553201dd"]
                       hackage "pandoc" -- For syb-0.6 and aeson-0.10 we need a release newer than 1.15.0.6
-                             -- >>= patch $(embedFile "patches/pandoc.diff")
+                             >>= patch $(embedFile "patches/pandoc.diff")
                              -- >>= flag (P.RelaxDep "libghc-pandoc-doc")
                              >>= flag (P.BuildDep "alex")
                              >>= flag (P.BuildDep "happy")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
