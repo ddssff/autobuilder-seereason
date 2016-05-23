@@ -57,7 +57,7 @@ buildTargets = do
   _applicative_extras <- hackage "applicative-extras" >>= flag (P.DebVersion "0.1.8-1") >>= inGroups ["ghcjs-libs", "ghc-libs"] >>= debianize
   _archive <- git "https://github.com/seereason/archive" []
              >>= flag (P.CabalDebian ["--default-package", "archive"])
-             >>= inGroups ["autobuilder-group"] >>= debianize
+             >>= inGroups ["autobuilder-group", "important"] >>= debianize
   _asn1_data <- hackage "asn1-data" >>= debianize
   _asn1_encoding <-  (hackage "asn1-encoding") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"]
   _asn1_parse <-  (hackage "asn1-parse") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"]
@@ -75,8 +75,8 @@ buildTargets = do
   _authenticate <-  (hackage "authenticate") >>= debianize >>= inGroups ["ghc-libs", "authenticate", "important"]
   _autobuilder <-  (git "https://github.com/ddssff/autobuilder" []) >>= debianize
                   >>= flag (P.CabalDebian [ "--source-package-name", "autobuilder" ])
-                  >>= inGroups ["autobuilder-group"]
-  _autobuilder_seereason <-  (git "https://github.com/ddssff/autobuilder-seereason" []) >>= debianize >>= inGroups ["autobuilder-group"]
+                  >>= inGroups ["autobuilder-group", "important"]
+  _autobuilder_seereason <-  (git "https://github.com/ddssff/autobuilder-seereason" []) >>= debianize >>= inGroups ["autobuilder-group", "important"]
   _auto_update <-  (hackage "auto-update") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"]
   _base_compat <-  (hackage "base-compat") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _base_orphans <-  (hackage "base-orphans") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -120,7 +120,7 @@ buildTargets = do
                -- ,  (hackage "cairo-pdf") >>= debianize
   _cabal_debian <- git "https://github.com/ddssff/cabal-debian" []
                   >>= flag (P.CabalDebian ["--cabal-flags", "-tests"]) -- turn off test suite
-                  >>= inGroups ["autobuilder-group"]
+                  >>= inGroups ["autobuilder-group", "important"]
   -- This is provided by ghc
   -- _cabal = hackage "Cabal" >>= debianize
   _cabal_install <- hackage "cabal-install" >>= flag (P.CabalPin "1.22.7.0") >>=
@@ -282,8 +282,8 @@ buildTargets = do
   _date_cache <-  (hackage "date-cache" >>= tflag (P.DebVersion "0.3.0-3")) >>= debianize >>= inGroups [ "authenticate", "important"]
   _datetime <- hackage "datetime" {->>= pflag (P.DebVersion "0.2.1-2") >>= tflag (P.DebVersion "0.2.1-5build1")-} >>= debianize
   _debhelper <- apt "wheezy" "debhelper" >>= patch $(embedFile "patches/debhelper.diff") >>= skip (Reason "Use standard")
-  _debian_haskell <- git "https://github.com/ddssff/debian-haskell" [] >>= flag (P.RelaxDep "cabal-debian") >>= inGroups ["autobuilder-group"]
-  _debian_repo <- git "https://github.com/ddssff/debian-repo" [] >>= inGroups ["autobuilder-group"]
+  _debian_haskell <- git "https://github.com/ddssff/debian-haskell" [] >>= flag (P.RelaxDep "cabal-debian") >>= inGroups ["autobuilder-group", "important"]
+  _debian_repo <- git "https://github.com/ddssff/debian-repo" [] >>= inGroups ["autobuilder-group", "important"]
   _debootstrap <- apt "sid" "debootstrap" >>= flag (P.UDeb "debootstrap-udeb")
                -- Build fails due to some debianization issue
                -- , apt "wheezy" "geneweb"
@@ -346,8 +346,8 @@ buildTargets = do
   _fgl <-  (hackage "fgl") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   _file_embed <-  (hackage "file-embed") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _file_location <-  (hackage "file-location" >>= flag (P.CabalDebian [ "--source-package-name", "file-location" ])) >>= debianize
-  _filemanip <-  (hackage "filemanip") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _filemanip_extra <-  (git "https://github.com/seereason/filemanip-extra" []) >>= debianize >>= inGroups ["ghcjs-libs", "autobuilder-group"]
+  _filemanip <- git "https://github.com/ddssff/filemanip" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _filemanip_extra <- git "https://github.com/seereason/filemanip-extra" [] >>= debianize >>= inGroups ["ghcjs-libs", "autobuilder-group", "important"]
   _fingertree <- hack "fingertree"
   _fixed <- hackage "fixed" >>= debianize
   _flock <- hack "flock"
@@ -525,8 +525,8 @@ buildTargets = do
   _sr_extra <-  (git ("https://github.com/seereason/sr-extra") []
                               -- Don't push out libghc-extra-dev, it now comes from Neil Mitchell's repo
                               {- `apply` (replacement "sr-extra" "Extra") -}
-                       ) >>= debianize >>= inGroups ["ghcjs-libs", "autobuilder-group"]
-  _haskell_help <-  (git ("https://github.com/seereason/sr-help") []) >>= debianize >>= inGroups ["autobuilder-group"]
+                       ) >>= debianize >>= inGroups ["ghcjs-libs", "autobuilder-group", "important"]
+  _haskell_help <- git ("https://github.com/seereason/sr-help") [] >>= debianize >>= inGroups ["autobuilder-group", "important"]
   _haskell_lexer <-  (hackage "haskell-lexer"
                               >>= pflag (P.DebVersion "1.0-3build2")
                               >>= wflag (P.DebVersion "1.0-3+b1")
@@ -589,7 +589,8 @@ buildTargets = do
                                >>= apply (execCabalM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
   _hs_bibutils <-  (hackage "hs-bibutils") >>= debianize
   _hscolour <-  (hackage "hscolour") >>= debianize >>= flag (P.RelaxDep "hscolour") >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _hse_cpp <-  (hackage "hse-cpp") >>= debianize >>= inGroups ["happstack", "important"]
+  -- _hse_cpp <-  (hackage "hse-cpp") >>= debianize >>= inGroups ["happstack", "important"]
+  _hse_cpp <- git "https://github.com/haskell-suite/hse-cpp" [] >>= debianize >>= inGroups ["happstack", "important"]
   _hsemail <-  (hackage "hsemail") >>= debianize -- (rel release [] [P.DebVersion "1.7.1-2build2"])
   _hslogger <-  (hackage "hslogger") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "important"]
   _hslua <-  (hackage "hslua") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
@@ -770,7 +771,7 @@ buildTargets = do
   _mime_mail <-  (git "https://github.com/snoyberg/mime-mail.git" [] >>= cd "mime-mail") >>= debianize >>= inGroups [ "authenticate", "important"]
   _mime_types <-  (hackage "mime-types") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit", "important"]
   _mirror <-  (git "https://github.com/seereason/mirror" []
-                        >>= flag (P.CabalDebian ["--executable", "debian-mirror"])) >>= debianize >>= inGroups ["autobuilder-group"]
+                        >>= flag (P.CabalDebian ["--executable", "debian-mirror"])) >>= debianize >>= inGroups ["autobuilder-group", "important"]
   _missingH <-  (hackage "MissingH") >>= debianize
   _mmap <-  (hackage "mmap") >>= debianize
   _mmorph <-  (hackage "mmorph") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"]
@@ -887,7 +888,7 @@ buildTargets = do
                               >>= tflag (P.DebVersion "1.1-4")) >>= debianize >>= wskip
   _psqueues <- hackage "psqueues" >>= debianize
   _publicsuffixlist <-  (hackage "publicsuffixlist" >>= tflag (P.DebVersion "0.1-1build4")) >>= debianize >>= inGroups ["platform"]
-  _pureMD5 <-  (hackage "pureMD5" >>= tflag (P.DebVersion "2.1.2.1-3build3")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"]
+  _pureMD5 <- hackage "pureMD5" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"]
   _pwstore_purehaskell <-  (hackage "pwstore-purehaskell"
                               >>= flag (P.SkipVersion "2.1.2")
                               -- >>= patch $(embedFile "patches/pwstore-purehaskell.diff")
@@ -1026,6 +1027,7 @@ buildTargets = do
                                         >>= flag (P.DevelDep "libncursesw5-dev")) >>= debianize -}
   _tasty <-  (hackage "tasty") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _tasty_hunit <-  (hackage "tasty-hunit") >>= debianize
+  _tasty_golden <-  (hackage "tasty-golden") >>= debianize
   _tasty_quickcheck <-  (hackage "tasty-quickcheck") >>= debianize
   _tasty_smallcheck <-  (hackage "tasty-smallcheck") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _template_default <-  (hackage "template-default" >>= patch $(embedFile "patches/template-default.diff")) >>= debianize >>= skip (Reason "Not in scope: data constructor ‘ClassP’")
@@ -1051,7 +1053,8 @@ buildTargets = do
   _th_expand_syns <-  (hackage "th-expand-syns") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path", "important"]
   -- th_instance_reification =  (git "https://github.com/seereason/th-instance-reification.git" []) >>= debianize
   _th_kinds_fork <-  (git "http://github.com/ddssff/th-kinds-fork" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path", "important"]
-  _th_lift <-  (hackage "th-lift") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _th_lift <- hackage "th-lift" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _th_lift_instances <- hackage "th-lift-instances" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "important"]
   _th_orphans <-  (hackage "th-orphans") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path", "important"]
   _th_typegraph <-  (git "http://github.com/seereason/th-typegraph" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path", "important"]
   _threads <-  (hackage "threads") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
@@ -1087,7 +1090,7 @@ buildTargets = do
   _units_parser <-  (hackage "units-parser") >>= debianize
   _unix_compat <-  (hackage "unix-compat") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _unix_time <-  (hackage "unix-time" {->>= flag (P.CabalDebian ["--no-run-tests"])-}) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"] -- doctest assumes cabal build dir is dist
-  _unixutils <-  (git "https://github.com/seereason/haskell-unixutils" []) >>= debianize >>= inGroups ["ghcjs-libs", "autobuilder-group"]
+  _unixutils <-  (git "https://github.com/seereason/haskell-unixutils" []) >>= debianize >>= inGroups ["ghcjs-libs", "autobuilder-group", "important"]
   _unixutils_shadow <-  (hackage "Unixutils-shadow") >>= debianize
   _unordered_containers <-  (hackage "unordered-containers") >>= debianize
                -- Obsolete after ghc-6.10
