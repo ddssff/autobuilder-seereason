@@ -1,0 +1,2291 @@
+diff -ruN old/data/templates/default.asciidoc new/data/templates/default.asciidoc
+--- old/data/templates/default.asciidoc	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.asciidoc	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,35 @@
++$if(titleblock)$
++$title$
++$if(author)$
++$for(author)$$author$$sep$; $endfor$
++$endif$
++$if(date)$
++$date$
++$endif$
++$if(keywords)$
++:keywords: $for(keywords)$$keywords$$sep$, $endfor$
++$endif$
++$if(toc)$
++:toc:
++$endif$
++
++$endif$
++$if(abstract)$
++[abstract]
++== Abstract
++$abstract$
++
++$endif$
++$for(header-includes)$
++$header-includes$
++
++$endfor$
++$for(include-before)$
++$include-before$
++
++$endfor$
++$body$
++$for(include-after)$
++
++$include-after$
++$endfor$
+diff -ruN old/data/templates/default.beamer new/data/templates/default.beamer
+--- old/data/templates/default.beamer	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.beamer	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,252 @@
++\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(handout)$handout,$endif$$if(beamer)$ignorenonframetext,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
++\setbeamertemplate{caption}[numbered]
++\setbeamertemplate{caption label separator}{: }
++\setbeamercolor{caption name}{fg=normal text.fg}
++\beamertemplatenavigationsymbols$if(navigation)$$navigation$$else$empty$endif$
++$if(fontfamily)$
++\usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
++$else$
++\usepackage{lmodern}
++$endif$
++\usepackage{amssymb,amsmath}
++\usepackage{ifxetex,ifluatex}
++\usepackage{fixltx2e} % provides \textsubscript
++\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
++  \usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
++  \usepackage[utf8]{inputenc}
++$if(euro)$
++  \usepackage{eurosym}
++$endif$
++\else % if luatex or xelatex
++  \ifxetex
++    \usepackage{mathspec}
++  \else
++    \usepackage{fontspec}
++  \fi
++  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
++$if(euro)$
++  \newcommand{\euro}{€}
++$endif$
++$if(mainfont)$
++    \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
++$endif$
++$if(sansfont)$
++    \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
++$endif$
++$if(monofont)$
++    \setmonofont[Mapping=tex-ansi$if(monofontoptions)$,$for(monofontoptions)$$monofontoptions$$sep$,$endfor$$endif$]{$monofont$}
++$endif$
++$if(mathfont)$
++    \setmathfont(Digits,Latin,Greek)[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
++$endif$
++$if(CJKmainfont)$
++    \usepackage{xeCJK}
++    \setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
++$endif$
++\fi
++$if(theme)$
++\usetheme{$theme$}
++$endif$
++$if(colortheme)$
++\usecolortheme{$colortheme$}
++$endif$
++$if(fonttheme)$
++\usefonttheme{$fonttheme$}
++$endif$
++$if(mainfont)$
++\usefonttheme{serif} % use mainfont rather than sansfont for slide text
++$endif$
++$if(innertheme)$
++\useinnertheme{$innertheme$}
++$endif$
++$if(outertheme)$
++\useoutertheme{$outertheme$}
++$endif$
++% use upquote if available, for straight quotes in verbatim environments
++\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
++% use microtype if available
++\IfFileExists{microtype.sty}{%
++\usepackage{microtype}
++\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
++}{}
++$if(lang)$
++\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
++  \usepackage[shorthands=off,$for(babel-otherlangs)$$babel-otherlangs$,$endfor$main=$babel-lang$]{babel}
++$if(babel-newcommands)$
++  $babel-newcommands$
++$endif$
++\else
++  \usepackage{polyglossia}
++  \setmainlanguage[$polyglossia-lang.options$]{$polyglossia-lang.name$}
++$for(polyglossia-otherlangs)$
++  \setotherlanguage[$polyglossia-otherlangs.options$]{$polyglossia-otherlangs.name$}
++$endfor$
++\fi
++$endif$
++\newif\ifbibliography
++$if(natbib)$
++\usepackage{natbib}
++\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
++$endif$
++$if(biblatex)$
++\usepackage$if(biblio-style)$[style=$biblio-style$]$endif${biblatex}
++$if(biblatexoptions)$\ExecuteBibliographyOptions{$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$}$endif$
++$for(bibliography)$
++\addbibresource{$bibliography$}
++$endfor$
++$endif$
++$if(listings)$
++\usepackage{listings}
++$endif$
++$if(lhs)$
++\lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small\ttfamily}}{}
++$endif$
++$if(highlighting-macros)$
++$highlighting-macros$
++$endif$
++$if(verbatim-in-note)$
++\usepackage{fancyvrb}
++\VerbatimFootnotes % allows verbatim text in footnotes
++$endif$
++$if(tables)$
++\usepackage{longtable,booktabs}
++\usepackage{caption}
++% These lines are needed to make table captions work with longtable:
++\makeatletter
++\def\fnum@table{\tablename~\thetable}
++\makeatother
++$endif$
++$if(graphics)$
++\usepackage{graphicx,grffile}
++\makeatletter
++\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
++\def\maxheight{\ifdim\Gin@nat@height>\textheight0.8\textheight\else\Gin@nat@height\fi}
++\makeatother
++% Scale images if necessary, so that they will not overflow the page
++% margins by default, and it is still possible to overwrite the defaults
++% using explicit options in \includegraphics[width, height, ...]{}
++\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
++$endif$
++
++% Prevent slide breaks in the middle of a paragraph:
++\widowpenalties 1 10000
++\raggedbottom
++
++$if(section-titles)$
++\AtBeginPart{
++  \let\insertpartnumber\relax
++  \let\partname\relax
++  \frame{\partpage}
++}
++\AtBeginSection{
++  \ifbibliography
++  \else
++    \let\insertsectionnumber\relax
++    \let\sectionname\relax
++    \frame{\sectionpage}
++  \fi
++}
++\AtBeginSubsection{
++  \let\insertsubsectionnumber\relax
++  \let\subsectionname\relax
++  \frame{\subsectionpage}
++}
++$endif$
++
++$if(links-as-notes)$
++% Make links footnotes instead of hotlinks:
++\renewcommand{\href}[2]{#2\footnote{\url{#1}}}
++$endif$
++$if(strikeout)$
++\usepackage[normalem]{ulem}
++% avoid problems with \sout in headers with hyperref:
++\pdfstringdefDisableCommands{\renewcommand{\sout}{}}
++$endif$
++\setlength{\emergencystretch}{3em}  % prevent overfull lines
++\providecommand{\tightlist}{%
++  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
++$if(numbersections)$
++\setcounter{secnumdepth}{5}
++$else$
++\setcounter{secnumdepth}{0}
++$endif$
++$if(dir)$
++\ifxetex
++  % load bidi as late as possible as it modifies e.g. graphicx
++  $if(latex-dir-rtl)$
++  \usepackage[RTLdocument]{bidi}
++  $else$
++  \usepackage{bidi}
++  $endif$
++\fi
++\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
++  \TeXXeTstate=1
++  \newcommand{\RL}[1]{\beginR #1\endR}
++  \newcommand{\LR}[1]{\beginL #1\endL}
++  \newenvironment{RTL}{\beginR}{\endR}
++  \newenvironment{LTR}{\beginL}{\endL}
++\fi
++$endif$
++$for(header-includes)$
++$header-includes$
++$endfor$
++
++$if(title)$
++\title{$title$}
++$endif$
++$if(subtitle)$
++\subtitle{$subtitle$}
++$endif$
++$if(author)$
++\author{$for(author)$$author$$sep$ \and $endfor$}
++$endif$
++$if(institute)$
++\institute{$for(institute)$$institute$$sep$ \and $endfor$}
++$endif$
++\date{$date$}
++
++\begin{document}
++$if(title)$
++\frame{\titlepage}
++$endif$
++
++$for(include-before)$
++$include-before$
++
++$endfor$
++$if(toc)$
++\begin{frame}
++\tableofcontents[hideallsubsections]
++\end{frame}
++
++$endif$
++$body$
++
++$if(natbib)$
++$if(bibliography)$
++$if(biblio-title)$
++$if(book-class)$
++\renewcommand\bibname{$biblio-title$}
++$else$
++\renewcommand\refname{$biblio-title$}
++$endif$
++$endif$
++\begin{frame}[allowframebreaks]{$biblio-title$}
++\bibliographytrue
++\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
++\end{frame}
++
++$endif$
++$endif$
++$if(biblatex)$
++\begin{frame}[allowframebreaks]{$biblio-title$}
++\bibliographytrue
++\printbibliography[heading=none]
++\end{frame}
++
++$endif$
++$for(include-after)$
++$include-after$
++
++$endfor$
++\end{document}
+diff -ruN old/data/templates/default.commonmark new/data/templates/default.commonmark
+--- old/data/templates/default.commonmark	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.commonmark	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,21 @@
++$if(titleblock)$
++$titleblock$
++
++$endif$
++$for(header-includes)$
++$header-includes$
++
++$endfor$
++$for(include-before)$
++$include-before$
++
++$endfor$
++$if(toc)$
++$toc$
++
++$endif$
++$body$
++$for(include-after)$
++
++$include-after$
++$endfor$
+diff -ruN old/data/templates/default.context new/data/templates/default.context
+--- old/data/templates/default.context	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.context	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,146 @@
++$if(context-lang)$
++\mainlanguage[$context-lang$]
++$endif$
++$if(context-dir)$
++\setupalign[$context-dir$]
++\setupdirections[bidi=on,method=two]
++$endif$
++% Enable hyperlinks
++\setupinteraction
++  [state=start,
++$if(title)$
++  title={$title$},
++$endif$
++$if(subtitle)$
++  subtitle={$subtitle$},
++$endif$
++$if(author)$
++  author={$for(author)$$author$$sep$; $endfor$},
++$endif$
++$if(keywords)$
++  keyword={$for(keywords)$$keywords$$sep$; $endfor$},
++$endif$
++  style=$linkstyle$,
++  color=$linkcolor$,
++  contrastcolor=$linkcontrastcolor$]
++% make chapter, section bookmarks visible when opening document
++\placebookmarks[chapter, section, subsection, subsubsection, subsubsubsection, subsubsubsubsection][chapter, section]
++\setupinteractionscreen[option=bookmark]
++\setuptagging[state=start]
++
++$if(papersize)$
++\setuppapersize[$for(papersize)$$papersize$$sep$,$endfor$]
++$endif$
++$if(layout)$
++\setuplayout[$for(layout)$$layout$$sep$,$endfor$]
++$endif$
++$if(pagenumbering)$
++\setuppagenumbering[$for(pagenumbering)$$pagenumbering$$sep$,$endfor$]
++$endif$
++% use microtypography
++\definefontfeature[default][default][script=latn, protrusion=quality, expansion=quality, itlc=yes, textitalics=yes, onum=yes, pnum=yes]
++\definefontfeature[smallcaps][script=latn, protrusion=quality, expansion=quality, smcp=yes, onum=yes, pnum=yes]
++\setupalign[hz,hanging]
++\setupitaliccorrection[global, always]
++\setupbodyfontenvironment[default][em=italic] % use italic as em, not slanted
++\usemodule[simplefonts$if(fontsize)$,$fontsize$$endif$]
++\setmainfontfallback[DejaVu Serif][range={greekandcoptic, greekextended}, force=yes, rscale=auto]
++$if(mainfont)$
++\setmainfont[$mainfont$]
++$endif$
++$if(sansfont)$
++\setsansfont[$sansfont$][rscale=auto]
++$endif$
++$if(monofont)$
++\setmonofont[$monofont$][features=none, rscale=auto]
++$endif$
++$if(mathfont)$
++\setmathfont[$mathfont$][rscale=auto]
++$endif$
++\setupwhitespace[$if(whitespace)$$whitespace$$else$medium$endif$]
++$if(indenting)$
++\setupindenting[$for(indenting)$$indenting$$sep$,$endfor$]
++$endif$
++$if(interlinespace)$
++\setupinterlinespace[$for(interlinespace)$$interlinespace$$sep$,$endfor$]
++$endif$
++
++\setuphead[chapter]            [style=\tfd,header=empty]
++\setuphead[section]            [style=\tfc]
++\setuphead[subsection]         [style=\tfb]
++\setuphead[subsubsection]      [style=\bf]
++\setuphead[subsubsubsection]   [style=\sc]
++\setuphead[subsubsubsubsection][style=\it]
++
++$if(headertext)$
++\setupheadertexts$for(headertext)$[$headertext$]$endfor$
++$endif$
++$if(footertext)$
++\setupfootertexts$for(footertext)$[$footertext$]$endfor$
++$endif$
++$if(number-sections)$
++$else$
++\setuphead[chapter, section, subsection, subsubsection, subsubsubsection, subsubsubsubsection][number=no]
++$endif$
++
++\definedescription
++  [description]
++  [headstyle=bold, style=normal, location=hanging, width=broad, margin=1cm, alternative=hanging]
++
++\setupitemize[autointro]    % prevent orphan list intro
++\setupitemize[indentnext=no]
++
++\setupfloat[figure][default={here,nonumber}]
++\setupfloat[table][default={here,nonumber}]
++
++\setupthinrules[width=15em] % width of horizontal rules
++
++$for(header-includes)$
++$header-includes$
++$endfor$
++
++\starttext
++$if(title)$
++\startalignment[middle]
++  {\tfd $title$}
++$if(subtitle)$
++  \smallskip
++  {\tfa $subtitle$}
++$endif$
++$if(author)$
++  \smallskip
++  {\tfa $for(author)$$author$$sep$\crlf $endfor$}
++$endif$
++$if(date)$
++  \smallskip
++  {\tfa $date$}
++$endif$
++  \bigskip
++\stopalignment
++$endif$
++$if(abstract)$
++\midaligned{\it Abstract}
++\startnarrower[2*middle]
++$abstract$
++\stopnarrower
++\blank[big]
++$endif$
++$for(include-before)$
++$include-before$
++$endfor$
++$if(toc)$
++\completecontent
++$endif$
++$if(lot)$
++\completelistoftables
++$endif$
++$if(lof)$
++\completelistoffigures
++$endif$
++
++$body$
++
++$for(include-after)$
++$include-after$
++$endfor$
++\stoptext
+diff -ruN old/data/templates/default.docbook new/data/templates/default.docbook
+--- old/data/templates/default.docbook	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.docbook	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,32 @@
++<?xml version="1.0" encoding="utf-8" ?>
++$if(mathml)$
++<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook EBNF Module V1.1CR1//EN"
++                  "http://www.oasis-open.org/docbook/xml/mathml/1.1CR1/dbmathml.dtd">
++$else$
++<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
++                  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
++$endif$
++<article>
++  <articleinfo>
++    <title>$title$</title>
++$if(author)$
++    <authorgroup>
++$for(author)$
++      <author>
++        $author$
++      </author>
++$endfor$
++    </authorgroup>
++$endif$
++$if(date)$
++    <date>$date$</date>
++$endif$
++  </articleinfo>
++$for(include-before)$
++$include-before$
++$endfor$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++</article>
+diff -ruN old/data/templates/default.docbook5 new/data/templates/default.docbook5
+--- old/data/templates/default.docbook5	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.docbook5	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,30 @@
++<?xml version="1.0" encoding="utf-8" ?>
++<!DOCTYPE article>
++$if(mathml)$
++<article xmlns="http://docbook.org/ns/docbook" version="5.0">
++$else$
++<article xmlns="http://docbook.org/ns/docbook" version="5.0">
++$endif$
++  <info>
++    <title>$title$</title>
++$if(author)$
++    <authorgroup>
++$for(author)$
++      <author>
++        $author$
++      </author>
++$endfor$
++    </authorgroup>
++$endif$
++$if(date)$
++    <date>$date$</date>
++$endif$
++  </info>
++$for(include-before)$
++$include-before$
++$endfor$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++</article>
+diff -ruN old/data/templates/default.dokuwiki new/data/templates/default.dokuwiki
+--- old/data/templates/default.dokuwiki	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.dokuwiki	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,13 @@
++$for(include-before)$
++$include-before$
++
++$endfor$
++$if(toc)$
++__TOC__
++
++$endif$
++$body$
++$for(include-after)$
++
++$include-after$
++$endfor$
+diff -ruN old/data/templates/default.dzslides new/data/templates/default.dzslides
+--- old/data/templates/default.dzslides	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.dzslides	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,198 @@
++<!DOCTYPE html>
++<head$if(lang)$ lang="$lang$"$endif$$if(dir)$ dir="$dir$"$endif$>
++  <meta charset="utf-8">
++  <meta name="generator" content="pandoc">
++$for(author-meta)$
++  <meta name="author" content="$author-meta$">
++$endfor$
++$if(date-meta)$
++  <meta name="dcterms.date" content="$date-meta$">
++$endif$
++$if(keywords)$
++  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$">
++$endif$
++  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
++  <style type="text/css">code{white-space: pre;}</style>
++$if(quotes)$
++  <style type="text/css">q { quotes: "“" "”" "‘" "’"; }</style>
++$endif$
++$if(highlighting-css)$
++  <style type="text/css">
++$highlighting-css$
++  </style>
++$endif$
++$if(css)$
++$for(css)$
++  <link rel="stylesheet" href="$css$">
++$endfor$
++$else$
++<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>
++
++<style>
++  html, .view body { background-color: black; counter-reset: slideidx; }
++  body, .view section { background-color: white; border-radius: 12px }
++  /* A section is a slide. It's size is 800x600, and this will never change */
++  section, .view head > title {
++      /* The font from Google */
++      font-family: 'Oswald', arial, serif;
++      font-size: 30px;
++  }
++
++  .view section:after {
++    counter-increment: slideidx;
++    content: counter(slideidx, decimal-leading-zero);
++    position: absolute; bottom: -80px; right: 100px;
++    color: white;
++  }
++
++  .view head > title {
++    color: white;
++    text-align: center;
++    margin: 1em 0 1em 0;
++  }
++
++  h1, h2 {
++    margin-top: 200px;
++    text-align: center;
++    font-size: 80px;
++  }
++  h3 {
++    margin: 100px 0 50px 100px;
++  }
++
++  ul {
++      margin: 50px 200px;
++  }
++  li > ul {
++      margin: 15px 50px;
++  }
++
++  p {
++    margin: 75px;
++    font-size: 50px;
++  }
++
++  blockquote {
++    height: 100%;
++    background-color: black;
++    color: white;
++    font-size: 60px;
++    padding: 50px;
++  }
++  blockquote:before {
++    content: open-quote;
++  }
++  blockquote:after {
++    content: close-quote;
++  }
++
++  /* Figures are displayed full-page, with the caption
++     on top of the image/video */
++  figure {
++    background-color: black;
++    width: 100%;
++    height: 100%;
++  }
++  figure > * {
++    position: absolute;
++  }
++  figure > img, figure > video {
++    width: 100%; height: 100%;
++  }
++  figcaption {
++    margin: 70px;
++    font-size: 50px;
++  }
++
++  footer {
++    position: absolute;
++    bottom: 0;
++    width: 100%;
++    padding: 40px;
++    text-align: right;
++    background-color: #F3F4F8;
++    border-top: 1px solid #CCC;
++  }
++
++  /* Transition effect */
++  /* Feel free to change the transition effect for original
++     animations. See here:
++     https://developer.mozilla.org/en/CSS/CSS_transitions
++     How to use CSS3 Transitions: */
++  section {
++    -moz-transition: left 400ms linear 0s;
++    -webkit-transition: left 400ms linear 0s;
++    -ms-transition: left 400ms linear 0s;
++    transition: left 400ms linear 0s;
++  }
++  .view section {
++    -moz-transition: none;
++    -webkit-transition: none;
++    -ms-transition: none;
++    transition: none;
++  }
++
++  .view section[aria-selected] {
++    border: 5px red solid;
++  }
++
++  /* Before */
++  section { left: -150%; }
++  /* Now */
++  section[aria-selected] { left: 0; }
++  /* After */
++  section[aria-selected] ~ section { left: +150%; }
++
++  /* Incremental elements */
++
++  /* By default, visible */
++  .incremental > * { opacity: 1; }
++
++  /* The current item */
++  .incremental > *[aria-selected] { opacity: 1; }
++
++  /* The items to-be-selected */
++  .incremental > *[aria-selected] ~ * { opacity: 0; }
++
++  /* The progressbar, at the bottom of the slides, show the global
++     progress of the presentation. */
++  #progress-bar {
++    height: 2px;
++    background: #AAA;
++  }
++</style>
++$endif$
++$if(math)$
++  $math$
++$endif$
++$for(header-includes)$
++  $header-includes$
++$endfor$
++</head>
++<body>
++$if(title)$
++<section class="title">
++  <h1 class="title">$title$</h1>
++$if(subtitle)$
++  <h1 class="subtitle">$subtitle$</h1>
++$endif$
++  <footer>
++    $if(author)$<span class="author">$for(author)$$author$$sep$, $endfor$</span>$endif$ · $if(date)$<span class="date">$date$</span>$endif$
++  </footer>
++</section>
++$endif$
++$if(toc)$
++<section id="$idprefix$TOC">
++$toc$
++</section>
++$endif$
++$for(include-before)$
++$include-before$
++$endfor$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++$dzslides-core$
++</body>
++</html>
+diff -ruN old/data/templates/default.epub new/data/templates/default.epub
+--- old/data/templates/default.epub	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.epub	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,59 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml"$if(lang)$ xml:lang="$lang$"$endif$>
++<head>
++  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++  <meta http-equiv="Content-Style-Type" content="text/css" />
++  <meta name="generator" content="pandoc" />
++  <title>$pagetitle$</title>
++$if(highlighting-css)$
++  <style type="text/css">
++$highlighting-css$
++  </style>
++$endif$
++$for(css)$
++  <link rel="stylesheet" type="text/css" href="$css$" />
++$endfor$
++$for(header-includes)$
++  $header-includes$
++$endfor$
++</head>
++<body$if(coverpage)$ id="cover"$endif$>
++$if(titlepage)$
++$for(title)$
++$if(title.text)$
++  <h1 class="$title.type$">$title.text$</h1>
++$else$
++  <h1 class="title">$title$</h1>
++$endif$
++$endfor$
++$if(subtitle)$
++  <h1 class="subtitle">$subtitle$</h1>
++$endif$
++$for(author)$
++  <h2 class="author">$author$</h2>
++$endfor$
++$for(creator)$
++  <h2 class="$creator.role$">$creator.text$</h2>
++$endfor$
++$if(publisher)$
++  <p class="publisher">$publisher$</p>
++$endif$
++$if(date)$
++  <p class="date">$date$</p>
++$endif$
++$if(rights)$
++  <div class="rights">$rights$</div>
++$endif$
++$else$
++$for(include-before)$
++$include-before$
++$endfor$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++$endif$
++</body>
++</html>
++
+diff -ruN old/data/templates/default.epub3 new/data/templates/default.epub3
+--- old/data/templates/default.epub3	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.epub3	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,65 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE html>
++<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"$if(lang)$ xml:lang="$lang$"$endif$>
++<head>
++  <meta charset="utf-8" />
++  <meta name="generator" content="pandoc" />
++  <title>$pagetitle$</title>
++$if(quotes)$
++  <style type="text/css">
++    q { quotes: "“" "”" "‘" "’"; }
++  </style>
++$endif$
++$if(highlighting-css)$
++  <style type="text/css">
++$highlighting-css$
++  </style>
++$endif$
++$for(css)$
++  <link rel="stylesheet" type="text/css" href="$css$" />
++$endfor$
++$for(header-includes)$
++  $header-includes$
++$endfor$
++</head>
++<body$if(coverpage)$ id="cover"$endif$>
++$if(titlepage)$
++<section epub:type="titlepage">
++$for(title)$
++$if(title.type)$
++  <h1 class="$title.type$">$title.text$</h1>
++$else$
++  <h1 class="title">$title$</h1>
++$endif$
++$endfor$
++$if(subtitle)$
++  <h1 class="subtitle">$subtitle$</h1>
++$endif$
++$for(author)$
++  <h2 class="author">$author$</h2>
++$endfor$
++$for(creator)$
++  <h2 class="$creator.role$">$creator.text$</h2>
++$endfor$
++$if(publisher)$
++  <p class="publisher">$publisher$</p>
++$endif$
++$if(date)$
++  <p class="date">$date$</p>
++$endif$
++$if(rights)$
++  <div class="rights">$rights$</div>
++$endif$
++</section>
++$else$
++$for(include-before)$
++$include-before$
++$endfor$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++$endif$
++</body>
++</html>
++
+diff -ruN old/data/templates/default.haddock new/data/templates/default.haddock
+--- old/data/templates/default.haddock	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.haddock	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1 @@
++$body$
+diff -ruN old/data/templates/default.html new/data/templates/default.html
+--- old/data/templates/default.html	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.html	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,64 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml"$if(lang)$ lang="$lang$" xml:lang="$lang$"$endif$$if(dir)$ dir="$dir$"$endif$>
++<head>
++  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++  <meta http-equiv="Content-Style-Type" content="text/css" />
++  <meta name="generator" content="pandoc" />
++$for(author-meta)$
++  <meta name="author" content="$author-meta$" />
++$endfor$
++$if(date-meta)$
++  <meta name="date" content="$date-meta$" />
++$endif$
++$if(keywords)$
++  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
++$endif$
++  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
++  <style type="text/css">code{white-space: pre;}</style>
++$if(quotes)$
++  <style type="text/css">q { quotes: "“" "”" "‘" "’"; }</style>
++$endif$
++$if(highlighting-css)$
++  <style type="text/css">
++$highlighting-css$
++  </style>
++$endif$
++$for(css)$
++  <link rel="stylesheet" href="$css$" type="text/css" />
++$endfor$
++$if(math)$
++  $math$
++$endif$
++$for(header-includes)$
++  $header-includes$
++$endfor$
++</head>
++<body>
++$for(include-before)$
++$include-before$
++$endfor$
++$if(title)$
++<div id="$idprefix$header">
++<h1 class="title">$title$</h1>
++$if(subtitle)$
++<h1 class="subtitle">$subtitle$</h1>
++$endif$
++$for(author)$
++<h2 class="author">$author$</h2>
++$endfor$
++$if(date)$
++<h3 class="date">$date$</h3>
++$endif$
++</div>
++$endif$
++$if(toc)$
++<div id="$idprefix$TOC">
++$toc$
++</div>
++$endif$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++</body>
++</html>
+diff -ruN old/data/templates/default.html5 new/data/templates/default.html5
+--- old/data/templates/default.html5	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.html5	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,67 @@
++<!DOCTYPE html>
++<html$if(lang)$ lang="$lang$"$endif$$if(dir)$ dir="$dir$"$endif$>
++<head>
++  <meta charset="utf-8">
++  <meta name="generator" content="pandoc">
++  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
++$for(author-meta)$
++  <meta name="author" content="$author-meta$">
++$endfor$
++$if(date-meta)$
++  <meta name="dcterms.date" content="$date-meta$">
++$endif$
++$if(keywords)$
++  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$">
++$endif$
++  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
++  <style type="text/css">code{white-space: pre;}</style>
++$if(quotes)$
++  <style type="text/css">q { quotes: "“" "”" "‘" "’"; }</style>
++$endif$
++$if(highlighting-css)$
++  <style type="text/css">
++$highlighting-css$
++  </style>
++$endif$
++$for(css)$
++  <link rel="stylesheet" href="$css$">
++$endfor$
++$if(math)$
++  $math$
++$endif$
++  <!--[if lt IE 9]>
++    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
++  <![endif]-->
++$for(header-includes)$
++  $header-includes$
++$endfor$
++</head>
++<body>
++$for(include-before)$
++$include-before$
++$endfor$
++$if(title)$
++<header>
++<h1 class="title">$title$</h1>
++$if(subtitle)$
++<h1 class="subtitle">$subtitle$</h1>
++$endif$
++$for(author)$
++<h2 class="author">$author$</h2>
++$endfor$
++$if(date)$
++<h3 class="date">$date$</h3>
++$endif$
++</header>
++$endif$
++$if(toc)$
++<nav id="$idprefix$TOC">
++$toc$
++</nav>
++$endif$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++</body>
++</html>
+diff -ruN old/data/templates/default.icml new/data/templates/default.icml
+--- old/data/templates/default.icml	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.icml	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,43 @@
++<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
++<?aid style="50" type="snippet" readerVersion="6.0" featureSet="513" product="8.0(370)" ?>
++<?aid SnippetType="InCopyInterchange"?>
++<Document DOMVersion="8.0" Self="pandoc_doc">
++    <RootCharacterStyleGroup Self="pandoc_character_styles">
++      <CharacterStyle Self="$$ID/NormalCharacterStyle" Name="Default" />
++      $charStyles$ 
++    </RootCharacterStyleGroup>
++    <RootParagraphStyleGroup Self="pandoc_paragraph_styles">
++      <ParagraphStyle Self="$$ID/NormalParagraphStyle" Name="$$ID/NormalParagraphStyle"
++          SpaceBefore="6" SpaceAfter="6"> <!-- paragraph spacing -->
++        <Properties>
++          <TabList type="list">
++            <ListItem type="record">
++              <Alignment type="enumeration">LeftAlign</Alignment>
++              <AlignmentCharacter type="string">.</AlignmentCharacter>
++              <Leader type="string"></Leader>
++              <Position type="unit">10</Position> <!-- first tab stop -->
++            </ListItem>
++          </TabList>
++        </Properties>
++      </ParagraphStyle>
++      $parStyles$ 
++    </RootParagraphStyleGroup>
++    <RootTableStyleGroup Self="pandoc_table_styles">
++      <TableStyle Self="TableStyle/Table" Name="Table" />
++    </RootTableStyleGroup>
++    <RootCellStyleGroup Self="pandoc_cell_styles">
++      <CellStyle Self="CellStyle/Cell" AppliedParagraphStyle="ParagraphStyle/$$ID/[No paragraph style]" Name="Cell" />
++    </RootCellStyleGroup>
++  <Story Self="pandoc_story"
++      TrackChanges="false"
++      StoryTitle="$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$"
++      AppliedTOCStyle="n"
++      AppliedNamedGrid="n" >
++    <StoryPreference OpticalMarginAlignment="true" OpticalMarginSize="12" />
++
++<!-- body needs to be non-indented, otherwise code blocks are indented too far -->
++$body$
++
++  </Story>
++  $hyperlinks$
++</Document>
+diff -ruN old/data/templates/default.latex new/data/templates/default.latex
+--- old/data/templates/default.latex	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.latex	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,262 @@
++\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(papersize)$$papersize$paper,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
++$if(fontfamily)$
++\usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
++$else$
++\usepackage{lmodern}
++$endif$
++$if(linestretch)$
++\usepackage{setspace}
++\setstretch{$linestretch$}
++$endif$
++\usepackage{amssymb,amsmath}
++\usepackage{ifxetex,ifluatex}
++\usepackage{fixltx2e} % provides \textsubscript
++\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
++  \usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
++  \usepackage[utf8]{inputenc}
++$if(euro)$
++  \usepackage{eurosym}
++$endif$
++\else % if luatex or xelatex
++  \ifxetex
++    \usepackage{mathspec}
++  \else
++    \usepackage{fontspec}
++  \fi
++  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
++$for(fontfamilies)$
++  \newfontfamily{$fontfamilies.name$}[$fontfamilies.options$]{$fontfamilies.font$}
++$endfor$
++$if(euro)$
++  \newcommand{\euro}{€}
++$endif$
++$if(mainfont)$
++    \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
++$endif$
++$if(sansfont)$
++    \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
++$endif$
++$if(monofont)$
++    \setmonofont[Mapping=tex-ansi$if(monofontoptions)$,$for(monofontoptions)$$monofontoptions$$sep$,$endfor$$endif$]{$monofont$}
++$endif$
++$if(mathfont)$
++    \setmathfont(Digits,Latin,Greek)[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
++$endif$
++$if(CJKmainfont)$
++    \usepackage{xeCJK}
++    \setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
++$endif$
++\fi
++% use upquote if available, for straight quotes in verbatim environments
++\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
++% use microtype if available
++\IfFileExists{microtype.sty}{%
++\usepackage{microtype}
++\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
++}{}
++$if(geometry)$
++\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
++$endif$
++\usepackage[unicode=true]{hyperref}
++$if(colorlinks)$
++\PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
++$endif$
++\hypersetup{
++$if(title-meta)$
++            pdftitle={$title-meta$},
++$endif$
++$if(author-meta)$
++            pdfauthor={$author-meta$},
++$endif$
++$if(keywords)$
++            pdfkeywords={$for(keywords)$$keywords$$sep$; $endfor$},
++$endif$
++$if(colorlinks)$
++            colorlinks=true,
++            linkcolor=$if(linkcolor)$$linkcolor$$else$Maroon$endif$,
++            citecolor=$if(citecolor)$$citecolor$$else$Blue$endif$,
++            urlcolor=$if(urlcolor)$$urlcolor$$else$Blue$endif$,
++$else$
++            pdfborder={0 0 0},
++$endif$
++            breaklinks=true}
++\urlstyle{same}  % don't use monospace font for urls
++$if(lang)$
++\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
++  \usepackage[shorthands=off,$for(babel-otherlangs)$$babel-otherlangs$,$endfor$main=$babel-lang$]{babel}
++$if(babel-newcommands)$
++  $babel-newcommands$
++$endif$
++\else
++  \usepackage{polyglossia}
++  \setmainlanguage[$polyglossia-lang.options$]{$polyglossia-lang.name$}
++$for(polyglossia-otherlangs)$
++  \setotherlanguage[$polyglossia-otherlangs.options$]{$polyglossia-otherlangs.name$}
++$endfor$
++\fi
++$endif$
++$if(natbib)$
++\usepackage{natbib}
++\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
++$endif$
++$if(biblatex)$
++\usepackage$if(biblio-style)$[style=$biblio-style$]$endif${biblatex}
++$if(biblatexoptions)$\ExecuteBibliographyOptions{$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$}$endif$
++$for(bibliography)$
++\addbibresource{$bibliography$}
++$endfor$
++$endif$
++$if(listings)$
++\usepackage{listings}
++$endif$
++$if(lhs)$
++\lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small\ttfamily}}{}
++$endif$
++$if(highlighting-macros)$
++$highlighting-macros$
++$endif$
++$if(verbatim-in-note)$
++\usepackage{fancyvrb}
++\VerbatimFootnotes % allows verbatim text in footnotes
++$endif$
++$if(tables)$
++\usepackage{longtable,booktabs}
++$endif$
++$if(graphics)$
++\usepackage{graphicx,grffile}
++\makeatletter
++\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
++\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
++\makeatother
++% Scale images if necessary, so that they will not overflow the page
++% margins by default, and it is still possible to overwrite the defaults
++% using explicit options in \includegraphics[width, height, ...]{}
++\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
++$endif$
++$if(links-as-notes)$
++% Make links footnotes instead of hotlinks:
++\renewcommand{\href}[2]{#2\footnote{\url{#1}}}
++$endif$
++$if(strikeout)$
++\usepackage[normalem]{ulem}
++% avoid problems with \sout in headers with hyperref:
++\pdfstringdefDisableCommands{\renewcommand{\sout}{}}
++$endif$
++$if(indent)$
++$else$
++\IfFileExists{parskip.sty}{%
++\usepackage{parskip}
++}{% else
++\setlength{\parindent}{0pt}
++\setlength{\parskip}{6pt plus 2pt minus 1pt}
++}
++$endif$
++\setlength{\emergencystretch}{3em}  % prevent overfull lines
++\providecommand{\tightlist}{%
++  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
++$if(numbersections)$
++\setcounter{secnumdepth}{5}
++$else$
++\setcounter{secnumdepth}{0}
++$endif$
++$if(subparagraph)$
++$else$
++% Redefines (sub)paragraphs to behave more like sections
++\ifx\paragraph\undefined\else
++\let\oldparagraph\paragraph
++\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
++\fi
++\ifx\subparagraph\undefined\else
++\let\oldsubparagraph\subparagraph
++\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
++\fi
++$endif$
++$if(dir)$
++\ifxetex
++  % load bidi as late as possible as it modifies e.g. graphicx
++  $if(latex-dir-rtl)$
++  \usepackage[RTLdocument]{bidi}
++  $else$
++  \usepackage{bidi}
++  $endif$
++\fi
++\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
++  \TeXXeTstate=1
++  \newcommand{\RL}[1]{\beginR #1\endR}
++  \newcommand{\LR}[1]{\beginL #1\endL}
++  \newenvironment{RTL}{\beginR}{\endR}
++  \newenvironment{LTR}{\beginL}{\endL}
++\fi
++$endif$
++$for(header-includes)$
++$header-includes$
++$endfor$
++
++$if(title)$
++\title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
++$endif$
++$if(subtitle)$
++\providecommand{\subtitle}[1]{}
++\subtitle{$subtitle$}
++$endif$
++$if(author)$
++\author{$for(author)$$author$$sep$ \and $endfor$}
++$endif$
++$if(institute)$
++\institute{$for(institute)$$institute$$sep$ \and $endfor$}
++$endif$
++\date{$date$}
++
++\begin{document}
++$if(title)$
++\maketitle
++$endif$
++$if(abstract)$
++\begin{abstract}
++$abstract$
++\end{abstract}
++$endif$
++
++$for(include-before)$
++$include-before$
++
++$endfor$
++$if(toc)$
++{
++$if(colorlinks)$
++\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$black$endif$}
++$endif$
++\setcounter{tocdepth}{$toc-depth$}
++\tableofcontents
++}
++$endif$
++$if(lot)$
++\listoftables
++$endif$
++$if(lof)$
++\listoffigures
++$endif$
++$body$
++
++$if(natbib)$
++$if(bibliography)$
++$if(biblio-title)$
++$if(book-class)$
++\renewcommand\bibname{$biblio-title$}
++$else$
++\renewcommand\refname{$biblio-title$}
++$endif$
++$endif$
++\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
++
++$endif$
++$endif$
++$if(biblatex)$
++\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
++
++$endif$
++$for(include-after)$
++$include-after$
++
++$endfor$
++\end{document}
+diff -ruN old/data/templates/default.man new/data/templates/default.man
+--- old/data/templates/default.man	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.man	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,30 @@
++$if(has-tables)$
++.\"t
++$endif$
++$if(pandoc-version)$
++.\" Automatically generated by Pandoc $pandoc-version$
++.\"
++$endif$
++$if(adjusting)$
++.ad $adjusting$
++$endif$
++.TH "$title$" "$section$" "$date$" "$footer$" "$header$"
++$if(hyphenate)$
++.hy
++$else$
++.nh \" Turn off hyphenation by default.
++$endif$
++$for(header-includes)$
++$header-includes$
++$endfor$
++$for(include-before)$
++$include-before$
++$endfor$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++$if(author)$
++.SH AUTHORS
++$for(author)$$author$$sep$; $endfor$.
++$endif$
+diff -ruN old/data/templates/default.markdown new/data/templates/default.markdown
+--- old/data/templates/default.markdown	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.markdown	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,21 @@
++$if(titleblock)$
++$titleblock$
++
++$endif$
++$for(header-includes)$
++$header-includes$
++
++$endfor$
++$for(include-before)$
++$include-before$
++
++$endfor$
++$if(toc)$
++$toc$
++
++$endif$
++$body$
++$for(include-after)$
++
++$include-after$
++$endfor$
+diff -ruN old/data/templates/default.mediawiki new/data/templates/default.mediawiki
+--- old/data/templates/default.mediawiki	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.mediawiki	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,13 @@
++$for(include-before)$
++$include-before$
++
++$endfor$
++$if(toc)$
++__TOC__
++
++$endif$
++$body$
++$for(include-after)$
++
++$include-after$
++$endfor$
+diff -ruN old/data/templates/default.opendocument new/data/templates/default.opendocument
+--- old/data/templates/default.opendocument	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.opendocument	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,32 @@
++<?xml version="1.0" encoding="utf-8" ?>
++<office:document-content xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0" xmlns:dr3d="urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0" xmlns:script="urn:oasis:names:tc:opendocument:xmlns:script:1.0" xmlns:ooo="http://openoffice.org/2004/office" xmlns:ooow="http://openoffice.org/2004/writer" xmlns:oooc="http://openoffice.org/2004/calc" xmlns:dom="http://www.w3.org/2001/xml-events" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" office:version="1.2">
++  <office:font-face-decls>
++    <style:font-face style:name="Courier New" style:font-family-generic="modern" style:font-pitch="fixed" svg:font-family="'Courier New'" />
++  </office:font-face-decls>
++  <office:automatic-styles>
++    $automatic-styles$
++  </office:automatic-styles>
++$for(header-includes)$
++  $header-includes$
++$endfor$
++<office:body>
++<office:text>
++$if(title)$
++<text:p text:style-name="Title">$title$</text:p>
++$endif$
++$for(author)$
++<text:p text:style-name="Author">$author$</text:p>
++$endfor$
++$if(date)$
++<text:p text:style-name="Date">$date$</text:p>
++$endif$
++$for(include-before)$
++$include-before$
++$endfor$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++</office:text>
++</office:body>
++</office:document-content>
+diff -ruN old/data/templates/default.opml new/data/templates/default.opml
+--- old/data/templates/default.opml	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.opml	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,11 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<opml version="2.0">
++  <head>
++    <title>$title$</title>
++    <dateModified>$date$</dateModified>
++    <ownerName>$for(author)$$author$$sep$; $endfor$</ownerName>
++  </head>
++  <body>
++$body$
++  </body>
++</opml>
+diff -ruN old/data/templates/default.org new/data/templates/default.org
+--- old/data/templates/default.org	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.org	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,24 @@
++$if(title)$
++#+TITLE: $title$
++
++$endif$
++$if(author)$
++#+AUTHOR: $for(author)$$author$$sep$; $endfor$
++$endif$
++$if(date)$
++#+DATE: $date$
++
++$endif$
++$for(header-includes)$
++$header-includes$
++
++$endfor$
++$for(include-before)$
++$include-before$
++
++$endfor$
++$body$
++$for(include-after)$
++
++$include-after$
++$endfor$
+diff -ruN old/data/templates/default.plain new/data/templates/default.plain
+--- old/data/templates/default.plain	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.plain	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,21 @@
++$if(titleblock)$
++$titleblock$
++
++$endif$
++$for(header-includes)$
++$header-includes$
++
++$endfor$
++$for(include-before)$
++$include-before$
++
++$endfor$
++$if(toc)$
++$toc$
++
++$endif$
++$body$
++$for(include-after)$
++
++$include-after$
++$endfor$
+diff -ruN old/data/templates/default.revealjs new/data/templates/default.revealjs
+--- old/data/templates/default.revealjs	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.revealjs	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,239 @@
++<!DOCTYPE html>
++<html$if(lang)$ lang="$lang$"$endif$$if(dir)$ dir="$dir$"$endif$>
++<head>
++  <meta charset="utf-8">
++  <meta name="generator" content="pandoc">
++$for(author-meta)$
++  <meta name="author" content="$author-meta$">
++$endfor$
++$if(date-meta)$
++  <meta name="dcterms.date" content="$date-meta$">
++$endif$
++$if(keywords)$
++  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$">
++$endif$
++  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
++  <meta name="apple-mobile-web-app-capable" content="yes">
++  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
++  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
++  <link rel="stylesheet" href="$revealjs-url$/css/reveal.css">
++  <style type="text/css">code{white-space: pre;}</style>
++$if(quotes)$
++  <style type="text/css">q { quotes: "“" "”" "‘" "’"; }</style>
++$endif$
++$if(highlighting-css)$
++  <style type="text/css">
++$highlighting-css$
++  </style>
++$endif$
++$if(theme)$
++  <link rel="stylesheet" href="$revealjs-url$/css/theme/$theme$.css" id="theme">
++$else$
++  <link rel="stylesheet" href="$revealjs-url$/css/theme/black.css" id="theme">
++$endif$
++$for(css)$
++  <link rel="stylesheet" href="$css$"/>
++$endfor$
++  <!-- Printing and PDF exports -->
++  <script>
++    var link = document.createElement( 'link' );
++    link.rel = 'stylesheet';
++    link.type = 'text/css';
++    link.href = window.location.search.match( /print-pdf/gi ) ? '$revealjs-url$/css/print/pdf.css' : '$revealjs-url$/css/print/paper.css';
++    document.getElementsByTagName( 'head' )[0].appendChild( link );
++  </script>
++  <!--[if lt IE 9]>
++  <script src="$revealjs-url$/lib/js/html5shiv.js"></script>
++  <![endif]-->
++$if(math)$
++  $math$
++$endif$
++$for(header-includes)$
++  $header-includes$
++$endfor$
++</head>
++<body>
++$for(include-before)$
++$include-before$
++$endfor$
++  <div class="reveal">
++    <div class="slides">
++
++$if(title)$
++<section>
++  <h1 class="title">$title$</h1>
++$if(subtitle)$
++  <h1 class="subtitle">$subtitle$</h1>
++$endif$
++$for(author)$
++  <h2 class="author">$author$</h2>
++$endfor$
++$if(date)$
++  <h3 class="date">$date$</h3>
++$endif$
++</section>
++$endif$
++$if(toc)$
++<section id="$idprefix$TOC">
++$toc$
++</section>
++$endif$
++
++$body$
++    </div>
++  </div>
++
++  <script src="$revealjs-url$/lib/js/head.min.js"></script>
++  <script src="$revealjs-url$/js/reveal.js"></script>
++
++  <script>
++
++      // Full list of configuration options available at:
++      // https://github.com/hakimel/reveal.js#configuration
++      Reveal.initialize({
++$if(controls)$
++        // Display controls in the bottom right corner
++        controls: $controls$,
++$endif$
++$if(progress)$
++        // Display a presentation progress bar
++        progress: $progress$,
++$endif$
++$if(slideNumber)$
++        // Display the page number of the current slide
++        slideNumber: $slideNumber$,
++$endif$
++$if(history)$
++        // Push each slide change to the browser history
++        history: $history$,
++$endif$
++$if(keyboard)$
++        // Enable keyboard shortcuts for navigation
++        keyboard: $keyboard$,
++$endif$
++$if(overview)$
++        // Enable the slide overview mode
++        overview: $overview$,
++$endif$
++$if(center)$
++        // Vertical centering of slides
++        center: $center$,
++$endif$
++$if(touch)$
++        // Enables touch navigation on devices with touch input
++        touch: $touch$,
++$endif$
++$if(loop)$
++        // Loop the presentation
++        loop: $loop$,
++$endif$
++$if(rtl)$
++        // Change the presentation direction to be RTL
++        rtl: $rtl$,
++$endif$
++$if(fragments)$
++        // Turns fragments on and off globally
++        fragments: $fragments$,
++$endif$
++$if(embedded)$
++        // Flags if the presentation is running in an embedded mode,
++        // i.e. contained within a limited portion of the screen
++        embedded: $embedded$,
++$endif$
++$if(help)$
++        // Flags if we should show a help overlay when the questionmark
++        // key is pressed
++        help: $help$,
++$endif$
++$if(showNotes)$
++        // Flags if speaker notes should be visible to all viewers
++        showNotes: $showNotes$,
++$endif$
++$if(autoSlide)$
++        // Number of milliseconds between automatically proceeding to the
++        // next slide, disabled when set to 0, this value can be overwritten
++        // by using a data-autoslide attribute on your slides
++        autoSlide: $autoSlide$,
++$endif$
++$if(autoSlideStoppable)$
++        // Stop auto-sliding after user input
++        autoSlideStoppable: $autoSlideStoppable$,
++$endif$
++$if(mouseWheel)$
++        // Enable slide navigation via mouse wheel
++        mouseWheel: $mouseWheel$,
++$endif$
++$if(hideAddressBar)$
++        // Hides the address bar on mobile devices
++        hideAddressBar: $hideAddressBar$,
++$endif$
++$if(previewLinks)$
++        // Opens links in an iframe preview overlay
++        previewLinks: $previewLinks$,
++$endif$
++$if(transition)$
++        // Transition style
++        transition: '$transition$', // none/fade/slide/convex/concave/zoom
++$endif$
++$if(transitionSpeed)$
++        // Transition speed
++        transitionSpeed: '$transitionSpeed$', // default/fast/slow
++$endif$
++$if(backgroundTransition)$
++        // Transition style for full page slide backgrounds
++        backgroundTransition: '$backgroundTransition$', // none/fade/slide/convex/concave/zoom
++$endif$
++$if(viewDistance)$
++        // Number of slides away from the current that are visible
++        viewDistance: $viewDistance$,
++$endif$
++$if(parallaxBackgroundImage)$
++        // Parallax background image
++        parallaxBackgroundImage: '$parallaxBackgroundImage$', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
++$endif$
++$if(parallaxBackgroundSize)$
++        // Parallax background size
++        parallaxBackgroundSize: '$parallaxBackgroundSize$', // CSS syntax, e.g. "2100px 900px"
++$endif$
++$if(parallaxBackgroundHorizontal)$
++        // Amount to move parallax background (horizontal and vertical) on slide change
++        // Number, e.g. 100
++        parallaxBackgroundHorizontal: $parallaxBackgroundHorizontal$,
++$endif$
++$if(parallaxBackgroundVertical)$
++        parallaxBackgroundVertical: $parallaxBackgroundVertical$,
++$endif$
++$if(width)$
++        // The "normal" size of the presentation, aspect ratio will be preserved
++        // when the presentation is scaled to fit different resolutions. Can be
++        // specified using percentage units.
++        width: $width$,
++$endif$
++$if(height)$
++        height: $height$,
++$endif$
++$if(margin)$
++        // Factor of the display size that should remain empty around the content
++        margin: $margin$,
++$endif$
++$if(minScale)$
++        // Bounds for smallest/largest possible scale to apply to content
++        minScale: $minScale$,
++$endif$
++$if(maxScale)$
++        maxScale: $maxScale$,
++$endif$
++
++        // Optional reveal.js plugins
++        dependencies: [
++          { src: '$revealjs-url$/lib/js/classList.js', condition: function() { return !document.body.classList; } },
++          { src: '$revealjs-url$/plugin/zoom-js/zoom.js', async: true },
++          { src: '$revealjs-url$/plugin/notes/notes.js', async: true }
++        ]
++      });
++    </script>
++  $for(include-after)$
++  $include-after$
++  $endfor$
++  </body>
++</html>
+diff -ruN old/data/templates/default.rst new/data/templates/default.rst
+--- old/data/templates/default.rst	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.rst	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,48 @@
++$if(title)$
++$title$
++
++$endif$
++$for(author)$
++:Author: $author$
++$endfor$
++$if(date)$
++:Date:   $date$
++$endif$
++$if(author)$
++
++$else$
++$if(date)$
++
++$endif$
++$endif$
++$if(math)$
++.. role:: math(raw)
++   :format: html latex
++..
++
++$endif$
++$if(rawtex)$
++.. role:: raw-latex(raw)
++   :format: latex
++..
++
++$endif$
++$for(include-before)$
++$include-before$
++
++$endfor$
++$if(toc)$
++.. contents::
++   :depth: $toc-depth$
++..
++
++$endif$
++$for(header-includes)$
++$header-includes$
++
++$endfor$
++$body$
++$for(include-after)$
++
++$include-after$
++$endfor$
+diff -ruN old/data/templates/default.rtf new/data/templates/default.rtf
+--- old/data/templates/default.rtf	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.rtf	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,30 @@
++{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 Courier;}}
++{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
++\widowctrl\hyphauto
++$for(header-includes)$
++$header-includes$
++$endfor$
++
++$if(title)$
++{\pard \qc \f0 \sa180 \li0 \fi0 \b \fs36 $title$\par}
++$endif$
++$for(author)$
++{\pard \qc \f0 \sa180 \li0 \fi0  $author$\par}
++$endfor$
++$if(date)$
++{\pard \qc \f0 \sa180 \li0 \fi0  $date$\par}
++$endif$
++$if(spacer)$
++{\pard \ql \f0 \sa180 \li0 \fi0 \par}
++$endif$
++$if(toc)$
++$toc$
++$endif$
++$for(include-before)$
++$include-before$
++$endfor$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++}
+diff -ruN old/data/templates/default.s5 new/data/templates/default.s5
+--- old/data/templates/default.s5	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.s5	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,86 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml"$if(lang)$ lang="$lang$" xml:lang="$lang$"$endif$$if(dir)$ dir="$dir$"$endif$>
++<head>
++  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++  <meta http-equiv="Content-Style-Type" content="text/css" />
++  <meta name="generator" content="pandoc" />
++$for(author-meta)$
++  <meta name="version" content="S5 1.1" />
++  <meta name="author" content="$author-meta$" />
++$endfor$
++$if(date-meta)$
++  <meta name="date" content="$date-meta$" />
++$endif$
++$if(keywords)$
++  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
++$endif$
++  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
++  <style type="text/css">code{white-space: pre;}</style>
++  <!-- configuration parameters -->
++  <meta name="defaultView" content="slideshow" />
++  <meta name="controlVis" content="hidden" />
++$if(quotes)$
++  <style type="text/css">q { quotes: "“" "”" "‘" "’"; }</style>
++$endif$
++$if(highlighting-css)$
++  <style type="text/css">
++$highlighting-css$
++  </style>
++$endif$
++$for(css)$
++  <link rel="stylesheet" href="$css$" type="text/css" />
++$endfor$
++  <!-- style sheet links -->
++  <link rel="stylesheet" href="$s5-url$/slides.css" type="text/css" media="projection" id="slideProj" />
++  <link rel="stylesheet" href="$s5-url$/outline.css" type="text/css" media="screen" id="outlineStyle" />
++  <link rel="stylesheet" href="$s5-url$/print.css" type="text/css" media="print" id="slidePrint" />
++  <link rel="stylesheet" href="$s5-url$/opera.css" type="text/css" media="projection" id="operaFix" />
++  <!-- S5 JS -->
++  <script src="$s5-url$/slides.js" type="text/javascript"></script>
++$if(math)$
++  $math$
++$endif$
++$for(header-includes)$
++  $header-includes$
++$endfor$
++</head>
++<body>
++$for(include-before)$
++$include-before$
++$endfor$
++<div class="layout">
++<div id="controls"></div>
++<div id="currentSlide"></div>
++<div id="header"></div>
++<div id="footer">
++  <h1>$date$</h1>
++  <h2>$title$</h2>
++</div>
++</div>
++<div class="presentation">
++$if(title)$
++<div class="titleslide slide">
++  <h1 class="title">$title$</h1>
++$if(subtitle)$
++  <h2 class="subtitle">$subtitle$</h2>
++$endif$
++$if(author)$
++  <h3 class="author">$for(author)$$author$$sep$<br/>$endfor$</h3>
++$endif$
++$if(date)$
++  <h4 class="date">$date$</h4>
++$endif$
++</div>
++$endif$
++$if(toc)$
++<div class="slide" id="$idprefix$TOC">
++$toc$
++</div>
++$endif$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++</div>
++</body>
++</html>
+diff -ruN old/data/templates/default.slideous new/data/templates/default.slideous
+--- old/data/templates/default.slideous	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.slideous	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,90 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
++ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml"$if(lang)$ lang="$lang$" xml:lang="$lang$"$endif$$if(dir)$ dir="$dir$"$endif$>
++<head>
++  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++  <meta http-equiv="Content-Style-Type" content="text/css" />
++  <meta name="generator" content="pandoc" />
++$for(author-meta)$
++  <meta name="author" content="$author-meta$" />
++$endfor$
++$if(date-meta)$
++  <meta name="date" content="$date-meta$" />
++$endif$
++$if(keywords)$
++  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
++$endif$
++  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
++  <style type="text/css">code{white-space: pre;}</style>
++$if(quotes)$
++  <style type="text/css">q { quotes: "“" "”" "‘" "’"; }</style>
++$endif$
++$if(highlighting-css)$
++  <style type="text/css">
++$highlighting-css$
++  </style>
++$endif$
++  <link rel="stylesheet" type="text/css" media="screen, projection, print"
++    href="$slideous-url$/slideous.css" />
++$for(css)$
++  <link rel="stylesheet" type="text/css" media="screen, projection, print"
++   href="$css$" />
++$endfor$
++$if(math)$
++  $math$
++$endif$
++$for(header-includes)$
++  $header-includes$
++$endfor$
++  <script src="$slideous-url$/slideous.js"
++    charset="utf-8" type="text/javascript"></script>
++$if(duration)$
++  <meta name="duration" content="$duration$" />
++$endif$
++</head>
++<body>
++$for(include-before)$
++$include-before$
++$endfor$
++<div id="statusbar">
++<span style="float:right;">
++<span style="margin-right:4em;font-weight:bold;"><span id="slideidx"></span> of {$$slidecount}</span>
++<button id="homebutton" title="first slide">1</button>
++<button id="prevslidebutton" title="previous slide">&laquo;</button>
++<button id="previtembutton" title="previous item">&lsaquo;</button>
++<button id="nextitembutton" title="next item">&rsaquo;</button>
++<button id="nextslidebutton" title="next slide">&raquo;</button>
++<button id="endbutton" title="last slide">{$$slidecount}</button>
++<button id="incfontbutton" title="content">A+</button>
++<button id="decfontbutton" title="first slide">A-</button>
++<select id="tocbox" size="1"><option></option></select>
++</span>
++<span id="eos">&frac12;</span>
++<span title="{$$location}, {$$date}">{$$title}, {$$author}</span>
++</div>
++$if(title)$
++<div class="slide titlepage">
++  <h1 class="title">$title$</h1>
++$if(subtitle)$
++  <h1 class="subtitle">$subtitle$</h1>
++$endif$
++  <p class="author">
++$for(author)$$author$$sep$<br/>$endfor$
++  </p>
++$if(date)$
++  <p class="date">$date$</p>
++$endif$
++</div>
++$endif$
++$if(toc)$
++<div class="slide" id="$idprefix$TOC">
++$toc$
++</div>
++$endif$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++</body>
++</html>
+diff -ruN old/data/templates/default.slidy new/data/templates/default.slidy
+--- old/data/templates/default.slidy	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.slidy	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,76 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
++ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml"$if(lang)$ lang="$lang$" xml:lang="$lang$"$endif$$if(dir)$ dir="$dir$"$endif$>
++<head>
++  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++  <meta http-equiv="Content-Style-Type" content="text/css" />
++  <meta name="generator" content="pandoc" />
++$for(author-meta)$
++  <meta name="author" content="$author-meta$" />
++$endfor$
++$if(date-meta)$
++  <meta name="date" content="$date-meta$" />
++$endif$
++$if(keywords)$
++  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
++$endif$
++  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
++  <style type="text/css">code{white-space: pre;}</style>
++$if(quotes)$
++  <style type="text/css">q { quotes: "“" "”" "‘" "’"; }</style>
++$endif$
++$if(highlighting-css)$
++  <style type="text/css">
++$highlighting-css$
++  </style>
++$endif$
++  <link rel="stylesheet" type="text/css" media="screen, projection, print"
++    href="$slidy-url$/styles/slidy.css" />
++$for(css)$
++  <link rel="stylesheet" type="text/css" media="screen, projection, print"
++   href="$css$" />
++$endfor$
++$if(math)$
++  $math$
++$endif$
++$for(header-includes)$
++  $header-includes$
++$endfor$
++  <script src="$slidy-url$/scripts/slidy.js"
++    charset="utf-8" type="text/javascript"></script>
++$if(duration)$
++  <meta name="duration" content="$duration$" />
++$endif$
++</head>
++<body>
++$for(include-before)$
++$include-before$
++$endfor$
++$if(title)$
++<div class="slide titlepage">
++  <h1 class="title">$title$</h1>
++$if(subtitle)$
++  <h1 class="subtitle">$subtitle$</h1>
++$endif$
++$if(author)$
++  <p class="author">
++$for(author)$$author$$sep$<br/>$endfor$
++  </p>
++$endif$
++$if(date)$
++  <p class="date">$date$</p>
++$endif$
++</div>
++$endif$
++$if(toc)$
++<div class="slide" id="$idprefix$TOC">
++$toc$
++</div>
++$endif$
++$body$
++$for(include-after)$
++$include-after$
++$endfor$
++</body>
++</html>
+diff -ruN old/data/templates/default.tei new/data/templates/default.tei
+--- old/data/templates/default.tei	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.tei	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,39 @@
++<?xml version="1.0" encoding="utf-8"?>
++<TEI xmlns="http://www.tei-c.org/ns/1.0"$if(lang)$ xml:lang="$lang$"$endif$>
++<teiHeader>
++  <fileDesc>
++    <titleStmt>
++$if(title)$
++      <title>$title$</title>
++$endif$
++$for(author)$
++      $author$
++$endfor$
++    </titleStmt>
++    <publicationStmt>
++      <p>$if(publicationStmt)$$publicationStmt$$endif$</p>
++      $if(license)$
++      <availability><licence>$license$</licence></availability>
++$endif$
++    </publicationStmt>
++    <sourceDesc>
++$if(sourceDesc)$
++      $sourceDesc$
++$else$
++      <p>Produced by pandoc.</p>
++$endif$
++    </sourceDesc>
++  </fileDesc>
++</teiHeader>
++<text>
++$for(include-before)$
++$include-before$
++$endfor$
++<body>
++$body$
++</body>
++$for(include-after)$
++$include-after$
++$endfor$
++</text>
++</TEI>
+diff -ruN old/data/templates/default.texinfo new/data/templates/default.texinfo
+--- old/data/templates/default.texinfo	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.texinfo	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,64 @@
++\input texinfo
++@documentencoding UTF-8
++$for(header-includes)$
++$header-includes$
++$endfor$
++
++$if(strikeout)$
++@macro textstrikeout{text}
++~~\text\~~
++@end macro
++
++$endif$
++$if(subscript)$
++@macro textsubscript{text}
++@iftex
++@textsubscript{\text\}
++@end iftex
++@ifnottex
++_@{\text\@}
++@end ifnottex
++@end macro
++
++$endif$
++$if(superscript)$
++@macro textsuperscript{text}
++@iftex
++@textsuperscript{\text\}
++@end iftex
++@ifnottex
++^@{\text\@}
++@end ifnottex
++@end macro
++
++$endif$
++@ifnottex
++@paragraphindent 0
++@end ifnottex
++$if(titlepage)$
++@titlepage
++@title $title$
++$for(author)$
++@author $author$
++$endfor$
++$if(date)$
++$date$
++$endif$
++@end titlepage
++
++$endif$
++$for(include-before)$
++$include-before$
++
++$endfor$
++$if(toc)$
++@contents
++
++$endif$
++$body$
++$for(include-after)$
++
++$include-after$
++$endfor$
++
++@bye
+diff -ruN old/data/templates/default.textile new/data/templates/default.textile
+--- old/data/templates/default.textile	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/default.textile	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,9 @@
++$for(include-before)$
++$include-before$
++
++$endfor$
++$body$
++$for(include-after)$
++
++$include-after$
++$endfor$
+diff -ruN old/data/templates/README.markdown new/data/templates/README.markdown
+--- old/data/templates/README.markdown	1969-12-31 16:00:00.000000000 -0800
++++ new/data/templates/README.markdown	2016-06-20 13:07:40.593700148 -0700
+@@ -0,0 +1,42 @@
++Templates for [pandoc](http://github.com/jgm/pandoc).
++
++If you use custom templates, we recommend forking this repository,
++so that you can integrate changes to the default templates in future
++pandoc releases.
++
++All of the templates in this repository are dual licensed, under both
++the GPL (v2 or higher, same as pandoc) and the BSD 3-clause license
++(included below).
++
++----
++
++Copyright (c) 2014, John MacFarlane
++
++All rights reserved.
++
++Redistribution and use in source and binary forms, with or without
++modification, are permitted provided that the following conditions are met:
++
++    * Redistributions of source code must retain the above copyright
++      notice, this list of conditions and the following disclaimer.
++
++    * Redistributions in binary form must reproduce the above
++      copyright notice, this list of conditions and the following
++      disclaimer in the documentation and/or other materials provided
++      with the distribution.
++
++    * Neither the name of John MacFarlane nor the names of other
++      contributors may be used to endorse or promote products derived
++      from this software without specific prior written permission.
++
++THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

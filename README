@@ -2,3 +2,13 @@ This is a configuration directory for the autobuilder.  Link your
 ~/.autobuilder.d to here, and modify it as you wish.  It requires
 autobuilder library version 5.2 or later.  The old style configuration
 files have moved into the attic subdirectory.
+
+# Upgrading libraries bundled with GHC
+
+To install a new version of a library bundled with GHC, the debian name
+needs to be different from the one GHC conflicts with.  This needs to be
+done globally, not just in the specific package, so other packages that
+depend on the renamed one will compute the right debian dependencies.
+In Debian.AutoBuilder.Details.Versions there is a list of such renamings.
+There you can specify the new base name for the package (the part between
+libghc- and -dev) and at what version that new name takes effect.

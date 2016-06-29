@@ -1,0 +1,12 @@
+diff --git a/Dh_Haskell.sh b/Dh_Haskell.sh
+--- a/Dh_Haskell.sh
++++ b/Dh_Haskell.sh
+@@ -418,7 +418,7 @@ build_recipe(){
+ check_recipe(){
+     # local PS5=$PS4; PS4=" + check_recipe> "; set -x
+     hc=`packages_hc`
+-    run ${DEB_SETUP_BIN_NAME} test --builddir=dist-${hc} --show-details=direct
++    run ${DEB_SETUP_BIN_NAME} test --builddir=dist-${hc} --show-details=always
+     # PS4=$PS5
+ }
+ 

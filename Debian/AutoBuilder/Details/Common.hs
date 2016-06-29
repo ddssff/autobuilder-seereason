@@ -48,7 +48,7 @@ ghcjs_only i = do
   flag (P.CabalDebian ["--ghcjs"]) i
   flag (P.BuildDep "libghc-cabal-dev") i
   flag (P.BuildDep "ghcjs") i
-  flag (P.BuildDep "haskell-devscripts (>= 0.8.21.3)") i
+  -- flag (P.BuildDep "haskell-devscripts (>= 0.8.21.3)") i
   flag P.NoDoc i -- sometimes the ghcjs haddock is super slow
 
 -- | Clone a GHC package and turn the clone into a GHCJS package.
@@ -103,7 +103,8 @@ ghcFlags i = relax "ghc" i >>=
              relax "debhelper" >>=
              relax "quilt" >>=
              relax "python-minimal" >>=
-             relax "libgmp-dev"
+             relax "libgmp-dev" >>=
+             relax "haskell-devscripts"
 
 rel :: Release -> a -> a -> a
 rel r precise quantal =

@@ -1,11 +1,11 @@
---- old/pandoc.cabal	2016-05-05 16:26:31.448003069 -0700
-+++ new/pandoc.cabal	2016-04-19 18:18:05.362667653 -0700
-@@ -267,7 +267,7 @@
+--- old/pandoc.cabal	2016-06-20 13:17:54.721682431 -0700
++++ new/pandoc.cabal	2016-06-20 13:17:39.909682859 -0700
+@@ -266,7 +266,7 @@
+                  extensible-exceptions >= 0.1 && < 0.2,
+                  pandoc-types >= 1.16 && < 1.17,
+                  aeson >= 0.7 && < 0.12,
+-                 tagsoup >= 0.13.7 && < 0.14,
++                 tagsoup >= 0.13.7 && < 0.15,
                   base64-bytestring >= 0.1 && < 1.1,
                   zlib >= 0.5 && < 0.7,
-                  highlighting-kate >= 0.6.1 && < 0.7,
--                 data-default >= 0.4 && < 0.6,
-+                 data-default >= 0.4 && < 0.7,
-                  temporary >= 1.1 && < 1.3,
-                  blaze-html >= 0.5 && < 0.9,
-                  blaze-markup >= 0.5.1 && < 0.8,
+                  highlighting-kate >= 0.6.2 && < 0.7,

@@ -152,6 +152,7 @@ myOptionalIncludePackages _myBuildRelease =
     , "ghcjs"                      -- Just be careful when trying to upgrade the compiler, if
                                    -- you need to back a build out you will tear your hair out
                                    -- figureing why the new compiler is still there!
+    , "happy"                      -- the happy dependency list is broken, so installing this helps it build when necessary
     , "autobuilder-seereason"      -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
     ]
 
@@ -210,4 +211,5 @@ myGlobalRelaxInfo =
      "tar",
      "sysvinit",
      "libc6-dev",
-     "haskell-devscripts"]
+     "haskell-devcripts" -- Need to patch this, but don't want to rebuild everything
+    ]
