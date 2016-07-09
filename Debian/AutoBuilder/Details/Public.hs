@@ -40,7 +40,7 @@ buildTargets = do
   _acid_state <- git "https://github.com/seereason/acid-state" [Branch "log-inspection"] >>=
                  debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
   _adjunctions <- hackage "adjunctions" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _aeson <- hackage "aeson" >>= debianize >>= flag (P.CabalPin "0.9.0.1") >>= inGroups ["ghcjs-libs", "ghc-libs"] -- pandoc 1.15.0.6 will not build with aeson 0.10.  Also, fb, jmacro, happstack-authenticate need updates
+  _aeson <- hackage "aeson" >>= debianize >>= {-flag (P.CabalPin "0.9.0.1") >>=-} inGroups ["ghcjs-libs", "ghc-libs"] -- pandoc 1.15.0.6 will not build with aeson 0.10.  Also, fb, jmacro, happstack-authenticate need updates
   _aeson_pretty <- hackage "aeson-pretty" >>= debianize
   _aeson_qq <-  hackage "aeson-qq" >>= debianize >>= inGroups [ "authenticate", "important"]
   _agi <- darcs ("http://src.seereason.com/haskell-agi") >>= skip (Reason "No instance for (Applicative (AGIT m))")
