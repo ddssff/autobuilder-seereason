@@ -1139,7 +1139,7 @@ buildTargets = do
                --             , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
   _utility_ht <-  (hackage "utility-ht") >>= debianize
   _uuid <-  (hackage "uuid") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _uuid_orphans <-  (git "https://github.com/seereason/uuid" [] >>= cd "uuid-orphans") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "clckwrks", "important"]
+  _uuid_orphans <- git "https://github.com/seereason/uuid-orphans" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "clckwrks", "important"]
   _uuid_types <-  (hackage "uuid-types") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _vacuum <-  (hackage "vacuum" >>= flag (P.SkipVersion "2.1.0.1")) >>= debianize >>= skip (Reason "#error Unsupported GHC version in ClosureTypes.hs!")
   _validation <-  (hackage "Validation" >>= patch $(embedFile "patches/validation.diff")) >>= debianize
