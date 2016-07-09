@@ -148,6 +148,8 @@ mySources myBuildRelease =
             (map Release baseReleases ++
              concatMap (derivedReleases myBuildRelease) baseReleases) ++
     [(baseReleaseString Experimental, debianSourceLines myDebianMirrorHost Experimental),
+{-   (unlines ["deb http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString release ++ " main",
+               "deb-src http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString release ++ " main"]), -}
 {-   ("debian-multimedia",
       (unlines ["deb http://mirror.home-dn.net/debian-multimedia stable main",
                 "deb-src http://mirror.home-dn.net/debian-multimedia stable main"])), -}
@@ -172,5 +174,5 @@ myDebianMirrorHost = "http://ftp.debian.org"
 --myUbuntuMirrorHost = "http://mirror.umd.edu" -- sources line looks like: deb http://mirror.umd.edu/ubuntu/ trusty main restricted universe multiverse
 --myUbuntuMirrorHost = "http://ubuntu.mirrors.tds.net/pub/ubuntu"
 --myUbuntuMirrorHost = "http://ubuntu.cs.utah.edu"  -- Very slow!
---myUbuntuMirrorHost = "http://archive.ubuntu.com/ubuntu"
-myUbuntuMirrorHost = "http://mirror.picosecond.org/ubuntu"
+myUbuntuMirrorHost = "http://archive.ubuntu.com/ubuntu"
+--myUbuntuMirrorHost = "http://mirror.picosecond.org/ubuntu"
