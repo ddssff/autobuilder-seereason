@@ -40,10 +40,10 @@ buildTargets = do
   _acid_state <- git "https://github.com/seereason/acid-state" [Branch "log-inspection"] >>=
                  debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
   _adjunctions <- hackage "adjunctions" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _aeson <- hackage "aeson" >>= debianize >>= {-flag (P.CabalPin "0.9.0.1") >>=-} inGroups ["ghcjs-libs", "ghc-libs"] -- pandoc 1.15.0.6 will not build with aeson 0.10.  Also, fb, jmacro, happstack-authenticate need updates
+  _aeson <- hackage "aeson" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _aeson_pretty <- hackage "aeson-pretty" >>= debianize
   _aeson_qq <-  hackage "aeson-qq" >>= debianize >>= inGroups [ "authenticate", "important"]
-  _agi <- darcs ("http://src.seereason.com/haskell-agi") >>= skip (Reason "No instance for (Applicative (AGIT m))")
+  _agi <- darcs ("https://github.com/ddssff/haskell-agi") >>= skip (Reason "No instance for (Applicative (AGIT m))")
   _alex <- hackage "alex" >>=
            patch $(embedFile "patches/alex.diff") >>=
            flag (P.CabalDebian ["--default-package", "alex"]) >>=
@@ -544,13 +544,14 @@ buildTargets = do
                               -- Don't push out libghc-extra-dev, it now comes from Neil Mitchell's repo
                               {- `apply` (replacement "sr-extra" "Extra") -}
                        ) >>= debianize >>= inGroups ["ghcjs-libs", "autobuilder-group", "important"]
+  _sr_order <- git "https://github.com/seereason/sr-order" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _haskell_help <- git ("https://github.com/seereason/sr-help") [] >>= debianize >>= inGroups ["autobuilder-group", "important"]
   _haskell_lexer <-  (hackage "haskell-lexer"
                               >>= pflag (P.DebVersion "1.0-3build2")
                               >>= wflag (P.DebVersion "1.0-3+b1")
                               >>= tflag (P.DebVersion "1.0-5")) >>= debianize
   _haskell_list <-  (hackage "List") >>= debianize
-  _haskell_names <-  git "https://github.com/ddssff/haskell-names" [Branch "one-ast"] >>= debianize >>= inGroups ["ghc-libs","pretty"]
+  _haskell_names <-  git "https://github.com/ddssff/haskell-names" [Branch "one-ast-v2"] >>= debianize >>= inGroups ["ghc-libs","pretty"]
   _haskell_newtype <-  (hackage "newtype" >>= wflag (P.DebVersion "0.2-1") >>= tflag (P.DebVersion "0.2-3")) >>= debianize
   _haskell_packages <-  (hackage "haskell-packages" {->>= patch $(embedFile "patches/haskell-packages.diff")-}) >>= debianize >>= inGroups ["happstack", "important"] >>= skip (Reason "duplicate FromJSON instances")
   _sr_revision <-  (git ("https://github.com/seereason/sr-revision") []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
@@ -559,7 +560,7 @@ buildTargets = do
   -- cabal-debian package, Debian.Debianize.Details.debianDefaults.
   -- But where does that leave ghcjs-haskell-src-exts?
   _haskell_src_exts <- hackage "haskell-src-exts" >>= flag (P.BuildDep "happy") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _haskell_src_exts_1ast <- git "https://github.com/ddssff/haskell-src-exts" [Branch "one-ast"] >>= debianize >>= inGroups ["ghc-libs", "pretty"]
+  --_haskell_src_exts_1ast <- git "https://github.com/ddssff/haskell-src-exts" [Branch "one-ast"] >>= debianize >>= inGroups ["ghc-libs", "pretty"]
   -- haskell_src_meta =  (hackage "haskell-src-meta") >>= debianize
   -- haskell_src_meta =  (git "https://github.com/bmillwood/haskell-src-meta" []) >>= debianize
   -- haskell_src_meta <-  (git "https://github.com/ddssff/haskell-src-meta" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
