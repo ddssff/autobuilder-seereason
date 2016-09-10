@@ -113,7 +113,8 @@ buildTargets = do
   _byteable <-  (hackage "byteable" >>= tflag (P.DebVersion "0.1.1-1")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _byteorder <-  (hackage "byteorder" >>= tflag (P.DebVersion "1.0.4-1")) >>= debianize
   _bytes <-  (hackage "bytes") >>= debianize >>= skip (Reason "Unmet build dependencies: libghc-cereal-dev (<< 0.5)")
-  -- _bytestring_builder <-  (hackage "bytestring-builder") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"] -- now part of bytestring
+  -- bytestring-builder is now part of bytestring, but some packages (fast-logger) still depend on it (now patched)
+  -- _bytestring_builder <-  (hackage "bytestring-builder") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _bytestring_conversion <- hackage "bytestring-conversion" >>= debianize >>= inGroups ["servant"]
   _bytestring_nums <-  (hackage "bytestring-nums") >>= debianize -- apt (rel release "wheezy" "quantal") "haskell-bytestring-nums"
   _bytestring_trie <-  (hackage "bytestring-trie") >>= debianize
@@ -217,6 +218,7 @@ buildTargets = do
                               >>= tflag (P.DebVersion "2.3.3-4")
                               >>= debianize
                -- , apt "wheezy" "haskell-configfile"
+  _comfort_graph <- hackage "comfort-graph" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _comonad <- hackage "comonad" >>=
                      apply (replacement "comonad" "comonad-transformers") >>=
                      apply (replacement "comonad" "comonad-fd") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -340,7 +342,8 @@ buildTargets = do
   _extra <-  (hackage "extra") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _fail <- hackage "fail" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _failure <- hackage "failure" >>= debianize
-  _fast_logger <-  (hackage "fast-logger") >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs", "authenticate", "important"]
+  -- Patch removes dependency on bytestring-builder, now part of bytestring.
+  _fast_logger <- hackage "fast-logger">>= patch $(embedFile "patches/fast-logger.diff") >>= debianize >>= inGroups ["ghc-libs", "ghcjs-libs", "authenticate", "important"]
   _fay_base <-  (hackage "fay-base") >>= debianize >>= skip (Reason "Waiting for newer fay")
   _fay <-  (hackage "fay" {- >>= patch $(embedFile "patches/fay.diff") -}) >>= debianize >>= flag (P.CabalDebian [ "--depends", "haskell-fay-utils:cpphs" ]) >>= skip (Reason "too old for current syb and optparse-applicative")
   _fay_jquery <-  (git "https://github.com/faylang/fay-jquery" []) >>= debianize >>= skip (Reason "Waiting for newer fay")
@@ -537,6 +540,9 @@ buildTargets = do
                      -- >>= patch $(embedFile "patches/darcs.diff")
                     ) >>= debianize >>= skip (Reason "Unmet build dependencies: libghc-vector-dev (<< 0.11)")
   _haskell_devscripts <- git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [] >>=
+                         -- This changes --show-details=direct to
+                         -- --show-details=always in check-recipe -
+                         -- due to cabal-install version?
                          patch $(embedFile "patches/haskell-devscripts.diff") >>=
                          flag (P.RelaxDep "python-minimal")
   _haskell_either <-  (hackage "either") >>= debianize
@@ -551,7 +557,7 @@ buildTargets = do
                               >>= wflag (P.DebVersion "1.0-3+b1")
                               >>= tflag (P.DebVersion "1.0-5")) >>= debianize
   _haskell_list <-  (hackage "List") >>= debianize
-  _haskell_names <-  git "https://github.com/ddssff/haskell-names" [Branch "one-ast-v2"] >>= debianize >>= inGroups ["ghc-libs","pretty"]
+  _haskell_names <-  git "https://github.com/haskell-suite/haskell-names" [] >>= debianize >>= inGroups ["ghc-libs","pretty"]
   _haskell_newtype <-  (hackage "newtype" >>= wflag (P.DebVersion "0.2-1") >>= tflag (P.DebVersion "0.2-3")) >>= debianize
   _haskell_packages <-  (hackage "haskell-packages" {->>= patch $(embedFile "patches/haskell-packages.diff")-}) >>= debianize >>= inGroups ["happstack", "important"] >>= skip (Reason "duplicate FromJSON instances")
   _sr_revision <-  (git ("https://github.com/seereason/sr-revision") []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
@@ -559,11 +565,15 @@ buildTargets = do
   -- The source package name is set to haskell-src-exts by the
   -- cabal-debian package, Debian.Debianize.Details.debianDefaults.
   -- But where does that leave ghcjs-haskell-src-exts?
-  _haskell_src_exts <- hackage "haskell-src-exts" >>= flag (P.BuildDep "happy") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  --_haskell_src_exts_1ast <- git "https://github.com/ddssff/haskell-src-exts" [Branch "one-ast"] >>= debianize >>= inGroups ["ghc-libs", "pretty"]
-  -- haskell_src_meta =  (hackage "haskell-src-meta") >>= debianize
-  -- haskell_src_meta =  (git "https://github.com/bmillwood/haskell-src-meta" []) >>= debianize
-  -- haskell_src_meta <-  (git "https://github.com/ddssff/haskell-src-meta" []) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _haskell_src_exts <- hackage "haskell-src-exts" >>=
+                       debianize >>=
+                       flag (P.CabalPin "1.17.1") >>= -- Waiting for updates to haskell-src-meta
+                       flag (P.BuildDep "happy") >>=
+                       inGroups ["ghcjs-libs", "ghc-libs"]
+  -- This goes with haskell-src-exts-1.18.*
+  -- _haskell_src_exts_simple <- hackage "haskell-src-exts-simple" >>= debianize
+  -- _haskell_src_meta <- git "https://github.com/bmillwood/haskell-src-meta" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  -- _haskell_src_meta <- git "https://github.com/ddssff/haskell-src-meta" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _haskell_src_meta <- hackage "haskell-src-meta" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "th-path", "important"]
   _haste_compiler <- hack "haste-compiler" >>= flag (P.CabalDebian ["--default-package", "haste-compiler"]) >>= skip (Reason "Unmet build dependencies: libghc-shellmate-dev (<< 0.3) libghc-shellmate-prof (<< 0.3)")
   _haste_ffi_parser <- git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
@@ -823,6 +833,7 @@ buildTargets = do
   _monadRandom <-  (hackage "MonadRandom") >>= debianize
   _monads_tf <-  (hackage "monads-tf") >>= debianize
   _monad_task <- hackage "monad-task" >>= debianize >>= skip (Reason "0.1.0 requires transformers<4")
+  _mono_traversable <- hackage "mono-traversable" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _monoid_transformer <-  (hackage "monoid-transformer") >>= debianize -- apt (rel release "wheezy" "quantal") "haskell-monoid-transformer"
   _mtl <-  (hackage "mtl") >>= debianize >>= inGroups ["platform"]
   _mtl_compat <-  (hackage "mtl-compat") >>= debianize >>= skip (Reason "build failure")
@@ -832,7 +843,7 @@ buildTargets = do
   _multipart <-  (hackage "multipart") >>= debianize >>= inGroups ["platform"]
   _multiset <-  (hackage "multiset") >>= debianize
   _murmur_hash <-  (hackage "murmur-hash") >>= debianize
-  _mwc_random <-  (hackage "mwc-random") >>= debianize
+  _mwc_random <-  (hackage "mwc-random") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _mysql <- hackage "mysql" >>= flag (P.BuildDep "libmysqlclient-dev") >>= debianize
   _mysql_simple <- hackage "mysql-simple" >>= flag (P.BuildDep "libmysqlclient-dev") >>= debianize
   _nano_hmac <- hackage "nano-hmac" >>= patch $(embedFile "patches/nano-hmac.diff") >>= flag (P.DebVersion "0.2.0ubuntu1") >>= debianize
@@ -1138,7 +1149,7 @@ buildTargets = do
                               >>= flag (P.RelaxDep "cpphs")) >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
                -- , P.Package { P.spec = Apt (rel release "wheezy" "quantal") "haskell-utf8-string"
                --             , P.flags = [P.RelaxDep "hscolour", P.RelaxDep "cpphs"] }
-  _utility_ht <-  (hackage "utility-ht") >>= debianize
+  _utility_ht <- hackage "utility-ht" >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _uuid <-  (hackage "uuid") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _uuid_orphans <- git "https://github.com/seereason/uuid-orphans" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "clckwrks", "important"]
   _uuid_types <-  (hackage "uuid-types") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -1148,7 +1159,7 @@ buildTargets = do
   _vault <-  (hackage "vault") >>= debianize
   _vc_darcs <- darcs ("http://src.seereason.com/vc-darcs")
   _vc_git_dired <- git "https://github.com/ddssff/vc-git-dired" []
-  _vector_algorithms <-  (hackage "vector-algorithms") >>= debianize
+  _vector_algorithms <-  (hackage "vector-algorithms") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _vector_binary_instances <- hack "vector-binary-instances"
   _vector <-  (hackage "vector") >>= debianize
   _vector_space <-  (hackage "vector-space") >>= debianize
