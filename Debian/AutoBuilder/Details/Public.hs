@@ -552,10 +552,7 @@ buildTargets = do
                        ) >>= debianize >>= inGroups ["ghcjs-libs", "autobuilder-group", "important"]
   _sr_order <- git "https://github.com/seereason/sr-order" [] >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _haskell_help <- git ("https://github.com/seereason/sr-help") [] >>= debianize >>= inGroups ["autobuilder-group", "important"]
-  _haskell_lexer <-  (hackage "haskell-lexer"
-                              >>= pflag (P.DebVersion "1.0-3build2")
-                              >>= wflag (P.DebVersion "1.0-3+b1")
-                              >>= tflag (P.DebVersion "1.0-5")) >>= debianize
+  _haskell_lexer <-  (hackage "haskell-lexer") >>= debianize
   _haskell_list <-  (hackage "List") >>= debianize
   _haskell_names <-  git "https://github.com/haskell-suite/haskell-names" [] >>= debianize >>= inGroups ["ghc-libs","pretty"]
   _haskell_newtype <-  (hackage "newtype" >>= wflag (P.DebVersion "0.2-1") >>= tflag (P.DebVersion "0.2-3")) >>= debianize
