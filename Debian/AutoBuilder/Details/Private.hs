@@ -14,8 +14,8 @@ import System.FilePath ((</>))
 
 buildTargets :: TSt ()
 buildTargets = do
-  _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= debianize
-  _appraisalscribe_paths <- git "ssh://git@github.com/seereason/appraisalscribe-paths" [] >>= debianize
+  _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [Branch "typegraph"] >>= debianize
+  _appraisalscribe_paths <- git "ssh://git@github.com/seereason/appraisalscribe-paths" [Branch "typegraph"] >>= debianize
   _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [] >>= debianize
   -- appraisalscribe-data-tests is a huge package because it
   -- contains lots of test data, it makes more sense to just check
@@ -27,7 +27,7 @@ buildTargets = do
   _clckwrks_theme_seereasonpartners <- darcs (privateRepo </> "seereasonpartners-clckwrks") >>= cd "clckwrks-theme-seereasonpartners" >>= debianize >>= flag (P.BuildDep "hsx2hs") {- >>= flag P.NoDoc -}
   _clckwrks_theme_appraisalscribe <- darcs (privateRepo </> "clckwrks-theme-appraisalscribe") >>= flag (P.BuildDep "hsx2hs") >>= debianize
 
-  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "master"]
+  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "newpath"]
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize >>= inGroups ["private-libs"] >>= ghcjs_only
   _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize >>= inGroups ["private-libs"]
   _happstack_ghcjs_webmodule <- happstack_ghcjs >>= cd "happstack-ghcjs-webmodule" >>= debianize >>= inGroups ["private-libs"] >>= ghcjs_flags
@@ -73,10 +73,11 @@ buildTargets = do
   -- stripe_http_conduit <- debianize (darcs (privateRepo </> "stripe") `cd` "stripe-http-conduit")
   _task_manager <- git "ssh://git@github.com/seereason/task-manager.git" [] >>= debianize >>= inGroups ["private-libs"]
   _th_path <- git "ssh://git@github.com/seereason/th-path.git" [] >>= debianize >>= inGroups ["private-libs"]
+  _typegraph <- git "ssh://git@github.com/seereason/typegraph.git" [] >>= debianize >>= inGroups ["private-libs"]
 
+  ghcjs_flags _typegraph
   ghcjs_flags _th_path
   ghcjs_flags _image_cache
-
   ghcjs_flags _appraisalscribe_data
   ghcjs_flags _appraisalscribe_paths
   noTests

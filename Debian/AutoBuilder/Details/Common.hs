@@ -194,6 +194,6 @@ addDeps newer older pre lns = do
              lns' %= (++ [[Rel (BinPkgName (pre ++ older ++ suf)) Nothing Nothing]])
              lns' %= (++ [[Rel (BinPkgName (pre ++ older ++ suf)) Nothing Nothing]])
 
-hack name = hackage name >>= debianize
+hack v name = hackage v name >>= debianize
 
 git' r c = git r c >>= debianize
