@@ -10,7 +10,7 @@ import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Types.Packages as P (TSt, depends,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
-                                                           UDeb, OmitLTDeps, SkipVersion), packageMap,
+                                                           NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
                                                darcs, apt, git, hg, cd, debdir, uri,
                                                GroupName, inGroups, createPackage)
@@ -846,7 +846,7 @@ buildTargets = do
   _nano_hmac <- hackage Nothing "nano-hmac" >>= patch $(embedFile "patches/nano-hmac.diff") >>= flag (P.DebVersion "0.2.0ubuntu1") >>= debianize
   _nanospec <-  (hackage (Just "0.2.1") "nanospec" >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize -- avoid circular dependency nanospec <-> silently
   -- Empty as of ghc-7.10
-  _nats <-  (hackage (Just "1.1.1") "nats") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _nats <-  (hackage (Just "1.1.1") "nats") >>= debianize >>= flag P.NoDoc >>= inGroups ["ghcjs-libs", "ghc-libs"]
   -- Deprecated in favor if conduit-extra
   -- _network_conduit <- hackage (Just "1.1.0") "network-conduit" >>= debianize
   _network <-  (hackage (Just "2.6.3.1") "network") >>= debianize >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
