@@ -1,0 +1,24 @@
+Only in hse-cpp-0.1: dist
+diff -ru hse-cpp-0.1.orig/hse-cpp.cabal hse-cpp-0.1/hse-cpp.cabal
+--- hse-cpp-0.1.orig/hse-cpp.cabal	2013-05-20 23:49:23.000000000 -0700
++++ hse-cpp-0.1/hse-cpp.cabal	2016-10-05 15:32:58.250757651 -0700
+@@ -19,5 +19,5 @@
+   -- other-modules:       
+   build-depends:       base == 4.*
+                      , cpphs
+-                     , haskell-src-exts >= 1.14
++                     , haskell-src-exts >= 1.18
+   default-language:    Haskell2010
+diff -ru hse-cpp-0.1.orig/Language/Haskell/Exts/Annotated/CPP.hs hse-cpp-0.1/Language/Haskell/Exts/Annotated/CPP.hs
+--- hse-cpp-0.1.orig/Language/Haskell/Exts/Annotated/CPP.hs	2013-05-20 23:49:23.000000000 -0700
++++ hse-cpp-0.1/Language/Haskell/Exts/Annotated/CPP.hs	2016-10-05 15:32:51.626757494 -0700
+@@ -10,7 +10,7 @@
+ import Language.Preprocessor.Cpphs hiding (defaultCpphsOptions)
+ import Language.Preprocessor.Unlit
+ import Language.Haskell.Exts (ParseMode(..))
+-import Language.Haskell.Exts.Annotated
++import Language.Haskell.Exts
+ import Control.Applicative
+ import Data.List
+ 
+Only in hse-cpp-0.1/Language/Haskell/Exts/Annotated: CPP.hs~
