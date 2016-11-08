@@ -14,7 +14,7 @@ import System.FilePath ((</>))
 
 buildTargets :: TSt ()
 buildTargets = do
-  _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [Branch "cleanup"] >>= debianize []
+  _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= debianize []
   _appraisalscribe_paths <- git "ssh://git@github.com/seereason/appraisalscribe-paths" [] >>= debianize []
   _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [] >>= debianize []
   -- appraisalscribe-data-tests is a huge package because it
@@ -40,9 +40,7 @@ buildTargets = do
   -- really have a mechanism to ensure this is installed in the parent
   -- environment, except making it a dependency of the autobuilder
   -- itself.
-{-
-  _mimo <- git "ssh://git@github.com/seereason/mimo.git" [] >>= debianize >>= inGroups ["private-libs"]
--}
+  _mimo <- git "ssh://git@github.com/seereason/mimo.git" [] >>= debianize [] >>= inGroups ["private-libs"]
   -- These won't build unless libghc-mimo-dev is installed.  Unfortunately,
   -- when mimo's dependencies change the library often gets uninstalled.
 {-
@@ -50,18 +48,19 @@ buildTargets = do
       git "ssh://git@github.com/seereason/mimo-bootstrap.git" [] >>=
           flag (P.SetupDep "libghc-mimo-dev") >>=
           flag (P.BuildDep "haskell-mimo-utils") >>=
-          debianize >>= inGroups ["private-libs"]
+          debianize [] >>= inGroups ["private-libs"]
   _mimo_optimum <-
       git "ssh://git@github.com/seereason/mimo-optimum.git" [] >>=
           flag (P.SetupDep "libghc-mimo-dev") >>=
           flag (P.BuildDep "haskell-mimo-utils") >>=
-          debianize >>= inGroups ["private-libs"]
+          debianize [] >>= inGroups ["private-libs"]
   _mimo_paste <-
       git "ssh://git@github.com/seereason/mimo-paste.git" [] >>=
           flag (P.SetupDep "libghc-mimo-dev") >>=
           flag (P.BuildDep "haskell-mimo-utils") >>=
-          debianize >>= inGroups ["private-libs"]
+          debianize [] >>= inGroups ["private-libs"]
 -}
+
   _ontology <- git "ssh://git@github.com/seereason/ontology.git" [] >>= debianize [] >>= inGroups ["private-libs"]
   _seereason <- git "ssh://git@github.com/seereason/seereason" [] >>= debianize []
   _seereasonpartners_dot_com <-  darcs (privateRepo </> "seereasonpartners-clckwrks") >>=
