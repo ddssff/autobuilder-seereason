@@ -23,7 +23,7 @@ flag showplease
 
 flag local-libs
   Description: Link directly to the source of the autobuilder, debian-repo, and cabal-debian libraries
-  Default: True
+  Default: False
   Manual: True
 
 Library
