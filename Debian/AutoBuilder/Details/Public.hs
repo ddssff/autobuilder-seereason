@@ -625,7 +625,7 @@ buildTargets = do
                                >>= apply (execCabalM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
   _hs_bibutils <-  (hackage (Just "5.5") "hs-bibutils") >>= debianize []
   _hscolour <-  (hackage (Just "1.24.1") "hscolour") >>= debianize [] >>= flag (P.RelaxDep "hscolour") >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _hse_cpp <-  (hackage (Just "0.1") "hse-cpp") >>= debianize [] >>= patch $(embedFile "patches/hse-cpp.diff") >>= inGroups ["happstack", "important"]
+  _hse_cpp <-  (hackage (Just "0.2") "hse-cpp") >>= debianize [] {->>= patch $(embedFile "patches/hse-cpp.diff")-} >>= inGroups ["happstack", "important"]
   -- _hse_cpp <- git "https://github.com/haskell-suite/hse-cpp" [] >>= debianize [] >>= inGroups ["happstack", "important"]
   _hsemail <-  (hackage (Just "1.7.7") "hsemail") >>= debianize [] -- (rel release [] [P.DebVersion "1.7.1-2build2"])
   _hslogger <-  (hackage (Just "1.2.10") "hslogger") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "important"]
