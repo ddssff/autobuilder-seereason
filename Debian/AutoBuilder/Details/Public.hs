@@ -312,6 +312,7 @@ buildTargets = do
   _distributive <-  (hackage (Just "0.5.0.2") "distributive") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _dlist <-  (hackage (Just "0.8.0.1") "dlist") >>= debianize []
                -- Natty only(?)
+  _doctemplates <- hackage (Just "0.1.0.2") "doctemplates" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _doctest <-  (hackage (Just "0.11.0") "doctest") >>= debianize [] >>= inGroups [{-"ghcjs-libs",-} "ghc-libs"]
       -- This package fails to build in several different ways because it has no modules.
       -- I am just going to patch the packages that use it to require transformers >= 0.3.
@@ -884,13 +885,11 @@ buildTargets = do
   _optparse_applicative <-  (hackage (Just "0.12.1.0") "optparse-applicative") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _ordered <-  (hackage (Just "0.1") "ordered") >>= debianize []
   _pandoc <- -- git "https://github.com/jgm/pandoc" []
-             hackage (Just "1.17.1") "pandoc" >>= flag (P.CabalPin "1.17.1")
+             hackage (Just "1.18") "pandoc"
                              >>= patch $(embedFile "patches/pandoc.diff")
-                             -- >>= patch $(embedFile "patches/pandoc-templates.diff")
-                             -- >>= flag (P.RelaxDep "libghc-pandoc-doc")
                              >>= flag (P.BuildDep "alex")
                              >>= flag (P.BuildDep "happy") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
-  _pandoc_types <-  (hackage (Just "1.16.1") "pandoc-types") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
+  _pandoc_types <-  (hackage (Just "1.17.0.4") "pandoc-types") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
   _pango <-  (hackage (Just "0.13.1.1") "pango") >>= debianize [] >>= skip (Reason "see cairo")
   _parallel <-  (hackage (Just "3.2.1.0") "parallel") >>= debianize [] >>= inGroups ["platform"]
   _parseargs <-  (hackage (Just "0.2.0.7") "parseargs") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -1088,7 +1087,7 @@ buildTargets = do
   _test_framework_smallcheck <-  (hackage (Just "0.2") "test-framework-smallcheck") >>= debianize []
   _test_framework_th <-  (hackage (Just "0.2.4") "test-framework-th" >>= tflag (P.DebVersion "0.2.4-1build4")) >>= debianize []
   _testing_feat <- hackage (Just "0.4.0.3") "testing-feat" >>= {-patch $(embedFile "patches/testing-feat.diff") >>=-} debianize []
-  _texmath <-  (hackage (Just "0.8.6.5") "texmath") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
+  _texmath <-  (hackage (Just "0.8.6.7") "texmath") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
   _text_binary <- hackage (Just "0.2.1") "text-binary" >>= debianize [] >>= inGroups ["ghcjs-libs"]
   _text <-  (hackage (Just "1.2.2.1") "text" >>= flag (P.CabalDebian ["--cabal-flags", "-integer-simple"]) >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize [] >>= inGroups ["platform"]
   _text_icu <-  (hackage (Just "0.7.0.1") "text-icu" >>= flag (P.DevelDep "libicu-dev")) >>= debianize []
