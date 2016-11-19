@@ -15,8 +15,9 @@ import System.FilePath (takeBaseName)
 
 import Control.Monad.State (get)
 import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, hackage, debianize, git)
+import Debian.GHC (hcFlavor)
 import Debian.Debianize as D
-    (CabalInfo, CabalM, execCabalM, debInfo, compilerFlavor, binaryDebDescription, flags, relations, conflicts, replaces)
+    (CabalInfo, CabalM, execCabalM, debInfo, compilerChoice, binaryDebDescription, flags, relations, conflicts, replaces)
 import Debian.Relation (BinPkgName(..), Relation(Rel), Relations)
 import Debian.Releases (baseRelease, BaseRelease(..), Release(..))
 import Distribution.Compiler (CompilerFlavor(GHCJS))
@@ -154,7 +155,7 @@ gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
 -- can't build packages that expect regex-tdfa using regex-tdfa-rc.
 substitute :: String -> String -> CabalInfo -> CabalInfo
 substitute newer older = execCabalM $ do
-  prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> use (debInfo . D.flags . compilerFlavor)
+  prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> use (debInfo . D.flags . compilerChoice . hcFlavor)
   addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . conflicts)
   addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . replaces)
 
@@ -170,7 +171,7 @@ substitute newer older = execCabalM $ do
 -- The 'replacement' function is probably more suitable in most cases.
 replacement :: String -> String -> CabalInfo -> CabalInfo
 replacement newer older = execCabalM $ do
-  prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> use (debInfo . D.flags . compilerFlavor)
+  prefix <- (\ hc -> case hc of GHCJS -> "libghcjs-"; _ -> "libghc-") <$> use (debInfo . D.flags . compilerChoice . hcFlavor)
   addDeps newer older prefix (\ b -> debInfo . binaryDebDescription b . relations . conflicts)
   -- If we include the Provides: relationship then we will never
   -- switch between these packages - it will look to apt like whatever

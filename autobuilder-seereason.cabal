@@ -61,7 +61,37 @@ Library
     Exposed-Modules: Debug.Show
 
   if flag(local-libs)
-    Build-Depends: time, exceptions, pureMD5, directory, network-uri, pretty, regex-compat, tar, zlib, applicative-extras, sr-extra, magic, syb, utf8-string, regex-tdfa, data-default, set-extra, newtype-generics, ansi-wl-pprint, optparse-applicative, Diff, memoize, hsemail, deepseq, transformers, template-haskell, ListLike, old-locale, old-time
+    Build-Depends:
+      ansi-wl-pprint,
+      applicative-extras,
+      data-default,
+      deepseq,
+      Diff,
+      directory,
+      exceptions,
+      hsemail,
+      ListLike,
+      magic,
+      memoize,
+      network-uri,
+      newtype-generics,
+      old-locale,
+      old-time,
+      optparse-applicative,
+      parsec,
+      pretty,
+      pureMD5,
+      regex-compat,
+      regex-tdfa,
+      set-extra,
+      sr-extra,
+      syb,
+      tar,
+      template-haskell,
+      time,
+      transformers,
+      utf8-string,
+      zlib
     Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen
     Exposed-modules:
       Debian.AutoBuilder.BuildEnv,
