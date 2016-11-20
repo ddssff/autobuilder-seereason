@@ -87,6 +87,7 @@ buildTargets = do
   _base_unicode_symbols <-  (hackage (Just "0.2.2.4") "base-unicode-symbols" >>= tflag (P.DebVersion "0.2.2.4-3")) >>= debianize []
   _bifunctors <-  (hackage (Just "5.4.1") "bifunctors") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _bimap <-  (hackage (Just "0.3.2") "bimap") >>= debianize []
+  -- _binary_tagged <- hackage Nothing "binary-tagged" >>= debianize []
   _bindings_dSL <-  (hackage (Just "1.0.23") "bindings-DSL") >>= debianize []
   _bindings_gLFW <-  (hackage (Just "3.1.2.1") "bindings-GLFW" >>= inGroups ["gl"]
                                -- `patch` $(embedFile "patches/bindings-GLFW.diff")
@@ -355,11 +356,12 @@ buildTargets = do
   _fay <-  (hackage (Just "0.23.1.16") "fay" {- >>= patch $(embedFile "patches/fay.diff") -}) >>= debianize [] >>= flag (P.CabalDebian [ "--depends", "haskell-fay-utils:cpphs" ]) >>= skip (Reason "too old for current syb and optparse-applicative")
   _fay_jquery <-  (git "https://github.com/faylang/fay-jquery" []) >>= debianize [] >>= skip (Reason "Waiting for newer fay")
   _fay_text <-  (hackage (Just "0.3.2.2") "fay-text") >>= debianize [] >>= skip (Reason "Waiting for newer fay")
-  _fb <-  (git "https://github.com/ddssff/fb.git" []) >>= debianize [] >>= inGroups [ "authenticate", "appraisalscribe", "important"]
+  _fb <- git "https://github.com/ddssff/fb.git" [] >>= debianize [] >>= inGroups [ "authenticate", "appraisalscribe", "important"]
   _feed <- git "https://github.com/seereason/feed" [] {-hackage "feed"-} >>= tflag (P.DebVersion "0.3.9.2-1") >>= debianize []
   _fgl <-  (hackage (Just "5.5.3.0") "fgl") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   _file_embed <-  (hackage (Just "0.0.10") "file-embed") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _file_location <-  (hackage (Just "0.4.9") "file-location" >>= flag (P.CabalDebian [ "--source-package-name", "file-location" ])) >>= debianize []
+  _filelock <- hackage Nothing "filelock" >>= debianize []
   _filemanip <- git "https://github.com/ddssff/filemanip" [] >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _filemanip_extra <- git "https://github.com/seereason/filemanip-extra" [] >>= debianize [] >>= inGroups ["ghcjs-libs", "autobuilder-group", "important"]
   _fingertree <- hack (Just "0.1.1.0") "fingertree"
@@ -580,6 +582,7 @@ buildTargets = do
       hackage (Just "0.7.0") "haskell-src-meta" >>=
       debianize [] >>=
       inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
+  -- _hastache <- hackage Nothing "hastache" >>= debianize []
   _haste_compiler <- hack (Just "0.5.5.0") "haste-compiler" >>= flag (P.CabalDebian ["--default-package", "haste-compiler"]) >>= skip (Reason "Unmet build dependencies: libghc-shellmate-dev (<< 0.3) libghc-shellmate-prof (<< 0.3)")
   _haste_ffi_parser <- git' "https://github.com/RudolfVonKrugstein/haste-ffi-parser" []
   _haTeX <- -- hackage Nothing "HaTeX" >>=
@@ -597,6 +600,7 @@ buildTargets = do
   _highlighting_kate <-  (hackage (Just "0.6.2.1") "highlighting-kate") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
   _hinotify <-  (hackage (Just "0.3.8.1") "hinotify") >>= debianize []
   _hint <-  (hackage (Just "0.6.0") "hint") >>= debianize [] {- >>= skip (Reason "requires ghc-mtl") -}
+  -- _hit <- hackage Nothing "hit" >>= debianize []
   _hJavaScript <-  (hackage (Just "0.4.7") "HJavaScript"
                               >>= patch $(embedFile "patches/hjavascript.diff")
                               >>= pflag (P.DebVersion "0.4.7-3++1")
@@ -621,6 +625,7 @@ buildTargets = do
                -- won't build.  Use our debianization instead.  This means keeping
                -- up with sid's version.
   _hourglass <-  (hackage (Just "0.2.10") "hourglass") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  -- _hpack <- hackage Nothing "hpack" >>= debianize []
   _hpdf <-  (hackage (Just "1.4.10") "HPDF") >>= debianize []
   _hS3 <-  (git "https://github.com/scsibug/hS3.git" []) >>= debianize []
                                >>= apply (execCabalM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
@@ -660,8 +665,8 @@ buildTargets = do
   _html_entities <- darcs ("http://src.seereason.com/html-entities")
   _html_xml_utils <- apt "sid" "html-xml-utils"
   _http_api_data <- hackage (Just "0.2.4") "http-api-data" >>= debianize []
-  _http_client <-  (hackage (Just "0.4.30") "http-client") >>= debianize [] >>= flag (P.CabalPin "0.4.30") >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit", "important"]
-  _http_client_tls <- hackage (Just "0.2.4.1") "http-client-tls" >>= debianize [] >>= flag (P.CabalPin "0.2.4.1") >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit", "important"]
+  _http_client <-  (hackage (Just "0.4.30" {-"0.5.4"-}) "http-client") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit", "important"]
+  _http_client_tls <- hackage (Just "0.2.4.1" {-"0.3.3"-}) "http-client-tls" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit", "important"]
       -- Deprecated in favor of http-conduit
       -- ,  (hackage (Just "0.2.0.1") "http-client-conduit") >>= debianize []
       -- Deprecated in favor of conduit-extra
@@ -669,7 +674,7 @@ buildTargets = do
       -- ,  (hackage (Just "1.0.0") "blaze-builder-conduit") >>= debianize []
       -- ,  (hackage (Just "1.0.0") "zlib-conduit") >>= debianize []
   _http_common <-  (hackage (Just "0.8.2.0") "http-common") >>= debianize [] >>= inGroups ["platform", "happstack", "important"]
-  _http_conduit <-  (hackage (Just "2.1.11") "http-conduit") >>= debianize [] >>= flag (P.CabalPin "2.1.11") >>= inGroups ["conduit", "important"] -- fb isn't ready for 2.2
+  _http_conduit <-  (hackage (Just "2.1.11" {-"2.2.2.1"-}) "http-conduit") >>= debianize [] >>= inGroups ["conduit", "important"] -- fb isn't ready for 2.2
   _http_date <-  (hackage (Just "0.0.6.1") "http-date") >>= debianize []
   _http_media <-  (hackage (Just "0.6.4") "http-media") >>= debianize [] >>= inGroups ["servant"]
   _http <-  (hackage Nothing "HTTP") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
@@ -1038,6 +1043,7 @@ buildTargets = do
   _split <- hackage (Just "0.2.3.1") "split" >>= {-patch $(embedFile "patches/split.diff") >>= tflag (P.DebVersion "0.2.2-1") >>=-} debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _spoon <-  hackage (Just "0.3.1") "spoon" >>= debianize []
   _srcloc <-  (hackage (Just "0.5.1.0") "srcloc") >>= debianize []
+  -- _stack <- hackage Nothing "stack" >>= debianize []
   _stateVar <-  (hackage (Just "1.1.0.4") "StateVar") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _stb_image <-  (hackage (Just "0.2.1") "stb-image") >>= debianize []
   _stm_chans <-  (hackage (Just "3.0.0.4") "stm-chans") >>= debianize [] >>= inGroups ["platform"]

@@ -30,7 +30,7 @@ public :: TSt ()
 public =
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     -- private >>
-    Public.buildTargets >> applyEpochMap >> applyExecMap  >> use P.release >>= applyDepMap >> proc'
+    Public.buildTargets >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
 
 private :: TSt ()
 private =
