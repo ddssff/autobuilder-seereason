@@ -70,6 +70,7 @@ Library
       directory,
       exceptions,
       hsemail,
+      HUnit,
       ListLike,
       magic,
       memoize,
