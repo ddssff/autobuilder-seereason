@@ -12,16 +12,16 @@ module Debian.AutoBuilder.Details
 
 import Control.Lens -- (use, view, (%=))
 import Control.Monad (when)
-import Control.Monad.State (execState, modify, MonadState)
-import Data.Map as Map (elems, insert, map)
+import Control.Monad.State (execState {-, modify, MonadState-})
+-- import Data.Map as Map (elems, insert, map)
 import Data.Maybe
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, releaseRepoName, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.Packages (TSt)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
-import Debian.Debianize as D (CabalInfo, debInfo, execMap)
-import Debian.Relation (BinPkgName(..), Relation(Rel))
+-- import Debian.Debianize as D (CabalInfo, debInfo, execMap)
+-- import Debian.Relation (BinPkgName(..), Relation(Rel))
 import Debian.Releases (Release(..),
                         releaseString, parseReleaseName, isPrivateRelease,
                         baseRelease, Distro(..))
@@ -73,6 +73,7 @@ myExtraRepos = [{-Right (PersonalPackageArchive {ppaUser = "hvr", ppaName = "ghc
 -- This section has all the definitions relating to the particular
 -- suffixes we will use on our build releases.
 --
+myReleaseSuffixes :: [String]
 myReleaseSuffixes = ["-seereason", "-private"]
 
 --
@@ -83,11 +84,13 @@ myReleaseSuffixes = ["-seereason", "-private"]
 -- only with the vendor tag.  Sid is always a development release,
 -- Ubuntu creates a new one for each cycle.
 --
+myDevelopmentReleaseNames :: [String]
 myDevelopmentReleaseNames = ["sid", "quantal"]
 
 -- This tag is used to construct the customized part of the version
 -- number for any package the autobuilder builds.
 --
+myVendorTag :: String
 myVendorTag = "+seereason"
 
 --myDiscards :: Set.Set String
@@ -145,6 +148,7 @@ myIncludePackages myBuildRelease =
 
 -- This will not be available when a new release is created, so we
 -- have to make do until it gets built and uploaded.
+myOptionalIncludePackages :: Release -> [String]
 myOptionalIncludePackages _myBuildRelease =
     [ "seereason-keyring"
       -- You may need to omit ghc and ghcjs and flush the root to build ghcjs.
@@ -156,6 +160,7 @@ myOptionalIncludePackages _myBuildRelease =
     , "autobuilder-seereason"      -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
     ]
 
+myExcludePackages :: Release -> [String]
 myExcludePackages _ = []
 
 myComponents :: Release -> [String]
@@ -165,11 +170,13 @@ myComponents myBuildRelease =
       Ubuntu -> ["main", "restricted", "universe", "multiverse"]
       _ -> error $ "Invalid base distro: " ++ show myBuildRelease
 
+myHackageServer :: String
 myHackageServer = "hackage.haskell.org"
 -- myHackageServer = "hackage.factisresearch.com"
 
 -- Any package listed here will not trigger rebuilds when updated.
 --
+myGlobalRelaxInfo :: [String]
 myGlobalRelaxInfo =
     ["base-files",
      "bash",

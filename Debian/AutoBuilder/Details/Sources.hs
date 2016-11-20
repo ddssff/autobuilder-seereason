@@ -12,7 +12,7 @@ module Debian.AutoBuilder.Details.Sources
 
 import Data.List as List (map)
 import Data.Maybe
--- import Data.Set as Set (Set, empty)
+import Data.Set as Set (delete, toAscList)
 import Debian.Releases (Release(..), BaseRelease(..), allReleases, baseReleaseString,
                         releaseString, isPrivateRelease,
                         baseRelease, baseReleaseDistro, Distro(..), distroString)
@@ -145,7 +145,7 @@ ubuntuSourceLines ubuntuMirrorHost release =
 mySources :: Release -> [(String, [DebSource])]
 mySources myBuildRelease =
     List.map releaseSources
-            (map Release baseReleases ++
+            (map Release (toAscList baseReleases) ++
              concatMap (derivedReleases myBuildRelease) baseReleases) ++
     [(baseReleaseString Experimental, debianSourceLines myDebianMirrorHost Experimental),
 {-   (unlines ["deb http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString release ++ " main",
@@ -158,7 +158,7 @@ mySources myBuildRelease =
                 ["deb http://kanotix.com/files/debian sid main contrib non-free vdr",
                  "  deb-src http://kanotix.com/files/debian sid main contrib non-free vdr"]))]
     where
-      baseReleases = filter (/= Experimental) allReleases
+      baseReleases = Set.delete Experimental allReleases
       releaseSources release =
           (releaseString release, releaseSourceLines release myDebianMirrorHost myUbuntuMirrorHost)
 

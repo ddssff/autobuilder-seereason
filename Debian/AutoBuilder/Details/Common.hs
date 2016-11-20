@@ -42,13 +42,13 @@ asciiToString = map (chr . fromIntegral) . B.unpack
 -- | Turn a GHC package into a GHCJS package.
 ghcjs_only :: P.PackageId -> TSt P.PackageId
 ghcjs_only i = do
-  P.modifyPackage (over P.groups (Set.delete "ghc-libs")) i
-  P.modifyPackage (over P.groups (Set.insert "ghcjs-libs")) i
+  _ <- P.modifyPackage (over P.groups (Set.delete "ghc-libs")) i
+  _ <- P.modifyPackage (over P.groups (Set.insert "ghcjs-libs")) i
   Just p <- use (P.packageMap . at i)
-  putSrcPkgName (makeSrcPkgName (view P.spec p)) i
-  flag (P.CabalDebian ["--ghcjs"]) i
-  flag (P.BuildDep "libghc-cabal-dev") i
-  flag (P.BuildDep "ghcjs") i
+  _ <- putSrcPkgName (makeSrcPkgName (view P.spec p)) i
+  _ <- flag (P.CabalDebian ["--ghcjs"]) i
+  _ <- flag (P.BuildDep "libghc-cabal-dev") i
+  _ <- flag (P.BuildDep "ghcjs") i
   -- flag (P.BuildDep "haskell-devscripts (>= 0.8.21.3)") i
   flag P.NoDoc i -- sometimes the ghcjs haddock is super slow
 
@@ -56,9 +56,9 @@ ghcjs_only i = do
 ghcjs_flags :: P.PackageId -> TSt P.PackageId
 ghcjs_flags i = do
   j <- P.clonePackage id i
-  ghcjs_only j
-  P.modifyPackage (over P.groups (Set.delete "ghcjs-libs")) i
-  P.modifyPackage (over P.groups (Set.insert "ghc-libs")) i
+  _ <- ghcjs_only j
+  _ <- P.modifyPackage (over P.groups (Set.delete "ghcjs-libs")) i
+  _ <- P.modifyPackage (over P.groups (Set.insert "ghc-libs")) i
   return j
 
 makeSrcPkgName :: RetrieveMethod -> String

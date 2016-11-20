@@ -5,7 +5,7 @@ module Debian.AutoBuilder.Details.Private (buildTargets) where
 import Control.Lens (use)
 import Data.FileEmbed (embedFile)
 import Data.Map as Map (keys)
-import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian, NoDoc, SetupDep), flag, patch, debianize, darcs, git, cd, TSt, packageMap, inGroups)
+import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, darcs, git, cd, TSt, packageMap, inGroups)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 import Debian.Repo.Fingerprint (GitSpec(Branch))
 import System.FilePath ((</>))
@@ -78,11 +78,11 @@ buildTargets = do
   _th_path <- git "ssh://git@github.com/seereason/th-path.git" [] >>= debianize [] >>= inGroups ["private-libs"]
   _typegraph <- git "ssh://git@github.com/seereason/typegraph.git" [] >>= debianize [] >>= inGroups ["private-libs"]
 
-  ghcjs_flags _typegraph
-  ghcjs_flags _th_path
-  ghcjs_flags _image_cache
-  ghcjs_flags _appraisalscribe_data
-  ghcjs_flags _appraisalscribe_paths
+  _ <- ghcjs_flags _typegraph
+  _ <- ghcjs_flags _th_path
+  _ <- ghcjs_flags _image_cache
+  _ <- ghcjs_flags _appraisalscribe_data
+  _ <- ghcjs_flags _appraisalscribe_paths
   noTests
 
 noTests :: TSt ()
