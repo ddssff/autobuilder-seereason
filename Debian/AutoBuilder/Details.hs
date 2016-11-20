@@ -21,7 +21,7 @@ import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.Packages (TSt)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 -- import Debian.Debianize as D (CabalInfo, debInfo, execMap)
--- import Debian.Relation (BinPkgName(..), Relation(Rel))
+import Debian.Relation (BinPkgName(..))
 import Debian.Releases (Release(..),
                         releaseString, parseReleaseName, isPrivateRelease,
                         baseRelease, Distro(..))
@@ -121,8 +121,9 @@ myKnownTargets params = do
 -- seereason-keyring) you currently need to first build it and then
 -- install it manually.
 --
-myIncludePackages :: Release -> [String]
+myIncludePackages :: Release -> [BinPkgName]
 myIncludePackages myBuildRelease =
+    fmap BinPkgName
     [ "cabal-install"
     , "debian-archive-keyring"
     , "build-essential"         -- This is required by autobuilder code that opens the essential-packages list
@@ -140,27 +141,28 @@ myIncludePackages myBuildRelease =
     -- Private releases generally have ssh URIs in their sources.list,
     -- I have observed that this solves the "ssh died unexpectedly"
     -- errors.
-    (if isPrivateRelease myBuildRelease then ["ssh"] else []) ++
+    (if isPrivateRelease myBuildRelease then [BinPkgName "ssh"] else []) ++
     case releaseRepoName (baseRelease myBuildRelease) of
       Debian -> []
-      Ubuntu -> ["ubuntu-keyring"]
+      Ubuntu -> [BinPkgName "ubuntu-keyring"]
       _ -> error $ "Invalid base distro: " ++ show myBuildRelease
 
 -- This will not be available when a new release is created, so we
 -- have to make do until it gets built and uploaded.
-myOptionalIncludePackages :: Release -> [String]
+myOptionalIncludePackages :: Release -> [BinPkgName]
 myOptionalIncludePackages _myBuildRelease =
-    [ "seereason-keyring"
+    
+    [ BinPkgName "seereason-keyring"
       -- You may need to omit ghc and ghcjs and flush the root to build ghcjs.
-    , "ghc"                        -- We need ghc and ghcjs to figure out bundled package lists.
-    , "ghcjs"                      -- Just be careful when trying to upgrade the compiler, if
-                                   -- you need to back a build out you will tear your hair out
-                                   -- figureing why the new compiler is still there!
-    , "happy"                      -- the happy dependency list is broken, so installing this helps it build when necessary
-    , "autobuilder-seereason"      -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
+    , BinPkgName "ghc"                   -- We need ghc and ghcjs to figure out bundled package lists.
+    , BinPkgName "ghcjs"                 -- Just be careful when trying to upgrade the compiler, if
+                                         -- you need to back a build out you will tear your hair out
+                                         -- figureing why the new compiler is still there!
+    , BinPkgName "happy"                 -- the happy dependency list is broken, so installing this helps it build when necessary
+    , BinPkgName "autobuilder-seereason" -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
     ]
 
-myExcludePackages :: Release -> [String]
+myExcludePackages :: Release -> [BinPkgName]
 myExcludePackages _ = []
 
 myComponents :: Release -> [String]
