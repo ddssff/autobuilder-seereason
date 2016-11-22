@@ -416,6 +416,7 @@ buildTargets = do
                                  >>= patch $(embedFile "patches/ghcjs-dom-hello.diff")
                                  >>= flag (P.CabalDebian ["--default-package", "ghcjs-dom-hello"])) >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "glib"] >>= skip (Reason "see cairo and glib")
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [{-Branch "ghcjsi"-}] >>= relax "cabal-install" >>= inGroups ["ghcjs-comp"]
+  _ghcjs8 <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["hvr"]
   -- _ghcjs_prim <- git "https://github.com/ghcjs/ghcjs-prim" [] >>= debianize [] >>= inGroups ["ghcjs-comp", "glib"]
   _ghc_mtl <- (hackage (Just "1.2.1.0") "ghc-mtl") >>= debianize [] {- >>= skip (Reason "No instance for (MonadIO GHC.Ghc)") -}
   _ghc_paths <-  (hackage (Just "0.1.0.9") "ghc-paths" >>= tflag (P.DebVersion "0.1.0.9-3")) >>= debianize [] -- apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah

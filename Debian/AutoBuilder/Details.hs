@@ -15,23 +15,23 @@ import Control.Monad (when)
 import Control.Monad.State (execState {-, modify, MonadState-})
 -- import Data.Map as Map (elems, insert, map)
 import Data.Maybe
+import Data.Version (showVersion, Version(Version))
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, releaseRepoName, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.Packages (TSt)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
--- import Debian.Debianize as D (CabalInfo, debInfo, execMap)
+import Debian.GHC as GHC (CompilerVendor(Debian, HVR), hvrCabalVersion)
 import Debian.Relation (BinPkgName(..))
-import Debian.Releases (Release(..),
-                        releaseString, parseReleaseName, isPrivateRelease,
-                        baseRelease, Distro(..))
+import Debian.Releases as Releases
+    (Release(..), releaseString, parseReleaseName, isPrivateRelease, baseRelease, Distro(..))
 import Debian.Repo.Slice (Slice, PPASlice{-(PersonalPackageArchive, ppaUser, ppaName)-})
 import Debian.Version (parseDebianVersion')
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
 
-myParams :: FilePath -> Release -> ParamRec
-myParams home myBuildRelease =
+myParams :: FilePath -> Release -> CompilerVendor -> ParamRec
+myParams home myBuildRelease ghcVendor =
     let myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
         myBuildURIPrefix = "http://deb.seereason.com"
         params = (defaultParams (releaseString myBuildRelease)
@@ -48,7 +48,7 @@ myParams home myBuildRelease =
                  , sources = mySources myBuildRelease
                  , globalRelaxInfo = myGlobalRelaxInfo
                  , includePackages = myIncludePackages myBuildRelease
-                 , optionalIncludePackages = myOptionalIncludePackages myBuildRelease
+                 , optionalIncludePackages = myOptionalIncludePackages myBuildRelease ghcVendor
                  , excludePackages = myExcludePackages myBuildRelease
                  , components = myComponents myBuildRelease
                  , developmentReleaseNames = myDevelopmentReleaseNames
@@ -124,43 +124,54 @@ myKnownTargets params = do
 myIncludePackages :: Release -> [BinPkgName]
 myIncludePackages myBuildRelease =
     fmap BinPkgName
-    [ "cabal-install"
-    , "debian-archive-keyring"
+    [ "debian-archive-keyring"
     , "build-essential"         -- This is required by autobuilder code that opens the essential-packages list
     , "pkg-config"              -- Some packages now depend on this package via new cabal options.
     , "debian-keyring"
     , "locales"
     , "software-properties-common" -- Required to run add-apt-repository to use a PPA.
-    -- , "perl-base"
-    -- , "gnupg"
-    -- , "dpkg"
-    -- , "locales"
-    -- , "language-pack-en"
-    -- , "makedev"
+    -- , "cabal-install"
     ] ++
     -- Private releases generally have ssh URIs in their sources.list,
     -- I have observed that this solves the "ssh died unexpectedly"
     -- errors.
     (if isPrivateRelease myBuildRelease then [BinPkgName "ssh"] else []) ++
     case releaseRepoName (baseRelease myBuildRelease) of
-      Debian -> []
+      Releases.Debian -> []
       Ubuntu -> [BinPkgName "ubuntu-keyring"]
       _ -> error $ "Invalid base distro: " ++ show myBuildRelease
 
 -- This will not be available when a new release is created, so we
 -- have to make do until it gets built and uploaded.
-myOptionalIncludePackages :: Release -> [BinPkgName]
-myOptionalIncludePackages _myBuildRelease =
-    
-    [ BinPkgName "seereason-keyring"
-      -- You may need to omit ghc and ghcjs and flush the root to build ghcjs.
-    , BinPkgName "ghc"                   -- We need ghc and ghcjs to figure out bundled package lists.
-    , BinPkgName "ghcjs"                 -- Just be careful when trying to upgrade the compiler, if
-                                         -- you need to back a build out you will tear your hair out
-                                         -- figureing why the new compiler is still there!
-    , BinPkgName "happy"                 -- the happy dependency list is broken, so installing this helps it build when necessary
-    , BinPkgName "autobuilder-seereason" -- This pulls in dependencies required for some pre-build tasks, e.g. libghc-cabal-debian-dev
-    ]
+myOptionalIncludePackages :: Release -> CompilerVendor -> [BinPkgName]
+myOptionalIncludePackages _myBuildRelease myCompilerVendor =
+    fmap BinPkgName
+    [ "seereason-keyring"
+    -- This pulls in dependencies required for some pre-build tasks,
+    -- e.g. libghc-cabal-debian-dev which is needed to run
+    -- Debianize.hs scripts.  But do we really need this in clean?
+    , "autobuilder-seereason"
+    -- You may need to omit ghc and ghcjs and flush the root to build
+    -- ghcjs.  We need ghc and ghcjs to figure out bundled package
+    -- lists.  Just be careful when trying to upgrade the compiler, if
+    -- you need to back a build out you will tear your hair out
+    -- figureing why the new compiler is still there!
+    -- , "ghc-" ++ showVersion v
+    -- , "ghcjs"
+    -- the happy dependency list is (was?) broken, so installing this
+    -- helps it build when necessary
+    -- , "happy-" ++ showVersion (hvrHappyVersion v)
+    ] ++
+    (case myCompilerVendor of
+       GHC.Debian ->
+           [BinPkgName "ghc",
+            BinPkgName "cabal-install",
+            BinPkgName "ghcjs"]
+       HVR v ->
+           [BinPkgName ("ghc-" ++ showVersion v),
+            BinPkgName ("cabal-install-" ++ showVersion (hvrCabalVersion v)),
+            -- Switch to ghcjs-8.0 once it is built
+            BinPkgName "ghcjs"])
 
 myExcludePackages :: Release -> [BinPkgName]
 myExcludePackages _ = []
@@ -168,7 +179,7 @@ myExcludePackages _ = []
 myComponents :: Release -> [String]
 myComponents myBuildRelease =
     case releaseRepoName (baseRelease myBuildRelease) of
-      Debian -> ["main", "contrib", "non-free"]
+      Releases.Debian -> ["main", "contrib", "non-free"]
       Ubuntu -> ["main", "restricted", "universe", "multiverse"]
       _ -> error $ "Invalid base distro: " ++ show myBuildRelease
 
