@@ -10,3 +10,22 @@ diff --git a/Dh_Haskell.sh b/Dh_Haskell.sh
      # PS4=$PS5
  }
  
+--- a/Dh_Haskell.sh
++++ b/Dh_Haskell.sh
+@@ -6,11 +6,11 @@ run () {
+ }
+ 
+ cpu(){
+-  ghc -e 'putStr System.Info.arch'
++  ghc -ignore-dot-ghci -e 'putStr System.Info.arch'
+ }
+ 
+ os(){
+-  ghc -e 'putStr System.Info.os'
++  ghc -ignore-dot-ghci -e 'putStr System.Info.os'
+ }
+ 
+ ghcjs_version(){
+-- 
+1.9.1
+

@@ -220,5 +220,5 @@ myGlobalRelaxInfo =
      "tar",
      "sysvinit",
      "libc6-dev",
-     "haskell-devcripts" -- Need to patch this, but don't want to rebuild everything
+     "haskell-devscripts"
     ]
