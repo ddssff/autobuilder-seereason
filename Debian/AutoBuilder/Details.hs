@@ -15,7 +15,7 @@ import Control.Monad (when)
 import Control.Monad.State (execState {-, modify, MonadState-})
 -- import Data.Map as Map (elems, insert, map)
 import Data.Maybe
-import Data.Version (showVersion, Version(Version))
+import Data.Version (showVersion)
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, releaseRepoName, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)

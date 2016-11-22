@@ -12,7 +12,7 @@ module Debian.AutoBuilder.Details.Sources
 
 import Data.List as List (map)
 import Data.Maybe
-import Data.Set as Set (delete, toAscList)
+import Data.Set as Set (delete, fromList, member, Set, toAscList)
 import Debian.Releases (Release(..), BaseRelease(..), allReleases, baseReleaseString,
                         releaseString, isPrivateRelease,
                         baseRelease, baseReleaseDistro, Distro(..), distroString)
@@ -97,55 +97,6 @@ myReleaseAliases myBuildRelease =
 
 ----------------------- SOURCES ----------------------------
 
--- Build a sources.list for one of our build relases.
---
-releaseSourceLines :: Release -> String -> String -> [DebSource]
-releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
-    case release of
-      PrivateRelease r ->
-          releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
-          List.map parseSourceLine [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
-                                   , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]
-      ExtendedRelease r _d ->
-          releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
-          List.map parseSourceLine [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
-                                   , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]
-      Release b -> baseReleaseSourceLines b debianMirrorHost ubuntuMirrorHost
-    where
-      uri = show (fromJust (myBuildURI release))
-
-baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
-    case releaseRepoName release of
-      Debian -> debianSourceLines debianMirrorHost release
-      Ubuntu -> ubuntuSourceLines ubuntuMirrorHost release
-      x -> error $ "Unknown release repository: " ++ show x
-
-debianSourceLines :: String -> BaseRelease -> [DebSource]
-debianSourceLines debianMirrorHost release =
-    List.map parseSourceLine
-      [ "deb " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free"
-      , "deb-src " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free" ] ++
-    hvrSourceLines release
-
-ubuntuSourceLines :: String -> BaseRelease -> [DebSource]
-ubuntuSourceLines ubuntuMirrorHost release =
-    List.map parseSourceLine
-      [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
-      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
-      , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
-      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
-      , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
-      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
-      , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse"
-      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse" ] ++
-    hvrSourceLines release
-
-hvrSourceLines :: BaseRelease -> [DebSource]
-hvrSourceLines release =
-    List.map parseSourceLine $
-    ["deb http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString release ++ " main",
-     "deb-src http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString release ++ " main"]
-
 -- Build a map assigning names to text for every sources.list we might
 -- use.  These names can be used in Apt targets.  It is also assumed
 -- that we can use any base release or build release name to look up a
@@ -168,6 +119,61 @@ mySources myBuildRelease =
       baseReleases = Set.delete Experimental allReleases
       releaseSources release =
           (releaseString release, releaseSourceLines release myDebianMirrorHost myUbuntuMirrorHost)
+
+-- Build a sources.list for one of our build relases.
+--
+releaseSourceLines :: Release -> String -> String -> [DebSource]
+releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
+    case release of
+      PrivateRelease r ->
+          releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
+          List.map parseSourceLine [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
+                                   , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]
+      ExtendedRelease r _d ->
+          releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
+          List.map parseSourceLine [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
+                                   , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]
+      Release b -> baseReleaseSourceLines b debianMirrorHost ubuntuMirrorHost ++
+                   hvrSourceLines b
+
+    where
+      uri = show (fromJust (myBuildURI release))
+
+baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
+    case releaseRepoName release of
+      Debian -> debianSourceLines debianMirrorHost release
+      Ubuntu -> ubuntuSourceLines ubuntuMirrorHost release
+      x -> error $ "Unknown release repository: " ++ show x
+
+debianSourceLines :: String -> BaseRelease -> [DebSource]
+debianSourceLines debianMirrorHost release =
+    List.map parseSourceLine
+      [ "deb " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free"
+      , "deb-src " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free" ]
+
+ubuntuSourceLines :: String -> BaseRelease -> [DebSource]
+ubuntuSourceLines ubuntuMirrorHost release =
+    List.map parseSourceLine
+      [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
+      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
+      , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
+      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
+      , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
+      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
+      , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse"
+      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse" ]
+
+hvrSourceLines :: BaseRelease -> [DebSource]
+hvrSourceLines release | release `member` hvrReleases =
+    List.map parseSourceLine $
+    ["deb http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString release ++ " main",
+     "deb-src http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString release ++ " main"]
+hvrSourceLines Jessie =
+    List.map parseSourceLine ["deb http://downloads.haskell.org/debian jessie main"]
+hvrSourceLines _ = []
+
+hvrReleases :: Set BaseRelease
+hvrReleases = Set.fromList [Precise, Trusty, Utopic, Vivid, Wily, Xenial, Yakkety]
 
 -- These host names are used to construct the sources.list lines to
 -- access the Debian and Ubuntu repositories.  The anl.gov values here
