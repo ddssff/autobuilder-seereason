@@ -1,18 +1,7 @@
 diff --git a/Dh_Haskell.sh b/Dh_Haskell.sh
 --- a/Dh_Haskell.sh
 +++ b/Dh_Haskell.sh
-@@ -483,7 +483,7 @@
- check_recipe(){
-     # local PS5=$PS4; PS4=" + check_recipe> "; set -x
-     hc=`packages_hc`
--    run ${DEB_SETUP_BIN_NAME} test --builddir=dist-${hc} --show-details=direct
-+    run ${DEB_SETUP_BIN_NAME} test --builddir=dist-${hc} --show-details=always
-     # PS4=$PS5
- }
- 
---- a/Dh_Haskell.sh
-+++ b/Dh_Haskell.sh
-@@ -6,11 +6,11 @@ run () {
+@@ -6,15 +6,21 @@ run () {
  }
  
  cpu(){
@@ -23,9 +12,55 @@ diff --git a/Dh_Haskell.sh b/Dh_Haskell.sh
  os(){
 -  ghc -e 'putStr System.Info.os'
 +  ghc -ignore-dot-ghci -e 'putStr System.Info.os'
++}
++
++# info ghc "Global Package DB" -> /usr/lib/ghc/package.conf.d
++info(){
++  ghc -ignore-dot-ghci -e "System.Process.readProcess \"$1\" [\"--info\"] \"\" >>= putStr . Data.Maybe.fromJust . lookup \"$2\" . (read :: String -> [(String, String)])"
  }
  
  ghcjs_version(){
--- 
-1.9.1
-
+   ghcjs --numeric-ghcjs-version
++  # info ghcjs "Project version"
+ }
+ 
+ ghcjs_ghc_version(){
+@@ -61,11 +67,7 @@ package_libdir(){
+ }
+ 
+ hc_pkgdir(){
+-    case $1 in
+-        ghc) echo "var/lib/ghc/package.conf.d";;
+-        ghcjs) echo "usr/lib/ghcjs/.ghcjs/`cpu`-`os`-`ghcjs_version`-`ghcjs_ghc_version`/ghcjs/package.conf.d";;
+-        *) echo "Don't know pkgdir for $1" >&2; exit 1;;
+-    esac
++    info $1 "Global Package DB" | sed 's:^/::'
+ }
+ 
+ package_pkgdir(){
+@@ -483,7 +483,7 @@
+ check_recipe(){
+     # local PS5=$PS4; PS4=" + check_recipe> "; set -x
+     hc=`packages_hc`
+-    run ${DEB_SETUP_BIN_NAME} test --builddir=dist-${hc} --show-details=direct
++    run ${DEB_SETUP_BIN_NAME} test --builddir=dist-${hc} --show-details=always
+     # PS4=$PS5
+ }
+ 
+diff --git a/debian/control b/debian/control
+index 4a312fb..9721fc3 100644
+--- a/debian/control
++++ b/debian/control
+@@ -17,11 +17,10 @@
+ Depends: dctrl-tools
+   , debhelper
+   , dh-buildinfo
+-  , ghc (>= 7.10.2.20151030-2)
++  , ghc-8.0.1 | ghc (>= 7.10.2.20151030-2)
+   , cdbs
+   , ${misc:Depends}
+   , html-xml-utils
+-  , ghc-haddock
+ Breaks: haskell-devscripts (<= 0.10.2.3)
+ Replaces: haskell-devscripts (<= 0.10.2.3)
+ Suggests: haskell-devscripts

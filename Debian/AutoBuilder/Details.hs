@@ -15,7 +15,7 @@ import Control.Monad (when)
 import Control.Monad.State (execState {-, modify, MonadState-})
 -- import Data.Map as Map (elems, insert, map)
 import Data.Maybe
-import Data.Version (showVersion)
+import Data.Version (showVersion, Version(Version))
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, releaseRepoName, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
@@ -30,8 +30,8 @@ import Debian.Version (parseDebianVersion')
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
 
-myParams :: FilePath -> Release -> CompilerVendor -> ParamRec
-myParams home myBuildRelease ghcVendor =
+myParams :: FilePath -> Release -> ParamRec
+myParams home myBuildRelease =
     let myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
         myBuildURIPrefix = "http://deb.seereason.com"
         params = (defaultParams (releaseString myBuildRelease)
@@ -40,6 +40,7 @@ myParams home myBuildRelease ghcVendor =
                    myDevelopmentReleaseNames)
                  { vendorTag = myVendorTag
                  , oldVendorTags = ["seereason"]
+                 , compilerPackage = myCompilerPackage
                  , autobuilderEmail = "SeeReason Autobuilder <partners@seereason.com>"
                  , releaseSuffixes = myReleaseSuffixes
                  , extraRepos = myExtraRepos
@@ -48,7 +49,7 @@ myParams home myBuildRelease ghcVendor =
                  , sources = mySources myBuildRelease
                  , globalRelaxInfo = myGlobalRelaxInfo
                  , includePackages = myIncludePackages myBuildRelease
-                 , optionalIncludePackages = myOptionalIncludePackages myBuildRelease ghcVendor
+                 , optionalIncludePackages = myOptionalIncludePackages
                  , excludePackages = myExcludePackages myBuildRelease
                  , components = myComponents myBuildRelease
                  , developmentReleaseNames = myDevelopmentReleaseNames
@@ -162,7 +163,7 @@ myOptionalIncludePackages _myBuildRelease myCompilerVendor =
     -- helps it build when necessary
     -- , "happy-" ++ showVersion (hvrHappyVersion v)
     ] ++
-    (case myCompilerVendor of
+    (case myCompilerPackage of
        GHC.Debian ->
            [BinPkgName "ghc",
             BinPkgName "cabal-install",
@@ -171,7 +172,11 @@ myOptionalIncludePackages _myBuildRelease myCompilerVendor =
            [BinPkgName ("ghc-" ++ showVersion v),
             BinPkgName ("cabal-install-" ++ showVersion (hvrCabalVersion v)),
             -- Switch to ghcjs-8.0 once it is built
-            BinPkgName "ghcjs"])
+            BinPkgName "ghcjs-8.0.1"])
+
+myCompilerPackage :: CompilerVendor
+myCompilerPackage = GHC.Debian
+-- myCompilerPackage = HVR (Version [8,0,1] [])
 
 myExcludePackages :: Release -> [BinPkgName]
 myExcludePackages _ = []
@@ -191,45 +196,46 @@ myHackageServer = "hackage.haskell.org"
 --
 myGlobalRelaxInfo :: [String]
 myGlobalRelaxInfo =
-    ["base-files",
-     "bash",
-     "binutils",
-     "bsdutils",
-     "cdbs",
-     "devscripts",
-     "dpkg",
-     "dpkg-dev",
-     "gcc",
-     "g++",
-     "libc-bin",
-     "make",
-     "mount",
-     "base-passwd",
-     "mktemp",
-     "sed",
-     "util-linux",
-     "sysvinit-utils",
-     "autoconf",
-     "debhelper",
-     "debianutils",
-     "diff",
-     "e2fsprogs",
-     "findutils",
-     "flex",
-     "login",
-     "coreutils",
-     "grep",
-     "gs",
-     "gzip",
-     "hostname",
-     "intltool",
-     "ncurses-base",
-     "ncurses-bin",
-     "perl",
-     "perl-base",
-     "python-minimal",
-     "tar",
-     "sysvinit",
-     "libc6-dev",
-     "haskell-devscripts"
-    ]
+    [ "autoconf"
+    , "base-files"
+    , "base-passwd"
+    , "bash"
+    , "binutils"
+    , "bsdutils"
+    , "cdbs"
+    , "coreutils"
+    , "debhelper"
+    , "debianutils"
+    , "devscripts"
+    , "diff"
+    , "dpkg"
+    , "dpkg-dev"
+    , "e2fsprogs"
+    , "findutils"
+    , "flex"
+    , "g++"
+    , "gcc"
+    , "grep"
+    , "gs"
+    , "gzip"
+    , "haskell-devscripts"
+    , "haskell-devscripts-minimal"
+    , "hostname"
+    , "intltool"
+    , "libc6-dev"
+    , "libc-bin"
+    , "login"
+    , "make"
+    , "mktemp"
+    , "mount"
+    , "ncurses-base"
+    , "ncurses-bin"
+    , "perl"
+    , "perl-base"
+    , "python-minimal"
+    , "sed"
+    , "sysvinit"
+    , "sysvinit-utils"
+    , "tar"
+    , "util-linux" ]
+

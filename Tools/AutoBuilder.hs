@@ -1,11 +1,9 @@
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-orphans #-}
 
-import Data.Version (Version(..))
 import qualified Debian.AutoBuilder.Main as M
 import Debian.AutoBuilder.Details (myParams)
 import Debian.AutoBuilder.Details.Versions (seereasonDefaults)
-import Debian.GHC (CompilerVendor(HVR))
 import Debian.Release (ReleaseName(ReleaseName))
 import Debian.Releases (parseReleaseName)
 import System.Environment (getEnv, getExecutablePath, getArgs)
@@ -18,7 +16,7 @@ main = do
   prog <- getExecutablePath
   case user of
     -- This actually runs the autobuilder
-    "root" -> M.main seereasonDefaults (\ h r -> myParams h (parseReleaseName (ReleaseName r)) (HVR (Version [8,0,1] [])))
+    "root" -> M.main seereasonDefaults (\h r -> myParams h (parseReleaseName (ReleaseName r)))
     -- Re-run the command with root permissions, preserving $HOME
     -- so we find the user's scratch directory in "$HOME/.autobuilder".
     _ -> rawSystem "sudo" ("-E" : prog : args) >>= exitWith
