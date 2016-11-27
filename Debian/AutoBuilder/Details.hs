@@ -15,12 +15,13 @@ import Control.Monad (when)
 import Control.Monad.State (execState {-, modify, MonadState-})
 -- import Data.Map as Map (elems, insert, map)
 import Data.Maybe
-import Data.Version (Version)
+import Data.Version (showVersion, Version)
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, releaseRepoName, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.Packages (TSt)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
+import Debian.GHC (hvrCabalVersion)
 import Debian.Relation (BinPkgName(..))
 import Debian.Releases as Releases
     (Release(..), releaseString, parseReleaseName, isPrivateRelease, baseRelease, Distro(..))
@@ -144,8 +145,8 @@ myIncludePackages myBuildRelease =
 
 -- This will not be available when a new release is created, so we
 -- have to make do until it gets built and uploaded.
-myOptionalIncludePackages :: Release -> CompilerVendor -> [BinPkgName]
-myOptionalIncludePackages _myBuildRelease myCompilerVendor =
+myOptionalIncludePackages :: [BinPkgName]
+myOptionalIncludePackages =
     fmap BinPkgName
     [ "seereason-keyring"
     -- This pulls in dependencies required for some pre-build tasks,
@@ -163,17 +164,16 @@ myOptionalIncludePackages _myBuildRelease myCompilerVendor =
     -- helps it build when necessary
     -- , "happy-" ++ showVersion (hvrHappyVersion v)
     ] ++
-    (case myCompilerPackage of
-       GHC.Debian ->
+    (case myCompilerVersion of
+       Nothing ->
            [BinPkgName "ghc",
             BinPkgName "cabal-install",
             BinPkgName "ghcjs"]
-       HVR v ->
+       Just v ->
            [BinPkgName ("ghc-" ++ showVersion v),
             BinPkgName ("cabal-install-" ++ showVersion (hvrCabalVersion v)),
             -- Switch to ghcjs-8.0 once it is built
             BinPkgName "ghcjs-8.0.1"])
-#endif
 
 myCompilerVersion :: Maybe Version
 myCompilerVersion = Nothing -- Just use the package named ghc
