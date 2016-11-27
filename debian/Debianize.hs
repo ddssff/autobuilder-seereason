@@ -30,9 +30,9 @@ main = performDebianization $ do
                  , "debian-archive-keyring"
                  , "debootstrap"
                  , "dupload"
-                 , "ghc"
                  , "git"
-                 , "libghc-autobuilder-seereason-dev" -- Used to run debian/Debianize.hs scripts
+                 -- Used to run debian/Debianize.hs scripts
+                 -- , "ghc", "libghc-autobuilder-seereason-dev"
                  , "mercurial"
                  , "quilt"
                  , "rsync"
