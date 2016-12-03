@@ -106,8 +106,8 @@ myKnownTargets :: ParamRec -> TSt ()
 myKnownTargets params = do
   rel <- use P.release
   if isPrivateRelease rel
-  then Targets.private
-  else (Targets.public >> when (testWithPrivate params) Targets.private)
+  then Targets.private params
+  else (Targets.public params >> when (testWithPrivate params) (Targets.private params))
 
 -- Additional packages to include in the clean build environment.
 -- Adding packages here can speed things up when you are building many

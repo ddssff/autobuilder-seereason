@@ -21,20 +21,21 @@ import Debian.Releases (BaseRelease(..), baseRelease, Release)
 import qualified Debian.Repo.Fingerprint as P
 import qualified Debian.AutoBuilder.Details.Public as Public
 import qualified Debian.AutoBuilder.Details.Private as Private
+import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 
 -- |Each of theses lists can be built on their own as a group,
 -- and any sequence of groups can be built together as long as
 -- no intermediate group is omitted.  Comment out the ones you
 -- don't wish to build.
-public :: TSt ()
-public =
+public :: ParamRec -> TSt ()
+public params =
     -- Dangerous when uncommented - build private targets into public, do not upload!!
     -- private >>
-    Public.buildTargets >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
+    Public.buildTargets params >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
 
-private :: TSt ()
-private =
-    Private.buildTargets >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
+private :: ParamRec -> TSt ()
+private params =
+    Private.buildTargets params >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
 
 proc' :: TSt ()
 proc' =

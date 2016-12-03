@@ -6,14 +6,15 @@ import Control.Lens (use)
 import Data.FileEmbed (embedFile)
 import Data.Map as Map (keys)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, darcs, git, cd, TSt, packageMap, inGroups)
+import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 import Debian.Repo.Fingerprint (GitSpec(Branch))
 import System.FilePath ((</>))
 
 -- Individual packages, alphabetized
 
-buildTargets :: TSt ()
-buildTargets = do
+buildTargets :: ParamRec -> TSt ()
+buildTargets params = do
   _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= debianize []
   _appraisalscribe_paths <- git "ssh://git@github.com/seereason/appraisalscribe-paths" [] >>= debianize []
   _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [] >>= debianize []
