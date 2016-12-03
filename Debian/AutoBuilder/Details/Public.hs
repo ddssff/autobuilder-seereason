@@ -927,7 +927,7 @@ buildTargets = do
   -- version (which is bundled with ghc) conflicts, in particular via th-typegraph.
   -- _pretty <- git "https://github.com/ddssff/pretty" [] >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "pretty"]
   _pretty_show <- hackage (Just "1.6.12") "pretty-show" >>= flag (P.BuildDep "happy") >>= debianize []
-  _primitive <-  (hackage (Just "0.6.1.0") "primitive") >>= debianize []
+  _primitive <-  (hackage (Just "0.6.2.0") "primitive") >>= debianize []
   _process_extras <-
        (git "https://github.com/seereason/process-extras" []) >>= debianize []
                    >>= apply (substitute "process-extras" "process-listlike")
