@@ -551,12 +551,13 @@ buildTargets = do
                      >>= flag (P.CabalDebian ["--cabal-flags", "-http"]) -- the http flag forces network < 2.5
                      -- >>= patch $(embedFile "patches/darcs.diff")
                     ) >>= debianize [] >>= skip (Reason "Unmet build dependencies: libghc-vector-dev (<< 0.11)")
-  _haskell_devscripts <- git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "2668216c654b0b302cb51162b2246c39cd6adc1e"] >>=
+  _haskell_devscripts <- -- git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "2668216c654b0b302cb51162b2246c39cd6adc1e"] >>=
+                         git "https://github.com/ddssff/haskell-devscripts" [Branch "0.12"] >>=
                          -- This changes --show-details=direct to
                          -- --show-details=always in check-recipe -
                          -- due to cabal-install version?
-                         patch $(embedFile "patches/haskell-devscripts.diff") >>=
-                         flag (P.RelaxDep "python-minimal")
+                         -- patch $(embedFile "patches/haskell-devscripts.diff") >>=
+                         flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   _haskell_either <-  (hackage (Just "4.4.1.1") "either") >>= debianize []
   _sr_extra <-  (git ("https://github.com/seereason/sr-extra") []
                               -- Don't push out libghc-extra-dev, it now comes from Neil Mitchell's repo
