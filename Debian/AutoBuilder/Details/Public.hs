@@ -250,7 +250,8 @@ buildTargets = do
   -- apt "sid" "debian-keyring=2014.03.03" -- The current version (2014.04.25) seems to be missing some keys that we need
   _cprng_aes <-  (hackage (Just "0.6.1") "cprng-aes") >>= debianize []
   _cpu <- hackage (Just "0.1.2") "cpu" >>= tflag (P.DebVersion "0.1.2-1") >>= debianize []
-  _criterion <- hackage (Just "1.1.1.0") "criterion" >>= debianize []
+  -- A bunch of missing dependencies - glob, cassava, hastache, statistics
+  -- _criterion <- hackage (Just "1.1.1.0") "criterion" >>= debianize []
   _crypto_api <-  (hackage (Just "0.13.2") "crypto-api" >>= qflag (P.DebVersion "0.10.2-1build3")) >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
                -- The certificate package may need to be updated for version 0.4
   _crypto_cipher_types <-  (hackage (Just "0.0.9") "crypto-cipher-types" >>= tflag (P.DebVersion "0.0.9-1")) >>= debianize [] >>= inGroups [ "authenticate", "important"]
@@ -321,7 +322,8 @@ buildTargets = do
   _double_conversion <-  (hackage (Just "2.0.1.0") "double-conversion") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _dpkg <- apt "wheezy" "dpkg" >>= patch $(embedFile "patches/dpkg.diff") >>= skip (Reason "use standard")
   _drbg <-  (hackage (Just "0.5.4") "DRBG") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= skip (Reason "requires update to use current cereal")
-  _dropbox_sdk <-  (hackage (Just "0.3.1") "dropbox-sdk") >>= debianize [] >>= patch $(embedFile "patches/dropbox-sdk.diff")
+  -- Depends on several old packages
+  -- _dropbox_sdk <-  (hackage (Just "0.3.1") "dropbox-sdk") >>= debianize [] >>= patch $(embedFile "patches/dropbox-sdk.diff")
   _dynamic_state <-  (hackage (Just "0.2.2.0") "dynamic-state") >>= debianize []
   _dyre <-  (hackage (Just "0.8.12") "dyre") >>= debianize []
   _easy_file <-  (hackage (Just "0.2.1") "easy-file") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -744,7 +746,7 @@ buildTargets = do
                , apt "wheezy" "haskell-leksah-server" -- for leksah -}
   _latex <-  (hackage (Just "0.1.0.3") "latex") >>= debianize []
   -- This commit adds the sequence numbers we need to generated function parameters
-  _lens <- hackage (Just "4.14") "lens" >>= flag (P.CabalPin "4.14") >>=
+  _lens <- hackage (Just "4.15.1") "lens" >>=
            -- git "https://github.com/ekmett/lens" [Commit "950eb5be34fb40bf0111ded6bc91c1ffcd2a786b"] >>=
            apply (replacement "lens" "microlens-compat") >>=
            debianize [] >>= inGroups ["lens", "ghcjs-libs", "ghc-libs", "important"]
@@ -847,7 +849,7 @@ buildTargets = do
   _monad_task <- hackage (Just "0.1.0") "monad-task" >>= debianize [] >>= skip (Reason "0.1.0 requires transformers<4")
   _mono_traversable <- hackage (Just "1.0.0.1") "mono-traversable" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _monoid_transformer <-  (hackage (Just "0.0.3") "monoid-transformer") >>= debianize [] -- apt (rel release "wheezy" "quantal") "haskell-monoid-transformer"
-  _mtl <-  (hackage (Just "2.2.1") "mtl") >>= debianize [] >>= inGroups ["platform"]
+  _mtl <- hackage (Just "2.2.1") "mtl" >>= patch $(embedFile "patches/mtl.diff") >>= debianize [] >>= inGroups ["platform"]
   _mtl_compat <-  (hackage (Just "0.2.1.3") "mtl-compat") >>= debianize [] >>= skip (Reason "build failure")
   _mtl_unleashed <-  (git "https://github.com/seereason/mtl-unleashed" []) >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path", "important"]
   _mtlparse <-  (hackage (Just "0.1.4.0") "mtlparse") >>= debianize []
@@ -1208,7 +1210,7 @@ buildTargets = do
   _webkit_sodium <- git "https://github.com/ghcjs/ghcjs-examples" [] >>= cd "webkit-sodium" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"] >>= skip (Reason "skipped jsaddle")
   _webkitgtk3 <- hackage (Just "0.13.1.3") "webkitgtk3" >>= flag (P.CabalPin "0.13.1.3") >>= flag (P.BuildDep "libwebkitgtk-3.0-dev") >>= debianize [] >>= inGroups ["glib"] >>= skip (Reason "see cairo and glib")
   _webkitgtk3_javascriptcore <- hackage (Just "0.13.1.1") "webkitgtk3-javascriptcore" >>= debianize [] >>= skip (Reason "Could not find module Gtk2HsSetup")
-  _websockets <- (git "https://github.com/jaspervdj/websockets.git" [Commit "1b87107c9a4f5db9b05c828de1e80368bc0d3bba" {- avoid rebuilds -}]) >>= debianize []
+  _websockets <- git "https://github.com/jaspervdj/websockets.git" [{-Commit "e2b9c0cef1402ffe8f0cc8e1bbfeecbd647cc2d" is version 0.9.7-}] >>= debianize []
   _wl_pprint <-  (hackage (Just "1.2") "wl-pprint") >>= debianize []
   _wl_pprint_extras <- hackage (Just "3.5.0.5") "wl-pprint-extras" >>=
                        -- git "https://github.com/ekmett/wl-pprint-extras" [Commit "48e757b10e78151dddc6728fd51d5965cf21064e"] >>= -- Right before Doc type changed

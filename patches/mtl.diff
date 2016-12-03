@@ -1,0 +1,11 @@
+--- old/mtl.cabal	2016-11-28 15:44:59.614896188 -0800
++++ new/mtl.cabal	2016-11-28 15:47:58.166899076 -0800
+@@ -46,7 +46,7 @@
+     Control.Monad.Writer.Class
+     Control.Monad.Writer.Lazy
+     Control.Monad.Writer.Strict
+-  build-depends: base < 6, transformers == 0.4.*
++  build-depends: base < 6, transformers >= 0.4 && < 0.6
+   extensions:
+     MultiParamTypeClasses
+     FunctionalDependencies
