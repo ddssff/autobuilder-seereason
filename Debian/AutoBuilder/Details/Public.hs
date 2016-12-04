@@ -290,7 +290,7 @@ buildTargets params = do
   _data_default_instances_containers <-  (hackage (Just "0.0.1") "data-default-instances-containers") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _data_default_instances_dlist <-  (hackage (Just "0.0.1") "data-default-instances-dlist") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _data_default_instances_old_locale <-  (hackage (Just "0.0.1") "data-default-instances-old-locale") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _dataenc <-  (hackage (Just "0.14.0.7") "dataenc" >>= patch $(embedFile "patches/dataenc.diff")) >>= debianize []
+  _dataenc <- ghc7 $ (hackage (Just "0.14.0.7") "dataenc" >>= patch $(embedFile "patches/dataenc.diff")) >>= debianize []
   _data_lens <- hackage (Just "2.10.7") "data-lens" {-`patch` $(embedFile "patches/data-lens.diff")-} >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"] >>= skip (Reason "Unmet build dependencies: libghcjs-comonad-dev (<< 4.3) libghcjs-semigroupoids-dev (<< 5.1)")
   _data_lens_light <- hackage (Just "0.1.2.2") "data-lens-light" >>= debianize [] >>= inGroups ["ghc-libs"]
   -- _data_lens_template <-  (hackage (Just "2.1.9") "data-lens-template") >>= debianize []
@@ -335,7 +335,7 @@ buildTargets params = do
   _dynamic_state <-  (hackage (Just "0.2.2.0") "dynamic-state") >>= debianize []
   _dyre <-  (hackage (Just "0.8.12") "dyre") >>= debianize []
   _easy_file <-  (hackage (Just "0.2.1") "easy-file") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _ed25519 <- hackage (Just "0.0.5.0") "ed25519" >>= debianize []
+  _ed25519 <- ghc7 $ hackage (Just "0.0.5.0") "ed25519" >>= debianize []
   _edisonAPI <- hackage (Just "1.3.1") "EdisonAPI" >>= debianize []
   _edisonCore <- ( (hackage (Just "1.3.1.1") "EdisonCore" >>= qflag (P.DebVersion "1.2.1.3-9build2")) >>= debianize [])
   _ekg_core <-  (hackage (Just "0.1.1.1") "ekg-core") >>= debianize []
@@ -468,19 +468,15 @@ buildTargets params = do
                -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
   _gtk3 <- hackage (Just "0.13.9") "gtk3" >>= flag (P.CabalPin "0.13.9") >>= flag (P.BuildDep "libgtk-3-dev") >>= debianize [] >>= inGroups ["glib"] >>= skip (Reason "see cairo and glib")
   _gyp <- apt "sid" "gyp" >>= skip (Reason "Use standard")
-  _haddock_api <-  hackage (Just "2.16.1") "haddock-api"
-                    >>= flag (P.CabalPin "2.16.1") -- 2.17.0 depends on ghc-boot, which requires binary-0.8
+  _haddock_api <-  hackage (Just "2.17.3") "haddock-api"
                     >>= flag (P.CabalDebian ["--default-package", "haddock-api"])
                     -- FIXME - This cabal-debian stuff does nothing because this isn't a Debianize target
                     >>= apply (execCabalM $ (debInfo . rulesFragments) %= Set.insert (Text.unlines
                                                                                                    [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                                                    , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"]))
                     >>= debianize [] >>= inGroups ["ghcjs-comp"]
-  _hackage_security <- hackage (Just "0.5.2.1") "hackage-security" >>= debianize []
-  _haddock_library <- hackage (Just "1.2.1") "haddock-library" >>=
-                     flag (P.CabalPin "1.2.1") >>= -- haddock-api-2.16.1 depends on haddock-library==1.2.*
-                     debianize [] >>=
-                     inGroups ["ghcjs-libs"]
+  _hackage_security <- ghc7 $ hackage (Just "0.5.2.1") "hackage-security" >>= debianize []
+  _haddock_library <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= inGroups ["ghcjs-libs"]
   _half <-  (hackage (Just "0.2.2.3") "half" >>= inGroups ["gl"]) >>= debianize []
   _hamlet <-  (hackage (Just "1.2.0") "hamlet") >>= debianize [] >>= inGroups ["ghcjs-libs"] >>= skip (Reason "No input files to haddock?")
   -- seereason still depends on this
@@ -640,7 +636,7 @@ buildTargets params = do
   _hourglass <-  (hackage (Just "0.2.10") "hourglass") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   -- _hpack <- hackage Nothing "hpack" >>= debianize []
   _hpdf <-  (hackage (Just "1.4.10") "HPDF") >>= debianize []
-  _hS3 <-  (git "https://github.com/scsibug/hS3.git" []) >>= debianize []
+  _hS3 <- ghc7 $ (git "https://github.com/scsibug/hS3.git" []) >>= debianize []
                                >>= apply (execCabalM $ doExecutable (BinPkgName "hs3") (InstallFile {execName = "hs3", sourceDir = Nothing, destDir = Nothing, destName = "hs3"}))
   _hs_bibutils <-  (hackage (Just "5.5") "hs-bibutils") >>= debianize []
   _hscolour <-  (hackage (Just "1.24.1") "hscolour") >>= debianize [] >>= flag (P.RelaxDep "hscolour") >>= inGroups ["ghcjs-libs", "ghc-libs"]
@@ -816,14 +812,14 @@ buildTargets params = do
   _matrix <-  (hackage (Just "0.3.5.0") "matrix") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
                -- ,  (hackage (Just "0.3") "hlatex") >>= debianize []
   _maybeT <-  (hackage (Just "1.2") "MaybeT" >>= flag (P.DebVersion "1.2-6")) >>= debianize [] >>= skip (Reason "Could not deduce (Applicative (MaybeT m))")
-  _memoize <-  (hackage (Just "0.7") "memoize") >>= debianize []
+  _memoize <-  (hackage (Just "0.8.1") "memoize") >>= debianize []
   _memory <-  (hackage (Just "0.13") "memory") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _memoTrie <-  (hackage (Just "0.6.4") "MemoTrie") >>= debianize []
-  _microlens <- hackage (Just "0.4.6.0") "microlens" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
-  _microlens_ghc <- hackage (Just "0.4.6.0") "microlens-ghc" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
-  _microlens_mtl <- hackage (Just "0.1.9.0") "microlens-mtl" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
-  _microlens_platform <- hackage (Just "0.3.4.0") "microlens-platform" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
-  _microlens_th <- hackage (Just "0.4.0.0") "microlens-th" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _memoTrie <- ghc7 $  (hackage (Just "0.6.4") "MemoTrie") >>= debianize []
+  _microlens <- ghc7 $ hackage (Just "0.4.6.0") "microlens" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _microlens_ghc <- ghc7 $ hackage (Just "0.4.6.0") "microlens-ghc" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _microlens_mtl <- ghc7 $ hackage (Just "0.1.9.0") "microlens-mtl" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _microlens_platform <- ghc7 $ hackage (Just "0.3.4.0") "microlens-platform" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
+  _microlens_th <- ghc7 $ hackage (Just "0.4.0.0") "microlens-th" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
   _microlens_compat <- git "https://github.com/seereason/microlens-compat.git" [] >>=
                        apply (replacement "microlens-compat" "lens") >>=
                        debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs", "th-path", "important"]
@@ -879,7 +875,7 @@ buildTargets params = do
   _network <-  (hackage (Just "2.6.3.1") "network") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   _network_info <-  (hackage (Just "0.2.0.8") "network-info") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _network_uri <-  (hackage (Just "2.6.1.0") "network-uri") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _newtype_generics <-  (hackage (Just "0.4.1") "newtype-generics") >>= debianize [] >>= inGroups ["autobuilder-group"]
+  _newtype_generics <-  (hackage (Just "0.5") "newtype-generics") >>= debianize [] >>= inGroups ["autobuilder-group"]
   -- _nodejs <- uri "https://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz" "5523ec4347d7fe6b0f6dda1d1c7799d5" >>=
   --            debdir (Git "https://github.com/seereason/nodejs-debian" []) >>= inGroups ["ghcjs-comp"]
   _nodejs <- uri "https://deb.nodesource.com/node_5.x/pool/main/n/nodejs/nodejs_5.6.0.orig.tar.gz" "6f7c2cec289a20bcd970240dd63c1395" >>=
@@ -890,7 +886,7 @@ buildTargets params = do
   _numInstances <-  (hackage (Just "1.4") "NumInstances") >>= debianize []
   _objectName <-  (hackage (Just "1.1.0.1") "ObjectName") >>= debianize []
   _old_locale <- ghc7 $ hackage (Just "1.0.0.7") "old-locale" >>= debianize []
-  _old_time <- ghc7 $ hackage (Just "1.1.0.3") "old-time" >>= debianize []
+  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= debianize []
   _oo_prototypes <-  (hackage (Just "0.1.0.0") "oo-prototypes") >>= debianize []
   _openGL <-  (hackage (Just "2.13.1.0") "OpenGL" >>= inGroups ["gl"] >>= flag (P.DevelDep "libglu1-mesa-dev")) >>= debianize [] >>= skip (Reason "too old for openglraw")
   _openGLRaw <-  (hackage (Just "3.2.1.0") "OpenGLRaw" >>= inGroups ["gl"]
@@ -1077,7 +1073,7 @@ buildTargets params = do
   _stringsearch <-  (hackage (Just "0.3.6.6") "stringsearch") >>= debianize []
   _sunroof_compiler <-  (git "http://github.com/ku-fpg/sunroof-compiler" [] >>= patch $(embedFile "patches/sunroof-compiler.diff")) >>= debianize [] >>= skip (Reason "Setup.hs:3:1: parse error on input ‘import’")
   _syb <-  (hackage (Just "0.6") "syb") >>= debianize [] >>= inGroups ["platform"] -- haskell-src-meta requres syb<0.6
-  _syb_with_class <-  (git "http://github.com/seereason/syb-with-class" []) >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"] -- Version 0.6.1.5 tries to derive typeable instances when building rjson, which is an error for ghc-7.8
+  _syb_with_class <- git "http://github.com/Happstack/syb-with-class" [] >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _syb_with_class_instances_text <-
                   (hackage (Just "0.0.1") "syb-with-class-instances-text"
                               >>= pflag (P.DebVersion "0.0.1-3")
@@ -1187,8 +1183,8 @@ buildTargets params = do
   _vc_git_dired <- git "https://github.com/ddssff/vc-git-dired" []
   _vector_algorithms <-  (hackage (Just "0.7.0.1") "vector-algorithms") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _vector_binary_instances <- hack (Just "0.2.3.2") "vector-binary-instances"
-  _vector <-  (hackage (Just "0.11.0.0") "vector") >>= debianize []
-  _vector_space <-  (hackage (Just "0.10.3") "vector-space") >>= debianize []
+  _vector <- hackage (Just "0.11.0.0") "vector" >>= debianize []
+  _vector_space <- ghc7 $ (hackage (Just "0.10.3") "vector-space") >>= debianize []
   _virthualenv <-  (hackage (Just "0.2.2") "virthualenv" >>= patch $(embedFile "patches/virthualenv.diff")) >>= debianize [] >>= skip (Reason "dependencies are missing: filepath >=1.1.0.3 && <1.4")
 {-
   _virthualenv <- pure $ P.Package { P._spec = Debianize'' (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff")) Nothing
@@ -1196,7 +1192,7 @@ buildTargets params = do
                                  , P._post = [] } :: TSt Package
 -}
   _void <-  (hackage (Just "0.7.1") "void") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"]
-  _vty <-  (hackage (Just "5.7.1") "vty") >>= debianize []
+  _vty <- ghc7 $ (hackage (Just "5.7.1") "vty") >>= debianize []
   _wai_app_static <-  (hackage (Just "3.1.5") "wai-app-static") >>= debianize [] >>= inGroups ["servant"]
   _wai <- hackage (Just "3.2.1.1") "wai" {- >>= patch $(embedFile "patches/wai.diff") -} >>= debianize [] >>= inGroups ["happstack", "important"]
   _wai_extra <-  (hackage (Just "3.0.16.1") "wai-extra") >>= debianize []
@@ -1253,7 +1249,7 @@ buildTargets params = do
                               >>= qflag (P.DebVersion "0.1.4-2build1")
                               >>= tflag (P.DebVersion "0.1.4-5build1")) >>= debianize []
   -- _yi <-  (hackage (Just "0.12.6") "yi") >>= debianize [] {- >>= skip (Reason "requires hint") -}
-  _yi_language <-  (hackage (Just "0.2.1") "yi-language" >>= flag (P.BuildDep "alex")) >>= debianize []
+  _yi_language <- ghc7 $ (hackage (Just "0.2.1") "yi-language" >>= flag (P.BuildDep "alex")) >>= debianize []
   _yi_rope <-  (hackage (Just "0.7.0.1") "yi-rope") >>= debianize []
   _zip_archive <-  (hackage (Just "0.3.0.4") "zip-archive") >>= flag (P.BuildDep "zip") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _zlib_bindings <-  (hackage (Just "0.1.1.5") "zlib-bindings") >>= debianize [] >>= inGroups [ "authenticate", "important"]
