@@ -16,6 +16,7 @@ import System.FilePath ((</>))
 buildTargets :: ParamRec -> TSt ()
 buildTargets params = do
   _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= debianize []
+  _appraisalscribe_acid <- git "ssh://git@github.com/seereason/appraisalscribe-acid" [] >>= debianize []
   _appraisalscribe_paths <- git "ssh://git@github.com/seereason/appraisalscribe-paths" [] >>= debianize []
   _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [] >>= debianize []
   -- appraisalscribe-data-tests is a huge package because it
@@ -24,9 +25,9 @@ buildTargets params = do
   -- the repository.
   -- appraisalscribe_data_tests = debianize (git "ssh://git@github.com/seereason/appraisalscribe-data-tests" [])
 
-  _clckwrks_plugin_stripe <- darcs (privateRepo </> "clckwrks-plugin-stripe") >>= flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["private-libs"]
-  _clckwrks_theme_seereasonpartners <- darcs (privateRepo </> "seereasonpartners-clckwrks") >>= cd "clckwrks-theme-seereasonpartners" >>= debianize [] >>= flag (P.BuildDep "hsx2hs") {- >>= flag P.NoDoc -}
-  _clckwrks_theme_appraisalscribe <- darcs (privateRepo </> "clckwrks-theme-appraisalscribe") >>= flag (P.BuildDep "hsx2hs") >>= debianize []
+  _clckwrks_plugin_stripe <- git "ssh://git@github.com/seereason/clckwrks-plugin-stripe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["private-libs"]
+  _clckwrks_theme_seereasonpartners <- git "ssh://git@github.com/seereason/clckwrks-theme-appraisalscribe" [] >>= debianize [] >>= flag (P.BuildDep "hsx2hs") {- >>= flag P.NoDoc -}
+  _clckwrks_theme_appraisalscribe <- git "ssh://git@github.com/seereason/clckwrks-theme-appraisalscribe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
 
   let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "newpath"]
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_only
