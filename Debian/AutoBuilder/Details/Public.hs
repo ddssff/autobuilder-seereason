@@ -406,9 +406,10 @@ buildTargets params = do
   _genI <-  (darcs "http://hub.darcs.net/kowey/GenI" >>= patch $(embedFile "patches/GenI.diff")) >>= debianize [] >>= inGroups ["GenI"]
   -- ghc76 <- ghcFlags $ apt "sid" "ghc" >>= patch $(embedFile "patches/ghc.diff")
   -- ghc78 <- ghcFlags $ apt "experimental" "ghc" >>= patch $(embedFile "patches/trac9262.diff")
-  _ghc710 <- apt "experimental" "ghc" >>= ghcFlags
-                        >>= patch $(embedFile "patches/ghc.diff")
-                            >>= skip (Reason "stick with current, avoid huge rebuild")
+  -- _ghc710 <- apt "experimental" "ghc" >>= ghcFlags
+  --                       >>= patch $(embedFile "patches/ghc.diff")
+  --                           >>= skip (Reason "stick with current, avoid huge rebuild")
+  _ghc8 <- apt "sid" "ghc" >>= patch $(embedFile "patches/ghc.diff") >>= inGroups ["ghc"]
   _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] >>= skip (Reason "Encountered missing dependencies: 2> binary ==0.8.*")
   _ghc_boot_th <- hackage (Just "8.0.1") "ghc-boot-th" >>= debianize []
   _ghc_exactprint <- git "https://github.com/alanz/ghc-exactprint" [] >>= debianize []
