@@ -15,6 +15,9 @@ seereasonDefaults =
     do debianDefaults
 
        (debInfo . missingDependencies) %= Set.insert (BinPkgName "libghc-happstack-authenticate-9-doc")
+       (debInfo . missingDependencies) %= Set.insert (BinPkgName "libghc-fail-doc") -- No modules, no doc
+       (debInfo . missingDependencies) %= Set.insert (BinPkgName "libghc-nats-doc") -- No modules, no doc
+       (debInfo . missingDependencies) %= Set.insert (BinPkgName "libghc-bytestring-builder-doc") -- No modules, no doc
 
        mapCabal (PackageName "clckwrks") (DebBase "clckwrks")
        splitCabal (PackageName "clckwrks") (DebBase "clckwrks-13") (Version [0, 14] [])
@@ -37,8 +40,8 @@ seereasonDefaults =
        mapCabal (PackageName "web-plugins") (DebBase "web-plugins")
        splitCabal (PackageName "web-plugins") (DebBase "web-plugins-1") (Version [0, 2] [])
 
+       mapCabal (PackageName "QuickCheck") (DebBase "quickcheck2")
+       splitCabal (PackageName "QuickCheck") (DebBase "quickcheck") (Version [2] [])
+
        mapCabal (PackageName "case-insensitive") (DebBase "case-insensitive")
        splitCabal (PackageName "case-insensitive") (DebBase "case-insensitive-0") (Version [1] [])
-
-       mapCabal (PackageName "haskeline") (DebBase "haskeline-0713")
-       splitCabal (PackageName "haskeline") (DebBase "haskeline") (Version [0, 7, 1, 3] []) -- shipped with ghc-7.8

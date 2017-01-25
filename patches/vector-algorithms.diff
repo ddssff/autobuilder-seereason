@@ -1,0 +1,11 @@
+--- old/vector-algorithms.cabal	2015-08-24 05:42:20.743977663 -0700
++++ new/vector-algorithms.cabal	2017-01-22 07:31:06.055687230 -0800
+@@ -44,7 +44,7 @@
+   hs-source-dirs: src
+ 
+   build-depends: base >= 4.5 && < 5,
+-                 vector >= 0.6 && < 0.12,
++                 vector >= 0.6 && < 0.13,
+                  primitive >=0.3 && <0.7,
+                  bytestring >= 0.9 && < 1.0
+ 

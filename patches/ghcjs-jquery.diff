@@ -1,0 +1,20 @@
+--- old/ghcjs-jquery.cabal	2017-01-23 20:28:35.319057271 -0800
++++ new/ghcjs-jquery.cabal	2017-01-24 10:41:59.896796046 -0800
+@@ -18,7 +18,7 @@
+   ghcjs-options: -O2 -Wall
+   exposed-modules:   JavaScript.JQuery
+                      JavaScript.JQuery.Internal
+-  build-depends:     base >= 4.7 && < 4.9,
++  build-depends:     base >= 4.7 && < 4.10,
+                      data-default,
+                      ghcjs-base,
+                      ghcjs-dom > 0.2,
+@@ -33,7 +33,7 @@
+   ghcjs-options: -O2 -Wall
+   if impl(ghcjs)
+     cpp-options: -DGHCJS_BROWSER
+-  build-depends:     base >= 4.7 && < 4.9,
++  build-depends:     base >= 4.7 && < 4.10,
+                      data-default,
+                      ghcjs-base,
+                      ghcjs-jquery,

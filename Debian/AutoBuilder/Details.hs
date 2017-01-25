@@ -216,6 +216,7 @@ myGlobalRelaxInfo =
     , "flex"
     , "g++"
     , "gcc"
+    , "ghc" -- ghc has a self dependency, so without this it would build every time
     , "grep"
     , "gs"
     , "gzip"

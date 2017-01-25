@@ -26,7 +26,11 @@ buildTargets params = do
   -- appraisalscribe_data_tests = debianize (git "ssh://git@github.com/seereason/appraisalscribe-data-tests" [])
 
   _clckwrks_plugin_stripe <- git "ssh://git@github.com/seereason/clckwrks-plugin-stripe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["private-libs"]
-  _clckwrks_theme_seereasonpartners <- git "ssh://git@github.com/seereason/clckwrks-theme-appraisalscribe" [] >>= debianize [] >>= flag (P.BuildDep "hsx2hs") {- >>= flag P.NoDoc -}
+  _clckwrks_theme_seereasonpartners <-
+      darcs (privateRepo </> "seereasonpartners-clckwrks") >>=
+      cd "clckwrks-theme-seereasonpartners" >>=
+      debianize [] >>=
+      flag (P.BuildDep "hsx2hs") {- >>= flag P.NoDoc -}
   _clckwrks_theme_appraisalscribe <- git "ssh://git@github.com/seereason/clckwrks-theme-appraisalscribe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
 
   let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "newpath"]
@@ -65,10 +69,11 @@ buildTargets params = do
 
   _ontology <- git "ssh://git@github.com/seereason/ontology.git" [] >>= debianize [] >>= inGroups ["private-libs"]
   _seereason <- git "ssh://git@github.com/seereason/seereason" [] >>= debianize []
-  _seereasonpartners_dot_com <-  darcs (privateRepo </> "seereasonpartners-clckwrks") >>=
-                                cd "seereasonpartners-dot-com" >>=
-                                patch $(embedFile "patches/seereasonpartners-dot-com.diff") >>=
-                                debianize []
+  _seereasonpartners_dot_com <-
+      darcs (privateRepo </> "seereasonpartners-clckwrks") >>=
+      cd "seereasonpartners-dot-com" >>=
+      patch $(embedFile "patches/seereasonpartners-dot-com.diff") >>=
+      debianize []
   -- stripeRepo <- "ssh://git@github.com/stripe-haskell/stripe"
   -- stripeRepo <- "https://github.com/seereason/stripe"
   let stripeRepo = "https://github.com/dmjio/stripe"

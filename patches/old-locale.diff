@@ -1,0 +1,9 @@
+--- old/old-locale.cabal	2015-06-06 10:04:18.303906791 -0700
++++ new/old-locale.cabal	2017-01-20 15:35:19.812046242 -0800
+@@ -31,5 +31,5 @@
+     exposed-modules:
+         System.Locale
+ 
+-    build-depends: base >= 4.2 && < 4.9
++    build-depends: base >= 4.2 && < 4.10
+     ghc-options: -Wall

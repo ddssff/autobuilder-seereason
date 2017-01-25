@@ -21,19 +21,18 @@ flag showplease
   Default: False
   Manual: True
 
-flag local-libs
-  Description: Link directly to the source of the autobuilder, debian-repo, and cabal-debian libraries
-  Default: False
-  Manual: True
-
 Library
   Default-Language: Haskell2010
   Hs-Source-Dirs: .
   Build-Depends:
+    AutoBuilder >= 6.71,
     base >= 4,
     bytestring,
     Cabal,
+    cabal-debian >= 4.24.5,
     containers,
+    debian >= 3.89,
+    debian-repo >= 5.73,
     fgl,
     filepath,
     file-embed,
@@ -42,7 +41,6 @@ Library
     process,
     text,
     unix,
-    debian >= 3.89,
     process-extras >= 0.2.0,
     filemanip-extra,
     Unixutils
@@ -60,176 +58,28 @@ Library
     Build-Depends: parsec
     Exposed-Modules: Debug.Show
 
-  if flag(local-libs)
-    Build-Depends:
-      ansi-wl-pprint,
-      applicative-extras,
-      data-default,
-      deepseq,
-      Diff,
-      directory,
-      exceptions,
-      hsemail,
-      HUnit,
-      ListLike,
-      magic,
-      memoize,
-      network-uri,
-      newtype-generics,
-      old-locale,
-      old-time,
-      optparse-applicative,
-      parsec,
-      pretty,
-      pureMD5,
-      regex-compat,
-      regex-tdfa,
-      set-extra,
-      sr-extra,
-      syb,
-      tar,
-      template-haskell,
-      time,
-      transformers,
-      utf8-string,
-      zlib
-    Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen
-    Exposed-modules:
-      Debian.AutoBuilder.BuildEnv,
-      Debian.AutoBuilder.BuildTarget,
-      Debian.AutoBuilder.BuildTarget.Apt,
-      Debian.AutoBuilder.BuildTarget.Bzr,
-      Debian.AutoBuilder.BuildTarget.Cd,
-      Debian.AutoBuilder.BuildTarget.Darcs,
-      Debian.AutoBuilder.BuildTarget.DebDir,
-      Debian.AutoBuilder.BuildTarget.Debianize,
-      Debian.AutoBuilder.BuildTarget.Git,
-      Debian.AutoBuilder.BuildTarget.Hackage,
-      Debian.AutoBuilder.BuildTarget.Hg,
-      Debian.AutoBuilder.BuildTarget.Patch,
-      Debian.AutoBuilder.BuildTarget.Proc,
-      Debian.AutoBuilder.BuildTarget.Quilt,
-      Debian.AutoBuilder.BuildTarget.SourceDeb,
-      Debian.AutoBuilder.BuildTarget.Svn,
-      Debian.AutoBuilder.BuildTarget.Tla,
-      Debian.AutoBuilder.BuildTarget.Twice,
-      Debian.AutoBuilder.BuildTarget.Uri,
-      Debian.AutoBuilder.LocalRepo,
-      Debian.AutoBuilder.Main,
-      Debian.AutoBuilder.Params,
-      Debian.AutoBuilder.Prelude,
-      Debian.AutoBuilder.Target,
-      Debian.AutoBuilder.Types.Buildable
-      Debian.AutoBuilder.Types.CacheRec
-      Debian.AutoBuilder.Types.DefaultParams
-      Debian.AutoBuilder.Types.Download
-      Debian.AutoBuilder.Types.Fingerprint
-      Debian.AutoBuilder.Types.Packages,
-      Debian.AutoBuilder.Types.ParamRec
-      Debian.AutoBuilder.Version
-      Paths_AutoBuilder
-    Hs-Source-Dirs: ../debian-repo
-    Exposed-modules:
-      Debian.Releases,
-      Debian.Repo,
-      Debian.Repo.AptImage,
-      Debian.Repo.Changes,
-      Debian.Repo.Dependencies,
-      Debian.Repo.EnvPath,
-      Debian.Repo.Internal.Apt,
-      Debian.Repo.Internal.IO,
-      Debian.Repo.Internal.Repos,
-      Debian.Repo.Fingerprint,
-      Debian.Repo.LocalRepository,
-      Debian.Repo.MonadOS,
-      Debian.Repo.OSImage,
-      Debian.Repo.Package,
-      Debian.Repo.PackageID,
-      Debian.Repo.PackageIndex,
-      Debian.Repo.Prelude,
-      Debian.Repo.Prelude.Bool,
-      Debian.Repo.Prelude.GPGSign,
-      Debian.Repo.Prelude.List,
-      Debian.Repo.Prelude.Lock,
-      Debian.Repo.Prelude.Misc,
-      Debian.Repo.Prelude.Process,
-      Debian.Repo.Prelude.SSH,
-      Debian.Repo.Prelude.Time,
-      Debian.Repo.Prelude.Verbosity,
-      Debian.Repo.Release,
-      Debian.Repo.RemoteRepository,
-      Debian.Repo.Repo,
-      Debian.Repo.Rsync,
-      Debian.Repo.Slice,
-      Debian.Repo.SourceTree,
-      Debian.Repo.State.AptImage,
-      Debian.Repo.State.OSImage,
-      Debian.Repo.State.Package,
-      Debian.Repo.State.PackageIndex,
-      Debian.Repo.State.Release,
-      Debian.Repo.State.Repository,
-      Debian.Repo.State.Slice,
-      Debian.Repo.Top,
-      Debian.VersionPolicy
-    Hs-Source-Dirs: ../cabal-debian/src, ../cabal-debian/dist/build/autogen
-    Exposed-Modules:
-      Data.Maybe.Extended
-      Debian.GHC
-      Debian.Orphans
-      Debian.Policy
-      Distribution.Version.Invert
-      Debian.Debianize
-      Debian.Debianize.BasicInfo
-      Debian.Debianize.BinaryDebDescription
-      Debian.Debianize.BuildDependencies
-      Debian.Debianize.Bundled
-      Debian.Debianize.CabalInfo
-      Debian.Debianize.Changelog
-      Debian.Debianize.CopyrightDescription
-      Debian.Debianize.DebianName
-      Debian.Debianize.DebInfo
-      Debian.Debianize.Details
-      Debian.Debianize.Files
-      Debian.Debianize.Finalize
-      Debian.Debianize.Goodies
-      Debian.Debianize.InputCabal
-      Debian.Debianize.InputDebian
-      Debian.Debianize.Interspersed
-      Debian.Debianize.Monad
-      Debian.Debianize.Optparse
-      Debian.Debianize.Output
-      Debian.Debianize.Prelude
-      Debian.Debianize.SourceDebDescription
-      Debian.Debianize.VersionSplits
-      Paths_cabal_debian
-  else
-    Build-Depends: AutoBuilder >= 6.71
-    Build-Depends: debian-repo >= 5.73
-    Build-Depends: cabal-debian >= 4.24.5
-
 Executable autobuilder-seereason
   Default-Language: Haskell2010
   Hs-Source-Dirs: Tools
   Main-Is: AutoBuilder.hs
   GHC-Options: -threaded -Wall -Wwarn -O2
   Build-Depends:
+    AutoBuilder,
     autobuilder-seereason,
     base >= 4,
     bytestring,
     Cabal,
     containers,
+    debian,
+    debian-repo,
     file-embed,
     filepath,
     process,
     text
-  Build-Depends: debian
   Build-Depends: process-extras >= 0.2.0
-  if !flag(local-libs)
-    Build-Depends: AutoBuilder
-    Build-Depends: debian-repo >= 5.73
-    Build-Depends: cabal-debian
 
 Executable seereason-darcs-backups
+  Buildable: False
   Default-Language: Haskell2010
   Hs-Source-Dirs: Tools
   Main-Is: Backups.hs

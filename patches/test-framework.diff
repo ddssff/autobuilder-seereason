@@ -1,0 +1,11 @@
+--- old/test-framework.cabal	2015-01-13 13:08:54.881405410 -0800
++++ new/test-framework.cabal	2017-01-22 07:28:51.251683815 -0800
+@@ -50,7 +50,7 @@
+                                 base >= 4.3 && < 5, random >= 1.0, containers >= 0.1,
+                                 regex-posix >= 0.72,
+                                 old-locale >= 1.0,
+-                                time >= 1.1.2 && < 1.6,
++                                time >= 1.1.2 && < 1.7,
+                                 xml >= 1.3.5, hostname >= 1.0
+ 
+         Extensions:             CPP

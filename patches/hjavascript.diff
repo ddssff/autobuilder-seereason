@@ -1,5 +1,14 @@
 --- haskell-hjavascript-0.4.7/src/Language/HJavaScript/Syntax.hs	2010-03-05 08:31:18.000000000 -0800
 +++ haskell-hjavascript-0.4.7/src/Language/HJavaScript/Syntax.hs	2011-08-29 10:33:49.898826156 -0700
+@@ -215,7 +215,7 @@
+   showsFeature :: a -> ShowS
+ 
+ -- A class can be a feature
+-instance IsClass c => IsFeature c where
++instance (IsClass c, Show c) => IsFeature c where
+   showsFeature = shows
+   
+ 
 @@ -468,6 +468,11 @@
  instance Args (Exp t1, Exp t2, Exp t3, Exp t4, Exp t5) (t1,t2,t3,t4,t5) where
    showsArgs = shows
@@ -12,3 +21,12 @@
  
  class VarsToExps v e | v -> e, e -> v where
    v2e :: v -> e
+@@ -504,7 +504,7 @@
+ class Show r => IsDeref r
+ 
+ -- There are two kinds of dereferencing; either from classes or objects.
+-instance IsClass c  => IsDeref c
++instance (IsClass c, Show c)  => IsDeref c
+ instance IsClass c  => IsDeref (Exp c)
+ 
+ -------------------------------------------------------------------

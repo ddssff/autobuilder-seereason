@@ -1,0 +1,14 @@
+--- old/MonadCatchIO-transformers.cabal	2015-01-03 08:20:31.613183220 -0800
++++ new/MonadCatchIO-transformers.cabal	2017-01-21 14:33:36.410140887 -0800
+@@ -23,9 +23,9 @@
+ 
+ Library
+   Build-Depends:
+-    base < 4.9,
++    base < 4.10,
+     extensible-exceptions == 0.1.*,
+-    transformers >= 0.2 && < 0.5,
++    transformers >= 0.2 && < 0.6,
+     monads-tf == 0.1.*
+   Exposed-Modules:
+     Control.Monad.CatchIO
