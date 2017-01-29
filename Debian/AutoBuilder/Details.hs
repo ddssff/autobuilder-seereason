@@ -203,6 +203,7 @@ myGlobalRelaxInfo =
     , "bash"
     , "binutils"
     , "bsdutils"
+    , "cabal-install"
     , "cdbs"
     , "coreutils"
     , "debhelper"

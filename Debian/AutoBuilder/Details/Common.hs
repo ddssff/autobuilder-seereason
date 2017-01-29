@@ -9,12 +9,11 @@ import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
 import Data.Set as Set (delete, insert)
 import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages (deletePackage, flag, PackageId, spec, TSt)
+import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, hackage, debianize, git, deletePackage, flag, PackageId, spec, TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
 
 import Control.Monad.State (get)
-import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, hackage, debianize, git)
 import Debian.Debianize as D
     (CabalInfo, CabalM, execCabalM, debInfo, binaryDebDescription, compilerFlavor, flags, relations, conflicts, replaces)
 import Debian.Relation (BinPkgName(..), Relation(Rel), Relations)
