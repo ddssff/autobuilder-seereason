@@ -40,11 +40,11 @@ buildTargets params = do
       ghc7 :: TSt a -> TSt (Maybe a)
       ghc7 action = if hvrVersion params <  Just (Version [8] []) then Just <$> action else pure Nothing
 #else
-  -- Using ghc8 from debian now
+  -- Still using ghc7
   let ghc8 :: TSt a -> TSt (Maybe a)
-      ghc8 action = Just <$> action
+      ghc8 action = pure Nothing
       ghc7 :: TSt a -> TSt (Maybe a)
-      ghc7 action = pure Nothing
+      ghc7 action = Just <$> action
 #endif
   --------------------------------------------------
   -- INDIVIDUAL PACKAGES (alphabetized by symbol) --
@@ -383,7 +383,7 @@ buildTargets params = do
   _feed <- git "https://github.com/seereason/feed" [] {-hackage "feed"-} >>= tflag (P.DebVersion "0.3.9.2-1") >>= debianize []
   _fgl <-  (hackage (Just "5.5.3.0") "fgl") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   _file_embed <-  (hackage (Just "0.0.10") "file-embed") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _file_location <-  (hackage (Just "0.4.9") "file-location" >>= flag (P.CabalDebian [ "--source-package-name", "file-location" ])) >>= debianize [] >>= skip (Reason "requires transformers < 0.5")
+  _file_location <- hackage (Just "0.4.9") "file-location" >>= {-flag (P.CabalDebian [ "--source-package-name", "file-location" ]) >>=-} debianize []
   _filelock <- hackage Nothing "filelock" >>= debianize []
   _filemanip <- git "https://github.com/ddssff/filemanip" [] >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _filemanip_extra <- git "https://github.com/seereason/filemanip-extra" [] >>= debianize [] >>= inGroups ["ghcjs-libs", "autobuilder-group", "important"]
@@ -422,7 +422,7 @@ buildTargets params = do
   -- _ghc710 <- apt "experimental" "ghc" >>= ghcFlags
   --                       >>= patch $(embedFile "patches/ghc.diff")
   --                           >>= skip (Reason "stick with current, avoid huge rebuild")
-  _ghc8 <- apt "sid" "ghc" >>= patch $(embedFile "patches/ghc.diff") >>= inGroups ["ghc"]
+  _ghc8 <- apt "sid" "ghc" >>= patch $(embedFile "patches/ghc.diff") >>= inGroups ["ghc"] >>= skip (Reason "Waiting for interactive support in ghcjs-0.2.1")
   _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] >>= skip (Reason "Encountered missing dependencies: 2> binary ==0.8.*")
   _ghc_boot_th <- hackage (Just "8.0.1") "ghc-boot-th" >>= debianize []
   _ghc_exactprint <- git "https://github.com/alanz/ghc-exactprint" [] >>= debianize []
@@ -856,6 +856,7 @@ buildTargets params = do
   _memoize <-  (hackage (Just "0.8.1") "memoize") >>= debianize []
   _memory <-  (hackage (Just "0.13") "memory") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _memoTrie <- ghc7 $  (hackage (Just "0.6.4") "MemoTrie") >>= debianize []
+{-
   _microlens <- ghc7 $ hackage (Just "0.4.6.0") "microlens" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
   _microlens_dev <- ghc7 $ hackage (Just "0.4.6.0") "microlens-dev" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
   _microlens_ghc <- ghc7 $ hackage (Just "0.4.6.0") "microlens-ghc" >>= debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs"]
@@ -866,6 +867,7 @@ buildTargets params = do
       ghc7 $ git "https://github.com/seereason/microlens-compat.git" [] >>=
              apply (replacement "microlens-compat" "lens") >>=
              debianize [] >>= inGroups ["ghc-libs", "ghcjs-libs", "th-path", "important"]
+-}
   _mime <- git ("https://github.com/seereason/haskell-mime") [] >>= debianize [] >>= inGroups ["autobuilder-group"]
   _mime_mail <-  (git "https://github.com/snoyberg/mime-mail.git" [] >>= cd "mime-mail") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _mime_types <-  (hackage (Just "0.1.0.7") "mime-types") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "conduit", "important"]
