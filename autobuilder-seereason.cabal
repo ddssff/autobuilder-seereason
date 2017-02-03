@@ -79,7 +79,6 @@ Executable autobuilder-seereason
   Build-Depends: process-extras >= 0.2.0
 
 Executable seereason-darcs-backups
-  Buildable: False
   Default-Language: Haskell2010
   Hs-Source-Dirs: Tools
   Main-Is: Backups.hs
