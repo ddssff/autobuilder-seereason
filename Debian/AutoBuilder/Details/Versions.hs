@@ -6,7 +6,7 @@ module Debian.AutoBuilder.Details.Versions
 import Control.Lens ((%=))
 import Data.Set as Set (insert)
 import Data.Version (Version(Version))
-import Debian.Debianize (CabalT, DebBase(DebBase), debInfo, missingDependencies, mapCabal, splitCabal, debianDefaults)
+import Debian.Debianize (CabalT, DebBase(DebBase), debInfo, missingDependencies, mapCabal, remapCabal, splitCabal, debianDefaults)
 import Debian.Relation (BinPkgName(BinPkgName))
 import Distribution.Package (PackageName(PackageName))
 
@@ -36,6 +36,12 @@ seereasonDefaults =
 
        mapCabal (PackageName "http-types") (DebBase "http-types")
        splitCabal (PackageName "http-types") (DebBase "http-types-7") (Version [0, 8] [])
+
+       -- Remap to build debs for Cabal that do not conflict with the
+       -- virtual package provided by ghc.
+       remapCabal (PackageName "Cabal") (DebBase "cabal1228")
+       -- But only use the package name if the dependency requires Cabal >= 1.22.8
+       splitCabal (PackageName "Cabal") (DebBase "cabal") (Version [1, 22, 8] [])
 
        mapCabal (PackageName "web-plugins") (DebBase "web-plugins")
        splitCabal (PackageName "web-plugins") (DebBase "web-plugins-1") (Version [0, 2] [])

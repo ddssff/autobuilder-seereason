@@ -150,6 +150,11 @@ buildTargets params = do
   -- This is provided by ghc.  1.24 is for ghc-8.  Why am I even
   -- building this?  Maybe because packages are failing with 1.22.4.0?
   -- _cabal <- hackage (Just "1.24.0.0") "Cabal" >>= debianize []
+
+  -- Build ghc debs for the version of Cabal shipped with our ghcjs.
+  -- These debs need special names (e.g. libghc-cabal1228-dev) to
+  -- avoid conflicts with the virtual package provided by ghc.
+  _cabal <- hackage (Just "1.22.8.0") "Cabal" >>= debianize []
   _cabal_install <- ghc8 $
                     hackage (Just "1.24.0.0") "cabal-install" >>=
                     -- debianize [] >>=
