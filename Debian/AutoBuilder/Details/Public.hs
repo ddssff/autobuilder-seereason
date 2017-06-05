@@ -51,16 +51,17 @@ buildTargets params = do
   --------------------------------------------------
   _abstract_deque <-  hackage (Just "0.3") "abstract-deque" >>= debianize []
   _abstract_par <- hackage (Just "0.3.3") "abstract-par" >>= debianize []
-  _acid_state <- git "https://github.com/seereason/acid-state" [Branch "log-inspection"] >>=
+  _acid_state <- git "https://github.com/acid-state/acid-state" [{-Branch "log-inspection"-}] >>=
                  debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
   _adjunctions <- hackage (Just "4.3") "adjunctions" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   -- Pin to avoid rebuild
+  -- _aeson <- hackage (Just "1.0.2.1") "aeson" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "important"]
   _aeson <- hackage (Just "0.11.2.0") "aeson" >>=
             debianize [] >>=
             flag (P.CabalPin "0.11.2.0") >>=
             flag (P.CabalDebian ["--missing-dependency", "libghc-fail-doc"]) >>=
             inGroups ["ghcjs-libs", "ghc-libs", "important"]
-  _aeson_pretty <- hackage (Just "0.8.1") "aeson-pretty" >>= debianize []
+  _aeson_pretty <- hackage (Just "0.8.2") "aeson-pretty" >>= debianize []
   _aeson_qq <-  hackage (Just "0.8.1") "aeson-qq" >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _agi <- darcs ("https://github.com/ddssff/haskell-agi") >>= skip (Reason "No instance for (Applicative (AGIT m))")
   _alex <- ghc7 $
@@ -71,6 +72,8 @@ buildTargets params = do
            flag (P.BuildDep "happy") >>=
            debianize [] >>=
            inGroups []
+  -- No Debian build trees found in /home/dsf/.autobuilder/hackage/allocated-processor-0.0.2
+  -- _allocated_processor <- hackage Nothing "allocated-processor"
   _annotated_wl_pprint <- hack (Just "0.7.0") "annotated-wl-pprint"
   _ansi_terminal <- hackage (Just "0.6.2.3") "ansi-terminal" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _ansi_wl_pprint <- hackage (Just "0.6.7.3") "ansi-wl-pprint" >>= inGroups ["ghcjs-libs", "ghc-libs"] >>= debianize []
@@ -326,8 +329,9 @@ buildTargets params = do
                -- , apt "wheezy" "geneweb"
   _decimal <-  (hackage (Just "0.4.2") "Decimal") >>= debianize [] -- for hledger
   _deepseq_generics <- hackage (Just "0.2.0.0") "deepseq-generics" >>= {-patch $(embedFile "patches/deepseq-generics.diff") >>=-} debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _derive <-  (hackage (Just "2.5.22") "derive") >>= debianize [] >>= skip (Reason "[libghc-src-exts-prof (>= 1.17)] -> []")
-  _diff <- hackage (Just "0.3.4") "Diff" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "pretty", "autobuilder-group"]
+  _derive <-  (hackage (Just "2.6.2") "derive") >>= debianize []
+  --_diff <- hackage (Just "0.3.4") "Diff" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "pretty", "autobuilder-group"]
+  _diff <- git "https://github.com/seereason/Diff" [] >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "pretty", "autobuilder-group"]
   _digest <-  (hackage (Just "0.0.1.2") "digest") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _digestive_functors <-  (hackage (Just "0.2.1.0") "digestive-functors" >>= flag (P.CabalPin "0.2.1.0")) >>= debianize [] >>= inGroups ["seereason", "important"]  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
       -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
@@ -419,7 +423,7 @@ buildTargets params = do
                        >>= tflag (P.DebVersion "3000.7.3-3")) >>= debianize []
                -- ,  (flags [P.BuildDep "libm-dev", P.BuildDep "libfreetype-dev"] (hackage (Just "3000.7.3") "gd")) >>= debianize []
   _gdiff <-  (hackage (Just "1.1") "gdiff") >>= debianize []
-               -- ,  (hackage (Just "0.1.4.7") "hjsmin") >>= debianize []
+  _gdiff_th <- git "https://github.com/ddssff/gdiff-th" [] >>= debianize []
   _generic_deriving <-  (hackage (Just "1.10.7") "generic-deriving") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _genI <-  (darcs "http://hub.darcs.net/kowey/GenI" >>= patch $(embedFile "patches/GenI.diff")) >>= debianize [] >>= inGroups ["GenI"]
   -- ghc76 <- ghcFlags $ apt "sid" "ghc" >>= patch $(embedFile "patches/ghc.diff")
@@ -451,9 +455,9 @@ buildTargets params = do
                       debianize [] >>=
                       inGroups ["ghcjs-libs", "ghc-libs", "glib"] >>=
                       skip (Reason "see cairo and glib")
-  _ghcjs <- ghc7 $ git "https://github.com/ddssff/ghcjs-debian" [Commit  "07679f05cc9ab8453f01c4a1dcebe3ae0890e80c"] >>= relax "cabal-install" >>= inGroups ["ghcjs-comp"]
+  _ghcjs <- {-ghc7 $-} git "https://github.com/ddssff/ghcjs-debian" [] >>= relax "cabal-install" >>= inGroups ["ghcjs-comp"]
   -- In a hurry right now
-  _ghcjs8 <- ghc8 $ git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs8-comp"]
+  _ghcjs8 <- ghc8 $ git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs8-comp"] >>= skip (Reason "Waiting for ghcjsi support")
   _ghcjs_prim <- git "https://github.com/ghcjs/ghcjs-prim" [] >>= debianize [] >>= inGroups ["ghcjs-comp", "glib"]
   _ghc_boot <- ghc8 $ hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   _ghc_mtl <- (hackage (Just "1.2.1.0") "ghc-mtl") >>= debianize [] {- >>= skip (Reason "No instance for (MonadIO GHC.Ghc)") -}
@@ -593,7 +597,7 @@ buildTargets params = do
   _hashed_storage <-  (hackage (Just "0.5.11") "hashed-storage") >>= debianize [] >>= skip (Reason "Non type-variable argument in the constraint: MonadState (TreeState m_aFTg) (t m_aFTg)")
                -- Built into ghc-7.8.3
   _hashtables <- hackage (Just "1.2.1.0") "hashtables" >>= patch $(embedFile "patches/hashtables.diff") >>= debianize []
-  _haskeline <-  (hackage (Just "0.7.2.3") "haskeline") >>= debianize []
+  -- _haskeline <- hackage (Just "0.7.2.3") "haskeline" >>= debianize []
   _haskell_darcs <-  (darcs "http://darcs.net/reviewed"
                      >>= flag (P.CabalDebian ["--source-package-name", "darcs"])
                      >>= flag (P.CabalDebian ["--default-package", "darcs"])
@@ -669,12 +673,13 @@ buildTargets params = do
                            , P.flags = [] }
            -}
   _hlint <-  (hackage (Just "1.8.53") "hlint") >>= debianize [] >>= inGroups [{-"ghcjs-libs",-} "ghc-libs"] >>= skip (Reason "[libghc-refact-doc] -> []")
-  _hostname <-  (hackage (Just "1.0") "hostname"  >>= inGroups ["ghcjs-libs", "ghc-libs"]
+
+  _hostname <- hackage (Just "1.0") "hostname"  >>= inGroups ["ghcjs-libs", "ghc-libs"]
                               >>= wflag (P.DebVersion "1.0-4")
                               >>= pflag (P.DebVersion "1.0-4build1")
                               >>= qflag (P.DebVersion "1.0-4build3")
                               >>= sflag (P.DebVersion "1.0-1~hackage1")
-                              >>= tflag (P.DebVersion "1.0-6")) >>= debianize []
+                              >>= tflag (P.DebVersion "1.0-6") >>= debianize []
                -- The Sid package has no profiling libraries, so dependent packages
                -- won't build.  Use our debianization instead.  This means keeping
                -- up with sid's version.
@@ -733,7 +738,7 @@ buildTargets params = do
   _http_media <-  (hackage (Just "0.6.4") "http-media") >>= debianize [] >>= inGroups ["servant"]
   _http <-  (hackage Nothing "HTTP") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   _http2 <-  (hackage (Just "1.6.1") "http2") >>= debianize []
-  _http_streams <-  (hackage (Just "0.8.3.3") "http-streams") >>= debianize [] >>= inGroups ["platform", "appraisalscribe", "important"]
+  _http_streams <-  (hackage (Just "0.8.4.0") "http-streams") >>= debianize [] >>= inGroups ["platform", "appraisalscribe", "important"]
   _http_types <-  (hackage (Just "0.8.6") "http-types" >>= flag (P.CabalPin "0.8.6")) >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"] -- web-routes specifies << 0.9
   _hUnit <-  (hackage (Just "1.3.1.1") "HUnit") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
   _hunt <-  (git "https://github.com/hunt-framework/hunt.git" [] >>= cd "hunt-searchengine" ) >>= debianize [] >>= skip (Reason "No instance for (Foldable t0) arising from a use of ‘elem’")
@@ -755,10 +760,12 @@ buildTargets params = do
   _incremental_sat_solver <-  (git "https://github.com/seereason/incremental-sat-solver" []) >>= debianize []
   _indents <-  (hackage (Just "0.3.3") "indents") >>= debianize []
   _instant_generics <- hackage (Just "0.6") "instant-generics" >>= flag (P.SkipVersion "0.3.7") >>= debianize [] >>= broken
+  _integer_logarithms <- hackage (Just "1.0.1") "integer-logarithms" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _intervals <-  (hackage (Just "0.7.2") "intervals") >>= debianize []
   _ioRefCAS <- (hackage (Just "0.2.0.1") "IORefCAS") >>= debianize [] >>= skip (Reason "Version 0.2.0.1 build fails")
   _io_storage <-  (hackage (Just "0.3") "io-storage" >>= pflag (P.DebVersion "0.3-2") >>= tflag (P.DebVersion "0.3-5")) >>= debianize []
-  _io_streams <- git "https://github.com/snapframework/io-streams" [] >>= debianize [] >>= inGroups ["important"] -- pull request to allow atto-parsec-0.13
+  -- _io_streams <- git "https://github.com/snapframework/io-streams" [] >>= debianize [] >>= inGroups ["important"] -- pull request to allow atto-parsec-0.13
+  _io_streams <- hackage (Just "1.3.6.1") "io-streams" >>= debianize [] >>= inGroups ["important"] -- http-streams-0.8.4.0 requires io-streams < 1.4
   _iproute <-  (hackage (Just "1.7.0") "iproute") >>= debianize []
   _ircbot <-  (hackage (Just "0.6.5") "ircbot") >>= debianize [] >>= inGroups ["happstack", "important"]
   _irc <-  (hackage (Just "0.6.1.0") "irc") >>= debianize [] >>= inGroups ["important"]
@@ -796,6 +803,7 @@ buildTargets params = do
            {-  , apt "wheezy" "haskell-leksah"
                , apt "wheezy" "haskell-leksah-server" -- for leksah -}
   _latex <-  (hackage (Just "0.1.0.3") "latex") >>= debianize []
+  _lattices <- hackage (Just "1.5.0") "lattices" >>= debianize []
   -- This commit adds the sequence numbers we need to generated function parameters
   _lens <- hackage (Just "4.15.1") "lens" >>=
            patch $(embedFile "patches/lens.diff") >>=
@@ -931,8 +939,8 @@ buildTargets params = do
   _newtype_generics <-  (hackage (Just "0.5") "newtype-generics") >>= debianize [] >>= inGroups ["autobuilder-group"]
   -- _nodejs <- uri "https://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz" "5523ec4347d7fe6b0f6dda1d1c7799d5" >>=
   --            debdir (Git "https://github.com/seereason/nodejs-debian" []) >>= inGroups ["ghcjs-comp"]
-  _nodejs <- uri "https://deb.nodesource.com/node_5.x/pool/main/n/nodejs/nodejs_5.6.0.orig.tar.gz" "6f7c2cec289a20bcd970240dd63c1395" >>=
-            debdir (Uri "https://deb.nodesource.com/node_5.x/pool/main/n/nodejs/nodejs_5.6.0-1nodesource1~trusty1.debian.tar.gz" "6272a4f41058ee7cf9fa1a1696beb343") >>=
+  _nodejs <- uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
+            debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~trusty1.debian.tar.xz" "a93243ac859fae3a6832522b55f698bd") >>=
             flag (P.RelaxDep "libssl-dev") >>=
             inGroups ["ghcjs-comp"]
   _numeric_extras <-  (hackage (Just "0.1") "numeric-extras") >>= debianize []
@@ -947,7 +955,7 @@ buildTargets params = do
   _openid <-  (hackage (Just "0.2.0.2") "openid" >>= patch $(embedFile "patches/openid.diff")) >>= debianize [] >>= skip (Reason "No instance for (Applicative (Assoc m))")
            {-  , P.Package { P.spec =  (Patch (Hackage (Just "0.2.0.2") "openid") $(embedFile "patches/openid-ghc76.diff")) >>= Debianize []
                            , P.flags = [] } -}
-  _openssl_streams <-  (hackage (Just "1.2.1.0") "openssl-streams") >>= debianize [] >>= inGroups ["important", "platform"]
+  _openssl_streams <-  (hackage (Just "1.2.1.1") "openssl-streams") >>= debianize [] >>= inGroups ["important", "platform"]
   _operational <- hackage (Just "0.2.3.3") "operational" >>= flag P.OmitLTDeps >>= debianize []
   _optparse_applicative <-  (hackage (Just "0.12.1.0") "optparse-applicative") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _ordered <-  (hackage (Just "0.1") "ordered") >>= debianize []
@@ -1066,20 +1074,14 @@ buildTargets params = do
              skip (Reason "Ambiguous occurrence ‘escape’")
   _rsa <-  (hackage (Just "2.2.0") "RSA") >>= debianize [] >>= inGroups ["authenticate", "important"]
   _rss <-  (hackage (Just "3000.2.0.5") "rss" {- >>= patch $(embedFile "patches/rss.diff") -}) >>= debianize [] >>= skip (Reason "time dependency")
-  _safecopy <-
-      -- git "https://github.com/acid-state/safecopy" [] >>=
-      git "https://github.com/ddssff/safecopy" [] >>=
-      debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _safecopy <- git "https://github.com/acid-state/safecopy" [] >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _safe <-  (hackage (Just "0.3.9") "safe") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _safeSemaphore <-  (hackage (Just "0.10.1") "SafeSemaphore") >>= debianize [] >>= inGroups ["happstack", "important"]
   _sandi <-  (hackage (Just "0.4.0") "sandi") >>= debianize [] -- replaces dataenc
   _sat <-  (hackage (Just "1.1.1") "sat"
                               >>= patch $(embedFile "patches/sat.diff")
                               >>= flag (P.DebVersion "1.1.1-1~hackage1")) >>= debianize []
-  _scientific <-
-      -- hackage (Just "0.3.4.9") "scientific" >>=
-      git "https://github.com/ddssff/scientific" [] >>=
-      debianize []
+  _scientific <- hackage (Just "0.3.4.11") "scientific" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
                -- ,  (hackage (Just "0.4.1.1") "arithmoi" >>= flag (P.BuildDep "llvm-dev")) >>= debianize []
   _scotty <- hackage (Just "0.10.2") "scotty" {- >>= patch $(embedFile "patches/scotty.diff") -} >>= debianize [] >>= skip (Reason "data-default dependency")
   _seclib <-  (darcs ("http://src.seereason.com/seclib")) >>= debianize [] >>= skip (Reason "No instance for (Applicative (Sec s))")
@@ -1188,8 +1190,8 @@ buildTargets params = do
       -- hackage (Just "0.1.10") "th-lift-instances" >>=
       git "https://github.com/ddssff/th-lift-instances" [] >>=
       debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "important"]
-  _th_orphans <-  (hackage (Just "0.13.2") "th-orphans") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path", "important"]
-  _th_typegraph <-  (git "http://github.com/seereason/th-typegraph" []) >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path", "important"]
+  _th_orphans <-  (hackage Nothing "th-orphans") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path", "important"]
+  _th_typegraph <- git "http://github.com/seereason/th-typegraph" [] >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path", "important"]
   _threads <-  (hackage (Just "0.5.1.4") "threads") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
   _th_reify_many <-  (hackage (Just "0.1.6") "th-reify-many") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "th-path", "important"]
   _time_compat <-  (hackage (Just "0.1.0.3") "time-compat") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "happstack", "important"]
@@ -1221,6 +1223,9 @@ buildTargets params = do
   _uniplate <-  (hackage (Just "1.6.12") "uniplate") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
   _units <-  (hackage (Just "2.4") "units") >>= debianize [] >>= skip (Reason "[libghc-singletons-prof (<< 2)] -> []")
   _units_parser <-  (hackage (Just "0.1.0.0") "units-parser") >>= debianize []
+  _universe_base <- hackage Nothing "universe-base" >>= debianize []
+  _universe_instances_base <- hackage Nothing "universe-instances-base" >>= debianize []
+  _universe_reverse_instances <- hackage Nothing "universe-reverse-instances" >>= debianize []
   _unix_compat <-  (hackage (Just "0.4.2.0") "unix-compat") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _unix_time <-  (hackage (Just "0.3.6") "unix-time" {->>= flag (P.CabalDebian ["--no-run-tests"])-}) >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"] -- doctest assumes cabal build dir is dist
   _unixutils <-  (git "https://github.com/seereason/haskell-unixutils" []) >>= debianize [] >>= inGroups ["ghcjs-libs", "autobuilder-group", "important"]
@@ -1239,7 +1244,7 @@ buildTargets params = do
                   flag (P.RelaxDep "cpphs") >>=
                   debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _utility_ht <- hackage (Just "0.0.11") "utility-ht" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _uuid <-  (hackage (Just "1.3.12") "uuid") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _uuid <- hackage (Just "1.3.12") "uuid" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _uuid_orphans <- git "https://github.com/seereason/uuid-orphans" [] >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "clckwrks", "important"]
   _uuid_types <-  (hackage (Just "1.0.3") "uuid-types") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _vacuum <-  (hackage (Just "2.2.0.0") "vacuum" >>= flag (P.SkipVersion "2.1.0.1")) >>= debianize [] >>= skip (Reason "#error Unsupported GHC version in ClosureTypes.hs!")
@@ -1322,6 +1327,7 @@ buildTargets params = do
   _yi_language <- ghc7 $ (hackage (Just "0.2.1") "yi-language" >>= flag (P.BuildDep "alex")) >>= debianize []
   _yi_rope <-  (hackage (Just "0.7.0.1") "yi-rope") >>= debianize []
   _zip_archive <-  (hackage (Just "0.3.0.4") "zip-archive") >>= flag (P.BuildDep "zip") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _zenc <- hackage (Just "0.1.1") "zenc" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _zlib_bindings <-  (hackage (Just "0.1.1.5") "zlib-bindings") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _zlib <-  (hackage (Just "0.5.4.2") "zlib"
                       >>= flag (P.CabalPin "0.5.4.2") -- Cabal-1.22.6.0 is not ready for zlib-0.6

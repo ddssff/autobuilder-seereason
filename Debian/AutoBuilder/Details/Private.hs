@@ -33,7 +33,7 @@ buildTargets params = do
       flag (P.BuildDep "hsx2hs") {- >>= flag P.NoDoc -}
   _clckwrks_theme_appraisalscribe <- git "ssh://git@github.com/seereason/clckwrks-theme-appraisalscribe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
 
-  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "newpath"]
+  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "MasterDSL"]
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_only
   _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize [] >>= inGroups ["private-libs"]
   _happstack_ghcjs_webmodule <- happstack_ghcjs >>= cd "happstack-ghcjs-webmodule" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_flags
@@ -46,7 +46,7 @@ buildTargets params = do
   -- really have a mechanism to ensure this is installed in the parent
   -- environment, except making it a dependency of the autobuilder
   -- itself.
-  _mimo <- git "ssh://git@github.com/seereason/mimo.git" [] >>= debianize [] >>= inGroups ["private-libs"]
+  -- _mimo <- git "ssh://git@github.com/seereason/mimo.git" [] >>= debianize [] >>= inGroups ["private-libs"]
   -- These won't build unless libghc-mimo-dev is installed.  Unfortunately,
   -- when mimo's dependencies change the library often gets uninstalled.
 {-
@@ -82,11 +82,9 @@ buildTargets params = do
   _stripe_haskell <- git stripeRepo [] >>= cd "stripe-haskell" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>= debianize []
   -- stripe_http_conduit <- debianize (darcs (privateRepo </> "stripe") `cd` "stripe-http-conduit")
   _task_manager <- git "ssh://git@github.com/seereason/task-manager.git" [] >>= debianize [] >>= inGroups ["private-libs"]
-  _th_path <- git "ssh://git@github.com/seereason/th-path.git" [] >>= debianize [] >>= inGroups ["private-libs"]
   _typegraph <- git "ssh://git@github.com/seereason/typegraph.git" [] >>= debianize [] >>= inGroups ["private-libs"]
 
   _ <- ghcjs_flags _typegraph
-  _ <- ghcjs_flags _th_path
   _ <- ghcjs_flags _image_cache
   _ <- ghcjs_flags _appraisalscribe_data
   _ <- ghcjs_flags _appraisalscribe_paths
