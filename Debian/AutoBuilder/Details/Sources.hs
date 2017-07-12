@@ -16,7 +16,7 @@ import Data.Set as Set (delete, fromList, member, Set, toAscList)
 import Debian.Releases (Release(..), BaseRelease(..), allReleases, baseReleaseString,
                         releaseString, isPrivateRelease,
                         baseRelease, baseReleaseDistro, Distro(..), distroString)
-import Debian.Sources (DebSource(..), SourceOption(..), SourceOp(..), parseSourceLine)
+import Debian.Sources (DebSource(..), parseSourceLine)
 import Debian.URI
 import Prelude hiding (map)
 import System.FilePath ((</>))
@@ -127,20 +127,19 @@ releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     case release of
       PrivateRelease r ->
           releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
-           (List.map (trustMe . parseSourceLine)
-              [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
-              , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ])
+           (List.map parseSourceLine
+              [ "deb [trusted=yes] " ++ uri ++ " " ++ releaseString release ++ " main"
+              , "deb-src [trusted=yes] " ++ uri ++ " " ++ releaseString release ++ " main" ])
       ExtendedRelease r _d ->
           releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
-          List.map (trustMe . parseSourceLine)
-                  [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
-                  , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]
+          List.map parseSourceLine
+                  [ "deb [trusted=yes] " ++ uri ++ " " ++ releaseString release ++ " main"
+                  , "deb-src [trusted=yes] " ++ uri ++ " " ++ releaseString release ++ " main" ]
       Release b -> baseReleaseSourceLines b debianMirrorHost ubuntuMirrorHost ++
                    hvrSourceLines b
 
     where
       uri = show (fromJust (myBuildURI release))
-      trustMe x = x {sourceOptions = [SourceOption "trusted" OpSet ["yes"]]}
 
 baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     case releaseRepoName release of
@@ -156,15 +155,17 @@ debianSourceLines debianMirrorHost release =
 
 ubuntuSourceLines :: String -> BaseRelease -> [DebSource]
 ubuntuSourceLines ubuntuMirrorHost release =
-    List.map parseSourceLine
+    List.map parseSourceLine $
       [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
-      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
-      , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
-      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
-      , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
-      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
-      , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse"
-      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse" ]
+      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse" ] ++
+      if release == Artful
+      then []
+      else [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
+           , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
+           , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main universe multiverse"
+           , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
+           , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse"
+           , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse" ]
 
 hvrSourceLines :: BaseRelease -> [DebSource]
 hvrSourceLines release | release `member` hvrReleases =
