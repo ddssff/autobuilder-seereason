@@ -33,7 +33,7 @@ buildTargets params = do
       flag (P.BuildDep "hsx2hs") {- >>= flag P.NoDoc -}
   _clckwrks_theme_appraisalscribe <- git "ssh://git@github.com/seereason/clckwrks-theme-appraisalscribe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
 
-  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "MasterDSL"]
+  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" []
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_only
   _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize [] >>= inGroups ["private-libs"]
   _happstack_ghcjs_webmodule <- happstack_ghcjs >>= cd "happstack-ghcjs-webmodule" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_flags

@@ -1,0 +1,14 @@
+To add a new release based on ubuntu artful:
+
+1. In autobuilder package, add xenial to ubuntuRelease in Debian.AutoBuilder.Types.DefaultParams(?)
+1a. In debian-repo package, add Xenial constructor to BaseRelease type, and add cases in parseReleaseNames
+2. Create release on deb.seereason.com (as instructed by autobuilder-seereason)
+
+  ssh upload@deb.seereason.com newdist --sender-email=autobuilder@seereason.com --notify-email dsf@seereason.com --notify-email beshers@seereason.com --notify-email jeremy@seereason.com --root=/srv/deb/ubuntu --create-release=xenial-seereason
+  ssh upload@deb.seereason.com newdist --sender-email=autobuilder@seereason.com --notify-email dsf@seereason.com --notify-email beshers@seereason.com --notify-email jeremy@seereason.com --root=/srv/deb/ubuntu --create-section=xenial-seereason,main
+
+3. Remove repo cache: rm /home/dsf/.autobuilder/repoCache
+4. Build and upload ghc: dist/build/autobuilder-seereason/autobuilder-seereason xenial-seereason --target ghc
+5. Build everything: dist/build/autobuilder-seereason/autobuilder-seereason xenial-seereason --all-targets
+
+I also had to remove restricted from the backports line of sources.list, in Debian.AutoBuilder.Details.Sources

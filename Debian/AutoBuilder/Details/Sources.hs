@@ -16,7 +16,7 @@ import Data.Set as Set (delete, fromList, member, Set, toAscList)
 import Debian.Releases (Release(..), BaseRelease(..), allReleases, baseReleaseString,
                         releaseString, isPrivateRelease,
                         baseRelease, baseReleaseDistro, Distro(..), distroString)
-import Debian.Sources (DebSource, parseSourceLine)
+import Debian.Sources (DebSource(..), SourceOption(..), SourceOp(..), parseSourceLine)
 import Debian.URI
 import Prelude hiding (map)
 import System.FilePath ((</>))
@@ -127,17 +127,20 @@ releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     case release of
       PrivateRelease r ->
           releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
-          List.map parseSourceLine [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
-                                   , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]
+           (List.map (trustMe . parseSourceLine)
+              [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
+              , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ])
       ExtendedRelease r _d ->
           releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
-          List.map parseSourceLine [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
-                                   , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]
+          List.map (trustMe . parseSourceLine)
+                  [ "deb " ++ uri ++ " " ++ releaseString release ++ " main"
+                  , "deb-src " ++ uri ++ " " ++ releaseString release ++ " main" ]
       Release b -> baseReleaseSourceLines b debianMirrorHost ubuntuMirrorHost ++
                    hvrSourceLines b
 
     where
       uri = show (fromJust (myBuildURI release))
+      trustMe x = x {sourceOptions = [SourceOption "trusted" OpSet ["yes"]]}
 
 baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     case releaseRepoName release of
