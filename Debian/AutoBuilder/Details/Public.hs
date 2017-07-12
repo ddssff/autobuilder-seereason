@@ -944,10 +944,15 @@ buildTargets params = do
   _newtype_generics <-  (hackage (Just "0.5") "newtype-generics") >>= debianize [] >>= inGroups ["autobuilder-group"]
   -- _nodejs <- uri "https://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz" "5523ec4347d7fe6b0f6dda1d1c7799d5" >>=
   --            debdir (Git "https://github.com/seereason/nodejs-debian" []) >>= inGroups ["ghcjs-comp"]
-  _nodejs <- uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
-            debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~trusty1.debian.tar.xz" "a93243ac859fae3a6832522b55f698bd") >>=
-            flag (P.RelaxDep "libssl-dev") >>=
-            inGroups ["ghcjs-comp"]
+  _nodejs <- case rel of
+               Artful -> uri "https://deb.nodesource.com/node_5.x/pool/main/n/nodejs/nodejs_5.6.0.orig.tar.gz" "6f7c2cec289a20bcd970240dd63c1395" >>=
+                         debdir (Uri "https://deb.nodesource.com/node_5.x/pool/main/n/nodejs/nodejs_5.6.0-1nodesource1~trusty1.debian.tar.gz" "6272a4f41058ee7cf9fa1a1696beb343") >>=
+                         flag (P.RelaxDep "libssl-dev") >>=
+                         inGroups ["ghcjs-comp"]
+               Trusty -> uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
+                         debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~trusty1.debian.tar.xz" "a93243ac859fae3a6832522b55f698bd") >>=
+                         flag (P.RelaxDep "libssl-dev") >>=
+                         inGroups ["ghcjs-comp"]
   _numeric_extras <-  (hackage (Just "0.1") "numeric-extras") >>= debianize []
   _numInstances <-  (hackage (Just "1.4") "NumInstances") >>= debianize []
   _objectName <-  (hackage (Just "1.1.0.1") "ObjectName") >>= debianize []

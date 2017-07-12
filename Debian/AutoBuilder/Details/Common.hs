@@ -9,6 +9,7 @@ import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
 import Data.Set as Set (delete, insert)
 import qualified Debian.AutoBuilder.Types.Packages as P
+   (clonePackage, flags, groups, modifyPackage, Package, PackageFlag(BuildDep, CabalDebian, NoDoc, RelaxDep), packageMap)
 import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, hackage, debianize, git, deletePackage, flag, PackageId, spec, TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)

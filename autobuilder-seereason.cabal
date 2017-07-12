@@ -21,18 +21,21 @@ flag showplease
   Default: False
   Manual: True
 
+flag local-libs
+  Description: Compile local libs
+  Default: False
+  Manual: True
+
 Library
   Default-Language: Haskell2010
   Hs-Source-Dirs: .
   Build-Depends:
-    AutoBuilder >= 6.71,
     base >= 4,
     bytestring,
     Cabal,
     cabal-debian >= 4.24.5,
     containers,
     debian >= 3.89,
-    debian-repo >= 5.73,
     fgl,
     filepath,
     file-embed,
@@ -53,6 +56,93 @@ Library
     Debian.AutoBuilder.Details.Sources
     Debian.AutoBuilder.Details.Common
 
+  if flag(local-libs)
+    Hs-Source-Dirs: ../autobuilder, ../debian-repo, ../autobuilder/dist/build/autogen
+    Build-Depends:
+      time, exceptions, pureMD5, network-uri, pretty, regex-compat, sr-extra,
+      applicative-extras, zlib, tar, magic, syb, utf8-string, deepseq, transformers,
+      template-haskell, ListLike, old-locale, old-time, directory
+    Exposed-Modules:
+      Debian.AutoBuilder.BuildEnv,
+      Debian.AutoBuilder.BuildTarget,
+      Debian.AutoBuilder.BuildTarget.Apt,
+      Debian.AutoBuilder.BuildTarget.Bzr,
+      Debian.AutoBuilder.BuildTarget.Cd,
+      Debian.AutoBuilder.BuildTarget.Darcs,
+      Debian.AutoBuilder.BuildTarget.DebDir,
+      Debian.AutoBuilder.BuildTarget.Debianize,
+      Debian.AutoBuilder.BuildTarget.Git,
+      Debian.AutoBuilder.BuildTarget.Hackage,
+      Debian.AutoBuilder.BuildTarget.Hg,
+      Debian.AutoBuilder.BuildTarget.Patch,
+      Debian.AutoBuilder.BuildTarget.Proc,
+      Debian.AutoBuilder.BuildTarget.Quilt,
+      Debian.AutoBuilder.BuildTarget.SourceDeb,
+      Debian.AutoBuilder.BuildTarget.Svn,
+      Debian.AutoBuilder.BuildTarget.Tla,
+      Debian.AutoBuilder.BuildTarget.Twice,
+      Debian.AutoBuilder.BuildTarget.Uri,
+      Debian.AutoBuilder.LocalRepo,
+      Debian.AutoBuilder.Main,
+      Debian.AutoBuilder.Params,
+      Debian.AutoBuilder.Prelude,
+      Debian.AutoBuilder.Target,
+      Debian.AutoBuilder.Types.Buildable
+      Debian.AutoBuilder.Types.CacheRec
+      Debian.AutoBuilder.Types.DefaultParams
+      Debian.AutoBuilder.Types.Download
+      Debian.AutoBuilder.Types.Fingerprint
+      Debian.AutoBuilder.Types.Packages,
+      Debian.AutoBuilder.Types.ParamRec
+      Debian.AutoBuilder.Version
+      Paths_AutoBuilder
+
+      Debian.Releases,
+      Debian.Repo,
+      Debian.Repo.AptImage,
+      Debian.Repo.Changes,
+      Debian.Repo.Dependencies,
+      Debian.Repo.EnvPath,
+      Debian.Repo.Internal.Apt,
+      Debian.Repo.Internal.IO,
+      Debian.Repo.Internal.Repos,
+      Debian.Repo.Fingerprint,
+      Debian.Repo.LocalRepository,
+      Debian.Repo.MonadOS,
+      Debian.Repo.OSImage,
+      Debian.Repo.Package,
+      Debian.Repo.PackageID,
+      Debian.Repo.PackageIndex,
+      Debian.Repo.Prelude,
+      Debian.Repo.Prelude.Bool,
+      Debian.Repo.Prelude.GPGSign,
+      Debian.Repo.Prelude.List,
+      Debian.Repo.Prelude.Lock,
+      Debian.Repo.Prelude.Misc,
+      Debian.Repo.Prelude.Process,
+      Debian.Repo.Prelude.SSH,
+      Debian.Repo.Prelude.Time,
+      Debian.Repo.Prelude.Verbosity,
+      Debian.Repo.Release,
+      Debian.Repo.RemoteRepository,
+      Debian.Repo.Repo,
+      Debian.Repo.Rsync,
+      Debian.Repo.Slice,
+      Debian.Repo.SourceTree,
+      Debian.Repo.State.AptImage,
+      Debian.Repo.State.OSImage,
+      Debian.Repo.State.Package,
+      Debian.Repo.State.PackageIndex,
+      Debian.Repo.State.Release,
+      Debian.Repo.State.Repository,
+      Debian.Repo.State.Slice,
+      Debian.Repo.Top,
+      Debian.VersionPolicy
+  else
+    Build-Depends:
+      AutoBuilder >= 6.71,
+      debian-repo >= 5.73
+
   if flag(showplease)
     Hs-Source-Dirs: ../showplease
     Build-Depends: parsec
@@ -64,21 +154,23 @@ Executable autobuilder-seereason
   Main-Is: AutoBuilder.hs
   GHC-Options: -threaded -Wall -Wwarn -O2
   Build-Depends:
-    AutoBuilder,
     autobuilder-seereason,
     base >= 4,
     bytestring,
     Cabal,
     containers,
     debian,
-    debian-repo,
     file-embed,
     filepath,
     process,
     text
   Build-Depends: process-extras >= 0.2.0
+  if !flag(local-libs)
+    Build-Depends: AutoBuilder, debian-repo
 
 Executable seereason-darcs-backups
+  if flag(local-libs)
+    Buildable: False
   Default-Language: Haskell2010
   Hs-Source-Dirs: Tools
   Main-Is: Backups.hs
