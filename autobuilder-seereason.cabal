@@ -53,13 +53,14 @@ Library
     Debian.AutoBuilder.Details.Targets
     Debian.AutoBuilder.Details.Private
     Debian.AutoBuilder.Details.Public
+    Debian.AutoBuilder.Details.Artful
     Debian.AutoBuilder.Details.Sources
     Debian.AutoBuilder.Details.Common
 
   if flag(local-libs)
     Hs-Source-Dirs: ../autobuilder, ../debian-repo, ../autobuilder/dist/build/autogen
     Build-Depends:
-      time, exceptions, pureMD5, network-uri, pretty, regex-compat, sr-extra,
+      time, exceptions, pureMD5, SHA, network-uri, pretty, regex-compat, sr-extra,
       applicative-extras, zlib, tar, magic, syb, utf8-string, deepseq, transformers,
       template-haskell, ListLike, old-locale, old-time, directory
     Exposed-Modules:

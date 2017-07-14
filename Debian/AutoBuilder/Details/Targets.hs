@@ -19,7 +19,8 @@ import Debian.Relation (Relation(..), BinPkgName(..))
 import Debian.Relation.String (parseRelations)
 import Debian.Releases (BaseRelease(..), baseRelease, Release)
 import qualified Debian.Repo.Fingerprint as P
-import qualified Debian.AutoBuilder.Details.Public as Public
+import qualified Debian.AutoBuilder.Details.Public as Trusty
+import qualified Debian.AutoBuilder.Details.Artful as Artful
 import qualified Debian.AutoBuilder.Details.Private as Private
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 
@@ -28,10 +29,11 @@ import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 -- no intermediate group is omitted.  Comment out the ones you
 -- don't wish to build.
 public :: ParamRec -> TSt ()
-public params =
+public params = do
+    rel <- baseRelease <$> use release
+    let targets = if rel == Artful then Artful.buildTargets else Trusty.buildTargets params
     -- Dangerous when uncommented - build private targets into public, do not upload!!
-    -- private >>
-    Public.buildTargets params >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
+    private params >> targets >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
 
 private :: ParamRec -> TSt ()
 private params =
@@ -51,7 +53,7 @@ relaxCabalDebian :: TSt ()
 relaxCabalDebian =
     packageMap %= Map.map f
     where f p | isDebianizeSpec (P._spec p) =
-                  p {_flags = _flags p ++ (List.map P.RelaxDep ["libghc-cabal-debian-dev",
+                  p {_flags' = _flags' p ++ (List.map P.RelaxDep ["libghc-cabal-debian-dev",
                                                                 "libghc-cabal-debian-prof",
                                                                 "libghc-cabal-debian-doc"])}
           f p = p
@@ -67,7 +69,7 @@ applyDepMap :: Release -> TSt ()
 applyDepMap release =
     packageMap %= Map.map f
     where
-      f x = x {P._flags = P._flags x ++ mappings}
+      f x = x {P._flags' = P._flags' x ++ mappings}
       mappings = [P.MapDep "cairo" (deb "libcairo2-dev"),
                   P.MapDep "cryptopp" (deb "libcrypto++-dev"),
                   P.MapDep "crypto" (deb "libcrypto++-dev"),
@@ -106,7 +108,7 @@ applyEpochMap =
     packageMap %= (Map.map f)
     where
       f :: P.Package -> Package
-      f x = x {P._flags = P._flags x ++ [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]}
+      f x = x {P._flags' = P._flags' x ++ [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]}
 
 applyExecMap :: TSt ()
 applyExecMap =

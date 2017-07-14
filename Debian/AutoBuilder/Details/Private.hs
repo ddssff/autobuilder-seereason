@@ -90,9 +90,6 @@ buildTargets params = do
   _ <- ghcjs_flags _appraisalscribe_paths
   noTests
 
-noTests :: TSt ()
-noTests = use P.packageMap >>= mapM_ (flag (P.CabalDebian ["--no-tests"])) . Map.keys
-
 {-
 libraries :: TSt ()
 libraries =
