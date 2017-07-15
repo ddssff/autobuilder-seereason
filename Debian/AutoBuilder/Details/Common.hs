@@ -12,7 +12,7 @@ import Data.Maybe (fromMaybe)
 import Data.Set as Set (delete, insert)
 import Debian.AutoBuilder.Types.Packages (apply, cd, debdir, depends, inGroups, patch, uri)
 import qualified Debian.AutoBuilder.Types.Packages as P
-   (clonePackage, createPackage, flags', groups, modifyPackage, Package, PackageFlag(BuildDep, CabalDebian, CabalPin, DebVersion, DevelDep, NoDoc, RelaxDep, SkipVersion, UDeb), packageMap)
+   (clonePackage, createPackage, flags, groups, modifyPackage, Package, PackageFlag(BuildDep, CabalDebian, CabalPin, DebVersion, DevelDep, NoDoc, RelaxDep, SkipVersion, UDeb), packageMap)
 import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, darcs, hackage, debianize, git, {-deletePackage,-} flag, PackageId, spec, TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
@@ -154,7 +154,7 @@ noflag :: PackageFlag -> PackageId -> TSt PackageId
 noflag _ i = return i
 
 relax :: String -> P.PackageId -> TSt P.PackageId
-relax x i = P.modifyPackage (over P.flags' (++ [P.RelaxDep x])) i
+relax x i = P.modifyPackage (over P.flags (++ [P.RelaxDep x])) i
 
 gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
 -- repo = "http://hub.darcs.net/stepcut/clckwrks-dev"

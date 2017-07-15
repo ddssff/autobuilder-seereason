@@ -54,7 +54,7 @@ relaxCabalDebian :: TSt ()
 relaxCabalDebian =
     packageMap %= Map.map f
     where f p | isDebianizeSpec (P._spec p) =
-                  p {_flags' = _flags' p ++ (List.map P.RelaxDep ["libghc-cabal-debian-dev",
+                  p {_flags = _flags p ++ (List.map P.RelaxDep ["libghc-cabal-debian-dev",
                                                                 "libghc-cabal-debian-prof",
                                                                 "libghc-cabal-debian-doc"])}
           f p = p
@@ -70,7 +70,7 @@ applyDepMap :: Release -> TSt ()
 applyDepMap release =
     packageMap %= Map.map f
     where
-      f x = x {P._flags' = P._flags' x ++ mappings}
+      f x = x {P._flags = P._flags x ++ mappings}
       mappings = [P.MapDep "cairo" (deb "libcairo2-dev"),
                   P.MapDep "cryptopp" (deb "libcrypto++-dev"),
                   P.MapDep "crypto" (deb "libcrypto++-dev"),
@@ -109,7 +109,7 @@ applyEpochMap =
     packageMap %= (Map.map f)
     where
       f :: P.Package -> Package
-      f x = x {P._flags' = P._flags' x ++ [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]}
+      f x = x {P._flags = P._flags x ++ [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]}
 
 applyExecMap :: TSt ()
 applyExecMap =
