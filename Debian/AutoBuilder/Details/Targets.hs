@@ -33,7 +33,8 @@ public params = do
     rel <- baseRelease <$> use release
     let targets = if rel == Artful then Artful.buildTargets else Trusty.buildTargets params
     -- Dangerous when uncommented - build private targets into public, do not upload!!
-    private params >> targets >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
+    -- private params >>
+    targets >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
 
 private :: ParamRec -> TSt ()
 private params =
