@@ -359,7 +359,7 @@ commonTargets = do
                     inGroups ["ghcjs-libs", "ghc-libs"]
   _haddock_library <-
       case rel of
-        Artful -> hackage (Just "1.4.3") "haddock-library" >>= flag (P.DebVersion "1.4.3-1") >>= debianize [] >>= inGroups [{-"ghcjs-libs",-} "ghcjs-comp"]
+        Artful -> hackage (Just "1.4.3") "haddock-library" >>= flag (P.DebVersion "1.4.3-1") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghcjs-comp"]
         Trusty -> hackage (Just "1.2.1") "haddock-library" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghcjs-comp"]
   _happstack_authenticate_0 <-  (git "https://github.com/Happstack/happstack-authenticate-0.git" []
                              >>= flag (P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0",
