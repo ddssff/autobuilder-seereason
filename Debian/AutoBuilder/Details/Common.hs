@@ -515,7 +515,8 @@ commonTargets = do
              flag (P.BuildDep "happy") >>=
              debianize [] >>=
              inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
-  _pandoc_types <- hackage (Just "1.19") "pandoc-types" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
+  -- pandoc depends on pandoc-types==1.17
+  _pandoc_types <- hackage (Just "1.17.0.5") "pandoc-types" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "appraisalscribe", "important"]
   _parseargs <-  (hackage (Just "0.2.0.7") "parseargs") >>= debianize [] >>= aflag (P.DebVersion "0.2.0.8-1") >>= inGroups ["ghcjs-libs", "ghc-libs"]
                -- , apt (rel release "wheezy" "quantal") "haskell-parsec2" >>= patch $(embedFile "patches/parsec2.diff")
   _parsec <-  (hackage (Just "3.1.11") "parsec" >>= apply (substitute "parsec2" "parsec3")) >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
