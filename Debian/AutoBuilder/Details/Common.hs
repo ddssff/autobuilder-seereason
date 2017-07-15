@@ -681,6 +681,7 @@ commonTargets = do
                       -- >>= flag (P.CabalPin "0.5.4.2") -- Cabal-1.22.6.0 is not ready for zlib-0.6
                       >>= flag (P.DevelDep "zlib1g-dev")) >>= debianize [] >>= aflag (P.DebVersion "0.6.1.2-1build1") >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
 
+#if 0
   -- Specify suspected dependencies
   _asn1_types `depends` [_hourglass]
   -- _th_typegraph `depends` [_set_extra, _th_desugar, _th_orphans]
@@ -703,6 +704,7 @@ commonTargets = do
   _authenticate `depends` [_tagstream_conduit,_xml_conduit, _http_conduit]
   _connection `depends` [_x509_system, _socks]
   _matrix `depends` [_loop]
+#endif
 
   noTests
   return ()
