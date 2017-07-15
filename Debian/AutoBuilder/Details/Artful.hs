@@ -31,6 +31,16 @@ import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'
 
 buildTargets = do
   commonTargets
+  _haskell_devscripts <-
+      -- Tagged 0.13.3
+      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "6e1e94bc4efd8a0ac37f34ac84f4813bcb0105cc"] >>=
+      -- version we used from 8/2016-11/2016
+      -- git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "a143f70d333663e1447998d6facbebf67cd5045f"] >>=
+      -- git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "2668216c654b0b302cb51162b2246c39cd6adc1e"] >>=
+      -- git "https://github.com/ddssff/haskell-devscripts" [Branch "0.12"] >>=
+      -- This changes --show-details=direct to --show-details=always in check-recipe
+      patch $(embedFile "patches/haskell-devscripts.diff") >>=
+      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   findGroup "ghcjs-libs" >>= mapM_ ghcjs_flags
 
 findGroup :: GroupName -> TSt (Set P.PackageId)
