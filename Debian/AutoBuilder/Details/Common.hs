@@ -314,6 +314,8 @@ commonTargets = do
   _data_default_instances_old_locale <-  (hackage (Just "0.0.1") "data-default-instances-old-locale") >>= debianize [] >>= aflag (P.DebVersion "0.0.1-7build1") >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _debian_haskell <- git "https://github.com/ddssff/debian-haskell" [] >>= {-debianize [] >>=-} flag (P.RelaxDep "cabal-debian") >>= inGroups ["autobuilder-group", "important"]
   _debian_repo <- git "https://github.com/ddssff/debian-repo" [] >>= inGroups ["autobuilder-group", "important"]
+  --_diff <- hackage (Just "0.3.4") "Diff" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "pretty", "autobuilder-group"]
+  _diff <- git "https://github.com/seereason/Diff" [] >>= debianize [] >>= aflag (P.DebVersion "0.3.4-2build1") >>= inGroups ["ghcjs-libs", "ghc-libs", "pretty", "autobuilder-group"]
   _digest <-  (hackage (Just "0.0.1.2") "digest") >>= debianize [] >>= aflag (P.DebVersion "0.0.1.2-7build1") >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _digestive_functors <-  (hackage (Just "0.2.1.0") "digestive-functors" >>= flag (P.CabalPin "0.2.1.0")) >>= debianize [] >>= inGroups ["seereason", "important"]  -- Waiting to move all these packages to 0.3.0.0 when hsp support is ready
       -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
@@ -357,6 +359,7 @@ commonTargets = do
                     debianize [] {-`putSrcPkgName` "ghcjs-ghcjs-jquery"-} >>=
                     patch $(embedFile "patches/ghcjs-jquery.diff") >>=
                     inGroups ["ghcjs-libs", "ghc-libs"]
+  _groom <-  (hackage (Just "0.1.2") "groom") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _haddock_library <-
       case rel of
         Artful -> hackage (Just "1.4.3") "haddock-library" >>= flag (P.DebVersion "1.4.3-1") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghcjs-comp"]
@@ -564,6 +567,7 @@ commonTargets = do
                           -- we are using regex-tdfa, the cabal package names are different so
                           -- packages can't automatically start using regex-tdfa-rc.
                           >>= apply (substitute "regex-tdfa" "regex-tdfa-rc")) >>= debianize [] >>= aflag (P.DebVersion "1.2.2-3build2") >>= inGroups ["ghcjs-libs", "ghc-libs"]
+  _regex_tdfa_text <- hackage (Just "1.0.0.3") "regex-tdfa-text" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _resourcet <-  (hackage (Just "1.1.7.4") "resourcet") >>= debianize [] >>= aflag (P.DebVersion "1.1.9-1build1") >>= inGroups ["ghcjs-libs", "ghc-libs", "authenticate", "important"]
   _safe <-  (hackage (Just "0.3.9") "safe") >>= debianize [] >>= aflag (P.DebVersion "0.3.14-1") >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _safecopy <- git "https://github.com/acid-state/safecopy" [] >>= debianize [] >>= aflag (P.DebVersion "0.9.3.2-1build1") >>= inGroups ["ghcjs-libs", "ghc-libs"]

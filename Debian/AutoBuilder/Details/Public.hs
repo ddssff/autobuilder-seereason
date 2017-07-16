@@ -212,8 +212,6 @@ buildTargets params = do
   _decimal <-  (hackage (Just "0.4.2") "Decimal") >>= debianize [] -- for hledger
   _deepseq_generics <- hackage (Just "0.2.0.0") "deepseq-generics" >>= {-patch $(embedFile "patches/deepseq-generics.diff") >>=-} debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _derive <-  (hackage (Just "2.6.2") "derive") >>= debianize []
-  --_diff <- hackage (Just "0.3.4") "Diff" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "pretty", "autobuilder-group"]
-  _diff <- git "https://github.com/seereason/Diff" [] >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs", "pretty", "autobuilder-group"]
   _directory_tree <-  (hackage (Just "0.12.0") "directory-tree") >>= debianize []
   _dlist <-  (hackage (Just "0.8.0.1") "dlist") >>= debianize []
                -- Natty only(?)
@@ -329,7 +327,6 @@ buildTargets params = do
   _gluRaw <- (hackage (Just "2.0.0.2") "GLURaw" >>= inGroups ["gl"]) >>= debianize []
   _glut <-  (hackage (Just "2.7.0.3") "GLUT" >>= inGroups ["gl"]
                      >>= flag (P.DevelDep "freeglut3-dev")) >>= debianize [] >>= skip (Reason "Waiting for newer opengl")
-  _groom <-  (hackage (Just "0.1.2") "groom") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
                -- Retired
                -- , apt "wheezy" "haskell-dummy"
                -- Need this when we upgrade blaze-textual to 0.2.0.0
@@ -720,7 +717,6 @@ buildTargets params = do
   _regexpr <-  (hackage (Just "0.5.4") "regexpr" >>= flag (P.DebVersion "0.5.4-5build1")) >>= debianize []
   _regex_tdfa_rc <-  (hackage (Just "1.1.8.3") "regex-tdfa-rc"
                               >>= apply (substitute "regex-tdfa-rc" "regex-tdfa")) >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _regex_tdfa_text <- hackage (Just "1.0.0.3") "regex-tdfa-text" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   -- reified_records =  (hackage (Just "0.2.2") "reified-records" >>= patch $(embedFile "patches/reified-records.diff")) >>= debianize []
   _reified_records <-  (hg "https://bitbucket.org/ddssff/reified-records") >>= debianize []
   _resource_pool <- hackage (Just "0.2.3.2") "resource-pool" >>= debianize []
