@@ -41,7 +41,8 @@ buildTargets = do
       -- This changes --show-details=direct to --show-details=always in check-recipe
       patch $(embedFile "patches/haskell-devscripts.diff") >>=
       flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
-  findGroup "ghcjs-libs" >>= mapM_ ghcjs_flags
+  -- findGroup "ghcjs-libs" >>= mapM_ ghcjs_also
+  return ()
 
 findGroup :: GroupName -> TSt (Set P.PackageId)
 findGroup name =

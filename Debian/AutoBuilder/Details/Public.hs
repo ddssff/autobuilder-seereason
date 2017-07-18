@@ -4,23 +4,23 @@ module Debian.AutoBuilder.Details.Public ( buildTargets ) where
 
 import Control.Lens (use, view, (%=))
 import Data.FileEmbed (embedFile)
-import Data.Map as Map (elems, keys)
+import Data.Map as Map (elems)
 import Data.Set as Set (fromList, insert, member, Set)
 import Data.Text as Text (unlines)
-import Data.Version (Version(Version))
+--import Data.Version (Version(Version))
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
-import Debian.AutoBuilder.Types.Packages as P (TSt, depends,
+import Debian.AutoBuilder.Types.Packages as P (TSt,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
-                                               darcs, apt, git, hg, cd, debdir, uri, release,
+                                               darcs, apt, git, hg, cd, release,
                                                GroupName, inGroups, createPackage)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.Debianize as D
     (doExecutable, execCabalM, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
 import Debian.Releases (baseRelease, BaseRelease(Trusty, Artful))
-import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage {-, Git-}), GitSpec(Commit, Branch))
+import Debian.Repo.Fingerprint (RetrieveMethod(Debianize'', Hackage {-, Git-}), GitSpec(Commit))
 --import Debug.Trace (trace)
 
 -- Group descriptions:
@@ -34,7 +34,7 @@ findGroup name =
   (Set.fromList . map (view pid) . filter (Set.member name . view groups) . Map.elems) <$> use packageMap
 
 buildTargets :: ParamRec -> TSt ()
-buildTargets params = do
+buildTargets _params = do
   rel <- baseRelease <$> use release
 #if 0
   let ghc8 :: TSt a -> TSt (Maybe a)
@@ -44,7 +44,7 @@ buildTargets params = do
 #else
   -- Still using ghc7
   let ghc8 :: TSt a -> TSt (Maybe a)
-      ghc8 action = pure Nothing
+      ghc8 _action = pure Nothing
       ghc7 :: TSt a -> TSt (Maybe a)
       ghc7 action = Just <$> action
 #endif
@@ -108,7 +108,6 @@ buildTargets params = do
   _byteorder <-  (hackage (Just "1.0.4") "byteorder" >>= tflag (P.DebVersion "1.0.4-1")) >>= debianize []
   _bytes <-  (hackage (Just "0.15.0.1") "bytes") >>= debianize [] >>= skip (Reason "Unmet build dependencies: libghc-cereal-dev (<< 0.5)")
   -- bytestring-builder is now part of bytestring, but some packages (fast-logger) still depend on it (now patched)
-  _bytestring_conversion <- hackage (Just "0.3.1") "bytestring-conversion" >>= debianize [] >>= inGroups ["servant"]
   _bytestring_nums <-  (hackage (Just "0.3.6") "bytestring-nums") >>= debianize [] -- apt (rel release "wheezy" "quantal") "haskell-bytestring-nums"
   _bytestring_trie <-  (hackage (Just "0.2.4.1") "bytestring-trie") >>= debianize []
                -- ,  (hackage "cairo-pdf") >>= debianize []
@@ -219,7 +218,6 @@ buildTargets params = do
       -- This package fails to build in several different ways because it has no modules.
       -- I am just going to patch the packages that use it to require transformers >= 0.3.
       -- Specifically, distributive and lens.
-  _double_conversion <-  (hackage (Just "2.0.1.0") "double-conversion") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _dpkg <- apt "wheezy" "dpkg" >>= patch $(embedFile "patches/dpkg.diff") >>= skip (Reason "use standard")
   _drbg <-  (hackage (Just "0.5.4") "DRBG") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= skip (Reason "requires update to use current cereal")
   -- Depends on several old packages
@@ -474,7 +472,6 @@ buildTargets params = do
   _htf <-  (hackage (Just "0.13.1.0") "HTF" >>= flag (P.BuildDep "cpphs")) >>= debianize []
   _html_entities <- darcs ("http://src.seereason.com/html-entities")
   _html_xml_utils <- apt "sid" "html-xml-utils"
-  _http_api_data <- hackage (Just "0.2.4") "http-api-data" >>= debianize []
       -- Deprecated in favor of http-conduit
       -- ,  (hackage (Just "0.2.0.1") "http-client-conduit") >>= debianize []
       -- Deprecated in favor of conduit-extra
@@ -483,7 +480,6 @@ buildTargets params = do
       -- ,  (hackage (Just "1.0.0") "zlib-conduit") >>= debianize []
   _http_common <-  (hackage (Just "0.8.2.0") "http-common") >>= debianize [] >>= inGroups ["platform", "happstack", "important"]
   _http_date <-  (hackage (Just "0.0.6.1") "http-date") >>= debianize []
-  _http_media <-  (hackage (Just "0.6.4") "http-media") >>= debianize [] >>= inGroups ["servant"]
   _http2 <-  (hackage (Just "1.6.1") "http2") >>= debianize []
   _hunt <-  (git "https://github.com/hunt-framework/hunt.git" [] >>= cd "hunt-searchengine" ) >>= debianize [] >>= skip (Reason "No instance for (Foldable t0) arising from a use of ‘elem’")
                -- ,  (darcs "haskell-tiny-server" ("http://src.seereason.com/tiny-server") >>= flag (P.BuildDep "hsx2hs")
@@ -735,8 +731,6 @@ buildTargets params = do
   _scotty <- hackage (Just "0.10.2") "scotty" {- >>= patch $(embedFile "patches/scotty.diff") -} >>= debianize [] >>= skip (Reason "data-default dependency")
   _seclib <-  (darcs ("http://src.seereason.com/seclib")) >>= debianize [] >>= skip (Reason "No instance for (Applicative (Sec s))")
   _securemem <-  (hackage (Just "0.1.9") "securemem") >>= debianize []
-  _servant <- hackage (Just "0.8") "servant" >>= debianize [] >>= inGroups ["servant"]
-  _servant_server <- hackage (Just "0.8") "servant-server" >>= debianize [] >>= inGroups ["servant-server"] >>= inGroups ["servant"] >>= skip (Reason "wai depends on obsolete bytestring-builder package")
   _setenv <-  (hackage (Just "0.1.1.3") "setenv") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
   _set_monad <-  (hackage (Just "0.2.0.0") "set-monad") >>= debianize []
   _shake <-  (hackage (Just "0.15.10") "shake") >>= debianize [] >>= inGroups ["ghcjs-libs"] >>= skip (Reason "dependencies")
@@ -833,7 +827,6 @@ buildTargets params = do
   _vacuum <-  (hackage (Just "2.2.0.0") "vacuum" >>= flag (P.SkipVersion "2.1.0.1")) >>= debianize [] >>= skip (Reason "#error Unsupported GHC version in ClosureTypes.hs!")
   _validation <-  (hackage (Just "0.2.0") "Validation" >>= patch $(embedFile "patches/validation.diff")) >>= debianize []
   _value_supply <-  (hackage (Just "0.6") "value-supply") >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"]
-  _vault <-  (hackage (Just "0.3.0.6") "vault") >>= debianize []
   _vector <- hackage (Just "0.12.0.0") "vector" >>= debianize []
   _vector_algorithms <- hackage (Just "0.7.0.1") "vector-algorithms" >>=
                         patch $(embedFile "patches/vector-algorithms.diff") >>=
@@ -868,7 +861,6 @@ buildTargets params = do
   _web_routes_wai <- git "https://github.com/Happstack/web-routes-wai.git" [] >>= debianize [] >>= inGroups ["happstack", "important"] >>= skip (Reason "wai depends on obsolete bytestring-builder package")
   _webkit_sodium <- git "https://github.com/ghcjs/ghcjs-examples" [] >>= cd "webkit-sodium" >>= debianize [] >>= inGroups ["ghcjs-libs", "ghc-libs"] >>= skip (Reason "skipped jsaddle")
   _webkitgtk3_javascriptcore <- hackage (Just "0.13.1.1") "webkitgtk3-javascriptcore" >>= debianize [] >>= skip (Reason "Could not find module Gtk2HsSetup")
-  _websockets <- git "https://github.com/jaspervdj/websockets.git" [{-Commit "e2b9c0cef1402ffe8f0cc8e1bbfeecbd647cc2d" is version 0.9.7-}] >>= debianize []
   _wl_pprint <-  (hackage (Just "1.2") "wl-pprint") >>= debianize []
   _word8 <-  (hackage (Just "0.1.2") "word8") >>= debianize []
   _word_trie <-  (hackage (Just "0.3.0") "word-trie") >>= debianize []
@@ -888,7 +880,7 @@ buildTargets params = do
   _zlib_enum <- hackage (Just "0.2.3.1") "zlib-enum" >>= debianize [] >>= flag (P.CabalDebian ["--no-tests"]) >>= inGroups [ "authenticate", "important"]
 
   -- Create the ghcjs library package targets
-  findGroup "ghcjs-libs" >>= mapM_ ghcjs_flags
+  -- findGroup "ghcjs-libs" >>= mapM_ ghcjs_also
   noTests -- Some package test suites fail, some hang, especially with ghcjs
 
   return ()
