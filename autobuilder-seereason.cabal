@@ -33,7 +33,6 @@ Library
     base >= 4,
     bytestring,
     Cabal,
-    cabal-debian >= 4.24.5,
     containers,
     debian >= 3.89,
     fgl,
@@ -58,11 +57,13 @@ Library
     Debian.AutoBuilder.Details.Common
 
   if flag(local-libs)
-    Hs-Source-Dirs: ../autobuilder, ../debian-repo, ../autobuilder/dist/build/autogen
+    Hs-Source-Dirs: ../autobuilder, ../debian-repo, ../cabal-debian/src, ../autobuilder/dist/build/autogen, ../cabal-debian/dist/build/autogen
     Build-Depends:
       time, exceptions, pureMD5, SHA, network-uri, pretty, regex-compat, sr-extra,
       applicative-extras, zlib, tar, magic, syb, utf8-string, deepseq, transformers,
-      template-haskell, ListLike, old-locale, old-time, directory
+                  template-haskell, ListLike, old-locale, old-time, directory, hsemail, parsec,
+                  memoize, regex-tdfa, data-default, newtype-generics, ansi-wl-pprint,
+                  optparse-applicative, HUnit, set-extra, Diff
     Exposed-Modules:
       Debian.AutoBuilder.BuildEnv,
       Debian.AutoBuilder.BuildTarget,
@@ -139,10 +140,43 @@ Library
       Debian.Repo.State.Slice,
       Debian.Repo.Top,
       Debian.VersionPolicy
+
+      Data.Maybe.Extended
+      Debian.GHC
+      Debian.Policy
+      Distribution.Version.Invert
+      Debian.Debianize
+      Debian.Debianize.BasicInfo
+      Debian.Debianize.BinaryDebDescription
+      Debian.Debianize.BuildDependencies
+      Debian.Debianize.Bundled
+      Debian.Debianize.CabalInfo
+      Debian.Debianize.Changelog
+      Debian.Debianize.CopyrightDescription
+      Debian.Debianize.DebianName
+      Debian.Debianize.DebInfo
+      Debian.Debianize.Details
+      Debian.Debianize.Files
+      Debian.Debianize.Finalize
+      Debian.Debianize.Goodies
+      Debian.Debianize.InputCabal
+      Debian.Debianize.InputDebian
+      Debian.Debianize.Interspersed
+      Debian.Debianize.Monad
+      Debian.Debianize.Optparse
+      Debian.Debianize.Output
+      Debian.Debianize.Prelude
+      Debian.Debianize.SourceDebDescription
+      Debian.Debianize.VersionSplits
+      Paths_cabal_debian
+      System.Git
+    Other-Modules:
+      Debian.Orphans
   else
     Build-Depends:
       AutoBuilder >= 6.71,
-      debian-repo >= 5.73
+      debian-repo >= 5.73,
+      cabal-debian >= 4.24.5
 
   if flag(showplease)
     Hs-Source-Dirs: ../showplease

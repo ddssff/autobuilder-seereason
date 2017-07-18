@@ -8,7 +8,7 @@ import Data.FileEmbed (embedFile)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, darcs, git, cd, TSt, {-packageMap,-} inGroups)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
---import Debian.Repo.Fingerprint (GitSpec(Branch))
+import Debian.Repo.Fingerprint (GitSpec(Branch))
 import System.FilePath ((</>))
 
 -- Individual packages, alphabetized
@@ -25,6 +25,7 @@ buildTargets _params = do
   -- the repository.
   -- appraisalscribe_data_tests = debianize (git "ssh://git@github.com/seereason/appraisalscribe-data-tests" [])
 
+  _chili <- git "ssh://git@github.com/seereason/chili" [Branch "with-model"] >>= debianize [] >>= ghcjs_also
   _clckwrks_plugin_stripe <- git "ssh://git@github.com/seereason/clckwrks-plugin-stripe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["private-libs"]
   _clckwrks_theme_seereasonpartners <-
       darcs (privateRepo </> "seereasonpartners-clckwrks") >>=

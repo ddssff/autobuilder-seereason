@@ -16,7 +16,7 @@ import Data.Maybe (fromMaybe)
 import Debian.AutoBuilder.Types.Packages (apply, cd, debdir, {-depends,-} inGroups, packageMap, patch, uri)
 import qualified Debian.AutoBuilder.Types.Packages as P
    (clonePackage, createPackage, flags, {-groups,-} modifyPackage, Package, PackageFlag(BuildDep, CabalDebian, CabalPin, DebVersion, DevelDep, NoDoc, RelaxDep, SkipVersion, UDeb), packageMap)
-import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, darcs, hackage, debianize, git, {-deletePackage,-} flag, PackageId, spec, TSt)
+import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, apt, darcs, hackage, debianize, git, {-deletePackage,-} flag, PackageId, proc, spec, TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
 import System.FilePath (takeBaseName)
 
@@ -59,7 +59,7 @@ ghcjs i = do
 ghcjs_also :: P.PackageId -> TSt (P.PackageId, P.PackageId)
 ghcjs_also i = do
   j <- P.clonePackage id i
-  Just p <- use (P.packageMap . at i)
+  -- Just p <- use (P.packageMap . at i)
   (,) <$> pure i <*> ghcjs j
 
 makeSrcPkgName :: RetrieveMethod -> String
@@ -234,6 +234,7 @@ commonTargets = do
   _asn1_encoding <-  (hackage (Just "0.9.4") "asn1-encoding") >>= debianize [] >>= aflag (P.DebVersion "0.9.5-1") >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _asn1_parse <-  (hackage (Just "0.9.4") "asn1-parse") >>= debianize [] >>= aflag (P.DebVersion "0.9.4-3build2") >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _asn1_types <-  (hackage (Just "0.3.2") "asn1-types") >>= debianize [] >>= aflag (P.DebVersion "0.3.2-3build1") >>= ghcjs_also
+  _async <-  (hackage (Just "2.1.1.1") "async") >>= debianize [] >>= aflag (P.DebVersion "2.1.1.1-1")
   _atp_haskell <-  (git "https://github.com/seereason/atp-haskell" []) >>= debianize [] >>= inGroups ["seereason", "th-path", "important"] >>= ghcjs_also
   _attoparsec <-  (hackage (Just "0.13.0.2") "attoparsec") >>= debianize [] >>= aflag (P.DebVersion "0.13.1.0-3build2") >>= inGroups ["important"]
   _authenticate <-  (hackage (Just "1.3.3.2") "authenticate") >>= debianize [] >>= aflag (P.DebVersion "1.3.3.2-3build2") >>= inGroups ["authenticate", "important"]
@@ -412,8 +413,7 @@ commonTargets = do
                              git "https://github.com/seereason/happstack-server" [Branch "websockets"] >>=
                              flag (P.CabalDebian ["--ghcjs"]) >>= flag (P.BuildDep "libghc-cabal-dev") >>=
                              flag (P.CabalDebian ["--cabal-flags", "-template_haskell"]) >>= flag (P.BuildDep "ghcjs") >>= flag P.NoDoc >>=
-                             debianize [] >>= inGroups ["happstack", "important"] >>= \i ->
-                             use (packageMap . at i) >>= \pkg -> trace ("Package: " ++ show pkg) (return i)
+                             debianize [] >>= inGroups ["happstack", "important"] {- >>= \i -> use (packageMap . at i) >>= \pkg -> trace ("Package: " ++ show pkg) (return i) -}
   _happstack_server_tls <-  (git "https://github.com/Happstack/happstack-server-tls" []) >>= debianize [] >>= inGroups ["happstack", "important"]
   _happstack_static_routing <-  (hackage (Just "0.4.2") "happstack-static-routing") >>= debianize [] {->>= inGroups ["happstack", "important"]-} >>= skip (Reason "compile error")
   _happstack_util <- hackage (Just "6.0.3") "happstack-util" >>=
@@ -479,6 +479,12 @@ commonTargets = do
   _ircbot <-  (hackage (Just "0.6.5.1") "ircbot") >>= debianize [] >>= aflag (P.DebVersion "0.6.5.1-1") >>= inGroups ["happstack", "important"]
   _ixset <-  (git "https://github.com/Happstack/ixset.git" []) >>= debianize [] >>= aflag (P.DebVersion "1.0.7-3build2") >>= inGroups ["happstack", "important"] >>= ghcjs_also -- ,  (hackage (Just "1.0.7") "ixset") >>= debianize []
   _ixset_typed <-  (hackage (Just "0.3.1") "ixset-typed") >>= debianize [] >>= aflag (P.DebVersion "0.3.1-3build2") >>= inGroups [ "authenticate", "important"] -- dependency of happstack-authenticate-2
+  _libjs_jcrop <- apt "jessie" "libjs-jcrop" >>= \p ->
+                 (baseRelease . view release <$> get) >>= \ r ->
+                 case r of
+                   Artful -> patch $(embedFile "patches/libjs-jcrop.diff") p >>= proc
+                   _ -> skip (Reason "Trusty has libjs-jcrop") p
+  _jqueryui18 <- darcs ("http://src.seereason.com/jqueryui18")
   _jmacro <-  (hackage (Just "0.6.14") "jmacro") >>= debianize [] >>= aflag (P.DebVersion "0.6.14-3build2") >>= inGroups ["happstack", "lens", "th-path", "important"] >>= ghcjs_also
   _juicyPixels <- hackage (Just "3.2.8") "JuicyPixels" >>= patch $(embedFile "patches/JuicyPixels.diff") >>= debianize [] >>= aflag (P.DebVersion "3.2.8.1-1") >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _jwt <-  (hackage (Just "0.7.2") "jwt") >>= debianize [] >>= aflag (P.DebVersion "0.7.2-4build3") >>= inGroups [ "authenticate", "important"] -- dependency of happstack-authenticate-2
