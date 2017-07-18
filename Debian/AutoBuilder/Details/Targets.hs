@@ -19,7 +19,7 @@ import Debian.Relation (Relation(..), BinPkgName(..))
 import Debian.Relation.String (parseRelations)
 import Debian.Releases (BaseRelease(..), baseRelease, Release)
 import qualified Debian.Repo.Fingerprint as P
-import qualified Debian.AutoBuilder.Details.Public as Trusty
+import qualified Debian.AutoBuilder.Details.Trusty as Trusty
 import qualified Debian.AutoBuilder.Details.Artful as Artful
 import qualified Debian.AutoBuilder.Details.Private as Private
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)

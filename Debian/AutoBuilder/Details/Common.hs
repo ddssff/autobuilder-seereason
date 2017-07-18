@@ -85,26 +85,25 @@ dropPrefix :: Monad m => String -> String -> m String
 dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
 dropPrefix pre str = fail $ "Expected prefix " ++ show pre ++ ", found " ++ show str
 
-skip :: Reason -> P.PackageId -> TSt P.PackageId
+skip :: Reason -> P.PackageId -> TSt ()
 skip _ = deletePackage
 
-askip :: Reason -> P.PackageId -> TSt P.PackageId
-askip _reason p = do
-  rel <- baseRelease <$> use release
-  case rel of
-    Artful -> deletePackage p
-    _ -> return p
+skip2 :: Reason -> (P.PackageId, P.PackageId) -> TSt ()
+skip2 _reason (i, j) = deletePackage i >> deletePackage j
 
 newtype Reason = Reason String
 
-broken :: P.PackageId -> TSt P.PackageId
+broken :: P.PackageId -> TSt ()
 broken = deletePackage
 
-deletePackage :: PackageId -> TSt PackageId
-deletePackage i = P.packageMap %= Map.delete i >> return i
+broken2 :: (P.PackageId, P.PackageId) -> TSt ()
+broken2 (i, j) = deletePackage i >> deletePackage j
 
-deletePackage' :: PackageId -> TSt PackageId
-deletePackage' i = P.packageMap %= Map.delete i >> return i
+deletePackage :: PackageId -> TSt ()
+deletePackage i = P.packageMap %= Map.delete i
+
+deletePackage' :: PackageId -> TSt ()
+deletePackage' i = P.packageMap %= Map.delete i
 
 patchTag :: String
 patchTag = "http://patch-tag.com/r/stepcut"
@@ -479,11 +478,6 @@ commonTargets = do
   _ircbot <-  (hackage (Just "0.6.5.1") "ircbot") >>= debianize [] >>= aflag (P.DebVersion "0.6.5.1-1") >>= inGroups ["happstack", "important"]
   _ixset <-  (git "https://github.com/Happstack/ixset.git" []) >>= debianize [] >>= aflag (P.DebVersion "1.0.7-3build2") >>= inGroups ["happstack", "important"] >>= ghcjs_also -- ,  (hackage (Just "1.0.7") "ixset") >>= debianize []
   _ixset_typed <-  (hackage (Just "0.3.1") "ixset-typed") >>= debianize [] >>= aflag (P.DebVersion "0.3.1-3build2") >>= inGroups [ "authenticate", "important"] -- dependency of happstack-authenticate-2
-  _libjs_jcrop <- apt "jessie" "libjs-jcrop" >>= \p ->
-                 (baseRelease . view release <$> get) >>= \ r ->
-                 case r of
-                   Artful -> patch $(embedFile "patches/libjs-jcrop.diff") p >>= proc
-                   _ -> skip (Reason "Trusty has libjs-jcrop") p
   _jqueryui18 <- darcs ("http://src.seereason.com/jqueryui18")
   _jmacro <-  (hackage (Just "0.6.14") "jmacro") >>= debianize [] >>= aflag (P.DebVersion "0.6.14-3build2") >>= inGroups ["happstack", "lens", "th-path", "important"] >>= ghcjs_also
   _juicyPixels <- hackage (Just "3.2.8") "JuicyPixels" >>= patch $(embedFile "patches/JuicyPixels.diff") >>= debianize [] >>= aflag (P.DebVersion "3.2.8.1-1") >>= inGroups ["happstack", "important"] >>= ghcjs_also

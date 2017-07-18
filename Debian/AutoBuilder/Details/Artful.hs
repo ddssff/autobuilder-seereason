@@ -19,7 +19,7 @@ import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Types.Packages as P (TSt, depends,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
-                                               pid, groups, PackageId, hackage, debianize, flag, apply, patch,
+                                               pid, proc, groups, PackageId, hackage, debianize, flag, apply, patch,
                                                darcs, apt, git, hg, cd, debdir, uri, release,
                                                GroupName, inGroups, createPackage)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
@@ -41,6 +41,8 @@ buildTargets = do
       -- This changes --show-details=direct to --show-details=always in check-recipe
       patch $(embedFile "patches/haskell-devscripts.diff") >>=
       flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
+  _libjs_jcrop <- apt "jessie" "libjs-jcrop" >>= \p ->
+                 patch $(embedFile "patches/libjs-jcrop.diff") p >>= proc
   -- findGroup "ghcjs-libs" >>= mapM_ ghcjs_also
   return ()
 

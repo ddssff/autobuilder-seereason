@@ -51,7 +51,7 @@ Library
     Debian.AutoBuilder.Details.Versions
     Debian.AutoBuilder.Details.Targets
     Debian.AutoBuilder.Details.Private
-    Debian.AutoBuilder.Details.Public
+    Debian.AutoBuilder.Details.Trusty
     Debian.AutoBuilder.Details.Artful
     Debian.AutoBuilder.Details.Sources
     Debian.AutoBuilder.Details.Common
