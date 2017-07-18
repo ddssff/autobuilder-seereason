@@ -439,12 +439,11 @@ commonTargets = do
   _hsx2hs <- {- git "https://github.com/seereason/hsx2hs.git" [] -}
              {- git "file:///home/dsf/git/hsx2hs" [] -}
              hackage (Just "0.14.0") "hsx2hs" >>=
-             flag (P.CabalDebian ["--executable", "hsx2hs",
-                                  "--conflicts", "hsx2hs:haskell-hsx-utils",
-                                  "--replaces", "hsx2hs:haskell-hsx-utils",
-                                  "--provides", "hsx2hs:haskell-hsx-utils"]) >>=
+             patch $(embedFile "patches/hsx2hs.diff") >>=
              debianize [] >>=
              inGroups ["happstack", "lens", "important"]
+  _hsx2hs2 <- P.clonePackage id _hsx2hs >>= ghcjs_only
+  flag (P.CabalDebian ["--executable", "hsx2hs"]) _hsx2hs
   _html <-  (hackage (Just "1.0.1.2") "html"
                              >>= tflag (P.DebVersion "1.0.1.2-7")
                              >>= pflag (P.DebVersion "1.0.1.2-5")) >>= debianize [] >>= aflag (P.DebVersion "1.0.1.2-13build1") >>= inGroups ["ghcjs-libs", "ghc-libs", "platform"]
