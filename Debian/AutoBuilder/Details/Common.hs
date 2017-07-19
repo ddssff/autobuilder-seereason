@@ -350,10 +350,6 @@ commonTargets = do
   _fmlist <- hackage Nothing "foundation" >>= debianize [] >>= ghcjs_also
   _free <-  (hackage (Just "4.12.4") "free") >>= debianize [] >>= aflag (P.DebVersion "4.12.4-3build3") >>= ghcjs_also
   _generic_deriving <-  (hackage (Just "1.10.7") "generic-deriving") >>= debianize [] >>= aflag (P.DebVersion "1.11.2-1") >>= ghcjs_also
-  _ghcjs <-
-      case rel of
-        Trusty -> git "https://github.com/ddssff/ghcjs-debian" [] >>= relax "cabal-install" >>= inGroups ["ghcjs-comp"]
-        Artful -> git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp"]
   _ghcjs_dom <- hackage (Just "0.2.4.0" {-"0.7.0.4"-} {-"0.4.0.0"-}) "ghcjs-dom" >>=
                 flag (P.CabalPin "0.2.4.0") >>=
                 debianize [] >>=
@@ -407,12 +403,7 @@ commonTargets = do
               -- ,  (hackage (Just "7.4.6.2") "happstack-server") >>= debianize []
   _happstack_server <- git "https://github.com/Happstack/happstack-server" [] >>=
                        debianize [] >>=
-                       flag (P.DebVersion "7.4.6.4-1build1") >>= inGroups ["happstack", "important"]
-  _happstack_server_ghcjs <- -- P.clonePackage id _happstack_server >>= ghcjs_only
-                             git "https://github.com/seereason/happstack-server" [Branch "websockets"] >>=
-                             flag (P.CabalDebian ["--ghcjs"]) >>= flag (P.BuildDep "libghc-cabal-dev") >>=
-                             flag (P.CabalDebian ["--cabal-flags", "-template_haskell"]) >>= flag (P.BuildDep "ghcjs") >>= flag P.NoDoc >>=
-                             debianize [] >>= inGroups ["happstack", "important"] {- >>= \i -> use (packageMap . at i) >>= \pkg -> trace ("Package: " ++ show pkg) (return i) -}
+                       flag (P.DebVersion "7.4.7") >>= inGroups ["happstack", "important"]
   _happstack_server_tls <-  (git "https://github.com/Happstack/happstack-server-tls" []) >>= debianize [] >>= inGroups ["happstack", "important"]
   _happstack_static_routing <-  (hackage (Just "0.4.2") "happstack-static-routing") >>= debianize [] {->>= inGroups ["happstack", "important"]-} >>= skip (Reason "compile error")
   _happstack_util <- hackage (Just "6.0.3") "happstack-util" >>=
@@ -681,6 +672,7 @@ commonTargets = do
   _web_routes_hsp <- git "https://github.com/Happstack/web-routes-hsp.git" [] >>= debianize [] >>= aflag (P.DebVersion "0.24.6.1-3build2") >>= inGroups ["happstack", "important"]
   _web_routes_th <- git "https://github.com/Happstack/web-routes-th.git" [] >>= debianize [] >>= aflag (P.DebVersion "0.22.6.1-1build1") >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _webkitgtk3 <- hackage (Just "0.13.1.3") "webkitgtk3" >>= flag (P.CabalPin "0.13.1.3") >>= flag (P.BuildDep "libwebkitgtk-3.0-dev") >>= debianize [] >>= inGroups ["glib"] >>= skip (Reason "The ghcjs version doesn't need this, see cairo and glib")
+  _websockets <- hackage (Just "0.11.2.0") "websockets" >>= debianize []
   _wl_pprint_extras <- hackage (Just "3.5.0.5") "wl-pprint-extras" >>=
                        patch $(embedFile "patches/wl-pprint-extras.diff") >>=
                        debianize [] >>=

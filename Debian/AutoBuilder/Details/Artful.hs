@@ -44,6 +44,7 @@ buildTargets = do
   _libjs_jcrop <- apt "jessie" "libjs-jcrop" >>= \p ->
                  patch $(embedFile "patches/libjs-jcrop.diff") p >>= proc
   -- findGroup "ghcjs-libs" >>= mapM_ ghcjs_also
+  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp"]
   return ()
 
 findGroup :: GroupName -> TSt (Set P.PackageId)
