@@ -48,13 +48,14 @@ Library
     Unixutils
   Exposed-Modules:
     Debian.AutoBuilder.Details
-    Debian.AutoBuilder.Details.Versions
-    Debian.AutoBuilder.Details.Targets
-    Debian.AutoBuilder.Details.Private
-    Debian.AutoBuilder.Details.Trusty
     Debian.AutoBuilder.Details.Artful
-    Debian.AutoBuilder.Details.Sources
     Debian.AutoBuilder.Details.Common
+    Debian.AutoBuilder.Details.Private
+    Debian.AutoBuilder.Details.Sources
+    Debian.AutoBuilder.Details.Targets
+    Debian.AutoBuilder.Details.Trusty
+    Debian.AutoBuilder.Details.Versions
+    Debian.AutoBuilder.Details.Xenial
 
   if flag(local-libs)
     Hs-Source-Dirs: ../autobuilder, ../debian-repo, ../cabal-debian/src, ../autobuilder/dist/build/autogen, ../cabal-debian/dist/build/autogen

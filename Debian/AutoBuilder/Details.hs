@@ -76,7 +76,7 @@ myExtraRepos = [{-Right (PersonalPackageArchive {ppaUser = "hvr", ppaName = "ghc
 -- suffixes we will use on our build releases.
 --
 myReleaseSuffixes :: [String]
-myReleaseSuffixes = ["-seereason", "-private"]
+myReleaseSuffixes = ["-seereason", "-private", "-ghc8"]
 
 --
 -- End of release suffix section.

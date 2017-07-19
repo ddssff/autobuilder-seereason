@@ -17,10 +17,11 @@ import Debian.AutoBuilder.Types.Packages
 import Debian.Debianize as D (CabalInfo, debInfo, execMap)
 import Debian.Relation (Relation(..), BinPkgName(..))
 import Debian.Relation.String (parseRelations)
-import Debian.Releases (BaseRelease(..), baseRelease, Release)
+import Debian.Releases (BaseRelease(..), baseRelease, Distro(..), Release(..))
 import qualified Debian.Repo.Fingerprint as P
 import qualified Debian.AutoBuilder.Details.Trusty as Trusty
 import qualified Debian.AutoBuilder.Details.Artful as Artful
+import qualified Debian.AutoBuilder.Details.Xenial as Xenial
 import qualified Debian.AutoBuilder.Details.Private as Private
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 
@@ -30,11 +31,16 @@ import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 -- don't wish to build.
 public :: ParamRec -> TSt ()
 public params = do
-    rel <- baseRelease <$> use release
-    let targets = if rel == Artful then Artful.buildTargets else Trusty.buildTargets params
-    -- Dangerous when uncommented - build private targets into public, do not upload!!
-    -- private params >>
-    targets >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
+  rel <- use release
+  let targets =
+          case rel of
+            ExtendedRelease (Release Xenial) SeeReasonGHC8 -> Xenial.buildTargets
+            ExtendedRelease (Release Trusty) SeeReason -> Trusty.buildTargets params
+            ExtendedRelease (Release Artful) SeeReason -> Artful.buildTargets
+            _ -> error $ "Unexpected release: " ++ show rel
+  -- Dangerous when uncommented - build private targets into public, do not upload!!
+  -- private params >>
+  targets >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
 
 private :: ParamRec -> TSt ()
 private params =

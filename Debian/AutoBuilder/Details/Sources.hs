@@ -145,7 +145,7 @@ baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     case releaseRepoName release of
       Debian -> debianSourceLines debianMirrorHost release
       Ubuntu -> ubuntuSourceLines ubuntuMirrorHost release
-      x -> error $ "Unknown release repository: " ++ show x
+      x -> error $ "Unknown release repository: " ++ distroString x
 
 debianSourceLines :: String -> BaseRelease -> [DebSource]
 debianSourceLines debianMirrorHost release =
