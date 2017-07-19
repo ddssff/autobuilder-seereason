@@ -61,8 +61,8 @@ buildTargets params = do
             flag (P.CabalPin "0.11.2.0") >>=
             flag (P.CabalDebian ["--missing-dependency", "libghc-fail-doc"]) >>=
             inGroups ["important"] >>= ghcjs_also
-  _aeson_pretty <- hackage (Just "0.8.2") "aeson-pretty" >>= debianize []
-  _aeson_qq <-  hackage (Just "0.8.1") "aeson-qq" >>= debianize [] >>= inGroups [ "authenticate", "important"]
+  _aeson_pretty <- hackage (Just "0.8.5") "aeson-pretty" >>= debianize []
+  _aeson_qq <-  hackage (Just "0.8.2") "aeson-qq" >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _agi <- darcs ("https://github.com/ddssff/haskell-agi") >>= skip (Reason "No instance for (Applicative (AGIT m))")
   _alex <- ghc7 $
            hackage (Just "3.1.7") "alex" >>=
@@ -391,7 +391,7 @@ buildTargets params = do
   _feed <- git "https://github.com/seereason/feed" [] {-hackage "feed"-} >>= tflag (P.DebVersion "0.3.9.2-1") >>= debianize []
   _fgl <-  (hackage (Just "5.5.3.0") "fgl") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _file_embed <-  (hackage (Just "0.0.10") "file-embed") >>= debianize [] >>= ghcjs_also
-  _file_location <- hackage (Just "0.4.9") "file-location" >>= {-flag (P.CabalDebian [ "--source-package-name", "file-location" ]) >>=-} debianize []
+  _file_location <- hackage (Just "0.4.9.1") "file-location" >>= {-flag (P.CabalDebian [ "--source-package-name", "file-location" ]) >>=-} debianize []
   _filelock <- hackage Nothing "filelock" >>= debianize []
   _filemanip <- git "https://github.com/ddssff/filemanip" [] >>= debianize [] >>= ghcjs_also
   _filemanip_extra <- git "https://github.com/seereason/filemanip-extra" [] >>= debianize [] >>= inGroups ["autobuilder-group", "important"] >>= ghcjs_also
@@ -432,11 +432,11 @@ buildTargets params = do
   --                           >>= skip (Reason "stick with current, avoid huge rebuild")
   _ghc8 <- apt "sid" "ghc" >>= patch $(embedFile "patches/ghc.diff") >>= inGroups ["ghc"] >>= skip (Reason "Waiting for interactive support in ghcjs-0.2.1")
   _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] >>= skip (Reason "Encountered missing dependencies: 2> binary ==0.8.*")
-  _ghc_boot_th <- hackage (Just "8.0.1") "ghc-boot-th" >>= debianize []
+  _ghc_boot_th <- hackage (Just "8.0.2") "ghc-boot-th" >>= debianize []
   _ghc_exactprint <- git "https://github.com/alanz/ghc-exactprint" [] >>= debianize []
   _terminal_size <- hackage (Just "0.3.2.1") "terminal-size"  >>= debianize [] >>= inGroups ["ghcid"]
   _ghcid <- hackage (Just "0.6.4") "ghcid" >>= debianize [] >>= inGroups ["ghcid"]
-  _ghcjs_base <- git "https://github.com/ghcjs/ghcjs-base" [] >>= debianize [] {->>= ghcjs_only-} -- causes double --ghcjs to be passed to cabal-debian
+  _ghcjs_base <- git "https://github.com/ghcjs/ghcjs-base" [] >>= debianize [] >>= ghcjs -- causes double --ghcjs to be passed to cabal-debian
   _ghcjs_jquery <-  git "https://github.com/ghcjs/ghcjs-jquery" [] >>=
                     debianize [] {-`putSrcPkgName` "ghcjs-ghcjs-jquery"-} >>=
                     patch $(embedFile "patches/ghcjs-jquery.diff") >>=
@@ -446,14 +446,14 @@ buildTargets params = do
   _ghcjs_dom <- hackage (Just "0.2.4.0" {-"0.7.0.4"-} {-"0.4.0.0"-}) "ghcjs-dom" >>=
                 flag (P.CabalPin "0.2.4.0") >>=
                 debianize [] >>=
-                inGroups ["glib"] >>= ghcjs_also
+                inGroups ["glib"] >>= ghcjs
   -- _ghcjs_dom_jsffi <- hackage (Just "0.7.0.4") "ghcjs-dom-jsffi" >>= debianize [] >>= ghcjs_also
   _ghcjs_dom_hello <- hackage (Just "3.0.0.0") "ghcjs-dom-hello" >>=
                       patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
                       flag (P.CabalDebian ["--default-package", "ghcjs-dom-hello"]) >>=
                       debianize [] >>=
-                      inGroups ["glib"] >>= ghcjs_also >>=
-                      skip2 (Reason "see cairo and glib")
+                      inGroups ["glib"] >>= ghcjs >>=
+                      skip (Reason "see cairo and glib")
   _ghcjs <- {-ghc7 $-} git "https://github.com/ddssff/ghcjs-debian" [] >>= relax "cabal-install" >>= inGroups ["ghcjs-comp"]
   -- In a hurry right now
   _ghcjs8 <- ghc8 $ git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs8-comp"] >>= skip (Reason "Waiting for ghcjsi support")
@@ -558,7 +558,9 @@ buildTargets params = do
   _happstack_scaffolding <-  (git "https://github.com/seereason/happstack-scaffolding" [] >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["seereason", "important"]
   _happstack_search <- darcs ("http://src.seereason.com/happstack-search") >>= inGroups ["happstack", "important"]
               -- ,  (hackage (Just "7.4.6.2") "happstack-server") >>= debianize []
-  _happstack_server <- git "https://github.com/Happstack/happstack-server" [] >>=
+  _happstack_server <- git "https://github.com/Happstack/happstack-server"
+                           -- Should be version 7.4.7
+                           [Commit "3e3ef7518f697bad5243b87a46459ae31a125812"] >>=
                        -- flag (P.CabalDebian ["--cabal-flags", "hslogger"]) >>=
                        debianize [] >>=
                        inGroups ["happstack", "important"] >>= ghcjs_also
@@ -964,7 +966,7 @@ buildTargets params = do
              flag (P.BuildDep "happy") >>=
              debianize [] >>=
              inGroups ["appraisalscribe", "important"] >>= ghcjs_also
-  _pandoc_types <- hackage (Just "1.19") "pandoc-types" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
+  _pandoc_types <- hackage (Just "1.17.0.3") "pandoc-types" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
   _pango <-  (hackage (Just "0.13.1.1") "pango") >>= debianize [] >>= skip (Reason "see cairo")
   _parallel <-  (hackage (Just "3.2.1.0") "parallel") >>= debianize [] >>= inGroups ["platform"]
   _parseargs <-  (hackage (Just "0.2.0.7") "parseargs") >>= debianize [] >>= ghcjs_also
