@@ -716,7 +716,7 @@ buildTargets params = do
                                   "--replaces", "hsx2hs:haskell-hsx-utils",
                                   "--provides", "hsx2hs:haskell-hsx-utils"]) >>=
              debianize [] >>=
-             inGroups ["happstack", "lens", "important"]
+             inGroups ["happstack", "lens", "important"] >>= ghcjs_also
   _hsx_jmacro <-  (git "https://github.com/Happstack/hsx-jmacro.git" []) >>= debianize [] >>= inGroups ["happstack", "lens", "important"]
   _hsyslog <-  (hackage (Just "4") "hsyslog") >>= debianize []
   _htf <-  (hackage (Just "0.13.1.0") "HTF" >>= flag (P.BuildDep "cpphs")) >>= debianize []
