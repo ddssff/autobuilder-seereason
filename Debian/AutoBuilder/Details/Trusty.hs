@@ -708,15 +708,12 @@ buildTargets params = do
   _hspec_meta <-  (hackage (Just "2.2.1") "hspec-meta") >>= debianize []
   _hsSyck <-  (hackage (Just "0.53") "HsSyck") >>= debianize []
   _hStringTemplate <- hackage (Just "0.8.5") "HStringTemplate" >>= debianize []
-  _hsx2hs <- {- git "https://github.com/seereason/hsx2hs.git" [] -}
-             {- git "file:///home/dsf/git/hsx2hs" [] -}
+  (_hsx2hs, _) <-
              hackage (Just "0.14.0") "hsx2hs" >>=
-             flag (P.CabalDebian ["--executable", "hsx2hs",
-                                  "--conflicts", "hsx2hs:haskell-hsx-utils",
-                                  "--replaces", "hsx2hs:haskell-hsx-utils",
-                                  "--provides", "hsx2hs:haskell-hsx-utils"]) >>=
+             patch $(embedFile "patches/hsx2hs.diff") >>=
              debianize [] >>=
              inGroups ["happstack", "lens", "important"] >>= ghcjs_also
+  flag (P.CabalDebian ["--executable", "hsx2hs"]) _hsx2hs
   _hsx_jmacro <-  (git "https://github.com/Happstack/hsx-jmacro.git" []) >>= debianize [] >>= inGroups ["happstack", "lens", "important"]
   _hsyslog <-  (hackage (Just "4") "hsyslog") >>= debianize []
   _htf <-  (hackage (Just "0.13.1.0") "HTF" >>= flag (P.BuildDep "cpphs")) >>= debianize []
