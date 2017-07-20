@@ -13,7 +13,7 @@ import System.FilePath ((</>))
 
 -- Individual packages, alphabetized
 
-buildTargets :: ParamRec -> TSt ()
+buildTargets :: Monad m => ParamRec -> TSt m ()
 buildTargets _params = do
   _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= debianize []
   _appraisalscribe_acid <- git "ssh://git@github.com/seereason/appraisalscribe-acid" [] >>= debianize []
@@ -87,7 +87,7 @@ buildTargets _params = do
   noTests
 
 {-
-libraries :: TSt ()
+libraries :: Monad m => TSt m ()
 libraries =
     -- (named "libraries") =<<
     sequence
@@ -108,7 +108,7 @@ libraries =
     , ghcjs_ghcjs_webmodule
     ] >> noTests
 
-applications :: TSt ()
+applications :: Monad m => TSt m ()
 applications =
     -- (named "applications") =<<
     sequence

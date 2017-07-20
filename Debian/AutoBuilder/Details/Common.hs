@@ -45,7 +45,7 @@ happstackRepo = "http://hub.darcs.net/stepcut/happstack" :: String
 asciiToString :: B.ByteString -> String
 asciiToString = map (chr . fromIntegral) . B.unpack
 
-ghcjs :: P.PackageId -> TSt P.PackageId
+ghcjs :: Monad m => P.PackageId -> TSt m P.PackageId
 ghcjs i = do
   p <- use (P.packageMap . at i) >>= maybe (error ("ghcjs: no such target: " ++ show i)) return
   _ <- putSrcPkgName (makeSrcPkgName (view P.spec p)) i
@@ -56,7 +56,7 @@ ghcjs i = do
   _ <- flag P.NoDoc i -- sometimes the ghcjs haddock is super slow
   return i
 
-ghcjs_also :: P.PackageId -> TSt (P.PackageId, P.PackageId)
+ghcjs_also :: Monad m => P.PackageId -> TSt m (P.PackageId, P.PackageId)
 ghcjs_also i = do
   j <- P.clonePackage id i
   -- Just p <- use (P.packageMap . at i)
@@ -73,7 +73,7 @@ makeSrcPkgName (Darcs path) = "ghcjs-" ++ map toLower (takeBaseName path)
 makeSrcPkgName (Proc x) = makeSrcPkgName x
 makeSrcPkgName m = error $ "ghcjs_flags - unsupported target type: " ++ show m
 
-putSrcPkgName :: String -> P.PackageId -> TSt P.PackageId
+putSrcPkgName :: Monad m => String -> P.PackageId -> TSt m P.PackageId
 putSrcPkgName name i = P.modifyPackage (over spec (\x -> putSrcPkgName' x name)) i
 
 putSrcPkgName' :: RetrieveMethod -> String -> RetrieveMethod
@@ -85,24 +85,27 @@ dropPrefix :: Monad m => String -> String -> m String
 dropPrefix pre str | isPrefixOf pre str = return $ drop (length pre) str
 dropPrefix pre str = fail $ "Expected prefix " ++ show pre ++ ", found " ++ show str
 
-skip :: Reason -> P.PackageId -> TSt ()
+skip0 :: Monad m => Reason -> () -> TSt m ()
+skip0 _reason () = return ()
+
+skip :: Monad m => Reason -> P.PackageId -> TSt m ()
 skip _ = deletePackage
 
-skip2 :: Reason -> (P.PackageId, P.PackageId) -> TSt ()
+skip2 :: Monad m => Reason -> (P.PackageId, P.PackageId) -> TSt m ()
 skip2 _reason (i, j) = deletePackage i >> deletePackage j
 
 newtype Reason = Reason String
 
-broken :: P.PackageId -> TSt ()
+broken :: Monad m => P.PackageId -> TSt m ()
 broken = deletePackage
 
-broken2 :: (P.PackageId, P.PackageId) -> TSt ()
+broken2 :: Monad m => (P.PackageId, P.PackageId) -> TSt m ()
 broken2 (i, j) = deletePackage i >> deletePackage j
 
-deletePackage :: PackageId -> TSt ()
+deletePackage :: Monad m => PackageId -> TSt m ()
 deletePackage i = P.packageMap %= Map.delete i
 
-deletePackage' :: PackageId -> TSt ()
+deletePackage' :: Monad m => PackageId -> TSt m ()
 deletePackage' i = P.packageMap %= Map.delete i
 
 patchTag :: String
@@ -110,7 +113,7 @@ patchTag = "http://patch-tag.com/r/stepcut"
 darcsHub :: String
 darcsHub = "http://hub.darcs.net/stepcut"
 
-ghcFlags :: P.PackageId -> TSt P.PackageId
+ghcFlags :: Monad m => P.PackageId -> TSt m P.PackageId
 ghcFlags i = relax "ghc" i >>=
              relax "happy" >>=
              relax "alex" >>=
@@ -125,19 +128,19 @@ ghcFlags i = relax "ghc" i >>=
 ghc74flag :: P.Package -> P.PackageFlag -> P.Package
 ghc74flag p _ = p
 
-sflag :: PackageFlag -> PackageId -> TSt PackageId
+sflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
 sflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Squeeze -> flag; _ -> noflag) fl i
-pflag :: PackageFlag -> PackageId -> TSt PackageId
+pflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
 pflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Precise -> flag; _ -> noflag) fl i
-tflag :: PackageFlag -> PackageId -> TSt PackageId
+tflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
 tflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Trusty -> flag; _ -> noflag) fl i
-qflag :: PackageFlag -> PackageId -> TSt PackageId
+qflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
 qflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Quantal -> flag; _ -> noflag) fl i
-wflag :: PackageFlag -> PackageId -> TSt PackageId
+wflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
 wflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Wheezy -> flag; _ -> noflag) fl i
-aflag :: PackageFlag -> PackageId -> TSt PackageId
+aflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
 aflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Artful -> flag; _ -> noflag) fl i
-wskip :: P.PackageId -> TSt (Maybe P.PackageId)
+wskip :: Monad m => P.PackageId -> TSt m (Maybe P.PackageId)
 wskip i = do
   r <- (baseRelease . view release <$> get)
   case r of Wheezy -> deletePackage i >> return Nothing
@@ -147,10 +150,10 @@ wonly i = do
   case r of Wheezy -> return (Just i)
             _ -> deletePackage i >> return Nothing
 
-noflag :: PackageFlag -> PackageId -> TSt PackageId
+noflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
 noflag _ i = return i
 
-relax :: String -> P.PackageId -> TSt P.PackageId
+relax :: Monad m => String -> P.PackageId -> TSt m P.PackageId
 relax x i = P.modifyPackage (over P.flags (++ [P.RelaxDep x])) i
 
 gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
@@ -209,8 +212,8 @@ hack v name = hackage v name >>= debianize []
 
 git' r c = git r c >>= debianize []
 
-commonTargets :: TSt ()
-commonTargets = do
+artfulTargets :: Monad m => TSt m ()
+artfulTargets = do
   rel <- baseRelease <$> use release
   _acid_state <- git "https://github.com/acid-state/acid-state" [{-Branch "log-inspection"-}] >>=
                  debianize [] >>= aflag (P.DebVersion "0.14.2-3build2") >>= inGroups ["happstack", "important"] >>= ghcjs_also
@@ -682,7 +685,7 @@ commonTargets = do
   _x509 <-  (hackage (Just "1.6.5") "x509") >>= debianize [] >>= aflag (P.DebVersion "1.6.5-1build2") >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _x509_store <-  (hackage (Just "1.6.2") "x509-store") >>= debianize [] >>= aflag (P.DebVersion "1.6.2-2build3") >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _x509_system <-  (hackage (Just "1.6.4") "x509-system") >>= debianize [] >>= aflag (P.DebVersion "1.6.4-2build3") >>= inGroups ["authenticate", "important"] >>= ghcjs_also
-  _x509_validation <-  (hackage (Just "1.6.5") "x509-validation") >>= debianize [] >>= aflag (P.DebVersion "1.6.5-2build3") >>= inGroups ["authenticate", "important"] >>= ghcjs_also :: TSt (PackageId, PackageId)
+  _x509_validation <-  (hackage (Just "1.6.5") "x509-validation") >>= debianize [] >>= aflag (P.DebVersion "1.6.5-2build3") >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _xhtml <-  (hackage (Just "3000.2.1") "xhtml" >>= wflag (P.DebVersion "3000.2.1-1") >>= qflag (P.DebVersion "3000.2.1-1build2") >>= tflag (P.DebVersion "3000.2.1-4")) >>= debianize [] >>= ghcjs_also
   _xml <- hackage (Just "1.3.14") "xml" >>= debianize [] >>= aflag (P.DebVersion "1.3.14-6build2") >>= ghcjs_also -- apt (rel release "wheezy" "quantal") "haskell-xml"
   _xml_conduit <-  (hackage (Just "1.3.5") "xml-conduit") >>= debianize [] >>= aflag (P.DebVersion "1.3.5-3build2") >>= inGroups ["conduit", "authenticate", "important"]
@@ -722,5 +725,5 @@ commonTargets = do
   noTests
   return ()
 
-noTests :: TSt ()
+noTests :: Monad m => TSt m ()
 noTests = use P.packageMap >>= mapM_ (flag (P.CabalDebian ["--no-tests"])) . Map.keys

@@ -8,7 +8,7 @@ module Debian.AutoBuilder.Details.Targets
 
 import Control.Applicative ((<$>), (<*>))
 import Control.Lens ((%=), (%~), use, view)
-import Control.Monad.State (execState, get, modify)
+import Control.Monad.State (execState, execStateT, get, modify)
 import Data.List as List (map)
 import Data.Map as Map (insert, map)
 import Data.Monoid (mappend)
@@ -24,17 +24,20 @@ import qualified Debian.AutoBuilder.Details.Artful as Artful
 import qualified Debian.AutoBuilder.Details.Xenial as Xenial
 import qualified Debian.AutoBuilder.Details.Private as Private
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
+import Debian.Repo.Internal.Apt (MonadApt)
+import Debian.Repo.Slice (NamedSliceList, SourcesChangedAction)
+import Debian.Repo.State.AptImage (withAptImage)
 
 -- |Each of theses lists can be built on their own as a group,
 -- and any sequence of groups can be built together as long as
 -- no intermediate group is omitted.  Comment out the ones you
 -- don't wish to build.
-public :: ParamRec -> TSt ()
+public :: Monad m => ParamRec -> TSt m ()
 public params = do
   rel <- use release
   let targets =
           case rel of
-            ExtendedRelease (Release Xenial) SeeReasonGHC8 -> Xenial.buildTargets
+            ExtendedRelease (Release Xenial) SeeReason -> Xenial.buildTargets
             ExtendedRelease (Release Trusty) SeeReason -> Trusty.buildTargets params
             ExtendedRelease (Release Artful) SeeReason -> Artful.buildTargets
             _ -> error $ "Unexpected release: " ++ show rel
@@ -42,11 +45,11 @@ public params = do
   -- private params >>
   targets >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
 
-private :: ParamRec -> TSt ()
+private :: Monad m => ParamRec -> TSt m ()
 private params =
     Private.buildTargets params >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'
 
-proc' :: TSt ()
+proc' :: Monad m => TSt m ()
 proc' =
     packageMap %= Map.map f
     where
@@ -56,7 +59,7 @@ proc' =
 -- | This prevents every package that uses cabal-debian for
 -- debianization from rebuilding every time the library is revved.
 -- Presumably the current build is working ok, right?
-relaxCabalDebian :: TSt ()
+relaxCabalDebian :: Monad m => TSt m ()
 relaxCabalDebian =
     packageMap %= Map.map f
     where f p | isDebianizeSpec (P._spec p) =
@@ -72,7 +75,7 @@ isDebianizeSpec (P.Debianize'' _ _) = True
 isDebianizeSpec _ = False
 
 -- | Add MapDep and DevelDep flags Supply some special cases to map cabal library names to debian.
-applyDepMap :: Release -> TSt ()
+applyDepMap :: Monad m => Release -> TSt m ()
 applyDepMap release =
     packageMap %= Map.map f
     where
@@ -110,14 +113,14 @@ applyDepMap release =
       deb s = [[Rel (BinPkgName s) Nothing Nothing]]
       rel s = either (error $ "Parse error in debian relations: " ++ show s) id (parseRelations s)
 
-applyEpochMap :: TSt ()
+applyEpochMap :: Monad m => TSt m ()
 applyEpochMap =
     packageMap %= (Map.map f)
     where
       f :: P.Package -> Package
       f x = x {P._flags = P._flags x ++ [ P.Epoch "HTTP" 1, P.Epoch "HaXml" 1 ]}
 
-applyExecMap :: TSt ()
+applyExecMap :: Monad m => TSt m ()
 applyExecMap =
     packageMap %= Map.map f
     where

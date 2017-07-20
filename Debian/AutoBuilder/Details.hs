@@ -102,7 +102,7 @@ myVendorTag = "+seereason"
 -- actually build are chosen from these.  The myBuildRelease argument
 -- comes from the autobuilder argument list.
 --
-myKnownTargets :: ParamRec -> TSt ()
+myKnownTargets :: Monad m => ParamRec -> TSt m ()
 myKnownTargets params = do
   rel <- use P.release
   if isPrivateRelease rel

@@ -29,8 +29,8 @@ import Debian.Relation (BinPkgName(..))
 import Debian.Releases (baseRelease, BaseRelease(Trusty, Artful))
 import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage {-, Git-}), GitSpec(Commit, Branch))
 
+buildTargets :: Monad m => TSt m ()
 buildTargets = do
-  commonTargets
   _haskell_devscripts <-
       -- Tagged 0.13.3
       git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "6e1e94bc4efd8a0ac37f34ac84f4813bcb0105cc"] >>=
@@ -45,8 +45,9 @@ buildTargets = do
                  patch $(embedFile "patches/libjs-jcrop.diff") p >>= proc
   -- findGroup "ghcjs-libs" >>= mapM_ ghcjs_also
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp"]
+  artfulTargets -- Targets with version numbers bumped past existing artful packages
   return ()
 
-findGroup :: GroupName -> TSt (Set P.PackageId)
+findGroup :: Monad m => GroupName -> TSt m (Set P.PackageId)
 findGroup name =
   (Set.fromList . map (view pid) . filter (Set.member name . view groups) . Map.elems) <$> use packageMap
