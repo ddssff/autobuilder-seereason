@@ -45,6 +45,23 @@ happstackRepo = "http://hub.darcs.net/stepcut/happstack" :: String
 asciiToString :: B.ByteString -> String
 asciiToString = map (chr . fromIntegral) . B.unpack
 
+#if 0
+-- Versions for a no-ghcjs build.
+ghcjs :: Monad m => P.PackageId -> TSt m ()
+ghcjs i = deletePackage i
+
+ghcjs_also :: Monad m => P.PackageId -> TSt m P.PackageId
+ghcjs_also i = return i
+
+skip2 :: Monad m => Reason -> P.PackageId -> TSt m ()
+skip2 _reason i = deletePackage i
+
+broken2 :: Monad m => P.PackageId -> TSt m ()
+broken2 i = deletePackage i
+
+#else
+
+-- Versions for a yes-ghcjs build
 ghcjs :: Monad m => P.PackageId -> TSt m P.PackageId
 ghcjs i = do
   p <- use (P.packageMap . at i) >>= maybe (error ("ghcjs: no such target: " ++ show i)) return
@@ -61,6 +78,31 @@ ghcjs_also i = do
   j <- P.clonePackage id i
   -- Just p <- use (P.packageMap . at i)
   (,) <$> pure i <*> ghcjs j
+
+skip2 :: Monad m => Reason -> (P.PackageId, P.PackageId) -> TSt m ()
+skip2 _reason (i, j) = deletePackage i >> deletePackage j
+
+broken2 :: Monad m => (P.PackageId, P.PackageId) -> TSt m ()
+broken2 (i, j) = deletePackage i >> deletePackage j
+#endif
+{-
+ghcjs :: Monad m => P.PackageId -> TSt m P.PackageId
+ghcjs i = do
+  p <- use (P.packageMap . at i) >>= maybe (error ("ghcjs: no such target: " ++ show i)) return
+  _ <- putSrcPkgName (makeSrcPkgName (view P.spec p)) i
+  _ <- flag (P.CabalDebian ["--ghcjs"]) i
+  _ <- flag (P.BuildDep "libghc-cabal-dev") i
+  _ <- flag (P.BuildDep "ghcjs") i
+  -- flag (P.BuildDep "haskell-devscripts (>= 0.8.21.3)") j
+  _ <- flag P.NoDoc i -- sometimes the ghcjs haddock is super slow
+  return i
+
+ghcjs_also :: Monad m => P.PackageId -> TSt m (P.PackageId, P.PackageId)
+ghcjs_also i = do
+  j <- P.clonePackage id i
+  -- Just p <- use (P.packageMap . at i)
+  (,) <$> pure i <*> ghcjs j
+-}
 
 makeSrcPkgName :: RetrieveMethod -> String
 makeSrcPkgName (Hackage "haskell-src-exts") = "ghcjs-src-exts"
@@ -90,20 +132,6 @@ skip0 _reason () = return ()
 
 skip :: Monad m => Reason -> P.PackageId -> TSt m ()
 skip _ = deletePackage
-
-#if 1
-skip2 :: Monad m => Reason -> (P.PackageId, P.PackageId) -> TSt m ()
-skip2 _reason (i, j) = deletePackage i >> deletePackage j
-
-broken2 :: Monad m => (P.PackageId, P.PackageId) -> TSt m ()
-broken2 (i, j) = deletePackage i >> deletePackage j
-#else
-skip2 :: Monad m => Reason -> P.PackageId -> TSt m ()
-skip2 _reason i = deletePackage i
-
-broken2 :: Monad m => P.PackageId -> TSt m ()
-broken2 i = deletePackage i
-#endif
 
 newtype Reason = Reason String
 
@@ -452,12 +480,12 @@ artfulTargets = do
   _hslogger <-  (hackage (Just "1.2.10") "hslogger") >>= debianize [] >>= inGroups ["important"] >>= ghcjs_also
   _hslua <-  (hackage (Just "0.4.1") "hslua") >>= debianize [] >>= aflag (P.DebVersion "0.4.1-10build1") >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _hsx_jmacro <-  (git "https://github.com/Happstack/hsx-jmacro.git" []) >>= debianize [] >>= aflag (P.DebVersion "7.3.8-3build2") >>= inGroups ["happstack", "lens", "important"]
-  _hsx2hs <- {- git "https://github.com/seereason/hsx2hs.git" [] -}
+  (_hsx2hs, _) <- {- git "https://github.com/seereason/hsx2hs.git" [] -}
              {- git "file:///home/dsf/git/hsx2hs" [] -}
              hackage (Just "0.14.0") "hsx2hs" >>=
              patch $(embedFile "patches/hsx2hs.diff") >>=
              debianize [] >>=
-             inGroups ["happstack", "lens", "important"] >>= ghcjs
+             inGroups ["happstack", "lens", "important"] >>= ghcjs_also
   flag (P.CabalDebian ["--executable", "hsx2hs"]) _hsx2hs
   _html <-  (hackage (Just "1.0.1.2") "html"
                              >>= tflag (P.DebVersion "1.0.1.2-7")

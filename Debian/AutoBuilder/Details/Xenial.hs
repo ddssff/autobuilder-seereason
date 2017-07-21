@@ -19,13 +19,13 @@ import Data.Map as Map (elems, keys)
 import Data.Set as Set (fromList, insert, member, Set)
 import Data.Text as Text (unlines)
 import Data.Version (Version(Version))
-import Debian.AutoBuilder.Details.Common hiding (ghcjs_also) -- (named, ghcjs_flags, putSrcPkgName)
+import Debian.AutoBuilder.Details.Common (ghcjs, ghcjs_also) -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Details.Trusty (commonTargets)
 import Debian.AutoBuilder.Types.Packages as P (TSt, depends,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap, Package(..),
                                                pid, proc, groups, PackageId, hackage, debianize, flag, apply, patch,
-                                               darcs, apt, git, hg, cd, debdir, uri, release,
+                                               darcs, apt, git, hg, cd, debdir, uri, release, spec, clonePackage,
                                                GroupName, inGroups, createPackage)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.Debianize as D
@@ -38,31 +38,6 @@ import Debian.Repo.Fingerprint (RetrieveMethod(Apt, Uri, DataFiles, Patch, Debia
 import Debian.Repo.PackageIndex (SourcePackage(sourcePackageID))
 import Debian.Repo.PackageID (packageName, packageVersion)
 import Debian.Version (DebianVersion, prettyDebianVersion)
-
-#if 1
-ghcjs :: Monad m => P.PackageId -> TSt m ()
-ghcjs i = deletePackage i
-
-ghcjs_also :: Monad m => P.PackageId -> TSt m P.PackageId
-ghcjs_also i = return i
-#else
-ghcjs :: Monad m => P.PackageId -> TSt m P.PackageId
-ghcjs i = do
-  p <- use (P.packageMap . at i) >>= maybe (error ("ghcjs: no such target: " ++ show i)) return
-  _ <- putSrcPkgName (makeSrcPkgName (view P.spec p)) i
-  _ <- flag (P.CabalDebian ["--ghcjs"]) i
-  _ <- flag (P.BuildDep "libghc-cabal-dev") i
-  _ <- flag (P.BuildDep "ghcjs") i
-  -- flag (P.BuildDep "haskell-devscripts (>= 0.8.21.3)") j
-  _ <- flag P.NoDoc i -- sometimes the ghcjs haddock is super slow
-  return i
-
-ghcjs_also :: Monad m => P.PackageId -> TSt m (P.PackageId, P.PackageId)
-ghcjs_also i = do
-  j <- P.clonePackage id i
-  -- Just p <- use (P.packageMap . at i)
-  (,) <$> pure i <*> ghcjs j
-#endif
 
 buildTargets :: Monad m => TSt m ()
 buildTargets = do
@@ -93,9 +68,9 @@ buildTargets = do
              debianize [] >>= inGroups ["ghcjs-comp"]
   _haddock_library8 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
 
-  _cabal_install <- hackage (Just "1.24.0.0") "cabal-install" >>=
-                    -- debianize [] >>=
-                    patch $(embedFile "patches/cabal-install.diff") >>= -- cabal-debian-4.35.7 outputs libghc-cabal-dev | ghc instead of ghc | libghc-cabal-dev
+  _cabal_install <- hackage (Just "1.24.0.2") "cabal-install" >>=
+                    debianize [] >>=
+                    -- patch $(embedFile "patches/cabal-install.diff") >>= -- cabal-debian-4.35.7 outputs libghc-cabal-dev | ghc instead of ghc | libghc-cabal-dev
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>=
                     inGroups []
 
