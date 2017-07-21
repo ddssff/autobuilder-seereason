@@ -99,6 +99,9 @@ buildTargets = do
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>=
                     inGroups []
 
+
+  _zlib <- hackage (Just "0.6.1.1") "zlib" >>= flag (P.DebVersion "0.6.1.1-1") >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
+
   -- Trusty targets
   commonTargets
 

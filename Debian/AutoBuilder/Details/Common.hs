@@ -91,16 +91,24 @@ skip0 _reason () = return ()
 skip :: Monad m => Reason -> P.PackageId -> TSt m ()
 skip _ = deletePackage
 
+#if 1
 skip2 :: Monad m => Reason -> (P.PackageId, P.PackageId) -> TSt m ()
 skip2 _reason (i, j) = deletePackage i >> deletePackage j
+
+broken2 :: Monad m => (P.PackageId, P.PackageId) -> TSt m ()
+broken2 (i, j) = deletePackage i >> deletePackage j
+#else
+skip2 :: Monad m => Reason -> P.PackageId -> TSt m ()
+skip2 _reason i = deletePackage i
+
+broken2 :: Monad m => P.PackageId -> TSt m ()
+broken2 i = deletePackage i
+#endif
 
 newtype Reason = Reason String
 
 broken :: Monad m => P.PackageId -> TSt m ()
 broken = deletePackage
-
-broken2 :: Monad m => (P.PackageId, P.PackageId) -> TSt m ()
-broken2 (i, j) = deletePackage i >> deletePackage j
 
 deletePackage :: Monad m => PackageId -> TSt m ()
 deletePackage i = P.packageMap %= Map.delete i
