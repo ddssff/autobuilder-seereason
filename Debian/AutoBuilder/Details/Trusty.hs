@@ -927,7 +927,7 @@ commonTargets = do
   _optparse_applicative <-  (hackage (Just "0.12.1.0") "optparse-applicative") >>= debianize [] >>= ghcjs_also
   _ordered <-  (hackage (Just "0.1") "ordered") >>= debianize []
   _pandoc <- hackage (Just "1.19.1") "pandoc" >>=
-             patch $(embedFile "patches/pandoc-trusty.diff") >>=
+             patch $(embedFile "patches/pandoc.diff") >>=
              flag (P.BuildDep "alex") >>=
              flag (P.BuildDep "happy") >>=
              debianize [] >>=
