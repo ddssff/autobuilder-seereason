@@ -124,7 +124,8 @@ buildTargets params = do
   _vector_space <- (hackage (Just "0.10.3") "vector-space") >>= debianize []
   _vty <- (hackage (Just "5.7.1") "vty") >>= debianize []
   _yi_language <- (hackage (Just "0.2.1") "yi-language" >>= flag (P.BuildDep "alex")) >>= debianize []
-  _zlib <- hackage (Just "0.5.4.2") "zlib" >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
+  -- _zlib <- hackage (Just "0.5.4.2") "zlib" >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
+  _zlib <- hackage (Just "0.6.1.1") "zlib" >>= flag (P.DebVersion "0.6.1.1-1") >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
 
   commonTargets
 
@@ -330,8 +331,8 @@ commonTargets = do
   _conduit <-  (hackage (Just "1.2.6.6") "conduit") >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
   _conduit_extra <-  (hackage (Just "1.1.13.2") "conduit-extra") >>= debianize [] >>= inGroups ["conduit", "important", "servant"] >>= ghcjs_also
   _configurator <- hackage (Just "0.3.0.0") "configurator" >>= flag (P.DebVersion "0.3.0.0-3build1") >>= debianize []
-  _configFile <-  (hackage (Just "1.1.4") "ConfigFile") >>= debianize []
-  _connection <-  (hackage (Just "0.2.5") "connection") >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
+  _configFile <-  (hackage (Just "1.1.4") "ConfigFile") >>= flag (P.DebVersion "1.1.4-2build1") >>= debianize []
+  _connection <-  (hackage (Just "0.2.5") "connection") >>= flag (P.DebVersion "0.2.5-2build1") >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
   _constrained_normal <-  (hackage (Just "1.0.2") "constrained-normal") >>= debianize []
   _constraints <- hackage (Just "0.8") "constraints" >>= debianize []
   _consumer <- darcs ("http://src.seereason.com/haskell-consumer") >>= skip (Reason "build failure")
@@ -444,7 +445,7 @@ commonTargets = do
   _fay <-  (hackage (Just "0.23.1.16") "fay" {- >>= patch $(embedFile "patches/fay.diff") -}) >>= debianize [] >>= flag (P.CabalDebian [ "--depends", "haskell-fay-utils:cpphs" ]) >>= skip (Reason "too old for current syb and optparse-applicative")
   _fay_jquery <-  (git "https://github.com/faylang/fay-jquery" []) >>= debianize [] >>= skip (Reason "Waiting for newer fay")
   _fay_text <-  (hackage (Just "0.3.2.2") "fay-text") >>= debianize [] >>= skip (Reason "Waiting for newer fay")
-  _fb <- git "https://github.com/ddssff/fb.git" [] >>= debianize [] >>= inGroups [ "authenticate", "appraisalscribe", "important"]
+  _fb <- git "https://github.com/ddssff/fb.git" [] >>= flag (P.DebVersion "1.0.13-1") >>= debianize [] >>= inGroups [ "authenticate", "appraisalscribe", "important"]
   _feed <- hackage (Just "0.3.12.0") "feed" >>= {-flag (P.DebVersion "0.3.10.4-1build1") >>=-} debianize []
   _fgl <-  (hackage (Just "5.5.3.0") "fgl") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _file_embed <-  (hackage (Just "0.0.10") "file-embed") >>= debianize [] >>= ghcjs_also
@@ -485,7 +486,7 @@ commonTargets = do
   _ghc_exactprint <- git "https://github.com/alanz/ghc-exactprint" [] >>= debianize []
   _terminal_size <- hackage (Just "0.3.2.1") "terminal-size"  >>= flag (P.DebVersion "0.3.2.1-2") >>= debianize [] >>= inGroups ["ghcid"]
   _ghcid <- hackage (Just "0.6.4") "ghcid" >>= debianize [] >>= inGroups ["ghcid"]
-  _ghcjs_base <- git "https://github.com/ghcjs/ghcjs-base" [] >>= debianize [] >>= ghcjs
+  _ghcjs_base <- git "https://github.com/ghcjs/ghcjs-base" [] >>= debianize []
   _ghcjs_jquery <-  git "https://github.com/ghcjs/ghcjs-jquery" [] >>=
                     debianize [] {-`putSrcPkgName` "ghcjs-ghcjs-jquery"-} >>=
                     patch $(embedFile "patches/ghcjs-jquery.diff") >>=
@@ -574,18 +575,17 @@ commonTargets = do
                                                          "--default-package", "happstack-foundation-example"])) >>= debianize [] >>= inGroups ["happstack", "important"]
   _happstack_hsp <-  (git "https://github.com/Happstack/happstack-hsp.git" []) >>= debianize [] >>= inGroups ["happstack", "lens", "important"]
   _happstack_jmacro <-  (git "https://github.com/Happstack/happstack-jmacro.git" []) >>= debianize [] >>= inGroups ["happstack", "lens", "important"]
-  _happstack_lite <-  (hackage (Just "7.3.6") "happstack-lite") >>= debianize [] >>= inGroups ["happstack", "important"]
+  _happstack_lite <- hackage (Just "7.3.6") "happstack-lite" >>= debianize [] >>= inGroups ["happstack", "important"]
   _happstack_plugins <-  (hackage (Just "7.0.2") "happstack-plugins" >>= patch $(embedFile "patches/happstack-plugins.diff")) >>= debianize [] >>= skip (Reason "Needs plugins-auto")
   _happstack_scaffolding <-  (git "https://github.com/seereason/happstack-scaffolding" [] >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["seereason", "important"]
   _happstack_search <- darcs ("http://src.seereason.com/happstack-search") >>= inGroups ["happstack", "important"]
               -- ,  (hackage (Just "7.4.6.2") "happstack-server") >>= debianize []
-  _happstack_server <- git "https://github.com/Happstack/happstack-server"
-                           -- Should be version 7.4.7
-                           [Commit "3e3ef7518f697bad5243b87a46459ae31a125812"] >>=
+  _happstack_server <- hackage (Just "7.5.0") "happstack-server" >>=
+                       -- git "https://github.com/Happstack/happstack-server" [Commit "3e3ef7518f697bad5243b87a46459ae31a125812"] >>=
                        -- flag (P.CabalDebian ["--cabal-flags", "hslogger"]) >>=
                        debianize [] >>=
                        inGroups ["happstack", "important"] >>= ghcjs_also
-  _happstack_server_tls <-  (git "https://github.com/Happstack/happstack-server-tls" []) >>= debianize [] >>= inGroups ["happstack", "important"]
+  _happstack_server_tls <- hackage (Just "7.1.6.3") "happstack-server-tls" >>= debianize [] >>= inGroups ["happstack", "important"]
   _happstack_static_routing <-  (hackage (Just "0.4.2") "happstack-static-routing") >>= debianize [] {->>= inGroups ["happstack", "important"]-} >>= skip (Reason "compile error")
   _happstack_util <- hackage (Just "6.0.3") "happstack-util" >>=
                      patch $(embedFile "patches/happstack-util.diff") >>=
@@ -747,7 +747,7 @@ commonTargets = do
   -- _io_streams <- git "https://github.com/snapframework/io-streams" [] >>= debianize [] >>= inGroups ["important"] -- pull request to allow atto-parsec-0.13
   _io_streams <- hackage (Just "1.3.6.1") "io-streams" >>= debianize [] >>= inGroups ["important"] -- http-streams-0.8.4.0 requires io-streams < 1.4
   _iproute <-  (hackage (Just "1.7.0") "iproute") >>= flag (P.DebVersion "1.7.0-1") >>= debianize []
-  _ircbot <-  (hackage (Just "0.6.5") "ircbot") >>= debianize [] >>= inGroups ["happstack", "important"]
+  _ircbot <- hackage (Just "0.6.5.1") "ircbot" >>= debianize [] >>= inGroups ["happstack", "important"]
   _irc <- hackage (Just "0.6.1.0") "irc" >>= flag (P.DebVersion "0.6.1.0-5build1") >>= debianize [] >>= inGroups ["important"]
   _iso3166_country_codes <-  (hackage (Just "0.20140203.7") "iso3166-country-codes") >>= debianize []
   _ixset <-  (git "https://github.com/Happstack/ixset.git" []) >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also -- ,  (hackage (Just "1.0.7") "ixset") >>= debianize []
@@ -873,7 +873,7 @@ commonTargets = do
                -- other hand, without monads-tf we lose this dependency chain:
                -- monads-tf <- options <- fay.
   _monadlist <-  (hackage (Just "0.0.2") "monadlist") >>= debianize [] >>= inGroups ["clckwrks", "important"]
-  _monad_logger <-  (hackage (Just "0.3.19") "monad-logger") >>= debianize [] >>= inGroups [ "authenticate", "important"]
+  _monad_logger <-  (hackage (Just "0.3.24") "monad-logger") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _monad_loops <- hackage (Just "0.4.3") "monad-loops" >>= flag (P.DebVersion "0.4.3-3") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _monad_parallel <-  (hackage (Just "0.7.2.2") "monad-parallel") >>= debianize []
   _monad_par <-  (hackage (Just "0.3.4.8") "monad-par") >>= debianize []
@@ -1240,7 +1240,7 @@ commonTargets = do
   _web_routes_boomerang <- git "https://github.com/Happstack/web-routes-boomerang.git" [] >>= debianize [] >>= inGroups ["happstack", "important"]
   _web_routes <- git "https://github.com/Happstack/web-routes.git" [] >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _web_routes_happstack <- git "https://github.com/Happstack/web-routes-happstack.git" [] >>= debianize [] >>= inGroups ["happstack", "important"]
-  _web_routes_hsp <- git "https://github.com/Happstack/web-routes-hsp.git" [] >>= debianize [] >>= inGroups ["happstack", "important"]
+  _web_routes_hsp <- git "https://github.com/Happstack/web-routes-hsp.git" [] >>= flag (P.DebVersion "0.24.6.1-1build1") >>= debianize [] >>= inGroups ["happstack", "important"]
 {-
   _web_routes_mtl <- git "https://github.com/Happstack/web-routes-mtl.git" [] >>= flag (P.DebVersion "0.20.1-1~hackage1") >>= debianize [] >>= inGroups ["happstack", "important"]
 -}
@@ -1262,8 +1262,8 @@ commonTargets = do
   _word_trie <-  (hackage (Just "0.3.0") "word-trie") >>= flag (P.DebVersion "0.3.0-4") >>= debianize []
   _x509 <- hackage (Just "1.6.3") "x509" >>= flag (P.DebVersion "1.6.3-1build1") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _x509_store <- hackage (Just "1.6.1") "x509-store" >>= flag (P.DebVersion "1.6.1-1build1") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
-  _x509_system <-  (hackage (Just "1.6.3") "x509-system") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
-  _x509_validation <- hackage (Just "1.6.3") "x509-validation" >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
+  _x509_system <-  (hackage (Just "1.6.3") "x509-system") >>= flag (P.DebVersion "1.6.3-1") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
+  _x509_validation <- hackage (Just "1.6.3") "x509-validation" >>= flag (P.DebVersion "1.6.3-1build1") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _xdg_basedir <- hackage (Just "0.2.2") "xdg-basedir" >>= flag (P.DebVersion "0.2.2-6") >>= debianize []
   _xhtml <-  (hackage (Just "3000.2.1") "xhtml" >>= wflag (P.DebVersion "3000.2.1-1") >>= qflag (P.DebVersion "3000.2.1-1build2") >>= tflag (P.DebVersion "3000.2.1-4")) >>= debianize [] >>= ghcjs_also
   _xml_conduit <-  (hackage (Just "1.3.5") "xml-conduit") >>= debianize [] >>= inGroups ["conduit", "authenticate", "important"]
