@@ -419,7 +419,7 @@ commonTargets = do
   _dynamic_state <-  (hackage (Just "0.2.2.0") "dynamic-state") >>= debianize []
   _dyre <-  (hackage (Just "0.8.12") "dyre") >>= flag (P.DebVersion "0.8.12-1") >>= debianize []
   _easy_file <-  (hackage (Just "0.2.1") "easy-file") >>= flag (P.DebVersion "0.2.1-3") >>= debianize [] >>= ghcjs_also
-  _ed25519 <- hackage (Just "0.0.5.0") "ed25519" >>= flag (P.DebVersion "0.0.5.0-1") >>= patch $(embedFile "patches/ed25519.diff") >>= debianize []
+  _ed25519 <- hackage (Just "0.0.5.0") "ed25519" >>= flag (P.DebVersion "0.0.5.0-1") >>= debianize []
   _edisonAPI <- hackage (Just "1.3.1") "EdisonAPI" >>= debianize []
   _edisonCore <- ( (hackage (Just "1.3.1.1") "EdisonCore" >>= qflag (P.DebVersion "1.2.1.3-9build2")) >>= debianize [])
   _ekg_core <-  (hackage (Just "0.1.1.1") "ekg-core") >>= debianize []
@@ -545,7 +545,7 @@ commonTargets = do
                -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
   _gtk3 <- hackage (Just "0.13.9") "gtk3" >>= flag (P.CabalPin "0.13.9") >>= flag (P.BuildDep "libgtk-3-dev") >>= debianize [] >>= inGroups ["glib"] >>= skip (Reason "see cairo and glib")
   _gyp <- apt "sid" "gyp" >>= skip (Reason "Use standard")
-  _hackage_security <- hackage (Just "0.5.2.2") "hackage-security" >>= flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>= flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>= patch $(embedFile "patches/hackage-security.diff") >>= debianize []
+  _hackage_security <- hackage (Just "0.5.2.2") "hackage-security" >>= flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>= flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>= debianize []
   _half <-  (hackage (Just "0.2.2.3") "half" >>= inGroups ["gl"]) >>= debianize []
   _hamlet <-  (hackage (Just "1.2.0") "hamlet") >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "No input files to haddock?")
   -- seereason still depends on this
@@ -587,8 +587,7 @@ commonTargets = do
                        inGroups ["happstack", "important"] >>= ghcjs_also
   _happstack_server_tls <- hackage (Just "7.1.6.3") "happstack-server-tls" >>= debianize [] >>= inGroups ["happstack", "important"]
   _happstack_static_routing <-  (hackage (Just "0.4.2") "happstack-static-routing") >>= debianize [] {->>= inGroups ["happstack", "important"]-} >>= skip (Reason "compile error")
-  _happstack_util <- hackage (Just "6.0.3") "happstack-util" >>=
-                     patch $(embedFile "patches/happstack-util.diff") >>=
+  _happstack_util <- git "https://github.com/seereason/happstack-util" [] >>=
                      flag (P.DebVersion "6.0.3-1") >>=
                      debianize [] >>=
                      inGroups ["happstack", "important"]
@@ -597,7 +596,7 @@ commonTargets = do
   _hashable <-  (hackage (Just "1.2.4.0") "hashable") >>= debianize []
   _hashed_storage <-  (hackage (Just "0.5.11") "hashed-storage") >>= debianize [] >>= skip (Reason "Non type-variable argument in the constraint: MonadState (TreeState m_aFTg) (t m_aFTg)")
                -- Built into ghc-7.8.3
-  _hashtables <- hackage (Just "1.2.1.0") "hashtables" >>= patch $(embedFile "patches/hashtables.diff") >>= flag (P.DebVersion "1.2.1.0-1build1") >>= debianize []
+  _hashtables <- hackage (Just "1.2.1.0") "hashtables" >>= flag (P.DebVersion "1.2.1.0-1build1") >>= debianize []
   -- _haskeline <- hackage (Just "0.7.2.3") "haskeline" >>= debianize []
   _haskell_darcs <-  (darcs "http://darcs.net/reviewed"
                      >>= flag (P.CabalDebian ["--source-package-name", "darcs"])
@@ -641,7 +640,7 @@ commonTargets = do
             -- patch $(embedFile "patches/HaTeX-texty.diff") >>=
             -- patch $(embedFile "patches/HaTeX-doc.diff") >>=
             debianize [] >>= ghcjs_also
-  _haXml <- {-git "https://github.com/ddssff/HaXml" []-} hackage (Just "1.25.3") "HaXml" >>= debianize [] >>= inGroups ["pretty"] >>= ghcjs_also
+  _haXml <- hackage (Just "1.25.4") "HaXml" >>= debianize [] >>= inGroups ["pretty"] >>= ghcjs_also
   _hclip <- hackage (Just "3.0.0.4") "Hclip" >>= debianize []
   _hdaemonize <-  (git "https://github.com/madhadron/hdaemonize" []) >>= debianize [] >>= skip (Reason "Module ‘System.Posix.Syslog’ does not export ‘syslog’")
   _heap <-  (hackage (Just "1.0.3") "heap") >>= debianize []
@@ -765,7 +764,7 @@ commonTargets = do
   _js_jquery <-  (hackage (Just "3.1.0") "js-jquery") >>= debianize [] >>= ghcjs_also
   _jsaddle <- git "https://github.com/ghcjs/jsaddle" [] >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "Unmet build dependencies: libghcjs-lens-dev (<< 4.15)")
   _json <-  (hackage (Just "0.9.1") "json") >>= flag (P.DebVersion "0.9.1-3build1") >>= debianize [] >>= inGroups ["seereason", "important"] >>= ghcjs_also -- darcs "haskell-json" (repo ++ "/haskell-json")
-  _juicyPixels <- hackage (Just "3.2.8") "JuicyPixels" >>= patch $(embedFile "patches/JuicyPixels.diff") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
+  _juicyPixels <- hackage (Just "3.2.8") "JuicyPixels" >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _jwt <-  (hackage (Just "0.7.2") "jwt") >>= debianize [] >>= inGroups [ "authenticate", "important"] -- dependency of happstack-authenticate-2
   _kan_extensions <- hackage (Just "5.0.1") "kan-extensions" {->>= flag (P.CabalPin "4.2.3")-} >>= debianize [] >>= ghcjs_also
   _keys <-  (hackage (Just "3.11") "keys") >>= debianize []
@@ -786,7 +785,6 @@ commonTargets = do
   -- _lattices <- hackage (Just "1.6.0") "lattices" >>= debianize []
   -- This commit adds the sequence numbers we need to generated function parameters
   _lens <- hackage (Just "4.15.1") "lens" >>=
-           patch $(embedFile "patches/lens.diff") >>=
            -- git "https://github.com/ekmett/lens" [Commit "950eb5be34fb40bf0111ded6bc91c1ffcd2a786b"] >>=
            apply (replacement "lens" "microlens-compat") >>=
            debianize [] >>= inGroups ["lens", "important"] >>= ghcjs_also
@@ -836,7 +834,7 @@ commonTargets = do
   _maccatcher <-  (hackage (Just "2.1.5") "maccatcher"
                               >>= pflag (P.DebVersion "2.1.5-3")
                               >>= tflag (P.DebVersion "2.1.5-5build1")) >>= debianize [] >>= ghcjs_also
-  _magic <-  (hackage (Just "1.1") "magic" >>= flag (P.DevelDep "libmagic-dev")) >>= debianize []
+  _magic <- hackage (Just "1.1") "magic" >>= flag (P.DevelDep "libmagic-dev") >>= debianize []
            {-  , P.Package { P._spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs ("http://src.seereason.com/magic-quilt"))
                            , P._flags = mempty } -}
   _mainland_pretty <-  (hackage (Just "0.4.1.4") "mainland-pretty") >>= debianize []
@@ -883,7 +881,7 @@ commonTargets = do
   _monad_task <- hackage (Just "0.1.0") "monad-task" >>= debianize [] >>= skip (Reason "0.1.0 requires transformers<4")
   _mono_traversable <- hackage (Just "1.0.0.1") "mono-traversable" >>= debianize [] >>= ghcjs_also
   _monoid_transformer <-  (hackage (Just "0.0.3") "monoid-transformer") >>= debianize [] -- apt (rel release "wheezy" "quantal") "haskell-monoid-transformer"
-  _mtl <- hackage (Just "2.2.1") "mtl" >>= flag (P.DebVersion "2.2.1-2") >>= patch $(embedFile "patches/mtl.diff") >>= debianize [] >>= inGroups ["platform"]
+  _mtl <- hackage (Just "2.2.1") "mtl" >>= flag (P.DebVersion "2.2.1-2") >>= debianize [] >>= inGroups ["platform"]
   _mtl_compat <-  (hackage (Just "0.2.1.3") "mtl-compat") >>= debianize [] >>= skip (Reason "build failure")
   _mtl_unleashed <-  (git "https://github.com/seereason/mtl-unleashed" []) >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _mtlparse <-  (hackage (Just "0.1.4.0") "mtlparse") >>= flag (P.DebVersion "0.1.4.0-4") >>= debianize []
@@ -913,8 +911,8 @@ commonTargets = do
   _numeric_extras <-  (hackage (Just "0.1") "numeric-extras") >>= flag (P.DebVersion "0.1-1") >>= debianize []
   _numInstances <-  (hackage (Just "1.4") "NumInstances") >>= flag (P.DebVersion "1.4-4") >>= debianize []
   _objectName <-  (hackage (Just "1.1.0.1") "ObjectName") >>= flag (P.DebVersion "1.1.0.1-1") >>= debianize []
-  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= patch $(embedFile "patches/old-locale.diff") >>= debianize [] >>= ghcjs_also
-  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= patch $(embedFile "patches/old-time.diff") >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize [] >>= ghcjs_also
+  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize [] >>= ghcjs_also
+  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize [] >>= ghcjs_also
   _oo_prototypes <-  (hackage (Just "0.1.0.0") "oo-prototypes") >>= flag (P.DebVersion "0.1.0.0-3") >>= debianize []
   _openGL <-  (hackage (Just "2.13.1.0") "OpenGL" >>= inGroups ["gl"] >>= flag (P.DevelDep "libglu1-mesa-dev")) >>= debianize [] >>= skip (Reason "too old for openglraw")
   _openGLRaw <-  (hackage (Just "3.2.1.0") "OpenGLRaw" >>= inGroups ["gl"]
@@ -1123,18 +1121,18 @@ commonTargets = do
   _template_default <- hackage (Just "0.1.1") "template-default" >>= patch $(embedFile "patches/template-default.diff") >>= debianize [] >>= skip (Reason "Not in scope: data constructor ‘ClassP’")
   _temporary <-  (hackage (Just "1.2.0.4") "temporary") >>= debianize [] >>= ghcjs_also
   _tensor <- hackage (Just "1.0.0.1") "Tensor" >>= tflag (P.DebVersion "1.0.0.1-2") >>= debianize [] >>= broken
-  _test_framework <- hackage (Just "0.8.1.1") "test-framework" >>= flag (P.DebVersion "0.8.1.1-4build1") >>= patch $(embedFile "patches/test-framework.diff") >>= debianize [] >>= ghcjs_also
+  _test_framework <- hackage (Just "0.8.1.1") "test-framework" >>= flag (P.DebVersion "0.8.1.1-4build1") >>= debianize [] >>= ghcjs_also
   _test_framework_hunit <-  (hackage (Just "0.3.0.2") "test-framework-hunit") >>= flag (P.DebVersion "0.3.0.2-1build1") >>= debianize [] >>= ghcjs_also
   _test_framework_quickcheck2 <- git "https://github.com/seereason/test-framework" [] >>= flag (P.DebVersion "0.3.0.3-6build1") >>= patch $(embedFile "patches/test-framework-quickcheck2.diff") >>= cd "quickcheck2" >>= debianize [] >>= ghcjs_also
   _test_framework_smallcheck <-  (hackage (Just "0.2") "test-framework-smallcheck") >>= debianize []
   _test_framework_th <- hackage (Just "0.2.4") "test-framework-th" >>= flag (P.DebVersion "0.2.4-7build1") >>= debianize []
   _testing_feat <- hackage (Just "0.4.0.3") "testing-feat" >>= {-patch $(embedFile "patches/testing-feat.diff") >>=-} debianize []
-  _texmath <- hackage (Just "0.9") "texmath" >>= patch $(embedFile "patches/texmath.diff") >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
+  _texmath <- hackage (Just "0.9") "texmath" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
   _text_binary <- hackage (Just "0.2.1") "text-binary" >>= flag (P.DebVersion "0.2.1-1build1") >>= debianize [] >>= ghcjs_also
   _text <-  (hackage (Just "1.2.2.1") "text" >>= flag (P.CabalDebian ["--cabal-flags", "-integer-simple"]) >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize [] >>= inGroups ["platform", "test8"]
   _text_icu <-  (hackage (Just "0.7.0.1") "text-icu" >>= flag (P.DevelDep "libicu-dev")) >>= flag (P.DebVersion "0.7.0.1-4build1") >>= debianize []
   _text_show <-  (hackage (Just "3.3") "text-show") >>= debianize []
-  _text_stream_decode <-  (hackage (Just "0.1.0.5") "text-stream-decode" >>= patch $(embedFile "patches/text-stream-decode.diff")) >>= debianize [] >>= inGroups ["conduit", "important"]
+  _text_stream_decode <- hackage (Just "0.1.0.5") "text-stream-decode" >>= patch $(embedFile "patches/text-stream-decode.diff") >>= debianize [] >>= inGroups ["conduit", "important"]
   _tf_random <-  (hackage (Just "0.5") "tf-random") >>= flag (P.DebVersion "0.5-5") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _th_alpha <-  (git "https://github.com/ddssff/th-alpha.git" []) >>= debianize []
   _th_context <-  (git "http://github.com/seereason/th-context" []) >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
@@ -1196,7 +1194,6 @@ commonTargets = do
   _utf8_light <-  (hackage (Just "0.4.2") "utf8-light") >>= flag (P.DebVersion "0.4.2-4") >>= debianize []
   _utf8_string <- hackage (Just "1.0.1.1") "utf8-string" >>=
                   flag (P.DebVersion "1.0.1.1-1") >>=
-                  patch $(embedFile "patches/utf8-string.diff") >>=
                   flag (P.RelaxDep "hscolour") >>=
                   flag (P.RelaxDep "cpphs") >>=
                   debianize [] >>= ghcjs_also
@@ -1212,7 +1209,6 @@ commonTargets = do
   _vc_git_dired <- git "https://github.com/ddssff/vc-git-dired" []
   _vector <- hackage (Just "0.12.0.0") "vector" >>= debianize []
   _vector_algorithms <- hackage (Just "0.7.0.1") "vector-algorithms" >>=
-                        patch $(embedFile "patches/vector-algorithms.diff") >>=
                         flag (P.DebVersion "0.7.0.1-3build1") >>= debianize [] >>=
                         ghcjs_also
   _vector_binary_instances <- hackage (Just "0.2.3.4") "vector-binary-instances" >>= debianize [] >>= skip (Reason "vector dependency")
@@ -1250,7 +1246,7 @@ commonTargets = do
   _webkit_sodium <- git "https://github.com/ghcjs/ghcjs-examples" [] >>= cd "webkit-sodium" >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "skipped jsaddle")
   _webkitgtk3 <- hackage (Just "0.13.1.3") "webkitgtk3" >>= flag (P.CabalPin "0.13.1.3") >>= flag (P.BuildDep "libwebkitgtk-3.0-dev") >>= debianize [] >>= inGroups ["glib"] >>= skip (Reason "see cairo and glib")
   _webkitgtk3_javascriptcore <- hackage (Just "0.13.1.1") "webkitgtk3-javascriptcore" >>= debianize [] >>= skip (Reason "Could not find module Gtk2HsSetup")
-  _websockets <- hackage (Just "0.11.2.0") "websockets" >>= debianize [] >>= ghcjs_also
+  _websockets <- hackage (Just "0.12.0.0") "websockets" >>= debianize [] >>= ghcjs_also
   _wl_pprint <- hackage (Just "1.2") "wl-pprint" >>= debianize []
   _wl_pprint_extras <- hackage (Just "3.5.0.5") "wl-pprint-extras" >>=
                        patch $(embedFile "patches/wl-pprint-extras.diff") >>=

@@ -1,14 +1,3 @@
---- old/text-stream-decode.cabal	2014-02-19 10:08:43.000000000 -0800
-+++ new/text-stream-decode.cabal	2014-02-19 10:50:10.338454481 -0800
-@@ -14,7 +14,7 @@
- extra-source-files:  include/text_cbits.h cbits/cbits.c
- 
- flag text11
--    default: False
-+    default: True
-     Description: Use text version 1.1, which exports many encoding modules.
- 
- Library
 --- old/Data/Text/StreamDecoding.hs	2014-02-13 09:45:36.410114693 -0800
 +++ new/Data/Text/StreamDecoding.hs	2014-02-13 13:59:55.926475230 -0800
 @@ -22,7 +22,7 @@
