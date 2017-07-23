@@ -446,8 +446,7 @@ artfulTargets = do
                        flag (P.DebVersion "7.4.7") >>= inGroups ["happstack", "important"]
   _happstack_server_tls <-  (git "https://github.com/Happstack/happstack-server-tls" []) >>= debianize [] >>= inGroups ["happstack", "important"]
   _happstack_static_routing <-  (hackage (Just "0.4.2") "happstack-static-routing") >>= debianize [] {->>= inGroups ["happstack", "important"]-} >>= skip (Reason "compile error")
-  _happstack_util <- hackage (Just "6.0.3") "happstack-util" >>=
-                     patch $(embedFile "patches/happstack-util.diff") >>=
+  _happstack_util <- git "https://github.com/seereason/happstack-util" [] >>=
                      flag (P.DebVersion "6.0.3-1") >>=
                      debianize [] >>=
                      inGroups ["happstack", "important"]
