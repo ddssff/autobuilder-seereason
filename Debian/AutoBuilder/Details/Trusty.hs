@@ -72,7 +72,7 @@ buildTargets params = do
            flag (P.BuildDep "happy") >>=
            debianize [] >>=
            inGroups []
-  _dataenc <- (hackage (Just "0.14.0.7") "dataenc" >>= patch $(embedFile "patches/dataenc.diff")) >>= debianize []
+  _dataenc <- hackage (Just "0.14.0.7") "dataenc" >>= debianize []
   _haddock_api7 <-
       hackage (Just "2.16.1") "haddock-api" >>=
              flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
