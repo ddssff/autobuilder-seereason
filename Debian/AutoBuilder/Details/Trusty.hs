@@ -834,7 +834,7 @@ commonTargets = do
   _maccatcher <-  (hackage (Just "2.1.5") "maccatcher"
                               >>= pflag (P.DebVersion "2.1.5-3")
                               >>= tflag (P.DebVersion "2.1.5-5build1")) >>= debianize [] >>= ghcjs_also
-  _magic <- hackage (Just "1.1") "magic" >>= flag (P.DevelDep "libmagic-dev") >>= debianize []
+  _magic <- hackage (Just "1.1") "magic" >>= flag (P.DebVersion "1.1-4") >>= flag (P.DevelDep "libmagic-dev") >>= debianize []
            {-  , P.Package { P._spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs ("http://src.seereason.com/magic-quilt"))
                            , P._flags = mempty } -}
   _mainland_pretty <-  (hackage (Just "0.4.1.4") "mainland-pretty") >>= debianize []
