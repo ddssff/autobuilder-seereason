@@ -193,6 +193,7 @@ relax :: Monad m => String -> P.PackageId -> TSt m P.PackageId
 relax x i = P.modifyPackage (over P.flags (++ [P.RelaxDep x])) i
 
 gitrepo x = git ("https://github.com/clckwrks" </> x ++ ".git") []
+gitrepo2 x = git ("https://github.com/seereason" </> x ++ ".git") []
 -- repo = "http://hub.darcs.net/stepcut/clckwrks-dev"
 -- repo = "http://src.seereason.com/mirrors/clckwrks-dev"
 
