@@ -261,7 +261,7 @@ commonTargets = do
   _clckwrks_dot_com <- gitrepo "clckwrks-dot-com" >>=
                                  -- This is a change that only relates to the autobuilder
                                  patch $(embedFile "patches/clckwrks-dot-com.diff") >>= debianize [] >>= inGroups ["clckwrks", "important"]
-  _clckwrks_plugin_bugs <-  (gitrepo "clckwrks-plugin-bugs"
+  _clckwrks_plugin_bugs <-  (gitrepo2 "clckwrks-plugin-bugs"
                              >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["clckwrks", "important"]
   _clckwrks_plugin_ircbot <-  (gitrepo "clckwrks-plugin-ircbot"
                              >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["clckwrks", "important"]
