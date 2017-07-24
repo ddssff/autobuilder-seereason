@@ -34,8 +34,15 @@ myUploadURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateUploadURI else myPublicUploadURI)
     where
       myPrivateUploadURI = myPrivateURIPrefix </> "deb-private" </> distroString (releaseRepoName (baseRelease myBuildRelease))
-      myPublicUploadURI = myPrivateURIPrefix </> "deb" </> distroString (releaseRepoName (baseRelease myBuildRelease))
+      myPublicUploadURI = myPrivateURIPrefix </> (myPoolDir myBuildRelease) </> distroString (releaseRepoName (baseRelease myBuildRelease))
 
+myPoolDir (PrivateRelease release) = myPoolURI release
+myPoolDir (ExtendedRelease (Release Xenial) SeeReason) = "deb8"
+myPoolDir _ = "deb"
+
+myPoolURI (PrivateRelease release) = myPoolURI release
+myPoolURI (ExtendedRelease (Release Xenial) SeeReason) = "http://deb8.seereason.com/"
+myPoolURI _ = "http://deb.seereason.com/"
 
 -- An alternate url for the same repository the upload-uri points to,
 -- used for downloading packages that have already been installed
@@ -46,7 +53,7 @@ myBuildURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI)
     where
       myPrivateBuildURI = myPrivateURIPrefix </> "deb-private" </> distroString (releaseRepoName (baseRelease myBuildRelease))
-      myPublicBuildURI = "http://deb.seereason.com/" ++ distroString (releaseRepoName (baseRelease myBuildRelease))
+      myPublicBuildURI = myPoolURI myBuildRelease ++ distroString (releaseRepoName (baseRelease myBuildRelease))
 
 -- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
 myPrivateURIPrefix = "ssh://upload@deb.seereason.com/srv"

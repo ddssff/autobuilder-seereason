@@ -37,7 +37,8 @@ public params = do
   rel <- use release
   let targets =
           case rel of
-            ExtendedRelease (Release Xenial) SeeReason -> Xenial.buildTargets
+            ExtendedRelease (Release Xenial) SeeReason7 -> Xenial.buildTargets7
+            ExtendedRelease (Release Xenial) SeeReason -> Xenial.buildTargets8
             ExtendedRelease (Release Trusty) SeeReason -> Trusty.buildTargets params
             ExtendedRelease (Release Artful) SeeReason -> Artful.buildTargets
             _ -> error $ "Unexpected release: " ++ show rel

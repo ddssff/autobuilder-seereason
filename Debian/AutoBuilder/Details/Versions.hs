@@ -39,9 +39,9 @@ seereasonDefaults =
 
        -- Remap to build debs for Cabal that do not conflict with the
        -- virtual package provided by ghc.
-       remapCabal (PackageName "Cabal") (DebBase "cabal1228")
+       -- remapCabal (PackageName "Cabal") (DebBase "cabal1228")
        -- But only use the package name if the dependency requires Cabal >= 1.22.8
-       splitCabal (PackageName "Cabal") (DebBase "cabal") (Version [1, 22, 8] [])
+       -- splitCabal (PackageName "Cabal") (DebBase "cabal") (Version [1, 22, 8] [])
 
        mapCabal (PackageName "web-plugins") (DebBase "web-plugins")
        splitCabal (PackageName "web-plugins") (DebBase "web-plugins-1") (Version [0, 2] [])

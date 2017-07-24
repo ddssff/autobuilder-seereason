@@ -24,7 +24,7 @@ import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.GHC (hvrCabalVersion)
 import Debian.Relation (BinPkgName(..))
 import Debian.Releases as Releases
-    (Release(..), releaseString, parseReleaseName, isPrivateRelease, baseRelease, Distro(..))
+    (Release(..), BaseRelease(Xenial), releaseString, parseReleaseName, isPrivateRelease, baseRelease, Distro(..))
 import Debian.Repo.Slice (Slice, PPASlice{-(PersonalPackageArchive, ppaUser, ppaName)-})
 import Debian.Version (parseDebianVersion')
 import qualified Debian.AutoBuilder.Details.Targets as Targets
@@ -76,7 +76,7 @@ myExtraRepos = [{-Right (PersonalPackageArchive {ppaUser = "hvr", ppaName = "ghc
 -- suffixes we will use on our build releases.
 --
 myReleaseSuffixes :: [String]
-myReleaseSuffixes = ["-seereason", "-private", "-ghc8"]
+myReleaseSuffixes = ["-seereason", "-private", "-seereason7"]
 
 --
 -- End of release suffix section.
