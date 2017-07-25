@@ -16,7 +16,7 @@ import Data.Set as Set (fromList, insert, member, Set)
 import Data.Text as Text (unlines)
 import Data.Version (Version(Version))
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
-import Debian.AutoBuilder.Types.Packages as P (TSt, depends,
+import Debian.AutoBuilder.Types.Packages as P (depends,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, proc, groups, PackageId, hackage, debianize, flag, apply, patch,
@@ -26,7 +26,7 @@ import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.Debianize as D
     (doExecutable, execCabalM, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..))
-import Debian.Releases (baseRelease, BaseRelease(Trusty, Artful))
+import Debian.Releases (baseRelease, BaseRelease(..))
 import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage {-, Git-}), GitSpec(Commit, Branch))
 
 buildTargets :: Monad m => TSt m ()

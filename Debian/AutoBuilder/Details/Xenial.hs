@@ -19,9 +19,9 @@ import Data.Map as Map (elems, keys)
 import Data.Set as Set (fromList, insert, member, Set)
 import Data.Text as Text (unlines)
 import Data.Version (Version(Version))
-import Debian.AutoBuilder.Details.Common (ghcjs, ghcjs_also) -- (named, ghcjs_flags, putSrcPkgName)
+import Debian.AutoBuilder.Details.Common (TSt, ghcjs, ghcjs_also) -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Details.Trusty (commonTargets)
-import Debian.AutoBuilder.Types.Packages as P (TSt, depends,
+import Debian.AutoBuilder.Types.Packages as P (depends,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap, Package(..),
                                                pid, proc, groups, PackageId, hackage, debianize, flag, apply, patch,
@@ -31,13 +31,14 @@ import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.Debianize as D
     (doExecutable, execCabalM, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
 import Debian.Relation (BinPkgName(..), SrcPkgName(SrcPkgName))
-import Debian.Releases (baseRelease, BaseRelease(Trusty, Artful))
+import Debian.Releases (baseRelease, BaseRelease(..))
 import Debian.Repo.Internal.Apt (getApt, MonadApt, AptImage(aptSourcePackageCache))
 import Debian.Repo.Internal.Repos (MonadRepos)
 import Debian.Repo.Fingerprint (RetrieveMethod(Apt, Uri, DataFiles, Patch, Debianize'', Hackage {-, Git-}), GitSpec(Commit, Branch))
 import Debian.Repo.PackageIndex (SourcePackage(sourcePackageID))
 import Debian.Repo.PackageID (packageName, packageVersion)
 import Debian.Version (DebianVersion, prettyDebianVersion)
+
 buildTargets7 :: Monad m => TSt m ()
 buildTargets7 = do
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp"]

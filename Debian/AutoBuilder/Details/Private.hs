@@ -5,7 +5,7 @@ module Debian.AutoBuilder.Details.Private (buildTargets) where
 --import Control.Lens (use)
 import Data.FileEmbed (embedFile)
 --import Data.Map as Map (keys)
-import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, darcs, git, cd, TSt, {-packageMap,-} inGroups)
+import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, darcs, git, cd, {-packageMap,-} inGroups)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 import Debian.Repo.Fingerprint (GitSpec(Branch))

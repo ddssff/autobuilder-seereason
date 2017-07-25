@@ -7,16 +7,18 @@ module Debian.AutoBuilder.Details.Sources
     , myUploadURI
     , myBuildURI
     , myReleaseAliases
-    , releaseRepoName
+    -- , releaseRepoName
     ) where
 
 import Data.List as List (map)
 import Data.Maybe
 import Data.Set as Set (delete, fromList, member, Set, toAscList)
-import Debian.Releases (Release(..), BaseRelease(..), allReleases, baseReleaseString,
+import Debian.Release (ReleaseName(..))
+import Debian.Releases (Vendor(..), Release(..), BaseRelease(..), allReleases, ubuntu,
                         releaseString, isPrivateRelease,
-                        baseRelease, baseReleaseDistro, Distro(..), distroString)
+                        baseRelease, {-baseReleaseDistro,-} Distro(..), distroString)
 import Debian.Sources (DebSource(..), parseSourceLine)
+import Debian.AutoBuilder.Details.Common (MyDistro(..))
 import Debian.URI
 import Prelude hiding (map)
 import System.FilePath ((</>))
@@ -29,31 +31,34 @@ import System.FilePath ((</>))
 -- it is built for use as build dependencies of other packages during
 -- the same run.
 --
-myUploadURI :: Release -> Maybe URI
+myUploadURI :: Release MyDistro -> Maybe URI
 myUploadURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateUploadURI else myPublicUploadURI)
     where
-      myPrivateUploadURI = myPrivateURIPrefix </> "deb-private" </> distroString (releaseRepoName (baseRelease myBuildRelease))
-      myPublicUploadURI = myPrivateURIPrefix </> (myPoolDir myBuildRelease) </> distroString (releaseRepoName (baseRelease myBuildRelease))
+      myPrivateUploadURI = myPrivateURIPrefix </> "deb-private" </> vendorString myBuildRelease
+      myPublicUploadURI = myPrivateURIPrefix </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
 
 myPoolDir (PrivateRelease release) = myPoolURI release
-myPoolDir (ExtendedRelease (Release Xenial) SeeReason) = "deb8"
+-- myPoolDir (ExtendedRelease (Release Xenial) SeeReason) = "deb8"
 myPoolDir _ = "deb"
 
 myPoolURI (PrivateRelease release) = myPoolURI release
-myPoolURI (ExtendedRelease (Release Xenial) SeeReason) = "http://deb8.seereason.com/"
+-- myPoolURI (ExtendedRelease (Release Xenial) SeeReason) = "http://deb8.seereason.com/"
 myPoolURI _ = "http://deb.seereason.com/"
 
 -- An alternate url for the same repository the upload-uri points to,
 -- used for downloading packages that have already been installed
 -- there.
 --
-myBuildURI :: Release -> Maybe URI
+myBuildURI :: Release MyDistro -> Maybe URI
 myBuildURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI)
     where
-      myPrivateBuildURI = myPrivateURIPrefix </> "deb-private" </> distroString (releaseRepoName (baseRelease myBuildRelease))
-      myPublicBuildURI = myPoolURI myBuildRelease ++ distroString (releaseRepoName (baseRelease myBuildRelease))
+      myPrivateBuildURI = myPrivateURIPrefix </> "deb-private" </> vendorString myBuildRelease
+      myPublicBuildURI = myPoolURI myBuildRelease ++ vendorString myBuildRelease
+
+vendorString :: Release -> String
+vendorString = _unVendor . _vendorName . baseRelease
 
 -- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
 myPrivateURIPrefix = "ssh://upload@deb.seereason.com/srv"
@@ -63,7 +68,7 @@ myPrivateURIPrefix = "ssh://upload@deb.seereason.com/srv"
 -- Given a release name, return the subdirectory of myUploadURI which
 -- contains the repository.
 --
-releaseRepoName = baseReleaseDistro
+-- releaseRepoName = baseReleaseDistro
 {-
 releaseRepoName rname
     | elem rname (debianReleases ++ oldDebianReleases) = "debian"
@@ -74,15 +79,15 @@ releaseRepoName rname
                suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
 -}
 
-derivedReleases :: Release -> BaseRelease -> [Release]
+derivedReleases :: Release MyDistro -> BaseRelease -> [Release MyDistro]
 derivedReleases myBuildRelease baseRelease' =
-    [ExtendedRelease (Release baseRelease') SeeReason] ++
-    if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Release baseRelease') SeeReason)] else []
+    [ExtendedRelease (Release baseRelease') SeeReason8] ++
+    if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Release baseRelease') SeeReason8)] else []
 
 -- Our private releases are always based on our public releases, not
 -- directly on upstream releases.
 --
-derivedReleaseNames :: Release -> BaseRelease -> [String]
+derivedReleaseNames :: Release MyDistro -> BaseRelease -> [String]
 derivedReleaseNames myBuildRelease baseRelease' = map releaseString (derivedReleases myBuildRelease baseRelease')
 
 -- There is a debian standard for constructing the version numbers of
@@ -100,7 +105,7 @@ myReleaseAliases myBuildRelease =
      ("squeeze", "bpo60+"),
      ("squeeze-seereason", "bpo60+"),
      ("squeeze-seereason-private", "bpo60+")] ++
-    concatMap (\ rel -> List.map (\ der -> (der, baseReleaseString rel)) (derivedReleaseNames myBuildRelease rel)) allReleases
+    concatMap (\ rel -> List.map (\ der -> (der, relName (_releaseName rel))) (derivedReleaseNames myBuildRelease rel)) allReleases
 
 ----------------------- SOURCES ----------------------------
 
@@ -109,27 +114,18 @@ myReleaseAliases myBuildRelease =
 -- that we can use any base release or build release name to look up a
 -- sources.list.
 --
-mySources :: Release -> [(String, [DebSource])]
+mySources :: Release MyDistro -> [(String, [DebSource])]
 mySources myBuildRelease =
     List.map releaseSources
-            (map Release (toAscList baseReleases) ++
-             concatMap (derivedReleases myBuildRelease) baseReleases) ++
-    [(baseReleaseString Experimental, debianSourceLines myDebianMirrorHost Experimental),
-{-   ("debian-multimedia",
-      (unlines ["deb http://mirror.home-dn.net/debian-multimedia stable main",
-                "deb-src http://mirror.home-dn.net/debian-multimedia stable main"])), -}
-      (distroString Kanotix,
-       (List.map parseSourceLine
-                ["deb http://kanotix.com/files/debian sid main contrib non-free vdr",
-                 "  deb-src http://kanotix.com/files/debian sid main contrib non-free vdr"]))]
+            (map Release (toAscList allReleases) ++
+             concatMap (derivedReleases myBuildRelease) allReleases)
     where
-      baseReleases = Set.delete Experimental allReleases
       releaseSources release =
           (releaseString release, releaseSourceLines release myDebianMirrorHost myUbuntuMirrorHost)
 
 -- Build a sources.list for one of our build relases.
 --
-releaseSourceLines :: Release -> String -> String -> [DebSource]
+releaseSourceLines :: Release MyDistro -> String -> String -> [DebSource]
 releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     case release of
       PrivateRelease r ->
@@ -148,43 +144,56 @@ releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     where
       uri = show (fromJust (myBuildURI release))
 
+baseReleaseSourceLines :: BaseRelease -> String -> String -> [DebSource]
 baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
-    case releaseRepoName release of
-      Debian -> debianSourceLines debianMirrorHost release
-      Ubuntu -> ubuntuSourceLines ubuntuMirrorHost release
-      x -> error $ "Unknown release repository: " ++ distroString x
+    case _vendorName release of
+      Vendor "debian" -> debianSourceLines debianMirrorHost release
+      Vendor "ubuntu" -> ubuntuSourceLines ubuntuMirrorHost release
+      x -> error $ "Unknown release repository: " ++ show release
+
+baseReleaseString :: Release MyDistro -> String
+baseReleaseString = relName . _releaseName . baseRelease
+
+baseReleaseString' :: BaseRelease -> String
+baseReleaseString' = relName . _releaseName
 
 debianSourceLines :: String -> BaseRelease -> [DebSource]
 debianSourceLines debianMirrorHost release =
     List.map parseSourceLine
-      [ "deb " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free"
-      , "deb-src " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free" ]
+      [ "deb " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString' release ++ " main contrib non-free"
+      , "deb-src " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString' release ++ " main contrib non-free" ]
 
 ubuntuSourceLines :: String -> BaseRelease -> [DebSource]
 ubuntuSourceLines ubuntuMirrorHost release =
     List.map parseSourceLine $
-      [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
-      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse" ] ++
-      if release == Artful
+      [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString' release ++ " main restricted universe multiverse"
+      , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString' release ++ " main restricted universe multiverse" ] ++
+      if _releaseName release == ReleaseName "artful"
       then []
-      else [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
-           , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
-           , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
-           , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-backports main restricted universe multiverse"
-           , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse"
-           , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse" ]
+      else [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString' release ++ "-updates main restricted universe multiverse"
+           , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString' release ++ "-updates main restricted universe multiverse"
+           , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString' release ++ "-backports main restricted universe multiverse"
+           , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString' release ++ "-backports main restricted universe multiverse"
+           , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString' release ++ "-security main restricted universe multiverse"
+           , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString' release ++ "-security main restricted universe multiverse" ]
 
 hvrSourceLines :: BaseRelease -> [DebSource]
 hvrSourceLines release | release `member` hvrReleases =
     List.map parseSourceLine $
-    ["deb http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString release ++ " main",
-     "deb-src http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString release ++ " main"]
-hvrSourceLines Jessie =
+    ["deb http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString' release ++ " main",
+     "deb-src http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString' release ++ " main"]
+hvrSourceLines (BaseRelease {_releaseName = ReleaseName "jessie"}) =
     List.map parseSourceLine ["deb http://downloads.haskell.org/debian jessie main"]
 hvrSourceLines _ = []
 
 hvrReleases :: Set BaseRelease
-hvrReleases = Set.fromList [Precise, Trusty, Utopic, Vivid, Wily, Xenial, Yakkety]
+hvrReleases = Set.fromList [BaseRelease ubuntu (ReleaseName "precise"),
+                            BaseRelease ubuntu (ReleaseName "trusty"),
+                            BaseRelease ubuntu (ReleaseName "utopic"),
+                            BaseRelease ubuntu (ReleaseName "vivid"),
+                            BaseRelease ubuntu (ReleaseName "wily"),
+                            BaseRelease ubuntu (ReleaseName "xenial"),
+                            BaseRelease ubuntu (ReleaseName "yakkety")]
 
 -- These host names are used to construct the sources.list lines to
 -- access the Debian and Ubuntu repositories.  The anl.gov values here

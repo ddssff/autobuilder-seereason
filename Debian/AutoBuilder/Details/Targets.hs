@@ -12,13 +12,15 @@ import Control.Monad.State (execState, execStateT, get, modify)
 import Data.List as List (map)
 import Data.Map as Map (insert, map)
 import Data.Monoid (mappend)
-import qualified Debian.AutoBuilder.Types.Packages as P
-import Debian.AutoBuilder.Types.Packages
+import qualified Debian.AutoBuilder.Types.Packages as P hiding (TSt)
+import Debian.AutoBuilder.Types.Packages hiding (TSt)
 import Debian.Debianize as D (CabalInfo, debInfo, execMap)
 import Debian.Relation (Relation(..), BinPkgName(..))
 import Debian.Relation.String (parseRelations)
+import Debian.Release (ReleaseName(..))
 import Debian.Releases (BaseRelease(..), baseRelease, Distro(..), Release(..))
 import qualified Debian.Repo.Fingerprint as P
+import Debian.AutoBuilder.Details.Common (MyDistro(..), TSt)
 import qualified Debian.AutoBuilder.Details.Trusty as Trusty
 import qualified Debian.AutoBuilder.Details.Artful as Artful
 import qualified Debian.AutoBuilder.Details.Xenial as Xenial
@@ -37,10 +39,11 @@ public params = do
   rel <- use release
   let targets =
           case rel of
-            ExtendedRelease (Release Xenial) SeeReason7 -> Xenial.buildTargets7
-            ExtendedRelease (Release Xenial) SeeReason -> Xenial.buildTargets8
-            ExtendedRelease (Release Trusty) SeeReason -> Trusty.buildTargets params
-            ExtendedRelease (Release Artful) SeeReason -> Artful.buildTargets
+            -- ExtendedRelease (Release Xenial) SeeReason8 -> Xenial.buildTargets8
+            ExtendedRelease (Release (BaseRelease _ (ReleaseName "xenial"))) SeeReason7 -> Xenial.buildTargets7
+            ExtendedRelease (Release (BaseRelease _ (ReleaseName "xenial"))) SeeReason8 -> Xenial.buildTargets8
+            ExtendedRelease (Release (BaseRelease _ (ReleaseName "trusty"))) SeeReason8 -> Trusty.buildTargets params
+            ExtendedRelease (Release (BaseRelease _ (ReleaseName "trusty"))) SeeReason7 -> Trusty.buildTargets params
             _ -> error $ "Unexpected release: " ++ show rel
   -- Dangerous when uncommented - build private targets into public, do not upload!!
   -- private params >>
@@ -76,7 +79,7 @@ isDebianizeSpec (P.Debianize'' _ _) = True
 isDebianizeSpec _ = False
 
 -- | Add MapDep and DevelDep flags Supply some special cases to map cabal library names to debian.
-applyDepMap :: Monad m => Release -> TSt m ()
+applyDepMap :: Monad m => Release MyDistro -> TSt m ()
 applyDepMap release =
     packageMap %= Map.map f
     where
@@ -97,8 +100,8 @@ applyDepMap release =
                   P.MapDep "pthread" (deb "libc6-dev"),
                   P.MapDep "Xrandr" (rel ("libxrandr-dev" ++
                                           case baseRelease release of
-                                            Wheezy -> " (= 2:1.3.2-2+deb7u1)"
-                                            Precise -> " (= 2:1.3.2-2ubuntu0.2)"
+                                            BaseRelease _ (ReleaseName "wheezy") -> " (= 2:1.3.2-2+deb7u1)"
+                                            BaseRelease _ (ReleaseName "precise") -> " (= 2:1.3.2-2ubuntu0.2)"
                                             _ -> "")),
                   -- the libxrandr-dev-lts-quantal package installs
                   -- /usr/lib/x86_64-linux-gnu/libXrandr_ltsq.so.

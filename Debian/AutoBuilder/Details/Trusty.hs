@@ -10,7 +10,7 @@ import Data.Text as Text (unlines)
 import Data.Version (Version(Version))
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
 -- import Debian.AutoBuilder.Details.DebVersion (setDebVersion)
-import Debian.AutoBuilder.Types.Packages as P (TSt, depends,
+import Debian.AutoBuilder.Types.Packages as P (depends,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,

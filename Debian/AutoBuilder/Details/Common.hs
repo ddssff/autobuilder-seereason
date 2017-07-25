@@ -16,8 +16,11 @@ import Data.Maybe (fromMaybe)
 import Debian.AutoBuilder.Types.Packages (apply, cd, debdir, {-depends,-} inGroups, packageMap, patch, uri)
 import qualified Debian.AutoBuilder.Types.Packages as P
    (clonePackage, createPackage, flags, {-groups,-} modifyPackage, Package, PackageFlag(BuildDep, CabalDebian, CabalPin, DebVersion, DevelDep, NoDoc, RelaxDep, SkipVersion, UDeb), packageMap)
-import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, apt, darcs, hackage, debianize, git, {-deletePackage,-} flag, PackageId, proc, spec, TSt)
+import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, apt, darcs, hackage, debianize, git, {-deletePackage,-} flag, PackageId, proc, spec)
+import qualified Debian.AutoBuilder.Types.Packages as P (TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
+import Debian.Release (ReleaseName(..))
+import Debian.Releases (Distro(..))
 import System.FilePath (takeBaseName)
 
 import Control.Monad.State (get)
@@ -28,6 +31,18 @@ import Debian.Releases (baseRelease, BaseRelease(..))
 import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage {-, Git-}), GitSpec({-Commit,-} Branch))
 import Distribution.Compiler (CompilerFlavor(GHCJS))
 import System.FilePath((</>))
+
+-- | A Distro is any organization that provides packages.
+data MyDistro = SeeReason8 | SeeReason7 deriving (Eq, Show)
+
+type TSt m = P.TSt MyDistro m
+
+instance Distro MyDistro where
+    distroString SeeReason8 = "seereason"
+    distroString SeeReason7 = "seereason7"
+    distroParse "seereason" = Just SeeReason8
+    distroParse "seereason7" = Just SeeReason7
+    distroParse _ = Nothing
 
 data Build = Production | Testing
 build = Production
@@ -165,25 +180,25 @@ ghc74flag :: P.Package -> P.PackageFlag -> P.Package
 ghc74flag p _ = p
 
 sflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-sflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Squeeze -> flag; _ -> noflag) fl i
+sflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "squeeze" -> flag; _ -> noflag) fl i
 pflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-pflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Precise -> flag; _ -> noflag) fl i
+pflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "precise" -> flag; _ -> noflag) fl i
 tflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-tflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Trusty -> flag; _ -> noflag) fl i
+tflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "trusty" -> flag; _ -> noflag) fl i
 qflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-qflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Quantal -> flag; _ -> noflag) fl i
+qflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "quantal" -> flag; _ -> noflag) fl i
 wflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-wflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Wheezy -> flag; _ -> noflag) fl i
+wflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "wheezy" -> flag; _ -> noflag) fl i
 aflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-aflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of Artful -> flag; _ -> noflag) fl i
+aflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "artful" -> flag; _ -> noflag) fl i
 wskip :: Monad m => P.PackageId -> TSt m (Maybe P.PackageId)
 wskip i = do
-  r <- (baseRelease . view release <$> get)
-  case r of Wheezy -> deletePackage i >> return Nothing
+  r <- (_releaseName . baseRelease . view release <$> get)
+  case r of (ReleaseName "wheezy") -> deletePackage i >> return Nothing
             _ -> return (Just i)
 wonly i = do
-  r <- (baseRelease . view release <$> get)
-  case r of Wheezy -> return (Just i)
+  r <- (_releaseName . baseRelease . view release <$> get)
+  case r of (ReleaseName "wheezy") -> return (Just i)
             _ -> deletePackage i >> return Nothing
 
 noflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
@@ -251,15 +266,15 @@ git' r c = git r c >>= debianize []
 
 artfulTargets :: Monad m => TSt m ()
 artfulTargets = do
-  rel <- baseRelease <$> use release
+  rel <- (_releaseName . baseRelease) <$> use release
   _acid_state <- git "https://github.com/acid-state/acid-state" [{-Branch "log-inspection"-}] >>=
                  debianize [] >>= aflag (P.DebVersion "0.14.2-3build2") >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _adjunctions <- hackage (Just "4.3") "adjunctions" >>= debianize [] >>= aflag (P.DebVersion "4.3-4build3") >>= ghcjs_also
   _aeson <- let version = case rel of
                             -- Idea is to stick to the version shipped with ghcjs,
                             -- but we are already ahead in the trusty repo.
-                            Trusty -> {-"0.9.0.1"-} "0.11.2.0"
-                            Artful -> "0.11.3.0" in
+                            ReleaseName "trusty" -> {-"0.9.0.1"-} "0.11.2.0"
+                            ReleaseName "artful" -> "0.11.3.0" in
             hackage (Just version) "aeson" >>= debianize [] >>= flag (P.CabalPin version) >>=
             flag (P.CabalDebian ["--missing-dependency", "libghc-fail-doc"]) >>= aflag (P.DebVersion "0.11.3.0-1build1") >>= inGroups ["important"] {->>= ghcjs_also-}
   _aeson_qq <-  hackage (Just "0.8.2") "aeson-qq" >>= debianize [] >>= inGroups [ "authenticate", "important"]
@@ -408,8 +423,8 @@ artfulTargets = do
   _groom <-  (hackage (Just "0.1.2") "groom") >>= debianize [] >>= ghcjs_also
   _haddock_library <-
       case rel of
-        Artful -> hackage (Just "1.4.3") "haddock-library" >>= flag (P.DebVersion "1.4.3-1") >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
-        Trusty -> hackage (Just "1.2.1") "haddock-library" >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
+        ReleaseName "artful" -> hackage (Just "1.4.3") "haddock-library" >>= flag (P.DebVersion "1.4.3-1") >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
+        ReleaseName "trusty" -> hackage (Just "1.2.1") "haddock-library" >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
   _happstack_authenticate_0 <-  (git "https://github.com/Happstack/happstack-authenticate-0.git" []
                              >>= flag (P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0",
                                                     "--cabal-flags", "migrate",
@@ -521,7 +536,7 @@ artfulTargets = do
   _lifted_base <-  (hackage (Just "0.2.3.8") "lifted-base") >>= debianize [] >>= aflag (P.DebVersion "0.2.3.10-1") >>= ghcjs_also
   _listLike <- git "https://github.com/JohnLato/ListLike" [] >>=
                flag (P.CabalDebian ["--cabal-flags", "safe"]) >>=
-               (if rel == Artful then flag (P.DebVersion "4.5.1-1build1") else return) >>=
+               (if rel == ReleaseName "artful" then flag (P.DebVersion "4.5.1-1build1") else return) >>=
                debianize [] >>=
                inGroups ["pretty", "autobuilder-group"] >>= ghcjs_also
   _logic_classes <-  (git "https://github.com/seereason/logic-classes" []) >>= debianize [] >>= inGroups ["seereason", "important"]
@@ -544,11 +559,11 @@ artfulTargets = do
   -- _nodejs <- uri "https://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz" "5523ec4347d7fe6b0f6dda1d1c7799d5" >>=
   --            debdir (Git "https://github.com/seereason/nodejs-debian" []) >>= inGroups ["ghcjs-comp"]
   _nodejs <- case rel of
-               Artful -> uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
+               ReleaseName "artful" -> uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
                          debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~trusty1.debian.tar.xz" "a93243ac859fae3a6832522b55f698bd") >>=
                          flag (P.RelaxDep "libssl-dev") >>=
                          inGroups ["ghcjs-comp"]
-               Trusty -> uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
+               ReleaseName "trusty" -> uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
                          debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~trusty1.debian.tar.xz" "a93243ac859fae3a6832522b55f698bd") >>=
                          flag (P.RelaxDep "libssl-dev") >>=
                          inGroups ["ghcjs-comp"]

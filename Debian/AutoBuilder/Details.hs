@@ -16,21 +16,21 @@ import Control.Monad.State (execState {-, modify, MonadState-})
 -- import Data.Map as Map (elems, insert, map)
 import Data.Maybe
 import Data.Version (showVersion, Version)
-import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, releaseRepoName, mySources)
+import Debian.AutoBuilder.Details.Common (MyDistro, TSt)
+import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
-import Debian.AutoBuilder.Types.Packages (TSt)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.GHC (hvrCabalVersion)
 import Debian.Relation (BinPkgName(..))
 import Debian.Releases as Releases
-    (Release(..), BaseRelease(Xenial), releaseString, parseReleaseName, isPrivateRelease, baseRelease, Distro(..))
+    (Release(..), Vendor(..), BaseRelease(..), releaseString, parseReleaseName, isPrivateRelease, baseRelease)
 import Debian.Repo.Slice (Slice, PPASlice{-(PersonalPackageArchive, ppaUser, ppaName)-})
 import Debian.Version (parseDebianVersion')
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
 
-myParams :: FilePath -> Release -> ParamRec
+myParams :: FilePath -> Release MyDistro -> ParamRec
 myParams home myBuildRelease =
     let myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
         myBuildURIPrefix = "http://deb.seereason.com"
@@ -123,7 +123,7 @@ myKnownTargets params = do
 -- seereason-keyring) you currently need to first build it and then
 -- install it manually.
 --
-myIncludePackages :: Release -> [BinPkgName]
+myIncludePackages :: Release MyDistro -> [BinPkgName]
 myIncludePackages myBuildRelease =
     fmap BinPkgName
     [ "debian-archive-keyring"
@@ -138,9 +138,9 @@ myIncludePackages myBuildRelease =
     -- I have observed that this solves the "ssh died unexpectedly"
     -- errors.
     (if isPrivateRelease myBuildRelease then [BinPkgName "ssh"] else []) ++
-    case releaseRepoName (baseRelease myBuildRelease) of
-      Releases.Debian -> []
-      Ubuntu -> [BinPkgName "ubuntu-keyring"]
+    case _vendorName (baseRelease myBuildRelease) of
+      Vendor "debian" -> []
+      Vendor "ubuntu" -> [BinPkgName "ubuntu-keyring"]
       _ -> error $ "Invalid base distro: " ++ show myBuildRelease
 
 -- This will not be available when a new release is created, so we
@@ -179,14 +179,14 @@ myCompilerVersion :: Maybe Version
 myCompilerVersion = Nothing -- Just use the package named ghc
 -- myCompilerVersion = Just (Version [8,0,1] []) -- Use a specific version of ghc and ghcjs
 
-myExcludePackages :: Release -> [BinPkgName]
+myExcludePackages :: Release MyDistro -> [BinPkgName]
 myExcludePackages _ = []
 
-myComponents :: Release -> [String]
+myComponents :: Release MyDistro -> [String]
 myComponents myBuildRelease =
-    case releaseRepoName (baseRelease myBuildRelease) of
-      Releases.Debian -> ["main", "contrib", "non-free"]
-      Ubuntu -> ["main", "restricted", "universe", "multiverse"]
+    case _vendorName (baseRelease myBuildRelease) of
+      Vendor "debian" -> ["main", "contrib", "non-free"]
+      Vendor "ubuntu" -> ["main", "restricted", "universe", "multiverse"]
       _ -> error $ "Invalid base distro: " ++ show myBuildRelease
 
 myHackageServer :: String
