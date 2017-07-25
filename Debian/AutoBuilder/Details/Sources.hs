@@ -39,11 +39,11 @@ myUploadURI myBuildRelease =
       myPublicUploadURI = myPrivateURIPrefix </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
 
 myPoolDir (PrivateRelease release) = myPoolURI release
--- myPoolDir (ExtendedRelease (Release Xenial) SeeReason) = "deb8"
+myPoolDir (ExtendedRelease (Release (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "deb8"
 myPoolDir _ = "deb"
 
 myPoolURI (PrivateRelease release) = myPoolURI release
--- myPoolURI (ExtendedRelease (Release Xenial) SeeReason) = "http://deb8.seereason.com/"
+myPoolURI (ExtendedRelease (Release (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "http://deb8.seereason.com/"
 myPoolURI _ = "http://deb.seereason.com/"
 
 -- An alternate url for the same repository the upload-uri points to,
@@ -57,7 +57,7 @@ myBuildURI myBuildRelease =
       myPrivateBuildURI = myPrivateURIPrefix </> "deb-private" </> vendorString myBuildRelease
       myPublicBuildURI = myPoolURI myBuildRelease ++ vendorString myBuildRelease
 
-vendorString :: Release -> String
+vendorString :: Release MyDistro -> String
 vendorString = _unVendor . _vendorName . baseRelease
 
 -- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
@@ -81,8 +81,10 @@ releaseRepoName rname
 
 derivedReleases :: Release MyDistro -> BaseRelease -> [Release MyDistro]
 derivedReleases myBuildRelease baseRelease' =
+    [ExtendedRelease (Release baseRelease') SeeReason7] ++
+    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Release baseRelease') SeeReason7)] else []) ++
     [ExtendedRelease (Release baseRelease') SeeReason8] ++
-    if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Release baseRelease') SeeReason8)] else []
+    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Release baseRelease') SeeReason8)] else [])
 
 -- Our private releases are always based on our public releases, not
 -- directly on upstream releases.

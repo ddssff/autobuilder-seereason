@@ -1,3 +1,14 @@
+--- old/debian/control	2017-06-25 12:52:22.000000000 -0700
++++ new/debian/control	2017-07-25 11:18:48.193464342 -0700
+@@ -5,7 +5,7 @@
+ Uploaders: Joachim Breitner <nomeata@debian.org>, Clint Adams <clint@debian.org>
+ Standards-Version: 3.9.8
+ Build-Depends:
+-  debhelper (>= 10),
++  debhelper (>= 9),
+   haskell-devscripts-minimal,
+   devscripts,
+   grep-dctrl,
 --- old/debian/control	2013-01-29 10:48:34.000000000 -0800
 +++ new/debian/control	2013-04-10 16:53:53.897605223 -0700
 @@ -13,7 +13,7 @@
