@@ -35,8 +35,8 @@ myUploadURI :: Release MyDistro -> Maybe URI
 myUploadURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateUploadURI else myPublicUploadURI)
     where
-      myPrivateUploadURI = myPrivateURIPrefix </> "deb-private" </> vendorString myBuildRelease
-      myPublicUploadURI = myPrivateURIPrefix </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
+      myPrivateUploadURI = myPrivateURIPrefix myBuildRelease </> "deb-private" </> vendorString myBuildRelease
+      myPublicUploadURI = myPrivateURIPrefix myBuildRelease </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
 
 myPoolDir (PrivateRelease release) = myPoolURI release
 myPoolDir (ExtendedRelease (Release (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "deb8"
@@ -54,14 +54,16 @@ myBuildURI :: Release MyDistro -> Maybe URI
 myBuildURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI)
     where
-      myPrivateBuildURI = myPrivateURIPrefix </> "deb-private" </> vendorString myBuildRelease
+      myPrivateBuildURI = myPrivateURIPrefix myBuildRelease </> "deb-private" </> vendorString myBuildRelease
       myPublicBuildURI = myPoolURI myBuildRelease ++ vendorString myBuildRelease
 
 vendorString :: Release MyDistro -> String
 vendorString = _unVendor . _vendorName . baseRelease
 
 -- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
-myPrivateURIPrefix = "ssh://upload@deb.seereason.com/srv"
+myPrivateURIPrefix :: Release MyDistro -> String
+myPrivateURIPrefix (PrivateRelease (ExtendedRelease (Release (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8)) = "ssh://upload@deb8.seereason.com/srv"
+myPrivateURIPrefix _ = "ssh://upload@deb.seereason.com/srv"
 
 ----------------------- BUILD RELEASE ----------------------------
 
