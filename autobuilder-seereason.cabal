@@ -50,6 +50,7 @@ Library
     Debian.AutoBuilder.Details
     Debian.AutoBuilder.Details.Artful
     Debian.AutoBuilder.Details.Common
+    Debian.AutoBuilder.Details.CommonTargets
     Debian.AutoBuilder.Details.Private
     Debian.AutoBuilder.Details.Sources
     Debian.AutoBuilder.Details.Targets

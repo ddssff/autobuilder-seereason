@@ -20,7 +20,7 @@ import Data.Set as Set (fromList, insert, member, Set)
 import Data.Text as Text (unlines)
 import Data.Version (Version(Version))
 import Debian.AutoBuilder.Details.Common (TSt, ghcjs, ghcjs_also, skip, Reason(..)) -- (named, ghcjs_flags, putSrcPkgName)
-import Debian.AutoBuilder.Details.Trusty (commonTargets)
+import Debian.AutoBuilder.Details.CommonTargets (commonTargets)
 import Debian.AutoBuilder.Types.Packages as P (depends,
                                                PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap, Package(..),
