@@ -53,6 +53,14 @@ buildTargets7 = do
                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
              debianize [] >>= inGroups ["ghcjs-comp"]
   _haddock_library7 <- hackage (Just "1.2.1") "haddock-library" >>= flag (P.DebVersion "1.2.1-2") >>= debianize [] >>= ghcjs_also
+  _ghcjs_dom <- hackage (Just "0.2.4.0" {-"0.7.0.4"-} {-"0.4.0.0"-}) "ghcjs-dom" >>= debianize [] >>= inGroups ["glib"] >>= ghcjs
+  _ghcjs_dom_hello <- hackage (Just "2.0.0.0") "ghcjs-dom-hello" >>=
+                      patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
+                      flag (P.CabalDebian ["--default-package", "ghcjs-dom-hello"]) >>=
+                      debianize [] >>=
+                      inGroups ["glib"] >>=
+                      ghcjs >>=
+                      skip (Reason "see cairo and glib")
   buildTargets
 
 buildTargets8 :: Monad m => TSt m ()
@@ -81,6 +89,14 @@ buildTargets8 = do
                     inGroups []
 
 
+  _ghcjs_dom <- hackage (Just "0.9.1.1") "ghcjs-dom" >>= debianize [] >>= inGroups ["glib"] >>= ghcjs
+  _ghcjs_dom_hello <- hackage (Just "6.0.0.0") "ghcjs-dom-hello" >>=
+                      patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
+                      flag (P.CabalDebian ["--default-package", "ghcjs-dom-hello"]) >>=
+                      debianize [] >>=
+                      inGroups ["glib"] >>=
+                      ghcjs >>=
+                      skip (Reason "see cairo and glib")
   buildTargets
 
 

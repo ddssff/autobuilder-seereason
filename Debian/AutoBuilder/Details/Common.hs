@@ -405,17 +405,6 @@ artfulTargets = do
   _fmlist <- hackage Nothing "foundation" >>= debianize [] >>= ghcjs_also
   _free <-  (hackage (Just "4.12.4") "free") >>= debianize [] >>= aflag (P.DebVersion "4.12.4-3build3") >>= ghcjs_also
   _generic_deriving <-  (hackage (Just "1.10.7") "generic-deriving") >>= debianize [] >>= aflag (P.DebVersion "1.11.2-1") >>= ghcjs_also
-  _ghcjs_dom <- hackage (Just "0.2.4.0" {-"0.7.0.4"-} {-"0.4.0.0"-}) "ghcjs-dom" >>=
-                flag (P.CabalPin "0.2.4.0") >>=
-                debianize [] >>=
-                inGroups ["glib"] >>= ghcjs
-  _ghcjs_dom_hello <- hackage (Just "3.0.0.0") "ghcjs-dom-hello" >>=
-                      patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
-                      flag (P.CabalDebian ["--default-package", "ghcjs-dom-hello"]) >>=
-                      debianize [] >>=
-                      inGroups ["glib"] >>=
-                      ghcjs >>=
-                      skip (Reason "see cairo and glib")
   _ghcjs_jquery <-  git "https://github.com/ghcjs/ghcjs-jquery" [] >>=
                     debianize [] {-`putSrcPkgName` "ghcjs-ghcjs-jquery"-} >>=
                     patch $(embedFile "patches/ghcjs-jquery.diff") >>=
@@ -689,7 +678,8 @@ artfulTargets = do
       hackage (Just "0.1.11") "th-lift-instances" >>=
       -- git "https://github.com/ddssff/th-lift-instances" [] >>=
       debianize [] >>= aflag (P.DebVersion "0.1.11-1build1") >>= inGroups ["important"] >>= ghcjs_also
-  _th_orphans <-  (hackage Nothing "th-orphans") >>= debianize [] >>= aflag (P.DebVersion "0.13.3-1build1") >>= inGroups ["th-path", "important"] >>= ghcjs_also
+  -- Pin to avoid rebuild
+  _th_orphans <-  (hackage (Just "0.13.3") "th-orphans") >>= debianize [] >>= aflag (P.DebVersion "0.13.3-1build1") >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _th_reify_many <-  (hackage (Just "0.1.6") "th-reify-many") >>= debianize [] >>= aflag (P.DebVersion "0.1.6-3build2") >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _th_typegraph <- git "http://github.com/seereason/th-typegraph" [] >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _threads <-  (hackage (Just "0.5.1.4") "threads") >>= debianize [] >>= aflag (P.DebVersion "0.5.1.4-3build1") >>= inGroups ["happstack", "important"] >>= ghcjs_also
