@@ -24,7 +24,7 @@ import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.GHC (hvrCabalVersion)
 import Debian.Relation (BinPkgName(..))
 import Debian.Releases as Releases
-    (ReleaseTree(..), Vendor(..), BaseRelease(..), releaseString, parseReleaseName, isPrivateRelease, baseRelease)
+    (ReleaseTree(..), Vendor(..), BaseRelease(..), releaseString, parseReleaseTree, isPrivateRelease, baseRelease)
 import Debian.Repo.Slice (Slice, PPASlice{-(PersonalPackageArchive, ppaUser, ppaName)-})
 import Debian.Version (parseDebianVersion')
 import qualified Debian.AutoBuilder.Details.Targets as Targets
@@ -64,7 +64,7 @@ myParams home myBuildRelease =
                  , requiredVersion = [(parseDebianVersion' ("6.64" :: String), Nothing)]
                  , hackageServer = myHackageServer
                  }
-        rel = parseReleaseName (buildRelease params)
+        rel = parseReleaseTree (buildRelease params)
         st = execState (myKnownTargets params) (P.targetState rel home) in
     params {knownPackages = view P.packageMap st}
 
