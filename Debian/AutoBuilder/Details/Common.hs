@@ -33,16 +33,12 @@ import Distribution.Compiler (CompilerFlavor(GHCJS))
 import System.FilePath((</>))
 
 -- | A Distro is any organization that provides packages.
-data MyDistro = SeeReason8 | SeeReason7 deriving (Eq, Show)
+-- data MyDistro = SeeReason8 | SeeReason7 deriving (Eq, Show)
 
-type TSt m = P.TSt MyDistro m
+type TSt m = P.TSt m
 
-instance Distro MyDistro where
-    distroString SeeReason8 = "seereason"
-    distroString SeeReason7 = "seereason7"
-    distroParse "seereason" = Just SeeReason8
-    distroParse "seereason7" = Just SeeReason7
-    distroParse _ = Nothing
+seeReason8 = Distro "seereason"
+seeReason7 = Distro "seereason7"
 
 data Build = Production | Testing
 build = Production

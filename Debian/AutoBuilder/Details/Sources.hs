@@ -13,12 +13,12 @@ module Debian.AutoBuilder.Details.Sources
 import Data.List as List (map)
 import Data.Maybe
 import Data.Set as Set (delete, fromList, member, Set, toAscList)
+import Debian.AutoBuilder.Details.Common (seeReason7, seeReason8)
 import Debian.Release (ReleaseName(..))
 import Debian.Releases (Vendor(..), ReleaseTree(..), BaseRelease(..), allReleases, ubuntu,
                         releaseString, isPrivateRelease,
-                        baseRelease, {-baseReleaseDistro,-} Distro(..), distroString)
+                        baseRelease, {-baseReleaseDistro,-} Distro(..))
 import Debian.Sources (DebSource(..), parseSourceLine)
-import Debian.AutoBuilder.Details.Common (MyDistro(..))
 import Debian.URI
 import Prelude hiding (map)
 import System.FilePath ((</>))
@@ -31,7 +31,7 @@ import System.FilePath ((</>))
 -- it is built for use as build dependencies of other packages during
 -- the same run.
 --
-myUploadURI :: ReleaseTree MyDistro -> Maybe URI
+myUploadURI :: ReleaseTree -> Maybe URI
 myUploadURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateUploadURI else myPublicUploadURI)
     where
@@ -39,32 +39,32 @@ myUploadURI myBuildRelease =
       myPublicUploadURI = myURIPrefix myBuildRelease </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
 
 myPoolDir (PrivateRelease release) = myPoolDir release ++ "-private"
-myPoolDir (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "deb8"
+myPoolDir (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) distro) | distro == seeReason8 = "deb8"
 myPoolDir _ = "deb"
 
 -- | URI used to download packages
 myPoolURI (PrivateRelease release) = myPoolURI release
-myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "http://deb8.seereason.com/"
+myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) distro) | distro == seeReason8 = "http://deb8.seereason.com/"
 myPoolURI _ = "http://deb.seereason.com/"
 
 -- An alternate url for the same repository the upload-uri points to,
 -- used for downloading packages that have already been installed
 -- there.
 --
-myBuildURI :: ReleaseTree MyDistro -> Maybe URI
+myBuildURI :: ReleaseTree -> Maybe URI
 myBuildURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI)
     where
       myPrivateBuildURI = myURIPrefix myBuildRelease </> "deb-private" </> vendorString myBuildRelease
       myPublicBuildURI = myPoolURI myBuildRelease ++ vendorString myBuildRelease
 
-vendorString :: ReleaseTree MyDistro -> String
+vendorString :: ReleaseTree -> String
 vendorString = _unVendor . _vendorName . baseRelease
 
 -- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
-myURIPrefix :: ReleaseTree MyDistro -> String
+myURIPrefix :: ReleaseTree -> String
 myURIPrefix (PrivateRelease rel) = myURIPrefix rel
-myURIPrefix (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "ssh://upload@deb8.seereason.com/srv"
+myURIPrefix (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) distro) | distro == seeReason8 = "ssh://upload@deb8.seereason.com/srv"
 myURIPrefix _ = "ssh://upload@deb.seereason.com/srv"
 
 ----------------------- BUILD RELEASE ----------------------------
@@ -83,17 +83,17 @@ releaseRepoName rname
                suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
 -}
 
-derivedReleases :: ReleaseTree MyDistro -> BaseRelease -> [ReleaseTree MyDistro]
+derivedReleases :: ReleaseTree -> BaseRelease -> [ReleaseTree]
 derivedReleases myBuildRelease baseRelease' =
-    [ExtendedRelease (Foundation baseRelease') SeeReason7] ++
-    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') SeeReason7)] else []) ++
-    [ExtendedRelease (Foundation baseRelease') SeeReason8] ++
-    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') SeeReason8)] else [])
+    [ExtendedRelease (Foundation baseRelease') seeReason7] ++
+    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') seeReason7)] else []) ++
+    [ExtendedRelease (Foundation baseRelease') seeReason8] ++
+    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') seeReason8)] else [])
 
 -- Our private releases are always based on our public releases, not
 -- directly on upstream releases.
 --
-derivedReleaseNames :: ReleaseTree MyDistro -> BaseRelease -> [String]
+derivedReleaseNames :: ReleaseTree -> BaseRelease -> [String]
 derivedReleaseNames myBuildRelease baseRelease' = map releaseString (derivedReleases myBuildRelease baseRelease')
 
 -- There is a debian standard for constructing the version numbers of
@@ -120,7 +120,7 @@ myReleaseAliases myBuildRelease =
 -- that we can use any base release or build release name to look up a
 -- sources.list.
 --
-mySources :: ReleaseTree MyDistro -> [(String, [DebSource])]
+mySources :: ReleaseTree -> [(String, [DebSource])]
 mySources myBuildRelease =
     List.map releaseSources
             (map Foundation (toAscList allReleases) ++
@@ -131,7 +131,7 @@ mySources myBuildRelease =
 
 -- Build a sources.list for one of our build relases.
 --
-releaseSourceLines :: ReleaseTree MyDistro -> String -> String -> [DebSource]
+releaseSourceLines :: ReleaseTree -> String -> String -> [DebSource]
 releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     case release of
       PrivateRelease r ->
@@ -157,7 +157,7 @@ baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
       Vendor "ubuntu" -> ubuntuSourceLines ubuntuMirrorHost release
       x -> error $ "Unknown release repository: " ++ show release
 
-baseReleaseString :: ReleaseTree MyDistro -> String
+baseReleaseString :: ReleaseTree -> String
 baseReleaseString = relName . _releaseName . baseRelease
 
 baseReleaseString' :: BaseRelease -> String

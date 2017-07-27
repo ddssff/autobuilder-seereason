@@ -16,7 +16,7 @@ import Control.Monad.State (execState {-, modify, MonadState-})
 -- import Data.Map as Map (elems, insert, map)
 import Data.Maybe
 import Data.Version (showVersion, Version)
-import Debian.AutoBuilder.Details.Common (MyDistro, TSt)
+import Debian.AutoBuilder.Details.Common (TSt)
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
@@ -30,7 +30,7 @@ import Debian.Version (parseDebianVersion')
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Prelude hiding (map)
 
-myParams :: FilePath -> ReleaseTree MyDistro -> ParamRec
+myParams :: FilePath -> ReleaseTree -> ParamRec
 myParams home myBuildRelease =
     let myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
         myBuildURIPrefix = "http://deb.seereason.com"
@@ -123,7 +123,7 @@ myKnownTargets params = do
 -- seereason-keyring) you currently need to first build it and then
 -- install it manually.
 --
-myIncludePackages :: ReleaseTree MyDistro -> [BinPkgName]
+myIncludePackages :: ReleaseTree -> [BinPkgName]
 myIncludePackages myBuildRelease =
     fmap BinPkgName
     [ "debian-archive-keyring"
@@ -179,10 +179,10 @@ myCompilerVersion :: Maybe Version
 myCompilerVersion = Nothing -- Just use the package named ghc
 -- myCompilerVersion = Just (Version [8,0,1] []) -- Use a specific version of ghc and ghcjs
 
-myExcludePackages :: ReleaseTree MyDistro -> [BinPkgName]
+myExcludePackages :: ReleaseTree -> [BinPkgName]
 myExcludePackages _ = []
 
-myComponents :: ReleaseTree MyDistro -> [String]
+myComponents :: ReleaseTree -> [String]
 myComponents myBuildRelease =
     case _vendorName (baseRelease myBuildRelease) of
       Vendor "debian" -> ["main", "contrib", "non-free"]
