@@ -14,7 +14,7 @@ import Data.List as List (map)
 import Data.Maybe
 import Data.Set as Set (delete, fromList, member, Set, toAscList)
 import Debian.Release (ReleaseName(..))
-import Debian.Releases (Vendor(..), Release(..), BaseRelease(..), allReleases, ubuntu,
+import Debian.Releases (Vendor(..), ReleaseTree(..), BaseRelease(..), allReleases, ubuntu,
                         releaseString, isPrivateRelease,
                         baseRelease, {-baseReleaseDistro,-} Distro(..), distroString)
 import Debian.Sources (DebSource(..), parseSourceLine)
@@ -31,7 +31,7 @@ import System.FilePath ((</>))
 -- it is built for use as build dependencies of other packages during
 -- the same run.
 --
-myUploadURI :: Release MyDistro -> Maybe URI
+myUploadURI :: ReleaseTree MyDistro -> Maybe URI
 myUploadURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateUploadURI else myPublicUploadURI)
     where
@@ -39,32 +39,32 @@ myUploadURI myBuildRelease =
       myPublicUploadURI = myURIPrefix myBuildRelease </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
 
 myPoolDir (PrivateRelease release) = myPoolDir release ++ "-private"
-myPoolDir (ExtendedRelease (Release (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "deb8"
+myPoolDir (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "deb8"
 myPoolDir _ = "deb"
 
 -- | URI used to download packages
 myPoolURI (PrivateRelease release) = myPoolURI release
-myPoolURI (ExtendedRelease (Release (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "http://deb8.seereason.com/"
+myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "http://deb8.seereason.com/"
 myPoolURI _ = "http://deb.seereason.com/"
 
 -- An alternate url for the same repository the upload-uri points to,
 -- used for downloading packages that have already been installed
 -- there.
 --
-myBuildURI :: Release MyDistro -> Maybe URI
+myBuildURI :: ReleaseTree MyDistro -> Maybe URI
 myBuildURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI)
     where
       myPrivateBuildURI = myURIPrefix myBuildRelease </> "deb-private" </> vendorString myBuildRelease
       myPublicBuildURI = myPoolURI myBuildRelease ++ vendorString myBuildRelease
 
-vendorString :: Release MyDistro -> String
+vendorString :: ReleaseTree MyDistro -> String
 vendorString = _unVendor . _vendorName . baseRelease
 
 -- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
-myURIPrefix :: Release MyDistro -> String
+myURIPrefix :: ReleaseTree MyDistro -> String
 myURIPrefix (PrivateRelease rel) = myURIPrefix rel
-myURIPrefix (ExtendedRelease (Release (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "ssh://upload@deb8.seereason.com/srv"
+myURIPrefix (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) SeeReason8) = "ssh://upload@deb8.seereason.com/srv"
 myURIPrefix _ = "ssh://upload@deb.seereason.com/srv"
 
 ----------------------- BUILD RELEASE ----------------------------
@@ -83,17 +83,17 @@ releaseRepoName rname
                suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
 -}
 
-derivedReleases :: Release MyDistro -> BaseRelease -> [Release MyDistro]
+derivedReleases :: ReleaseTree MyDistro -> BaseRelease -> [ReleaseTree MyDistro]
 derivedReleases myBuildRelease baseRelease' =
-    [ExtendedRelease (Release baseRelease') SeeReason7] ++
-    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Release baseRelease') SeeReason7)] else []) ++
-    [ExtendedRelease (Release baseRelease') SeeReason8] ++
-    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Release baseRelease') SeeReason8)] else [])
+    [ExtendedRelease (Foundation baseRelease') SeeReason7] ++
+    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') SeeReason7)] else []) ++
+    [ExtendedRelease (Foundation baseRelease') SeeReason8] ++
+    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') SeeReason8)] else [])
 
 -- Our private releases are always based on our public releases, not
 -- directly on upstream releases.
 --
-derivedReleaseNames :: Release MyDistro -> BaseRelease -> [String]
+derivedReleaseNames :: ReleaseTree MyDistro -> BaseRelease -> [String]
 derivedReleaseNames myBuildRelease baseRelease' = map releaseString (derivedReleases myBuildRelease baseRelease')
 
 -- There is a debian standard for constructing the version numbers of
@@ -120,10 +120,10 @@ myReleaseAliases myBuildRelease =
 -- that we can use any base release or build release name to look up a
 -- sources.list.
 --
-mySources :: Release MyDistro -> [(String, [DebSource])]
+mySources :: ReleaseTree MyDistro -> [(String, [DebSource])]
 mySources myBuildRelease =
     List.map releaseSources
-            (map Release (toAscList allReleases) ++
+            (map Foundation (toAscList allReleases) ++
              concatMap (derivedReleases myBuildRelease) allReleases)
     where
       releaseSources release =
@@ -131,7 +131,7 @@ mySources myBuildRelease =
 
 -- Build a sources.list for one of our build relases.
 --
-releaseSourceLines :: Release MyDistro -> String -> String -> [DebSource]
+releaseSourceLines :: ReleaseTree MyDistro -> String -> String -> [DebSource]
 releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
     case release of
       PrivateRelease r ->
@@ -144,8 +144,8 @@ releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
           List.map parseSourceLine
                   [ "deb [trusted=yes] " ++ uri ++ " " ++ releaseString release ++ " main"
                   , "deb-src [trusted=yes] " ++ uri ++ " " ++ releaseString release ++ " main" ]
-      Release b -> baseReleaseSourceLines b debianMirrorHost ubuntuMirrorHost ++
-                   hvrSourceLines b
+      Foundation b -> baseReleaseSourceLines b debianMirrorHost ubuntuMirrorHost ++
+                      hvrSourceLines b
 
     where
       uri = show (fromJust (myBuildURI release))
@@ -157,7 +157,7 @@ baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
       Vendor "ubuntu" -> ubuntuSourceLines ubuntuMirrorHost release
       x -> error $ "Unknown release repository: " ++ show release
 
-baseReleaseString :: Release MyDistro -> String
+baseReleaseString :: ReleaseTree MyDistro -> String
 baseReleaseString = relName . _releaseName . baseRelease
 
 baseReleaseString' :: BaseRelease -> String

@@ -18,7 +18,7 @@ import Debian.Debianize as D (CabalInfo, debInfo, execMap)
 import Debian.Relation (Relation(..), BinPkgName(..))
 import Debian.Relation.String (parseRelations)
 import Debian.Release (ReleaseName(..))
-import Debian.Releases (BaseRelease(..), baseRelease, Distro(..), Release(..))
+import Debian.Releases (BaseRelease(..), baseRelease, Distro(..), ReleaseTree(..))
 import qualified Debian.Repo.Fingerprint as P
 import Debian.AutoBuilder.Details.Common (MyDistro(..), TSt)
 import qualified Debian.AutoBuilder.Details.Trusty as Trusty
@@ -40,10 +40,10 @@ public params = do
   let targets =
           case rel of
             -- ExtendedRelease (Release Xenial) SeeReason8 -> Xenial.buildTargets8
-            ExtendedRelease (Release (BaseRelease _ (ReleaseName "xenial"))) SeeReason7 -> Xenial.buildTargets7
-            ExtendedRelease (Release (BaseRelease _ (ReleaseName "xenial"))) SeeReason8 -> Xenial.buildTargets8
-            ExtendedRelease (Release (BaseRelease _ (ReleaseName "trusty"))) SeeReason8 -> Trusty.buildTargets params
-            ExtendedRelease (Release (BaseRelease _ (ReleaseName "trusty"))) SeeReason7 -> Trusty.buildTargets params
+            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "xenial"))) SeeReason7 -> Xenial.buildTargets7
+            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "xenial"))) SeeReason8 -> Xenial.buildTargets8
+            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "trusty"))) SeeReason8 -> Trusty.buildTargets params
+            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "trusty"))) SeeReason7 -> Trusty.buildTargets params
             _ -> error $ "Unexpected release: " ++ show rel
   -- Dangerous when uncommented - build private targets into public, do not upload!!
   -- private params >>
@@ -79,7 +79,7 @@ isDebianizeSpec (P.Debianize'' _ _) = True
 isDebianizeSpec _ = False
 
 -- | Add MapDep and DevelDep flags Supply some special cases to map cabal library names to debian.
-applyDepMap :: Monad m => Release MyDistro -> TSt m ()
+applyDepMap :: Monad m => ReleaseTree MyDistro -> TSt m ()
 applyDepMap release =
     packageMap %= Map.map f
     where
