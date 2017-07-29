@@ -9,14 +9,14 @@
 
 module Debian.AutoBuilder.Details.Xenial ( buildTargets7, buildTargets8 ) where
 
-import Control.Lens (at, use, view, (%=))
-import Control.Monad.Trans (lift)
-import Data.Char (toLower)
+import Control.Lens ((%=))
+--import Control.Monad.Trans (lift)
+--import Data.Char (toLower)
 import Data.FileEmbed (embedFile)
-import Data.Function (on)
-import Data.List (sortBy)
-import Data.Map as Map (elems, keys)
-import Data.Set as Set (fromList, insert, member, Set)
+--import Data.Function (on)
+--import Data.List (sortBy)
+--import Data.Map as Map (elems, keys)
+import Data.Set as Set (insert)
 import Data.Text as Text (unlines)
 import Data.Version (Version(Version))
 import Debian.AutoBuilder.Details.Common (TSt, ghcjs, ghcjs_also, skip, Reason(..)) -- (named, ghcjs_flags, putSrcPkgName)
@@ -83,6 +83,9 @@ buildTargets8 = do
              debianize [] >>= inGroups ["ghcjs-comp"]
   _haddock_library8 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
   _cabal_install <- hackage (Just "1.24.0.2") "cabal-install" >>=
+                    -- Avoid creating a versioned libghc-cabal-dev
+                    -- dependency, as it is a virtual package in ghc
+                    patch $(embedFile "patches/cabal-install.diff") >>=
                     debianize [] >>=
                     -- patch $(embedFile "patches/cabal-install.diff") >>= -- cabal-debian-4.35.7 outputs libghc-cabal-dev | ghc instead of ghc | libghc-cabal-dev
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>=

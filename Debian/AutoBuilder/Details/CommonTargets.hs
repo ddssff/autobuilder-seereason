@@ -2,27 +2,17 @@
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
 module Debian.AutoBuilder.Details.CommonTargets (commonTargets) where
 
-import Control.Lens (at, use, view, (%=))
+import Control.Lens (use, view)
 import Data.FileEmbed (embedFile)
-import Data.Map as Map (elems, keys)
-import Data.Set as Set (fromList, insert, member, Set)
-import Data.Text as Text (unlines)
-import Data.Version (Version(Version))
+import Data.Map as Map (elems)
+import Data.Set as Set (fromList, member, Set)
 import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
 -- import Debian.AutoBuilder.Details.DebVersion (setDebVersion)
-import Debian.AutoBuilder.Types.Packages as P (depends,
-                                               PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
+import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
-                                               darcs, apt, git, hg, cd, debdir, uri, spec, clonePackage,
-                                               GroupName, inGroups, createPackage)
-import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
-import Debian.Debianize as D
-    (doExecutable, execCabalM, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
-import Debian.Relation (BinPkgName(..))
-import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage {-, Git-}), GitSpec(Commit, Branch))
-import Debian.Repo.Internal.Apt (MonadApt)
-import Debian.Repo.Internal.Repos (MonadRepos)
+                                               darcs, apt, git, hg, cd, debdir, uri, GroupName, inGroups, createPackage)
+import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage))
 
 commonTargets :: Monad m => TSt m ()
 commonTargets = do
@@ -381,7 +371,7 @@ commonTargets = do
   _ghc_exactprint <- git "https://github.com/alanz/ghc-exactprint" [] >>= debianize []
   _terminal_size <- hackage (Just "0.3.2.1") "terminal-size"  >>= flag (P.DebVersion "0.3.2.1-2") >>= debianize [] >>= inGroups ["ghcid"]
   _ghcid <- hackage (Just "0.6.4") "ghcid" >>= debianize [] >>= inGroups ["ghcid"]
-  _ghcjs_base <- git "https://github.com/ghcjs/ghcjs-base" [] >>= debianize []
+  _ghcjs_base <- git "https://github.com/ghcjs/ghcjs-base" [] >>= debianize [] >>= ghcjs
   _ghcjs_jquery <-  git "https://github.com/ghcjs/ghcjs-jquery" [] >>=
                     debianize [] {-`putSrcPkgName` "ghcjs-ghcjs-jquery"-} >>=
                     patch $(embedFile "patches/ghcjs-jquery.diff") >>=
@@ -508,10 +498,11 @@ commonTargets = do
   _haskell_help <- git ("https://github.com/seereason/sr-help") [] >>= debianize [] >>= inGroups ["autobuilder-group", "important"]
   _haskell_lexer <-  (hackage (Just "1.0.1") "haskell-lexer") >>= debianize []
   _haskell_list <-  (hackage (Just "0.5.2") "List") >>= debianize []
+  -- _haskell_mode <- apt "jessie" "haskell-mode" >>= patch $(embedFile "patches/haskell-mode.diff")
   _haskell_names <-  git "https://github.com/haskell-suite/haskell-names" [] >>= debianize [] >>= inGroups ["pretty"]
   _haskell_newtype <- hackage (Just "0.2") "newtype" >>= flag (P.DebVersion "0.2-7") >>= debianize []
   _haskell_packages <-  (hackage (Just "0.3") "haskell-packages" {->>= patch $(embedFile "patches/haskell-packages.diff")-}) >>= debianize [] >>= inGroups ["happstack", "important"] >>= skip (Reason "duplicate FromJSON instances")
-  _sr_revision <-  (git ("https://github.com/seereason/sr-revision") []) >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
+  _sr_revision <-  (git ("https://github.com/seereason/sr-revision") []) >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also >>= skip2 (Reason "Not used")
   _haskell_src <-  (hackage (Just "1.0.2.0") "haskell-src" >>= flag (P.BuildDep "happy")) >>= flag (P.DebVersion "1.0.2.0-4build1") >>= debianize [] >>= inGroups ["platform"]
   -- The source package name is set to haskell-src-exts by the
   -- cabal-debian package, Debian.Debianize.Details.debianDefaults.

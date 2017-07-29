@@ -1,0 +1,35 @@
+--- old/debian/changelog	2014-11-11 11:32:44.000000000 -0800
++++ new/debian/changelog	2017-07-27 08:46:28.787962210 -0700
+@@ -1,4 +1,4 @@
+-haskell-mode (13.10-3) unstable; urgency=medium
++haskell-mode-1310 (13.10-3) unstable; urgency=medium
+ 
+   * Ignore byte compilation warnings during tests (Closes: #768770).
+   * Retire Petr Rockai as Maintainer. Thanks for your contributions.
+--- old/debian/control	2014-11-11 11:32:44.000000000 -0800
++++ new/debian/control	2017-07-27 08:47:23.368628251 -0700
+@@ -1,4 +1,4 @@
+-Source: haskell-mode
++Source: haskell-mode-1310
+ Section: haskell
+ Priority: optional
+ Maintainer: David Bremner <bremner@debian.org>
+@@ -12,10 +12,12 @@
+ Vcs-Git: git://anonscm.debian.org/collab-maint/haskell-mode.git
+ Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/haskell-mode.git
+ 
+-Package: haskell-mode
++Package: haskell-mode-1310
+ Architecture: all
+ Depends: emacs24 | emacs23 | emacs-snapshot | emacs, ${misc:Depends}
+ Breaks: agda-mode (<< 2.3.2)
++Conflicts: haskell-mode
++Replaces: haskell-mode
+ Recommends: ghc | hugs
+ Description: major mode for editing Haskell in Emacs
+  A major mode for editing Haskell (the functional
+--- old/debian/source/format	2014-08-26 12:18:32.000000000 -0700
++++ new/debian/source/format	2017-07-24 11:42:07.460193491 -0700
+@@ -1 +1 @@
+-3.0 (quilt)
++3.0 (native)
