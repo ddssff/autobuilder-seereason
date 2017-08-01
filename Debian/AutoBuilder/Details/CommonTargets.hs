@@ -6,8 +6,7 @@ import Control.Lens (use, view)
 import Data.FileEmbed (embedFile)
 import Data.Map as Map (elems)
 import Data.Set as Set (fromList, member, Set)
-import Debian.AutoBuilder.Details.Common -- (named, ghcjs_flags, putSrcPkgName)
--- import Debian.AutoBuilder.Details.DebVersion (setDebVersion)
+import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs, git', gitrepo, gitrepo2, hack, noTests, putSrcPkgName, Reason(Reason), replacement, skip, skip2, tflag, qflag, pflag, substitute, wflag, wskip, TSt)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
@@ -465,6 +464,7 @@ commonTargets = do
   _happstack_scaffolding <-  (git "https://github.com/seereason/happstack-scaffolding" [] >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["seereason", "important"]
   _happstack_search <- darcs ("http://src.seereason.com/happstack-search") >>= inGroups ["happstack", "important"]
               -- ,  (hackage (Just "7.4.6.2") "happstack-server") >>= debianize []
+  _happstack_servant <- git "https://github.com/Happstack/servant-happstack" [] >>= debianize []
   _happstack_server <- hackage (Just "7.5.0") "happstack-server" >>=
                        -- git "https://github.com/Happstack/happstack-server" [Commit "3e3ef7518f697bad5243b87a46459ae31a125812"] >>=
                        -- flag (P.CabalDebian ["--cabal-flags", "hslogger"]) >>=
@@ -630,7 +630,7 @@ commonTargets = do
   _ioRefCAS <- (hackage (Just "0.2.0.1") "IORefCAS") >>= debianize [] >>= skip (Reason "Version 0.2.0.1 build fails")
   _io_storage <- hackage (Just "0.3") "io-storage" >>= flag (P.DebVersion "0.3-9") >>= debianize []
   -- _io_streams <- git "https://github.com/snapframework/io-streams" [] >>= debianize [] >>= inGroups ["important"] -- pull request to allow atto-parsec-0.13
-  _io_streams <- hackage (Just "1.3.6.1") "io-streams" >>= debianize [] >>= inGroups ["important"] -- http-streams-0.8.4.0 requires io-streams < 1.4
+  _io_streams <- hackage (Just "1.3.6.1") "io-streams" >>= debianize [] >>= patch $(embedFile "patches/io-streams.diff") >>= inGroups ["important"] -- http-streams-0.8.4.0 requires io-streams < 1.4
   _iproute <-  (hackage (Just "1.7.0") "iproute") >>= flag (P.DebVersion "1.7.0-1") >>= debianize []
   _ircbot <- hackage (Just "0.6.5.1") "ircbot" >>= debianize [] >>= inGroups ["happstack", "important"]
   _irc <- hackage (Just "0.6.1.0") "irc" >>= flag (P.DebVersion "0.6.1.0-5build1") >>= debianize [] >>= inGroups ["important"]

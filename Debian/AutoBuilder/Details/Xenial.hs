@@ -18,26 +18,21 @@ import Data.FileEmbed (embedFile)
 --import Data.Map as Map (elems, keys)
 import Data.Set as Set (insert)
 import Data.Text as Text (unlines)
-import Data.Version (Version(Version))
+--import Data.Version (Version(Version))
 import Debian.AutoBuilder.Details.Common (TSt, ghcjs, ghcjs_also, skip, Reason(..)) -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Details.CommonTargets (commonTargets)
-import Debian.AutoBuilder.Types.Packages as P (depends,
-                                               PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
-                                                           NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap, Package(..),
-                                               pid, proc, groups, PackageId, hackage, debianize, flag, apply, patch,
-                                               darcs, apt, git, hg, cd, debdir, uri, release, spec, clonePackage,
-                                               GroupName, inGroups, createPackage)
-import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
-import Debian.Debianize as D
-    (doExecutable, execCabalM, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
-import Debian.Relation (BinPkgName(..), SrcPkgName(SrcPkgName))
-import Debian.Releases (baseRelease, BaseRelease(..))
-import Debian.Repo.Internal.Apt (getApt, MonadApt, AptImage(aptSourcePackageCache))
-import Debian.Repo.Internal.Repos (MonadRepos)
-import Debian.Repo.Fingerprint (RetrieveMethod(Apt, Uri, DataFiles, Patch, Debianize'', Hackage {-, Git-}), GitSpec(Commit, Branch))
-import Debian.Repo.PackageIndex (SourcePackage(sourcePackageID))
-import Debian.Repo.PackageID (packageName, packageVersion)
-import Debian.Version (DebianVersion, prettyDebianVersion)
+import Debian.AutoBuilder.Types.Packages as P
+    (apply, apt, debianize, flag, git, hackage, inGroups, PackageFlag(CabalDebian, DebVersion, DevelDep, RelaxDep), patch)
+--import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
+import Debian.Debianize as D (execCabalM, rulesFragments, debInfo)
+--import Debian.Relation (BinPkgName(..), SrcPkgName(SrcPkgName))
+--import Debian.Releases (baseRelease, BaseRelease(..))
+--import Debian.Repo.Internal.Apt (getApt, MonadApt, AptImage(aptSourcePackageCache))
+--import Debian.Repo.Internal.Repos (MonadRepos)
+import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
+--import Debian.Repo.PackageIndex (SourcePackage(sourcePackageID))
+--import Debian.Repo.PackageID (packageName, packageVersion)
+--import Debian.Version (DebianVersion, prettyDebianVersion)
 
 buildTargets7 :: Monad m => TSt m ()
 buildTargets7 = do

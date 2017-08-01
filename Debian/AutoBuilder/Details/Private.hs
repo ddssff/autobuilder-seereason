@@ -8,7 +8,7 @@ import Data.FileEmbed (embedFile)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, darcs, git, cd, {-packageMap,-} inGroups)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
-import Debian.Repo.Fingerprint (GitSpec(Branch))
+import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
 import System.FilePath ((</>))
 
 -- Individual packages, alphabetized
@@ -78,7 +78,7 @@ buildTargets _params = do
   -- stripeRepo <- "ssh://git@github.com/stripe-haskell/stripe"
   -- stripeRepo <- "https://github.com/seereason/stripe"
   let stripeRepo = "https://github.com/dmjio/stripe"
-  _stripe_core <- git stripeRepo [] >>= cd "stripe-core" >>= debianize [] >>= inGroups ["private-libs"]
+  _stripe_core <- git stripeRepo [Commit "10deea753de5dc6a1fd7dfe4ddee13600e563490"] >>= cd "stripe-core" >>= debianize [] >>= inGroups ["private-libs"]
   _stripe_http_streams <- git stripeRepo [] >>= cd "stripe-http-streams" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>=  debianize [] >>= inGroups ["private-libs"]
   _stripe_haskell <- git stripeRepo [] >>= cd "stripe-haskell" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>= debianize []
   -- stripe_http_conduit <- debianize (darcs (privateRepo </> "stripe") `cd` "stripe-http-conduit")
