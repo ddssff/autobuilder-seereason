@@ -192,6 +192,7 @@ wskip :: Monad m => P.PackageId -> TSt m (Maybe P.PackageId)
 wskip i = do
   r <- (_releaseName . baseRelease . view release <$> get)
   case r of (ReleaseName "wheezy") -> deletePackage i >> return Nothing
+            _ -> return $ Just i
 
 noflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
 noflag _ i = return i

@@ -538,12 +538,12 @@ commonTargets = do
   _hint <-  (hackage (Just "0.6.0") "hint") >>= debianize [] {- >>= skip (Reason "requires ghc-mtl") -}
   -- _hit <- hackage Nothing "hit" >>= debianize []
   _hJavaScript <- hackage (Just "0.4.7") "HJavaScript"
-                  >>= patch $(embedFile "patches/hjavascript.diff")
-                  >>= tflag (P.DebVersion "0.4.7-6")
+                  >>= patch $(embedFile "patches/HJavaScript.diff")
+                  -- >>= tflag (P.DebVersion "0.4.7-6")
                   >>= debianize []
                -- Not used, and not building.
                -- ,  (hackage (Just "0.3.5") "hoauth") >>= debianize []
-  _hJScript <- git "https://github.com/seereason/HJScript" [] >>= debianize [] >>= inGroups ["happstack", "important"]
+  _hJScript <- hackage (Just "0.7.0") "HJScript" >>= debianize [] >>= inGroups ["happstack", "important"]
   _hledger <- git "https://github.com/simonmichael/hledger" [] >>= cd "hledger-lib" >>= debianize [] >>= skip (Reason "requires mtl-compat")
            {-
                -- Needs a build dependency on libXrandr-dev and the cabal package x11.
