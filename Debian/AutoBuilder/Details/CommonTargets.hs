@@ -334,7 +334,7 @@ commonTargets = do
   _fgl <-  (hackage (Just "5.5.3.0") "fgl") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _file_embed <-  (hackage (Just "0.0.10") "file-embed") >>= debianize [] >>= ghcjs_also
   _file_location <- hackage (Just "0.4.9.1") "file-location" >>= {-flag (P.CabalDebian [ "--source-package-name", "file-location" ]) >>=-} debianize []
-  _filelock <- hackage Nothing "filelock" >>= flag (P.DebVersion "0.1.0.1-2") >>= debianize []
+  _filelock <- hackage (Just "0.1.1.2") Nothing "filelock" >>= debianize []
   _filemanip <- git "https://github.com/ddssff/filemanip" [] >>= debianize [] >>= ghcjs_also
   _filemanip_extra <- git "https://github.com/seereason/filemanip-extra" [] >>= debianize [] >>= inGroups ["autobuilder-group", "important"] >>= ghcjs_also
   _fingertree <- hack (Just "0.1.1.0") "fingertree" >>= flag (P.DebVersion "0.1.1.0-3")
