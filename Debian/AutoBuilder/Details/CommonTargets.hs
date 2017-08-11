@@ -798,8 +798,8 @@ commonTargets = do
   _numeric_extras <-  (hackage (Just "0.1") "numeric-extras") >>= flag (P.DebVersion "0.1-1") >>= debianize []
   _numInstances <-  (hackage (Just "1.4") "NumInstances") >>= flag (P.DebVersion "1.4-4") >>= debianize []
   _objectName <-  (hackage (Just "1.1.0.1") "ObjectName") >>= flag (P.DebVersion "1.1.0.1-1") >>= debianize []
-  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize [] >>= ghcjs_also
-  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize [] >>= ghcjs_also
+  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize []
+  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize []
   _oo_prototypes <-  (hackage (Just "0.1.0.0") "oo-prototypes") >>= flag (P.DebVersion "0.1.0.0-3") >>= debianize []
   _openGL <-  (hackage (Just "2.13.1.0") "OpenGL" >>= inGroups ["gl"] >>= flag (P.DevelDep "libglu1-mesa-dev")) >>= debianize [] >>= skip (Reason "too old for openglraw")
   _openGLRaw <-  (hackage (Just "3.2.1.0") "OpenGLRaw" >>= inGroups ["gl"]
