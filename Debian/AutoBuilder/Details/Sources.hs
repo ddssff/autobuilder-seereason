@@ -34,9 +34,10 @@ myUploadURI :: ReleaseTree -> Maybe URI
 myUploadURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateUploadURI else myPublicUploadURI)
     where
-      myPrivateUploadURI = myURIPrefix myBuildRelease </> "deb-private" </> vendorString myBuildRelease
+      myPrivateUploadURI = myURIPrefix myBuildRelease </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
       myPublicUploadURI = myURIPrefix myBuildRelease </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
 
+myPoolDir :: ReleaseTree -> String
 myPoolDir (PrivateRelease release) = myPoolDir release ++ "-private"
 myPoolDir (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) distro) | distro == seeReason8 = "deb8"
 myPoolDir _ = "deb"
@@ -54,7 +55,7 @@ myBuildURI :: ReleaseTree -> Maybe URI
 myBuildURI myBuildRelease =
     parseURI (if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI)
     where
-      myPrivateBuildURI = myURIPrefix myBuildRelease </> "deb-private" </> vendorString myBuildRelease
+      myPrivateBuildURI = myURIPrefix myBuildRelease </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
       myPublicBuildURI = myPoolURI myBuildRelease ++ vendorString myBuildRelease
 
 vendorString :: ReleaseTree -> String
