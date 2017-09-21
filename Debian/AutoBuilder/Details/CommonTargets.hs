@@ -276,7 +276,7 @@ commonTargets = do
                -- , apt "wheezy" "geneweb"
   _decimal <-  (hackage (Just "0.4.2") "Decimal") >>= flag (P.DebVersion "0.4.2-4") >>= debianize [] -- for hledger
   _deepseq_generics <- hackage (Just "0.2.0.0") "deepseq-generics" >>= {-patch $(embedFile "patches/deepseq-generics.diff") >>=-} debianize [] >>= ghcjs_also
-  _derive <-  (hackage (Just "2.6.2") "derive") >>= debianize []
+  _derive <-  (hackage (Just "2.6.3") "derive") >>= debianize [] >>= flag (P.CabalDebian ["--executable", "derive"])
   --_diff <- hackage (Just "0.3.4") "Diff" >>= debianize [] >>= inGroups ["pretty", "autobuilder-group"] >>= ghcjs_also
   _diff <- git "https://github.com/seereason/Diff" [] >>= debianize [] >>= inGroups ["pretty", "autobuilder-group"] >>= ghcjs_also
   _digest <- hackage (Just "0.0.1.2") "digest" >>= flag (P.DebVersion "0.0.1.2-5") >>= debianize [] >>= ghcjs_also
