@@ -466,10 +466,8 @@ commonTargets = do
               -- ,  (hackage (Just "7.4.6.2") "happstack-server") >>= debianize []
   _happstack_servant <- git "https://github.com/Happstack/servant-happstack" [] >>= debianize []
   _happstack_server <- hackage (Just "7.5.0") "happstack-server" >>=
-                       -- git "https://github.com/Happstack/happstack-server" [Commit "3e3ef7518f697bad5243b87a46459ae31a125812"] >>=
-                       -- flag (P.CabalDebian ["--cabal-flags", "hslogger"]) >>=
                        debianize [] >>=
-                       inGroups ["happstack", "important"] >>= ghcjs_also
+                       inGroups ["happstack", "important"]
   _happstack_server_tls <- hackage (Just "7.1.6.3") "happstack-server-tls" >>= debianize [] >>= inGroups ["happstack", "important"]
   _happstack_static_routing <-  (hackage (Just "0.4.2") "happstack-static-routing") >>= debianize [] {->>= inGroups ["happstack", "important"]-} >>= skip (Reason "compile error")
   _happstack_util <- git "https://github.com/seereason/happstack-util" [] >>=
@@ -1062,7 +1060,7 @@ commonTargets = do
   _union_find <-  (hackage (Just "0.2") "union-find") >>= debianize []
                -- ,  (hackage "Elm") >>= debianize []
                -- ,  (hackage "elm-server" {- >>= patch $(embedFile "patches/elm-server.diff") -}) >>= debianize []
-  _uniplate <-  (hackage (Just "1.6.12") "uniplate") >>= flag (P.DebVersion "1.6.12-4build1") >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
+  _uniplate <- hackage (Just "1.6.12") "uniplate" >>= flag (P.DebVersion "1.6.12-4build1") >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
   _units <-  (hackage (Just "2.4") "units") >>= debianize [] >>= skip (Reason "[libghc-singletons-prof (<< 2)] -> []")
   _units_parser <-  (hackage (Just "0.1.0.0") "units-parser") >>= debianize []
   _universe_base <- hackage Nothing "universe-base" >>= flag (P.DebVersion "1.0.2.1-1") >>= debianize []
