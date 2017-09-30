@@ -14,6 +14,8 @@ module Debian.AutoBuilder.Details.Common
     , gitrepo2
     , hack
     , noTests
+    , noDoc
+    , noProf
     , pflag
     , privateRepo
     , putSrcPkgName
@@ -256,3 +258,9 @@ git' r c = git r c >>= debianize []
 
 noTests :: Monad m => TSt m ()
 noTests = use P.packageMap >>= mapM_ (flag (P.CabalDebian ["--no-tests"])) . Map.keys
+
+noDoc :: Monad m => TSt m ()
+noDoc = use P.packageMap >>= mapM_ (flag (P.CabalDebian ["--disable-haddock"])) . Map.keys
+
+noProf :: Monad m => TSt m ()
+noProf = use P.packageMap >>= mapM_ (flag (P.CabalDebian ["--disable-profiling"])) . Map.keys

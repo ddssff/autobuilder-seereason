@@ -1,20 +1,11 @@
---- old/aeson.cabal	2014-02-19 06:24:46.000000000 -0800
-+++ new/aeson.cabal	2014-02-19 09:25:04.514333845 -0800
-@@ -79,7 +79,7 @@
- 
- flag new-bytestring-builder
-   description: Use the new bytestring builder available in bytestring >= 0.10.4.0
--  default: False
-+  default: True
- 
- library
-   exposed-modules:
-@@ -119,7 +119,7 @@
-     hashable >= 1.1.2.0,
-     mtl,
-     old-locale,
--    scientific >= 0.2 && < 0.3,
-+    scientific >= 0.2,
-     syb,
-     template-haskell >= 2.4,
-     time,
+--- a/aeson.cabal	2017-09-27 12:29:17.478866883 -0700
++++ b/aeson.cabal	2017-09-30 06:44:25.682768558 -0700
+@@ -76,8 +76,6 @@
+     Data.Aeson.Parser
+     Data.Aeson.Types
+     Data.Aeson.TH
+-
+-  other-modules:
+     Data.Aeson.Encode.Builder
+     Data.Aeson.Encode.Functions
+     Data.Aeson.Functions

@@ -6,7 +6,7 @@ import Control.Lens (use, view)
 import Data.FileEmbed (embedFile)
 import Data.Map as Map (elems)
 import Data.Set as Set (fromList, member, Set)
-import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs, git', gitrepo, gitrepo2, hack, noTests, putSrcPkgName, Reason(Reason), replacement, skip, skip2, tflag, qflag, pflag, substitute, wflag, wskip, TSt)
+import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs, git', gitrepo, gitrepo2, hack, noTests, noDoc, noProf, putSrcPkgName, Reason(Reason), replacement, skip, skip2, tflag, qflag, pflag, substitute, wflag, wskip, TSt)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
@@ -23,12 +23,11 @@ commonTargets = do
   _acid_state <- git "https://github.com/acid-state/acid-state" [{-Branch "log-inspection"-}] >>=
                  debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _adjunctions <- hackage (Just "4.3") "adjunctions" >>= debianize [] >>= ghcjs_also
-  -- Pin to avoid rebuild
-  -- _aeson <- hackage (Just "1.0.2.1") "aeson" >>= debianize [] >>= inGroups ["important"] >>= ghcjs_also
   _aeson <- hackage (Just "0.11.2.0") "aeson" >>=
-            debianize [] >>=
+            patch $(embedFile "patches/aeson.diff") >>=
             flag (P.CabalPin "0.11.2.0") >>=
-            flag (P.CabalDebian ["--missing-dependency", "libghc-fail-doc"]) >>=
+            -- flag (P.CabalDebian ["--missing-dependency", "libghc-fail-doc"]) >>=
+            debianize [] >>=
             inGroups ["important"] >>= ghcjs_also
   _aeson_pretty <- hackage (Just "0.8.5") "aeson-pretty" >>= debianize []
   _aeson_qq <-  hackage (Just "0.8.2") "aeson-qq" >>= debianize [] >>= inGroups [ "authenticate", "important"]
@@ -1047,7 +1046,7 @@ commonTargets = do
                           {-patch $(embedFile "patches/transformers-compat.diff") >>=-}
                           debianize [] >>= ghcjs_also
   _transformers_free <-  (hackage (Just "1.0.1") "transformers-free") >>= debianize []
-  _traverse_with_class <-  (hackage (Just "0.2.0.4") "traverse-with-class") >>= debianize [] >>= inGroups ["happstack", "important"]
+  _traverse_with_class <- hackage Nothing "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
   _trifecta <-  (hackage (Just "1.5.2") "trifecta" {->>= patch $(embedFile "patches/trifecta.diff")-}) >>= debianize [] >>= skip (Reason "Unmet build dependencies: libghc-comonad-dev (<< 5) libghc-comonad-prof (<< 5)")
   _tyb <- hackage (Just "0.2.3") "TYB" >>= debianize [] >>= skip (Reason "Needs update for current template-haskell")
   _type_eq <- hackage (Just "0.5") "type-eq" >>= flag (P.BuildDep "cpphs") >>= debianize [] >>= skip (Reason "dependencies")
@@ -1196,6 +1195,8 @@ commonTargets = do
   -- Create the ghcjs library package targets
   -- findGroup "ghcjs-libs" >>= mapM_ ghcjs_flags
   noTests -- Some package test suites fail, some hang, especially with ghcjs
+  -- noDoc
+  -- noProf
 
   return ()
 

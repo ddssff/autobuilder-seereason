@@ -86,6 +86,8 @@ buildTargets _params = do
   _task_manager <- git "ssh://git@github.com/seereason/task-manager.git" [] >>= debianize [] >>= inGroups ["private-libs"]
   _typegraph <- git "ssh://git@github.com/seereason/typegraph.git" [] >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_also
   noTests
+  -- noDoc
+  -- noProf
 
 {-
 libraries :: Monad m => TSt m ()
