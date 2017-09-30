@@ -1,23 +1,14 @@
---- old/GenI.cabal	2013-11-04 06:36:04.000000000 -0800
-+++ new/GenI.cabal	2014-05-20 06:16:30.662553974 -0700
-@@ -67,7 +67,7 @@
-                , errors
-                , filepath    == 1.*
-                , hslogger
--               , json >= 0.4.3 && < 0.6
-+               , json >= 0.4.3
-                , mtl > 1.0
-                , old-locale
-                , ordered == 0.1.*
-@@ -142,7 +142,7 @@
-               , filepath    == 1.*
-               , yaml-light  == 0.1.*
-               , hslogger
--              , json        >= 0.4 && < 0.6
-+              , json        >= 0.4
-               , mtl         > 1.0
-               , process     > 1
- 
+--- old/GenI.cabal	2017-09-30 07:54:15.367971546 -0700
++++ new/GenI.cabal	2017-09-30 08:02:46.797068910 -0700
+@@ -62,7 +62,7 @@
+                , bytestring == 0.10.*
+                , containers == 0.5.*
+                , deepseq    == 1.4.*
+-               , directory  == 1.2.*
++               , directory  >= 1.2 && < 1.4
+                , filepath   == 1.4.*
+                , hslogger   == 1.2.*
+                , json       == 0.9.*
 --- old/src/NLP/GenI/Configuration.hs	2014-08-17 06:53:19.562134164 -0700
 +++ new/src/NLP/GenI/Configuration.hs	2015-06-24 16:08:39.242248826 -0700
 @@ -17,6 +17,7 @@
@@ -39,60 +30,3 @@ diff -ru old/src/NLP/GenI/Console.hs new/src/NLP/GenI/Console.hs
  {-# LANGUAGE DeriveDataTypeable #-}
  {-# LANGUAGE OverloadedStrings  #-}
  {-# LANGUAGE PatternGuards      #-}
-@@ -39,12 +40,17 @@
- import qualified Data.Text.Encoding            as T
- import qualified Data.Text.IO                  as T
- import           Data.Time                     (formatTime, getCurrentTime)
-+#if MIN_VERSION_time(1,5,0)
-+import           Data.Time                     (defaultTimeLocale)
-+#else
-+import           System.Locale                 (defaultTimeLocale)
-+#endif
- import           Data.Typeable
- import           System.Directory
- import           System.Exit
- import           System.FilePath               (takeFileName, (</>))
- import           System.IO                     (stderr)
--import           System.Locale
-+import           System.Locale                 (iso8601DateFormat)
- import           System.Timeout                (timeout)
- 
- import           System.Log.Logger
-diff -ru old/src/NLP/GenI/General.hs new/src/NLP/GenI/General.hs
---- old/src/NLP/GenI/General.hs	2015-06-20 11:03:05.892109138 -0700
-+++ new/src/NLP/GenI/General.hs	2015-06-24 16:07:19.946246952 -0700
-@@ -145,7 +145,7 @@
-     | T.any naughty x = quoteText x
-     | otherwise       = x
-   where
--    naughty c = not (isGeniIdentLetter c) || c `elem` "_?/"
-+    naughty c = not (isGeniIdentLetter c) || c `elem` ("_?/" :: String)
- 
- quoteText :: Text -> Text
- quoteText t =
---- old/src/NLP/GenI/General.hs~	2015-06-10 10:00:02.259689096 -0700
-+++ new/src/NLP/GenI/General.hs	2015-06-10 09:59:57.247689240 -0700
-@@ -108,10 +108,6 @@
- -- Strings
- -- ----------------------------------------------------------------------
- 
--instance Binary Text where
--  put = put . T.encodeUtf8
--  get = liftM T.decodeUtf8 get
--
- isGeniIdentLetter :: Char -> Bool
--isGeniIdentLetter x = isAlphaNum x || x `elem` "_'+-."
-+isGeniIdentLetter x = isAlphaNum x || x `elem` ("_'+-." :: String)
- 
-@@ -412,11 +412,3 @@
-     replicate min_ '0'
- showBitVector min_ (BitVector x) =
-     showBitVector (min_ - 1) (BitVector (shiftR x 1)) ++ (show $ x .&. 1)
--
---- ----------------------------------------------------------------------
---- JSON
---- ----------------------------------------------------------------------
--
--instance JSON Text where
--    readJSON = fmap T.pack . readJSON
--    showJSON = showJSON . T.unpack
