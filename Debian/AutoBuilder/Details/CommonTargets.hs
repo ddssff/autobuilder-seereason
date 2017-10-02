@@ -719,6 +719,7 @@ commonTargets = do
   _maccatcher <-  (hackage (Just "2.1.5") "maccatcher"
                               >>= pflag (P.DebVersion "2.1.5-3")
                               >>= tflag (P.DebVersion "2.1.5-5build1")) >>= debianize [] >>= ghcjs_also
+  _machines <- hackage Nothing "machines" >>= debianize [] >>= ghcjs_also
   _magic <- hackage (Just "1.1") "magic" >>= flag (P.DebVersion "1.1-4") >>= flag (P.DevelDep "libmagic-dev") >>= debianize []
            {-  , P.Package { P._spec = Quilt (Apt "wheezy" "magic-haskell") (Darcs ("http://src.seereason.com/magic-quilt"))
                            , P._flags = mempty } -}
@@ -840,7 +841,7 @@ commonTargets = do
   _plugins <- git "https://github.com/stepcut/plugins" [] >>= flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>= flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>= debianize [] >>= skip (Reason "obsolete")
   _plugins_ng <-  (git "https://github.com/ddssff/plugins-ng" []) >>= debianize [] >>= skip (Reason "needs fsnotify << 0.2")
   _po4a <- apt "wheezy" "po4a" >>= skip (Reason "use standard trusty version")
-  _pointed <- git "https://github.com/ekmett/pointed" [] >>= debianize []
+  _pointed <- git "https://github.com/ekmett/pointed" [] >>= debianize [] >>= ghcjs_also
   _pointedlist <-  (hackage (Just "0.6.1") "pointedlist") >>= flag (P.DebVersion "0.6.1-4") >>= debianize []
   _polyparse <-  (hackage (Just "1.12") "polyparse") >>= debianize [] >>= ghcjs_also
   _prelude_extras <-  (hackage (Just "0.4.0.3") "prelude-extras") >>= debianize [] >>= ghcjs_also
