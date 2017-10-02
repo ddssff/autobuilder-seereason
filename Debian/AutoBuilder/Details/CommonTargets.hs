@@ -135,6 +135,7 @@ commonTargets = do
   _charset <-  (hackage (Just "0.3.7.1") "charset") >>= flag (P.DebVersion "0.3.7.1-4build1") >>= debianize []
   _charsetdetect_ae <-  (hackage (Just "1.1.0.1") "charsetdetect-ae") >>= flag (P.DebVersion "1.1.0.1-1") >>= debianize []
   _cheapskate <- git "https://github.com/seereason/cheapskate" [] {-hackage (Just "0.1.0.3") "cheapskate"-} >>= debianize [] >>= skip (Reason "data default dependency")
+  _chili <-  gitrepo2 "chili"  >>= debianize [] >>= ghcjs_also
   _cipher_aes128 <-  (hackage (Just "0.7.0.1") "cipher-aes128") >>= flag (P.DebVersion "0.7.0.1-2") >>= debianize [] >>= inGroups ["authenticate", "important"]
   _cipher_aes <- hackage (Just "0.2.11") "cipher-aes" >>= flag (P.DebVersion "0.2.11-3build1") >>= debianize []
   _cipher_des <- hackage (Just "0.0.6") "cipher-des" >>= flag (P.DebVersion "0.0.6-5build1") >>= debianize []
@@ -789,7 +790,7 @@ commonTargets = do
   -- _nodejs <- uri "https://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz" "5523ec4347d7fe6b0f6dda1d1c7799d5" >>=
   --            debdir (Git "https://github.com/seereason/nodejs-debian" []) >>= inGroups ["ghcjs-comp"]
   _nodejs <- uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
-            debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~trusty1.debian.tar.xz" "a93243ac859fae3a6832522b55f698bd") >>=
+            debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~xenial1.debian.tar.xz" "0083c158831134295e719a524d9c8513") >>=
             flag (P.RelaxDep "libssl-dev") >>=
             inGroups ["ghcjs-comp"]
   _numeric_extras <-  (hackage (Just "0.1") "numeric-extras") >>= flag (P.DebVersion "0.1-1") >>= debianize []
