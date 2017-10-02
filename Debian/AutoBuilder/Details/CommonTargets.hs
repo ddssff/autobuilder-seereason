@@ -28,7 +28,7 @@ commonTargets = do
             flag (P.CabalPin "0.11.2.0") >>=
             -- flag (P.CabalDebian ["--missing-dependency", "libghc-fail-doc"]) >>=
             debianize [] >>=
-            inGroups ["important"] >>= ghcjs_also
+            inGroups ["important"]
   _aeson_pretty <- hackage (Just "0.8.5") "aeson-pretty" >>= debianize []
   _aeson_qq <-  hackage (Just "0.8.2") "aeson-qq" >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _agi <- darcs ("https://github.com/ddssff/haskell-agi") >>= skip (Reason "No instance for (Applicative (AGIT m))")
