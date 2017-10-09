@@ -1134,7 +1134,7 @@ commonTargets = do
   _webkit_sodium <- git "https://github.com/ghcjs/ghcjs-examples" [] >>= cd "webkit-sodium" >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "skipped jsaddle")
   _webkitgtk3 <- hackage (Just "0.13.1.3") "webkitgtk3" >>= flag (P.CabalPin "0.13.1.3") >>= flag (P.BuildDep "libwebkitgtk-3.0-dev") >>= debianize [] >>= inGroups ["glib"] >>= skip (Reason "see cairo and glib")
   _webkitgtk3_javascriptcore <- hackage (Just "0.13.1.1") "webkitgtk3-javascriptcore" >>= debianize [] >>= skip (Reason "Could not find module Gtk2HsSetup")
-  _websockets <- hackage (Just "0.12.0.0") "websockets" >>= debianize [] >>= ghcjs_also
+  _websockets <- hackage (Just "0.12.2.0") "websockets" >>= debianize [] >>= ghcjs_also
   _wl_pprint <- hackage (Just "1.2") "wl-pprint" >>= debianize []
   _wl_pprint_extras <- hackage (Just "3.5.0.5") "wl-pprint-extras" >>=
                        patch $(embedFile "patches/wl-pprint-extras.diff") >>=
