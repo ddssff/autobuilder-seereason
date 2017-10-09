@@ -474,7 +474,7 @@ commonTargets = do
                      flag (P.DebVersion "6.0.3-1") >>=
                      debianize [] >>=
                      inGroups ["happstack", "important"]
-  _happstack_websockets <- git "https://github.com/seereason/happstack-websockets" [] >>= debianize [] >>= ghcjs
+  _happstack_websockets <- git "https://github.com/seereason/happstack-websockets" [] >>= debianize []
   _harp <-  (git "https://github.com/seereason/harp" []) >>= debianize []
   _hashable <-  (hackage (Just "1.2.4.0") "hashable") >>= debianize []
   _hashed_storage <-  (hackage (Just "0.5.11") "hashed-storage") >>= debianize [] >>= skip (Reason "Non type-variable argument in the constraint: MonadState (TreeState m_aFTg) (t m_aFTg)")
