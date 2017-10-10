@@ -364,7 +364,7 @@ commonTargets = do
   _gdiff <-  (hackage (Just "1.1") "gdiff") >>= debianize []
   _gdiff_th <- git "https://github.com/ddssff/gdiff-th" [] >>= debianize []
   _generic_deriving <-  (hackage (Just "1.10.7") "generic-deriving") >>= debianize [] >>= ghcjs_also
-  _genI <-  (darcs "http://hub.darcs.net/kowey/GenI" >>= patch $(embedFile "patches/GenI.diff")) >>= debianize [] >>= inGroups ["GenI"]
+  _genI <- darcs "http://hub.darcs.net/kowey/GenI" >>= patch $(embedFile "patches/GenI.diff") >>= debianize [] >>= inGroups ["GenI"]
   _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] >>= skip (Reason "Encountered missing dependencies: 2> binary ==0.8.*")
   _ghc_boot_th <- hackage (Just "8.0.2") "ghc-boot-th" >>= debianize []
   _ghc_exactprint <- git "https://github.com/alanz/ghc-exactprint" [] >>= debianize []
@@ -474,7 +474,7 @@ commonTargets = do
                      flag (P.DebVersion "6.0.3-1") >>=
                      debianize [] >>=
                      inGroups ["happstack", "important"]
-  _happstack_websockets <- git "https://github.com/seereason/happstack-websockets" [] >>= debianize [] >>= ghcjs
+  _happstack_websockets <- git "https://github.com/seereason/happstack-websockets" [] >>= debianize []
   _harp <-  (git "https://github.com/seereason/harp" []) >>= debianize []
   _hashable <-  (hackage (Just "1.2.4.0") "hashable") >>= debianize []
   _hashed_storage <-  (hackage (Just "0.5.11") "hashed-storage") >>= debianize [] >>= skip (Reason "Non type-variable argument in the constraint: MonadState (TreeState m_aFTg) (t m_aFTg)")
@@ -497,7 +497,7 @@ commonTargets = do
   _haskell_lexer <-  (hackage (Just "1.0.1") "haskell-lexer") >>= debianize []
   _haskell_list <-  (hackage (Just "0.5.2") "List") >>= debianize []
   -- _haskell_mode <- apt "jessie" "haskell-mode" >>= patch $(embedFile "patches/haskell-mode.diff")
-  _haskell_names <-  git "https://github.com/haskell-suite/haskell-names" [] >>= debianize [] >>= inGroups ["pretty"]
+  _haskell_names <- hackage (Just "0.8.0") "haskell-names" >>= debianize []
   _haskell_newtype <- hackage (Just "0.2") "newtype" >>= flag (P.DebVersion "0.2-7") >>= debianize []
   _haskell_packages <-  (hackage (Just "0.3") "haskell-packages" {->>= patch $(embedFile "patches/haskell-packages.diff")-}) >>= debianize [] >>= inGroups ["happstack", "important"] >>= skip (Reason "duplicate FromJSON instances")
   _sr_revision <-  (git ("https://github.com/seereason/sr-revision") []) >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also >>= skip2 (Reason "Not used")
@@ -1049,7 +1049,7 @@ commonTargets = do
                           {-patch $(embedFile "patches/transformers-compat.diff") >>=-}
                           debianize [] >>= ghcjs_also
   _transformers_free <-  (hackage (Just "1.0.1") "transformers-free") >>= debianize []
-  _traverse_with_class <- hackage Nothing "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
+  _traverse_with_class <- hackage (Just "0.2.0.4") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
   _trifecta <-  (hackage (Just "1.5.2") "trifecta" {->>= patch $(embedFile "patches/trifecta.diff")-}) >>= debianize [] >>= skip (Reason "Unmet build dependencies: libghc-comonad-dev (<< 5) libghc-comonad-prof (<< 5)")
   _tyb <- hackage (Just "0.2.3") "TYB" >>= debianize [] >>= skip (Reason "Needs update for current template-haskell")
   _type_eq <- hackage (Just "0.5") "type-eq" >>= flag (P.BuildDep "cpphs") >>= debianize [] >>= skip (Reason "dependencies")
