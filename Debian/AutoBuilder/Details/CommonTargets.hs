@@ -1022,6 +1022,7 @@ commonTargets = do
   _text_stream_decode <- hackage (Just "0.1.0.5") "text-stream-decode" >>= patch $(embedFile "patches/text-stream-decode.diff") >>= debianize [] >>= inGroups ["conduit", "important"] >>= skip (Reason "depends on older text")
   _tf_random <-  (hackage (Just "0.5") "tf-random") >>= flag (P.DebVersion "0.5-5") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _th_alpha <-  (git "https://github.com/ddssff/th-alpha.git" []) >>= debianize []
+  _th_abstraction <- hackage Nothing "th-abstraction" >>= debianize []
   _th_context <-  (git "http://github.com/seereason/th-context" []) >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _th_desugar <- {-(git "http://github.com/goldfirere/th-desugar" [])-} hackage (Just "1.6") "th-desugar" >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _th_expand_syns <-  (hackage (Just "0.4.0.0") "th-expand-syns") >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
