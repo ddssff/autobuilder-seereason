@@ -824,6 +824,7 @@ commonTargets = do
   _parsec <-  (hackage (Just "3.1.11") "parsec" >>= apply (substitute "parsec2" "parsec3")) >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _parse_dimacs <-  (hackage (Just "1.3") "parse-dimacs") >>= debianize []
   _parsers <- hackage (Just "0.12.4") "parsers" >>= debianize []
+  _patches_vector <- hackage (Just "0.1.5.4") "patches-vector" >>= debianize []
   _pbkdf2 <-  (hackage (Just "0.3.1.5") "PBKDF2") >>= debianize [] >>= skip (Reason "[libghc-multiset-dev (<< 0.3)] -> []")
                -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
   _pcre_light <- hackage (Just "0.4.0.4") "pcre-light" >>=
