@@ -85,7 +85,8 @@ buildTargets8 = do
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
   _haddock_library8 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
-  _cabal_install <- hackage (Just "1.24.0.2") "cabal-install" >>=
+  _cabal <- hackage (Just "2.0.0.2") "Cabal" >>= debianize []
+  _cabal_install <- hackage (Just "2.0.0.0") "cabal-install" >>=
                     -- Avoid creating a versioned libghc-cabal-dev
                     -- dependency, as it is a virtual package in ghc
                     patch $(embedFile "patches/cabal-install.diff") >>=

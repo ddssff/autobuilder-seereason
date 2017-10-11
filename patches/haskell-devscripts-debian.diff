@@ -131,3 +131,24 @@ index 1cada17..632d80e 100644
  ifndef DEB_NO_IMPLICIT_HADDOCK_HYPERLINK
  DEB_HADDOCK_OPTS += --hyperlink-source
  endif
+diff --ruw a/Dh_Haskell.sh b/Dh_Haskell.sh
+--- old/Dh_Haskell.sh	2017-10-11 12:34:55.961952524 -0700
++++ new/Dh_Haskell.sh	2017-10-11 12:36:53.516233863 -0700
+@@ -515,7 +515,7 @@
+ extra_depends_recipe(){
+     # local PS5=$PS4; PS4=" + extra_depends_recipe> "; set -x
+     hc=$1
+-    pkg_config=`${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config | tr -d ' \n' | sed -r 's,^.*:,,'`
++    pkg_config=`${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config -v | tr -d ' \n' | sed -r 's,^.*:,,'`
+     run dh_haskell_extra_depends ${hc} $pkg_config
+     rm $pkg_config
+     # PS4=$PS5
+@@ -532,7 +532,7 @@
+     ( run cd debian/tmp-inst-${hc} ; run mkdir -p ${libdir} ; run find ${libdir}/ \
+         \( ! -name "*_p.a" ! -name "*.p_hi" ! -type d \) \
+         -exec install -Dm 644 '{}' ../${PKG}/'{}' ';' )
+-    pkg_config=`${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config | tr -d ' \n' | sed -r 's,^.*:,,'`
++    pkg_config=`${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config -v | tr -d ' \n' | sed -r 's,^.*:,,'`
+     if [ "${HASKELL_HIDE_PACKAGES}" ]; then sed -i 's/^exposed: True$/exposed: False/' $pkg_config; fi
+     run install -Dm 644 $pkg_config debian/${PKG}/${pkgdir}/$pkg_config
+     run rm -f $pkg_config
