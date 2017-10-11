@@ -1,0 +1,28 @@
+--- old/patches-vector.cabal	2017-10-11 12:06:59.558019363 -0700
++++ new/patches-vector.cabal	2017-10-11 12:22:12.441378453 -0700
+@@ -33,7 +33,7 @@
+                      , Data.Patch.Internal
+   build-depends:       base >=4.7 && <5
+                      , edit-distance-vector >=1.0 && <1.1
+-                     , vector >= 0.10 && < 0.12
++                     , vector >= 0.10 && < 0.13
+                      , microlens >= 0.2 && < 0.5
+   default-language:    Haskell2010
+ 
+@@ -54,7 +54,7 @@
+                      , QuickCheck >= 2.7 && < 2.9
+                      , patches-vector
+                      , criterion >= 1.1 && < 1.2
+-                     , vector >= 0.10 && <0.12
++                     , vector >= 0.10 && <0.13
+   default-language:    Haskell2010
+ 
+ test-suite             spec-patches-vector
+@@ -68,6 +68,6 @@
+                      , QuickCheck >= 2.7 && < 2.9
+                      , patches-vector
+                      , criterion >= 1.1 && < 1.2
+-                     , vector >= 0.10 && <0.12
++                     , vector >= 0.10 && <0.13
+                      , hspec >= 2.1 && < 2.3
+   default-language:    Haskell2010
