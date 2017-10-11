@@ -949,7 +949,7 @@ commonTargets = do
   _shakespeare <-  (hackage (Just "2.0.10") "shakespeare") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _shakespeare_js <-  (hackage (Just "1.3.0") "shakespeare-js") >>= debianize [] >>= skip (Reason "No input files to haddock?")
   _shellmate <- hack (Just "0.3.3") "shellmate" >>= skip (Reason "directory dependency")
-  _shelly <- hackage (Just "1.6.8.1") "shelly" >>= debianize [] >>= inGroups ["ghcjs-comp"]
+  _shelly <- hackage (Just "1.6.8.4") "shelly" >>= debianize [] >>= inGroups ["ghcjs-comp"]
   _show_please <- hackage Nothing "show-please" >>= debianize [] >>= ghcjs_also
   _silently <-  (hackage (Just "1.2.5") "silently") >>= flag (P.DebVersion "1.2.5-3") >>= debianize []
   _simple_reflect <-  (hackage (Just "0.3.2") "simple-reflect") >>= flag (P.DebVersion "0.3.2-5") >>= debianize []
