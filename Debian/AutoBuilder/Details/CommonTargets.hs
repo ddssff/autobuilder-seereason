@@ -303,10 +303,11 @@ commonTargets = do
   _dynamic_state <-  (hackage (Just "0.2.2.0") "dynamic-state") >>= debianize []
   _dyre <-  (hackage (Just "0.8.12") "dyre") >>= flag (P.DebVersion "0.8.12-1") >>= debianize []
   _easy_file <-  (hackage (Just "0.2.1") "easy-file") >>= flag (P.DebVersion "0.2.1-3") >>= debianize [] >>= ghcjs_also
+  _echo <- hackage (Just "0.1.3") "echo" >>= debianize []
   _ed25519 <- hackage (Just "0.0.5.0") "ed25519" >>= flag (P.DebVersion "0.0.5.0-1") >>= debianize []
   _edisonAPI <- hackage (Just "1.3.1") "EdisonAPI" >>= debianize []
   _edisonCore <- ( (hackage (Just "1.3.1.1") "EdisonCore" >>= qflag (P.DebVersion "1.2.1.3-9build2")) >>= debianize [])
-  _edit_distance <- hackage (Just "0.2.2.1") "edit-distance" >>= debianize [] >>= ghcjs_also
+  _edit_distance <- hackage (Just "0.2.2.1") "edit-distance" >>= flag (P.DebVersion "0.2.2.1-3") >>= debianize [] >>= ghcjs_also
   _edit_distance_vector <- hackage (Just "1.0.0.4") "edit-distance-vector" >>= debianize [] >>= ghcjs_also
   _ekg_core <-  (hackage (Just "0.1.1.1") "ekg-core") >>= debianize []
   _email_validate <-  (hackage (Just "2.2.0") "email-validate") >>= debianize [] >>= inGroups ["important"]
