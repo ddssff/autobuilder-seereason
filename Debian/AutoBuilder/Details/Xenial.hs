@@ -57,6 +57,13 @@ buildTargets7 = do
                       inGroups ["glib"] >>=
                       ghcjs >>=
                       skip (Reason "see cairo and glib")
+  _haskell_devscripts <-
+      -- Revert to version we used from 8/2016-11/2016
+      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "a143f70d333663e1447998d6facbebf67cd5045f"] >>=
+      -- This changes --show-details=direct to --show-details=always in check-recipe
+      patch $(embedFile "patches/haskell-devscripts.diff") >>=
+      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
+  -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   buildTargets
 
 buildTargets8 :: Monad m => TSt m ()
@@ -96,20 +103,20 @@ buildTargets8 = do
                       inGroups ["glib"] >>=
                       ghcjs >>=
                       skip (Reason "see cairo and glib")
+  _haskell_devscripts <-
+      -- Revert to version we used from 8/2016-11/2016
+      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "a143f70d333663e1447998d6facbebf67cd5045f"] >>=
+      -- This changes --show-details=direct to --show-details=always in check-recipe
+      patch $(embedFile "patches/haskell-devscripts.diff") >>=
+      -- Changes from debian since 0.11.2
+      patch $(embedFile "patches/haskell-devscripts-debian.diff") >>=
+      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
+  -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   buildTargets
 
 
 buildTargets :: Monad m => TSt m ()
 buildTargets = do
-  _haskell_devscripts <-
-      -- Revert to version we used from 8/2016-11/2016
-      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "a143f70d333663e1447998d6facbebf67cd5045f"] >>=
-      -- git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "2668216c654b0b302cb51162b2246c39cd6adc1e"] >>=
-      -- git "https://github.com/ddssff/haskell-devscripts" [Branch "0.12"] >>=
-      -- This changes --show-details=direct to --show-details=always in check-recipe
-      patch $(embedFile "patches/haskell-devscripts.diff") >>=
-      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
-  -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   _zlib <- hackage (Just "0.6.1.1") "zlib" >>= flag (P.DebVersion "0.6.1.1-1") >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
 
   -- Trusty targets

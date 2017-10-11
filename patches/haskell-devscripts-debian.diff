@@ -1,0 +1,133 @@
+diff -ru haskell-devscripts-2016/debian/changelog haskell-devscripts.anonscm/debian/changelog
+--- haskell-devscripts-2016/debian/changelog	2017-10-11 06:14:18.501840202 -0700
++++ haskell-devscripts.anonscm/debian/changelog	2016-11-23 12:14:19.077585231 -0800
+@@ -1,11 +1,53 @@
+-haskell-devscripts (0.11.2) UNRELEASED; urgency=medium
++haskell-devscripts (0.13.3) unstable; urgency=medium
+ 
++  * Patch from Chris Lamb to sort haskell:Recommends substvar.
++    closes: #842708.
++
++ -- Clint Adams <clint@debian.org>  Mon, 31 Oct 2016 19:43:28 -0400
++
++haskell-devscripts (0.13.2) unstable; urgency=medium
++
++  * Move versioned ghc dependency to -minimal to break
++    dependency loop for ghc.
++
++ -- Clint Adams <clint@debian.org>  Thu, 27 Oct 2016 22:12:23 -0400
++
++haskell-devscripts (0.13.1) unstable; urgency=medium
++
++  * Upload to unstable as part of GHC 8 transition.
++
++ -- Clint Adams <clint@debian.org>  Thu, 27 Oct 2016 18:45:08 -0400
++
++haskell-devscripts (0.13) experimental; urgency=medium
++
++  * Pass `--mathjax` option to haddock
++    Starting from version 2.17.0, haddock supports typesetting of mathematical
++    expressions via Mathjax. Pass the `--mathjax` option to haddock to
++    instruct it to use the Debian provided JS library, instead of pointing to
++    the CDN. As a result, every *-doc package now recommends libjs-mathjax.
++  * Bump ghc dependency to 8.0.1
++  * Disable automatic generation of debug symbol packages
++    GHC cannot produce debugging symbols, so the dbgsym package ends
++    up being empty.
++  * Bump debhelper dependency to 9.20151219
++    We need a newer version of dh_strip in order to pass the
++    `--no-automatic-dbgsym` option.
++  * Convert d/copyright to DEP-5 format
++
++ -- Ilias Tsitsimpis <i.tsitsimpis@gmail.com>  Fri, 21 Oct 2016 12:44:44 +0300
++
++haskell-devscripts (0.12) unstable; urgency=medium
++
++  [ Sean Whitton ]
+   * Revert my duplicate fix for #826501.
+     James McCoy's fix was sufficient.
+   * Retroactively remove duplicate entry regarding fix for #826501 from
+     changelog for version 0.11.0.
+ 
+- -- Sean Whitton <spwhitton@spwhitton.name>  Sun, 24 Jul 2016 08:53:17 -0700
++  [ Clint Adams ]
++  * Do not exclude libHS files from dh_shlibdeps.  closes: #834156.
++
++ -- Clint Adams <clint@debian.org>  Mon, 05 Sep 2016 13:51:30 -0400
+ 
+ haskell-devscripts (0.11.1) experimental; urgency=high
+ 
+diff --git a/debian/control b/debian/control
+index 3ae8ccb..4a312fb 100644
+--- a/debian/control
++++ b/debian/control
+@@ -15,9 +15,9 @@ Vcs-Git: https://anonscm.debian.org/git/pkg-haskell/haskell-devscripts.git
+ Package: haskell-devscripts-minimal
+ Architecture: all
+ Depends: dctrl-tools
+-  , debhelper
++  , debhelper (>= 9.20151219)
+   , dh-buildinfo
+-  , ghc (>= 7.10.2.20151030-2)
++  , ghc
+   , cdbs
+   , ${misc:Depends}
+   , html-xml-utils
+@@ -44,6 +44,7 @@ Description: Tools to help Debian developers build Haskell packages
+ Package: haskell-devscripts
+ Architecture: all
+ Depends: ${misc:Depends}
++  , ghc (>= 8.0.1)
+   , haskell-devscripts-minimal
+   , hscolour
+ Description: Tools to help Debian developers build Haskell packages
+diff --git a/dh_haskell_depends b/dh_haskell_depends
+index 4ca7b76..fc240de 100644
+--- a/dh_haskell_depends
++++ b/dh_haskell_depends
+@@ -141,7 +141,7 @@ for pkg in `dh_listpackages $args`; do
+                 | sed -e 's,^file:/,,' \
+                 | grep ^/ \
+                 | cut -d# -f1 \
+-                | sort -u \
++                | LANG=C sort -u \
+                 | xargs -r dpkg -S \
+                 | cut -d: -f1 \
+                 | sort -u \
+diff --git a/hlibrary.mk b/hlibrary.mk
+index 1cada17..632d80e 100644
+--- a/hlibrary.mk
++++ b/hlibrary.mk
+@@ -63,16 +63,15 @@ NO_GHCI_FLAG = $(shell test -e /usr/bin/ghci || echo --ghc-option=-DDEBIAN_NO_GH
+ 
+ DEB_COMPRESS_EXCLUDE += .haddock .hs .txt
+ 
+-# We do not want to take dependency information
+-# from libHS*.so files, because
+-# * dh_haskell_shlibs takes care of that and
+-# * it would introduced unwanted dependencies on libgmp
+-# If the latter can be avoided, this could be changed to
+-# DEB_DH_SHLIBDEPS_ARGS_ALL += -- --ignore-missing-info
+ # (because we do not (yet) have shlibs files for libHS libraries)
+-DEB_DH_SHLIBDEPS_ARGS_ALL += -XlibHS
++DEB_DH_SHLIBDEPS_ARGS_ALL += -- --ignore-missing-info
+ DEB_DH_MAKESHLIBS_ARGS_ALL += -XlibHS
+ 
++# Starting from debhelper v9.20151219, dh_strip automatically generats debug
++# symbol packages. GHC cannot produce debugging symbols so the dbgsym
++# package ends up being empty. Disable dbgsym generation.
++DEB_DH_STRIP_ARGS += --no-automatic-dbgsym
++
+ # TODO:
+ # - some of this would probably be useful for generic Haskell programs,
+ #   not just libraries
+@@ -85,7 +84,8 @@ DEB_SETUP_BIN_NAME ?= debian/hlibrary.setup
+ GHC6_VERSION = $(shell ghc --numeric-version)
+ GHC_VERSION = $(shell ghc --numeric-version)
+ 
+-DEB_HADDOCK_OPTS += --html --hoogle
++DEB_HADDOCK_OPTS += --html --hoogle \
++	--haddock-options="--mathjax=file:///usr/share/javascript/mathjax/MathJax.js"
+ ifndef DEB_NO_IMPLICIT_HADDOCK_HYPERLINK
+ DEB_HADDOCK_OPTS += --hyperlink-source
+ endif
