@@ -135,7 +135,7 @@ commonTargets = do
   _charset <-  (hackage (Just "0.3.7.1") "charset") >>= flag (P.DebVersion "0.3.7.1-4build1") >>= debianize []
   _charsetdetect_ae <-  (hackage (Just "1.1.0.1") "charsetdetect-ae") >>= flag (P.DebVersion "1.1.0.1-1") >>= debianize []
   _cheapskate <- git "https://github.com/seereason/cheapskate" [] {-hackage (Just "0.1.0.3") "cheapskate"-} >>= debianize [] >>= skip (Reason "data default dependency")
-  _chili <-  gitrepo2 "chili"  >>= debianize [] >>= ghcjs_also
+  _chili <- gitrepo2 "chili"  >>= debianize [] >>= ghcjs
   _cipher_aes128 <-  (hackage (Just "0.7.0.1") "cipher-aes128") >>= flag (P.DebVersion "0.7.0.1-2") >>= debianize [] >>= inGroups ["authenticate", "important"]
   _cipher_aes <- hackage (Just "0.2.11") "cipher-aes" >>= flag (P.DebVersion "0.2.11-3build1") >>= debianize []
   _cipher_des <- hackage (Just "0.0.6") "cipher-des" >>= flag (P.DebVersion "0.0.6-5build1") >>= debianize []
@@ -389,9 +389,7 @@ commonTargets = do
                       patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
                       flag (P.CabalDebian ["--default-package", "ghcjs-dom-hello"]) >>=
                       debianize [] >>=
-                      inGroups ["glib"] >>= ghcjs
-  -- In a hurry right now
-  _ghcjs_prim <- git "https://github.com/ghcjs/ghcjs-prim" [] >>= debianize [] >>= inGroups ["ghcjs-comp", "glib"] >>= ghcjs
+                      inGroups ["glib"] >>= ghcjs >>= skip (Reason "Requires older version of ghcjs-dom")
   _ghc_mtl <- (hackage (Just "1.2.1.0") "ghc-mtl") >>= flag (P.DebVersion "1.2.1.0-4build3") >>= debianize [] {- >>= skip (Reason "No instance for (MonadIO GHC.Ghc)") -}
   _ghc_paths <- hackage (Just "0.1.0.9") "ghc-paths" >>= flag (P.DebVersion "0.1.0.9-7") >>= debianize [] -- apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah
                -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...
@@ -960,7 +958,12 @@ commonTargets = do
   _simple_sendfile <-  (hackage (Just "0.2.25") "simple-sendfile") >>= debianize []
   _singletons <- hackage (Just "2.1") "singletons" >>= flag (P.CabalPin "2.1") >>= debianize [] -- 2.2 requires base-4.9
   -- pandoc 1.19.2.4 requires skylighting << 0.2
-  _skylighting <- hackage (Just "0.1.1.5") "skylighting" >>= debianize [] >>= ghcjs_also
+  _skylighting <- hackage (Just "0.1.1.5") "skylighting" >>=
+                  debianize [] >>= ghcjs_also
+  -- This is intended to solve a problem with the pretty-show dependency unexpectedly
+  -- being missed even though nothing buildable seemed to need it.
+  flag (P.CabalDebian ["--cabal-flags", "executable", "--executable", "skylighting" ])(fst _skylighting)
+  flag (P.CabalDebian ["--cabal-flags", "executable", "--executable", "skylighting-ghcjs" ])(snd _skylighting)
   _smallcheck <-  (hackage (Just "1.1.1") "smallcheck") >>= flag (P.DebVersion "1.1.1-5") >>= debianize [] >>= ghcjs_also
   _smtpClient <-  (hackage (Just "1.1.0") "SMTPClient") >>= debianize []
   _snap_core <- hackage (Just "0.9.5.0") "snap-core" >>= debianize [] >>= skip (Reason "glib")
@@ -1055,7 +1058,6 @@ commonTargets = do
                           {-patch $(embedFile "patches/transformers-compat.diff") >>=-}
                           debianize [] >>= ghcjs_also
   _transformers_free <-  (hackage (Just "1.0.1") "transformers-free") >>= debianize []
-  _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
   _trifecta <-  (hackage (Just "1.5.2") "trifecta" {->>= patch $(embedFile "patches/trifecta.diff")-}) >>= debianize [] >>= skip (Reason "Unmet build dependencies: libghc-comonad-dev (<< 5) libghc-comonad-prof (<< 5)")
   _tyb <- hackage (Just "0.2.3") "TYB" >>= debianize [] >>= skip (Reason "Needs update for current template-haskell")
   _type_eq <- hackage (Just "0.5") "type-eq" >>= flag (P.BuildDep "cpphs") >>= debianize [] >>= skip (Reason "dependencies")

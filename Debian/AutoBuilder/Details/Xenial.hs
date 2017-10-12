@@ -66,6 +66,7 @@ buildTargets7 = do
       patch $(embedFile "patches/haskell-devscripts.diff") >>=
       flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
+  _traverse_with_class <- hackage (Just "0.2.0.4") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
   buildTargets
 
 buildTargets8 :: Monad m => TSt m ()
@@ -117,6 +118,7 @@ buildTargets8 = do
       patch $(embedFile "patches/haskell-devscripts-debian.diff") >>=
       flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
+  _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
   buildTargets
 
 
