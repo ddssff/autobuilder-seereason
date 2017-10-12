@@ -203,7 +203,7 @@ commonTargets = do
   _colour <-  hackage (Just "2.3.3") "colour" >>= flag (P.DebVersion "2.3.3-8") >>= debianize []
                -- , apt "wheezy" "haskell-configfile"
   _comfort_graph <- hackage (Just "0.0.1") "comfort-graph" >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "transformers dependency too old")
-  _comonad <- hackage (Just "5") "comonad" >>=
+  _comonad <- hackage (Just "5.0.2") "comonad" >>=
                      apply (replacement "comonad" "comonad-transformers") >>=
                      apply (replacement "comonad" "comonad-fd") >>= debianize [] >>= ghcjs_also
   _concatenative <-  (hackage (Just "1.0.1") "concatenative") >>= debianize []
@@ -287,7 +287,7 @@ commonTargets = do
                                             >>= flag (P.DebVersion "0.1.1.5-2")) >>= debianize [] >>= inGroups ["digestive-functors", "appraisalscribe", "important"]
   _digestive_functors_hsp <-  (darcs ("http://src.seereason.com/digestive-functors-hsp") >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["seereason", "important"]
   _directory_tree <-  (hackage (Just "0.12.0") "directory-tree") >>= flag (P.DebVersion "0.12.0-3") >>= debianize []
-  _distributive <-  (hackage (Just "0.5.0.2") "distributive") >>= debianize [] >>= ghcjs_also
+  _distributive <-  (hackage (Just "0.5.3") "distributive") >>= debianize [] >>= ghcjs_also
   _dlist <-  (hackage (Just "0.8.0.1") "dlist") >>= debianize []
                -- Natty only(?)
   _doctemplates <- hackage (Just "0.1.0.2") "doctemplates" >>= debianize [] >>= ghcjs_also
@@ -497,7 +497,7 @@ commonTargets = do
                        ) >>= debianize [] >>= inGroups ["autobuilder-group", "important"] >>= ghcjs_also
   _sr_order <- git "https://github.com/seereason/sr-order" [] >>= debianize [] >>= ghcjs_also
   _haskell_help <- git ("https://github.com/seereason/sr-help") [] >>= debianize [] >>= inGroups ["autobuilder-group", "important"]
-  _haskell_lexer <-  (hackage (Just "1.0.1") "haskell-lexer") >>= debianize []
+  _haskell_lexer <-  (hackage (Just "1.0.1") "haskell-lexer") >>= debianize [] >>= ghcjs_also
   _haskell_list <-  (hackage (Just "0.5.2") "List") >>= debianize []
   -- _haskell_mode <- apt "jessie" "haskell-mode" >>= patch $(embedFile "patches/haskell-mode.diff")
   _haskell_names <- hackage (Just "0.8.0") "haskell-names" >>= debianize []
@@ -627,7 +627,7 @@ commonTargets = do
   _indents <-  (hackage (Just "0.3.3") "indents") >>= debianize []
   _instant_generics <- hackage (Just "0.6") "instant-generics" >>= flag (P.SkipVersion "0.3.7") >>= debianize [] >>= broken
   _integer_logarithms <- hackage (Just "1.0.1") "integer-logarithms" >>= debianize [] >>= ghcjs_also
-  _intervals <-  (hackage (Just "0.7.2") "intervals") >>= debianize []
+  _intervals <-  (hackage (Just "0.8.1") "intervals") >>= debianize []
   _ioRefCAS <- (hackage (Just "0.2.0.1") "IORefCAS") >>= debianize [] >>= skip (Reason "Version 0.2.0.1 build fails")
   _io_storage <- hackage (Just "0.3") "io-storage" >>= flag (P.DebVersion "0.3-9") >>= debianize []
   -- _io_streams <- git "https://github.com/snapframework/io-streams" [] >>= debianize [] >>= inGroups ["important"] -- pull request to allow atto-parsec-0.13
@@ -801,8 +801,6 @@ commonTargets = do
   _numeric_extras <-  (hackage (Just "0.1") "numeric-extras") >>= flag (P.DebVersion "0.1-1") >>= debianize []
   _numInstances <-  (hackage (Just "1.4") "NumInstances") >>= flag (P.DebVersion "1.4-4") >>= debianize []
   _objectName <-  (hackage (Just "1.1.0.1") "ObjectName") >>= flag (P.DebVersion "1.1.0.1-1") >>= debianize []
-  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize []
-  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize []
   _oo_prototypes <-  (hackage (Just "0.1.0.0") "oo-prototypes") >>= flag (P.DebVersion "0.1.0.0-3") >>= debianize []
   _openGL <-  (hackage (Just "2.13.1.0") "OpenGL" >>= inGroups ["gl"] >>= flag (P.DevelDep "libglu1-mesa-dev")) >>= debianize [] >>= skip (Reason "too old for openglraw")
   _openGLRaw <-  (hackage (Just "3.2.1.0") "OpenGLRaw" >>= inGroups ["gl"]
@@ -814,13 +812,14 @@ commonTargets = do
   _operational <- hackage (Just "0.2.3.3") "operational" >>= flag P.OmitLTDeps >>= debianize []
   _optparse_applicative <-  (hackage (Just "0.12.1.0") "optparse-applicative") >>= debianize [] >>= ghcjs_also
   _ordered <-  (hackage (Just "0.1") "ordered") >>= debianize []
-  _pandoc <- hackage (Just "1.19.1") "pandoc" >>=
+  _pandoc <- hackage (Just "1.19.2.4") "pandoc" >>=
              patch $(embedFile "patches/pandoc.diff") >>=
              flag (P.BuildDep "alex") >>=
              flag (P.BuildDep "happy") >>=
              debianize [] >>=
              inGroups ["appraisalscribe", "important"] >>= ghcjs_also
-  _pandoc_types <- hackage (Just "1.17.0.3") "pandoc-types" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
+  -- pandoc 1.19.2.4 requires pandoc-types < 1.17.1
+  _pandoc_types <- hackage (Just "1.17.0.5") "pandoc-types" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
   _pango <-  (hackage (Just "0.13.1.1") "pango") >>= debianize [] >>= skip (Reason "see cairo")
   _parallel <- hackage (Just "3.2.1.0") "parallel" >>= flag (P.DebVersion "3.2.1.0-1") >>= debianize [] >>= inGroups ["platform"]
   _parseargs <-  (hackage (Just "0.2.0.7") "parseargs") >>= debianize [] >>= ghcjs_also
@@ -853,7 +852,7 @@ commonTargets = do
   -- We can't put upgraded versions of pretty in the repo because the template haskell
   -- version (which is bundled with ghc) conflicts, in particular via th-typegraph.
   -- _pretty <- git "https://github.com/ddssff/pretty" [] >>= debianize [] >>= inGroups ["pretty"] >>= ghcjs_also
-  _pretty_show <- hackage (Just "1.6.12") "pretty-show" >>= flag (P.BuildDep "happy") >>= debianize []
+  _pretty_show <- hackage (Just "1.6.12") "pretty-show" >>= flag (P.BuildDep "happy") >>= debianize [] >>= ghcjs_also
   _primitive <-
       -- 0.6.1.0 depends on base<4.9, ghc-prim<0.5, transformers<0.5, so for ghc8 we probably need 0.6.2.0
       -- hackage (Just "0.6.1.0") "primitive" >>=
@@ -960,6 +959,8 @@ commonTargets = do
   _simple_reflect <-  (hackage (Just "0.3.2") "simple-reflect") >>= flag (P.DebVersion "0.3.2-5") >>= debianize []
   _simple_sendfile <-  (hackage (Just "0.2.25") "simple-sendfile") >>= debianize []
   _singletons <- hackage (Just "2.1") "singletons" >>= flag (P.CabalPin "2.1") >>= debianize [] -- 2.2 requires base-4.9
+  -- pandoc 1.19.2.4 requires skylighting << 0.2
+  _skylighting <- hackage (Just "0.1.1.5") "skylighting" >>= debianize [] >>= ghcjs_also
   _smallcheck <-  (hackage (Just "1.1.1") "smallcheck") >>= flag (P.DebVersion "1.1.1-5") >>= debianize [] >>= ghcjs_also
   _smtpClient <-  (hackage (Just "1.1.0") "SMTPClient") >>= debianize []
   _snap_core <- hackage (Just "0.9.5.0") "snap-core" >>= debianize [] >>= skip (Reason "glib")
@@ -1019,7 +1020,7 @@ commonTargets = do
   _test_framework_smallcheck <-  (hackage (Just "0.2") "test-framework-smallcheck") >>= debianize []
   _test_framework_th <- hackage (Just "0.2.4") "test-framework-th" >>= flag (P.DebVersion "0.2.4-7build1") >>= debianize []
   _testing_feat <- hackage (Just "0.4.0.3") "testing-feat" >>= {-patch $(embedFile "patches/testing-feat.diff") >>=-} debianize []
-  _texmath <- hackage (Just "0.9") "texmath" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
+  _texmath <- hackage (Just "0.9.4.4") "texmath" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
   _text_binary <- hackage (Just "0.2.1") "text-binary" >>= flag (P.DebVersion "0.2.1-1build1") >>= debianize [] >>= ghcjs_also
   _text <-  (hackage (Just "1.2.2.1") "text" >>= flag (P.CabalDebian ["--cabal-flags", "-integer-simple"]) >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize [] >>= inGroups ["platform", "test8"]
   _text_icu <-  (hackage (Just "0.7.0.1") "text-icu" >>= flag (P.DevelDep "libicu-dev")) >>= flag (P.DebVersion "0.7.0.1-4build1") >>= debianize []

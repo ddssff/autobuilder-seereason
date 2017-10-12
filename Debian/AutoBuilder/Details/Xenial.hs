@@ -49,6 +49,8 @@ buildTargets7 = do
                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
              debianize [] >>= inGroups ["ghcjs-comp"]
   _haddock_library7 <- hackage (Just "1.2.1") "haddock-library" >>= flag (P.DebVersion "1.2.1-2") >>= debianize [] >>= ghcjs_also
+  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize []
+  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize []
   _ghcjs_dom <- hackage (Just "0.2.4.0" {-"0.7.0.4"-} {-"0.4.0.0"-}) "ghcjs-dom" >>= debianize [] >>= inGroups ["glib"] >>= ghcjs
   _ghcjs_dom_hello <- hackage (Just "2.0.0.0") "ghcjs-dom-hello" >>=
                       patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
@@ -85,6 +87,8 @@ buildTargets8 = do
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
   _haddock_library8 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
+  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize [] >>= ghcjs_also
+  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize [] >>= ghcjs_also
   _cabal <- hackage (Just "2.0.0.2") "Cabal" >>= debianize []
   _cabal_install <- hackage (Just "2.0.0.0") "cabal-install" >>=
                     -- Avoid creating a versioned libghc-cabal-dev
