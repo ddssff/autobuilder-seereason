@@ -37,7 +37,7 @@ import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
 buildTargets7 :: Monad m => TSt m ()
 buildTargets7 = do
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp"]
-  _binary <- hackage (Just "0.8.4.0") "binary" >>= debianize [] >>= ghcjs_also
+  -- _binary <- hackage (Just "0.8.4.0") "binary" >>= debianize [] >>= ghcjs_also
   _haddock_api7 <-
       hackage (Just "2.16.1") "haddock-api" >>=
              flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=

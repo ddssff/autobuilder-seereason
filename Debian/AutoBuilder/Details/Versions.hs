@@ -49,8 +49,8 @@ seereasonDefaults =
        mapCabal (PackageName "QuickCheck") (DebBase "quickcheck2")
        splitCabal (PackageName "QuickCheck") (DebBase "quickcheck") (Version [2] [])
 
-       mapCabal (PackageName "binary") (DebBase "binary-08")
-       splitCabal (PackageName "binary") (DebBase "binary") (Version [0,8] [])
+       -- mapCabal (PackageName "binary") (DebBase "binary-08")
+       -- splitCabal (PackageName "binary") (DebBase "binary") (Version [0,8] [])
 
        mapCabal (PackageName "case-insensitive") (DebBase "case-insensitive")
        splitCabal (PackageName "case-insensitive") (DebBase "case-insensitive-0") (Version [1] [])
