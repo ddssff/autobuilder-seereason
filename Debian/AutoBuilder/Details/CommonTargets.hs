@@ -489,7 +489,7 @@ commonTargets = do
                      >>= flag (P.CabalDebian ["--cabal-flags", "-http"]) -- the http flag forces network < 2.5
                      -- >>= patch $(embedFile "patches/darcs.diff")
                     ) >>= debianize [] >>= skip (Reason "Unmet build dependencies: libghc-vector-dev (<< 0.11)")
-  _haskell_either <-  (hackage (Just "4.4.1.1") "either") >>= debianize []
+  _haskell_either <- hackage (Just "4.4.1.1") "either" >>= debianize [] >>= inGroups ["kmett", "autobuilder-group"]
   _sr_extra <-  (git ("https://github.com/seereason/sr-extra") []
                               -- Don't push out libghc-extra-dev, it now comes from Neil Mitchell's repo
                               {- `apply` (replacement "sr-extra" "Extra") -}
