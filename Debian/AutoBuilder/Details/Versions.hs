@@ -8,16 +8,8 @@ import Control.Lens ((%=))
 import Data.Set as Set (insert)
 import Debian.Debianize (CabalT, DebBase(DebBase), debInfo, missingDependencies, mapCabal, remapCabal, splitCabal, debianDefaults)
 import Debian.Relation (BinPkgName(BinPkgName))
-#if MIN_VERSION_Cabal(2,0,0)
-import Distribution.Version (Version, mkVersion)
-import Distribution.Package (PackageName, mkPackageName)
-#else
-import Data.Version (Version(Version))
-import Distribution.Package (PackageName(PackageName))
-
-mkVersion ns = Version ns []
-mkPackageName = PackageName
-#endif
+import Debian.Debianize.Prelude (Version, mkVersion, mkPackageName)
+import Distribution.Package (PackageName)
 
 seereasonDefaults :: Monad m => CabalT m ()
 seereasonDefaults =
