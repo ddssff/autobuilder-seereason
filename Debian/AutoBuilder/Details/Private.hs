@@ -27,7 +27,6 @@ buildTargets _params = do
   -- the repository.
   -- appraisalscribe_data_tests = debianize (git "ssh://git@github.com/seereason/appraisalscribe-data-tests" [])
 
-  _chili <- git "ssh://git@github.com/seereason/chili" [Branch "with-model"] >>= debianize [] >>= ghcjs
   _clckwrks_plugin_stripe <- git "ssh://git@github.com/seereason/clckwrks-plugin-stripe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["private-libs"]
   _clckwrks_theme_seereasonpartners <-
       darcs (privateRepo </> "seereasonpartners-clckwrks") >>=
