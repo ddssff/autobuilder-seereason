@@ -728,7 +728,7 @@ commonTargets = do
   _matrix <-  (hackage (Just "0.3.5.0") "matrix") >>= debianize [] >>= ghcjs_also
                -- ,  (hackage (Just "0.3") "hlatex") >>= debianize []
   _maybeT <-  (hackage (Just "1.2") "MaybeT" >>= flag (P.DebVersion "1.2-6")) >>= debianize [] >>= skip (Reason "Could not deduce (Applicative (MaybeT m))")
-  _memoize <-  (hackage (Just "0.8.1") "memoize") >>= debianize []
+  _memoize <-  (hackage (Just "0.8.1") "memoize") >>= debianize [] >>= ghcjs_also
   _memory <-  (hackage (Just "0.13") "memory") >>= debianize [] >>= ghcjs_also
   _microlens <- hackage (Just "0.4.8.1") "microlens" >>= debianize [] >>= ghcjs_also
   _mime <- git ("https://github.com/seereason/haskell-mime") [] >>= debianize [] >>= inGroups ["autobuilder-group"]
