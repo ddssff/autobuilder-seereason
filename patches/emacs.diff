@@ -205,7 +205,7 @@
 - emacs24-common-non-dfsg, ${shlibs:Depends}, ${misc:Depends}
 -Suggests: emacs24-el
 -Conflicts: emacs24-el (<< ${source:Version}), cedet, eieio, speedbar
-+ emacs243-common-non-dfsg, ${shlibs:Depends}, ${misc:Depends}
++ emacs24-common-non-dfsg, ${shlibs:Depends}, ${misc:Depends}
 +Suggests: emacs243-el
 +Conflicts: emacs243-el (<< ${source:Version}), cedet, eieio, speedbar
  Description: GNU Emacs editor's shared, architecture independent infrastructure
