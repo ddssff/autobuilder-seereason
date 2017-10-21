@@ -22,14 +22,14 @@ import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common (TSt, ghcjs, ghcjs_also, skip, Reason(..)) -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Details.CommonTargets (commonTargets)
 import Debian.AutoBuilder.Types.Packages as P
-    (apply, apt, debianize, flag, git, hackage, inGroups, PackageFlag(CabalDebian, DebVersion, DevelDep, RelaxDep), patch)
+    (apply, apt, debdir, debianize, flag, git, hackage, uri, inGroups, PackageFlag(CabalDebian, DebVersion, DevelDep, RelaxDep), patch, PackageId)
 --import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.Debianize as D (execCabalM, rulesFragments, debInfo)
 --import Debian.Relation (BinPkgName(..), SrcPkgName(SrcPkgName))
 --import Debian.Releases (baseRelease, BaseRelease(..))
 --import Debian.Repo.Internal.Apt (getApt, MonadApt, AptImage(aptSourcePackageCache))
 --import Debian.Repo.Internal.Repos (MonadRepos)
-import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
+import Debian.Repo.Fingerprint
 --import Debian.Repo.PackageIndex (SourcePackage(sourcePackageID))
 --import Debian.Repo.PackageID (packageName, packageVersion)
 --import Debian.Version (DebianVersion, prettyDebianVersion)
@@ -37,6 +37,7 @@ import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
 buildTargets7 :: Monad m => TSt m ()
 buildTargets7 = do
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp"]
+  _nodejs <- nodejs
   -- _binary <- hackage (Just "0.8.4.0") "binary" >>= debianize [] >>= ghcjs_also
   _haddock_api7 <-
       hackage (Just "2.16.1") "haddock-api" >>=
@@ -67,11 +68,20 @@ buildTargets7 = do
       flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   _traverse_with_class <- hackage (Just "0.2.0.4") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
+  _emacs <- apt "trusty" "emacs24" >>= patch $(embedFile "patches/emacs.diff")
   buildTargets
+
+nodejs :: Monad m => TSt m PackageId
+nodejs =
+    uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
+    debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~xenial1.debian.tar.xz" "0083c158831134295e719a524d9c8513") >>=
+    flag (P.RelaxDep "libssl-dev") >>=
+    inGroups ["ghcjs-comp"]
 
 buildTargets8 :: Monad m => TSt m ()
 buildTargets8 = do
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp"]
+  _nodejs <- nodejs
   _ghc8 <- apt "sid" "ghc" >>=
            patch $(embedFile "patches/ghc.diff") >>=
            inGroups ["ghc8-comp"]
