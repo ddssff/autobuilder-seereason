@@ -1152,6 +1152,7 @@ commonTargets = do
   _xml <-  (hackage (Just "1.3.14") "xml") >>= flag (P.DebVersion "1.3.14-4build1") >>= debianize [] >>= ghcjs_also -- apt (rel release "wheezy" "quantal") "haskell-xml"
   _xmlgen <-  (hackage (Just "0.6.2.1") "xmlgen") >>= debianize []
   _xmlhtml <-  (hackage (Just "0.2.3.4") "xmlhtml") >>= debianize [] >>= skip (Reason "Unmet build dependencies: libghc-blaze-builder-dev (<< 0.4)")
+  _xml_hamlet <- hackage (Just "0.4.1.1") "xml-hamlet" >>= debianize []
   _xml_types <-  (hackage (Just "0.3.6") "xml-types") >>= flag (P.DebVersion "0.3.6-3build1") >>= debianize []
   _xss_sanitize <-  (hackage (Just "0.3.5.7") "xss-sanitize" >>= qflag (P.DebVersion "0.3.2-1build1")) >>= debianize [] >>= inGroups ["important"]
   _yaml <-  (hackage (Just "0.8.18.1") "yaml") >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
