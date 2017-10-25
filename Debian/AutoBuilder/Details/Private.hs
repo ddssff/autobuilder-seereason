@@ -17,6 +17,7 @@ buildTargets :: Monad m => ParamRec -> TSt m ()
 buildTargets _params = do
   _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= debianize []
   _appraisalscribe_acid <- git "ssh://git@github.com/seereason/appraisalscribe-acid" [] >>= debianize []
+  _appraisalscribe_json <- git "ssh://git@github.com/seereason/appraisalscribe-json" [] >>= debianize []
   _appraisalscribe_paths <- git "ssh://git@github.com/seereason/appraisalscribe-paths" [] >>= debianize [] >>= ghcjs_also
   _appraisalscribe_io <- git "ssh://git@github.com/seereason/appraisalscribe-io" [] >>= debianize [] >>= ghcjs_also
   _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [] >>= debianize [] >>= ghcjs_also
@@ -26,7 +27,6 @@ buildTargets _params = do
   -- the repository.
   -- appraisalscribe_data_tests = debianize (git "ssh://git@github.com/seereason/appraisalscribe-data-tests" [])
 
-  _chili <- git "ssh://git@github.com/seereason/chili" [Branch "with-model"] >>= debianize [] >>= ghcjs
   _clckwrks_plugin_stripe <- git "ssh://git@github.com/seereason/clckwrks-plugin-stripe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["private-libs"]
   _clckwrks_theme_seereasonpartners <-
       darcs (privateRepo </> "seereasonpartners-clckwrks") >>=

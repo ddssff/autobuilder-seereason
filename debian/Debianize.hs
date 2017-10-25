@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE CPP, FlexibleContexts #-}
 import Control.Lens
 import Data.Map as Map (insert)
 import Debian.AutoBuilder.Details.Versions (seereasonDefaults)

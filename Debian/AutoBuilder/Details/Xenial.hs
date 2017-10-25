@@ -22,14 +22,14 @@ import Data.Text as Text (unlines)
 import Debian.AutoBuilder.Details.Common (TSt, ghcjs, ghcjs_also, skip, Reason(..)) -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Details.CommonTargets (commonTargets)
 import Debian.AutoBuilder.Types.Packages as P
-    (apply, apt, debianize, flag, git, hackage, inGroups, PackageFlag(CabalDebian, DebVersion, DevelDep, RelaxDep), patch)
+    (apply, apt, debdir, debianize, flag, git, hackage, uri, inGroups, PackageFlag(CabalDebian, DebVersion, DevelDep, RelaxDep), patch, PackageId)
 --import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.Debianize as D (execCabalM, rulesFragments, debInfo)
 --import Debian.Relation (BinPkgName(..), SrcPkgName(SrcPkgName))
 --import Debian.Releases (baseRelease, BaseRelease(..))
 --import Debian.Repo.Internal.Apt (getApt, MonadApt, AptImage(aptSourcePackageCache))
 --import Debian.Repo.Internal.Repos (MonadRepos)
-import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
+import Debian.Repo.Fingerprint
 --import Debian.Repo.PackageIndex (SourcePackage(sourcePackageID))
 --import Debian.Repo.PackageID (packageName, packageVersion)
 --import Debian.Version (DebianVersion, prettyDebianVersion)
@@ -37,7 +37,8 @@ import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
 buildTargets7 :: Monad m => TSt m ()
 buildTargets7 = do
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp"]
-  _binary <- hackage (Just "0.8.4.0") "binary" >>= debianize [] >>= ghcjs_also
+  _nodejs <- nodejs
+  -- _binary <- hackage (Just "0.8.4.0") "binary" >>= debianize [] >>= ghcjs_also
   _haddock_api7 <-
       hackage (Just "2.16.1") "haddock-api" >>=
              flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
@@ -49,6 +50,8 @@ buildTargets7 = do
                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
              debianize [] >>= inGroups ["ghcjs-comp"]
   _haddock_library7 <- hackage (Just "1.2.1") "haddock-library" >>= flag (P.DebVersion "1.2.1-2") >>= debianize [] >>= ghcjs_also
+  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize []
+  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize []
   _ghcjs_dom <- hackage (Just "0.2.4.0" {-"0.7.0.4"-} {-"0.4.0.0"-}) "ghcjs-dom" >>= debianize [] >>= inGroups ["glib"] >>= ghcjs
   _ghcjs_dom_hello <- hackage (Just "2.0.0.0") "ghcjs-dom-hello" >>=
                       patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
@@ -57,11 +60,28 @@ buildTargets7 = do
                       inGroups ["glib"] >>=
                       ghcjs >>=
                       skip (Reason "see cairo and glib")
+  _haskell_devscripts <-
+      -- Revert to version we used from 8/2016-11/2016
+      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "a143f70d333663e1447998d6facbebf67cd5045f"] >>=
+      -- This changes --show-details=direct to --show-details=always in check-recipe
+      patch $(embedFile "patches/haskell-devscripts.diff") >>=
+      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
+  -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
+  _traverse_with_class <- hackage (Just "0.2.0.4") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
+  _emacs <- apt "trusty" "emacs24" >>= patch $(embedFile "patches/emacs.diff")
   buildTargets
+
+nodejs :: Monad m => TSt m PackageId
+nodejs =
+    uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
+    debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~xenial1.debian.tar.xz" "0083c158831134295e719a524d9c8513") >>=
+    flag (P.RelaxDep "libssl-dev") >>=
+    inGroups ["ghcjs-comp"]
 
 buildTargets8 :: Monad m => TSt m ()
 buildTargets8 = do
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp"]
+  _nodejs <- nodejs
   _ghc8 <- apt "sid" "ghc" >>=
            patch $(embedFile "patches/ghc.diff") >>=
            inGroups ["ghc8-comp"]
@@ -78,7 +98,10 @@ buildTargets8 = do
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
   _haddock_library8 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
-  _cabal_install <- hackage (Just "1.24.0.2") "cabal-install" >>=
+  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize [] >>= ghcjs_also
+  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize [] >>= ghcjs_also
+  _cabal <- hackage (Just "2.0.0.2") "Cabal" >>= debianize []
+  _cabal_install <- hackage (Just "2.0.0.0") "cabal-install" >>=
                     -- Avoid creating a versioned libghc-cabal-dev
                     -- dependency, as it is a virtual package in ghc
                     patch $(embedFile "patches/cabal-install.diff") >>=
@@ -96,20 +119,21 @@ buildTargets8 = do
                       inGroups ["glib"] >>=
                       ghcjs >>=
                       skip (Reason "see cairo and glib")
+  _haskell_devscripts <-
+      -- Revert to version we used from 8/2016-11/2016
+      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "a143f70d333663e1447998d6facbebf67cd5045f"] >>=
+      -- This changes --show-details=direct to --show-details=always in check-recipe
+      patch $(embedFile "patches/haskell-devscripts.diff") >>=
+      -- Changes from debian since 0.11.2
+      patch $(embedFile "patches/haskell-devscripts-debian.diff") >>=
+      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
+  -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
+  _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
   buildTargets
 
 
 buildTargets :: Monad m => TSt m ()
 buildTargets = do
-  _haskell_devscripts <-
-      -- Revert to version we used from 8/2016-11/2016
-      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "a143f70d333663e1447998d6facbebf67cd5045f"] >>=
-      -- git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "2668216c654b0b302cb51162b2246c39cd6adc1e"] >>=
-      -- git "https://github.com/ddssff/haskell-devscripts" [Branch "0.12"] >>=
-      -- This changes --show-details=direct to --show-details=always in check-recipe
-      patch $(embedFile "patches/haskell-devscripts.diff") >>=
-      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
-  -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   _zlib <- hackage (Just "0.6.1.1") "zlib" >>= flag (P.DebVersion "0.6.1.1-1") >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
 
   -- Trusty targets

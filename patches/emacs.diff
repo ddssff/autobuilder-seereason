@@ -1,0 +1,74 @@
+--- a/GNUmakefile	2013-04-06 08:15:34.000000000 -0700
++++ b/GNUmakefile	2017-10-21 14:27:44.811677011 -0700
+@@ -70,7 +70,7 @@
+ Makefile: configure
+ 	@echo >&2 'There seems to be no Makefile in this directory.'
+ 	@echo >&2 'Running ./configure ...'
+-	./configure
++	./configure --with-gif=no
+ 	@echo >&2 'Makefile built.'
+ 
+ endif
+--- a/debian/rules	2014-03-07 08:26:30.000000000 -0800
++++ b/debian/rules	2017-10-21 14:04:53.506339329 -0700
+@@ -312,6 +312,7 @@
+ confflags += --infodir=/usr/share/info
+ confflags += --mandir=/usr/share/man
+ confflags += --with-pop=yes
++confflags += --with-gif=no
+ confflags += --enable-locallisppath=$(local_lpath)
+ 
+ # multiarch compatibility
+--- a/debian/source/format	2014-03-07 08:25:28.000000000 -0800
++++ b/debian/source/format	2017-10-21 10:36:41.609020495 -0700
+@@ -1,1 +1,1 @@
+-3.0 (quilt)
++3.0 (native)
+--- a/debian/changelog	2017-10-21 10:26:53.725582185 -0700
++++ b/debian/changelog	2017-10-21 10:30:42.618251700 -0700
+@@ -1,3 +1,9 @@
++emacs24 (24.243) unstable; urgency=medium
++
++  * Bump version past 24.5
++
++ -- David Fox <dsf@seereason.com>  Sat, 21 Oct 2017 10:30:36 -0700
++
+ emacs24 (24.3+1-2ubuntu1.1) trusty-security; urgency=medium
+ 
+   * SECURITY UPDATE: arbitrary code execution
+--- a/configure.ac	2017-10-21 11:50:20.460825150 -0700
++++ b/configure.ac	2017-10-21 12:27:29.461144675 -0700
+@@ -2573,30 +2573,12 @@
+ AC_SUBST(LIBXPM)
+ 
+ ### Use -ljpeg if available, unless `--with-jpeg=no'.
+-HAVE_JPEG=no
++HAVE_JPEG=yes
+ LIBJPEG=
+ if test "${HAVE_X11}" = "yes" || test "${HAVE_W32}" = "yes"; then
+-  if test "${with_jpeg}" != "no"; then
+-    dnl Checking for jpeglib.h can lose because of a redefinition of
+-    dnl  HAVE_STDLIB_H.
+-    AC_CHECK_HEADER(jerror.h,
+-      [AC_CHECK_LIB(jpeg, jpeg_destroy_compress, HAVE_JPEG=yes)])
+-  fi
+-
+   AH_TEMPLATE(HAVE_JPEG, [Define to 1 if you have the jpeg library (-ljpeg).])dnl
+-  if test "${HAVE_JPEG}" = "yes"; then
+-    AC_DEFINE(HAVE_JPEG)
+-    AC_EGREP_CPP([version= *(6[2-9]|[7-9][0-9])],
+-        [#include <jpeglib.h>
+-	 version=JPEG_LIB_VERSION
+-],
+-        [AC_DEFINE(HAVE_JPEG)],
+-        [AC_MSG_WARN([libjpeg found, but not version 6b or later])
+-        HAVE_JPEG=no])
+-  fi
+-  if test "${HAVE_JPEG}" = "yes"; then
+-    LIBJPEG=-ljpeg
+-  fi
++  AC_DEFINE(HAVE_JPEG)
++  LIBJPEG=-ljpeg
+ fi
+ AC_SUBST(LIBJPEG)
+ 

@@ -1,11 +1,21 @@
---- old/lens.cabal	2014-07-17 13:18:03.772171286 -0700
-+++ new/lens.cabal	2014-07-17 14:29:47.448291496 -0700
-@@ -208,7 +208,7 @@
-     transformers              >= 0.2      && < 0.6,
-     transformers-compat       >= 0.4      && < 1,
-     unordered-containers      >= 0.2.4    && < 0.3,
--    vector                    >= 0.9      && < 0.12,
-+    vector                    >= 0.9      && < 0.13,
-     void                      >= 0.5      && < 1
+--- old/Setup.lhs	2017-09-12 06:50:16.227862290 -0700
++++ new/Setup.lhs	2017-10-12 11:21:32.835339274 -0700
+@@ -5,7 +5,7 @@
  
-   if impl(ghc < 8.0)
+ import Data.List ( nub )
+ import Data.Version ( showVersion )
+-import Distribution.Package ( PackageName(PackageName), Package, PackageId, InstalledPackageId, packageVersion, packageName )
++import Distribution.Package ( Package, PackageId, InstalledPackageId, packageVersion, packageName, unPackageName )
+ import Distribution.PackageDescription ( PackageDescription(), TestSuite(..) )
+ import Distribution.Simple ( defaultMainWithHooks, UserHooks(..), simpleUserHooks )
+ import Distribution.Simple.Utils ( rewriteFile, createDirectoryIfMissingVerbose, copyFiles )
+@@ -50,8 +50,7 @@
+         ]
+   where
+     formatdeps = map (formatone . snd)
+-    formatone p = case packageName p of
+-      PackageName n -> n ++ "-" ++ showVersion (packageVersion p)
++    formatone p = unPackageName p ++ "-" ++ showVersion (packageVersion p)
+ 
+ testDeps :: ComponentLocalBuildInfo -> ComponentLocalBuildInfo -> [(InstalledPackageId, PackageId)]
+ testDeps xs ys = nub $ componentPackageDeps xs ++ componentPackageDeps ys
