@@ -268,6 +268,7 @@ commonTargets = do
   _data_stringmap <-  (hackage (Just "1.0.1.1") "data-stringmap") >>= debianize []
   _date_cache <-  (hackage (Just "0.3.0") "date-cache" >>= tflag (P.DebVersion "0.3.0-3")) >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _datetime <- hackage (Just "0.3.1") "datetime" {->>= pflag (P.DebVersion "0.2.1-2") >>= tflag (P.DebVersion "0.2.1-5build1")-} >>= debianize []
+  _dav <- hackage (Just "1.3.1") "DAV" >>= debianize []
   _debhelper <- apt "wheezy" "debhelper" >>= patch $(embedFile "patches/debhelper.diff") >>= skip (Reason "Use standard")
   _debian_haskell <- git "https://github.com/ddssff/debian-haskell" [] >>= flag (P.RelaxDep "cabal-debian") >>= inGroups ["autobuilder-group", "important"]
   _debian_repo <- git "https://github.com/ddssff/debian-repo" [] >>= inGroups ["autobuilder-group", "important"]
