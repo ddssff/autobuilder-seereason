@@ -68,7 +68,6 @@ buildTargets7 = do
       flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   _traverse_with_class <- hackage (Just "0.2.0.4") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
-  _emacs <- apt "trusty" "emacs24" >>= patch $(embedFile "patches/emacs.diff")
   buildTargets
 
 nodejs :: Monad m => TSt m PackageId

@@ -6,11 +6,11 @@ import Control.Lens (use, view)
 import Data.FileEmbed (embedFile)
 import Data.Map as Map (elems)
 import Data.Set as Set (fromList, member, Set)
-import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs, git', gitrepo, gitrepo2, hack, noTests, noDoc, noProf, putSrcPkgName, Reason(Reason), replacement, skip, skip2, tflag, qflag, pflag, substitute, wflag, wskip, TSt)
+import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs, git', gitrepo, gitrepo2, hack, noTests, putSrcPkgName, Reason(Reason), replacement, skip, skip2, tflag, qflag, pflag, substitute, wflag, wskip, TSt)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
-                                               darcs, apt, git, hg, cd, debdir, uri, GroupName, inGroups, createPackage)
+                                               darcs, apt, git, hg, cd, GroupName, inGroups, createPackage)
 import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage), GitSpec(Branch))
 
 commonTargets :: Monad m => TSt m ()
@@ -313,6 +313,7 @@ commonTargets = do
   _edit_distance_vector <- hackage (Just "1.0.0.4") "edit-distance-vector" >>= debianize [] >>= ghcjs_also
   _editor_client <- (git "https://github.com/stepcut/markdown-editor-chili/editor-client" []) >>= debianize [] >>= ghcjs
   _ekg_core <-  (hackage (Just "0.1.1.1") "ekg-core") >>= debianize []
+  _emacs <- apt "trusty" "emacs24" >>= patch $(embedFile "patches/emacs.diff")
   _email_validate <-  (hackage (Just "2.2.0") "email-validate") >>= debianize [] >>= inGroups ["important"]
   _enclosed_exceptions <-  (hackage (Just "1.0.2") "enclosed-exceptions") >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
   _entropy <- hackage (Just "0.3.7") "entropy" >>= flag (P.DebVersion "0.3.7-3") >>= debianize [] >>= ghcjs_also
@@ -492,10 +493,8 @@ commonTargets = do
                      -- >>= patch $(embedFile "patches/darcs.diff")
                     ) >>= debianize [] >>= skip (Reason "Unmet build dependencies: libghc-vector-dev (<< 0.11)")
   _haskell_either <- hackage (Just "4.4.1.1") "either" >>= debianize [] >>= inGroups ["kmett", "autobuilder-group"]
-  _sr_extra <-  (git ("https://github.com/seereason/sr-extra") []
-                              -- Don't push out libghc-extra-dev, it now comes from Neil Mitchell's repo
-                              {- `apply` (replacement "sr-extra" "Extra") -}
-                       ) >>= debianize [] >>= inGroups ["autobuilder-group", "important"] >>= ghcjs_also
+  _sr_extra <- git ("https://github.com/seereason/sr-extra") [] >>=
+               debianize [] >>= inGroups ["autobuilder-group", "important"] >>= ghcjs_also
   _sr_order <- git "https://github.com/seereason/sr-order" [] >>= debianize [] >>= ghcjs_also
   _haskell_help <- git ("https://github.com/seereason/sr-help") [] >>= debianize [] >>= inGroups ["autobuilder-group", "important"]
   _haskell_lexer <-  (hackage (Just "1.0.1") "haskell-lexer") >>= debianize [] >>= ghcjs_also
@@ -944,7 +943,7 @@ commonTargets = do
   _shakespeare_js <-  (hackage (Just "1.3.0") "shakespeare-js") >>= debianize [] >>= skip (Reason "No input files to haddock?")
   _shellmate <- hack (Just "0.3.3") "shellmate" >>= skip (Reason "directory dependency")
   _shelly <- hackage (Just "1.6.8.4") "shelly" >>= debianize [] >>= inGroups ["ghcjs-comp"]
-  _show_please <- hackage Nothing "show-please" >>= debianize [] >>= ghcjs_also
+  _show_please <- {-hackage Nothing "show-please"-} git "https://github.com/ddssff/show-please" [] >>= debianize [] >>= ghcjs_also
   _silently <-  (hackage (Just "1.2.5") "silently") >>= flag (P.DebVersion "1.2.5-3") >>= debianize []
   _simple_reflect <-  (hackage (Just "0.3.2") "simple-reflect") >>= flag (P.DebVersion "0.3.2-5") >>= debianize []
   _simple_sendfile <-  (hackage (Just "0.2.25") "simple-sendfile") >>= debianize []
@@ -1154,6 +1153,7 @@ commonTargets = do
   _xml <-  (hackage (Just "1.3.14") "xml") >>= flag (P.DebVersion "1.3.14-4build1") >>= debianize [] >>= ghcjs_also -- apt (rel release "wheezy" "quantal") "haskell-xml"
   _xmlgen <-  (hackage (Just "0.6.2.1") "xmlgen") >>= debianize []
   _xmlhtml <-  (hackage (Just "0.2.3.4") "xmlhtml") >>= debianize [] >>= skip (Reason "Unmet build dependencies: libghc-blaze-builder-dev (<< 0.4)")
+  _xml_hamlet <- hackage (Just "0.4.1.1") "xml-hamlet" >>= debianize []
   _xml_types <-  (hackage (Just "0.3.6") "xml-types") >>= flag (P.DebVersion "0.3.6-3build1") >>= debianize []
   _xss_sanitize <-  (hackage (Just "0.3.5.7") "xss-sanitize" >>= qflag (P.DebVersion "0.3.2-1build1")) >>= debianize [] >>= inGroups ["important"]
   _yaml <-  (hackage (Just "0.8.18.1") "yaml") >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
