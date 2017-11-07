@@ -313,6 +313,7 @@ commonTargets = do
   _edit_distance_vector <- hackage (Just "1.0.0.4") "edit-distance-vector" >>= debianize [] >>= ghcjs_also
   _editor_common <- (git "https://github.com/stepcut/markdown-editor-chili" []) >>= cd "editor-common" >>= debianize [] >>= ghcjs_also
   _editor_client <- (git "https://github.com/stepcut/markdown-editor-chili" []) >>= cd "editor-client" >>= debianize [] >>= ghcjs
+  _editor_server <- (git "https://github.com/stepcut/markdown-editor-chili" []) >>= cd "editor-server" >>= debianize []
   _ekg_core <-  (hackage (Just "0.1.1.1") "ekg-core") >>= debianize []
   _emacs <- apt "trusty" "emacs24" >>= patch $(embedFile "patches/emacs.diff")
   _email_validate <-  (hackage (Just "2.2.0") "email-validate") >>= debianize [] >>= inGroups ["important"]
