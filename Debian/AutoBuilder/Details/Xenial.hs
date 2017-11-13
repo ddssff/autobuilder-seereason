@@ -68,6 +68,7 @@ buildTargets7 = do
       flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   _traverse_with_class <- hackage (Just "0.2.0.4") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
+  _haskell_names <- hackage (Just "0.8.0") "haskell-names" >>= debianize []
   buildTargets
 
 nodejs :: Monad m => TSt m PackageId
@@ -128,6 +129,7 @@ buildTargets8 = do
       flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
+  _haskell_names <- git "https://github.com/haskell-suite/haskell-names" [] >>= debianize []
   buildTargets
 
 
