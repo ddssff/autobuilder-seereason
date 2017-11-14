@@ -221,6 +221,7 @@ commonTargets = do
   _constrained_normal <-  (hackage (Just "1.0.2") "constrained-normal") >>= debianize []
   _constraints <- hackage (Just "0.8") "constraints" >>= debianize []
   _consumer <- darcs ("http://src.seereason.com/haskell-consumer") >>= skip (Reason "build failure")
+  _constraints <- hackage Nothing "constraints" >>= debianize [] >>= ghcjs_also
   _contravariant <- hackage (Just "1.4") "contravariant" >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
   _control_monad_free <-  (hackage (Just "0.6.1") "control-monad-free") >>= flag (P.DebVersion "0.6.1-3") >>= debianize []
   _cookie <-  (hackage (Just "0.4.2.1") "cookie") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
