@@ -335,7 +335,7 @@ commonTargets = do
   _failure <- hackage (Just "0.2.0.3") "failure" >>= flag (P.DebVersion "0.2.0.3-5") >>= debianize []
   -- Patch removes dependency on bytestring-builder, now part of bytestring.
   -- Does not build under ghcjs due to "System.Directory: Can't be safely imported!"
-  _fast_logger <- hackage (Just "2.4.10") "fast-logger">>= patch $(embedFile "patches/fast-logger.diff") >>= debianize [] >>= inGroups ["authenticate", "important"] {- >>= ghcjs_also -}
+  _fast_logger <- hackage (Just "2.4.10") "fast-logger">>= debianize [] >>= inGroups ["authenticate", "important"] {- >>= ghcjs_also -}
   _fay_base <-  (hackage (Just "0.20.0.1") "fay-base") >>= debianize [] >>= skip (Reason "Waiting for newer fay")
   _fay <-  (hackage (Just "0.23.1.16") "fay" {- >>= patch $(embedFile "patches/fay.diff") -}) >>= debianize [] >>= flag (P.CabalDebian [ "--depends", "haskell-fay-utils:cpphs" ]) >>= skip (Reason "too old for current syb and optparse-applicative")
   _fay_jquery <-  (git "https://github.com/faylang/fay-jquery" []) >>= debianize [] >>= skip (Reason "Waiting for newer fay")
@@ -631,7 +631,7 @@ commonTargets = do
   _incremental_sat_solver <-  (git "https://github.com/seereason/incremental-sat-solver" []) >>= debianize []
   _indents <-  (hackage (Just "0.3.3") "indents") >>= debianize []
   _instant_generics <- hackage (Just "0.6") "instant-generics" >>= flag (P.SkipVersion "0.3.7") >>= debianize [] >>= broken
-  _integer_logarithms <- hackage (Just "1.0.1") "integer-logarithms" >>= debianize [] >>= ghcjs_also
+  _integer_logarithms <- hackage (Just "1.0.2") "integer-logarithms" >>= debianize [] >>= ghcjs_also
   _intervals <-  (hackage (Just "0.8.1") "intervals") >>= debianize []
   _ioRefCAS <- (hackage (Just "0.2.0.1") "IORefCAS") >>= debianize [] >>= skip (Reason "Version 0.2.0.1 build fails")
   _io_storage <- hackage (Just "0.3") "io-storage" >>= flag (P.DebVersion "0.3-9") >>= debianize []
