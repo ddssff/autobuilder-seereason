@@ -334,7 +334,8 @@ commonTargets = do
   _fail <- hackage (Just "4.9.0.0") "fail" >>= flag (P.BuildDep "hscolour") >>= debianize [] >>= flag P.NoDoc >>= ghcjs_also
   _failure <- hackage (Just "0.2.0.3") "failure" >>= flag (P.DebVersion "0.2.0.3-5") >>= debianize []
   -- Patch removes dependency on bytestring-builder, now part of bytestring.
-  _fast_logger <- hackage (Just "2.4.6") "fast-logger">>= patch $(embedFile "patches/fast-logger.diff") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
+  -- Does not build under ghcjs due to "System.Directory: Can't be safely imported!"
+  _fast_logger <- hackage (Just "2.4.10") "fast-logger">>= patch $(embedFile "patches/fast-logger.diff") >>= debianize [] >>= inGroups ["authenticate", "important"] {- >>= ghcjs_also -}
   _fay_base <-  (hackage (Just "0.20.0.1") "fay-base") >>= debianize [] >>= skip (Reason "Waiting for newer fay")
   _fay <-  (hackage (Just "0.23.1.16") "fay" {- >>= patch $(embedFile "patches/fay.diff") -}) >>= debianize [] >>= flag (P.CabalDebian [ "--depends", "haskell-fay-utils:cpphs" ]) >>= skip (Reason "too old for current syb and optparse-applicative")
   _fay_jquery <-  (git "https://github.com/faylang/fay-jquery" []) >>= debianize [] >>= skip (Reason "Waiting for newer fay")
@@ -372,7 +373,8 @@ commonTargets = do
                        >>= flag (P.DevelDep "libfreetype6-dev") >>= debianize []
                -- ,  (flags [P.BuildDep "libm-dev", P.BuildDep "libfreetype-dev"] (hackage (Just "3000.7.3") "gd")) >>= debianize []
   _gdiff <-  (hackage (Just "1.1") "gdiff") >>= debianize []
-  _gdiff_th <- git "https://github.com/ddssff/gdiff-th" [] >>= flag (P.BuildDep "cpphs") >>= debianize []
+  -- Needs update for current template-haskell
+  -- _gdiff_th <- git "https://github.com/ddssff/gdiff-th" [] >>= flag (P.BuildDep "cpphs") >>= debianize []
   _generic_deriving <-  (hackage (Just "1.10.7") "generic-deriving") >>= debianize [] >>= ghcjs_also
   _genI <- darcs "http://hub.darcs.net/kowey/GenI" >>= patch $(embedFile "patches/GenI.diff") >>= debianize [] >>= inGroups ["GenI"]
   _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] >>= skip (Reason "Encountered missing dependencies: 2> binary ==0.8.*")
@@ -760,7 +762,7 @@ commonTargets = do
                -- other hand, without monads-tf we lose this dependency chain:
                -- monads-tf <- options <- fay.
   _monadlist <-  (hackage (Just "0.0.2") "monadlist") >>= debianize [] >>= inGroups ["clckwrks", "important"]
-  _monad_logger <-  (hackage (Just "0.3.24") "monad-logger") >>= debianize [] >>= inGroups [ "authenticate", "important"]
+  _monad_logger <-  (hackage (Just "0.3.25.1") "monad-logger") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _monad_loops <- hackage (Just "0.4.3") "monad-loops" >>= flag (P.DebVersion "0.4.3-3") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _monad_parallel <-  (hackage (Just "0.7.2.2") "monad-parallel") >>= debianize []
   _monad_par <-  (hackage (Just "0.3.4.8") "monad-par") >>= debianize []
@@ -1110,7 +1112,7 @@ commonTargets = do
 -}
   _void <- hackage (Just "0.7.2") "void" >>= debianize [] >>= inGroups ["kmett", "authenticate", "important"] >>= ghcjs_also
   _wai_app_static <-  (hackage (Just "3.1.5") "wai-app-static") >>= debianize [] >>= inGroups ["servant"] >>= skip (Reason "wai depends on obsolete bytestring-builder package")
-  _wai <- hackage (Just "3.2.1.1") "wai" {- >>= patch $(embedFile "patches/wai.diff") -} >>= debianize [] >>= inGroups ["happstack", "important"] >>= skip (Reason "wai depends on obsolete bytestring-builder package")
+  _wai <- hackage (Just "3.2.1.1") "wai" {- >>= patch $(embedFile "patches/wai.diff") -} >>= debianize [] >>= inGroups ["happstack", "important"]
   _wai_extra <-  (hackage (Just "3.0.16.1") "wai-extra") >>= debianize [] >>= skip (Reason "wai depends on obsolete bytestring-builder package")
   _wai_logger <-  (hackage (Just "2.3.0") "wai-logger") >>= debianize [] >>= skip (Reason "wai depends on obsolete bytestring-builder package")
   _wai_middleware_static <-  (hackage (Just "0.8.0") "wai-middleware-static") >>= debianize [] >>= skip (Reason "Unmet build dependencies: libghc-wai-dev (<< 3.1) libghc-wai-prof (<< 3.1)")
