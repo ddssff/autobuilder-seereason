@@ -46,7 +46,7 @@ commonTargets = do
   _asn1_encoding <-  (hackage (Just "0.9.4") "asn1-encoding") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _asn1_parse <-  (hackage (Just "0.9.4") "asn1-parse") >>= flag (P.DebVersion "0.9.4-1build1") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _asn1_types <-  (hackage (Just "0.3.2") "asn1-types") >>= flag (P.DebVersion "0.3.2-1") >>= debianize [] >>= ghcjs_also
-  _async <-  (hackage (Just "2.1.0") "async") >>= debianize []
+  _async <-  (hackage (Just "2.1.1.1") "async") >>= debianize []
   _atomic_primops <-  (hackage (Just "0.8.0.4") "atomic-primops") >>= debianize []
   _atp_haskell <-  (git "https://github.com/seereason/atp-haskell" []) >>= debianize [] >>= inGroups ["seereason", "th-path", "important"] >>= ghcjs_also
   _attempt <-  (hackage (Just "0.4.0.1") "attempt") >>= debianize []
@@ -541,6 +541,7 @@ commonTargets = do
   _hint <-  (hackage (Just "0.6.0") "hint") >>= debianize [] {- >>= skip (Reason "requires ghc-mtl") -}
   -- _hit <- hackage Nothing "hit" >>= debianize []
   _hJavaScript <- hackage (Just "0.4.7") "HJavaScript"
+                  >>= flag (P.DebVersion "0.4.7-6")
                   >>= patch $(embedFile "patches/HJavaScript.diff")
                   -- >>= tflag (P.DebVersion "0.4.7-6")
                   >>= debianize []
@@ -699,7 +700,7 @@ commonTargets = do
                            , P.flags = [] }
            -}
   _libv8 <- apt "sid" "libv8-3.14" >>= skip (Reason "Use standard")
-  _lifted_async <-  (hackage (Just "0.9.0") "lifted-async") >>= debianize [] >>= inGroups ["ghcjs-comp"]
+  _lifted_async <-  (hackage (Just "0.9.3") "lifted-async") >>= debianize [] >>= inGroups ["ghcjs-comp"]
   _lifted_base <-  (hackage (Just "0.2.3.8") "lifted-base") >>= debianize [] >>= ghcjs_also
   _linear <-  (hackage (Just "1.20.2") "linear") >>= debianize [] >>= skip (Reason "Requires bytes")
   _list_extras <-  (hackage (Just "0.4.1.4") "list-extras") >>= debianize []
