@@ -62,7 +62,7 @@ commonTargets = do
                   >>= inGroups ["autobuilder-group", "important"]
   _autobuilder_seereason <-  (git "https://github.com/ddssff/autobuilder-seereason" []) >>= debianize [] >>= inGroups ["autobuilder-group", "important"]
   _auto_update <-  (hackage (Just "0.1.4") "auto-update") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
-  _base_compat <-  (hackage (Just "0.9.1") "base-compat") >>= debianize [] >>= ghcjs_also
+  _base_compat <-  (hackage (Just "0.9.3") "base-compat") >>= debianize [] >>= ghcjs_also
   _base_orphans <-  (hackage (Just "0.5.4") "base-orphans") >>= debianize [] >>= ghcjs_also
   _base16_bytestring <-  (hackage (Just "0.1.1.6") "base16-bytestring") >>= flag (P.DebVersion "0.1.1.6-5") >>= debianize [] >>= ghcjs_also
   _base64_bytestring <- hackage (Just "1.0.0.1") "base64-bytestring" >>= flag (P.DebVersion "1.0.0.1-6") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
@@ -628,6 +628,7 @@ commonTargets = do
              debianize [] >>=
              skip (Reason "Unmet build dependencies: libghc-optparse-applicative-dev (<< 0.12)")
   -- incremental_sat_solver = pure $ P.Package { P.spec = DebDir (Hackage (Just "0.2.0") "incremental-sat-solver") (Darcs ("http://src.seereason.com/haskell-incremental-sat-solver-debian")) , P.flags = [] }
+  _ifcxt <- git "https://github.com/ddssff/ifcxt" [] >>= debianize [] >>= ghcjs_also
   _incremental_sat_solver <-  (git "https://github.com/seereason/incremental-sat-solver" []) >>= debianize []
   _indents <-  (hackage (Just "0.3.3") "indents") >>= debianize []
   _instant_generics <- hackage (Just "0.6") "instant-generics" >>= flag (P.SkipVersion "0.3.7") >>= debianize [] >>= broken

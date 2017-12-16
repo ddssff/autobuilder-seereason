@@ -29,10 +29,10 @@ buildTargets _params = do
 
   _clckwrks_plugin_stripe <- git "ssh://git@github.com/seereason/clckwrks-plugin-stripe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["private-libs"]
   _clckwrks_theme_seereasonpartners <-
-      darcs (privateRepo </> "seereasonpartners-clckwrks") >>=
+      git "ssh://git@github.com/seereason/seereasonpartners-clckwrks" [] >>=
       cd "clckwrks-theme-seereasonpartners" >>=
       debianize [] >>=
-      flag (P.BuildDep "hsx2hs") {- >>= flag P.NoDoc -}
+      flag (P.BuildDep "hsx2hs")
   _clckwrks_theme_appraisalscribe <- git "ssh://git@github.com/seereason/clckwrks-theme-appraisalscribe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
 
   let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" []
@@ -72,7 +72,7 @@ buildTargets _params = do
   _ontology <- git "ssh://git@github.com/seereason/ontology.git" [] >>= debianize [] >>= inGroups ["private-libs"]
   _seereason <- git "ssh://git@github.com/seereason/seereason" [] >>= debianize []
   _seereasonpartners_dot_com <-
-      darcs (privateRepo </> "seereasonpartners-clckwrks") >>=
+      git "ssh://git@github.com/seereason/seereasonpartners-clckwrks" [] >>=
       cd "seereasonpartners-dot-com" >>=
       patch $(embedFile "patches/seereasonpartners-dot-com.diff") >>=
       debianize []

@@ -231,6 +231,7 @@ myGlobalRelaxInfo =
     , "intltool"
     , "libc6-dev"
     , "libc-bin"
+    , "libxml2-dev"
     , "login"
     , "make"
     , "mktemp"
