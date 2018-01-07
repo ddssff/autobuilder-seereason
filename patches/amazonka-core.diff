@@ -1,0 +1,39 @@
+--- old/src/Network/AWS/Data/Query.hs	2018-01-07 09:06:52.127533670 -0800
++++ new/src/Network/AWS/Data/Query.hs	2018-01-07 09:06:26.531715615 -0800
+@@ -1,3 +1,4 @@
++{-# LANGUAGE CPP                 #-}
+ {-# LANGUAGE DefaultSignatures   #-}
+ {-# LANGUAGE DeriveDataTypeable  #-}
+ {-# LANGUAGE FlexibleContexts    #-}
+@@ -21,7 +22,7 @@
+ 
+ import           Data.ByteString.Builder     (Builder)
+ import qualified Data.ByteString.Builder     as Build
+-import qualified Data.ByteString.Char8       as BS8
++import           Data.ByteString.Char8       as BS8 hiding (map, filter, sort, concatMap, zipWith)
+ import qualified Data.ByteString.Lazy        as LBS
+ import           Data.Data
+ import           Data.List                   (sort)
+@@ -35,6 +36,13 @@
+ import           Network.HTTP.Types.URI      (urlEncode)
+ import           Numeric.Natural
+ 
++#if !MIN_VERSION_bytestring(0,10,8)
++stripPrefix :: ByteString -> ByteString -> Maybe ByteString
++stripPrefix bs1 bs2
++   | bs1 `isPrefixOf` bs2 = Just (BS8.drop (BS8.length bs1) bs2)
++   | otherwise = Nothing
++#endif
++
+ data QueryString
+     = QList  [QueryString]
+     | QPair  ByteString QueryString
+@@ -70,7 +78,7 @@
+         case x of
+             ""  -> QValue Nothing
+             "=" -> QValue Nothing
+-            _   -> QValue (Just (fromMaybe x (BS8.stripPrefix "=" x)))
++            _   -> QValue (Just (fromMaybe x (stripPrefix "=" x)))
+ 
+ -- FIXME: use Builder
+ instance ToByteString QueryString where

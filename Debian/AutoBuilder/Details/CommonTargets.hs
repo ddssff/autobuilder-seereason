@@ -32,6 +32,8 @@ commonTargets = do
   _aeson_pretty <- hackage (Just "0.8.5") "aeson-pretty" >>= debianize []
   _aeson_qq <-  hackage (Just "0.8.2") "aeson-qq" >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _agi <- darcs ("https://github.com/ddssff/haskell-agi") >>= skip (Reason "No instance for (Applicative (AGIT m))")
+  _amazonka_core <- hackage Nothing "amazonka-core" >>= patch $(embedFile "patches/amazonka-core.diff") >>= debianize []
+  _amazonka_ses <- hackage (Just "1.5.0") "amazonka-ses" >>= debianize []
   -- No Debian build trees found in /home/dsf/.autobuilder/hackage/allocated-processor-0.0.2
   -- _allocated_processor <- hackage Nothing "allocated-processor"
   _annotated_wl_pprint <- hack (Just "0.7.0") "annotated-wl-pprint"
@@ -595,8 +597,8 @@ commonTargets = do
   _html_entities <- darcs ("http://src.seereason.com/html-entities")
   _html_xml_utils <- apt "sid" "html-xml-utils"
   _http_api_data <- hackage (Just "0.2.4") "http-api-data" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
-  _http_client <-  (hackage (Just "0.4.30" {-"0.5.4"-}) "http-client") >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
-  _http_client_tls <- hackage (Just "0.2.4.1" {-"0.3.3"-}) "http-client-tls" >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
+  _http_client <-  (hackage (Just "0.5.7.1") "http-client") >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
+  _http_client_tls <- hackage (Just "0.3.5.1") "http-client-tls" >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
       -- Deprecated in favor of http-conduit
       -- ,  (hackage (Just "0.2.0.1") "http-client-conduit") >>= debianize []
       -- Deprecated in favor of conduit-extra
@@ -604,7 +606,7 @@ commonTargets = do
       -- ,  (hackage (Just "1.0.0") "blaze-builder-conduit") >>= debianize []
       -- ,  (hackage (Just "1.0.0") "zlib-conduit") >>= debianize []
   _http_common <-  (hackage (Just "0.8.2.0") "http-common") >>= flag (P.DebVersion "0.8.2.0-2build1") >>= debianize [] >>= inGroups ["platform", "happstack", "important"]
-  _http_conduit <-  (hackage (Just "2.1.11" {-"2.2.2.1"-}) "http-conduit") >>= debianize [] >>= inGroups ["conduit", "important"] -- fb isn't ready for 2.2
+  _http_conduit <-  (hackage (Just "2.2.4") "http-conduit") >>= debianize [] >>= inGroups ["conduit", "important"] -- fb isn't ready for 2.2
   _http_date <-  (hackage (Just "0.0.6.1") "http-date") >>= flag (P.DebVersion "0.0.6.1-3build1") >>= debianize []
   _http_media <-  (hackage (Just "0.6.4") "http-media") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _http <-  (hackage Nothing "HTTP") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
@@ -632,7 +634,7 @@ commonTargets = do
   _incremental_sat_solver <-  (git "https://github.com/seereason/incremental-sat-solver" []) >>= debianize []
   _indents <-  (hackage (Just "0.3.3") "indents") >>= debianize []
   _instant_generics <- hackage (Just "0.6") "instant-generics" >>= flag (P.SkipVersion "0.3.7") >>= debianize [] >>= broken
-  _integer_logarithms <- hackage (Just "1.0.2") "integer-logarithms" >>= debianize [] >>= ghcjs_also
+  _integer_logarithms <- hackage (Just "1.0.2") "integer-logarithms" >>= debianize [] {->>= ghcjs_also-}
   _intervals <-  (hackage (Just "0.8.1") "intervals") >>= debianize []
   _ioRefCAS <- (hackage (Just "0.2.0.1") "IORefCAS") >>= debianize [] >>= skip (Reason "Version 0.2.0.1 build fails")
   _io_storage <- hackage (Just "0.3") "io-storage" >>= flag (P.DebVersion "0.3-9") >>= debianize []
@@ -925,7 +927,7 @@ commonTargets = do
   _sat <-  (hackage (Just "1.1.1") "sat"
                               >>= patch $(embedFile "patches/sat.diff")
                               >>= flag (P.DebVersion "1.1.1-1~hackage1")) >>= debianize []
-  _scientific <- hackage (Just "0.3.4.11") "scientific" >>= debianize [] >>= ghcjs_also
+  _scientific <- hackage (Just "0.3.4.11") "scientific" >>= debianize [] {->>= ghcjs_also-}
                -- ,  (hackage (Just "0.4.1.1") "arithmoi" >>= flag (P.BuildDep "llvm-dev")) >>= debianize []
   _scotty <- hackage (Just "0.10.2") "scotty" {- >>= patch $(embedFile "patches/scotty.diff") -} >>= debianize [] >>= skip (Reason "data-default dependency")
   _seclib <-  (darcs ("http://src.seereason.com/seclib")) >>= debianize [] >>= skip (Reason "No instance for (Applicative (Sec s))")
