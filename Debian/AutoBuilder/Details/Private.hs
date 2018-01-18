@@ -18,7 +18,6 @@ buildTargets _params = do
   _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= debianize []
   _appraisalscribe_acid <- git "ssh://git@github.com/seereason/appraisalscribe-acid" [] >>= debianize []
   -- _appraisalscribe_json <- git "ssh://git@github.com/seereason/appraisalscribe-json" [] >>= debianize []
-  _appraisalscribe_paths <- git "ssh://git@github.com/seereason/appraisalscribe-paths" [] >>= debianize [] >>= ghcjs_also
   _appraisalscribe_io <- git "ssh://git@github.com/seereason/appraisalscribe-io" [] >>= debianize [] >>= ghcjs_also
   _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [] >>= debianize [] >>= ghcjs_also
   -- appraisalscribe-data-tests is a huge package because it
@@ -116,8 +115,6 @@ applications =
     -- (named "applications") =<<
     sequence
     [ appraisalscribe
-    , appraisalscribe_paths
-    , appraisalscribe_paths >>= ghcjs_flags
     , appraisalscribe_data
     , appraisalscribe_data >>= ghcjs_flags >>= flag P.NoDoc
     , image_cache
