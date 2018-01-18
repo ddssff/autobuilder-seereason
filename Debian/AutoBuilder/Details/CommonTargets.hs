@@ -52,8 +52,9 @@ commonTargets = do
   _atomic_primops <-  (hackage (Just "0.8.0.4") "atomic-primops") >>= debianize []
   _atp_haskell <-  (git "https://github.com/seereason/atp-haskell" []) >>= debianize [] >>= inGroups ["seereason", "th-path", "important"] >>= ghcjs_also
   _attempt <-  (hackage (Just "0.4.0.1") "attempt") >>= debianize []
-  _attoparsec <-  (hackage (Just "0.13.0.2") "attoparsec") >>= debianize [] >>= inGroups ["important"]
+  _attoparsec <-  (hackage (Just "0.13.2.0") "attoparsec") >>= debianize [] >>= inGroups ["servant", "important"]
   _attoparsec_enumerator <- hackage (Just "0.3.4") "attoparsec-enumerator" >>= flag (P.DebVersion "0.3.4-3build1") >>= debianize []
+  _attoparsec_iso8601 <- hackage (Just "1.0.0.0") "attoparsec-iso8601" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
                -- This was merged into attoparsec
                -- ,  (hackage "attoparsec-text" `patch` $(embedFile "patches/attoparsec-text.diff") >>= flag (P.Revision "")) >>= debianize []
                -- Deprecated
@@ -596,7 +597,7 @@ commonTargets = do
   _html <- hackage (Just "1.0.1.2") "html" >>= flag (P.DebVersion "1.0.1.2-11") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _html_entities <- darcs ("http://src.seereason.com/html-entities")
   _html_xml_utils <- apt "sid" "html-xml-utils"
-  _http_api_data <- hackage (Just "0.2.4") "http-api-data" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  _http_api_data <- hackage (Just "0.3.7.1") "http-api-data" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _http_client <-  (hackage (Just "0.5.7.1") "http-client") >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
   _http_client_tls <- hackage (Just "0.3.5.1") "http-client-tls" >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
       -- Deprecated in favor of http-conduit
@@ -790,6 +791,7 @@ commonTargets = do
   _nanospec <-  (hackage (Just "0.2.1") "nanospec" >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize [] -- avoid circular dependency nanospec <-> silently
   -- Empty as of ghc-7.10
   _nats <-  (hackage (Just "1.1.1") "nats") >>= debianize [] >>= flag P.NoDoc >>= ghcjs_also
+  _natural_transformation <- hackage (Just "0.4") "natural-transformation" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   -- Deprecated in favor if conduit-extra
   -- _network_conduit <- hackage (Just "1.1.0") "network-conduit" >>= debianize []
   _network <- hackage (Just "2.6.3.1") "network" >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
@@ -938,7 +940,7 @@ commonTargets = do
   _semigroupoids <- hackage (Just "5.2.1") "semigroupoids" >>= apply (replacement "semigroupoids" "semigroupoid-extras") >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
   _semigroups <-  (hackage (Just "0.18.3") "semigroups") >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also -- avoid rebuilds
   _sendfile <- hackage (Just "0.7.9") "sendfile" >>= flag (P.DebVersion "0.7.9-6") >>= debianize [] >>= ghcjs_also
-  _servant <- hackage (Just "0.8") "servant" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  _servant <- hackage (Just "0.12.1") "servant" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_server <- hackage (Just "0.8") "servant-server" >>= debianize [] >>= inGroups ["servant-server"] >>= inGroups ["servant"] >>= skip (Reason "wai depends on obsolete bytestring-builder package")
   _setenv <- hackage (Just "0.1.1.3") "setenv" >>= flag (P.DebVersion "0.1.1.3-4") >>= debianize [] >>= ghcjs_also
   _set_extra <-  (darcs ("http://src.seereason.com/set-extra")) >>= flag (P.DebVersion "1.3.2-2build1") >>= debianize [] >>= ghcjs_also
@@ -1084,6 +1086,7 @@ commonTargets = do
                -- ,  (hackage "utf8-prelude" >>= flag (P.DebVersion "0.1.6-1~hackage1")) >>= debianize []
                -- The GHC in wheezy conflicts with libghc-containers-dev, so we can't build this.
                -- , wonly $  (hackage "containers") >>= debianize []
+  _uri_bytestring <- hackage (Just "0.3.1.0") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _urlencoded <-  (hackage (Just "0.4.1") "urlencoded" {->>= patch $(embedFile "patches/urlencoded.diff")-}) >>= debianize []
   _userid <- git "https://github.com/Happstack/userid" [] >>= debianize [] >>= inGroups ["authenticate", "happstack", "important"] >>= ghcjs_also
   _utf8_light <-  (hackage (Just "0.4.2") "utf8-light") >>= flag (P.DebVersion "0.4.2-4") >>= debianize []
