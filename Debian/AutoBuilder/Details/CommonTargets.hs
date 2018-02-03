@@ -1031,19 +1031,18 @@ commonTargets = do
   _th_alpha <-  (git "https://github.com/ddssff/th-alpha.git" []) >>= debianize []
   _th_abstraction <- hackage Nothing "th-abstraction" >>= debianize [] >>= ghcjs_also
   _th_context <-  (git "http://github.com/seereason/th-context" []) >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
-  _th_desugar <- {-(git "http://github.com/goldfirere/th-desugar" [])-} hackage (Just "1.6") "th-desugar" >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
+  _th_desugar <- {-(git "http://github.com/goldfirere/th-desugar" [])-} hackage Nothing "th-desugar" >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _th_expand_syns <-  (hackage (Just "0.4.0.0") "th-expand-syns") >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   -- th_instance_reification =  (git "https://github.com/seereason/th-instance-reification.git" []) >>= debianize []
   _th_kinds_fork <-  (git "http://github.com/ddssff/th-kinds-fork" []) >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
-  _th_lift <- hackage (Just "0.7.6") "th-lift" >>= debianize [] >>= ghcjs_also
+  _th_lift <- hackage Nothing "th-lift" >>= debianize [] >>= ghcjs_also
   _th_lift_instances <-
-      -- hackage (Just "0.1.10") "th-lift-instances" >>=
-      git "https://github.com/ddssff/th-lift-instances" [] >>=
+      hackage Nothing "th-lift-instances" >>=
       debianize [] >>= inGroups ["important"] >>= ghcjs_also
-  _th_orphans <-  (hackage Nothing "th-orphans") >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
+  _th_orphans <- hackage Nothing "th-orphans" >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _th_typegraph <- git "http://github.com/seereason/th-typegraph" [] >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _threads <-  (hackage (Just "0.5.1.4") "threads") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
-  _th_reify_many <-  (hackage (Just "0.1.6") "th-reify-many") >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
+  _th_reify_many <- hackage Nothing "th-reify-many" >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _time_compat <-  (hackage (Just "0.1.0.3") "time-compat") >>= flag (P.DebVersion "0.1.0.3-5") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _time_locale_compat <-  (hackage (Just "0.1.1.3") "time-locale-compat") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _tinymce <- apt "wheezy" "tinymce"
