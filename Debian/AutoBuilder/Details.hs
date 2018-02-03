@@ -231,6 +231,7 @@ myGlobalRelaxInfo =
     , "intltool"
     , "libc6-dev"
     , "libc-bin"
+    , "libgl1-mesa-dev"
     , "libxml2-dev"
     , "login"
     , "make"

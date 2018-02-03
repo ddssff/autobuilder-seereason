@@ -59,7 +59,7 @@ commonTargets = do
                -- ,  (hackage "attoparsec-text" `patch` $(embedFile "patches/attoparsec-text.diff") >>= flag (P.Revision "")) >>= debianize []
                -- Deprecated
                -- ,  (hackage "attoparsec-text-enumerator") >>= debianize []
-  _authenticate <-  (hackage (Just "1.3.3.2") "authenticate") >>= debianize [] >>= inGroups ["authenticate", "important"]
+  _authenticate <-  (hackage Nothing "authenticate") >>= debianize [] >>= inGroups ["authenticate", "important"]
   _autobuilder <-  (git "https://github.com/ddssff/autobuilder" []) >>= debianize []
                   >>= flag (P.CabalDebian [ "--source-package-name", "autobuilder" ])
                   >>= inGroups ["autobuilder-group", "important"]
