@@ -319,7 +319,7 @@ commonTargets = do
   _emacs <- apt "trusty" "emacs24" >>= patch $(embedFile "patches/emacs.diff")
   _email_validate <-  (hackage (Just "2.2.0") "email-validate") >>= debianize [] >>= inGroups ["important"]
   _enclosed_exceptions <-  (hackage (Just "1.0.2") "enclosed-exceptions") >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
-  _entropy <- hackage (Just "0.3.8") "entropy" >>= flag (P.DebVersion "0.3.7-3") >>= debianize [] >>= ghcjs_also
+  _entropy <- hackage (Just "0.3.8") "entropy" >>= debianize [] >>= ghcjs_also
   _enumerator <- hackage (Just "0.4.20") "enumerator" >>= flag (P.DebVersion "0.4.20-4build1") >>= debianize []
   _erf <- hackage (Just "2.0.0.0") "erf" >>= flag (P.DebVersion "2.0.0.0-9") >>= debianize []
   _errors <-  (hackage (Just "2.1.2") "errors") >>= debianize [] >>= ghcjs_also
