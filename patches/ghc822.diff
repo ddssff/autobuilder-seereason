@@ -1,0 +1,45 @@
+--- old/debian/control	2017-06-25 12:52:22.000000000 -0700
++++ new/debian/control	2017-07-25 11:18:48.193464342 -0700
+@@ -5,18 +5,18 @@
+ Uploaders: Joachim Breitner <nomeata@debian.org>, Clint Adams <clint@debian.org>
+ Standards-Version: 4.1.1
+ Build-Depends:
+-  debhelper (>= 10),
+-  haskell-devscripts-minimal <!cross>,
++  debhelper (>= 9),
++  haskell-devscripts-minimal,
+   devscripts,
+   grep-dctrl,
+   pkg-config,
+-  ghc:native (>= 7.8),
+-  libgmp-dev,
++  ghc (>= 7.8),
++  libgmp3-dev,
+   llvm-3.9 [arm64 armel armhf],
+   libffi-dev,
+   binutils [arm64 armel armhf],
+   libncurses5-dev,
+-  python-sphinx <!cross>,
++  python-sphinx,
+   dpkg-dev (>= 1.16.1.1)
+ Build-Depends-Indep:
+   hscolour,
+--- old/debian/control	2013-01-29 10:48:34.000000000 -0800
++++ new/debian/control	2013-04-10 16:53:53.897605223 -0700
+@@ -35,7 +35,7 @@
+ Depends:
+   llvm-3.7 [arm64 armel armhf],
+   gcc,
+-  libgmp-dev,
++  libgmp3-dev,
+   libffi-dev,
+   libbsd-dev,
+   libc6-dev,
+--- old/debian/rules	2016-11-14 08:07:27.000000000 -0800
++++ new/debian/rules	2017-01-20 13:05:44.044861643 -0800
+@@ -274,4 +274,4 @@
+ #GHC has no meaningful debugging symbols, so we don't ship a -dbgsym
+ #package.
+ override_dh_strip:
+-	dh_strip --no-automatic-dbgsym
++	dh_strip

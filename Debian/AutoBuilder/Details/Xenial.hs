@@ -83,7 +83,7 @@ buildTargets8 = do
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp"]
   _nodejs <- nodejs
   _ghc8 <- apt "experimental" "ghc" >>=
-           patch $(embedFile "patches/ghc.diff") >>=
+           patch $(embedFile "patches/ghc822.diff") >>=
            inGroups ["ghc8-comp"]
   _haddock_api8 <-
       hackage (Just "2.17.4") "haddock-api" >>=
