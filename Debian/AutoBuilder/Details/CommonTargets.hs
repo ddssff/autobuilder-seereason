@@ -315,14 +315,14 @@ commonTargets = do
   _edisonCore <- ( (hackage (Just "1.3.1.1") "EdisonCore" >>= qflag (P.DebVersion "1.2.1.3-9build2")) >>= debianize [])
   _edit_distance <- hackage (Just "0.2.2.1") "edit-distance" >>= flag (P.DebVersion "0.2.2.1-3") >>= debianize [] >>= ghcjs_also
   _edit_distance_vector <- hackage (Just "1.0.0.4") "edit-distance-vector" >>= debianize [] >>= ghcjs_also
-  _editor_common <- (git "https://github.com/seereason/markdown-editor-chili" []) >>= cd "editor-common" >>= debianize [] >>= ghcjs_also
-  _editor_client <- (git "https://github.com/seereason/markdown-editor-chili" []) >>= cd "editor-client" >>= debianize [] >>= ghcjs
-  _editor_server <- (git "https://github.com/seereason/markdown-editor-chili" []) >>= cd "editor-server" >>= debianize []
+  _editor_common <- git "https://github.com/seereason/editor-common" [] >>= debianize [] >>= ghcjs_also
+  _editor_client <- git "https://github.com/seereason/editor-client" [] >>= debianize [] >>= ghcjs
+  _editor_server <- git "https://github.com/seereason/editor-server" [] >>= debianize []
   _ekg_core <-  (hackage (Just "0.1.1.1") "ekg-core") >>= debianize []
   _emacs <- apt "trusty" "emacs24" >>= patch $(embedFile "patches/emacs.diff")
   _email_validate <-  (hackage (Just "2.2.0") "email-validate") >>= debianize [] >>= inGroups ["important"]
   _enclosed_exceptions <-  (hackage (Just "1.0.2") "enclosed-exceptions") >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
-  _entropy <- hackage (Just "0.3.7") "entropy" >>= flag (P.DebVersion "0.3.7-3") >>= debianize [] >>= ghcjs_also
+  _entropy <- hackage (Just "0.3.8") "entropy" >>= flag (P.DebVersion "0.3.7-3") >>= debianize [] >>= ghcjs_also
   _enumerator <- hackage (Just "0.4.20") "enumerator" >>= flag (P.DebVersion "0.4.20-4build1") >>= debianize []
   _erf <- hackage (Just "2.0.0.0") "erf" >>= flag (P.DebVersion "2.0.0.0-9") >>= debianize []
   _errors <-  (hackage (Just "2.1.2") "errors") >>= debianize [] >>= ghcjs_also
