@@ -34,6 +34,9 @@ buildTargets _params = do
       flag (P.BuildDep "hsx2hs")
   _clckwrks_theme_appraisalscribe <- git "ssh://git@github.com/seereason/clckwrks-theme-appraisalscribe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
 
+  _editor_common <- git "ssh://git@github.com/seereason/editor-common" [] >>= debianize [] >>= ghcjs_also
+  _editor_client <- git "ssh://git@github.com/seereason/editor-client" [] >>= debianize [] >>= ghcjs
+  _editor_server <- git "ssh://git@github.com/seereason/editor-server" [] >>= debianize []
   let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" []
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs
   _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize [] >>= inGroups ["private-libs"]
