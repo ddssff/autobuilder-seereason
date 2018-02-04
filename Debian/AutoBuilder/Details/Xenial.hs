@@ -49,7 +49,7 @@ buildTargets7 = do
                                          Set.insert (Text.unlines [ "# Force the Cabal dependency to be the version provided by GHC"
                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
              debianize [] >>= inGroups ["ghcjs-comp"]
-  _haddock_library7 <- hackage (Just "1.2.1") "haddock-library" >>= flag (P.DebVersion "1.2.1-2") >>= debianize [] >>= ghcjs_also
+  _haddock_library7 <- hackage (Just "1.2.1") "haddock-library" >>= flag (P.DebVersion "1.2.1-2") >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
   _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize []
   _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize []
   _ghcjs_dom <- hackage (Just "0.2.4.0" {-"0.7.0.4"-} {-"0.4.0.0"-}) "ghcjs-dom" >>= debianize [] >>= inGroups ["glib"] >>= ghcjs
@@ -88,6 +88,8 @@ buildTargets8 = do
   _ghc8 <- apt "experimental" "ghc" >>=
            patch $(embedFile "patches/ghc822.diff") >>=
            inGroups ["ghc8-comp"]
+  _ghc_boot <- hackage (Just "8.2.2") "ghc-boot" >>= debianize []
+  _ghc_boot_th <- hackage (Just "8.2.2") "ghc-boot-th" >>= debianize []
   _haddock_api8 <-
       hackage (Just "2.17.4") "haddock-api" >>=
              flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
@@ -100,7 +102,7 @@ buildTargets8 = do
                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
-  _haddock_library8 <- hackage (Just "1.4.5") "haddock-library" >>= debianize [] >>= ghcjs_also
+  _haddock_library8 <- hackage (Just "1.4.5") "haddock-library" >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
   _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize [] >>= ghcjs_also
   _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize [] >>= ghcjs_also
   _cabal <- hackage (Just "2.0.0.2") "Cabal" >>= debianize []
@@ -130,9 +132,8 @@ buildTargets8 = do
       -- Changes from debian since 0.11.2
       patch $(embedFile "patches/haskell-devscripts-debian.diff") >>=
       flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
-  -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
-  _haskell_names <- hackage (Just "0.9.1") [] >>= debianize []
+  _haskell_names <- hackage (Just "0.9.1") "haskell-names" >>= debianize []
   _singletons <- hackage (Just "2.3.1") "singletons" >>= debianize [] -- 2.4 requires base-4.11
   buildTargets
 
