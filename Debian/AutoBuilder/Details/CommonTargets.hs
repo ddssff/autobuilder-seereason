@@ -59,7 +59,7 @@ commonTargets = do
                -- ,  (hackage "attoparsec-text" `patch` $(embedFile "patches/attoparsec-text.diff") >>= flag (P.Revision "")) >>= debianize []
                -- Deprecated
                -- ,  (hackage "attoparsec-text-enumerator") >>= debianize []
-  _authenticate <-  (hackage (Just "1.3.3.2") "authenticate") >>= debianize [] >>= inGroups ["authenticate", "important"]
+  _authenticate <-  (hackage (Just "1.3.4") "authenticate") >>= debianize [] >>= inGroups ["authenticate", "important"]
   _autobuilder <-  (git "https://github.com/ddssff/autobuilder" []) >>= debianize []
                   >>= flag (P.CabalDebian [ "--source-package-name", "autobuilder" ])
                   >>= inGroups ["autobuilder-group", "important"]
@@ -70,7 +70,7 @@ commonTargets = do
   _base16_bytestring <-  (hackage (Just "0.1.1.6") "base16-bytestring") >>= flag (P.DebVersion "0.1.1.6-5") >>= debianize [] >>= ghcjs_also
   _base64_bytestring <- hackage (Just "1.0.0.1") "base64-bytestring" >>= flag (P.DebVersion "1.0.0.1-6") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _base_unicode_symbols <- hackage (Just "0.2.2.4") "base-unicode-symbols" >>= flag (P.DebVersion "0.2.2.4-7") >>= debianize []
-  _basement <- hackage (Just "0.0.6") "basement" >>= debianize []
+  _basement <- hackage (Just "0.0.6") "basement" >>= debianize [] >>= ghcjs_also
   _bifunctors <-  (hackage (Just "5.4.1") "bifunctors") >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
   _bimap <-  (hackage (Just "0.3.2") "bimap") >>= debianize []
   -- _binary_tagged <- hackage Nothing "binary-tagged" >>= debianize []
@@ -240,6 +240,8 @@ commonTargets = do
   _crypto_cipher_types <- hackage (Just "0.0.9") "crypto-cipher-types" >>= flag (P.DebVersion "0.0.9-5build1") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _crypto <-  (hackage (Just "4.2.5.1") "Crypto") >>= flag (P.DebVersion "4.2.5.1-5build1") >>= debianize []
   _cryptohash_conduit <- hackage (Just "0.1.1") "cryptohash-conduit" >>= flag (P.DebVersion "0.1.1-6build1") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  _cryptohash_md5 <- hackage Nothing "cryptohash-md5" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  _cryptohash_sha1 <- hackage Nothing "cryptohash-sha1" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _cryptohash_cryptoapi <-  (hackage (Just "0.1.4") "cryptohash-cryptoapi") >>= debianize [] >>= inGroups ["happstack", "important"]
   _cryptohash_sha256 <- hackage (Just "0.11.100.1") "cryptohash-sha256" >>= debianize []
   _cryptohash <-  (hackage (Just "0.11.9") "cryptohash") >>= debianize [] >>= inGroups ["important"] >>= ghcjs_also
@@ -357,7 +359,7 @@ commonTargets = do
   _formlets <-  (hackage (Just "0.8") "formlets"
                                >>= patch $(embedFile "patches/formlets.diff")
                                >>= flag (P.DebVersion "0.8-1~hackage1")) >>= debianize []
-  _foundation <- hackage (Just "0.0.19") "foundation" >>= debianize []
+  _foundation <- hackage (Just "0.0.19") "foundation" >>= debianize [] >>= ghcjs_also
   _free <-  (hackage (Just "4.12.4") "free") >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
   _frquotes <-  (hackage (Just "0.2.1") "frquotes") >>= debianize []
                -- Usable versions of this package are available in some dists -
@@ -521,7 +523,7 @@ commonTargets = do
   -- This goes with haskell-src-exts-1.18.*
   -- _haskell_src_exts_simple <- hackage "haskell-src-exts-simple" >>= debianize []
   _haskell_src_meta <-
-      hackage Nothing "haskell-src-meta" >>=
+      hackage (Just "0.8.0.2") "haskell-src-meta" >>=
       debianize [] >>=
       inGroups ["happstack", "important"] >>= ghcjs_also
   -- _hastache <- hackage Nothing "hastache" >>= debianize []
@@ -955,7 +957,6 @@ commonTargets = do
   _silently <-  (hackage (Just "1.2.5") "silently") >>= flag (P.DebVersion "1.2.5-3") >>= debianize []
   _simple_reflect <-  (hackage (Just "0.3.2") "simple-reflect") >>= flag (P.DebVersion "0.3.2-5") >>= debianize []
   _simple_sendfile <-  (hackage (Just "0.2.25") "simple-sendfile") >>= debianize []
-  _singletons <- hackage (Just "2.1") "singletons" >>= flag (P.CabalPin "2.1") >>= debianize [] -- 2.2 requires base-4.9
   -- pandoc 1.19.2.4 requires skylighting << 0.2
   _skylighting <- hackage (Just "0.1.1.5") "skylighting" >>=
                   debianize [] >>= ghcjs_also
@@ -1029,7 +1030,7 @@ commonTargets = do
   _text_show <-  (hackage (Just "3.3") "text-show") >>= debianize []
   _text_stream_decode <- hackage (Just "0.1.0.5") "text-stream-decode" >>= patch $(embedFile "patches/text-stream-decode.diff") >>= debianize [] >>= inGroups ["conduit", "important"] >>= skip (Reason "depends on older text")
   _tf_random <-  (hackage (Just "0.5") "tf-random") >>= flag (P.DebVersion "0.5-5") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
-  _th_alpha <-  (git "https://github.com/ddssff/th-alpha.git" []) >>= debianize []
+  _th_alpha <- hackage (Just "0.2.1.0") "th-alpha" >>= debianize []
   _th_abstraction <- hackage Nothing "th-abstraction" >>= debianize [] >>= ghcjs_also
   _th_context <-  (git "http://github.com/seereason/th-context" []) >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _th_desugar <- {-(git "http://github.com/goldfirere/th-desugar" [])-} hackage Nothing "th-desugar" >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also

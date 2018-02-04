@@ -67,8 +67,11 @@ buildTargets7 = do
       patch $(embedFile "patches/haskell-devscripts.diff") >>=
       flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
+  -- traverse-with-class-1.0.0.0 requires base >= 4.9, aka ghc8.  This blocks haskell-names-0.9.
   _traverse_with_class <- hackage (Just "0.2.0.4") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
+  -- Unfortunately this package requires haskell-src-exts<1.19, which is gone
   _haskell_names <- hackage (Just "0.8.0") "haskell-names" >>= debianize []
+  _singletons <- hackage (Just "2.1") "singletons" >>= debianize []
   buildTargets
 
 nodejs :: Monad m => TSt m PackageId
@@ -129,7 +132,8 @@ buildTargets8 = do
       flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
-  _haskell_names <- git "https://github.com/haskell-suite/haskell-names" [] >>= debianize []
+  _haskell_names <- hackage (Just "0.9.1") [] >>= debianize []
+  _singletons <- hackage (Just "2.3.1") "singletons" >>= debianize [] -- 2.4 requires base-4.11
   buildTargets
 
 
