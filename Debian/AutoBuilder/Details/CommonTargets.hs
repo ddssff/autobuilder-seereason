@@ -59,7 +59,7 @@ commonTargets = do
                -- ,  (hackage "attoparsec-text" `patch` $(embedFile "patches/attoparsec-text.diff") >>= flag (P.Revision "")) >>= debianize []
                -- Deprecated
                -- ,  (hackage "attoparsec-text-enumerator") >>= debianize []
-  _authenticate <-  (hackage Nothing "authenticate") >>= debianize [] >>= inGroups ["authenticate", "important"]
+  _authenticate <-  (hackage (Just "1.3.3.2") "authenticate") >>= debianize [] >>= inGroups ["authenticate", "important"]
   _autobuilder <-  (git "https://github.com/ddssff/autobuilder" []) >>= debianize []
                   >>= flag (P.CabalDebian [ "--source-package-name", "autobuilder" ])
                   >>= inGroups ["autobuilder-group", "important"]
@@ -70,6 +70,7 @@ commonTargets = do
   _base16_bytestring <-  (hackage (Just "0.1.1.6") "base16-bytestring") >>= flag (P.DebVersion "0.1.1.6-5") >>= debianize [] >>= ghcjs_also
   _base64_bytestring <- hackage (Just "1.0.0.1") "base64-bytestring" >>= flag (P.DebVersion "1.0.0.1-6") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _base_unicode_symbols <- hackage (Just "0.2.2.4") "base-unicode-symbols" >>= flag (P.DebVersion "0.2.2.4-7") >>= debianize []
+  _basement <- hackage (Just "0.0.6") "basement" >>= debianize []
   _bifunctors <-  (hackage (Just "5.4.1") "bifunctors") >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
   _bimap <-  (hackage (Just "0.3.2") "bimap") >>= debianize []
   -- _binary_tagged <- hackage Nothing "binary-tagged" >>= debianize []
@@ -203,7 +204,7 @@ commonTargets = do
   _clock <-  (hackage (Just "0.7.2") "clock") >>= debianize [] >>= ghcjs_also
   -- _closure_compiler <- apt "sid" "closure-compiler"
   _cmark <-  (hackage (Just "0.5.3.1") "cmark") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
-  _cmdargs <-  (hackage (Just "0.10.14") "cmdargs") >>= debianize [] >>= ghcjs_also
+  _cmdargs <-  (hackage (Just "0.10.20") "cmdargs") >>= debianize [] >>= ghcjs_also
   _colour <-  hackage (Just "2.3.3") "colour" >>= flag (P.DebVersion "2.3.3-8") >>= debianize []
                -- , apt "wheezy" "haskell-configfile"
   _comfort_graph <- hackage (Just "0.0.1") "comfort-graph" >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "transformers dependency too old")
@@ -222,7 +223,7 @@ commonTargets = do
   _configFile <-  (hackage (Just "1.1.4") "ConfigFile") >>= flag (P.DebVersion "1.1.4-2build1") >>= debianize []
   _connection <-  (hackage (Just "0.2.5") "connection") >>= flag (P.DebVersion "0.2.5-2build1") >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
   _constrained_normal <-  (hackage (Just "1.0.2") "constrained-normal") >>= debianize []
-  _constraints <- hackage (Just "0.8") "constraints" >>= debianize []
+  _constraints <- hackage (Just "0.10") "constraints" >>= debianize []
   _consumer <- darcs ("http://src.seereason.com/haskell-consumer") >>= skip (Reason "build failure")
   _constraints <- hackage Nothing "constraints" >>= debianize [] >>= ghcjs_also
   _contravariant <- hackage (Just "1.4") "contravariant" >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
@@ -282,7 +283,7 @@ commonTargets = do
                -- , apt "wheezy" "geneweb"
   _decimal <-  (hackage (Just "0.4.2") "Decimal") >>= flag (P.DebVersion "0.4.2-4") >>= debianize [] -- for hledger
   _deepseq_generics <- hackage (Just "0.2.0.0") "deepseq-generics" >>= {-patch $(embedFile "patches/deepseq-generics.diff") >>=-} debianize [] >>= ghcjs_also
-  _derive <-  (hackage (Just "2.6.3") "derive") >>= debianize [] >>= flag (P.CabalDebian ["--executable", "derive"])
+  _derive <- hackage (Just "2.6.3") "derive" >>= debianize [] >>= flag (P.CabalDebian ["--executable", "derive"])
   --_diff <- hackage (Just "0.3.4") "Diff" >>= debianize [] >>= inGroups ["pretty", "autobuilder-group"] >>= ghcjs_also
   _diff <- git "https://github.com/seereason/Diff" [] >>= debianize [] >>= inGroups ["pretty", "autobuilder-group"] >>= ghcjs_also
   _digest <- hackage (Just "0.0.1.2") "digest" >>= flag (P.DebVersion "0.0.1.2-5") >>= debianize [] >>= ghcjs_also
@@ -356,6 +357,7 @@ commonTargets = do
   _formlets <-  (hackage (Just "0.8") "formlets"
                                >>= patch $(embedFile "patches/formlets.diff")
                                >>= flag (P.DebVersion "0.8-1~hackage1")) >>= debianize []
+  _foundation <- hackage (Just "0.0.19") "foundation" >>= debianize []
   _free <-  (hackage (Just "4.12.4") "free") >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
   _frquotes <-  (hackage (Just "0.2.1") "frquotes") >>= debianize []
                -- Usable versions of this package are available in some dists -
@@ -375,7 +377,7 @@ commonTargets = do
   _gdiff <-  (hackage (Just "1.1") "gdiff") >>= debianize []
   -- Needs update for current template-haskell
   -- _gdiff_th <- git "https://github.com/ddssff/gdiff-th" [] >>= flag (P.BuildDep "cpphs") >>= debianize []
-  _generic_deriving <-  (hackage (Just "1.10.7") "generic-deriving") >>= debianize [] >>= ghcjs_also
+  _generic_deriving <- hackage (Just "1.12.1") "generic-deriving" >>= debianize [] >>= ghcjs_also
   _genI <- darcs "http://hub.darcs.net/kowey/GenI" >>= patch $(embedFile "patches/GenI.diff") >>= debianize [] >>= inGroups ["GenI"]
   _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] >>= skip (Reason "Encountered missing dependencies: 2> binary ==0.8.*")
   _ghc_boot_th <- hackage (Just "8.0.2") "ghc-boot-th" >>= debianize []
@@ -512,15 +514,14 @@ commonTargets = do
   -- The source package name is set to haskell-src-exts by the
   -- cabal-debian package, Debian.Debianize.Details.debianDefaults.
   -- But where does that leave ghcjs-haskell-src-exts?
-  _haskell_src_exts <- hackage (Just "1.18.2") "haskell-src-exts" >>=
+  _haskell_src_exts <- hackage (Just "1.20.1") "haskell-src-exts" >>=
                        debianize [] >>=
                        flag (P.BuildDep "happy") >>=
                        inGroups ["important"] >>= ghcjs_also
   -- This goes with haskell-src-exts-1.18.*
   -- _haskell_src_exts_simple <- hackage "haskell-src-exts-simple" >>= debianize []
   _haskell_src_meta <-
-      -- git "https://github.com/ddssff/haskell-src-meta" [] >>=
-      hackage (Just "0.7.0") "haskell-src-meta" >>=
+      hackage Nothing "haskell-src-meta" >>=
       debianize [] >>=
       inGroups ["happstack", "important"] >>= ghcjs_also
   -- _hastache <- hackage Nothing "hastache" >>= debianize []
@@ -583,8 +584,8 @@ commonTargets = do
   _hspec_meta <-  (hackage (Just "2.2.1") "hspec-meta") >>= debianize []
   _hsSyck <-  (hackage (Just "0.53") "HsSyck") >>= debianize []
   _hStringTemplate <- hackage (Just "0.8.5") "HStringTemplate" >>= debianize []
-  (_hsx2hs, _) <- hackage (Just "0.14.0") "hsx2hs" >>=
-             patch $(embedFile "patches/hsx2hs.diff") >>=
+  (_hsx2hs, _) <- hackage (Just "0.14.1.2") "hsx2hs" >>=
+             patch $(embedFile "patches/hsx2hs.diff") >>= -- build library only for ghcjs
              debianize [] >>=
              inGroups ["happstack", "important"] >>= ghcjs_also
   flag (P.CabalDebian ["--executable", "hsx2hs"]) _hsx2hs
@@ -593,7 +594,7 @@ commonTargets = do
   _htf <-  (hackage (Just "0.13.1.0") "HTF" >>= flag (P.BuildDep "cpphs")) >>= debianize []
   _html <- hackage (Just "1.0.1.2") "html" >>= flag (P.DebVersion "1.0.1.2-11") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _html_entities <- darcs ("http://src.seereason.com/html-entities")
-  _html_xml_utils <- apt "sid" "html-xml-utils"
+  _html_xml_utils <- apt "stretch" "html-xml-utils"
   _http_api_data <- hackage (Just "0.3.7.1") "http-api-data" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _http_client <-  (hackage (Just "0.5.7.1") "http-client") >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
   _http_client_tls <- hackage (Just "0.3.5.1") "http-client-tls" >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
@@ -703,7 +704,7 @@ commonTargets = do
                            , P.flags = [] }
            -}
   _libv8 <- apt "sid" "libv8-3.14" >>= skip (Reason "Use standard")
-  _lifted_async <-  (hackage (Just "0.9.3") "lifted-async") >>= debianize [] >>= inGroups ["ghcjs-comp"]
+  _lifted_async <-  (hackage (Just "0.9.3.3") "lifted-async") >>= debianize [] >>= inGroups ["ghcjs-comp"]
   _lifted_base <-  (hackage (Just "0.2.3.8") "lifted-base") >>= debianize [] >>= ghcjs_also
   _linear <-  (hackage (Just "1.20.2") "linear") >>= debianize [] >>= skip (Reason "Requires bytes")
   _list_extras <-  (hackage (Just "0.4.1.4") "list-extras") >>= debianize []
@@ -736,7 +737,7 @@ commonTargets = do
                -- ,  (hackage (Just "0.3") "hlatex") >>= debianize []
   _maybeT <-  (hackage (Just "1.2") "MaybeT" >>= flag (P.DebVersion "1.2-6")) >>= debianize [] >>= skip (Reason "Could not deduce (Applicative (MaybeT m))")
   _memoize <-  (hackage (Just "0.8.1") "memoize") >>= debianize [] >>= ghcjs_also
-  _memory <-  (hackage (Just "0.13") "memory") >>= debianize [] >>= ghcjs_also
+  _memory <-  (hackage (Just "0.14.14") "memory") >>= debianize [] >>= ghcjs_also
   _microlens <- hackage (Just "0.4.8.1") "microlens" >>= debianize [] >>= ghcjs_also
   _mime <- git ("https://github.com/seereason/haskell-mime") [] >>= debianize [] >>= inGroups ["autobuilder-group"]
   _mime_mail <-  (git "https://github.com/snoyberg/mime-mail.git" [] >>= cd "mime-mail") >>= debianize [] >>= inGroups [ "authenticate", "important"]
@@ -794,7 +795,7 @@ commonTargets = do
   _network <- hackage (Just "2.6.3.1") "network" >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _network_info <-  (hackage (Just "0.2.0.8") "network-info") >>= flag (P.DebVersion "0.2.0.8-1") >>= debianize [] >>= ghcjs_also
   _network_uri <-  (hackage (Just "2.6.1.0") "network-uri") >>= debianize [] >>= ghcjs_also
-  _newtype_generics <-  (hackage (Just "0.5") "newtype-generics") >>= debianize [] >>= inGroups ["autobuilder-group"]
+  _newtype_generics <- hackage (Just "0.5.1") "newtype-generics" >>= debianize [] >>= inGroups ["autobuilder-group"]
   _numeric_extras <-  (hackage (Just "0.1") "numeric-extras") >>= flag (P.DebVersion "0.1-1") >>= debianize []
   _numInstances <-  (hackage (Just "1.4") "NumInstances") >>= flag (P.DebVersion "1.4-4") >>= debianize []
   _objectName <-  (hackage (Just "1.1.0.1") "ObjectName") >>= flag (P.DebVersion "1.1.0.1-1") >>= debianize []
@@ -818,7 +819,7 @@ commonTargets = do
   -- pandoc 1.19.2.4 requires pandoc-types < 1.17.1
   _pandoc_types <- hackage (Just "1.17.0.5") "pandoc-types" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
   _pango <-  (hackage (Just "0.13.1.1") "pango") >>= debianize [] >>= skip (Reason "see cairo")
-  _parallel <- hackage (Just "3.2.1.0") "parallel" >>= flag (P.DebVersion "3.2.1.0-1") >>= debianize [] >>= inGroups ["platform"]
+  _parallel <- hackage (Just "3.2.1.1") "parallel" >>= debianize [] >>= inGroups ["platform"]
   _parseargs <-  (hackage (Just "0.2.0.7") "parseargs") >>= debianize [] >>= ghcjs_also
                -- , apt (rel release "wheezy" "quantal") "haskell-parsec2" >>= patch $(embedFile "patches/parsec2.diff")
   _parsec <-  (hackage (Just "3.1.11") "parsec" >>= apply (substitute "parsec2" "parsec3")) >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
@@ -987,7 +988,7 @@ commonTargets = do
   _stringbuilder <-  (hackage (Just "0.5.0") "stringbuilder") >>= flag (P.DebVersion "0.5.0-4") >>= debianize []
   _stringsearch <-  (hackage (Just "0.3.6.6") "stringsearch") >>= flag (P.DebVersion "0.3.6.6-4") >>= debianize []
   _sunroof_compiler <-  (git "http://github.com/ku-fpg/sunroof-compiler" [] >>= patch $(embedFile "patches/sunroof-compiler.diff")) >>= debianize [] >>= skip (Reason "Setup.hs:3:1: parse error on input ‘import’")
-  _syb <- hackage (Just "0.6") "syb" >>= flag (P.DebVersion "0.6-1") >>= debianize [] >>= inGroups ["platform"] -- haskell-src-meta requres syb<0.6
+  _syb <- hackage Nothing "syb" >>= debianize [] >>= inGroups ["platform"] -- haskell-src-meta requres syb<0.6
   _syb_with_class <- git "http://github.com/Happstack/syb-with-class" [] >>= debianize [] >>= ghcjs_also
   _syb_with_class_instances_text <-
                   (hackage (Just "0.0.1") "syb-with-class-instances-text"
@@ -1092,7 +1093,7 @@ commonTargets = do
                   flag (P.RelaxDep "cpphs") >>=
                   debianize [] >>= ghcjs_also
   _utility_ht <- hackage (Just "0.0.11") "utility-ht" >>= flag (P.DebVersion "0.0.11-1") >>= debianize [] >>= ghcjs_also
-  _uuid <- hackage (Just "1.3.12") "uuid" >>= debianize [] >>= ghcjs_also
+  _uuid <- hackage (Just "1.3.13") "uuid" >>= debianize [] >>= ghcjs_also
   _uuid_orphans <- git "https://github.com/seereason/uuid-orphans" [] >>= debianize [] >>= inGroups ["clckwrks", "important"] >>= ghcjs_also
   _uuid_types <-  (hackage (Just "1.0.3") "uuid-types") >>= debianize [] >>= ghcjs_also
   _vacuum <-  (hackage (Just "2.2.0.0") "vacuum" >>= flag (P.SkipVersion "2.1.0.1")) >>= debianize [] >>= skip (Reason "#error Unsupported GHC version in ClosureTypes.hs!")
