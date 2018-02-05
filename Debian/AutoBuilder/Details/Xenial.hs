@@ -102,12 +102,14 @@ buildTargets8 = do
   _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize [] >>= ghcjs_also
   _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize [] >>= ghcjs_also
   _cabal <- hackage (Just "2.0.0.2") "Cabal" >>= debianize []
-  _cabal_install <- hackage (Just "2.0.0.0") "cabal-install" >>=
+  -- 1.24.0.2 is the last cabal-install that supported the topdown solver
+  -- (which apparently doesn't work, but we can't build ghcjs without it.)
+  _cabal_install <- hackage (Just "1.24.0.2") "cabal-install" >>=
                     -- Avoid creating a versioned libghc-cabal-dev
                     -- dependency, as it is a virtual package in ghc
-                    patch $(embedFile "patches/cabal-install.diff") >>=
                     debianize [] >>=
-                    -- patch $(embedFile "patches/cabal-install.diff") >>= -- cabal-debian-4.35.7 outputs libghc-cabal-dev | ghc instead of ghc | libghc-cabal-dev
+                    -- Allow building with Cabal-2
+                    patch $(embedFile "patches/cabal-install.diff") >>=
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>=
                     inGroups []
 
