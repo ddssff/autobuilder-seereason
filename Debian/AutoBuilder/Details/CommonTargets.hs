@@ -443,7 +443,7 @@ commonTargets = do
                -- , debianize "AES" [P.DebVersion "0.2.8-1~hackage1"]
   _gtk3 <- hackage (Just "0.13.9") "gtk3" >>= flag (P.CabalPin "0.13.9") >>= flag (P.BuildDep "libgtk-3-dev") >>= debianize [] >>= inGroups ["glib"] >>= skip (Reason "see cairo and glib")
   _gyp <- apt "sid" "gyp" >>= skip (Reason "Use standard")
-  _hackage_security <- hackage (Just "0.5.2.2") "hackage-security" >>= debianize []
+  _hackage_security <- hackage (Just "0.5.2.2") "hackage-security" >>= patch $(embedFile "patches/hackage-security.diff") >>= debianize []
   _half <-  (hackage (Just "0.2.2.3") "half" >>= inGroups ["gl"]) >>= debianize []
   _hamlet <-  (hackage (Just "1.2.0") "hamlet") >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "No input files to haddock?")
   -- seereason still depends on this
