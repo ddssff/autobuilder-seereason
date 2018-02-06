@@ -39,10 +39,14 @@ seereasonDefaults =
        splitCabal (mkPackageName "http-types") (DebBase "http-types-7") (mkVersion [0, 8])
 
        -- Remap to build debs for Cabal that do not conflict with the
-       -- virtual package provided by ghc.
-       remapCabal (mkPackageName "Cabal") (DebBase "cabal2")
-       -- But only use the package name if the dependency requires Cabal >= 2
-       splitCabal (mkPackageName "Cabal") (DebBase "cabal") (mkVersion [2])
+       -- virtual package provided by ghc.  But only use the package
+       -- name if the dependency requires Cabal >= 2.  This split is
+       -- disabled because it creates a versioned dependency for
+       -- the virtual libghc-cabal-dev built into ghc-8.0.2:
+       --    libghc-cabal-dev < 2 | libghc-cabal2-dev >= 2 | ghc
+       --
+       -- remapCabal (mkPackageName "Cabal") (DebBase "cabal2")
+       -- splitCabal (mkPackageName "Cabal") (DebBase "cabal") (mkVersion [2])
 
        mapCabal (mkPackageName "web-plugins") (DebBase "web-plugins")
        splitCabal (mkPackageName "web-plugins") (DebBase "web-plugins-1") (mkVersion [0, 2])

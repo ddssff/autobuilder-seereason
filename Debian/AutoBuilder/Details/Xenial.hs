@@ -101,19 +101,19 @@ buildTargets8 = do
   _haddock_library8 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
   _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize [] >>= ghcjs_also
   _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize [] >>= ghcjs_also
-  _cabal <- hackage (Just "2.0.0.2") "Cabal" >>= debianize []
+  -- We don't need this until ghc-8.2.2, right?
+  -- _cabal <- hackage (Just "2.0.0.2") "Cabal" >>= debianize []
+
   -- 1.24.0.2 is the last cabal-install that supported the topdown solver
   -- (which apparently doesn't work, but we can't build ghcjs without it.)
   _cabal_install <- hackage (Just "1.24.0.2") "cabal-install" >>=
                     -- Avoid creating a versioned libghc-cabal-dev
                     -- dependency, as it is a virtual package in ghc
+                    patch $(embedFile "patches/cabal-install.diff") >>=
                     debianize [] >>=
                     -- Allow building with Cabal-2
-                    patch $(embedFile "patches/cabal-install.diff") >>=
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>=
                     inGroups []
-
-
   _ghcjs_dom <- hackage (Just "0.9.1.1") "ghcjs-dom" >>= debianize [] >>= inGroups ["glib"] >>= ghcjs
   _ghcjs_dom_hello <- hackage (Just "6.0.0.0") "ghcjs-dom-hello" >>=
                       patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
