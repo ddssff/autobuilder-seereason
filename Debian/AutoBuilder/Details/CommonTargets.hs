@@ -705,7 +705,7 @@ commonTargets = do
                , P.Package { P.spec = DebDir (Uri ("http://src.seereason.com/jcrop/Jcrop.tar.gz") "028feeb9b6415af3b7fd7d9471c92469") (Darcs ("http://src.seereason.com/jcrop-debian"))
                            , P.flags = [] }
            -}
-  _libsystemd_journal <- hackage Nothing "libsystemd-journal" >>= debianize []
+  _libsystemd_journal <- hackage Nothing "libsystemd-journal" >>= flag (P.BuildDep "libsystemd-dev") >>= debianize []
   _libv8 <- apt "sid" "libv8-3.14" >>= skip (Reason "Use standard")
   _lifted_async <-  (hackage (Just "0.9.3.3") "lifted-async") >>= debianize [] >>= inGroups ["ghcjs-comp"]
   _lifted_base <-  (hackage (Just "0.2.3.8") "lifted-base") >>= debianize [] >>= ghcjs_also
