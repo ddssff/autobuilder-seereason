@@ -72,6 +72,7 @@ buildTargets7 = do
   -- Unfortunately this package requires haskell-src-exts<1.19, which is gone
   _haskell_names <- hackage (Just "0.8.0") "haskell-names" >>= debianize []
   _singletons <- hackage (Just "2.1") "singletons" >>= debianize []
+  _uri_bytestring <- hackage (Just "0.3.0.2") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   buildTargets
 
 nodejs :: Monad m => TSt m PackageId
@@ -134,6 +135,7 @@ buildTargets8 = do
   _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
   _haskell_names <- hackage (Just "0.9.1") "haskell-names" >>= debianize []
   _singletons <- hackage (Just "2.3.1") "singletons" >>= debianize [] -- 2.4 requires base-4.11
+  _uri_bytestring <- hackage (Just "0.3.1.0") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   buildTargets
 
 

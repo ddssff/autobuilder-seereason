@@ -705,6 +705,7 @@ commonTargets = do
                , P.Package { P.spec = DebDir (Uri ("http://src.seereason.com/jcrop/Jcrop.tar.gz") "028feeb9b6415af3b7fd7d9471c92469") (Darcs ("http://src.seereason.com/jcrop-debian"))
                            , P.flags = [] }
            -}
+  _libsystemd_journal <- hackage Nothing "libsystemd-journal" >>= debianize []
   _libv8 <- apt "sid" "libv8-3.14" >>= skip (Reason "Use standard")
   _lifted_async <-  (hackage (Just "0.9.3.3") "lifted-async") >>= debianize [] >>= inGroups ["ghcjs-comp"]
   _lifted_base <-  (hackage (Just "0.2.3.8") "lifted-base") >>= debianize [] >>= ghcjs_also
@@ -714,6 +715,7 @@ commonTargets = do
   _list_tries <-  (hackage (Just "0.6.3") "list-tries" {- >>= patch $(embedFile "patches/list-tries.diff") -}) >>= debianize [] >>= inGroups ["happstack", "important"] -- version 0.5.2 depends on dlist << 0.7
   _loch_th <-  (hackage (Just "0.2.1") "loch-th") >>= debianize []
   _logging <- hackage (Just "3.0.4") "logging" >>= debianize [] >>= inGroups ["important"] {->>= ghcjs_also-}
+  _logging_facade <- hackage Nothing "logging-facade" >>= debianize []
   _logic_classes <-  (git "https://github.com/seereason/logic-classes" []) >>= debianize [] >>= inGroups ["seereason", "important"]
   _logic_TPTP <-  (hackage (Just "0.4.4.0") "logic-TPTP") >>= debianize []
                  >>= patch $(embedFile "patches/logic-TPTP.diff")
@@ -839,7 +841,8 @@ commonTargets = do
                  ghcjs_also
   _pem <-  (hackage (Just "0.2.2") "pem") >>= flag (P.DebVersion "0.2.2-5") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _permutation <-  (hackage (Just "0.5.0.5") "permutation") >>= debianize []
-  _pipes <-  (hackage (Just "4.2.0") "pipes") >>= debianize []
+  _pipes <- hackage Nothing "pipes" >>= debianize []
+  _pipes_safe <- hackage Nothing "pipes-safe" >>= debianize []
   _placeholders <-  (hackage (Just "0.1") "placeholders") >>= debianize []
   _plugins_auto <-  (hackage (Just "0.0.4") "plugins-auto" >>= patch $(embedFile "patches/plugins-auto.diff")) >>= debianize [] >>= skip (Reason "Couldn't match expected type ‘Int#’ with actual type ‘Int’")
   _plugins <- git "https://github.com/stepcut/plugins" [] >>= flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>= flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>= debianize [] >>= skip (Reason "obsolete")
@@ -1075,6 +1078,7 @@ commonTargets = do
   _universe_base <- hackage Nothing "universe-base" >>= flag (P.DebVersion "1.0.2.1-1") >>= debianize []
   _universe_instances_base <- hackage Nothing "universe-instances-base" >>= debianize []
   _universe_reverse_instances <- hackage Nothing "universe-reverse-instances" >>= debianize []
+  _unix_bytestring <- hackage Nothing "unix-bytestring" >>= debianize [] 
   _unix_compat <-  (hackage (Just "0.4.2.0") "unix-compat") >>= debianize [] >>= ghcjs_also
   _unix_time <-  (hackage (Just "0.3.6") "unix-time" {->>= flag (P.CabalDebian ["--no-run-tests"])-}) >>= flag (P.DebVersion "0.3.6-1") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also -- doctest assumes cabal build dir is dist
   _unixutils <- git "https://github.com/seereason/haskell-unixutils" [] >>= flag (P.DebVersion "1.54.1-2build2") >>= debianize [] >>= inGroups ["autobuilder-group", "important"] >>= ghcjs_also
@@ -1084,7 +1088,6 @@ commonTargets = do
                -- ,  (hackage "utf8-prelude" >>= flag (P.DebVersion "0.1.6-1~hackage1")) >>= debianize []
                -- The GHC in wheezy conflicts with libghc-containers-dev, so we can't build this.
                -- , wonly $  (hackage "containers") >>= debianize []
-  _uri_bytestring <- hackage (Just "0.3.1.0") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _urlencoded <-  (hackage (Just "0.4.1") "urlencoded" {->>= patch $(embedFile "patches/urlencoded.diff")-}) >>= debianize []
   _userid <- git "https://github.com/Happstack/userid" [] >>= debianize [] >>= inGroups ["authenticate", "happstack", "important"] >>= ghcjs_also
   _utf8_light <-  (hackage (Just "0.4.2") "utf8-light") >>= flag (P.DebVersion "0.4.2-4") >>= debianize []
