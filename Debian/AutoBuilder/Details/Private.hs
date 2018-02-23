@@ -37,6 +37,7 @@ buildTargets _params = do
   _editor_common <- git "ssh://git@github.com/seereason/editor-common" [] >>= debianize [] >>= ghcjs_also
   _editor_client <- git "ssh://git@github.com/seereason/editor-client" [] >>= debianize [] >>= ghcjs
   _editor_server <- git "ssh://git@github.com/seereason/editor-server" [] >>= debianize []
+  _editor_taggy <- git "ssh://git@github.com/seereason/editor-taggy" [] >>= debianize [] >>= ghcjs
   let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" []
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs
   _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize [] >>= inGroups ["private-libs"]
