@@ -36,7 +36,7 @@ import Debian.Repo.Fingerprint
 
 buildTargets7 :: Monad m => TSt m ()
 buildTargets7 = do
-  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp"]
+  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
   _nodejs <- nodejs
   -- _binary <- hackage (Just "0.8.4.0") "binary" >>= debianize [] >>= ghcjs_also
   _haddock_api7 <-
@@ -135,7 +135,9 @@ buildTargets8 = do
   _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
   _haskell_names <- hackage (Just "0.9.1") "haskell-names" >>= debianize []
   _singletons <- hackage (Just "2.3.1") "singletons" >>= debianize [] -- 2.4 requires base-4.11
-  _uri_bytestring <- hackage (Just "0.3.1.0") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  -- The ghc-8.0 branch of ghcjs needs version 0.3.1.0, but we
+  -- are not using that yet.
+  _uri_bytestring <- hackage (Just "0.3.0.2") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   buildTargets
 
 

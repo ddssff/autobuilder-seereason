@@ -135,6 +135,7 @@ commonTargets = do
   _cc_delcont <-  (hackage (Just "0.2") "CC-delcont" >>= flag (P.DebVersion "0.2-1~hackage1")) >>= debianize [] >>= skip (Reason "Missing applicative instances in 0.2")
                -- , apt (rel release "wheezy" "quantal") "haskell-cereal"
   _cereal <-  (hackage (Just "0.5.3.0") "cereal" {->>= flag (P.CabalPin "0.4.1.1")-}) >>= debianize [] >>= ghcjs_also -- Concerns about migration in 0.5
+  _cereal_vector <- hackage (Just "0.2.0.1") "cereal-vector" >>= debianize [] >>= ghcjs_also
   _certificate <- hackage (Just "1.3.9") "certificate" >>= patch $(embedFile "patches/certificate.diff") >>= tflag (P.DebVersion "1.3.9-1build4") >>= debianize [] >>= skip (Reason "base < 4.8")
   _cgi <- (hackage (Just "3001.2.2.2") "cgi" {- `patch` $(embedFile "patches/cgi.diff") -}) >>= debianize [] >>= inGroups ["platform"] >>= skip (Reason "Depends on exceptions < 0.7")
   _charset <-  (hackage (Just "0.3.7.1") "charset") >>= flag (P.DebVersion "0.3.7.1-4build1") >>= debianize []
@@ -1111,7 +1112,7 @@ commonTargets = do
   _vector_algorithms <- hackage (Just "0.7.0.1") "vector-algorithms" >>=
                         flag (P.DebVersion "0.7.0.1-3build1") >>= debianize [] >>=
                         ghcjs_also
-  _vector_binary_instances <- hackage (Just "0.2.3.4") "vector-binary-instances" >>= debianize [] >>= skip (Reason "vector dependency")
+  _vector_binary_instances <- hackage (Just "0.2.3.4") "vector-binary-instances" >>= debianize [] >>= ghcjs_also
   _virthualenv <-  (hackage (Just "0.2.2") "virthualenv" >>= patch $(embedFile "patches/virthualenv.diff")) >>= debianize [] >>= skip (Reason "dependencies are missing: filepath >=1.1.0.3 && <1.4")
 {-
   _virthualenv <- pure $ P.Package { P._spec = Debianize'' (Patch (Hackage "virthualenv") $(embedFile "patches/virthualenv.diff")) Nothing

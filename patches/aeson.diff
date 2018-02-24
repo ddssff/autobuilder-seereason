@@ -9,3 +9,21 @@
      Data.Aeson.Encode.Builder
      Data.Aeson.Encode.Functions
      Data.Aeson.Functions
+@@ -95,7 +95,6 @@
+     containers,
+     deepseq,
+     dlist >= 0.2,
+-    fail == 4.9.*,
+     ghc-prim >= 0.2,
+     hashable >= 1.1.2.0,
+     mtl,
+@@ -111,6 +110,9 @@
+   if !impl(ghc >= 8.0)
+     -- `Data.Semigroup` is available in base only since GHC 8.0 / base 4.9
+     build-depends: semigroups >= 0.16.1 && < 0.19
++  else
++    -- fail is an empty package as of ghc8, and some tooling can't deal
++    build-depends: fail == 4.9.*
+ 
+   if !impl(ghc >= 7.10)
+     -- `Numeric.Natural` is available in base only since GHC 7.10 / base 4.8
