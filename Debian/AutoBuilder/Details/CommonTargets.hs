@@ -611,7 +611,7 @@ commonTargets = do
   _http_conduit <-  (hackage (Just "2.2.4") "http-conduit") >>= debianize [] >>= inGroups ["conduit", "important"] -- fb isn't ready for 2.2
   _http_date <-  (hackage (Just "0.0.6.1") "http-date") >>= flag (P.DebVersion "0.0.6.1-3build1") >>= debianize []
   _http_media <-  (hackage (Just "0.6.4") "http-media") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
-  _http <-  (hackage Nothing "HTTP") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
+  _http <- hackage (Just "4000.3.9") "HTTP" >>= debianize [] >>= inGroups ["platform", "HTTP"] >>= ghcjs_also
   _http2 <-  (hackage (Just "1.6.1") "http2") >>= debianize []
   _http_streams <-  (hackage (Just "0.8.4.0") "http-streams") >>= debianize [] >>= inGroups ["platform", "appraisalscribe", "important"]
   _http_types <-  (hackage (Just "0.8.6") "http-types" >>= flag (P.CabalPin "0.8.6")) >>= flag (P.DebVersion "0.9-2") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also -- web-routes specifies << 0.9

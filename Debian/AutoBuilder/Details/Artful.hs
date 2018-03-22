@@ -279,7 +279,6 @@ artfulTargets = do
   _html <-  (hackage (Just "1.0.1.2") "html"
                              >>= tflag (P.DebVersion "1.0.1.2-7")
                              >>= pflag (P.DebVersion "1.0.1.2-5")) >>= debianize [] >>= aflag (P.DebVersion "1.0.1.2-13build1") >>= inGroups ["platform"] >>= ghcjs_also
-  _http <-  (hackage Nothing "HTTP") >>= debianize [] >>= aflag (P.DebVersion "1:4000.3.7-1build1") >>= inGroups ["platform"] >>= ghcjs_also
   _http_api_data <- hackage (Just "0.2.4") "http-api-data" >>= debianize [] >>= aflag (P.DebVersion "0.2.4-5build2") >>= ghcjs_also
   _http_client <-  (hackage (Just "0.4.30" {-"0.5.4"-}) "http-client") >>= debianize [] >>= aflag (P.DebVersion "0.4.31.2-1build1") >>= inGroups ["conduit", "important"] >>= ghcjs_also
   _http_client_tls <- hackage (Just "0.2.4.1" {-"0.3.3"-}) "http-client-tls" >>= debianize [] >>= aflag (P.DebVersion "0.2.4.1-3build2") >>= inGroups ["conduit", "important"] >>= ghcjs_also

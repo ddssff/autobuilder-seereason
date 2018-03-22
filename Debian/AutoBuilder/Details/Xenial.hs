@@ -84,7 +84,7 @@ nodejs =
 
 buildTargets8 :: Monad m => TSt m ()
 buildTargets8 = do
-  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp"]
+  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
   _nodejs <- nodejs
   -- _ghc8 <- apt "sid" "ghc" >>= patch $(embedFile "patches/ghc.diff") >>= inGroups ["ghc8-comp"]
   _haddock_api8 <-
