@@ -1,0 +1,20 @@
+--- old/src/Data/IxSet/Typed.hs	2017-09-13 06:53:34.325837290 -0700
++++ new/src/Data/IxSet/Typed.hs	2018-03-22 22:02:11.249296447 -0700
+@@ -193,7 +193,7 @@
+ import           Control.DeepSeq
+ import           Data.Foldable  (Foldable)
+ import qualified Data.Foldable  as Fold
+-import           Data.Generics  (Data, gmapQ)
++import           Data.Generics  (Data, gmapQ, Typeable)
+ -- import qualified Data.Generics.SYB.WithClass.Basics as SYBWC
+ import qualified Data.IxSet.Typed.Ix  as Ix
+ import           Data.IxSet.Typed.Ix  (Ix(Ix))
+@@ -378,7 +378,7 @@
+ instance (Indexable ixs a, Read a) => Read (IxSet ixs a) where
+   readsPrec n = map (first fromSet) . readsPrec n
+ 
+-instance (Indexable ixs a, SafeCopy a) => SafeCopy (IxSet ixs a) where
++instance (Typeable ixs, Indexable ixs a, SafeCopy a) => SafeCopy (IxSet ixs a) where
+   putCopy = contain . safePut . toList
+   getCopy = contain $ fmap fromList safeGet
+ 
