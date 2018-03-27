@@ -1047,7 +1047,8 @@ commonTargets = do
       hackage Nothing "th-lift-instances" >>=
       debianize [] >>= inGroups ["important"] >>= ghcjs_also
   _th_orphans <- hackage Nothing "th-orphans" >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
-  _th_typegraph <- git "http://github.com/seereason/th-typegraph" [] >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
+  _th_unify <- git "http://github.com/seereason/th-unify" [] >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
+  _th_unify_clients <- git "http://github.com/seereason/th-unify-clients" [] >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _threads <-  (hackage (Just "0.5.1.4") "threads") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _th_reify_many <- hackage Nothing "th-reify-many" >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _time_compat <-  (hackage (Just "0.1.0.3") "time-compat") >>= flag (P.DebVersion "0.1.0.3-5") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
