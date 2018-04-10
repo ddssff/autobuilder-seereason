@@ -1,0 +1,11 @@
+--- old/debian/control	2017-11-12 04:21:19.000000000 -0800
++++ new/debian/control	2018-03-31 10:56:02.428387627 -0700
+@@ -4,7 +4,7 @@
+ Maintainer: Jörg Frings-Fürst <debian@jff.email>
+ Standards-Version: 4.1.1
+ Build-Depends:
+- debhelper (>= 10),
++ debhelper (>= 9),
+  gnome-pkg-tools (>= 0.10),
+  libcairo2-dev,
+  libcolord-dev,

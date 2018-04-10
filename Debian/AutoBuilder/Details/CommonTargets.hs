@@ -11,7 +11,7 @@ import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, D
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
                                                darcs, apt, git, hg, cd, GroupName, inGroups, createPackage)
-import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage), GitSpec(Branch))
+import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage), GitSpec(..))
 
 commonTargets :: Monad m => TSt m ()
 commonTargets = do
@@ -20,8 +20,7 @@ commonTargets = do
   --------------------------------------------------
   _abstract_deque <-  hackage (Just "0.3") "abstract-deque" >>= flag (P.DebVersion "0.3-5") >>= debianize [] {->>= setDebVersion-}
   _abstract_par <- hackage (Just "0.3.3") "abstract-par" >>= flag (P.DebVersion "0.3.3-5") >>= debianize []
-  _acid_state <- git "https://github.com/acid-state/acid-state" [{-Branch "log-inspection"-}] >>=
-                 debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
+  _acid_state <- git "https://github.com/acid-state/acid-state" [Commit "7a185444df1e78a2516e221fe7e55a22d044643f"{-, Branch "log-inspection"-}] >>= debianize [] >>= inGroups ["happstack", "important"]
   _adjunctions <- hackage (Just "4.3") "adjunctions" >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
   _aeson <- hackage (Just "0.11.2.0") "aeson" >>=
             patch $(embedFile "patches/aeson.diff") >>=
@@ -349,7 +348,7 @@ commonTargets = do
   _fgl <-  (hackage (Just "5.5.3.0") "fgl") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _file_embed <-  (hackage (Just "0.0.10") "file-embed") >>= debianize [] >>= ghcjs_also
   _file_location <- hackage (Just "0.4.9.1") "file-location" >>= {-flag (P.CabalDebian [ "--source-package-name", "file-location" ]) >>=-} debianize []
-  _filelock <- hackage (Just "0.1.1.2") "filelock" >>= debianize []
+  _filelock <- hackage (Just "0.1.1.2") "filelock" >>= debianize [] >>= ghcjs_also
   _filemanip <- git "https://github.com/ddssff/filemanip" [] >>= debianize [] >>= ghcjs_also
   _filemanip_extra <- git "https://github.com/seereason/filemanip-extra" [] >>= debianize [] >>= inGroups ["autobuilder-group", "important"] >>= ghcjs_also
   _fingertree <- hack (Just "0.1.1.0") "fingertree" >>= flag (P.DebVersion "0.1.1.0-3")
@@ -647,7 +646,7 @@ commonTargets = do
   _irc <- hackage (Just "0.6.1.0") "irc" >>= flag (P.DebVersion "0.6.1.0-5build1") >>= debianize [] >>= inGroups ["important"]
   _iso3166_country_codes <-  (hackage (Just "0.20140203.7") "iso3166-country-codes") >>= debianize []
   _ixset <-  (git "https://github.com/Happstack/ixset.git" []) >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also -- ,  (hackage (Just "1.0.7") "ixset") >>= debianize []
-  _ixset_typed <- hackage (Just "0.3.1") "ixset-typed" >>= debianize [] >>= inGroups [ "authenticate", "important"] -- dependency of happstack-authenticate-2
+  _ixset_typed <- hackage (Just "0.3.1") "ixset-typed" >>= debianize [] >>= inGroups [ "authenticate", "important"] >>= ghcjs_also -- dependency of happstack-authenticate-2
   _jmacro <-  (hackage (Just "0.6.14") "jmacro") >>= debianize [] >>= inGroups ["happstack", "th-path", "important"] >>= ghcjs_also
   _jmacro_rpc <- hackage (Just "0.3.2") "jmacro-rpc" >>= inGroups ["happstack", "important"] >>= debianize [] >>= broken
   _jmacro_rpc_happstack <- hackage (Just "0.3.2") "jmacro-rpc-happstack" >>= flag (P.SkipVersion "0.2.1") >>= debianize [] >>= broken -- Really just waiting for jmacro-rpc
@@ -888,6 +887,7 @@ commonTargets = do
   -- _quickcheck_instances <-  (hackage (Just "0.3.12") "quickcheck-instances") >>= debianize []
   _quickcheck_io <-  (hackage (Just "0.1.3") "quickcheck-io") >>= debianize [] >>= ghcjs_also
   -- quickCheck1 =  (hackage "QuickCheck" >>= flag (P.CabalPin "1.2.0.1") >>= flag (P.DebVersion "1.2.0.1-2") >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize []
+  _quickcheck_properties <- hackage Nothing "quickcheck-properties" >>= debianize [] >>= ghcjs_also
   _random <- hackage (Just "1.1") "random" >>= flag (P.DebVersion "1.1-3") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also -- 1.1.0.3 fixes the build for ghc-7.4.2 / base < 4.6
   _reducers <- hack (Just "3.12.1") "reducers" >>= flag (P.DebVersion "3.12.1-1build1")
   _ref_tf <- hackage (Just "0.4.0.1") "ref-tf" >>= debianize [] >>= ghcjs_also
@@ -960,6 +960,8 @@ commonTargets = do
   _show_please <- {-hackage Nothing "show-please"-} git "https://github.com/ddssff/show-please" [] >>= debianize [] >>= ghcjs_also
   _silently <-  (hackage (Just "1.2.5") "silently") >>= flag (P.DebVersion "1.2.5-3") >>= debianize []
   _simple_reflect <-  (hackage (Just "0.3.2") "simple-reflect") >>= flag (P.DebVersion "0.3.2-5") >>= debianize []
+  -- Requires debhelper >= 10
+  -- _simple_scan <- apt "stretch" "simple-scan"
   _simple_sendfile <-  (hackage (Just "0.2.25") "simple-sendfile") >>= debianize []
   -- pandoc 1.19.2.4 requires skylighting << 0.2
   _skylighting <- hackage (Just "0.1.1.5") "skylighting" >>=
