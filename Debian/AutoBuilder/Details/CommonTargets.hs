@@ -65,7 +65,7 @@ commonTargets = do
   _autobuilder_seereason <-  (git "https://github.com/ddssff/autobuilder-seereason" []) >>= debianize [] >>= inGroups ["autobuilder-group", "important"]
   _auto_update <-  (hackage (Just "0.1.4") "auto-update") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _base_compat <-  (hackage (Just "0.9.3") "base-compat") >>= debianize [] >>= ghcjs_also
-  _base_orphans <-  (hackage (Just "0.5.4") "base-orphans") >>= debianize [] >>= ghcjs_also
+  _base_orphans <-  (hackage (Just "0.5.4") "base-orphans") >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
   _base16_bytestring <-  (hackage (Just "0.1.1.6") "base16-bytestring") >>= flag (P.DebVersion "0.1.1.6-5") >>= debianize [] >>= ghcjs_also
   _base64_bytestring <- hackage (Just "1.0.0.1") "base64-bytestring" >>= flag (P.DebVersion "1.0.0.1-6") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _base_unicode_symbols <- hackage (Just "0.2.2.4") "base-unicode-symbols" >>= flag (P.DebVersion "0.2.2.4-7") >>= debianize []
@@ -354,7 +354,7 @@ commonTargets = do
   _fingertree <- hack (Just "0.1.1.0") "fingertree" >>= flag (P.DebVersion "0.1.1.0-3")
   _fixed <- hackage (Just "0.2.1.1") "fixed" >>= debianize []
   _flock <- hackage (Just "0.3.1.8") "flock" >>= debianize []
-  _fmlist <-  (hackage (Just "0.9") "fmlist") >>= flag (P.DebVersion "0.9-4") >>= debianize [] >>= ghcjs_also
+  _fmlist <-  (hackage (Just "0.9") "fmlist") >>= flag (P.DebVersion "0.9-4") >>= debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
   _foreign_var <-  (hackage (Just "0.1") "foreign-var") >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "dependencies")
   _formlets <-  (hackage (Just "0.8") "formlets"
                                >>= patch $(embedFile "patches/formlets.diff")
@@ -592,7 +592,7 @@ commonTargets = do
              inGroups ["happstack", "important"] >>= ghcjs_also
   flag (P.CabalDebian ["--executable", "hsx2hs"]) _hsx2hs
   _hsx_jmacro <-  (git "https://github.com/Happstack/hsx-jmacro.git" []) >>= debianize [] >>= inGroups ["happstack", "important"]
-  _hsyslog <-  (hackage (Just "4") "hsyslog") >>= debianize []
+  _hsyslog <-  (hackage (Just "5.0.1") "hsyslog") >>= debianize []
   _htf <-  (hackage (Just "0.13.1.0") "HTF" >>= flag (P.BuildDep "cpphs")) >>= debianize []
   _html <- hackage (Just "1.0.1.2") "html" >>= flag (P.DebVersion "1.0.1.2-11") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _html_entities <- darcs ("http://src.seereason.com/html-entities")
@@ -1094,13 +1094,13 @@ commonTargets = do
                -- The GHC in wheezy conflicts with libghc-containers-dev, so we can't build this.
                -- , wonly $  (hackage "containers") >>= debianize []
   _urlencoded <-  (hackage (Just "0.4.1") "urlencoded" {->>= patch $(embedFile "patches/urlencoded.diff")-}) >>= debianize []
-  _userid <- git "https://github.com/Happstack/userid" [] >>= debianize [] >>= inGroups ["authenticate", "happstack", "important"] >>= ghcjs_also
+  _userid <- git "https://github.com/Happstack/userid" [] >>= debianize [] >>= inGroups ["authenticate", "autobuilder-group", "happstack", "important"] >>= ghcjs_also
   _utf8_light <-  (hackage (Just "0.4.2") "utf8-light") >>= flag (P.DebVersion "0.4.2-4") >>= debianize []
   _utf8_string <- hackage (Just "1.0.1.1") "utf8-string" >>=
                   flag (P.DebVersion "1.0.1.1-1") >>=
                   flag (P.RelaxDep "hscolour") >>=
                   flag (P.RelaxDep "cpphs") >>=
-                  debianize [] >>= ghcjs_also
+                  debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
   _utility_ht <- hackage (Just "0.0.11") "utility-ht" >>= flag (P.DebVersion "0.0.11-1") >>= debianize [] >>= ghcjs_also
   _uuid <- hackage (Just "1.3.13") "uuid" >>= debianize [] >>= ghcjs_also
   _uuid_orphans <- git "https://github.com/seereason/uuid-orphans" [] >>= debianize [] >>= inGroups ["clckwrks", "important"] >>= ghcjs_also

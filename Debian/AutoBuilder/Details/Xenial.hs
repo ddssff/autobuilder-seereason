@@ -77,11 +77,11 @@ buildTargets7 = do
                       inGroups ["glib"] >>=
                       ghcjs >>=
                       skip (Reason "see cairo and glib")
-  _traverse_with_class <- hackage (Just "0.2.0.4") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
+  _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
   -- Unfortunately this package requires haskell-src-exts<1.19, which is gone
-  _haskell_names <- hackage (Just "0.8.0") "haskell-names" >>= debianize []
-  _singletons <- hackage (Just "2.1") "singletons" >>= debianize []
-  _uri_bytestring <- hackage (Just "0.3.0.2") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  _haskell_names <- hackage (Just "0.9.1") "haskell-names" >>= debianize []
+  _singletons <- hackage (Just "2.3.1") "singletons" >>= debianize []
+  _uri_bytestring <- hackage (Just "0.3.1.0") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
 #else
   -- ghc-8.0.2-11
   _ghc8 <- apt "buster" "ghc" >>= patch $(embedFile "patches/ghc.diff") >>= inGroups ["ghc8-comp"]
