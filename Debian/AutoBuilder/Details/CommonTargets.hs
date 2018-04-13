@@ -20,7 +20,7 @@ commonTargets = do
   --------------------------------------------------
   _abstract_deque <-  hackage (Just "0.3") "abstract-deque" >>= flag (P.DebVersion "0.3-5") >>= debianize [] {->>= setDebVersion-}
   _abstract_par <- hackage (Just "0.3.3") "abstract-par" >>= flag (P.DebVersion "0.3.3-5") >>= debianize []
-  _acid_state <- git "https://github.com/acid-state/acid-state" [Commit "7a185444df1e78a2516e221fe7e55a22d044643f"{-, Branch "log-inspection"-}] >>= debianize [] >>= inGroups ["happstack", "important"]
+  _acid_state <- git "https://github.com/acid-state/acid-state" [Commit "7a185444df1e78a2516e221fe7e55a22d044643f"{-, Branch "log-inspection"-}] >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _adjunctions <- hackage (Just "4.3") "adjunctions" >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
   _aeson <- hackage (Just "0.11.2.0") "aeson" >>=
             patch $(embedFile "patches/aeson.diff") >>=
@@ -31,8 +31,8 @@ commonTargets = do
   _aeson_pretty <- hackage (Just "0.8.5") "aeson-pretty" >>= debianize []
   _aeson_qq <-  hackage (Just "0.8.2") "aeson-qq" >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _agi <- darcs ("https://github.com/ddssff/haskell-agi") >>= skip (Reason "No instance for (Applicative (AGIT m))")
-  _amazonka_core <- hackage Nothing "amazonka-core" >>= patch $(embedFile "patches/amazonka-core.diff") >>= debianize []
-  _amazonka_ses <- hackage (Just "1.5.0") "amazonka-ses" >>= debianize []
+  _amazonka_core <- {-hackage Nothing "amazonka-core"-} git "http://github.com/brendanhay/amazonka" [] >>= patch $(embedFile "patches/amazonka-core.diff") >>= debianize []
+  _amazonka_ses <- {-hackage Nothing "amazonka-ses"-} git "http://github.com/brendanhay/amazonka-ses" [] >>= debianize []
   -- No Debian build trees found in /home/dsf/.autobuilder/hackage/allocated-processor-0.0.2
   -- _allocated_processor <- hackage Nothing "allocated-processor"
   _annotated_wl_pprint <- hack (Just "0.7.0") "annotated-wl-pprint"
@@ -1037,7 +1037,7 @@ commonTargets = do
   _text_show <-  (hackage (Just "3.3") "text-show") >>= debianize []
   _text_stream_decode <- hackage (Just "0.1.0.5") "text-stream-decode" >>= patch $(embedFile "patches/text-stream-decode.diff") >>= debianize [] >>= inGroups ["conduit", "important"] >>= skip (Reason "depends on older text")
   _tf_random <-  (hackage (Just "0.5") "tf-random") >>= flag (P.DebVersion "0.5-5") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
-  _th_alpha <- hackage (Just "0.2.1.0") "th-alpha" >>= debianize []
+  _th_alpha <- git "http://github.com/ddssff/th-alpha" [] >>= debianize []
   _th_abstraction <- hackage Nothing "th-abstraction" >>= debianize [] >>= ghcjs_also
   _th_context <-  (git "http://github.com/seereason/th-context" []) >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
   _th_desugar <- {-(git "http://github.com/goldfirere/th-desugar" [])-} hackage Nothing "th-desugar" >>= debianize [] >>= inGroups ["th-path", "important"] >>= ghcjs_also
