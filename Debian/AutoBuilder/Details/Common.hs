@@ -7,7 +7,7 @@ module Debian.AutoBuilder.Details.Common
     ( aflag
     , broken
     , broken2
-    , ghcjs
+    , ghcjs_only
     , ghcjs_also
     , git'
     , gitrepo
@@ -88,8 +88,8 @@ privateRepo = "ssh://upload@src.seereason.com/srv/darcs" :: String
 
 #if 0
 -- Versions for a no-ghcjs build.
-ghcjs :: Monad m => P.PackageId -> TSt m ()
-ghcjs i = deletePackage i
+ghcjs_only :: Monad m => P.PackageId -> TSt m ()
+ghcjs_only i = deletePackage i
 
 ghcjs_also :: Monad m => P.PackageId -> TSt m P.PackageId
 ghcjs_also i = return i
@@ -103,8 +103,8 @@ broken2 i = deletePackage i
 #else
 
 -- Versions for a yes-ghcjs build
-ghcjs :: Monad m => P.PackageId -> TSt m P.PackageId
-ghcjs i = do
+ghcjs_only :: Monad m => P.PackageId -> TSt m P.PackageId
+ghcjs_only i = do
   p <- use (P.packageMap . at i) >>= maybe (error ("ghcjs: no such target: " ++ show i)) return
   _ <- putSrcPkgName (makeSrcPkgName (view P.spec p)) i
   _ <- flag (P.CabalDebian ["--ghcjs"]) i
@@ -118,7 +118,7 @@ ghcjs_also :: Monad m => P.PackageId -> TSt m (P.PackageId, P.PackageId)
 ghcjs_also i = do
   j <- P.clonePackage id i
   -- Just p <- use (P.packageMap . at i)
-  (,) <$> pure i <*> ghcjs j
+  (,) <$> pure i <*> ghcjs_only j
 
 skip2 :: Monad m => Reason -> (P.PackageId, P.PackageId) -> TSt m ()
 skip2 _reason (i, j) = deletePackage i >> deletePackage j

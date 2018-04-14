@@ -19,7 +19,7 @@ import Data.FileEmbed (embedFile)
 import Data.Set as Set (insert)
 import Data.Text as Text (unlines)
 --import Data.Version (Version(Version))
-import Debian.AutoBuilder.Details.Common (TSt, ghcjs, ghcjs_also, skip, Reason(..)) -- (named, ghcjs_flags, putSrcPkgName)
+import Debian.AutoBuilder.Details.Common (TSt, ghcjs_only, ghcjs_also, skip, Reason(..)) -- (named, ghcjs_flags, putSrcPkgName)
 import Debian.AutoBuilder.Details.CommonTargets (commonTargets)
 import Debian.AutoBuilder.Types.Packages as P
     (apply, apt, debdir, debianize, flag, git, hackage, uri, inGroups, PackageFlag(CabalDebian, DebVersion, DevelDep, RelaxDep), patch, PackageId)
@@ -49,13 +49,13 @@ buildTargets = do
                     -- Allow building with Cabal-2
                     flag (P.CabalDebian ["--default-package", "cabal-install"])
   -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
-  _ghcjs_dom <- hackage (Just "0.9.1.1") "ghcjs-dom" >>= debianize [] >>= inGroups ["glib"] >>= ghcjs
+  _ghcjs_dom <- hackage (Just "0.9.1.1") "ghcjs-dom" >>= debianize [] >>= inGroups ["glib"] >>= ghcjs_only
   _ghcjs_dom_hello <- hackage (Just "6.0.0.0") "ghcjs-dom-hello" >>=
                       patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
                       flag (P.CabalDebian ["--default-package", "ghcjs-dom-hello"]) >>=
                       debianize [] >>=
                       inGroups ["glib"] >>=
-                      ghcjs >>=
+                      ghcjs_only >>=
                       skip (Reason "see cairo and glib")
   _haddock_api8 <-
       hackage (Just "2.17.4") "haddock-api" >>=

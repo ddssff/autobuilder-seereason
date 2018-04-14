@@ -172,7 +172,7 @@ artfulTargets = do
   _vault <- hackage (Just "0.3.0.7") "vault" >>= debianize [] >>= aflag (P.DebVersion "0.3.0.7-1build1") >>= ghcjs_also
   _double_conversion <- hackage (Just "2.0.2.0") "double-conversion" >>= debianize [] >>= aflag (P.DebVersion "2.0.2.0-1build1") >>= ghcjs_also
   _websockets <- hackage (Just "0.11.2.0") "websockets" >>= debianize [] >>= ghcjs_also
-  _happstack_websockets <- git "https://github.com/seereason/happstack-websockets" [] >>= debianize [] >>= ghcjs
+  _happstack_websockets <- git "https://github.com/seereason/happstack-websockets" [] >>= debianize [] >>= ghcjs_only
   -- _websockets <- git "https://github.com/jaspervdj/websockets.git" [{-Commit "e2b9c0cef1402ffe8f0cc8e1bbfeecbd647cc2d" is version 0.9.7-}] >>= debianize []
 
   _email_validate <-  (hackage (Just "2.2.0") "email-validate") >>= debianize [] >>= aflag (P.DebVersion "2.2.0-3build2") >>= inGroups ["important"]
@@ -193,7 +193,7 @@ artfulTargets = do
   _ghcjs_jquery <-  git "https://github.com/ghcjs/ghcjs-jquery" [] >>=
                     debianize [] {-`putSrcPkgName` "ghcjs-ghcjs-jquery"-} >>=
                     patch $(embedFile "patches/ghcjs-jquery.diff") >>=
-                    ghcjs
+                    ghcjs_only
   _groom <-  (hackage (Just "0.1.2") "groom") >>= debianize [] >>= ghcjs_also
   _haddock_library <-
       case rel of

@@ -6,7 +6,7 @@ import Control.Lens (use, view)
 import Data.FileEmbed (embedFile)
 import Data.Map as Map (elems)
 import Data.Set as Set (fromList, member, Set)
-import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs, git', gitrepo, gitrepo2, hack, noTests, putSrcPkgName, Reason(Reason), replacement, skip, skip2, tflag, qflag, pflag, substitute, wflag, wskip, TSt)
+import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs_only, git', gitrepo, gitrepo2, hack, noTests, putSrcPkgName, Reason(Reason), replacement, skip, skip2, tflag, qflag, pflag, substitute, wflag, wskip, TSt)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
@@ -140,7 +140,7 @@ commonTargets = do
   _charset <-  (hackage (Just "0.3.7.1") "charset") >>= flag (P.DebVersion "0.3.7.1-4build1") >>= debianize []
   _charsetdetect_ae <-  (hackage (Just "1.1.0.1") "charsetdetect-ae") >>= flag (P.DebVersion "1.1.0.1-1") >>= debianize []
   _cheapskate <- git "https://github.com/seereason/cheapskate" [] {-hackage (Just "0.1.0.3") "cheapskate"-} >>= debianize [] >>= skip (Reason "data default dependency")
-  _chili <- git "https://github.com/seereason/chili.git" [] >>= debianize [] >>= ghcjs
+  _chili <- git "https://github.com/seereason/chili.git" [] >>= debianize [] >>= ghcjs_only
   _cipher_aes128 <-  (hackage (Just "0.7.0.1") "cipher-aes128") >>= flag (P.DebVersion "0.7.0.1-2") >>= debianize [] >>= inGroups ["authenticate", "important"]
   _cipher_aes <- hackage (Just "0.2.11") "cipher-aes" >>= flag (P.DebVersion "0.2.11-3build1") >>= debianize []
   _cipher_des <- hackage (Just "0.0.6") "cipher-des" >>= flag (P.DebVersion "0.0.6-5build1") >>= debianize []
@@ -386,23 +386,23 @@ commonTargets = do
   _ghc_exactprint <- git "https://github.com/alanz/ghc-exactprint" [] >>= debianize []
   _terminal_size <- hackage (Just "0.3.2.1") "terminal-size"  >>= flag (P.DebVersion "0.3.2.1-2") >>= debianize [] >>= inGroups ["ghcid"]
   _ghcid <- hackage (Just "0.6.4") "ghcid" >>= debianize [] >>= inGroups ["ghcid"]
-  _ghcjs_base <- git "https://github.com/ghcjs/ghcjs-base" [] >>= debianize [] >>= ghcjs
+  _ghcjs_base <- git "https://github.com/ghcjs/ghcjs-base" [] >>= debianize [] >>= ghcjs_only
   _ghcjs_jquery <-  git "https://github.com/cliffordbeshers/ghcjs-jquery" [] >>=
                     debianize [] {-`putSrcPkgName` "ghcjs-ghcjs-jquery"-} >>=
                     patch $(embedFile "patches/ghcjs-jquery.diff") >>=
-                    ghcjs
+                    ghcjs_only
   -- ghcjs_vdom = ghcjs_flags ( (git "https://github.com/seereason/ghcjs-vdom" [Branch "base48"]) >>= debianize `putSrcPkgName` "ghcjs-ghcjs-vdom")
   _ghcjs_ffiqq <- git "https://github.com/ghcjs/ghcjs-ffiqq" [] >>= putSrcPkgName "ghcjs-ghcjs-ffiqq" >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "[libghc-ghcjs-base-doc] -> []")
   _ghcjs_dom <- hackage (Just "0.2.4.0" {-"0.7.0.4"-} {-"0.4.0.0"-}) "ghcjs-dom" >>=
                 flag (P.CabalPin "0.2.4.0") >>=
                 debianize [] >>=
-                inGroups ["glib"] >>= ghcjs
+                inGroups ["glib"] >>= ghcjs_only
   -- _ghcjs_dom_jsffi <- hackage (Just "0.7.0.4") "ghcjs-dom-jsffi" >>= debianize [] >>= ghcjs_also
   _ghcjs_dom_hello <- hackage (Just "3.0.0.0") "ghcjs-dom-hello" >>=
                       patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
                       flag (P.CabalDebian ["--default-package", "ghcjs-dom-hello"]) >>=
                       debianize [] >>=
-                      inGroups ["glib"] >>= ghcjs >>= skip (Reason "Requires older version of ghcjs-dom")
+                      inGroups ["glib"] >>= ghcjs_only >>= skip (Reason "Requires older version of ghcjs-dom")
   _ghc_mtl <- (hackage (Just "1.2.1.0") "ghc-mtl") >>= flag (P.DebVersion "1.2.1.0-4build3") >>= debianize [] {- >>= skip (Reason "No instance for (MonadIO GHC.Ghc)") -}
   _ghc_paths <- hackage (Just "0.1.0.9") "ghc-paths" >>= flag (P.DebVersion "0.1.0.9-7") >>= debianize [] -- apt (rel release "wheezy" "quantal") "haskell-ghc-paths" -- for leksah
                -- Unpacking haskell-gtk2hs-buildtools-utils (from .../haskell-gtk2hs-buildtools-utils_0.12.1-0+seereason1~lucid2_amd64.deb) ...

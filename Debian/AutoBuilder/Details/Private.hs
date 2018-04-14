@@ -5,11 +5,11 @@ module Debian.AutoBuilder.Details.Private (buildTargets) where
 --import Control.Lens (use)
 import Data.FileEmbed (embedFile)
 --import Data.Map as Map (keys)
-import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, darcs, git, cd, {-packageMap,-} inGroups)
+import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, git, cd, {-packageMap,-} inGroups)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
-import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
-import System.FilePath ((</>))
+--import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
+--import System.FilePath ((</>))
 
 -- Individual packages, alphabetized
 
@@ -35,11 +35,11 @@ buildTargets _params = do
   _clckwrks_theme_appraisalscribe <- git "ssh://git@github.com/seereason/clckwrks-theme-appraisalscribe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
 
   _editor_common <- git "ssh://git@github.com/seereason/editor-common" [] >>= debianize [] >>= ghcjs_also
-  _editor_client <- git "ssh://git@github.com/seereason/editor-client" [] >>= debianize [] >>= ghcjs
+  _editor_client <- git "ssh://git@github.com/seereason/editor-client" [] >>= debianize [] >>= ghcjs_only
   _editor_server <- git "ssh://git@github.com/seereason/editor-server" [] >>= debianize []
-  _editor_taggy <- git "ssh://git@github.com/seereason/editor-taggy" [] >>= debianize [] >>= ghcjs
+  _editor_taggy <- git "ssh://git@github.com/seereason/editor-taggy" [] >>= debianize [] >>= ghcjs_only
   let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" []
-  _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs
+  _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_only
   _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize [] >>= inGroups ["private-libs"]
   _happstack_ghcjs_webmodule <- happstack_ghcjs >>= cd "happstack-ghcjs-webmodule" >>= flag (P.BuildDep "haskell-editor-common-utils") >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_also
 
