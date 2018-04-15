@@ -31,8 +31,8 @@ commonTargets = do
   _aeson_pretty <- hackage (Just "0.8.5") "aeson-pretty" >>= debianize []
   _aeson_qq <-  hackage (Just "0.8.2") "aeson-qq" >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _agi <- darcs ("https://github.com/ddssff/haskell-agi") >>= skip (Reason "No instance for (Applicative (AGIT m))")
-  _amazonka_core <- {-hackage Nothing "amazonka-core"-} git "http://github.com/brendanhay/amazonka" [] >>= patch $(embedFile "patches/amazonka-core.diff") >>= debianize []
-  _amazonka_ses <- {-hackage Nothing "amazonka-ses"-} git "http://github.com/brendanhay/amazonka-ses" [] >>= debianize []
+  _amazonka_core <- git "http://github.com/brendanhay/amazonka" [] >>= cd "core" >>= {-patch $(embedFile "patches/amazonka-core.diff") >>=-} debianize []
+  _amazonka_ses <- git "http://github.com/brendanhay/amazonka" [] >>= cd "amazonka-ses" >>= debianize []
   -- No Debian build trees found in /home/dsf/.autobuilder/hackage/allocated-processor-0.0.2
   -- _allocated_processor <- hackage Nothing "allocated-processor"
   _annotated_wl_pprint <- hack (Just "0.7.0") "annotated-wl-pprint"
