@@ -7,7 +7,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
 
-module Debian.AutoBuilder.Details.Xenial ( buildTargets7, buildTargets8 ) where
+module Debian.AutoBuilder.Details.Xenial ( buildTargets82, buildTargets8 ) where
 
 import Control.Lens ((%=))
 --import Control.Monad.Trans (lift)
@@ -41,13 +41,6 @@ buildTargets = do
 
   -- 1.24.0.2 is the last cabal-install that supported the topdown solver
   -- (which apparently doesn't work, but we can't build ghcjs without it.)
-  _cabal_install <- hackage (Just "1.24.0.2") "cabal-install" >>=
-                    -- Avoid creating a versioned libghc-cabal-dev
-                    -- dependency, as it is a virtual package in ghc
-                    patch $(embedFile "patches/cabal-install.diff") >>=
-                    debianize [] >>=
-                    -- Allow building with Cabal-2
-                    flag (P.CabalDebian ["--default-package", "cabal-install"])
   -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   _ghcjs_dom <- hackage (Just "0.9.1.1") "ghcjs-dom" >>= debianize [] >>= inGroups ["glib"] >>= ghcjs_only
   _ghcjs_dom_hello <- hackage (Just "6.0.0.0") "ghcjs-dom-hello" >>=
@@ -69,8 +62,6 @@ buildTargets = do
                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
-  _haddock_library8 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
-
   _haskell_devscripts <-
       -- Revert to version we used from 8/2016-11/2016
       git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "a143f70d333663e1447998d6facbebf67cd5045f"] >>=
@@ -86,9 +77,7 @@ buildTargets = do
   _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize [] >>= ghcjs_also
   _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize [] >>= ghcjs_also
 
-  _singletons <- hackage (Just "2.3.1") "singletons" >>= debianize [] -- 2.4 requires base-4.11
   _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
-  _uri_bytestring <- hackage (Just "0.3.1.0") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _zlib <- hackage (Just "0.6.1.1") "zlib" >>= flag (P.DebVersion "0.6.1.1-1") >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   commonTargets
 
@@ -100,13 +89,36 @@ nodejs =
     inGroups ["ghcjs-comp"]
 
 
-buildTargets7 :: Monad m => TSt m ()
-buildTargets7 = do
+buildTargets82 :: Monad m => TSt m ()
+buildTargets82 = do
   _ghc8 <- apt "buster" "ghc" >>= patch $(embedFile "patches/ghc.diff") >>= inGroups ["ghc8-comp"]
+  _cabal_install <- hackage (Just "1.24.0.2") "cabal-install" >>=
+                    -- Avoid creating a versioned libghc-cabal-dev
+                    -- dependency, as it is a virtual package in ghc
+                    patch $(embedFile "patches/cabal-install.diff") >>=
+                    debianize [] >>=
+                    -- Allow building with Cabal-2
+                    flag (P.CabalDebian ["--default-package", "cabal-install"])
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
+  _haddock_library8 <- hackage (Just "1.4.5") "haddock-library" >>= debianize [] >>= ghcjs_also
+  -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
+  -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
+  -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
+  _singletons_ghc <- hackage (Just "2.3.1") "singletons" >>= debianize [] >>= ghcjs_also
+  _uri_bytestring <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"]
   buildTargets
 
 buildTargets8 :: Monad m => TSt m ()
 buildTargets8 = do
+  _ghc82 <- apt "sid" "ghc" >>= patch $(embedFile "patches/ghc822.diff") >>= inGroups ["ghc8-comp"]
+  _cabal_install <- hackage (Just "2.0.0.1") "cabal-install" >>=
+                    debianize [] >>=
+                    flag (P.CabalDebian ["--default-package", "cabal-install"])
+  -- Stick with ghc-7.10 version of ghcjs, that's what Jeremy is using.
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
+  _singletons_ghc <- hackage (Just "2.2") "singletons" >>= debianize []
+  _singletons_ghcjs <- hackage (Just "2.1") "singletons" >>= debianize [] >>= ghcjs_only
+  _haddock_library82 <- hackage (Just "1.4.5") "haddock-library" >>= debianize [] >>= ghcjs_also
+  _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"]
+  _uri_bytestring_ghcjs <- hackage (Just "0.3.0.2") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_only
   buildTargets
