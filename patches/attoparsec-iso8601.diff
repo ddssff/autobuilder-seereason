@@ -1,0 +1,11 @@
+--- old/attoparsec-iso8601.cabal	2018-01-07 12:31:07.281958956 -0800
++++ new/attoparsec-iso8601.cabal	2018-04-15 18:45:18.409471673 -0700
+@@ -37,7 +37,7 @@
+   build-depends:
+     attoparsec >= 0.13.0.1,
+     base >= 4.5 && < 5,
+-    base-compat >= 0.9.1 && < 0.10,
++    base-compat >= 0.9.1 && < 0.11,
+     text >= 1.1.1.0,
+     time >= 1.1.1.4
+ 

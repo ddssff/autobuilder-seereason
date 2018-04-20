@@ -118,7 +118,7 @@ buildTargets8 = do
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
   _singletons_ghc <- hackage (Just "2.2") "singletons" >>= debianize []
   _singletons_ghcjs <- hackage (Just "2.1") "singletons" >>= debianize [] >>= ghcjs_only
-  _haddock_library82 <- hackage (Just "1.4.5") "haddock-library" >>= debianize [] >>= ghcjs_also
+  _haddock_library82 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"]
   _uri_bytestring_ghcjs <- hackage (Just "0.3.0.2") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_only
   buildTargets
