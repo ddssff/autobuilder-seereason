@@ -89,8 +89,8 @@ nodejs =
     inGroups ["ghcjs-comp"]
 
 
-buildTargets82 :: Monad m => TSt m ()
-buildTargets82 = do
+buildTargets80 :: Monad m => TSt m ()
+buildTargets80 = do
   _ghc8 <- apt "buster" "ghc" >>= patch $(embedFile "patches/ghc.diff") >>= inGroups ["ghc8-comp"]
   _cabal_install <- hackage (Just "1.24.0.2") "cabal-install" >>=
                     -- Avoid creating a versioned libghc-cabal-dev
@@ -100,7 +100,7 @@ buildTargets82 = do
                     -- Allow building with Cabal-2
                     flag (P.CabalDebian ["--default-package", "cabal-install"])
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
-  _haddock_library8 <- hackage (Just "1.4.5") "haddock-library" >>= debianize [] >>= ghcjs_also
+  _haddock_library8 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
   -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
   -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
   -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
@@ -108,8 +108,8 @@ buildTargets82 = do
   _uri_bytestring <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"]
   buildTargets
 
-buildTargets80 :: Monad m => TSt m ()
-buildTargets80 = do
+buildTargets82 :: Monad m => TSt m ()
+buildTargets82 = do
   _ghc82 <- apt "sid" "ghc" >>= patch $(embedFile "patches/ghc822.diff") >>= inGroups ["ghc8-comp"]
   _cabal_install <- hackage (Just "2.0.0.1") "cabal-install" >>=
                     debianize [] >>=
@@ -118,7 +118,7 @@ buildTargets80 = do
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
   _singletons_ghc <- hackage (Just "2.2") "singletons" >>= debianize []
   _singletons_ghcjs <- hackage (Just "2.1") "singletons" >>= debianize [] >>= ghcjs_only
-  _haddock_library82 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
+  _haddock_library82 <- hackage (Just "1.4.5") "haddock-library" >>= debianize [] >>= ghcjs_also
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"]
   _uri_bytestring_ghcjs <- hackage (Just "0.3.0.2") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_only
   buildTargets
