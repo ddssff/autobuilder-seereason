@@ -61,7 +61,7 @@ Library
   if flag(local-libs)
     Hs-Source-Dirs: ../autobuilder, ../debian-repo, ../cabal-debian/src, ../autobuilder/dist/build/autogen, ../cabal-debian/dist/build/autogen
     Build-Depends:
-      time, exceptions, pureMD5, SHA, network-uri, pretty, regex-compat, sr-extra,
+      time, exceptions, pureMD5, SHA, network-uri, pretty, sr-extra,
       applicative-extras, zlib, tar, magic, syb, utf8-string, deepseq, transformers,
                   template-haskell, ListLike, old-locale, old-time, directory, hsemail, parsec,
                   memoize, regex-tdfa, data-default, newtype-generics, ansi-wl-pprint,
