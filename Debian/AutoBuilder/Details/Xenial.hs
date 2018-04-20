@@ -7,7 +7,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
 
-module Debian.AutoBuilder.Details.Xenial ( buildTargets82, buildTargets8 ) where
+module Debian.AutoBuilder.Details.Xenial ( buildTargets82, buildTargets80 ) where
 
 import Control.Lens ((%=))
 --import Control.Monad.Trans (lift)
@@ -108,8 +108,8 @@ buildTargets82 = do
   _uri_bytestring <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"]
   buildTargets
 
-buildTargets8 :: Monad m => TSt m ()
-buildTargets8 = do
+buildTargets80 :: Monad m => TSt m ()
+buildTargets80 = do
   _ghc82 <- apt "sid" "ghc" >>= patch $(embedFile "patches/ghc822.diff") >>= inGroups ["ghc8-comp"]
   _cabal_install <- hackage (Just "2.0.0.1") "cabal-install" >>=
                     debianize [] >>=

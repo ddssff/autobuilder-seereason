@@ -40,8 +40,8 @@ public params = do
   let targets =
           case rel of
             -- ExtendedRelease (Release Xenial) SeeReason8 -> Xenial.buildTargets8
-            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "xenial"))) distro | distro == seeReason7 -> Xenial.buildTargets82
-            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "xenial"))) distro | distro == seeReason8 -> Xenial.buildTargets8
+            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "xenial"))) distro | distro == seeReason7 -> Xenial.buildTargets80
+            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "xenial"))) distro | distro == seeReason8 -> Xenial.buildTargets82
             ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "trusty"))) distro | distro == seeReason8 -> Trusty.buildTargets params
             ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "trusty"))) distro | distro == seeReason7 -> Trusty.buildTargets params
             _ -> error $ "Unexpected release: " ++ show rel
