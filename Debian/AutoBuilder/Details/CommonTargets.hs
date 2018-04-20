@@ -646,7 +646,8 @@ commonTargets = do
   _iso3166_country_codes <-  (hackage (Just "0.20140203.7") "iso3166-country-codes") >>= debianize []
   _ixset <-  (git "https://github.com/Happstack/ixset.git" []) >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also -- ,  (hackage (Just "1.0.7") "ixset") >>= debianize []
   _ixset_typed <- hackage (Just "0.3.1") "ixset-typed" >>= debianize [] >>= inGroups [ "authenticate", "important"] >>= ghcjs_also -- dependency of happstack-authenticate-2
-  _jmacro <-  (hackage (Just "0.6.14") "jmacro") >>= debianize [] >>= inGroups ["happstack", "th-path", "important"] >>= ghcjs_also
+  -- No ghcjs - uses a regex package which uses foreign functions
+  _jmacro <-  (hackage (Just "0.6.14") "jmacro") >>= debianize [] >>= inGroups ["happstack", "th-path", "important"]
   _jmacro_rpc <- hackage (Just "0.3.2") "jmacro-rpc" >>= inGroups ["happstack", "important"] >>= debianize [] >>= broken
   _jmacro_rpc_happstack <- hackage (Just "0.3.2") "jmacro-rpc-happstack" >>= flag (P.SkipVersion "0.2.1") >>= debianize [] >>= broken -- Really just waiting for jmacro-rpc
   -- _jquery <- apt "sid" "jquery" >>= skip (Reason "Missing dependency node-source-map") {- >>= patch $(embedFile "patches/jquery.diff") -} -- Revert to version 1.7.2+dfsg-3, version 1.7.2+dfsg-3.2 gives us a nearly empty jquery.min.js 
@@ -898,12 +899,15 @@ commonTargets = do
   _reform_hsp <- git "https://github.com/Happstack/reform-hsp.git" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["happstack", "important"]
   _regex_applicative <-  (hackage (Just "0.3.3") "regex-applicative") >>= flag (P.DebVersion "0.3.3-1") >>= debianize []
   _regex_base <- hackage (Just "0.93.2") "regex-base" >>= flag (P.DebVersion "0.93.2-8") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
+  -- No ghcjs for regex-compat, it depends on regex-posix
   _regex_compat <- hackage (Just "0.95.1") "regex-compat" >>= flag (P.DebVersion "0.95.1-8") >>= debianize [] >>= inGroups ["platform"]
   _regex_compat_tdfa <- hackage (Just "0.95.1.4") "regex-compat-tdfa" >>= flag (P.DebVersion "0.95.1.4-3build2") >>= debianize []
+  -- No ghcjs for regex-pcre-builtin, it calls foreign functions
   _regex_pcre_builtin <-  (hackage (Just "0.94.4.8.8.35") "regex-pcre-builtin"
                               -- Need to email Audrey Tang <audreyt@audreyt.org> about this.
                               >>= patch $(embedFile "patches/regex-pcre-builtin.diff")
-                              >>= flag (P.DevelDep "libpcre3-dev")) >>= debianize [] >>= ghcjs_also
+                              >>= flag (P.DevelDep "libpcre3-dev")) >>= debianize []
+  -- No ghcjs for regex-posix, it calls foreign functions
   _regex_posix <- hackage (Just "0.95.2") "regex-posix" >>= flag (P.DebVersion "0.95.2-7") >>= debianize [] >>= inGroups ["platform"]
   _regexpr <- hackage (Just "0.5.4") "regexpr" >>= flag (P.DebVersion "0.5.4-9build1") >>= debianize []
   _regex_tdfa <-  (hackage (Just "1.2.2") "regex-tdfa"
