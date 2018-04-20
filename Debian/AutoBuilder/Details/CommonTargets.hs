@@ -36,7 +36,7 @@ commonTargets = do
   -- No Debian build trees found in /home/dsf/.autobuilder/hackage/allocated-processor-0.0.2
   -- _allocated_processor <- hackage Nothing "allocated-processor"
   _annotated_wl_pprint <- hack (Just "0.7.0") "annotated-wl-pprint"
-  _ansi_terminal <- hackage (Just "0.6.2.3") "ansi-terminal" >>= flag (P.DebVersion "0.6.2.3-1") >>= debianize [] >>= ghcjs_also
+  _ansi_terminal <- hackage (Just "0.8.0.2") "ansi-terminal" >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
   _ansi_wl_pprint <- hackage (Just "0.6.7.3") "ansi-wl-pprint" >>= flag (P.DebVersion "0.6.7.3-1") >>= debianize [] >>= ghcjs_also
   _appar <- hackage Nothing "appar" >>= flag (P.DebVersion "1.1.4-1") >>= debianize []
   _applicative_extras <- hackage (Just "0.1.8") "applicative-extras" >>= flag (P.DebVersion "0.1.8-1") >>= debianize [] >>= ghcjs_also
@@ -205,7 +205,7 @@ commonTargets = do
   -- _closure_compiler <- apt "sid" "closure-compiler"
   _cmark <-  (hackage (Just "0.5.3.1") "cmark") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _cmdargs <-  (hackage (Just "0.10.20") "cmdargs") >>= debianize [] >>= ghcjs_also
-  _colour <-  hackage (Just "2.3.3") "colour" >>= flag (P.DebVersion "2.3.3-8") >>= debianize []
+  _colour <-  hackage (Just "2.3.4") "colour" >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
                -- , apt "wheezy" "haskell-configfile"
   _comfort_graph <- hackage (Just "0.0.1") "comfort-graph" >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "transformers dependency too old")
   _comonad <- hackage (Just "5.0.2") "comonad" >>=
@@ -343,7 +343,8 @@ commonTargets = do
   _fay <-  (hackage (Just "0.23.1.16") "fay" {- >>= patch $(embedFile "patches/fay.diff") -}) >>= debianize [] >>= flag (P.CabalDebian [ "--depends", "haskell-fay-utils:cpphs" ]) >>= skip (Reason "too old for current syb and optparse-applicative")
   _fay_jquery <-  (git "https://github.com/faylang/fay-jquery" []) >>= debianize [] >>= skip (Reason "Waiting for newer fay")
   _fay_text <-  (hackage (Just "0.3.2.2") "fay-text") >>= debianize [] >>= skip (Reason "Waiting for newer fay")
-  _fb <- git "https://github.com/ddssff/fb.git" [] >>= flag (P.DebVersion "1.0.13-1") >>= debianize [] >>= inGroups [ "authenticate", "important"]
+  -- Not in use, needs update for current HTTP package
+  -- _fb <- git "https://github.com/ddssff/fb.git" [] >>= flag (P.DebVersion "1.0.13-1") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _feed <- hackage (Just "0.3.12.0") "feed" >>= {-flag (P.DebVersion "0.3.10.4-1build1") >>=-} debianize []
   _fgl <-  (hackage (Just "5.5.3.0") "fgl") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _file_embed <-  (hackage (Just "0.0.10") "file-embed") >>= debianize [] >>= ghcjs_also
@@ -540,7 +541,6 @@ commonTargets = do
                -- ,  (hackage (Just "0.13.1.2") "heist" >>= patch $(embedFile "patches/heist.diff")) >>= debianize []
   _hex <-  (hackage (Just "0.1.2") "hex") >>= flag (P.DebVersion "0.1.2-2") >>= debianize []
   _hexpat <- hackage (Just "0.20.9") "hexpat" >>= debianize []
-  _highlighting_kate <-  (hackage (Just "0.6.2.1") "highlighting-kate") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _hinotify <-  (hackage (Just "0.3.8.1") "hinotify") >>= flag (P.DebVersion "0.3.8.1-3") >>= debianize []
   _hint <-  (hackage (Just "0.6.0") "hint") >>= debianize [] {- >>= skip (Reason "requires ghc-mtl") -}
   -- _hit <- hackage Nothing "hit" >>= debianize []
@@ -898,26 +898,31 @@ commonTargets = do
   _reform_happstack <- git "https://github.com/Happstack/reform-happstack.git" [] >>= debianize [] >>= inGroups ["happstack", "important"]
   _reform_hsp <- git "https://github.com/Happstack/reform-hsp.git" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["happstack", "important"]
   _regex_applicative <-  (hackage (Just "0.3.3") "regex-applicative") >>= flag (P.DebVersion "0.3.3-1") >>= debianize []
-  _regex_base <- hackage (Just "0.93.2") "regex-base" >>= flag (P.DebVersion "0.93.2-8") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
+  _regex_base <- hackage (Just "0.93.2") "regex-base" >>= flag (P.DebVersion "0.93.2-8") >>= debianize [] >>= inGroups ["platform"] >>= inGroups ["tmp"] >>= ghcjs_also
   -- No ghcjs for regex-compat, it depends on regex-posix
-  _regex_compat <- hackage (Just "0.95.1") "regex-compat" >>= flag (P.DebVersion "0.95.1-8") >>= debianize [] >>= inGroups ["platform"]
-  _regex_compat_tdfa <- hackage (Just "0.95.1.4") "regex-compat-tdfa" >>= flag (P.DebVersion "0.95.1.4-3build2") >>= debianize []
+  _regex_compat <- hackage (Just "0.95.1") "regex-compat" >>= flag (P.DebVersion "0.95.1-8") >>= debianize [] >>= inGroups ["platform"] >>= inGroups ["tmp"] >>= ghcjs_also
+  _regex_compat_tdfa <- hackage (Just "0.95.1.4") "regex-compat-tdfa" >>= flag (P.DebVersion "0.95.1.4-3build2") >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
   -- No ghcjs for regex-pcre-builtin, it calls foreign functions
-  _regex_pcre_builtin <-  (hackage (Just "0.94.4.8.8.35") "regex-pcre-builtin"
-                              -- Need to email Audrey Tang <audreyt@audreyt.org> about this.
-                              >>= patch $(embedFile "patches/regex-pcre-builtin.diff")
-                              >>= flag (P.DevelDep "libpcre3-dev")) >>= debianize []
+  _regex_pcre <- hackage (Just "0.94.4") "regex-pcre" >>= flag (P.DebVersion "0.94.4-7") >>= debianize [] >>= inGroups ["platform", "tmp"] >>= ghcjs_also
+  _regex_pcre_builtin <- hackage (Just "0.94.4.8.8.35") "regex-pcre-builtin" >>=
+                         -- Need to email Audrey Tang <audreyt@audreyt.org> about this.
+                         patch $(embedFile "patches/regex-pcre-builtin.diff") >>=
+                         flag (P.DevelDep "libpcre3-dev") >>= debianize [] >>= inGroups ["tmp"]
   -- No ghcjs for regex-posix, it calls foreign functions
   _regex_posix <- hackage (Just "0.95.2") "regex-posix" >>= flag (P.DebVersion "0.95.2-7") >>= debianize [] >>= inGroups ["platform"]
   _regexpr <- hackage (Just "0.5.4") "regexpr" >>= flag (P.DebVersion "0.5.4-9build1") >>= debianize []
-  _regex_tdfa <-  (hackage (Just "1.2.2") "regex-tdfa"
-                          -- Although it might be nice to start using regex-tdfa-rc everywhere
-                          -- we are using regex-tdfa, the cabal package names are different so
-                          -- packages can't automatically start using regex-tdfa-rc.
-                          >>= apply (substitute "regex-tdfa" "regex-tdfa-rc")) >>= debianize [] >>= ghcjs_also
-  _regex_tdfa_rc <-  (hackage (Just "1.1.8.3") "regex-tdfa-rc"
-                              >>= apply (substitute "regex-tdfa-rc" "regex-tdfa")) >>= debianize [] >>= ghcjs_also
-  _regex_tdfa_text <- hackage (Just "1.0.0.3") "regex-tdfa-text" >>= debianize [] >>= ghcjs_also
+  _regex_tdfa <-
+      hackage (Just "1.2.2") "regex-tdfa" >>=
+      -- Although it might be nice to start using regex-tdfa-rc everywhere
+      -- we are using regex-tdfa, the cabal package names are different so
+      -- packages can't automatically start using regex-tdfa-rc.
+      -- apply (substitute "regex-tdfa" "regex-tdfa-rc") >>=
+      debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
+  _regex_tdfa_rc <-
+      hackage (Just "1.1.8.3") "regex-tdfa-rc" >>=
+      -- apply (substitute "regex-tdfa-rc" "regex-tdfa") >>=
+      debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
+  _regex_tdfa_text <- hackage (Just "1.0.0.3") "regex-tdfa-text" >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
   -- reified_records =  (hackage (Just "0.2.2") "reified-records" >>= patch $(embedFile "patches/reified-records.diff")) >>= debianize []
   _reified_records <-  (hg "https://bitbucket.org/ddssff/reified-records") >>= debianize []
   _resource_pool <- hackage (Just "0.2.3.2") "resource-pool" >>= flag (P.DebVersion "0.2.3.2-4build1") >>= debianize []
@@ -968,12 +973,12 @@ commonTargets = do
   -- _simple_scan <- apt "stretch" "simple-scan"
   _simple_sendfile <-  (hackage (Just "0.2.25") "simple-sendfile") >>= debianize []
   -- pandoc 1.19.2.4 requires skylighting << 0.2
-  _skylighting <- hackage (Just "0.1.1.5") "skylighting" >>=
-                  debianize [] >>= ghcjs_also
-  -- This is intended to solve a problem with the pretty-show dependency unexpectedly
-  -- being missed even though nothing buildable seemed to need it.
+  -- _skylighting <- hackage (Just "0.1.1.5") "skylighting" >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
+  _skylighting <- git "https://github.com/ddssff/skylighting" [] >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
   flag (P.CabalDebian ["--cabal-flags", "executable", "--executable", "skylighting" ])(fst _skylighting)
   flag (P.CabalDebian ["--cabal-flags", "executable", "--executable", "skylighting-ghcjs" ])(snd _skylighting)
+  -- This is intended to solve a problem with the pretty-show dependency unexpectedly
+  -- being missed even though nothing buildable seemed to need it.
   _smallcheck <-  (hackage (Just "1.1.1") "smallcheck") >>= flag (P.DebVersion "1.1.1-5") >>= debianize [] >>= ghcjs_also
   _smtpClient <-  (hackage (Just "1.1.0") "SMTPClient") >>= debianize []
   _snap_core <- hackage (Just "0.9.5.0") "snap-core" >>= debianize [] >>= skip (Reason "glib")
