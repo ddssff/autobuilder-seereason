@@ -37,7 +37,7 @@ commonTargets = do
   -- _allocated_processor <- hackage Nothing "allocated-processor"
   _annotated_wl_pprint <- hack (Just "0.7.0") "annotated-wl-pprint"
   _ansi_terminal <- hackage (Just "0.8.0.2") "ansi-terminal" >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
-  _ansi_wl_pprint <- hackage (Just "0.6.7.3") "ansi-wl-pprint" >>= flag (P.DebVersion "0.6.7.3-1") >>= debianize [] >>= ghcjs_also
+  _ansi_wl_pprint <- hackage (Just "0.6.8.2") "ansi-wl-pprint" >>= debianize [] >>= ghcjs_also
   _appar <- hackage Nothing "appar" >>= flag (P.DebVersion "1.1.4-1") >>= debianize []
   _applicative_extras <- hackage (Just "0.1.8") "applicative-extras" >>= flag (P.DebVersion "0.1.8-1") >>= debianize [] >>= ghcjs_also
   _archive <- git "https://github.com/seereason/archive" []
@@ -1025,10 +1025,10 @@ commonTargets = do
                ,  (hackage (Just "0.3.2.5") "terminfo"
                                         >>= flag (P.DevelDep "libncurses5-dev")
                                         >>= flag (P.DevelDep "libncursesw5-dev")) >>= debianize -}
-  _tasty <-  (hackage (Just "0.11.0.3") "tasty") >>= debianize [] >>= ghcjs_also
-  _tasty_hunit <- hackage (Just "0.9.2") "tasty-hunit" >>= flag (P.DebVersion "0.9.2-5build2") >>= debianize []
-  _tasty_golden <- hackage (Just "2.3.1") "tasty-golden" >>= flag (P.DebVersion "2.3.1-1build2") >>= debianize []
-  _tasty_quickcheck <- hackage (Just "0.8.4") "tasty-quickcheck" >>= flag (P.DebVersion "0.8.4-1build1") >>= debianize []
+  _tasty <-  (hackage (Just "1.0.1.1") "tasty") >>= debianize [] >>= ghcjs_also
+  _tasty_hunit <- hackage (Just "0.10.0.1") "tasty-hunit" >>= flag (P.DebVersion "0.9.2-5build2") >>= debianize []
+  _tasty_golden <- hackage (Just "2.3.1.3") "tasty-golden" >>= flag (P.DebVersion "2.3.1-1build2") >>= debianize []
+  _tasty_quickcheck <- hackage (Just "0.10") "tasty-quickcheck" >>= flag (P.DebVersion "0.8.4-1build1") >>= debianize []
   _tasty_smallcheck <- hackage (Just "0.8.1") "tasty-smallcheck" >>= flag (P.DebVersion "0.8.1-1build1") >>= debianize [] >>= ghcjs_also
   _template_default <- hackage (Just "0.1.1") "template-default" >>= patch $(embedFile "patches/template-default.diff") >>= debianize [] >>= skip (Reason "Not in scope: data constructor ‘ClassP’")
   _temporary <-  (hackage (Just "1.2.0.4") "temporary") >>= debianize [] >>= ghcjs_also
