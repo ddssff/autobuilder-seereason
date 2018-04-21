@@ -1026,9 +1026,9 @@ commonTargets = do
                                         >>= flag (P.DevelDep "libncurses5-dev")
                                         >>= flag (P.DevelDep "libncursesw5-dev")) >>= debianize -}
   _tasty <-  (hackage (Just "1.0.1.1") "tasty") >>= debianize [] >>= ghcjs_also
-  _tasty_hunit <- hackage (Just "0.10.0.1") "tasty-hunit" >>= flag (P.DebVersion "0.9.2-5build2") >>= debianize []
-  _tasty_golden <- hackage (Just "2.3.1.3") "tasty-golden" >>= flag (P.DebVersion "2.3.1-1build2") >>= debianize []
-  _tasty_quickcheck <- hackage (Just "0.10") "tasty-quickcheck" >>= flag (P.DebVersion "0.8.4-1build1") >>= debianize []
+  _tasty_hunit <- hackage (Just "0.10.0.1") "tasty-hunit" >>= debianize []
+  _tasty_golden <- hackage (Just "2.3.1.3") "tasty-golden" >>= debianize []
+  _tasty_quickcheck <- hackage (Just "0.10") "tasty-quickcheck" >>= debianize []
   _tasty_smallcheck <- hackage (Just "0.8.1") "tasty-smallcheck" >>= flag (P.DebVersion "0.8.1-1build1") >>= debianize [] >>= ghcjs_also
   _template_default <- hackage (Just "0.1.1") "template-default" >>= patch $(embedFile "patches/template-default.diff") >>= debianize [] >>= skip (Reason "Not in scope: data constructor ‘ClassP’")
   _temporary <-  (hackage (Just "1.2.0.4") "temporary") >>= debianize [] >>= ghcjs_also
