@@ -1,11 +1,32 @@
---- old/test-framework.cabal	2015-01-13 13:08:54.881405410 -0800
-+++ new/test-framework.cabal	2017-01-22 07:28:51.251683815 -0800
+--- old/test-framework.cabal	2017-07-22 13:45:11.449122220 -0700
++++ new/test-framework.cabal	2018-04-27 20:26:26.594505742 -0700
 @@ -50,7 +50,7 @@
-                                 base >= 4.3 && < 5, random >= 1.0, containers >= 0.1,
-                                 regex-posix >= 0.72,
-                                 old-locale >= 1.0,
--                                time >= 1.1.2 && < 1.6,
-+                                time >= 1.1.2 && < 1.7,
-                                 xml >= 1.3.5, hostname >= 1.0
  
-         Extensions:             CPP
+         Build-Depends:          ansi-terminal >= 0.4.0, ansi-wl-pprint >= 0.5.1,
+                                 base >= 4.3 && < 5, random >= 1.0 && < 2, containers >= 0.1,
+-                                regex-posix >= 0.72,
++                                regex-tdfa,
+                                 old-locale == 1.0.*,
+                                 time >= 1.1.2 && < 1.9,
+                                 xml >= 1.3.5, hostname >= 1.0
+@@ -79,7 +79,7 @@
+                 Build-Depends:          HUnit >= 1.2, QuickCheck >= 2.3 && < 2.5,
+                                         base >= 4.3 && < 5, random >= 1.0, containers >= 0.1,
+                                         ansi-terminal >= 0.4.0, ansi-wl-pprint >= 0.5.1,
+-                                        regex-posix >= 0.72,
++                                        regex-tdfa,
+                                         old-locale >= 1.0, time >= 1.1.2,
+                                         xml >= 1.3.5, hostname >= 1.0,
+                                         libxml >= 0.1.1, bytestring >= 0.9
+--- old/Test/Framework/Runners/TestPattern.hs	2018-04-27 20:32:21.696605914 -0700
++++ new/Test/Framework/Runners/TestPattern.hs	2018-04-27 20:31:56.084452982 -0700
+@@ -4,8 +4,7 @@
+ 
+ import Test.Framework.Utilities
+ 
+-import Text.Regex.Posix.Wrap
+-import Text.Regex.Posix.String()
++import Text.Regex.TDFA
+ 
+ import Data.List
+ 

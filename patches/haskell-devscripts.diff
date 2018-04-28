@@ -123,6 +123,15 @@
      for package_id in `cabal_package_ids $@` ; do
          packages="$packages, `package_id_to_virtual_package "${hc}" prof $package_id "${ghcpkg}"`"
      done
+@@ -443,7 +443,7 @@ configure_recipe(){
+     # local PS5=$PS4; PS4=" + configure_recipe> "; set -x
+     hc=`packages_hc`
+ 
+-    ENABLE_PROFILING=`{ for i in ${DEB_PACKAGES}; do package_ext $i | grep prof; done; } | LC_ALL=C sort -u | sed 's/prof/--enable-library-profiling/'`
++    ENABLE_PROFILING=`{ for i in ${DEB_PACKAGES}; do package_ext $i | grep prof; done; } | LC_ALL=C sort -u | sed 's/prof/--enable-library-profiling --enable-profiling --disable-executable-dynamic/'`
+     local GHC_OPTIONS
+     for i in `dpkg-buildflags --get LDFLAGS`
+     do
 @@ -483,7 +483,7 @@
  check_recipe(){
      # local PS5=$PS4; PS4=" + check_recipe> "; set -x

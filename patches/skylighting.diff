@@ -1,0 +1,10 @@
+--- old/skylighting.cabal	2018-04-20 15:47:09.367977847 -0700
++++ new/skylighting.cabal	2018-04-28 05:28:13.119563645 -0700
+@@ -229,6 +229,7 @@
+   build-depends:       base >= 4.7 && < 5.0,
+                        mtl,
+                        text,
++                       pretty-show,
+                        binary,
+                        bytestring,
+                        directory,

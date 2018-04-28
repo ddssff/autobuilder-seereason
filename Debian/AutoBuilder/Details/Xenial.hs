@@ -36,12 +36,6 @@ import Debian.Repo.Fingerprint
 
 buildTargets :: Monad m => TSt m ()
 buildTargets = do
-  -- We don't need this until ghc-8.2.2, right?
-  -- _cabal <- hackage (Just "2.0.0.2") "Cabal" >>= debianize []
-
-  -- 1.24.0.2 is the last cabal-install that supported the topdown solver
-  -- (which apparently doesn't work, but we can't build ghcjs without it.)
-  -- _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] -- Required by haddock-api
   _ghcjs_dom <- hackage (Just "0.9.1.1") "ghcjs-dom" >>= debianize [] >>= inGroups ["glib"] >>= ghcjs_only
   _ghcjs_dom_hello <- hackage (Just "6.0.0.0") "ghcjs-dom-hello" >>=
                       patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
@@ -62,14 +56,6 @@ buildTargets = do
                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
-  _haskell_devscripts <-
-      -- Revert to version we used from 8/2016-11/2016
-      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "a143f70d333663e1447998d6facbebf67cd5045f"] >>=
-      -- This changes --show-details=direct to --show-details=always in check-recipe
-      patch $(embedFile "patches/haskell-devscripts.diff") >>=
-      -- Changes from debian since 0.11.2
-      patch $(embedFile "patches/haskell-devscripts-debian.diff") >>=
-      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   -- Unfortunately this package requires haskell-src-exts<1.19, which is gone
   _haskell_names <- hackage (Just "0.9.1") "haskell-names" >>= debianize []
   _nodejs <- nodejs
@@ -88,7 +74,6 @@ nodejs =
     flag (P.RelaxDep "libssl-dev") >>=
     inGroups ["ghcjs-comp"]
 
-
 buildTargets80 :: Monad m => TSt m ()
 buildTargets80 = do
   _ghc8 <- apt "buster" "ghc" >>= patch $(embedFile "patches/ghc.diff") >>= inGroups ["ghc8-comp"]
@@ -104,12 +89,41 @@ buildTargets80 = do
   -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
   -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
   -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
-  _singletons_ghc <- hackage (Just "2.3.1") "singletons" >>= debianize [] >>= ghcjs_also
-  _uri_bytestring <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"]
+  _singletons_ghc <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
+  _uri_bytestring <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  _haskell_devscripts <-
+      -- Revert to version we used from 8/2016-11/2016
+      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "a143f70d333663e1447998d6facbebf67cd5045f"] >>=
+      -- This changes --show-details=direct to --show-details=always in check-recipe
+      patch $(embedFile "patches/haskell-devscripts.diff") >>=
+      -- Changes from debian since 0.11.2
+      patch $(embedFile "patches/haskell-devscripts-debian.diff") >>=
+      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   buildTargets
 
+-- Currently we just have an experimental haskell-devscripts in the 82
+-- repo, it uses the current git repo and tries to fix the profiling flags.
 buildTargets82 :: Monad m => TSt m ()
 buildTargets82 = do
+  -- These are targets likely to change when we go from 8.0 to 8.2.
+#if 1
+  _ghc8 <- apt "buster" "ghc" >>= patch $(embedFile "patches/ghc.diff") >>= inGroups ["ghc8-comp"] >>= skip (Reason "We have revision 10, but buster now has revision 11")
+  _cabal_install <- hackage (Just "1.24.0.2") "cabal-install" >>=
+                    -- Avoid creating a versioned libghc-cabal-dev
+                    -- dependency, as it is a virtual package in ghc
+                    patch $(embedFile "patches/cabal-install.diff") >>=
+                    debianize [] >>=
+                    -- Allow building with Cabal-2
+                    flag (P.CabalDebian ["--default-package", "cabal-install"])
+  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
+  _haddock_library8 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
+  -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
+  -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
+  -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
+  _singletons_ghc <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
+  _uri_bytestring <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+#else
+  -- Some of these are needed for ghc-8.2, some are wrong.
   _ghc82 <- apt "sid" "ghc" >>= patch $(embedFile "patches/ghc822.diff") >>= inGroups ["ghc8-comp"]
   _cabal_install <- hackage (Just "2.0.0.1") "cabal-install" >>=
                     debianize [] >>=
@@ -121,4 +135,15 @@ buildTargets82 = do
   _haddock_library82 <- hackage (Just "1.4.5") "haddock-library" >>= debianize [] >>= ghcjs_also
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"]
   _uri_bytestring_ghcjs <- hackage (Just "0.3.0.2") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_only
+#endif
+  _haskell_devscripts <-
+      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git"
+              -- Current version as of 26 Apr 2018
+              [Commit "6e1e94bc4efd8a0ac37f34ac84f4813bcb0105cc"] >>=
+      -- This changes --show-details=direct to --show-details=always in check-recipe
+      -- Also changes the enable profiling flags
+      patch $(embedFile "patches/haskell-devscripts.diff") >>=
+      -- Changes from debian since 0.11.2
+      -- patch $(embedFile "patches/haskell-devscripts-debian.diff") >>=
+      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   buildTargets

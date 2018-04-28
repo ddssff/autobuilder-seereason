@@ -30,6 +30,7 @@ Library
   Default-Language: Haskell2010
   Hs-Source-Dirs: .
   Build-Depends:
+    archive >= 1.7,
     base >= 4,
     bytestring,
     Cabal,
