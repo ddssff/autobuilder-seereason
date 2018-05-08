@@ -56,7 +56,14 @@ buildTargets = do
                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
-  -- Unfortunately this package requires haskell-src-exts<1.19, which is gone
+  _haskell_devscripts <-
+      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git"
+              -- Current version as of 26 Apr 2018
+              [Commit "6e1e94bc4efd8a0ac37f34ac84f4813bcb0105cc"] >>=
+      -- This changes --show-details=direct to --show-details=always in check-recipe
+      -- Also changes the enable profiling flags
+      patch $(embedFile "patches/haskell-devscripts.diff") >>=
+      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   _haskell_names <- hackage (Just "0.9.1") "haskell-names" >>= debianize []
   _nodejs <- nodejs
 
@@ -91,14 +98,6 @@ buildTargets80 = do
   -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
   _singletons_ghc <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
   _uri_bytestring <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
-  _haskell_devscripts <-
-      -- Revert to version we used from 8/2016-11/2016
-      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "a143f70d333663e1447998d6facbebf67cd5045f"] >>=
-      -- This changes --show-details=direct to --show-details=always in check-recipe
-      patch $(embedFile "patches/haskell-devscripts.diff") >>=
-      -- Changes from debian since 0.11.2
-      patch $(embedFile "patches/haskell-devscripts-debian.diff") >>=
-      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   buildTargets
 
 -- Currently we just have an experimental haskell-devscripts in the 82
@@ -136,14 +135,4 @@ buildTargets82 = do
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"]
   _uri_bytestring_ghcjs <- hackage (Just "0.3.0.2") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_only
 #endif
-  _haskell_devscripts <-
-      git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git"
-              -- Current version as of 26 Apr 2018
-              [Commit "6e1e94bc4efd8a0ac37f34ac84f4813bcb0105cc"] >>=
-      -- This changes --show-details=direct to --show-details=always in check-recipe
-      -- Also changes the enable profiling flags
-      patch $(embedFile "patches/haskell-devscripts.diff") >>=
-      -- Changes from debian since 0.11.2
-      -- patch $(embedFile "patches/haskell-devscripts-debian.diff") >>=
-      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
   buildTargets

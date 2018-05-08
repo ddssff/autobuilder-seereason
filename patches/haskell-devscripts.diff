@@ -1,5 +1,19 @@
 --- old/Dh_Haskell.sh	2016-12-11 16:48:06.000000000 -0800
 +++ new/Dh_Haskell.sh	2017-01-23 13:56:39.054461622 -0800
+@@ -6,11 +6,11 @@
+ }
+ 
+ cpu(){
+-  ghc -e 'putStr System.Info.arch'
++  ghc -ignore-dot-ghci -e 'putStr System.Info.arch'
+ }
+ 
+ os(){
+-  ghc -e 'putStr System.Info.os'
++  ghc -ignore-dot-ghci -e 'putStr System.Info.os'
+ }
+ 
+ ghcjs_version(){
 @@ -107,7 +107,7 @@
  }
  
