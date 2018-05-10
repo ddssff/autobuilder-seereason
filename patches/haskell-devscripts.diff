@@ -1,3 +1,14 @@
+--- old/debian/control
++++ new/debian/control
+@@ -43,7 +43,7 @@ Description: Tools to help Debian developers build Haskell packages
+ Package: haskell-devscripts
+ Architecture: all
+ Depends: ${misc:Depends}
+-  , ghc (>= 8.2)
++  , ghc (>= 8.0.1)
+   , haskell-devscripts-minimal
+   , hscolour
+ Description: Tools to help Debian developers build Haskell packages
 --- old/Dh_Haskell.sh	2016-12-11 16:48:06.000000000 -0800
 +++ new/Dh_Haskell.sh	2017-01-23 13:56:39.054461622 -0800
 @@ -6,11 +6,11 @@
@@ -137,15 +148,6 @@
      for package_id in `cabal_package_ids $@` ; do
          packages="$packages, `package_id_to_virtual_package "${hc}" prof $package_id "${ghcpkg}"`"
      done
-@@ -443,7 +443,7 @@ configure_recipe(){
-     # local PS5=$PS4; PS4=" + configure_recipe> "; set -x
-     hc=`packages_hc`
- 
--    ENABLE_PROFILING=`{ for i in ${DEB_PACKAGES}; do package_ext $i | grep prof; done; } | LC_ALL=C sort -u | sed 's/prof/--enable-library-profiling/'`
-+    ENABLE_PROFILING=`{ for i in ${DEB_PACKAGES}; do package_ext $i | grep prof; done; } | LC_ALL=C sort -u | sed 's/prof/--enable-library-profiling --enable-profiling --disable-executable-dynamic/'`
-     local GHC_OPTIONS
-     for i in `dpkg-buildflags --get LDFLAGS`
-     do
 @@ -483,7 +483,7 @@
  check_recipe(){
      # local PS5=$PS4; PS4=" + check_recipe> "; set -x

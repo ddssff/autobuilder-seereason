@@ -1,0 +1,20 @@
+--- old/cabal-install.cabal	2018-04-14 06:56:19.414597639 -0700
++++ new/cabal-install.cabal	2018-05-10 13:36:14.637526495 -0700
+@@ -293,7 +293,7 @@
+         base16-bytestring >= 0.1.1 && < 0.2,
+         binary     >= 0.5      && < 0.9,
+         bytestring >= 0.9      && < 0.11,
+-        Cabal      >= 2.0.1.0  && < 2.1,
++        Cabal,
+         containers >= 0.4      && < 0.6,
+         cryptohash-sha256 >= 0.11 && < 0.12,
+         deepseq    >= 1.3      && < 1.5,
+@@ -423,7 +423,7 @@
+         IntegrationTests2
+       cpp-options: -DMONOLITHIC
+       build-depends:
+-        Cabal      >= 2.0.1.0 && < 2.1,
++        Cabal,
+         QuickCheck >= 2.8.2,
+         array,
+         async,
