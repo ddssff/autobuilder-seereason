@@ -27,19 +27,6 @@ buildTargets = do
                       inGroups ["glib"] >>=
                       ghcjs_only >>=
                       skip (Reason "see cairo and glib")
-  _haddock_api8 <-
-      -- 2.18.1 requires ghc-8.2, 2.19.0.1 requires ghc-8.4
-      hackage (Just "2.18.1") "haddock-api" >>= inGroups ["ghcjs-comp"] >>=
-             flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
-             flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>=
-             flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>=
-{-
-             -- This breaks the build
-             apply (execCabalM $ (debInfo . rulesFragments) %=
-                                         Set.insert (Text.unlines [ "# Force the Cabal dependency to be the version provided by GHC"
-                                                                  , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
--}
-             debianize [] >>= inGroups ["ghcjs-comp"]
   _haskell_devscripts <-
       -- Current version as of 26 Apr 2018
       -- git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "6e1e94bc4efd8a0ac37f34ac84f4813bcb0105cc"] >>=
@@ -81,6 +68,18 @@ buildTargets80 = do
   -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
   -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
   -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
+  _haddock_api8 <-
+      hackage (Just "2.17.4") "haddock-api" >>=
+             flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
+             flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>=
+             flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>=
+{-
+             -- This breaks the build
+             apply (execCabalM $ (debInfo . rulesFragments) %=
+                                         Set.insert (Text.unlines [ "# Force the Cabal dependency to be the version provided by GHC"
+                                                                  , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
+-}
+             debianize [] >>= inGroups ["ghcjs-comp"]
   _singletons_ghc <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
   _uri_bytestring <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   buildTargets
@@ -133,6 +132,19 @@ buildTargets82 = do
       flag (P.BuildDep "hspec-discover") >>=
       inGroups ["ghcjs-comp"] >>=
       debianize [] {- >>= ghcjs_also -}
+  _haddock_api8 <-
+      -- 2.18.1 requires ghc-8.2, 2.19.0.1 requires ghc-8.4
+      hackage (Just "2.18.1") "haddock-api" >>= inGroups ["ghcjs-comp"] >>=
+             flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
+             flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>=
+             flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>=
+{-
+             -- This breaks the build
+             apply (execCabalM $ (debInfo . rulesFragments) %=
+                                         Set.insert (Text.unlines [ "# Force the Cabal dependency to be the version provided by GHC"
+                                                                  , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
+-}
+             debianize [] >>= inGroups ["ghcjs-comp"]
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
 
 #endif
