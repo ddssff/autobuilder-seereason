@@ -14,7 +14,7 @@ import Debian.AutoBuilder.Details.Common (TSt, ghcjs_only, ghcjs_also, skip, Rea
 import Debian.AutoBuilder.Details.CommonTargets (commonTargets)
 import Debian.AutoBuilder.Types.Packages as P
     (apt, debdir, debianize, flag, git, hackage, uri, inGroups,
-     PackageFlag(CabalDebian, DebVersion, DevelDep, RelaxDep), patch, PackageId)
+     PackageFlag(BuildDep, CabalDebian, DebVersion, DevelDep, NoDoc, RelaxDep), patch, PackageId)
 import Debian.Repo.Fingerprint
 
 buildTargets :: Monad m => TSt m ()
@@ -28,7 +28,8 @@ buildTargets = do
                       ghcjs_only >>=
                       skip (Reason "see cairo and glib")
   _haddock_api8 <-
-      hackage (Just "2.17.4") "haddock-api" >>=
+      -- 2.18.1 requires ghc-8.2, 2.19.0.1 requires ghc-8.4
+      hackage (Just "2.18.1") "haddock-api" >>= inGroups ["ghcjs-comp"] >>=
              flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>=
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>=
@@ -119,10 +120,19 @@ buildTargets82 = do
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>= inGroups ["ghc8-comp"]
   -- Stick with ghc-7.10 version of ghcjs, that's what Jeremy is using.
   -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
-  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.2"] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
+  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.2"] >>= inGroups ["ghcjs-comp"]
   _singletons_ghc <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
-  -- Waiting for Cabal-2.0
-  _haddock_library82 <- hackage (Just "1.4.5") "haddock-library" >>= debianize [] >>= ghcjs_also
+  -- haddock-library has to "library" sections in its cabal file, which cabal
+  -- debian (and haskell-devscripts) cannot handle.  Remove the second one
+  -- and just use the available attoparsec library.
+  _haddock_library82 <-
+      -- Version 1.4.4 is required by haddock-api-2.18.1, the next
+      -- haddock-api requires version 1.5 and ghc-8.4.
+      hackage (Just "1.4.4") "haddock-library" >>=
+      patch $(embedFile "patches/haddock-library.diff") >>=
+      flag (P.BuildDep "hspec-discover") >>=
+      inGroups ["ghcjs-comp"] >>=
+      debianize [] {- >>= ghcjs_also -}
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
 
 #endif
