@@ -119,7 +119,8 @@ buildTargets82 = do
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>= inGroups ["ghc8-comp"]
   -- Stick with ghc-7.10 version of ghcjs, that's what Jeremy is using.
   -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
-  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.2"] >>= inGroups ["ghcjs-comp"]
+  -- Can't get this to build.  Stick with 8.0 for now. :-(
+  -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.2"] >>= inGroups ["ghcjs-comp"]
   _singletons_ghc <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
   -- haddock-library has to "library" sections in its cabal file, which cabal
   -- debian (and haskell-devscripts) cannot handle.  Remove the second one
