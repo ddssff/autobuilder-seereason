@@ -1,14 +1,3 @@
---- old/debian/control
-+++ new/debian/control
-@@ -43,7 +43,7 @@ Description: Tools to help Debian developers build Haskell packages
- Package: haskell-devscripts
- Architecture: all
- Depends: ${misc:Depends}
--  , ghc (>= 8.2)
-+  , ghc (>= 8.0.1)
-   , haskell-devscripts-minimal
-   , hscolour
- Description: Tools to help Debian developers build Haskell packages
 --- old/Dh_Haskell.sh	2016-12-11 16:48:06.000000000 -0800
 +++ new/Dh_Haskell.sh	2017-01-23 13:56:39.054461622 -0800
 @@ -6,11 +6,11 @@
@@ -148,35 +137,3 @@
      for package_id in `cabal_package_ids $@` ; do
          packages="$packages, `package_id_to_virtual_package "${hc}" prof $package_id "${ghcpkg}"`"
      done
-@@ -483,7 +483,7 @@
- check_recipe(){
-     # local PS5=$PS4; PS4=" + check_recipe> "; set -x
-     hc=`packages_hc`
--    run ${DEB_SETUP_BIN_NAME} test --builddir=dist-${hc} --show-details=direct
-+    run ${DEB_SETUP_BIN_NAME} test --builddir=dist-${hc} --show-details=always
-     # PS4=$PS5
- }
- 
-@@ -516,9 +516,9 @@ haddock_recipe(){
- extra_depends_recipe(){
-     # local PS5=$PS4; PS4=" + extra_depends_recipe> "; set -x
-     hc=$1
-     pkg_config=$(LC_ALL=C.UTF-8 ${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config --verbose=verbose+nowrap | sed -r -n '/^Creating package registration file: /s///p')
-     run dh_haskell_extra_depends ${hc} $pkg_config
--    rm $pkg_config
-+    rm -r $pkg_config
-     # PS4=$PS5
- }
- 
-@@ -533,10 +533,10 @@ install_dev_recipe(){
-     ( run cd debian/tmp-inst-${hc} ; run mkdir -p ${libdir} ; run find ${libdir}/ \
-         \( ! -name "*_p.a" ! -name "*.p_hi" ! -type d \) \
-         -exec install -Dm 644 '{}' ../${PKG}/'{}' ';' )
-     pkg_config=$(LC_ALL=C.UTF-8 ${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config --verbose=verbose+nowrap | sed -r -n '/^Creating package registration file: /s///p')
-     if [ "${HASKELL_HIDE_PACKAGES}" ]; then sed -i 's/^exposed: True$/exposed: False/' $pkg_config; fi
-     run install -Dm 644 $pkg_config debian/${PKG}/${pkgdir}/$pkg_config
--    run rm -f $pkg_config
-+    run rm -rf $pkg_config
-     if [ "z${DEB_GHC_EXTRA_PACKAGES}" != "z" ] ; then
-        EP_DIR=debian/${PKG}/usr/lib/haskell-packages/extra-packages
-        run mkdir -p $EP_DIR

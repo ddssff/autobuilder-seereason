@@ -6,7 +6,7 @@ import Control.Lens (use, view)
 import Data.FileEmbed (embedFile)
 import Data.Map as Map (elems)
 import Data.Set as Set (fromList, member, Set)
-import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs_only, git', gitrepo, gitrepo2, hack, noTests, putSrcPkgName, Reason(Reason), replacement, skip, skip2, tflag, qflag, pflag, substitute, wflag, wskip, TSt)
+import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs_only, git', gitrepo, gitrepo2, hack, noProf, noTests, putSrcPkgName, Reason(Reason), replacement, skip, skip2, tflag, qflag, pflag, substitute, wflag, wskip, TSt)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
