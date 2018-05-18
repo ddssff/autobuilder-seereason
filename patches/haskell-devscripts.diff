@@ -161,8 +161,7 @@
  extra_depends_recipe(){
      # local PS5=$PS4; PS4=" + extra_depends_recipe> "; set -x
      hc=$1
--    pkg_config=$(LC_ALL=C.UTF-8 ${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config --verbose=verbose+nowrap | sed -r -n '/^Creating package registration file: /s///p')
-+    pkg_config=$(LC_ALL=C.UTF-8 ${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config --verbose=2 | sed -r -n '/^Creating package registration .*: /s///p')
+     pkg_config=$(LC_ALL=C.UTF-8 ${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config --verbose=verbose+nowrap | sed -r -n '/^Creating package registration file: /s///p')
      run dh_haskell_extra_depends ${hc} $pkg_config
 -    rm $pkg_config
 +    rm -r $pkg_config
@@ -173,8 +172,7 @@
      ( run cd debian/tmp-inst-${hc} ; run mkdir -p ${libdir} ; run find ${libdir}/ \
          \( ! -name "*_p.a" ! -name "*.p_hi" ! -type d \) \
          -exec install -Dm 644 '{}' ../${PKG}/'{}' ';' )
--    pkg_config=$(LC_ALL=C.UTF-8 ${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config --verbose=verbose+nowrap | sed -r -n '/^Creating package registration file: /s///p')
-+    pkg_config=$(LC_ALL=C.UTF-8 ${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config --verbose=2 | sed -r -n '/^Creating package registration .*: /s///p')
+     pkg_config=$(LC_ALL=C.UTF-8 ${DEB_SETUP_BIN_NAME} register --builddir=dist-${hc} --gen-pkg-config --verbose=verbose+nowrap | sed -r -n '/^Creating package registration file: /s///p')
      if [ "${HASKELL_HIDE_PACKAGES}" ]; then sed -i 's/^exposed: True$/exposed: False/' $pkg_config; fi
      run install -Dm 644 $pkg_config debian/${PKG}/${pkgdir}/$pkg_config
 -    run rm -f $pkg_config
