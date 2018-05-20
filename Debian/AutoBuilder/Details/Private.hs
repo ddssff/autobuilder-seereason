@@ -15,10 +15,10 @@ import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 
 buildTargets :: Monad m => ParamRec -> TSt m ()
 buildTargets _params = do
-  _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= debianize []
-  _appraisalscribe_acid <- git "ssh://git@github.com/seereason/appraisalscribe-acid" [] >>= debianize []
+  _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= debianize []
+  _appraisalscribe_acid <- git "ssh://git@github.com/seereason/appraisalscribe-acid" [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= debianize []
   -- _appraisalscribe_json <- git "ssh://git@github.com/seereason/appraisalscribe-json" [] >>= debianize []
-  _appraisalscribe_io <- git "ssh://git@github.com/seereason/appraisalscribe-io" [] >>= debianize [] >>= ghcjs_also
+  _appraisalscribe_io <- git "ssh://git@github.com/seereason/appraisalscribe-io" [] >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= ghcjs_also
   _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [] >>= debianize [] >>= ghcjs_also
   -- appraisalscribe-data-tests is a huge package because it
   -- contains lots of test data, it makes more sense to just check
@@ -40,9 +40,9 @@ buildTargets _params = do
   _editor_taggy <- git "ssh://git@github.com/seereason/editor-taggy" [] >>= debianize [] >>= ghcjs_only
   let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" []
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_only
-  _happstack_ghcjs_common <- happstack_ghcjs >>= cd "happstack-ghcjs-common" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_also
-  _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize [] >>= inGroups ["private-libs"]
-  _happstack_ghcjs_webmodule <- happstack_ghcjs >>= cd "happstack-ghcjs-webmodule" >>= flag (P.BuildDep "haskell-editor-common-utils") >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_also
+  _happstack_ghcjs_common <- happstack_ghcjs >>= cd "happstack-ghcjs-common" >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"] >>= ghcjs_also
+  _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"]
+  _happstack_ghcjs_webmodule <- happstack_ghcjs >>= cd "happstack-ghcjs-webmodule" >>= flag (P.BuildDep "haskell-editor-common-utils") >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"] >>= ghcjs_also
 
   _happstack_ontology <- git "ssh://git@github.com/seereason/happstack-ontology" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
   _image_cache <- git "https://github.com/seereason/image-cache.git" [] {- >>= flag (P.CabalDebian ["--cabal-flags", "-pretty-112"]) -} >>= debianize [] >>= ghcjs_also
@@ -88,7 +88,7 @@ buildTargets _params = do
   _stripe_haskell <- git stripeRepo [] >>= cd "stripe-haskell" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>= debianize []
   -- stripe_http_conduit <- debianize (darcs (privateRepo </> "stripe") `cd` "stripe-http-conduit")
   _task_manager <- git "ssh://git@github.com/seereason/task-manager.git" [] >>= debianize [] >>= inGroups ["private-libs"]
-  _typegraph <- git "ssh://git@github.com/seereason/typegraph.git" [] >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_also
+  _typegraph <- git "ssh://git@github.com/seereason/typegraph.git" [] >>= debianize [] >>= inGroups ["private-libs"] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= ghcjs_also
   noTests
   -- noDoc
   -- noProf
