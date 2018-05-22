@@ -391,11 +391,8 @@ commonTargets = do
                     ghcjs_only
   -- ghcjs_vdom = ghcjs_flags ( (git "https://github.com/seereason/ghcjs-vdom" [Branch "base48"]) >>= debianize `putSrcPkgName` "ghcjs-ghcjs-vdom")
   _ghcjs_ffiqq <- git "https://github.com/ghcjs/ghcjs-ffiqq" [] >>= putSrcPkgName "ghcjs-ghcjs-ffiqq" >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "[libghc-ghcjs-base-doc] -> []")
-  _ghcjs_dom <- hackage (Just "0.2.4.0" {-"0.7.0.4"-} {-"0.4.0.0"-}) "ghcjs-dom" >>=
-                flag (P.CabalPin "0.2.4.0") >>=
-                debianize [] >>=
-                inGroups ["glib"] >>= ghcjs_only
-  -- _ghcjs_dom_jsffi <- hackage (Just "0.7.0.4") "ghcjs-dom-jsffi" >>= debianize [] >>= ghcjs_also
+  _ghcjs_dom <- hackage (Just "0.9.2.0") "ghcjs-dom" >>= debianize [] >>= ghcjs_only
+  _ghcjs_dom_jsffi <- hackage (Just "0.9.2.0") "ghcjs-dom-jsffi" >>= debianize [] >>= ghcjs_only
   _ghcjs_dom_hello <- hackage (Just "3.0.0.0") "ghcjs-dom-hello" >>=
                       patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
                       flag (P.CabalDebian ["--default-package", "ghcjs-dom-hello"]) >>=
