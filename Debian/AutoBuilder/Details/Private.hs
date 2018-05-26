@@ -8,7 +8,7 @@ import Data.FileEmbed (embedFile)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, git, cd, {-packageMap,-} inGroups)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
---import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
+import Debian.Repo.Fingerprint (GitSpec(Branch))
 --import System.FilePath ((</>))
 
 -- Individual packages, alphabetized
@@ -38,7 +38,7 @@ buildTargets _params = do
   _editor_client <- git "ssh://git@github.com/seereason/editor-client" [] >>= debianize [] >>= ghcjs_only
   _editor_server <- git "ssh://git@github.com/seereason/editor-server" [] >>= debianize []
   _editor_taggy <- git "ssh://git@github.com/seereason/editor-taggy" [] >>= debianize [] >>= ghcjs_also
-  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" []
+  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "dsf"]
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_only
   _happstack_ghcjs_common <- happstack_ghcjs >>= cd "happstack-ghcjs-common" >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"] >>= ghcjs_also
   _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"]
