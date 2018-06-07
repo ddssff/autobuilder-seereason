@@ -80,3 +80,12 @@
  
  source-repository head
      type:     git
+@@ -112,7 +112,7 @@ Library
+      hsp                          >= 0.9  && < 0.11,
+      hsx-jmacro                   == 7.3.*,
+      hsx2hs                       >= 0.13 && < 0.15,
+-     ixset                        == 1.0.*,
++     ixset                        >= 1.0,
+      jmacro                       == 0.6.*,
+      lens                         >= 4.3  && < 4.17,
+      mtl                          >= 2.0  && < 2.3,

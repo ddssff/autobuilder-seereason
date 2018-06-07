@@ -65,9 +65,6 @@ buildTargets80 = do
                     flag (P.CabalDebian ["--default-package", "cabal-install"])
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
   _haddock_library8 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
-  -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
-  -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
-  -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
   _haddock_api8 <-
       hackage (Just "2.17.4") "haddock-api" >>=
              flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
@@ -121,7 +118,10 @@ buildTargets82 = do
   -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
   -- Can't get this to build.  Stick with 8.0 for now. :-(
   -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.2"] >>= inGroups ["ghcjs-comp"]
-  _singletons_ghc <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
+  -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
+  -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
+  -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
+  _singletons_ghc <- hackage (Just "2.3.1") "singletons" >>= debianize [] >>= ghcjs_also
   -- haddock-library has to "library" sections in its cabal file, which cabal
   -- debian (and haskell-devscripts) cannot handle.  Remove the second one
   -- and just use the available attoparsec library.
