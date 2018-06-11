@@ -1,0 +1,21 @@
+--- old/wai-app-static.cabal	2018-06-10 12:19:53.406450098 -0700
++++ new/wai-app-static.cabal	2018-06-10 14:27:05.811759784 -0700
+@@ -50,7 +50,7 @@
+                    , zlib                      >= 0.5
+                    , filepath
+                    , wai-extra                 >= 3.0      && < 3.1
+-                   , optparse-applicative      >= 0.7      && < 0.13
++                   , optparse-applicative      >= 0.7
+                    , warp                      >= 3.0.11   && < 3.3
+ 
+     exposed-modules: Network.Wai.Application.Static
+--- old/WaiAppStatic/CmdLine.hs	2018-06-10 14:42:19.144807037 -0700
++++ new/WaiAppStatic/CmdLine.hs	2018-06-10 14:41:37.121483173 -0700
+@@ -25,6 +25,7 @@
+ import WaiAppStatic.Types (ssIndices, toPiece, ssGetMimeType, fileName, fromPiece)
+ import Data.Maybe (mapMaybe)
+ import Control.Arrow (second)
++import Data.Monoid ((<>))
+ 
+ data Args = Args
+     { docroot :: FilePath
