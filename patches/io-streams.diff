@@ -1,22 +1,18 @@
---- old/io-streams.cabal	2017-07-22 13:43:11.415909742 -0700
-+++ new/io-streams.cabal	2017-07-31 21:49:24.629787582 -0700
-@@ -119,8 +119,7 @@
- 
+--- old/io-streams.cabal	2017-09-13 06:53:29.613906866 -0700
++++ new/io-streams.cabal	2018-06-14 23:08:05.700350146 -0700
+@@ -120,7 +120,6 @@
    Build-depends:     base               >= 4     && <5,
                       attoparsec         >= 0.10  && <0.14,
--                     bytestring         >= 0.9   && <0.11,
+                      bytestring         >= 0.9   && <0.11,
 -                     bytestring-builder >= 0.10  && <0.11,
-+                     bytestring         >= 0.10  && <0.11,
                       network            >= 2.3   && <2.7,
                       primitive          >= 0.2   && <0.7,
                       process            >= 1.1   && <1.7,
-@@ -200,8 +199,7 @@
- 
+@@ -201,7 +200,6 @@
    Build-depends:     base               >= 4     && <5,
                       attoparsec         >= 0.10  && <0.14,
--                     bytestring         >= 0.9   && <0.11,
+                      bytestring         >= 0.9   && <0.11,
 -                     bytestring-builder >= 0.10  && <0.11,
-+                     bytestring         >= 0.10  && <0.11,
                       deepseq            >= 1.2   && <1.5,
                       directory          >= 1.1   && <2,
                       filepath           >= 1.2   && <2,

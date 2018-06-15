@@ -1,10 +1,10 @@
---- old/wai.cabal	2013-08-02 18:48:24.000000000 -0700
-+++ new/wai.cabal	2013-08-02 20:30:34.173078086 -0700
-@@ -25,6 +25,6 @@
+--- old/wai.cabal	2017-11-21 06:05:54.381331600 -0800
++++ new/wai.cabal	2018-06-14 21:24:57.701006944 -0700
+@@ -21,7 +21,6 @@
+ Library
+   Build-Depends:     base                      >= 4        && < 5
+                    , bytestring                >= 0.10
+-                   , bytestring-builder        >= 0.10.4.0 && < 0.11
+                    , blaze-builder             >= 0.2.1.4  && < 0.5
+                    , network                   >= 2.2.1.5
                     , http-types                >= 0.7
-                    , text                      >= 0.7
-                    , transformers              >= 0.2.2
--                   , vault                     >= 0.1      && < 0.3
-+                   , vault                     >= 0.1
-   Exposed-modules:   Network.Wai
-   ghc-options:       -Wall

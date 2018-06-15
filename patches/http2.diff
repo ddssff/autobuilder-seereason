@@ -1,0 +1,50 @@
+--- old/http2.cabal	2017-09-13 06:53:21.458027347 -0700
++++ new/http2.cabal	2018-06-14 21:28:52.302043796 -0700
+@@ -81,7 +81,6 @@
+   Build-Depends:        base >= 4.6 && < 5
+                       , array
+                       , bytestring >= 0.10
+-                      , bytestring-builder
+                       , case-insensitive
+                       , containers >= 0.5
+                       , psqueues
+@@ -114,7 +113,6 @@
+   Build-Depends:        base >= 4 && < 5
+                       , array
+                       , bytestring
+-                      , bytestring-builder
+                       , case-insensitive
+                       , containers
+                       , hex
+@@ -137,7 +135,6 @@
+                       , aeson-pretty
+                       , array
+                       , bytestring
+-                      , bytestring-builder
+                       , case-insensitive
+                       , containers
+                       , directory
+@@ -187,7 +184,6 @@
+                       , aeson-pretty
+                       , array
+                       , bytestring
+-                      , bytestring-builder
+                       , case-insensitive
+                       , containers
+                       , hex
+@@ -209,7 +205,6 @@
+                       , aeson
+                       , array
+                       , bytestring
+-                      , bytestring-builder
+                       , case-insensitive
+                       , containers
+                       , hex
+@@ -232,7 +227,6 @@
+                       , aeson-pretty
+                       , array
+                       , bytestring
+-                      , bytestring-builder
+                       , case-insensitive
+                       , containers
+                       , directory

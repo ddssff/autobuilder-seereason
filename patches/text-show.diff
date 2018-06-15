@@ -1,0 +1,26 @@
+--- old/text-show.cabal	2018-06-14 23:11:23.901704062 -0700
++++ new/text-show.cabal	2018-06-14 23:12:11.177072394 -0700
+@@ -161,7 +161,6 @@
+                      , base-compat         >= 0.8.1  && < 0.10
+                      , bifunctors          >= 5.1    && < 6
+                      , bytestring          >= 0.9    && < 0.11
+-                     , bytestring-builder
+                      , containers          >= 0.1    && < 0.6
+                      , contravariant       >= 0.5    && < 2
+                      , generic-deriving    >= 1.11   && < 2
+@@ -343,7 +342,6 @@
+                      , base-orphans         >= 0.6    && < 0.8
+                      , bifunctors           >= 5.1    && < 6
+                      , bytestring           >= 0.9    && < 0.11
+-                     , bytestring-builder
+                      , containers           >= 0.1    && < 0.6
+                      , contravariant        >= 0.5    && < 2
+                      , deriving-compat      >= 0.3.4  && < 1
+@@ -402,7 +400,6 @@
+                      , base-compat         >= 0.8.1  && < 0.10
+                      , bifunctors          >= 5.1    && < 6
+                      , bytestring          >= 0.9    && < 0.11
+-                     , bytestring-builder
+                      , containers          >= 0.1    && < 0.6
+                      , contravariant       >= 0.5    && < 2
+                      , criterion           >= 1.1.4  && < 2

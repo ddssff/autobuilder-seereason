@@ -146,7 +146,7 @@ buildTargets82 = do
                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
-  _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= patch $(embedFile "patches/uri-bytestring.diff") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
 
 #endif
   buildTargets

@@ -1,69 +1,42 @@
-diff -ru a/src/Network/WebSockets/Hybi13.hs b/src/Network/WebSockets/Hybi13.hs
---- a/src/Network/WebSockets/Hybi13.hs	2017-10-11 13:17:27.429364449 -0700
-+++ b/src/Network/WebSockets/Hybi13.hs	2017-10-12 15:40:29.751624601 -0700
-@@ -23,7 +23,7 @@
- import           Control.Exception                     (throwIO)
- import           Control.Monad                         (forM, liftM, unless,
-                                                         when)
--import           Data.Binary.Get                       (Get, getInt64be,
-+import           Data.Binary.Get                       (Get, getWord64be,
-                                                         getLazyByteString,
-                                                         getWord16be, getWord8)
- import           Data.Binary.Put                       (putWord16be, runPut)
-@@ -198,7 +198,7 @@
- 
-     len <- case lenflag of
-         126 -> fromIntegral <$> getWord16be
--        127 -> getInt64be
-+        127 -> fromIntegral <$> getWord64be
-         _   -> return (fromIntegral lenflag)
- 
-     -- Check size against limit.
-diff -ru a/websockets.cabal b/websockets.cabal
---- a/websockets.cabal	2017-10-11 13:17:27.429364449 -0700
-+++ b/websockets.cabal	2017-10-12 15:34:03.761669524 -0700
-@@ -78,7 +78,7 @@
-     attoparsec        >= 0.10   && < 0.14,
-     base              >= 4.4    && < 5,
+--- old/websockets.cabal	2018-06-14 21:22:47.138645795 -0700
++++ new/websockets.cabal	2018-06-14 21:34:30.345127316 -0700
+@@ -84,7 +84,6 @@
      base64-bytestring >= 0.1    && < 1.1,
--    binary            >= 0.8.1  && < 0.9,
-+    binary            >= 0.7    && < 0.9,
-     blaze-builder     >= 0.3    && < 0.5,
+     binary            >= 0.8.1  && < 0.10,
      bytestring        >= 0.9    && < 0.11,
+-    bytestring-builder             < 0.11,
      case-insensitive  >= 0.3    && < 1.3,
-@@ -134,7 +134,7 @@
-     attoparsec        >= 0.10   && < 0.14,
-     base              >= 4      && < 5,
+     containers        >= 0.3    && < 0.6,
+     network           >= 2.3    && < 2.8,
+@@ -141,7 +140,6 @@
      base64-bytestring >= 0.1    && < 1.1,
--    binary            >= 0.8.1  && < 0.9,
-+    binary            >= 0.7    && < 0.9,
-     blaze-builder     >= 0.3    && < 0.5,
+     binary            >= 0.8.1  && < 0.10,
      bytestring        >= 0.9    && < 0.11,
+-    bytestring-builder             < 0.11,
      case-insensitive  >= 0.3    && < 1.3,
-@@ -160,7 +160,7 @@
-     attoparsec        >= 0.10   && < 0.14,
-     base              >= 4      && < 5,
+     containers        >= 0.3    && < 0.6,
+     network           >= 2.3    && < 2.8,
+@@ -167,7 +165,6 @@
      base64-bytestring >= 0.1    && < 1.1,
--    binary            >= 0.8.1  && < 0.9,
-+    binary            >= 0.7    && < 0.9,
-     blaze-builder     >= 0.3    && < 0.5,
+     binary            >= 0.8.1  && < 0.10,
      bytestring        >= 0.9    && < 0.11,
+-    bytestring-builder             < 0.11,
      case-insensitive  >= 0.3    && < 1.3,
-@@ -190,7 +190,7 @@
-     attoparsec        >= 0.10   && < 0.14,
-     base              >= 4      && < 5,
+     containers        >= 0.3    && < 0.6,
+     network           >= 2.3    && < 2.8,
+@@ -195,7 +192,6 @@
      base64-bytestring >= 0.1    && < 1.1,
--    binary            >= 0.8.1  && < 0.9,
-+    binary            >= 0.7    && < 0.9,
-     blaze-builder     >= 0.3    && < 0.5,
+     binary            >= 0.8.1  && < 0.10,
      bytestring        >= 0.9    && < 0.11,
+-    bytestring-builder             < 0.11,
      case-insensitive  >= 0.3    && < 1.3,
-@@ -216,7 +216,7 @@
-         attoparsec        >= 0.10   && < 0.14,
-         base              >= 4      && < 5,
+     containers        >= 0.3    && < 0.6,
+     network           >= 2.3    && < 2.8,
+@@ -221,7 +217,6 @@
          base64-bytestring >= 0.1    && < 1.1,
--        binary            >= 0.8.1  && < 0.9,
-+        binary            >= 0.7    && < 0.9,
-         blaze-builder     >= 0.3    && < 0.5,
+         binary            >= 0.8.1  && < 0.10,
          bytestring        >= 0.9    && < 0.11,
+-        bytestring-builder             < 0.11,
          case-insensitive  >= 0.3    && < 1.3,
+         containers        >= 0.3    && < 0.6,
+         network           >= 2.3    && < 2.8,

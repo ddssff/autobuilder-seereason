@@ -1,0 +1,18 @@
+--- old/warp.cabal	2017-09-13 06:57:58.905960870 -0700
++++ new/warp.cabal	2018-06-14 21:42:41.981861516 -0700
+@@ -38,7 +38,6 @@
+                    , auto-update               >= 0.1.3    && < 0.2
+                    , blaze-builder             >= 0.4
+                    , bytestring                >= 0.9.1.4
+-                   , bytestring-builder
+                    , case-insensitive          >= 0.2
+                    , containers
+                    , ghc-prim
+@@ -144,7 +143,6 @@
+                    , auto-update
+                    , blaze-builder             >= 0.4
+                    , bytestring                >= 0.9.1.4
+-                   , bytestring-builder
+                    , case-insensitive          >= 0.2
+                    , ghc-prim
+                    , HTTP
