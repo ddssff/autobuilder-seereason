@@ -350,7 +350,7 @@ commonTargets = do
   _generics_sop <- hackage (Just "0.3.2.0") "generics-sop" >>= debianize [] >>= ghcjs_also
   _genI <- darcs "http://hub.darcs.net/kowey/GenI" >>= patch $(embedFile "patches/GenI.diff") >>= debianize [] >>= inGroups ["GenI"] >>= skip (Reason "hub.darcs.net retrieve failed")
   _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] >>= skip (Reason "Encountered missing dependencies: 2> binary ==0.8.*")
-  _ghc_boot_th <- hackage (Just "8.0.2") "ghc-boot-th" >>= debianize []
+  _ghc_boot_th <- hackage (Just "8.2.2") "ghc-boot-th" >>= debianize []
   _ghc_exactprint <- git "https://github.com/alanz/ghc-exactprint" [] >>= debianize []
   _terminal_size <- hackage (Just "0.3.2.1") "terminal-size"  >>= flag (P.DebVersion "0.3.2.1-2") >>= debianize [] >>= inGroups ["ghcid"]
   _ghcid <- hackage (Just "0.6.4") "ghcid" >>= debianize [] >>= inGroups ["ghcid"]
@@ -720,11 +720,6 @@ commonTargets = do
   _mmap <-  (hackage (Just "0.5.9") "mmap") >>= flag (P.DebVersion "0.5.9-3") >>= debianize []
   _mmorph <- hackage Nothing "mmorph" >>= debianize [] >>= inGroups ["authenticate", "important", "servant"] >>= ghcjs_also
   _module_management <-  (git "https://github.com/seereason/module-management" [] >>= flag (P.BuildDep "rsync")) >>= debianize []
-  _monadCatchIO_mtl <-  (hackage (Just "0.3.1.0") "MonadCatchIO-mtl" >>= patch $(embedFile "patches/monadcatchio-mtl.diff")) >>= debianize []
-  _monadCatchIO_transformers <- hackage (Just "0.3.1.3") "MonadCatchIO-transformers" >>=
-                                flag (P.DebVersion "0.3.1.3-4") >>=
-                                patch $(embedFile "patches/MonadCatchIO-transformers.diff") >>=
-                                debianize []
   _monad_control <-  (hackage (Just "1.0.1.0") "monad-control") >>= debianize [] >>= ghcjs_also
   _monadcryptorandom <- hackage (Just "0.7.0") "monadcryptorandom" >>= flag (P.DebVersion "0.7.0-1") >>= debianize [] >>= inGroups ["authenticate", "important"]
   _monadLib <-  (hackage (Just "3.7.3") "monadLib") >>= flag (P.DebVersion "3.7.3-1") >>= debianize []
