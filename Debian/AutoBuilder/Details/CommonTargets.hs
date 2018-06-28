@@ -6,7 +6,7 @@ import Control.Lens (use, view)
 import Data.FileEmbed (embedFile)
 import Data.Map as Map (elems)
 import Data.Set as Set (fromList, member, Set)
-import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs_only, git', gitrepo, gitrepo2, hack, noProf, noTests, putSrcPkgName, Reason(Reason), replacement, skip, skip2, tflag, qflag, pflag, substitute, wflag, wskip, TSt)
+import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs_only, git', gitrepo, gitrepo2, hack, {-noProf,-} noTests, putSrcPkgName, Reason(Reason), replacement, skip, skip2, tflag, qflag, pflag, substitute, wflag, wskip, TSt)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
@@ -127,7 +127,8 @@ commonTargets = do
   _categories <- hackage (Just "1.0.6") "categories" >>= tflag (P.DebVersion "1.0.6-1") >>= debianize [] >>= broken
   _cautious_file <-  (hackage (Just "1.0.2") "cautious-file" >>= tflag (P.DebVersion "1.0.2-2")) >>= debianize [] >>= skip (Reason "requires filepath < 1.4")
   _cc_delcont <-  (hackage (Just "0.2") "CC-delcont" >>= flag (P.DebVersion "0.2-1~hackage1")) >>= debianize [] >>= skip (Reason "Missing applicative instances in 0.2")
-  _cereal <-  (hackage (Just "0.5.3.0") "cereal" {->>= flag (P.CabalPin "0.4.1.1")-}) >>= debianize [] >>= ghcjs_also -- Concerns about migration in 0.5
+  -- Version 0.5.5.0 first exports Data.Serialize.Get.bytesRead
+  _cereal <- hackage (Just "0.5.5.0") "cereal" >>= debianize [] >>= ghcjs_also -- Concerns about migration in 0.5
   _cereal_vector <- hackage (Just "0.2.0.1") "cereal-vector" >>= debianize [] >>= ghcjs_also
   _certificate <- hackage (Just "1.3.9") "certificate" >>= patch $(embedFile "patches/certificate.diff") >>= tflag (P.DebVersion "1.3.9-1build4") >>= debianize [] >>= skip (Reason "base < 4.8")
   _cgi <- (hackage (Just "3001.2.2.2") "cgi" {- `patch` $(embedFile "patches/cgi.diff") -}) >>= debianize [] >>= inGroups ["platform"] >>= skip (Reason "Depends on exceptions < 0.7")
@@ -288,7 +289,7 @@ commonTargets = do
   _emacs <- apt "trusty" "emacs24" >>= patch $(embedFile "patches/emacs.diff")
   _email_validate <-  (hackage (Just "2.2.0") "email-validate") >>= debianize [] >>= inGroups ["important"]
   _enclosed_exceptions <- hackage (Just "1.0.2") "enclosed-exceptions" >>= debianize [] >>= inGroups ["ghcjs-comp"] {->>= ghcjs_also-}
-  _entropy <- hackage (Just "0.3.8") "entropy" >>= debianize [] >>= ghcjs_also
+  _entropy <- hackage (Just "0.4.1.1") "entropy" >>= debianize [] >>= ghcjs_also
   _enumerator <- hackage (Just "0.4.20") "enumerator" >>= flag (P.DebVersion "0.4.20-4build1") >>= debianize []
   _erf <- hackage (Just "2.0.0.0") "erf" >>= flag (P.DebVersion "2.0.0.0-9") >>= debianize []
   _errors <-  (hackage (Just "2.1.2") "errors") >>= debianize [] >>= ghcjs_also
@@ -555,7 +556,7 @@ commonTargets = do
              patch $(embedFile "patches/hsx2hs.diff") >>= -- build library only for ghcjs
              debianize [] >>=
              inGroups ["happstack", "important"] >>= ghcjs_also
-  flag (P.CabalDebian ["--executable", "hsx2hs"]) _hsx2hs
+  _hsx2hs' <- flag (P.CabalDebian ["--executable", "hsx2hs"]) _hsx2hs
   _hsx_jmacro <- git "https://github.com/Happstack/hsx-jmacro.git" [] >>= debianize [] >>= inGroups ["happstack", "important"]
   _hsyslog <-  (hackage (Just "5.0.1") "hsyslog") >>= debianize []
   _htf <-  (hackage (Just "0.13.1.0") "HTF" >>= flag (P.BuildDep "cpphs")) >>= debianize []
@@ -780,6 +781,9 @@ commonTargets = do
   _optparse_applicative <-  (hackage (Just "0.14.2.0") "optparse-applicative") >>= debianize [] >>= ghcjs_also
   _ordered <-  (hackage (Just "0.1") "ordered") >>= debianize []
   _pandoc <- hackage (Just "2.2.1") "pandoc" >>=
+             flag (P.CabalDebian ["--executable", "pandoc"]) >>=
+             flag (P.CabalDebian ["--executable", "try-pandoc"]) >>=
+             flag (P.CabalDebian ["--default-package", "pandoc-data"]) >>=
              flag (P.BuildDep "alex") >>=
              flag (P.BuildDep "happy") >>=
              debianize [] >>=
@@ -959,9 +963,9 @@ commonTargets = do
   _size_based <- hackage Nothing "size-based" >>= debianize []
   (_ghc_skylighting_core, _ghcjs_skylighting_core) <- hackage (Just "0.7.1") "skylighting-core" >>= debianize [] >>= inGroups [] >>= ghcjs_also
   (_ghc_skylighting, _ghcjs_skylighting) <- hackage (Just "0.7.1") "skylighting" >>= debianize [] >>= inGroups [] >>= ghcjs_also
-  flag (P.CabalDebian ["--cabal-flag", "system-pcre"]) _ghcjs_skylighting_core
-  flag (P.CabalDebian ["--cabal-flag", "system-pcre"]) _ghcjs_skylighting
-  flag (P.CabalDebian ["--cabal-flags", "executable", "--executable", "skylighting" ]) _ghc_skylighting
+  _ghcjs_skylighting_core' <- flag (P.CabalDebian ["--cabal-flag", "system-pcre"]) _ghcjs_skylighting_core
+  _ghcjs_skylighting' <- flag (P.CabalDebian ["--cabal-flag", "system-pcre"]) _ghcjs_skylighting
+  _ghc_skylighting' <- flag (P.CabalDebian ["--cabal-flags", "executable", "--executable", "skylighting" ]) _ghc_skylighting
   -- flag (P.CabalDebian ["--cabal-flags", "executable", "--executable", "skylighting-ghcjs" ]) _ghcjs_skylighting
   -- _skylighting <- git "https://github.com/ddssff/skylighting" [] >>= patch $(embedFile "patches/skylighting.diff") >>= debianize [] >>= inGroups [] >>= ghcjs_also
   -- This is intended to solve a problem with the pretty-show dependency unexpectedly

@@ -7,14 +7,14 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
 
-module Debian.AutoBuilder.Details.Xenial ( buildTargets82, buildTargets80 ) where
+module Debian.AutoBuilder.Details.Xenial ( buildTargets84, buildTargets80 ) where
 
 import Data.FileEmbed (embedFile)
 import Debian.AutoBuilder.Details.Common (TSt, ghcjs_only, ghcjs_also, skip, Reason(..))
 import Debian.AutoBuilder.Details.CommonTargets (commonTargets)
 import Debian.AutoBuilder.Types.Packages as P
     (apt, debdir, debianize, flag, git, hackage, uri, inGroups,
-     PackageFlag(BuildDep, CabalDebian, DebVersion, DevelDep, NoDoc, RelaxDep), patch, PackageId)
+     PackageFlag(BuildDep, CabalDebian, DebVersion, DevelDep, {-NoDoc,-} RelaxDep), patch, PackageId)
 import Debian.Repo.Fingerprint
 
 buildTargets :: Monad m => TSt m ()
