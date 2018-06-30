@@ -68,7 +68,7 @@ commonTargets = do
   -- Requires base-compat >= 0.10
   -- _base_compat_batteries <- hackage (Just "0.9.3") "base-compat-batteries" >>= debianize [] >>= ghcjs_also
   _base_orphans <-  (hackage (Just "0.5.4") "base-orphans") >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
-  _base16_bytestring <-  (hackage (Just "0.1.1.6") "base16-bytestring") >>= flag (P.DebVersion "0.1.1.6-5") >>= debianize [] >>= ghcjs_also
+  _base16_bytestring <-  (hackage (Just "0.1.1.6") "base16-bytestring") >>= flag (P.DebVersion "0.1.1.6-5") >>= inGroups ["tmp"] >>= debianize [] >>= ghcjs_also
   _base64_bytestring <- hackage (Just "1.0.0.1") "base64-bytestring" >>= flag (P.DebVersion "1.0.0.1-6") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _base_unicode_symbols <- hackage (Just "0.2.2.4") "base-unicode-symbols" >>= flag (P.DebVersion "0.2.2.4-7") >>= debianize []
   _basement <- hackage (Just "0.0.6") "basement" >>= debianize [] >>= ghcjs_also
@@ -894,6 +894,7 @@ commonTargets = do
   _regex_tdfa_text <- hackage (Just "1.0.0.3") "regex-tdfa-text" >>= debianize [] >>= ghcjs_also
   -- reified_records =  (hackage (Just "0.2.2") "reified-records" >>= patch $(embedFile "patches/reified-records.diff")) >>= debianize []
   _reified_records <-  (hg "https://bitbucket.org/ddssff/reified-records") >>= debianize []
+  _resolv <- hackage (Just "0.1.1.1") "resolv" >>= inGroups ["tmp"] >>= debianize []
   _resource_pool <- hackage (Just "0.2.3.2") "resource-pool" >>= flag (P.DebVersion "0.2.3.2-4build1") >>= debianize []
   _resourcet <-  (hackage (Just "1.1.7.4") "resourcet") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _rJson <-  hackage (Just "0.3.7") "RJson" >>=
