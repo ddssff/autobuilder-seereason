@@ -32,10 +32,11 @@ buildTargets = do
       -- git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "6e1e94bc4efd8a0ac37f34ac84f4813bcb0105cc"] >>=
       -- New repository
       git "https://salsa.debian.org/haskell-team/haskell-devscripts.git" [] >>=
+      inGroups ["platform"] >>=
       -- This changes --show-details=direct to --show-details=always in check-recipe
       -- Also changes the enable profiling flags
       patch $(embedFile "patches/haskell-devscripts.diff") >>=
-      flag (P.RelaxDep "python-minimal") >>= inGroups ["platform"]
+      flag (P.RelaxDep "python-minimal")
   _haskell_names <- hackage (Just "0.9.1") "haskell-names" >>= debianize []
   _nodejs <- nodejs
 
@@ -97,10 +98,9 @@ buildTargets82 = do
                     patch $(embedFile "patches/cabal-install-2.diff") >>=
                     debianize [] >>=
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>= inGroups ["ghc8-comp"]
-  -- Stick with ghc-7.10 version of ghcjs, that's what Jeremy is using.
-  -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
   -- Can't get this to build.  Stick with 8.0 for now. :-(
   -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.2"] >>= inGroups ["ghcjs-comp"]
+  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
   -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
   -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
   -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
@@ -130,6 +130,8 @@ buildTargets82 = do
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= patch $(embedFile "patches/uri-bytestring.diff") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  _parsec <- hackage (Just "3.1.11") "parsec" >>= apply (substitute "parsec2" "parsec3") >>= debianize [] >>= inGroups ["platform", "ghc8-comp"] >>= ghcjs_also
+  _text <- hackage (Just "1.2.3.0") "text" >>= flag (P.CabalDebian ["--cabal-flags", "-integer-simple"]) >>= flag (P.CabalDebian ["--no-tests"]) >>= debianize [] >>= inGroups ["platform", "test8"]
 
   buildTargets
 
@@ -180,5 +182,8 @@ buildTargets84 = do
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= patch $(embedFile "patches/uri-bytestring.diff") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  _zlib <- hackage (Just "0.6.1.2") "zlib" >>= flag (P.DebVersion "0.6.1.2-1build1") >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform", "ghc8-comp"] >>= ghcjs_also
+  -- parsec-3 is built into ghc-8.4.3, and the deb name is libghc-parsec-dev, not parsec3.
+  -- text-1.2.3.0 is built into ghc-8.4.3
 
   buildTargets

@@ -794,7 +794,6 @@ commonTargets = do
   _parallel <- hackage (Just "3.2.1.1") "parallel" >>= debianize [] >>= inGroups ["platform"]
   _parseargs <-  (hackage (Just "0.2.0.7") "parseargs") >>= debianize [] >>= ghcjs_also
                -- , apt (rel release "wheezy" "quantal") "haskell-parsec2" >>= patch $(embedFile "patches/parsec2.diff")
-  _parsec <-  (hackage (Just "3.1.11") "parsec" >>= apply (substitute "parsec2" "parsec3")) >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _parse_dimacs <-  (hackage (Just "1.3") "parse-dimacs") >>= debianize []
   _parsers <- hackage (Just "0.12.8") "parsers" >>= debianize [] >>= ghcjs_also
   _patches_vector <- hackage (Just "0.1.5.4") "patches-vector" >>= patch $(embedFile "patches/patches-vector.diff") >>= debianize [] >>= ghcjs_also
@@ -1039,7 +1038,6 @@ commonTargets = do
   _testing_type_modifiers <- hackage Nothing "testing-type-modifiers" >>= debianize []
   _texmath <- hackage (Just "0.11") "texmath" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
   _text_binary <- hackage (Just "0.2.1") "text-binary" >>= flag (P.DebVersion "0.2.1-1build1") >>= debianize [] >>= ghcjs_also
-  _text <-  (hackage (Just "1.2.3.0") "text" >>= flag (P.CabalDebian ["--cabal-flags", "-integer-simple"]) >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize [] >>= inGroups ["platform", "test8"]
   _text_icu <-  (hackage (Just "0.7.0.1") "text-icu" >>= flag (P.DevelDep "libicu-dev")) >>= flag (P.DebVersion "0.7.0.1-4build1") >>= debianize []
   _text_show <- hackage (Just "3.7.2") "text-show" >>= patch $(embedFile "patches/text-show.diff") >>= debianize [] -- 3.7.3 requires base-compat-0.10
   _text_stream_decode <- hackage (Just "0.1.0.5") "text-stream-decode" >>= patch $(embedFile "patches/text-stream-decode.diff") >>= debianize [] >>= inGroups ["conduit", "important"] >>= skip (Reason "depends on older text")
