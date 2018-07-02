@@ -5,7 +5,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
-{-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-unused-binds -fno-warn-name-shadowing #-}
+{-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-name-shadowing #-}
 
 module Debian.AutoBuilder.Details.Xenial ( buildTargets82, buildTargets84 ) where
 
@@ -53,34 +53,6 @@ nodejs =
     debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~xenial1.debian.tar.xz" "0083c158831134295e719a524d9c8513") >>=
     flag (P.RelaxDep "libssl-dev") >>=
     inGroups ["ghcjs-comp"]
-
-buildTargets80 :: Monad m => TSt m ()
-buildTargets80 = do
-  _ghc8 <- apt "buster" "ghc" >>= patch $(embedFile "patches/ghc.diff") >>= inGroups ["ghc8-comp"]
-  _cabal_install <- hackage (Just "1.24.0.2") "cabal-install" >>=
-                    -- Avoid creating a versioned libghc-cabal-dev
-                    -- dependency, as it is a virtual package in ghc
-                    patch $(embedFile "patches/cabal-install.diff") >>=
-                    debianize [] >>=
-                    -- Allow building with Cabal-2
-                    flag (P.CabalDebian ["--default-package", "cabal-install"])
-  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
-  _haddock_library8 <- hackage (Just "1.4.2") "haddock-library" >>= debianize [] >>= ghcjs_also
-  _haddock_api8 <-
-      hackage (Just "2.17.4") "haddock-api" >>=
-             flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
-             flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>=
-             flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>=
-{-
-             -- This breaks the build
-             apply (execCabalM $ (debInfo . rulesFragments) %=
-                                         Set.insert (Text.unlines [ "# Force the Cabal dependency to be the version provided by GHC"
-                                                                  , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
--}
-             debianize [] >>= inGroups ["ghcjs-comp"]
-  _singletons_ghc <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
-  _uri_bytestring <- hackage (Just "0.3.1.1") "uri-bytestring" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
-  buildTargets
 
 -- Currently we just have an experimental haskell-devscripts in the 82
 -- repo, it uses the current git repo and tries to fix the profiling flags.
