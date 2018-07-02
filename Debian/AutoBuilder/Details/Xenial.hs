@@ -149,27 +149,27 @@ buildTargets84 = do
                     patch $(embedFile "patches/cabal-install-22.diff") >>=
                     debianize [] >>=
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>= inGroups ["ghc8-comp"]
-  -- Stick with ghc-7.10 version of ghcjs, that's what Jeremy is using.
-  -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
-  -- Can't get this to build.  Stick with 8.0 for now. :-(
-  -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.2"] >>= inGroups ["ghcjs-comp"]
+  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.4"] >>= inGroups ["ghcjs-comp"]
   -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
   -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
   -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
   _singletons_ghc <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
-  -- haddock-library has to "library" sections in its cabal file, which cabal
-  -- debian (and haskell-devscripts) cannot handle.  Remove the second one
-  -- and just use the available attoparsec library.
   _haddock_library84 <-
       -- Version 1.4.4 is required by haddock-api-2.18.1, the next
       -- haddock-api requires version 1.5 and ghc-8.4.
       hackage (Just "1.6.0") "haddock-library" >>=
-      -- patch $(embedFile "patches/haddock-library.diff") >>=
+      -- We need a doc package, otherwise the underlying package has
+      -- a pseudo-dependency on haddock-interface-28 instead of 33.
+      -- flag P.NoDoc >>=
+      -- haddock-library has two "library" sections in its cabal file, which cabal
+      -- debian (and haskell-devscripts) cannot handle.  Remove the second one
+      -- and just use the available attoparsec library.
+      patch $(embedFile "patches/haddock-library-1.6.0.diff") >>=
       flag (P.BuildDep "hspec-discover") >>=
       inGroups ["ghcjs-comp"] >>=
       debianize [] {- >>= ghcjs_also -}
   _haddock_api8 <-
-      -- 2.18.1 requires ghc-8.2, 2.19.0.1 requires ghc-8.4
+      -- 2.18.1 requires ghc-8.2, 2.19.0.1 requires ghc-8.4.1
       hackage (Just "2.20.0") "haddock-api" >>= inGroups ["ghcjs-comp"] >>=
              flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>=
