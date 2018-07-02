@@ -10,10 +10,10 @@
 module Debian.AutoBuilder.Details.Xenial ( buildTargets82, buildTargets84 ) where
 
 import Data.FileEmbed (embedFile)
-import Debian.AutoBuilder.Details.Common (TSt, ghcjs_only, ghcjs_also, skip, Reason(..))
+import Debian.AutoBuilder.Details.Common (TSt, ghcjs_only, ghcjs_also, skip, substitute, Reason(..))
 import Debian.AutoBuilder.Details.CommonTargets (commonTargets)
 import Debian.AutoBuilder.Types.Packages as P
-    (apt, debdir, debianize, flag, git, hackage, uri, inGroups,
+    (apply, apt, debdir, debianize, flag, git, hackage, uri, inGroups,
      PackageFlag(BuildDep, CabalDebian, DebVersion, DevelDep, {-NoDoc,-} RelaxDep), patch, PackageId)
 import Debian.Repo.Fingerprint
 
