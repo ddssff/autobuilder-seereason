@@ -829,7 +829,7 @@ commonTargets = do
       -- hackage (Just "0.6.1.0") "primitive" >>=
       hackage (Just "0.6.4.0") "primitive" >>=
       inGroups ["ghcjs-comp"] >>=
-      debianize []
+      debianize [] >>= ghcjs_also
   _process_extras <-
        (git "https://github.com/seereason/process-extras" []) >>= debianize []
                    >>= apply (substitute "process-extras" "process-listlike")
@@ -980,7 +980,7 @@ commonTargets = do
   _sodium <- hackage (Just "0.11.0.3") "sodium" >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "dependencies")
   _sourcemap <-  (hackage (Just "0.1.6") "sourcemap") >>= debianize [] >>= inGroups ["happstack", "important"]
   _spine <-  (hackage (Just "0.1") "spine") >>= debianize []
-  _split <- hackage (Just "0.2.3.1") "split" >>= flag (P.DebVersion "0.2.3.2-1") >>= debianize [] >>= ghcjs_also
+  _split <- hackage (Just "0.2.3.3") "split" >>= debianize [] >>= ghcjs_also
   _spoon <-  hackage (Just "0.3.1") "spoon" >>= debianize []
   _srcloc <-  (hackage (Just "0.5.1.0") "srcloc") >>= debianize []
   -- _stack <- hackage Nothing "stack" >>= debianize []
@@ -999,7 +999,7 @@ commonTargets = do
   _stringsearch <- hackage (Just "0.3.6.6") "stringsearch" >>= flag (P.DebVersion "0.3.6.6-6build1") >>= debianize []
   _sunroof_compiler <-  (git "http://github.com/ku-fpg/sunroof-compiler" [] >>= patch $(embedFile "patches/sunroof-compiler.diff")) >>= debianize [] >>= skip (Reason "Setup.hs:3:1: parse error on input ‘import’")
   _swagger2 <- hackage (Just "2.2.2") "swagger2" >>= inGroups ["servant"] >>= debianize [] >>= skip (Reason "Requires lens-4.16.1, network-2.6.3.5")
-  _syb <- hackage Nothing "syb" >>= flag (P.DebVersion "0.7-1") >>= debianize [] >>= inGroups ["platform"] -- haskell-src-meta requres syb<0.6
+  _syb <- hackage Nothing "syb" >>= flag (P.DebVersion "0.7-1") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also -- haskell-src-meta requres syb<0.6
   _syb_with_class <- git "http://github.com/Happstack/syb-with-class" [] >>= debianize [] >>= ghcjs_also
   _syb_with_class_instances_text <-
                   (hackage (Just "0.0.1") "syb-with-class-instances-text"
@@ -1115,7 +1115,7 @@ commonTargets = do
   _vault <- hackage (Just "0.3.1.0") "vault" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _vc_darcs <- darcs ("http://src.seereason.com/vc-darcs")
   _vc_git_dired <- git "https://github.com/ddssff/vc-git-dired" []
-  _vector <- hackage (Just "0.12.0.1") "vector" >>= flag (P.DebVersion "0.12.0.1-2build1") >>= debianize []
+  _vector <- hackage (Just "0.12.0.1") "vector" >>= flag (P.DebVersion "0.12.0.1-2build1") >>= debianize [] >>= ghcjs_also
   _vector_algorithms <- hackage (Just "0.7.0.1") "vector-algorithms" >>=
                         flag (P.DebVersion "0.7.0.1-3build1") >>= debianize [] >>=
                         ghcjs_also
