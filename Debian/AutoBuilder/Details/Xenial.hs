@@ -38,13 +38,12 @@ buildTargets = do
       patch $(embedFile "patches/haskell-devscripts.diff") >>=
       flag (P.RelaxDep "python-minimal")
   _haskell_names <- hackage (Just "0.9.1") "haskell-names" >>= debianize []
-  _nodejs <- nodejs
 
-  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-2") >>= debianize [] >>= ghcjs_also
+  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-5build1") >>= debianize [] >>= ghcjs_also
   _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize [] >>= ghcjs_also
 
   _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
-  _zlib <- hackage (Just "0.6.1.1") "zlib" >>= flag (P.DebVersion "0.6.1.1-1") >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
+  _zlib <- hackage (Just "0.6.2") "zlib" >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   commonTargets
 
 nodejs :: Monad m => TSt m PackageId
@@ -73,6 +72,7 @@ buildTargets82 = do
   -- Can't get this to build.  Stick with 8.0 for now. :-(
   -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.2"] >>= inGroups ["ghcjs-comp"]
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.0"] >>= inGroups ["ghcjs-comp", "ghcjs-only"]
+  _nodejs <- nodejs
   -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
   -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
   -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
@@ -157,5 +157,6 @@ buildTargets84 = do
   _zlib <- hackage (Just "0.6.1.2") "zlib" >>= flag (P.DebVersion "0.6.1.2-1build1") >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform", "ghc8-comp"] >>= ghcjs_also
   -- parsec-3 is built into ghc-8.4.3, and the deb name is libghc-parsec-dev, not parsec3.
   -- text-1.2.3.0 is built into ghc-8.4.3
+  -- nodejs-8.10 is available from ubuntu bionic
 
   buildTargets
