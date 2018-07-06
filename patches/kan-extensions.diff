@@ -1,0 +1,10 @@
+--- old/kan-extensions.cabal	2018-07-05 15:03:47.581401377 -0700
++++ new/kan-extensions.cabal	2018-07-05 15:08:46.676602452 -0700
+@@ -47,7 +47,6 @@
+     containers    >= 0.4     && < 0.6,
+     contravariant >= 1       && < 2,
+     distributive  >= 0.2.2   && < 1,
+-    fail          >= 4.9     && < 5,
+     free          >= 4       && < 5,
+     mtl           >= 2.0.1   && < 2.3,
+     semigroupoids >= 4       && < 6,

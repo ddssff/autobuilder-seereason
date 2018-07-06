@@ -1,0 +1,182 @@
+diff -ru HaXml-1.25.4.orig/HaXml.cabal HaXml-1.25.4/HaXml.cabal
+--- old/HaXml.cabal	2018-07-05 11:40:42.651469803 -0700
++++ new/HaXml.cabal	2018-07-05 15:36:00.032777307 -0700
+@@ -70,7 +70,7 @@
+   hs-source-dirs: src
+   build-depends: polyparse >= 1.10, filepath
+   if flag(splitBase)
+-    build-depends: base >= 3 && < 4.11, pretty, random, containers
++    build-depends: base >= 3 && < 4.12, pretty, random, containers
+   else
+     build-depends: base < 3
+   if flag(bytestringInBase)
+diff -ru old/src/Text/XML/HaXml/ByteStringPP.hs new/src/Text/XML/HaXml/ByteStringPP.hs
+--- old/src/Text/XML/HaXml/ByteStringPP.hs	2017-06-21 00:31:40.000000000 -0700
++++ new/src/Text/XML/HaXml/ByteStringPP.hs	2018-07-05 15:36:45.449172323 -0700
+@@ -20,7 +20,7 @@
+   ,   cp
+   ) where
+ 
+-import Prelude hiding (maybe,either,elem,concat)
++import Prelude hiding ((<>), maybe,either,elem,concat)
+ import Data.Maybe hiding (maybe)
+ import Data.List (intersperse)
+ --import Data.ByteString.Lazy hiding (pack,map,head,any,singleton,intersperse,join)
+Only in new/src/Text/XML/HaXml: ByteStringPP.hs~
+diff -ru old/src/Text/XML/HaXml/DtdToHaskell/Instance.hs new/src/Text/XML/HaXml/DtdToHaskell/Instance.hs
+--- old/src/Text/XML/HaXml/DtdToHaskell/Instance.hs	2017-06-21 00:31:40.000000000 -0700
++++ new/src/Text/XML/HaXml/DtdToHaskell/Instance.hs	2018-07-05 15:38:58.286394657 -0700
+@@ -3,7 +3,7 @@
+   ) where
+ 
+ import Data.List (intersperse)
+-
++import Prelude hiding ((<>))
+ import Text.XML.HaXml.DtdToHaskell.TypeDef
+ import Text.PrettyPrint.HughesPJ
+ 
+Only in new/src/Text/XML/HaXml/DtdToHaskell: Instance.hs~
+diff -ru old/src/Text/XML/HaXml/DtdToHaskell/TypeDef.hs new/src/Text/XML/HaXml/DtdToHaskell/TypeDef.hs
+--- old/src/Text/XML/HaXml/DtdToHaskell/TypeDef.hs	2017-06-21 00:31:40.000000000 -0700
++++ new/src/Text/XML/HaXml/DtdToHaskell/TypeDef.hs	2018-07-05 15:38:39.126212792 -0700
+@@ -20,6 +20,7 @@
+ 
+ import Data.Char (isLower, isUpper, toLower, toUpper, isDigit)
+ import Data.List (intersperse)
++import Prelude hiding ((<>))
+ import Text.PrettyPrint.HughesPJ
+ 
+ 
+Only in new/src/Text/XML/HaXml/DtdToHaskell: TypeDef.hs~
+diff -ru old/src/Text/XML/HaXml/Html/Pretty.hs new/src/Text/XML/HaXml/Html/Pretty.hs
+--- old/src/Text/XML/HaXml/Html/Pretty.hs	2017-06-21 00:31:40.000000000 -0700
++++ new/src/Text/XML/HaXml/Html/Pretty.hs	2018-07-05 15:37:31.877588853 -0700
+@@ -8,7 +8,7 @@
+   , content
+   ) where
+ 
+-import Prelude hiding (maybe,either)
++import Prelude hiding ((<>), maybe,either)
+ import Data.Maybe hiding (maybe)
+ import Data.List (intersperse)
+ import Data.Char (isSpace)
+Only in new/src/Text/XML/HaXml/Html: Pretty.hs~
+diff -ru old/src/Text/XML/HaXml/Pretty.hs new/src/Text/XML/HaXml/Pretty.hs
+--- old/src/Text/XML/HaXml/Pretty.hs	2017-06-21 00:31:40.000000000 -0700
++++ new/src/Text/XML/HaXml/Pretty.hs	2018-07-05 15:37:50.453758868 -0700
+@@ -21,7 +21,7 @@
+   ,   cp
+   ) where
+ 
+-import Prelude hiding (maybe,either)
++import Prelude hiding ((<>), maybe,either)
+ import Data.Maybe hiding (maybe)
+ import Data.List (intersperse)
+ --import Char (isSpace)
+Only in new/src/Text/XML/HaXml: Pretty.hs~
+diff -ru old/src/Text/XML/HaXml/Schema/PrettyHaskell.hs new/src/Text/XML/HaXml/Schema/PrettyHaskell.hs
+--- old/src/Text/XML/HaXml/Schema/PrettyHaskell.hs	2017-06-21 00:31:40.000000000 -0700
++++ new/src/Text/XML/HaXml/Schema/PrettyHaskell.hs	2018-07-05 15:45:33.690448141 -0700
+@@ -15,7 +15,7 @@
+ import Text.XML.HaXml.Schema.XSDTypeModel (Occurs(..))
+ import Text.XML.HaXml.Schema.NameConversion
+ import Text.PrettyPrint.HughesPJ as PP
+-
++import Prelude hiding ((<>))
+ import Data.List (intersperse,notElem,inits)
+ import Data.Maybe (isJust,fromJust,fromMaybe,catMaybes)
+ import Data.Char (toLower)
+diff -ru old/src/Text/XML/HaXml/Schema/PrettyHsBoot.hs new/src/Text/XML/HaXml/Schema/PrettyHsBoot.hs
+--- old/src/Text/XML/HaXml/Schema/PrettyHsBoot.hs	2017-06-21 00:31:40.000000000 -0700
++++ new/src/Text/XML/HaXml/Schema/PrettyHsBoot.hs	2018-07-05 15:45:51.822644405 -0700
+@@ -15,7 +15,7 @@
+ import Text.XML.HaXml.Schema.XSDTypeModel (Occurs(..))
+ import Text.XML.HaXml.Schema.NameConversion
+ import Text.PrettyPrint.HughesPJ as PP
+-
++import Prelude hiding ((<>))
+ import Data.List (intersperse,notElem,inits)
+ import Data.Maybe (isJust,fromJust,catMaybes)
+ 
+diff -ru old/src/Text/XML/HaXml/Schema/TypeConversion.hs new/src/Text/XML/HaXml/Schema/TypeConversion.hs
+--- old/src/Text/XML/HaXml/Schema/TypeConversion.hs	2017-06-21 00:31:40.000000000 -0700
++++ new/src/Text/XML/HaXml/Schema/TypeConversion.hs	2018-07-05 15:46:37.279139349 -0700
+@@ -538,17 +538,20 @@
+ consolidate (Occurs min max) (UnorderedMaxLength,_,n) =
+              Occurs min (Just (read n))
+ 
+-instance Monoid Occurs where
+-    mempty = Occurs Nothing Nothing
+-    (Occurs Nothing  Nothing)  `mappend` o  = o
+-    (Occurs (Just z) Nothing)  `mappend` (Occurs min max)
++instance Semigroup Occurs where
++    (Occurs Nothing  Nothing)  <> o  = o
++    (Occurs (Just z) Nothing)  <> (Occurs min max)
+                                         = Occurs (Just $ maybe z (*z) min) max
+-    (Occurs Nothing  (Just x)) `mappend` (Occurs min max)
++    (Occurs Nothing  (Just x)) <> (Occurs min max)
+                                         = Occurs min (Just $ maybe x (*x) max)
+-    (Occurs (Just z) (Just x)) `mappend` (Occurs min max)
++    (Occurs (Just z) (Just x)) <> (Occurs min max)
+                                         = Occurs (Just $ maybe z (*z) min)
+                                                  (Just $ maybe x (*x) max)
+ 
++instance Monoid Occurs where
++    mempty = Occurs Nothing Nothing
++    mappend = (<>)
++
+ -- | Push another Occurs value inside an existing Modifier.
+ combineOccursModifier :: Occurs -> Modifier -> Modifier
+ combineOccursModifier o Haskell.Single     = occursToModifier $ mappend o
+diff -ru old/src/Text/XML/HaXml/Schema/XSDTypeModel.hs new/src/Text/XML/HaXml/Schema/XSDTypeModel.hs
+--- old/src/Text/XML/HaXml/Schema/XSDTypeModel.hs	2017-06-21 00:31:40.000000000 -0700
++++ new/src/Text/XML/HaXml/Schema/XSDTypeModel.hs	2018-07-05 15:45:04.018128483 -0700
+@@ -3,6 +3,7 @@
+   ) where
+ 
+ import Data.Monoid hiding (Any)
++import Data.Semigroup (Semigroup(..))
+ import Text.XML.HaXml.Types      (Name,Namespace,QName)
+ 
+ data Schema        = Schema
+@@ -291,17 +292,23 @@
+ type URI           = String
+ type TypeName      = String
+ 
++instance Semigroup Annotation where
++  (Documentation d) <> (Documentation e) = Documentation (d++"\n"++e)
++  _                 <> (Documentation e) = Documentation e
++  ann               <> _                 = ann          
++  
++
+ instance Monoid Annotation where
+   mempty = NoAnnotation "Monoid.mempty <Annotation>"
+-  (Documentation d) `mappend` (Documentation e) = Documentation (d++"\n"++e)
+-  _                 `mappend` (Documentation e) = Documentation e
+-  ann               `mappend` _                 = ann          
++  mappend = (<>)
+ 
+ -- This instance is pretty unsatisfactory, and is useful only for
+ -- building environments involving recursive modules.  The /mappend/
+ -- method is left-biased, and the /mempty/ value contains lots of
+ -- undefined values.
++instance Semigroup Schema where
++  s <> t = s{ schema_items = schema_items s ++ schema_items t }
+ instance Monoid Schema where
+   mempty        = Schema{ schema_items=[] }
+-  s `mappend` t = s{ schema_items = schema_items s ++ schema_items t }
++  mappend = (<>)
+ 
+diff -ru old/src/Text/XML/HaXml/ShowXmlLazy.hs new/src/Text/XML/HaXml/ShowXmlLazy.hs
+--- old/src/Text/XML/HaXml/ShowXmlLazy.hs	2017-06-21 00:31:40.000000000 -0700
++++ new/src/Text/XML/HaXml/ShowXmlLazy.hs	2018-07-05 15:38:07.813919398 -0700
+@@ -5,7 +5,7 @@
+ import Text.XML.HaXml.TypeMapping -- (toHType, toDTD, Tuple(), Defined, showHType)
+ 
+ import qualified Text.XML.HaXml.XmlContent as X
+-import Prelude hiding (maybe,either)
++import Prelude hiding ((<>), maybe,either)
+ import Data.Maybe hiding (maybe)
+ import Data.List
+ 
+

@@ -39,8 +39,8 @@ buildTargets = do
       flag (P.RelaxDep "python-minimal")
   _haskell_names <- hackage (Just "0.9.1") "haskell-names" >>= debianize []
 
-  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-5build1") >>= debianize [] >>= ghcjs_also
-  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-2") >>= debianize [] >>= ghcjs_also
+  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-5build1") >>= debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
+  _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-5build1") >>= debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
 
   _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
   _zlib <- hackage (Just "0.6.2") "zlib" >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
@@ -102,7 +102,7 @@ buildTargets82 = do
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= patch $(embedFile "patches/uri-bytestring.diff") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
-  _parsec <- hackage (Just "3.1.11") "parsec" >>= apply (substitute "parsec2" "parsec3") >>= debianize [] >>= inGroups ["platform", "ghc8-comp"] >>= ghcjs_also
+  _parsec <- hackage (Just "3.1.11") "parsec" >>= apply (substitute "parsec2" "parsec3") >>= debianize [] >>= inGroups ["platform", "ghc8-comp", "autobuilder-group"] >>= ghcjs_also
   _text <- hackage (Just "1.2.3.0") "text" >>= flag (P.CabalDebian ["--cabal-flags", "-integer-simple"]) >>= flag (P.CabalDebian ["--no-tests"]) >>= debianize [] >>= inGroups ["platform", "test8"]
 
   buildTargets

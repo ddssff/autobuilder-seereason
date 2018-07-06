@@ -1,0 +1,42 @@
+--- old/free.cabal	2018-07-05 11:39:51.396176240 -0700
++++ new/free.cabal	2018-07-05 15:56:14.161041018 -0700
+@@ -68,7 +68,7 @@
+     GADTs
+ 
+   build-depends:
+-    base                 == 4.* && <4.11,
++    base                 == 4.* && <4.12,
+     bifunctors           >= 4 && < 6,
+     comonad              >= 4 && < 6,
+     distributive         >= 0.2.1,
+diff -ru old/src/Control/Monad/Trans/Iter.hs new/src/Control/Monad/Trans/Iter.hs
+--- old/src/Control/Monad/Trans/Iter.hs	2016-01-16 18:15:13.000000000 -0800
++++ new/src/Control/Monad/Trans/Iter.hs	2018-07-05 16:05:16.464357429 -0700
+@@ -388,16 +388,20 @@
+ interleave_ xs = IterT $ liftM (Right . interleave_ . rights) $ mapM runIterT xs
+ {-# INLINE interleave_ #-}
+ 
+-instance (Monad m, Monoid a) => Monoid (IterT m a) where
+-  mempty = return mempty
+-  x `mappend` y = IterT $ do
++instance (Monad m, Monoid a) => Semigroup (IterT m a) where
++  x <> y = IterT $ do
+     x' <- runIterT x
+     y' <- runIterT y
+     case (x', y') of
+-      ( Left a, Left b)  -> return . Left  $ a `mappend` b
+-      ( Left a, Right b) -> return . Right $ liftM (a `mappend`) b
+-      (Right a, Left b)  -> return . Right $ liftM (`mappend` b) a
+-      (Right a, Right b) -> return . Right $ a `mappend` b
++      ( Left a, Left b)  -> return . Left  $ a <> b
++      ( Left a, Right b) -> return . Right $ liftM (a <>) b
++      (Right a, Left b)  -> return . Right $ liftM (<> b) a
++      (Right a, Right b) -> return . Right $ a <> b
++  
++
++instance (Monad m, Monoid a) => Monoid (IterT m a) where
++  mempty = return mempty
++  mappend = (<>)
+ 
+   mconcat = mconcat' . map Right
+     where
