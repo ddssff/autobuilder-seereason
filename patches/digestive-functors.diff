@@ -1,0 +1,113 @@
+diff -ru old/src/Text/Digestive/Cli.hs new/src/Text/Digestive/Cli.hs
+--- old/src/Text/Digestive/Cli.hs	2012-02-12 10:52:45.000000000 -0800
++++ new/src/Text/Digestive/Cli.hs	2018-07-06 15:36:16.330510939 -0700
+@@ -35,7 +35,7 @@
+ --
+ newtype PromptView = PromptView
+     { unPromptView :: [FieldItem]
+-    } deriving (Show, Monoid)
++    } deriving (Show, Semigroup, Monoid)
+ 
+ -- | Type for a prompt
+ --
+@@ -46,7 +46,7 @@
+ --
+ newtype InputMap = InputMap
+     { unInputMap :: [(FormId, String)]
+-    } deriving (Show, Monoid)
++    } deriving (Show, Semigroup, Monoid)
+ 
+ -- Create an environment from an input map
+ --
+diff -ru old/src/Text/Digestive/Forms/Html.hs new/src/Text/Digestive/Forms/Html.hs
+--- old/src/Text/Digestive/Forms/Html.hs	2012-02-12 10:52:45.000000000 -0800
++++ new/src/Text/Digestive/Forms/Html.hs	2018-07-06 15:36:00.946298176 -0700
+@@ -1,5 +1,6 @@
+ -- | General functions for forms that are rendered to some sort of HTML
+ --
++{-# LANGUAGE FlexibleContexts, UndecidableInstances #-}
+ module Text.Digestive.Forms.Html
+     ( FormHtmlConfig (..)
+     , FormEncType (..)
+@@ -44,10 +45,13 @@
+ 
+ -- Monoid instance for encoding types: prefer UrlEncoded, but fallback to
+ -- MultiPart when needed
++instance Semigroup FormEncType where
++    UrlEncoded <> x = x
++    MultiPart <> _ = MultiPart
++
+ instance Monoid FormEncType where
+     mempty = UrlEncoded
+-    mappend UrlEncoded x = x
+-    mappend MultiPart _ = MultiPart
++    mappend = (<>)
+ 
+ -- | HTML describing a form
+ --
+@@ -56,7 +60,7 @@
+     , formHtml    :: FormHtmlConfig -> a
+     }
+ 
+-instance Monoid a => Monoid (FormHtml a) where
++instance (Semigroup (FormHtml a), Monoid a) => Monoid (FormHtml a) where
+     mempty = FormHtml mempty $ const mempty
+     mappend (FormHtml x f) (FormHtml y g) =
+         FormHtml (x `mappend` y) $ f `mappend` g
+diff -ru old/src/Text/Digestive/Types.hs new/src/Text/Digestive/Types.hs
+--- old/src/Text/Digestive/Types.hs	2012-02-12 10:52:45.000000000 -0800
++++ new/src/Text/Digestive/Types.hs	2018-07-06 15:34:29.505020421 -0700
+@@ -1,6 +1,6 @@
+ -- | Core types
+ --
+-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
++{-# LANGUAGE FlexibleContexts, GeneralizedNewtypeDeriving, UndecidableInstances #-}
+ module Text.Digestive.Types
+     ( View (..)
+     , Environment (..)
+@@ -40,7 +40,7 @@
+ --
+ newtype View e v = View
+     { unView :: [(FormRange, e)] -> v
+-    } deriving (Monoid)
++    } deriving (Semigroup, Monoid)
+ 
+ instance Functor (View e) where
+     fmap f (View g) = View $ f . g
+@@ -51,7 +51,7 @@
+ data Environment m i = Environment (FormId -> m (Maybe i))
+                      | NoEnvironment
+ 
+-instance Monad m => Monoid (Environment m i) where
++instance (Semigroup (Environment m i), Monad m) => Monoid (Environment m i) where
+     mempty = NoEnvironment
+     NoEnvironment `mappend` x = x
+     x `mappend` NoEnvironment = x
+diff -ru old/src/Text/Digestive/Validate.hs new/src/Text/Digestive/Validate.hs
+--- old/src/Text/Digestive/Validate.hs	2012-02-12 10:52:45.000000000 -0800
++++ new/src/Text/Digestive/Validate.hs	2018-07-06 15:37:16.759341153 -0700
+@@ -1,5 +1,6 @@
+ -- | Validators that can be attached to forms
+ --
++{-# LANGUAGE FlexibleContexts, UndecidableInstances #-}
+ module Text.Digestive.Validate
+     ( Validator
+     , validate
+@@ -22,7 +23,7 @@
+ --
+ newtype Validator m e a = Validator {unValidator :: Transformer m e a a}
+ 
+-instance Monad m => Monoid (Validator m e a) where
++instance (Semigroup (Validator m e a), Monad m) => Monoid (Validator m e a) where
+     mempty = Validator id
+     v1 `mappend` v2 = Validator $ Transformer $ \inp ->
+         liftM2 eitherPlus (unTransformer (unValidator v1) inp)
+@@ -40,7 +41,7 @@
+ 
+ -- | Attach multiple validators to a form.
+ --
+-validateMany :: Monad m => Form m i e v a -> [Validator m e a] -> Form m i e v a
++validateMany :: (Semigroup (Validator m e a), Monad m) => Form m i e v a -> [Validator m e a] -> Form m i e v a
+ validateMany form = validate form . mconcat
+ 
+ -- | Easy way to create a pure validator

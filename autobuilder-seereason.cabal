@@ -7,7 +7,7 @@ Maintainer:       SeeReason Partners <partners@seereason.com>
 Synopsis:         The autobuilder executable configured for the seereason repository
 Description:      The autobuilder executable configured for the seereason repository.  Includes a backup
                   script for our source repositories, Install on a machine other than src.seereason.com
-		  to perform automated timed incremental backups.
+                  to perform automated timed incremental backups.
 Build-Type:       Custom
 Category:         Web, Language
 Cabal-version:    >= 1.13
