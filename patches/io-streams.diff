@@ -1,14 +1,14 @@
---- old/io-streams.cabal	2017-09-13 06:53:29.613906866 -0700
-+++ new/io-streams.cabal	2018-06-14 23:08:05.700350146 -0700
-@@ -120,7 +120,6 @@
+--- old/io-streams.cabal	2018-07-07 08:13:56.887341798 -0700
++++ new/io-streams.cabal	2018-07-07 08:38:42.580929387 -0700
+@@ -123,7 +123,6 @@
    Build-depends:     base               >= 4     && <5,
                       attoparsec         >= 0.10  && <0.14,
                       bytestring         >= 0.9   && <0.11,
 -                     bytestring-builder >= 0.10  && <0.11,
-                      network            >= 2.3   && <2.7,
+                      network            >= 2.3   && <2.8,
                       primitive          >= 0.2   && <0.7,
                       process            >= 1.1   && <1.7,
-@@ -201,7 +200,6 @@
+@@ -206,7 +205,6 @@
    Build-depends:     base               >= 4     && <5,
                       attoparsec         >= 0.10  && <0.14,
                       bytestring         >= 0.9   && <0.11,

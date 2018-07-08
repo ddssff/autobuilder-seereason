@@ -1,5 +1,6 @@
---- old/HJavaScript.cabal	2017-07-22 13:42:39.395590306 -0700
-+++ new/HJavaScript.cabal	2017-10-01 07:06:04.940778298 -0700
+diff -ru old/HJavaScript.cabal new/HJavaScript.cabal
+--- old/HJavaScript.cabal	2018-07-06 07:07:03.888008994 -0700
++++ new/HJavaScript.cabal	2018-07-07 11:00:07.046816577 -0700
 @@ -17,6 +17,6 @@
  Hs-Source-Dirs:   src
  Exposed-Modules:  Language.HJavaScript.Syntax
@@ -8,9 +9,20 @@
 +Build-Depends:    base <4.12, pretty >= 1.0
  Build-Type:       Simple
  Category:         Language
---- old/src/Language/HJavaScript/Syntax.hs	2017-08-01 17:32:21.976850247 -0700
-+++ new/src/Language/HJavaScript/Syntax.hs	2017-08-01 17:34:47.296163155 -0700
-@@ -215,7 +215,7 @@
+diff -ru old/src/Language/HJavaScript/Syntax.hs new/src/Language/HJavaScript/Syntax.hs
+--- old/src/Language/HJavaScript/Syntax.hs	2010-03-05 08:31:18.000000000 -0800
++++ new/src/Language/HJavaScript/Syntax.hs	2018-07-07 11:00:58.415443112 -0700
+@@ -67,7 +67,8 @@
+     renderBlock,
+      
+   ) where
+-   
++
++import Prelude hiding ((<>))
+ import Text.PrettyPrint.HughesPJ
+ import Text.Printf(printf)
+ import Data.Char
+@@ -215,7 +216,7 @@
    showsFeature :: a -> ShowS
  
  -- A class can be a feature
@@ -19,7 +31,7 @@
    showsFeature = shows
    
  
-@@ -504,7 +504,7 @@
+@@ -504,7 +505,7 @@
  class Show r => IsDeref r
  
  -- There are two kinds of dereferencing; either from classes or objects.

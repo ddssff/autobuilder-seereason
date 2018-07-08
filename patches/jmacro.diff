@@ -1,79 +1,69 @@
-diff -ru jmacro-0.6.14/Setup.hs /tmp/jmacro-0.6.14/Setup.hs
---- old/Setup.hs	2016-05-27 15:08:19.000000000 -0700
-+++ new/Setup.hs	2018-04-28 03:54:53.846348236 -0700
-@@ -1,2 +1,25 @@
-+#!/usr/bin/runhaskell
-+
- import Distribution.Simple
--main = defaultMain
-+import Distribution.PackageDescription
-+import Distribution.Simple.LocalBuildInfo
-+import Distribution.Simple.Setup
-+import System.Environment
-+import System.FilePath
-+import System.Process
-+
-+main = defaultMainWithHooks (simpleUserHooks { postConf = hook })
-+
-+hook :: Args -> ConfigFlags -> PackageDescription -> LocalBuildInfo -> IO ()
-+hook _args flags pd lbi = do
-+  case compilerId (compiler lbi) of
-+    CompilerId GHC _ -> do
-+      args <- getArgs
-+      let distDir = takeDirectory (buildDir lbi)
-+      -- We need to pre-build this package so the required _dyn.o file
-+      -- already exists when the profiling library is built.
-+      _ <- readProcess "cabal" ["configure", "--builddir=" ++ distDir] ""
-+      _ <- readProcess "cabal" ["build", "--builddir=" ++ distDir] ""
-+      _ <- readProcess "cabal" args ""
-+      return ()
-+    _ -> return ()
-diff -ru jmacro-0.6.14/jmacro.cabal /tmp/jmacro-0.6.14/jmacro.cabal
---- jmacro-0.6.14/jmacro.cabal	2017-09-12 06:50:11.371932533 -0700
-+++ /tmp/jmacro-0.6.14/jmacro.cabal	2018-04-20 16:37:37.497082634 -0700
-@@ -12,7 +12,7 @@
+diff -ru old/jmacro.cabal new/jmacro.cabal
+--- old/jmacro.cabal	2018-07-07 17:40:11.393962127 -0700
++++ new/jmacro.cabal	2018-07-08 10:10:22.566595889 -0700
+@@ -12,7 +12,11 @@
  Cabal-Version:       >= 1.6
  
  library
 -  build-depends:     base >= 4, base < 5, containers, wl-pprint-text, text, safe >= 0.2, parsec > 3.0, template-haskell >= 2.3, mtl > 1.1 , haskell-src-exts, haskell-src-meta, bytestring >= 0.9, syb, aeson >= 0.5 , regex-posix > 0.9, vector >= 0.8, unordered-containers >= 0.2
-+  build-depends:     base >= 4, base < 5, containers, wl-pprint-text, text, safe >= 0.2, parsec > 3.0, template-haskell >= 2.3, mtl > 1.1 , haskell-src-exts, haskell-src-meta, bytestring >= 0.9, syb, aeson >= 0.5 , regex-base, regex-tdfa, regex-compat-tdfa, vector >= 0.8, unordered-containers >= 0.2, parseargs
++  build-depends:     base >= 4, base < 5, containers, wl-pprint-text, text, safe >= 0.2, parsec > 3.0, template-haskell >= 2.3, mtl > 1.1 , haskell-src-exts, haskell-src-meta, bytestring >= 0.9, syb, aeson >= 0.5, vector >= 0.8, unordered-containers >= 0.2
++  if impl(ghcjs)
++    build-depends: regex-base, regex-tdfa, regex-compat-tdfa
++  else
++    build-depends: regex-posix > 0.9
  
    exposed-modules:   Language.Javascript.JMacro
                       Language.Javascript.JMacro.Util
-@@ -29,7 +29,7 @@
+@@ -29,7 +33,11 @@
    default: False
  
  executable jmacro
--  build-depends:     base >= 4, base < 5, containers, wl-pprint-text, text, safe >= 0.2, parsec > 3.0, template-haskell >= 2.3, mtl > 1.1 , haskell-src-exts, haskell-src-meta, bytestring >= 0.9, syb, aeson >= 0.5 , regex-posix > 0.9, vector >= 0.8, unordered-containers >= 0.2, parseargs
-+  build-depends:     base >= 4, base < 5, containers, wl-pprint-text, text, safe >= 0.2, parsec > 3.0, template-haskell >= 2.3, mtl > 1.1 , haskell-src-exts, haskell-src-meta, bytestring >= 0.9, syb, aeson >= 0.5 , regex-base, regex-tdfa, regex-compat-tdfa, vector >= 0.8, unordered-containers >= 0.2, parseargs
-   main-is: Language/Javascript/JMacro/Executable.hs
- 
- executable jmacro-bench
+-   build-depends:     base >= 4, base < 5, containers, wl-pprint-text, text, safe >= 0.2, parsec > 3.0, template-haskell >= 2.3, mtl > 1.1 , haskell-src-exts, haskell-src-meta, bytestring >= 0.9, syb, aeson >= 0.5 , regex-posix > 0.9, vector >= 0.8, unordered-containers >= 0.2, parseargs
++   build-depends:     base >= 4, base < 5, containers, wl-pprint-text, text, safe >= 0.2, parsec > 3.0, template-haskell >= 2.3, mtl > 1.1 , haskell-src-exts, haskell-src-meta, bytestring >= 0.9, syb, aeson >= 0.5, vector >= 0.8, unordered-containers >= 0.2, parseargs
++   if impl(ghcjs)
++     build-depends: regex-base, regex-tdfa, regex-compat-tdfa
++   else
++     build-depends: regex-posix > 0.9
+    main-is: Language/Javascript/JMacro/Executable.hs
+    other-modules: Language.Javascript.JMacro.Util
+                    Language.Javascript.JMacro.TypeCheck
 diff -ru old/Language/Javascript/JMacro/QQ.hs new/Language/Javascript/JMacro/QQ.hs
---- old/Language/Javascript/JMacro/QQ.hs	2017-09-12 06:50:11.371932533 -0700
-+++ new/Language/Javascript/JMacro/QQ.hs	2018-04-20 16:47:55.945204812 -0700
-@@ -36,7 +36,8 @@
+--- old/Language/Javascript/JMacro/QQ.hs	2018-05-10 11:17:11.000000000 -0700
++++ new/Language/Javascript/JMacro/QQ.hs	2018-07-08 10:10:58.311060509 -0700
+@@ -1,4 +1,4 @@
+-{-# LANGUAGE FlexibleInstances, UndecidableInstances, OverlappingInstances, TypeFamilies, TemplateHaskell, QuasiQuotes, RankNTypes, GADTs #-}
++{-# LANGUAGE CPP, FlexibleInstances, UndecidableInstances, OverlappingInstances, TypeFamilies, TemplateHaskell, QuasiQuotes, RankNTypes, GADTs #-}
+ 
+ -----------------------------------------------------------------------------
+ {- |
+@@ -36,7 +36,12 @@
  import qualified Text.ParserCombinators.Parsec.Token as P
  import Text.ParserCombinators.Parsec.Language(javaStyle)
  
--import Text.Regex.Posix.String
++#if __GHCJS__
 +import Text.Regex.Base
 +import Text.Regex.TDFA.String
++#else
+ import Text.Regex.Posix.String
++#endif
  
  import Language.Javascript.JMacro.Base
  import Language.Javascript.JMacro.Types
-@@ -590,10 +591,10 @@
+@@ -590,10 +595,17 @@
  --args :: JMParser [JExpr]
  --args = parens $ commaSep expr
  
--compileRegex :: String -> Either WrapError Regex
--compileRegex s = unsafePerformIO $ compile co eo s
--    where co = compExtended
--          eo = execBlank
++#if __GHCJS__
 +compileRegex :: String -> Either String Regex
 +compileRegex s = compile co eo s
 +    where co = defaultCompOpt
 +          eo = defaultExecOpt
++#else
+ compileRegex :: String -> Either WrapError Regex
+ compileRegex s = unsafePerformIO $ compile co eo s
+     where co = compExtended
+           eo = execBlank
++#endif
  
  expr :: JMParser JExpr
  expr = do

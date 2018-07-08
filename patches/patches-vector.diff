@@ -1,5 +1,5 @@
---- old/patches-vector.cabal	2017-10-11 12:06:59.558019363 -0700
-+++ new/patches-vector.cabal	2017-10-11 12:22:12.441378453 -0700
+--- old/patches-vector.cabal	2018-07-06 07:08:43.673067619 -0700
++++ new/patches-vector.cabal	2018-07-07 22:29:08.847996852 -0700
 @@ -33,7 +33,7 @@
                       , Data.Patch.Internal
    build-depends:       base >=4.7 && <5
@@ -26,3 +26,29 @@
 +                     , vector >= 0.10 && <0.13
                       , hspec >= 2.1 && < 2.3
    default-language:    Haskell2010
+diff -ru oldData/Patch/Internal.hs new/Data/Patch/Internal.hs
+--- oldData/Patch/Internal.hs	2018-07-07 23:13:54.105194148 -0700
++++ new/Data/Patch/Internal.hs	2018-07-07 23:11:05.787183600 -0700
+@@ -145,9 +145,8 @@
+         normalise' [] (d:_) _  = [d]
+         normalise' _ _ _ = error "Impossible!"
+ 
+-instance Eq a => Monoid (Patch a) where
+-  mempty = Patch []
+-  mappend (Patch a) (Patch b) = Patch $ merge a b (0 :: Int)
++instance Eq a => Semigroup (Patch a) where
++  (Patch a) <> (Patch b) = Patch $ merge a b (0 :: Int)
+     where
+       merge [] ys  off  = map (over index (+ off)) ys
+       merge xs []  _    = xs
+@@ -171,6 +170,10 @@
+       replace _ o n | o == n = id
+       replace i o n | otherwise = (Replace i o n :)
+ 
++instance Eq a => Monoid (Patch a) where
++  mempty = Patch []
++  mappend = (<>)
++
+ -- | Returns true if a patch can be safely applied to a document, that is,
+ --   @applicable p d@ holds when @d@ is a valid source document for the patch @p@.
+ applicable :: (Eq a) => Patch a -> Vector a -> Bool

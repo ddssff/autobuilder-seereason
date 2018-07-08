@@ -37,6 +37,7 @@ buildTargets = do
       -- Also changes the enable profiling flags
       patch $(embedFile "patches/haskell-devscripts.diff") >>=
       flag (P.RelaxDep "python-minimal")
+  -- haskell-names-0.9.1 requires aeson<1.3
   _haskell_names <- hackage (Just "0.9.1") "haskell-names" >>= debianize []
 
   _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-5build1") >>= debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
@@ -125,20 +126,20 @@ buildTargets84 = do
   -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
   -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
   -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
-  _singletons_ghc <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
+  _singletons <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
   _haddock_library84 <-
       -- Version 1.4.4 is required by haddock-api-2.18.1, the next
       -- haddock-api requires version 1.5 and ghc-8.4.
-      hackage (Just "1.6.0") "haddock-library" >>=
+      hackage (Just "1.5.0.1") "haddock-library" >>=
       -- We need a doc package, otherwise the underlying package has
       -- a pseudo-dependency on haddock-interface-28 instead of 33.
       -- flag P.NoDoc >>=
       -- haddock-library has two "library" sections in its cabal file, which cabal
       -- debian (and haskell-devscripts) cannot handle.  Remove the second one
       -- and just use the available attoparsec library.
-      patch $(embedFile "patches/haddock-library-1.6.0.diff") >>=
+      patch $(embedFile "patches/haddock-library-1.5.0.1.diff") >>=
       flag (P.BuildDep "hspec-discover") >>=
-      inGroups ["ghcjs-comp"] >>=
+      inGroups ["ghcjs-comp", "appraisalscribe"] >>=
       debianize [] {- >>= ghcjs_also -}
   _haddock_api8 <-
       -- 2.18.1 requires ghc-8.2, 2.19.0.1 requires ghc-8.4.1

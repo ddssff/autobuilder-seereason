@@ -5,7 +5,7 @@ module Debian.AutoBuilder.Details.Private (buildTargets) where
 --import Control.Lens (use)
 import Data.FileEmbed (embedFile)
 --import Data.Map as Map (keys)
-import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, git, cd, {-packageMap,-} inGroups)
+import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, git, cd, {-packageMap,-} inGroups, hackage)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 import Debian.Repo.Fingerprint (GitSpec(Branch))
@@ -80,9 +80,9 @@ buildTargets _params = do
       cd "seereasonpartners-dot-com" >>=
       patch $(embedFile "patches/seereasonpartners-dot-com.diff") >>=
       debianize []
-  -- stripeRepo <- "ssh://git@github.com/stripe-haskell/stripe"
-  -- stripeRepo <- "https://github.com/seereason/stripe"
-  let stripeRepo = "https://github.com/dmjio/stripe"
+  let stripeRepo = "https://github.com/seereason/stripe"
+  -- let stripeRepo = "https://github.com/dmjio/stripe"
+  _stripe_http_client <- hackage (Just "2.4.0") "stripe-http-client" >>= debianize []
   _stripe_core <- git stripeRepo [] >>= cd "stripe-core" >>= debianize [] >>= inGroups ["private-libs"]
   _stripe_http_streams <- git stripeRepo [] >>= cd "stripe-http-streams" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>=  debianize [] >>= inGroups ["private-libs"]
   _stripe_haskell <- git stripeRepo [] >>= cd "stripe-haskell" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>= debianize []
