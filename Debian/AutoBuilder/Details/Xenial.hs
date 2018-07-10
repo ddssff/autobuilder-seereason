@@ -126,7 +126,7 @@ buildTargets84 = do
   -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
   -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
   -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
-  _singletons <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= ghcjs_also
+  _singletons <- hackage (Just "2.4.1") "singletons" >>= debianize [] {->>= ghcjs_also-}
   _haddock_library84 <-
       -- Version 1.4.4 is required by haddock-api-2.18.1, the next
       -- haddock-api requires version 1.5 and ghc-8.4.
@@ -143,7 +143,7 @@ buildTargets84 = do
       debianize [] {- >>= ghcjs_also -}
   _haddock_api8 <-
       -- 2.18.1 requires ghc-8.2, 2.19.0.1 requires ghc-8.4.1
-      hackage (Just "2.20.0") "haddock-api" >>= inGroups ["ghcjs-comp"] >>=
+      hackage (Just "2.19.0.1") "haddock-api" >>= inGroups ["ghcjs-comp"] >>=
              flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>=
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>=

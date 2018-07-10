@@ -1,0 +1,10 @@
+--- old/src/Language/Css/Pretty.hs	2012-03-23 10:50:20.000000000 -0700
++++ new/src/Language/Css/Pretty.hs	2018-07-10 05:38:48.536733712 -0700
+@@ -4,6 +4,7 @@
+ 
+ import Text.PrettyPrint
+ import Language.Css.Syntax
++import Prelude hiding ((<>))
+ 
+ 
+ class Pretty a where

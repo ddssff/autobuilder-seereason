@@ -1,0 +1,20 @@
+--- old/src/HJScript/Monad.hs	2013-07-17 18:21:23.000000000 -0700
++++ new/HJScript/Monad.hs	2018-07-10 05:54:01.925392636 -0700
+@@ -46,11 +46,14 @@
+   show script = show . snd $ evalHJScript script
+ 
+ -- | Block as a Monoid
++instance Semigroup (Block ()) where
++  EmptyBlock <> b = b
++  b <> EmptyBlock = b
++  b1 <> (Sequence b2 s) = Sequence (b1 <> b2) s
++
+ instance Monoid (Block ()) where
+   mempty = EmptyBlock
+-  mappend EmptyBlock b = b
+-  mappend b EmptyBlock = b
+-  mappend b1 (Sequence b2 s) = Sequence (mappend b1 b2) s
++  mappend = (<>)
+ 
+ -- | Evaluate a script returning a tuple of the produced value and
+ -- a block of code.

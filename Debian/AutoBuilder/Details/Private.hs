@@ -38,7 +38,7 @@ buildTargets _params = do
   _editor_client <- git "ssh://git@github.com/seereason/editor-client" [] >>= debianize [] >>= ghcjs_only
   _editor_server <- git "ssh://git@github.com/seereason/editor-server" [] >>= debianize []
   _editor_taggy <- git "ssh://git@github.com/seereason/editor-taggy" [] >>= debianize [] >>= ghcjs_also
-  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" [Branch "dsf"]
+  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" []
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_only
   _happstack_ghcjs_common <- happstack_ghcjs >>= cd "happstack-ghcjs-common" >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"] >>= ghcjs_also
   _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"]
@@ -82,7 +82,7 @@ buildTargets _params = do
       debianize []
   let stripeRepo = "https://github.com/seereason/stripe"
   -- let stripeRepo = "https://github.com/dmjio/stripe"
-  _stripe_http_client <- hackage (Just "2.4.0") "stripe-http-client" >>= debianize []
+  _stripe_http_client <- hackage (Just "2.4.0") "stripe-http-client" >>= patch $(embedFile "patches/stripe-http-client.diff") >>= debianize []
   _stripe_core <- git stripeRepo [] >>= cd "stripe-core" >>= debianize [] >>= inGroups ["private-libs"]
   _stripe_http_streams <- git stripeRepo [] >>= cd "stripe-http-streams" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>=  debianize [] >>= inGroups ["private-libs"]
   _stripe_haskell <- git stripeRepo [] >>= cd "stripe-haskell" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>= debianize []
