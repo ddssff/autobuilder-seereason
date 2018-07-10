@@ -28,8 +28,8 @@ commonTargets = do
   _aeson_pretty <- hackage (Just "0.8.7") "aeson-pretty" >>= debianize [] >>= inGroups [] >>= ghcjs_also
   _aeson_qq <-  hackage (Just "0.8.2") "aeson-qq" >>= flag (P.DebVersion "0.8.2-1build4") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _agi <- darcs ("https://github.com/ddssff/haskell-agi") >>= skip (Reason "No instance for (Applicative (AGIT m))")
-  _amazonka_core <- git "http://github.com/brendanhay/amazonka" [] >>= cd "core" >>= {-patch $(embedFile "patches/amazonka-core.diff") >>=-} debianize []
-  _amazonka_ses <- git "http://github.com/brendanhay/amazonka" [] >>= cd "amazonka-ses" >>= debianize []
+  _amazonka_core <- git "http://github.com/seereason/amazonka" [] >>= cd "core" >>= patch $(embedFile "patches/amazonka-core.diff") >>= debianize [] >>= inGroups ["tmp"]
+  _amazonka_ses <- git "http://github.com/seereason/amazonka" [] >>= cd "amazonka-ses" >>= debianize [] >>= inGroups ["tmp"]
   -- No Debian build trees found in /home/dsf/.autobuilder/hackage/allocated-processor-0.0.2
   -- _allocated_processor <- hackage Nothing "allocated-processor"
   _annotated_wl_pprint <- hack (Just "0.7.0") "annotated-wl-pprint" >>= flag (P.DebVersion "0.7.0-1")
@@ -418,7 +418,7 @@ commonTargets = do
   _happstack_authenticate_0 <-  (git "https://github.com/Happstack/happstack-authenticate-0.git" []
                              >>= flag (P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0",
                                                     "--cabal-flags", "migrate",
-                                                    "--executable", "happstack-authenticate-migrate" ])) >>= debianize [] >>= inGroups [ "authenticate", "happstack", "important", "tmp"]
+                                                    "--executable", "happstack-authenticate-migrate" ])) >>= debianize [] >>= inGroups [ "authenticate", "happstack", "important"]
   _happstack_authenticate <- git "https://github.com/seereason/happstack-authenticate.git" [] >>= debianize [] >>= inGroups [ "authenticate", "happstack", "important"]
   _happstack_clckwrks <-  (git ("https://github.com/Happstack/happstack-clckwrks") [] >>=
                              cd "clckwrks-theme-happstack"
@@ -443,8 +443,8 @@ commonTargets = do
   _happstack_jmacro <-  (git "https://github.com/Happstack/happstack-jmacro.git" []) >>= debianize [] >>= inGroups ["happstack", "important"]
   _happstack_lite <- git "https://github.com/Happstack/happstack-lite" [] >>= debianize [] >>= inGroups ["happstack", "important"] -- hackage 7.3.6 depends on happstack-server < 7.5
   _happstack_plugins <-  (hackage (Just "7.0.2") "happstack-plugins" >>= patch $(embedFile "patches/happstack-plugins.diff")) >>= debianize [] >>= skip (Reason "Needs plugins-auto")
-  _happstack_scaffolding <-  (git "https://github.com/seereason/happstack-scaffolding" [] >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["seereason", "important", "tmp"]
-  _happstack_search <- git "https://github.com/seereason/happstack-search" [] >>= debianize [] >>= inGroups ["happstack", "important", "tmp"]
+  _happstack_scaffolding <-  (git "https://github.com/seereason/happstack-scaffolding" [] >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["seereason", "important"]
+  _happstack_search <- git "https://github.com/seereason/happstack-search" [] >>= debianize [] >>= inGroups ["happstack", "important"]
               -- ,  (hackage (Just "7.4.6.2") "happstack-server") >>= debianize []
   _happstack_server <- hackage (Just "7.5.1.1") "happstack-server" >>=
                        debianize [] >>=
@@ -518,7 +518,7 @@ commonTargets = do
                   >>= debianize []
                -- Not used, and not building.
                -- ,  (hackage (Just "0.3.5") "hoauth") >>= debianize []
-  _hJScript <- hackage (Just "0.7.0") "HJScript" >>= patch $(embedFile "patches/HJScript.diff") >>= debianize [] >>= inGroups ["happstack", "important", "tmp"]
+  _hJScript <- hackage (Just "0.7.0") "HJScript" >>= patch $(embedFile "patches/HJScript.diff") >>= debianize [] >>= inGroups ["happstack", "important"]
   _hledger <- git "https://github.com/simonmichael/hledger" [] >>= cd "hledger-lib" >>= debianize [] >>= skip (Reason "requires mtl-compat")
            {-
                -- Needs a build dependency on libXrandr-dev and the cabal package x11.
@@ -639,7 +639,7 @@ commonTargets = do
   _kan_extensions <- hackage (Just "5.1") "kan-extensions" >>= patch $(embedFile "patches/kan-extensions.diff") >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
   -- _keys <- hackage (Just "3.11") "keys" >>= flag (P.DebVersion "3.11-3build5") >>= debianize []
   -- Failing and unused
-  _language_css <- hackage (Just "0.0.3") "language-css" >>= patch $(embedFile "patches/language-css.diff") >>= debianize [] >>= inGroups ["tmp"]
+  _language_css <- hackage (Just "0.0.3") "language-css" >>= patch $(embedFile "patches/language-css.diff") >>= debianize []
   _language_ecmascript <-  (hackage (Just "0.17.0.1") "language-ecmascript") >>= debianize [] >>= skip (Reason "relax data-default dependency")
   _language_haskell_extract <- hackage (Just "0.2.4") "language-haskell-extract" >>= flag (P.DebVersion "0.2.4-7build2") >>= debianize []
   _language_java <-  (hackage (Just "0.2.9") "language-java" >>= flag (P.BuildDep "alex")) >>= debianize []
@@ -669,7 +669,7 @@ commonTargets = do
       ,  (hackage (Just "0.4.0.4") "universe" {- >>= patch $(embedFile "patches/universe.diff") -}) >>= debianize []
       -}
 
-  _libjs_jcrop <- apt "xenial" "libjs-jcrop" >>= patch $(embedFile "patches/libjs-jcrop.diff") >>= inGroups ["tmp"]
+  _libjs_jcrop <- apt "xenial" "libjs-jcrop" >>= patch $(embedFile "patches/libjs-jcrop.diff")
   _libsystemd_journal <- hackage Nothing "libsystemd-journal" >>= flag (P.BuildDep "libsystemd-dev") >>= flag (P.CabalDebian [ "--dev-dep", "libsystemd0" ]) >>= debianize []
   _libv8 <- apt "sid" "libv8-3.14" >>= skip (Reason "Use standard")
   _lifted_async <-  (hackage (Just "0.10.0.2") "lifted-async") >>= debianize [] >>= inGroups ["ghcjs-comp"]
@@ -912,7 +912,7 @@ commonTargets = do
   _scotty <- hackage (Just "0.10.2") "scotty" {- >>= patch $(embedFile "patches/scotty.diff") -} >>= debianize [] >>= skip (Reason "data-default dependency")
   _seclib <-  (darcs ("http://src.seereason.com/seclib")) >>= debianize [] >>= skip (Reason "No instance for (Applicative (Sec s))")
   _securemem <- hackage (Just "0.1.10") "securemem" >>= debianize []
-  _seereason_base <- git "https://github.com/seereason/seereason-base" [] >>= debianize [] >>= inGroups ["seereason", "important", "tmp"]
+  _seereason_base <- git "https://github.com/seereason/seereason-base" [] >>= debianize [] >>= inGroups ["seereason", "important"]
   _seereason_keyring <- darcs ("http://src.seereason.com/seereason-keyring") >>= flag (P.UDeb "seereason-keyring-udeb")
   _seereason_ports <-  (git "https://github.com/seereason/seereason-ports" []) >>= debianize []
   _semigroupoids <- hackage (Just "5.3.1") "semigroupoids" >>= apply (replacement "semigroupoids" "semigroupoid-extras") >>= debianize [] >>= inGroups ["kmett", "autobuilder-group"] >>= ghcjs_also
