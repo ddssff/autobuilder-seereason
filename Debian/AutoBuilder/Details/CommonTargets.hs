@@ -922,8 +922,8 @@ commonTargets = do
   -- Servant-0.13 requires some packages that aren't available in ghcjs-8.0.
   _servant <- hackage (Just "0.13.0.1") "servant" >>= {-patch $(embedFile "patches/servant.diff") >>=-} debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_happstack <- git "https://github.com/Happstack/servant-happstack" [] >>= inGroups ["servant"] >>= debianize []
+  _servant_auth <- hackage (Just "0.3.2.0") "servant-auth" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_blaze <- hackage (Just "0.8") "servant-blaze" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
-  -- Hackage version of servant-client-core-0.12 requires http-types << 0.12
   _servant_client_core <- hackage (Just "0.13.0.1") "servant-client-core" >>= {-patch $(embedFile "patches/servant-client-core.diff") >>=-} debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_client <-      hackage (Just "0.13.0.1") "servant-client" >>= patch $(embedFile "patches/servant-client.diff") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_docs <-        hackage (Just "0.11.2") "servant-docs" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
