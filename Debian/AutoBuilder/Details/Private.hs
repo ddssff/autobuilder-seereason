@@ -82,7 +82,7 @@ buildTargets _params = do
       debianize []
   let stripeRepo = "https://github.com/seereason/stripe"
   -- let stripeRepo = "https://github.com/dmjio/stripe"
-  _stripe_http_client <- hackage (Just "2.4.0") "stripe-http-client" >>= patch $(embedFile "patches/stripe-http-client.diff") >>= debianize []
+  _stripe_http_client <- hackage (Just "2.4.0") "stripe-http-client" >>= debianize []
   _stripe_core <- git stripeRepo [] >>= cd "stripe-core" >>= debianize [] >>= inGroups ["private-libs"]
   _stripe_http_streams <- git stripeRepo [] >>= cd "stripe-http-streams" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>=  debianize [] >>= inGroups ["private-libs"]
   _stripe_haskell <- git stripeRepo [] >>= cd "stripe-haskell" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>= debianize []
