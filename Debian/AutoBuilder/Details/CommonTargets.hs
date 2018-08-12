@@ -451,6 +451,7 @@ commonTargets = do
   _happstack_search <- git "https://github.com/seereason/happstack-search" [] >>= debianize [] >>= inGroups ["happstack", "important"]
               -- ,  (hackage (Just "7.4.6.2") "happstack-server") >>= debianize []
   _happstack_server <- hackage (Just "7.5.1.1") "happstack-server" >>=
+                       patch $(embedFile "patches/happstack-server.diff") >>=
                        debianize [] >>=
                        inGroups ["happstack", "important"]
   _happstack_server_tls <- hackage (Just "7.1.6.5") "happstack-server-tls" >>= patch $(embedFile "patches/happstack-server-tls.diff") >>= debianize [] >>= inGroups ["happstack", "important"]
