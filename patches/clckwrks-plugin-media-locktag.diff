@@ -1,0 +1,23 @@
+--- old/Clckwrks/Media/Monad.hs	2018-06-13 09:27:12.954170061 -0700
++++ new/Clckwrks/Media/Monad.hs	2018-08-09 23:03:10.650670684 -0700
+@@ -80,7 +80,7 @@
+     do let basePath = fromMaybe "_state" mBasePath
+            cacheDir  = mediaDir </> "_cache"
+        createDirectoryIfMissing True cacheDir
+-       bracket (openLocalStateFrom (basePath </> "media") initialMediaState) (createCheckpointAndClose) $ \media ->
++       bracket (openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Clckwrks.Media.Monad.withMediaConfig " <> show flag <> "\n")) (basePath </> "media") initialMediaState) (createCheckpointAndClose) $ \media ->
+          bracket (startIOThread (applyTransforms mediaDir cacheDir)) killIOThread $ \ioThread ->
+            do magic <- magicOpen [MagicMime, MagicError]
+               magicLoadDefault magic
+--- old/Clckwrks/Media/Plugin.hs	2018-06-13 09:27:12.954170061 -0700
++++ new/Clckwrks/Media/Plugin.hs	2018-08-09 23:15:45.713004854 -0700
+@@ -50,7 +50,7 @@
+            cacheDir = mediaDir </> "_cache"
+        createDirectoryIfMissing True cacheDir
+ 
+-       acid <- openLocalStateFrom (basePath </> "media") initialMediaState
++       acid <- openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Clckwrks.Media.Plugin.mediaInit " <> show flag ++ "\n")) (basePath </> "media") initialMediaState
+        addCleanup plugins Always (createCheckpointAndClose acid)
+ 
+        ioThread <- startIOThread (applyTransforms mediaDir cacheDir)
+Only in media-new/haskell-clckwrks-plugin-media-0.6.16.4: dist

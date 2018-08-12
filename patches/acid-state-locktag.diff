@@ -1,0 +1,105 @@
+diff -ru old/src/Data/Acid/Local.hs new/src/Data/Acid/Local.hs
+--- old/src/Data/Acid/Local.hs	2018-03-30 12:58:43.400009141 -0700
++++ new/src/Data/Acid/Local.hs	2018-08-09 13:06:49.305957362 -0700
+@@ -41,9 +41,9 @@
+ import Data.SafeCopy                  ( SafeCopy(..), safeGet, safePut
+                                       , primitive, contain )
+ import Data.Typeable                  ( Typeable, typeOf )
+-import Data.IORef
++import Data.IORef (IORef, newIORef, readIORef, writeIORef)
+ import System.FilePath                ( (</>), takeDirectory )
+-import System.FileLock
++import System.FileLock (FileLock, unlockFile, tryLockFile, SharedExclusive(Exclusive))
+ import System.Directory               ( createDirectoryIfMissing )
+ 
+ 
+@@ -222,11 +222,12 @@
+ --
+ --   This will create or resume a log found in the \"state\/[typeOf state]\/\" directory.
+ openLocalState :: (Typeable st, IsAcidic st)
+-              => st                          -- ^ Initial state value. This value is only used if no checkpoint is
++              => (Bool -> FilePath -> IO ())
++              -> st                          -- ^ Initial state value. This value is only used if no checkpoint is
+                                              --   found.
+               -> IO (AcidState st)
+-openLocalState initialState =
+-  openLocalStateFrom ("state" </> show (typeOf initialState)) initialState
++openLocalState locktag initialState =
++  openLocalStateFrom locktag ("state" </> show (typeOf initialState)) initialState
+ 
+ -- | Create an AcidState given an initial value.
+ --
+@@ -234,11 +235,12 @@
+ --   The most recent checkpoint will be loaded immediately but the AcidState will not be opened
+ --   until the returned function is executed.
+ prepareLocalState :: (Typeable st, IsAcidic st)
+-                  => st                          -- ^ Initial state value. This value is only used if no checkpoint is
++                  => (Bool -> FilePath -> IO ())
++                  -> st                          -- ^ Initial state value. This value is only used if no checkpoint is
+                                                  --   found.
+                   -> IO (IO (AcidState st))
+-prepareLocalState initialState =
+-  prepareLocalStateFrom ("state" </> show (typeOf initialState)) initialState
++prepareLocalState locktag initialState =
++  prepareLocalStateFrom locktag ("state" </> show (typeOf initialState)) initialState
+ 
+ 
+ -- | Create an AcidState given a log directory and an initial value.
+@@ -247,12 +249,13 @@
+ --   Running two AcidState's from the same directory is an error
+ --   but will not result in dataloss.
+ openLocalStateFrom :: (IsAcidic st)
+-                  => FilePath            -- ^ Location of the checkpoint and transaction files.
++                  => (Bool -> FilePath -> IO ())
++                  -> FilePath            -- ^ Location of the checkpoint and transaction files.
+                   -> st                  -- ^ Initial state value. This value is only used if no checkpoint is
+                                          --   found.
+                   -> IO (AcidState st)
+-openLocalStateFrom directory initialState =
+-  join $ resumeLocalStateFrom directory initialState False
++openLocalStateFrom locktag directory initialState =
++  join $ resumeLocalStateFrom locktag directory initialState False
+ 
+ -- | Create an AcidState given an initial value.
+ --
+@@ -260,22 +263,24 @@
+ --   The most recent checkpoint will be loaded immediately but the AcidState will not be opened
+ --   until the returned function is executed.
+ prepareLocalStateFrom :: (IsAcidic st)
+-                  => FilePath            -- ^ Location of the checkpoint and transaction files.
++                  => (Bool -> FilePath -> IO ())
++                  -> FilePath            -- ^ Location of the checkpoint and transaction files.
+                   -> st                  -- ^ Initial state value. This value is only used if no checkpoint is
+                                          --   found.
+                   -> IO (IO (AcidState st))
+-prepareLocalStateFrom directory initialState =
+-  resumeLocalStateFrom directory initialState True
++prepareLocalStateFrom locktag directory initialState =
++  resumeLocalStateFrom locktag directory initialState True
+ 
+ 
+ 
+ resumeLocalStateFrom :: (IsAcidic st)
+-                  => FilePath            -- ^ Location of the checkpoint and transaction files.
++                  => (Bool -> FilePath -> IO ())
++                  -> FilePath            -- ^ Location of the checkpoint and transaction files.
+                   -> st                  -- ^ Initial state value. This value is only used if no checkpoint is
+                                          --   found.
+                   -> Bool                -- ^ True => load checkpoint before acquiring the lock.
+                   -> IO (IO (AcidState st))
+-resumeLocalStateFrom directory initialState delayLocking =
++resumeLocalStateFrom locktag directory initialState delayLocking =
+   case delayLocking of
+     True -> do
+       (n, st) <- loadCheckpoint
+@@ -321,8 +326,8 @@
+                                       }
+     maybeLockFile path = do
+       createDirectoryIfMissing True (takeDirectory path)
+-      maybe (throwIO (StateIsLocked path))
+-                            return =<< tryLockFile path Exclusive
++      maybe (locktag False (takeDirectory path) >> throwIO (StateIsLocked path))
++                            (\r -> locktag True (takeDirectory path) >> return r) =<< tryLockFile path Exclusive
+ 
+ 
+ checkpointRestoreError msg

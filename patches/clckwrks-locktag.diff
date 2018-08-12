@@ -1,0 +1,52 @@
+diff -ru old/Clckwrks/Acid.hs new/Clckwrks/Acid.hs
+--- old/Clckwrks/Acid.hs	2018-03-29 16:00:49.000000000 +0000
++++ new/Clckwrks/Acid.hs	2018-08-10 00:26:56.054957438 +0000
+@@ -124,12 +124,12 @@
+ class GetAcidState m st where
+     getAcidState :: m (AcidState st)
+ 
+-withAcid :: Maybe FilePath -> (Acid -> IO a) -> IO a
+-withAcid mBasePath f =
++withAcid :: (Bool -> FilePath -> IO ()) -> Maybe FilePath -> (Acid -> IO a) -> IO a
++withAcid locktag mBasePath f =
+     let basePath = fromMaybe "_state" mBasePath in
+-    bracket (openLocalStateFrom (basePath </> "profileData") initialProfileDataState) (createArchiveCheckpointAndClose) $ \profileData ->
+-    bracket (openLocalStateFrom (basePath </> "core")        initialCoreState)        (createArchiveCheckpointAndClose) $ \core ->
+-    bracket (openLocalStateFrom (basePath </> "navBar")      initialNavBarState)      (createArchiveCheckpointAndClose) $ \navBar ->
++    bracket (openLocalStateFrom locktag (basePath </> "profileData") initialProfileDataState) (createArchiveCheckpointAndClose) $ \profileData ->
++    bracket (openLocalStateFrom locktag (basePath </> "core")        initialCoreState)        (createArchiveCheckpointAndClose) $ \core ->
++    bracket (openLocalStateFrom locktag (basePath </> "navBar")      initialNavBarState)      (createArchiveCheckpointAndClose) $ \navBar ->
+     bracket (forkIO (tryRemoveFile (basePath </> "profileData_socket") >> acidServer skipAuthenticationCheck (UnixSocket $ basePath </> "profileData_socket") profileData))
+             (\tid -> killThread tid >> tryRemoveFile (basePath </> "profileData_socket"))
+             (const $ f (Acid profileData core navBar))
+diff -ru c.old/Clckwrks/Server.hs c.new/Clckwrks/Server.hs
+--- c.old/Clckwrks/Server.hs	2018-03-29 09:00:49.000000000 -0700
++++ c.new/Clckwrks/Server.hs	2018-08-10 02:32:31.740830637 -0700
+@@ -31,10 +31,10 @@
+ import Web.Plugins.Core             (Plugins, withPlugins, getPluginRouteFn, getPostHooks, serve)
+ import qualified Paths_clckwrks     as Clckwrks
+ 
+-withClckwrks :: ClckwrksConfig -> (ClckState -> IO b) -> IO b
+-withClckwrks cc action = do
++withClckwrks :: (Bool -> FilePath -> IO ()) -> ClckwrksConfig -> (ClckState -> IO b) -> IO b
++withClckwrks locktag cc action = do
+   let top' = fmap (\top -> top </> "_state") (clckTopDir cc)
+-  withAcid top' $ \acid ->
++  withAcid locktag top' $ \acid ->
+     withPlugins cc (initialClckPluginsSt acid) $ \plugins -> do
+       u <- atomically $ newTVar 0
+       let clckState = ClckState { acidState        = acid
+@@ -47,9 +47,9 @@
+                                 }
+       action clckState
+ 
+-simpleClckwrks :: ClckwrksConfig -> IO ()
+-simpleClckwrks cc =
+-  withClckwrks cc $ \clckState ->
++simpleClckwrks :: (Bool -> FilePath -> IO ()) -> ClckwrksConfig -> IO ()
++simpleClckwrks locktag cc =
++  withClckwrks locktag cc $ \clckState ->
+       do let baseURI =
+                case calcTLSBaseURI cc of
+                  (Just baseUri) -> baseUri
+Only in c.new: dist

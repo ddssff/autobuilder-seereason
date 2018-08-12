@@ -1,0 +1,25 @@
+diff --git a/Appraisal/AcidCache.hs b/Appraisal/AcidCache.hs
+index c0dc608..1e23010 100644
+--- a/Appraisal/AcidCache.hs
++++ b/Appraisal/AcidCache.hs
+@@ -84,7 +84,7 @@ initCacheMap = mempty
+ 
+ openValueCache :: (AcidKey key, AcidVal val) =>
+                   FilePath -> IO (AcidState (Map key val))
+-openValueCache path = openLocalStateFrom path initCacheMap
++openValueCache path = openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Appraisal.AcidCache.openValueCache " <> show flag <> "\n")) path initCacheMap
+ 
+ withValueCache :: (AcidKey key, AcidVal val) =>
+                   FilePath -> (AcidState (Map key val) -> IO a) -> IO a
+diff --git a/Tests/Cache.hs b/Tests/Cache.hs
+index a91a536..2300c3d 100644
+--- a/Tests/Cache.hs
++++ b/Tests/Cache.hs
+@@ -17,6 +17,6 @@ import Text.LaTeX (render)
+ 
+ loadImageCache :: IsAcidic (Map ImageKey ImageFile) => FilePath -> IO (AcidState (Map ImageKey ImageFile))
+ loadImageCache top =
+-    bracket (openLocalStateFrom (top </> "imageCache") (error $ "loadImageCache " ++ top </> "imageCache"))
++    bracket (openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Appraisal.Cache.loadImageCache " <> show flag <> "\n")) (top </> "imageCache") (error $ "loadImageCache " ++ top </> "imageCache"))
+             closeAcidState $ \ imageCache ->
+     return imageCache

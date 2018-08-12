@@ -16,17 +16,17 @@ import Debian.Repo.Fingerprint (GitSpec(Branch))
 buildTargets :: Monad m => ParamRec -> TSt m ()
 buildTargets _params = do
   _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= debianize []
-  _appraisalscribe_acid <- git "ssh://git@github.com/seereason/appraisalscribe-acid" [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= debianize []
+  _appraisalscribe_acid <- git "ssh://git@github.com/seereason/appraisalscribe-acid" [] >>= {-patch $(embedFile "patches/appraisalscribe-acid-locktag.diff") >>=-} flag (P.CabalDebian ["--disable-profiling"]) >>= debianize []
   -- _appraisalscribe_json <- git "ssh://git@github.com/seereason/appraisalscribe-json" [] >>= debianize []
   _appraisalscribe_io <- git "ssh://git@github.com/seereason/appraisalscribe-io" [] >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= ghcjs_also
-  _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [] >>= debianize [] >>= ghcjs_also
+  _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= debianize [] >>= ghcjs_also
   -- appraisalscribe-data-tests is a huge package because it
   -- contains lots of test data, it makes more sense to just check
   -- it out of git and run it rather than constantly uploading it to
   -- the repository.
   -- appraisalscribe_data_tests = debianize (git "ssh://git@github.com/seereason/appraisalscribe-data-tests" [])
 
-  _clckwrks_plugin_stripe <- git "ssh://git@github.com/seereason/clckwrks-plugin-stripe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["private-libs"]
+  _clckwrks_plugin_stripe <- git "ssh://git@github.com/seereason/clckwrks-plugin-stripe" [] >>= {-patch $(embedFile "patches/clckwrks-plugin-stripe-locktag.diff") >>=-} flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["private-libs"]
   _clckwrks_theme_seereasonpartners <-
       git "ssh://git@github.com/seereason/seereasonpartners-clckwrks" [] >>=
       cd "clckwrks-theme-seereasonpartners" >>=
@@ -45,7 +45,7 @@ buildTargets _params = do
   _happstack_ghcjs_webmodule <- happstack_ghcjs >>= cd "happstack-ghcjs-webmodule" >>= flag (P.BuildDep "haskell-editor-common-utils") >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"] >>= ghcjs_also
 
   _happstack_ontology <- git "ssh://git@github.com/seereason/happstack-ontology" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
-  _image_cache <- git "https://github.com/seereason/image-cache.git" [] {- >>= flag (P.CabalDebian ["--cabal-flags", "-pretty-112"]) -} >>= debianize [] >>= ghcjs_also
+  _image_cache <- git "https://github.com/seereason/image-cache.git" [] >>= {-patch $(embedFile "patches/image-cache-locktag.diff") >>=-} flag (P.CabalDebian ["--disable-profiling"]) >>= debianize [] >>= ghcjs_also
   -- The debian/Debianize.hs script has a dependency on
   -- happstack-foundation, which must be installed in the parent
   -- environment *before* we can create the debianization.  We don't

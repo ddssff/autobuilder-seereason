@@ -1,0 +1,11 @@
+--- old/Clckwrks/Bugs/Plugin.hs	2017-09-13 06:44:48.333803875 -0700
++++ new/Clckwrks/Bugs/Plugin.hs	2018-08-09 23:19:40.173994256 -0700
+@@ -49,7 +49,7 @@
+        (Just clckShowFn) <- getPluginRouteFn plugins (pluginName clckPlugin)
+        mTopDir <- clckTopDir <$> getConfig plugins
+        let basePath = maybe "_state" (\td -> td </> "_state") mTopDir -- FIXME
+-       acid <- openLocalStateFrom (basePath </> "bugs") initialBugsState
++       acid <- openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Clckwrks.Bugs.Plugin.bugsInit " <> show flag <> "\n")) (basePath </> "bugs") initialBugsState
+        addCleanup plugins Always (createCheckpointAndClose acid)
+        let bugsConfig = BugsConfig { bugsDirectory = "bugs-dir"
+                                    , bugsState     = acid

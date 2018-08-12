@@ -1,0 +1,23 @@
+--- old/src/Happstack/Server/FileServe/BuildingBlocks.hs	2018-06-26 08:51:43.000000000 -0700
++++ new/src/Happstack/Server/FileServe/BuildingBlocks.hs	2018-08-12 05:51:13.770203440 -0700
+@@ -70,7 +70,7 @@
+ import Happstack.Server.Monads      (ServerMonad(askRq), FilterMonad, WebMonad)
+ import Happstack.Server.Response    (ToMessage(toResponse), ifModifiedSince, forbidden, ok, seeOther)
+ import Happstack.Server.Types       (Length(ContentLength), Request(rqPaths, rqUri), Response(SendFile), RsFlags(rsfLength), nullRsFlags, result, resultBS, setHeader)
+-import System.Directory             (doesDirectoryExist, doesFileExist, getDirectoryContents, getModificationTime)
++import System.Directory             (doesDirectoryExist, doesFileExist, getCurrentDirectory, getDirectoryContents, getModificationTime)
+ import System.FilePath              ((</>), addTrailingPathSeparator, hasDrive, isPathSeparator, joinPath, takeExtension, isValid)
+ import System.IO                    (IOMode(ReadMode), hFileSize, hClose, openBinaryFile, withBinaryFile)
+ import System.Log.Logger            (Priority(DEBUG), logM)
+@@ -361,9 +361,10 @@
+        else do let fp = joinPath (localPath : rqPaths rq)
+                fe <- liftIO $ doesFileExist fp
+                de <- liftIO $ doesDirectoryExist fp
++               cwd <- liftIO $ getCurrentDirectory
+                let status | de   = "DIR"
+                           | fe   = "file"
+-                          | True = "NOT FOUND"
++                          | True = "NOT FOUND in " <> cwd
+                liftIO $ logM "Happstack.Server.FileServe" DEBUG ("fileServe: "++show fp++" \t"++status)
+                if de
+                   then if last (rqUri rq) == '/'

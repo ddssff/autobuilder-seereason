@@ -1,0 +1,18 @@
+--- a/Clckwrks/Stripe/Plugin.hs
++++ b/Clckwrks/Stripe/Plugin.hs
+@@ -36,7 +36,7 @@ stripeInit plugins =
+        (Just clckShowFn)   <- getPluginRouteFn plugins (pluginName clckPlugin)
+        mTopDir <- clckTopDir <$> getConfig plugins
+        let basePath = maybe "_state" (\td -> td </> "_state") mTopDir -- FIXME
+-       acid <- openLocalStateFrom (basePath </> "stripe") initialStripeState
++       acid <- openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Clckwrks.Stripe.Plugin.stripeInit " <> show flag <> "\n")) (basePath </> "stripe") initialStripeState
+        addCleanup plugins Always (createCheckpointAndClose acid)
+        let stripeConfig = StripeConfig { stripeState = acid
+                                        , clckShowURL = clckShowFn
+@@ -92,4 +92,4 @@ subscriptionActive' plugins =
+          (Just stripeConfig, Just routeFn) ->
+              runStripeT'' routeFn stripeConfig subscriptionActiveM
+ 
+--}
+\ No newline at end of file
++-}

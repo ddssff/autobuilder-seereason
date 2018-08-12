@@ -1,0 +1,12 @@
+diff -ru old/Clckwrks/Page/Plugin.hs new/Clckwrks/Page/Plugin.hs
+--- old/Clckwrks/Page/Plugin.hs	2018-06-13 09:27:14.126152044 -0700
++++ new/Clckwrks/Page/Plugin.hs	2018-08-09 22:58:47.178042355 -0700
+@@ -55,7 +55,7 @@
+        createDirectoryIfMissing True cacheDir
+ 
+        ips  <- initialPageState
+-       acid <- openLocalStateFrom (basePath </> "page") ips
++       acid <- openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Clckwrks.Page.Plugin.pageInit " <> show flag <> "\n")) (basePath </> "page") ips
+        addCleanup plugins Always (createCheckpointAndClose acid)
+ 
+        let pageConfig = PageConfig { pageState     = acid

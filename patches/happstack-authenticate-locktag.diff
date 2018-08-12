@@ -1,0 +1,39 @@
+diff -ru old/Happstack/Authenticate/OpenId/Route.hs new/Happstack/Authenticate/OpenId/Route.hs
+--- old/Happstack/Authenticate/OpenId/Route.hs	2018-07-08 19:50:29.788983543 +0000
++++ new/Happstack/Authenticate/OpenId/Route.hs	2018-08-09 23:46:54.614454433 +0000
+@@ -61,7 +61,7 @@
+            -> AuthenticateConfig
+            -> IO (Bool -> IO (), (AuthenticationMethod, AuthenticationHandler), RouteT AuthenticateURL (ServerPartT IO) JStat)
+ initOpenId basePath authenticateState authenticateConfig =
+-  do openIdState <- openLocalStateFrom (combine basePath "openId") initialOpenIdState
++  do openIdState <- openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Happstack.Authenticate.OpenId.Route.initOpenId " ++ show flag ++ "\n")) (combine basePath "openId") initialOpenIdState
+      let shutdown = \normal ->
+            if normal
+            then createCheckpointAndClose openIdState
+Only in new/Happstack/Authenticate/OpenId: Route.hs~
+diff -ru old/Happstack/Authenticate/Password/Route.hs new/Happstack/Authenticate/Password/Route.hs
+--- old/Happstack/Authenticate/Password/Route.hs	2018-07-08 19:50:29.788983543 +0000
++++ new/Happstack/Authenticate/Password/Route.hs	2018-08-09 23:46:54.102460870 +0000
+@@ -54,7 +54,7 @@
+              -> AuthenticateConfig
+              -> IO (Bool -> IO (), (AuthenticationMethod, AuthenticationHandler), RouteT AuthenticateURL (ServerPartT IO) JStat)
+ initPassword passwordConfig basePath authenticateState authenticateConfig =
+-  do passwordState <- openLocalStateFrom (combine basePath "password") initialPasswordState
++  do passwordState <- openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Happstack.Authenticate.OpenId.Route.initPassword " ++ show flag ++ "\n")) (combine basePath "password") initialPasswordState
+      let shutdown = \normal ->
+            if normal
+            then createCheckpointAndClose passwordState
+Only in new/Happstack/Authenticate/Password: Route.hs~
+diff -ru old/Happstack/Authenticate/Route.hs new/Happstack/Authenticate/Route.hs
+--- old/Happstack/Authenticate/Route.hs	2018-07-08 19:50:29.788983543 +0000
++++ new/Happstack/Authenticate/Route.hs	2018-08-09 23:46:39.734641450 +0000
+@@ -51,7 +51,7 @@
+   -> IO (IO (), AuthenticateURL -> RouteT AuthenticateURL (ServerPartT IO) Response, AcidState AuthenticateState)
+ initAuthentication mBasePath authenticateConfig initMethods =
+   do let authenticatePath = combine (fromMaybe "state" mBasePath) "authenticate"
+-     authenticateState <- openLocalStateFrom (combine authenticatePath "core") initialAuthenticateState
++     authenticateState <- openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Happstack.Authenticate.OpenId.Route.initAuthentication " ++ show flag ++ "\n")) (combine authenticatePath "core") initialAuthenticateState
+      -- FIXME: need to deal with one of the initMethods throwing an exception
+      (cleanupPartial, handlers, javascript) <- unzip3 <$> mapM (\initMethod -> initMethod authenticatePath authenticateState authenticateConfig) initMethods
+      let cleanup = sequence_ $ createCheckpointAndClose authenticateState : (map (\c -> c True) cleanupPartial)
+Only in new/Happstack/Authenticate: Route.hs~

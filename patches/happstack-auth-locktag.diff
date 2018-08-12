@@ -1,0 +1,24 @@
+Only in new: dist
+diff -ru old/Migrate.hs new/Migrate.hs
+--- old/Migrate.hs	2017-09-13 06:49:43.001283758 -0700
++++ new/Migrate.hs	2018-08-09 17:38:58.953818306 -0700
+@@ -21,14 +21,14 @@
+ 
+ main :: IO ()
+ main =
+-  bracket (openLocalStateFrom "_state/auth"    initialAuthState)                       closeAcidState $ \auth ->
+-  bracket (openLocalStateFrom "_state/profile" initialProfileState)                    closeAcidState $ \profile ->
++  bracket (openLocalStateFrom (\flag path -> Prelude.appendFile (path <> "/locktag") ("Migrate1 " ++ show flag ++ "\n")) "_state/auth"    initialAuthState)                       closeAcidState $ \auth ->
++  bracket (openLocalStateFrom (\flag path -> Prelude.appendFile (path <> "/locktag") ("Migrate2 " ++ show flag ++ "\n")) "_state/profile" initialProfileState)                    closeAcidState $ \profile ->
+        do as <- query auth    AskAuthState
+           ps <- query profile GetProfileState
+           let (Profile.UserId uid) = Profile.nextUserId ps in
+-           bracket (openLocalStateFrom "_new_state/authenticate/core" (initialAuthenticateState { Authenticate._nextUserId = Authenticate.UserId uid })) createCheckpointAndClose $ \authenticateState ->
+-           bracket (openLocalStateFrom "_new_state/authenticate/password" initialPasswordState) createCheckpointAndClose $ \passwordState ->
+-           bracket (openLocalStateFrom "_new_state/authenticate/openId" initialOpenIdState)     createCheckpointAndClose $ \openIdState -> do
++           bracket (openLocalStateFrom (\flag path -> Prelude.appendFile (path <> "/locktag") ("Migrate3 " ++ show flag ++ "\n")) "_new_state/authenticate/core" (initialAuthenticateState { Authenticate._nextUserId = Authenticate.UserId uid })) createCheckpointAndClose $ \authenticateState ->
++           bracket (openLocalStateFrom (\flag path -> Prelude.appendFile (path <> "/locktag") ("Migrate4 " ++ show flag ++ "\n")) "_new_state/authenticate/password" initialPasswordState) createCheckpointAndClose $ \passwordState ->
++           bracket (openLocalStateFrom (\flag path -> Prelude.appendFile (path <> "/locktag") ("Migrate5 " ++ show flag ++ "\n")) "_new_state/authenticate/openId" initialOpenIdState)     createCheckpointAndClose $ \openIdState -> do
+              let users = map (mkUser as (authUserMap ps)) (IxSet.toList $ profiles ps)
+              mapM_ (insertUser authenticateState passwordState openIdState) users
+              Prelude.putStrLn $ "_nextUserId = " ++ show uid

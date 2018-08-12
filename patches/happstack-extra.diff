@@ -1,0 +1,13 @@
+diff -ru old/src/HSP/Pandoc.hs new/src/HSP/Pandoc.hs
+--- old/src/HSP/Pandoc.hs	2018-08-10 00:10:19.928894147 +0000
++++ new/src/HSP/Pandoc.hs	2018-08-10 00:10:09.881039628 +0000
+@@ -4,7 +4,7 @@
+ import Data.Default (def)
+ import qualified Data.Text.Lazy as TL
+ import HSP
+-import Text.Pandoc (Pandoc, writeHtmlString)
++import Text.Pandoc (Pandoc, writeHtml5String)
+ 
+ instance (XMLGen m, EmbedAsChild m XML) => (EmbedAsChild m Pandoc) where
+-    asChild pandoc = asChild (cdata $ TL.pack $ writeHtmlString def pandoc)
++    asChild pandoc = asChild (cdata $ writeHtml5String def pandoc)

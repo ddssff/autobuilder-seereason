@@ -1,0 +1,125 @@
+--- a/src/Acid.hs
++++ b/src/Acid.hs
+@@ -58,7 +58,7 @@ data Acid clckacid =
+ 
+ openAppraisalAcid :: FilePaths p => p -> clckacid -> IO (Acid clckacid)
+ openAppraisalAcid top' clckacid =
+-   do appraisalData <- initialAppraisalData (basePath </> "appraisalData") >>= openLocalStateFrom (basePath </> "appraisalData")
++   do appraisalData <- initialAppraisalData (basePath </> "appraisalData") >>= openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Acid.openAppraisalAcid1 " <> show flag <> "\n")) (basePath </> "appraisalData")
+       imageMap <- openValueCache (basePath </> "imageCache")
+       result <- runImageCacheIO imageMap (images top') (populateImageMap appraisalData) :: IO (Either FileError (Map ImageKey ImageFile))
+       either
+@@ -70,10 +70,10 @@ openAppraisalAcid top' clckacid =
+ 
+           Acid <$> pure appraisalData
+                <*> pure imageMap
+-               <*> openLocalStateFrom (basePath </> "testData")  initialTestData
+-               <*> openLocalStateFrom (basePath </> "userAndGroupData")  initProfiles
++               <*> openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Acid.openAppraisalAcid2 " <> show flag <> "\n")) (basePath </> "testData")  initialTestData
++               <*> openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Acid.openAppraisalAcid3 " <> show flag <> "\n")) (basePath </> "userAndGroupData")  initProfiles
+                <*> pure clckacid
+-               <*> openLocalStateFrom (basePath </> "tagData") (IxSet.empty :: TagSet))
++               <*> openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Acid.openAppraisalAcid4 " <> show flag <> "\n")) (basePath </> "tagData") (IxSet.empty :: TagSet))
+         result
+     where
+       basePath = state top'
+@@ -106,8 +106,8 @@ convertImageCache top = do
+ -- present in version 1.0 of the image-cache package.
+ convertImageCache' :: FilePaths p => p -> IO ()
+ convertImageCache' top =
+-  bracket (openLocalStateFrom (state top </> "imageCache") (error "loadImageCache" :: Map ImageKey ImageFile)) createCheckpointAndClose $ \cache ->
+-  bracket (openLocalStateFrom (state top </> "appraisalData") (error "loadImageCache" :: AppraisalData)) createCheckpointAndClose $ \appraisals ->
++  bracket (openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Acid.convertImageCache1 " <> show flag <> "\n")) (state top </> "imageCache") (error "loadImageCache" :: Map ImageKey ImageFile)) createCheckpointAndClose $ \cache ->
++  bracket (openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Acid.convertImageCache2 " <> show flag <> "\n")) (state top </> "appraisalData") (error "loadImageCache" :: AppraisalData)) createCheckpointAndClose $ \appraisals ->
+   go cache appraisals
+   where
+     go :: AcidState (Map ImageKey ImageFile) -> AcidState AppraisalData -> IO ()
+diff --git a/tools/AppraisalScope.hs b/tools/AppraisalScope.hs
+index b3345f9..1376dd4 100644
+--- a/tools/AppraisalScope.hs
++++ b/tools/AppraisalScope.hs
+@@ -168,7 +168,7 @@ freshStartDB p =
+ 
+ openLocalStateFrom' :: IsAcidic st => FilePath -> IO (AcidState st)
+ openLocalStateFrom' p =
+-  openLocalStateFrom p (error $ "AppraisalScope.openLocalStateFrom': no database found at " ++ p)
++  openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("AppraisalScope.openLocalStateFrom' " <> show flag <> "\n")) p (error $ "AppraisalScope.openLocalStateFrom': no database found at " ++ p)
+ 
+ undelete :: FilePath -> UUID -> IO ()
+ undelete p uuid =
+@@ -199,7 +199,7 @@ reportByUUID p uuid = do
+ 
+ copyReportByUUID :: FilePath -> FilePath -> UUID -> IO ()
+ copyReportByUUID oldpath newpath uuid = do
+-  bracket (openLocalStateFrom oldpath undefined) (closer) $ \ appData ->
++  bracket (openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("AppraisalScope.copyReportByUUID " <> show flag <> "\n")) oldpath undefined) (closer) $ \ appData ->
+     do (mh :: Maybe (AppraisalHistory Report)) <- query appData (InsecureQueryReportByID (ReportID uuid))
+        let (rs :: Maybe [Report]) = fmap (toListOf folded) mh
+        _ <- mkNewDB newpath (maybe notFound (\(r : _) -> r) rs)
+@@ -219,15 +219,15 @@ mkNewDB newpath r = do
+   let singleton = AppraisalData
+                     (reportMapFromList [r])
+                     (reportMapFromList [])
+-  acid <- openLocalStateFrom newpath singleton
++  acid <- openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("AppraisalScope.mkNewDB " <> show flag <> "\n")) newpath singleton
+   createCheckpointAndClose acid
+   return newpath
+ 
+ -- oldpath gets priority on duplicate
+ mergeDB :: FilePath -> FilePath -> IO ()
+ mergeDB oldpath newpath  = do
+-  bracket (openLocalStateFrom oldpath undefined) (createCheckpointAndClose) $ \ oldData ->
+-    bracket (openLocalStateFrom newpath undefined) (closer) $ \ newData ->
++  bracket (openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("AppraisalScope.mergeDB1 " <> show flag <> "\n")) oldpath undefined) (createCheckpointAndClose) $ \ oldData ->
++    bracket (openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("AppraisalScope.mergeDB2 " <> show flag <> "\n")) newpath undefined) (closer) $ \ newData ->
+     do newAD <- query newData InsecureQueryAppraisal
+        update oldData (InsecureMergeAppraisal newAD)
+ 
+diff --git a/tools/ImageRepair.hs b/tools/ImageRepair.hs
+index dcddd29..729cfc6 100644
+--- a/tools/ImageRepair.hs
++++ b/tools/ImageRepair.hs
+@@ -42,8 +42,8 @@ files = FileCacheTop (top </> "images")
+ 
+ main :: IO ()
+ main =
+-  bracket (openLocalStateFrom db (error $ "loadImageCache " ++ db)) createCheckpointAndClose $ \cache ->
+-  bracket (openLocalStateFrom adb (error $ "loadAppraisalCache " ++ adb)) createCheckpointAndClose $ \appraisals ->
++  bracket (openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("ImageRepair1 ' " <> show flag <> "\n")) db (error $ "loadImageCache " ++ db)) createCheckpointAndClose $ \cache ->
++  bracket (openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("ImageRepair2 " <> show flag <> "\n")) adb (error $ "loadAppraisalCache " ++ adb)) createCheckpointAndClose $ \appraisals ->
+   timeComputation (dump cache files appraisals) >>= \(_, t) ->
+   putStrLn ("Elapsed: " ++ show t) >>
+   exitWith ExitSuccess
+diff --git a/tools/Sample.hs b/tools/Sample.hs
+index bb06626..860225f 100644
+--- a/tools/Sample.hs
++++ b/tools/Sample.hs
+@@ -33,7 +33,7 @@ $(makeAcidic ''AppraisalData [
+ 
+ loadReport :: String -> IO (Maybe (AppraisalHistory Report))
+ loadReport s =
+-    bracket (openLocalStateFrom (state top </> "appraisalData") undefined) closeAcidState $ \ appraisalData ->
++    bracket (openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("Sample " <> show flag <> "\n")) (state top </> "appraisalData") undefined) closeAcidState $ \ appraisalData ->
+     query appraisalData (InsecureQueryReportByID (ReportID $ fromJust (fromString s)))
+     where
+       top = Top "/srv/appraisalscribe-development"
+diff --git a/tools/TestTags.hs b/tools/TestTags.hs
+index 664ebd4..f5739aa 100644
+--- a/tools/TestTags.hs
++++ b/tools/TestTags.hs
+@@ -40,13 +40,13 @@ tag5 = unsafePerformIO $ Tag <$> nextRandom
+ -- λ> fmap (getEQ (Tag (read "0ab46a32-afdd-4821-9436-4ad0b96ce017"))) tagdata
+ -- Right (fromList [TagInfo {_tag = (Tag "0ab46a32-afdd-4821-9436-4ad0b96ce017"), _tagText = "this is not tag 1"}])
+ tagdata :: Either IOException TagData
+-tagdata = unsafePerformIO (try (do tags <- openLocalStateFrom "./tagTestData" empty
++tagdata = unsafePerformIO (try (do tags <- openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("TestTags1 " <> show flag <> "\n")) "./tagTestData" empty
+                                    query tags QueryTagData))
+ 
+ withNewTagData :: (AcidState TagData -> IO ()) -> IO ()
+ withNewTagData action =
+   bracket (do shelly $ rm_rf "./tagTestData"
+-              openLocalStateFrom "./tagTestData" empty)
++              openLocalStateFrom (\flag path -> appendFile (path <> "/locktag") ("TestTags2 " <> show flag <> "\n")) "./tagTestData" empty)
+           createCheckpointAndClose
+           action
+ 
