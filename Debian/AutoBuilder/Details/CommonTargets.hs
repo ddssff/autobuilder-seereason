@@ -260,7 +260,7 @@ commonTargets = do
       -- , debianize "digestive-functors-blaze" [P.CabalPin "0.2.1.0", P.DebVersion "0.2.1.0-1~hackage1"]
   _digestive_functors_happstack <-  (git "https://github.com/seereason/digestive-functors" []
                                             >>= cd "digestive-functors-happstack"
-                                            >>= flag (P.DebVersion "0.1.1.5-2")) >>= debianize [] >>= inGroups ["digestive-functors", "appraisalscribe", "important"]
+                                            >>= flag (P.DebVersion "0.1.1.5-2")) >>= debianize [] >>= inGroups ["digestive-functors", "appraisalscribe", "important", "happstack"]
   _digestive_functors_hsp <-  (darcs ("http://src.seereason.com/digestive-functors-hsp") >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["seereason", "important"]
   _directory_tree <- hackage (Just "0.12.1") "directory-tree" >>= flag (P.DebVersion "0.12.1-3build1") >>= debianize []
   _distributive <- hackage (Just "0.5.3") "distributive" >>= flag (P.DebVersion "0.5.3-1build1") >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
@@ -361,13 +361,13 @@ commonTargets = do
   _ghcid <- hackage (Just "0.6.4") "ghcid" >>= debianize [] >>= inGroups ["ghcid"]
   -- try allowing aeson-1.3
   _ghcjs_base <- git "https://github.com/seereason/ghcjs-base" [] >>= debianize [] >>= ghcjs_only
-  _ghcjs_jquery <-  git "https://github.com/seereason/ghcjs-jquery" [] >>=
-                    debianize [] >>=
-                    inGroups ["appraisalscribe"] >>=
-                    ghcjs_only
+  _ghcjs_jquery <- git "https://github.com/seereason/ghcjs-jquery" []
+                   >>= debianize []
+                   >>= inGroups ["appraisalscribe"]
+                   >>= ghcjs_only
   -- ghcjs_vdom = ghcjs_flags ( (git "https://github.com/seereason/ghcjs-vdom" [Branch "base48"]) >>= debianize `putSrcPkgName` "ghcjs-ghcjs-vdom")
   _ghcjs_ffiqq <- git "https://github.com/ghcjs/ghcjs-ffiqq" [] >>= putSrcPkgName "ghcjs-ghcjs-ffiqq" >>= debianize [] >>= ghcjs_also >>= skip2 (Reason "[libghc-ghcjs-base-doc] -> []")
-  _ghcjs_dom <- hackage (Just "0.9.2.0") "ghcjs-dom" >>= debianize [] >>= ghcjs_only
+  _ghcjs_dom <- hackage (Just "0.9.2.0") "ghcjs-dom" >>= debianize [] >>= inGroups ["appraisalscribe"] >>= ghcjs_only
   _ghcjs_dom_jsffi <- hackage (Just "0.9.2.0") "ghcjs-dom-jsffi" >>= debianize [] >>= ghcjs_only
   _ghcjs_dom_hello <- hackage (Just "3.0.0.0") "ghcjs-dom-hello" >>=
                       patch $(embedFile "patches/ghcjs-dom-hello.diff") >>=
@@ -447,7 +447,7 @@ commonTargets = do
   _happstack_jmacro <-  (git "https://github.com/Happstack/happstack-jmacro.git" []) >>= debianize [] >>= inGroups ["happstack", "important"]
   _happstack_lite <- git "https://github.com/Happstack/happstack-lite" [] >>= debianize [] >>= inGroups ["happstack", "important"] -- hackage 7.3.6 depends on happstack-server < 7.5
   _happstack_plugins <-  (hackage (Just "7.0.2") "happstack-plugins" >>= patch $(embedFile "patches/happstack-plugins.diff")) >>= debianize [] >>= skip (Reason "Needs plugins-auto")
-  _happstack_scaffolding <-  (git "https://github.com/seereason/happstack-scaffolding" [] >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["seereason", "important", "acid-state"]
+  _happstack_scaffolding <-  (git "https://github.com/seereason/happstack-scaffolding" [] >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["seereason", "important", "acid-state", "happstack"]
   _happstack_search <- git "https://github.com/seereason/happstack-search" [] >>= debianize [] >>= inGroups ["happstack", "important"]
               -- ,  (hackage (Just "7.4.6.2") "happstack-server") >>= debianize []
   _happstack_server <- hackage (Just "7.5.1.1") "happstack-server" >>=
@@ -460,7 +460,7 @@ commonTargets = do
                      flag (P.DebVersion "6.0.3-1") >>=
                      debianize [] >>=
                      inGroups ["happstack", "important"]
-  _happstack_websockets <- git "https://github.com/seereason/happstack-websockets" [] >>= debianize [] >>= inGroups []
+  _happstack_websockets <- git "https://github.com/seereason/happstack-websockets" [] >>= debianize [] >>= inGroups ["happstack"]
   _harp <-  (git "https://github.com/seereason/harp" []) >>= debianize []
   _hashable <-  (hackage (Just "1.2.7.0") "hashable") >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
   _hashed_storage <-  (hackage (Just "0.5.11") "hashed-storage") >>= debianize [] >>= skip (Reason "Non type-variable argument in the constraint: MonadState (TreeState m_aFTg) (t m_aFTg)")
@@ -786,6 +786,7 @@ commonTargets = do
   _optparse_applicative <- hackage (Just "0.14.2.0") "optparse-applicative" >>= debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
   -- Failing and unused
   -- _ordered <- hackage (Just "0.1") "ordered" >>= debianize []
+  _packman <- hackage (Just "0.5.0") "packman" >>= debianize [] >>= ghcjs_also
   _pandoc <- hackage (Just "2.2.1") "pandoc" >>= patch $(embedFile "patches/pandoc.diff") >>=
              flag (P.CabalDebian ["--executable", "pandoc"]) >>=
              -- flag (P.CabalDebian ["--executable", "try-pandoc"]) >>=
