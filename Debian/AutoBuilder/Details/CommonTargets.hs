@@ -313,7 +313,7 @@ commonTargets = do
   -- Not in use, needs update for current HTTP package
   -- _fb <- git "https://github.com/ddssff/fb.git" [] >>= flag (P.DebVersion "1.0.13-1") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   -- feed-1.0.0.0 switches from xml to xml-types, this is a legacy package for us.
-  _feed <- hackage (Just "0.3.12.0") "feed" >>= flag (P.DebVersion "0.3.12.0-1build1") >>= patch $(embedFile "patches/feed.diff") >>= debianize [] >>= inGroups ["acid-state"]
+  _feed <- hackage (Just "0.3.12.0") "feed" >>= flag (P.DebVersion "0.3.12.0-1build1") >>= debianize [] >>= inGroups ["acid-state"]
   _fgl <- hackage (Just "5.5.4.0") "fgl" >>= flag (P.DebVersion "5.5.4.0-1") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _file_embed <-  (hackage (Just "0.0.10.1") "file-embed") >>= debianize [] >>= ghcjs_also
   _file_location <- hackage (Just "0.4.9.1") "file-location" >>= {-flag (P.CabalDebian [ "--source-package-name", "file-location" ]) >>=-} debianize []
@@ -454,7 +454,7 @@ commonTargets = do
                        patch $(embedFile "patches/happstack-server.diff") >>=
                        debianize [] >>=
                        inGroups ["happstack", "important"]
-  _happstack_server_tls <- hackage (Just "7.1.6.5") "happstack-server-tls" >>= patch $(embedFile "patches/happstack-server-tls.diff") >>= debianize [] >>= inGroups ["happstack", "important"]
+  _happstack_server_tls <- hackage (Just "7.1.6.5") "happstack-server-tls" >>= {-patch $(embedFile "patches/happstack-server-tls.diff") >>=-} debianize [] >>= inGroups ["happstack", "important"]
   _happstack_static_routing <-  (hackage (Just "0.4.2") "happstack-static-routing") >>= debianize [] {->>= inGroups ["happstack", "important"]-} >>= skip (Reason "compile error")
   _happstack_util <- git "https://github.com/seereason/happstack-util" [] >>=
                      flag (P.DebVersion "6.0.3-1") >>=
@@ -787,7 +787,7 @@ commonTargets = do
   -- Failing and unused
   -- _ordered <- hackage (Just "0.1") "ordered" >>= debianize []
   _packman <- hackage (Just "0.5.0") "packman" >>= debianize [] >>= ghcjs_also
-  _pandoc <- hackage (Just "2.2.1") "pandoc" >>= patch $(embedFile "patches/pandoc.diff") >>=
+  _pandoc <- hackage (Just "2.2.1") "pandoc" >>=
              flag (P.CabalDebian ["--executable", "pandoc"]) >>=
              -- flag (P.CabalDebian ["--executable", "try-pandoc"]) >>=
              flag (P.CabalDebian ["--default-package", "pandoc-data"]) >>=
@@ -803,7 +803,7 @@ commonTargets = do
                -- , apt (rel release "wheezy" "quantal") "haskell-parsec2" >>= patch $(embedFile "patches/parsec2.diff")
   _parse_dimacs <-  (hackage (Just "1.3") "parse-dimacs") >>= debianize []
   _parsers <- hackage (Just "0.12.8") "parsers" >>= flag (P.DebVersion "0.12.8-1") >>= debianize [] >>= ghcjs_also
-  _patches_vector <- hackage (Just "0.1.5.4") "patches-vector" >>= patch $(embedFile "patches/patches-vector.diff") >>= debianize [] >>= ghcjs_also
+  _patches_vector <- hackage (Just "0.1.5.4") "patches-vector" >>= {-patch $(embedFile "patches/patches-vector.diff") >>=-} debianize [] >>= ghcjs_also
   _pbkdf2 <-  (hackage (Just "0.3.1.5") "PBKDF2") >>= debianize [] >>= skip (Reason "[libghc-multiset-dev (<< 0.3)] -> []")
                -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
   _pcre_light <- hackage (Just "0.4.0.4") "pcre-light" >>=
@@ -1046,7 +1046,7 @@ commonTargets = do
   _texmath <- hackage (Just "0.11") "texmath" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
   _text_binary <- hackage (Just "0.2.1.1") "text-binary" >>= flag (P.DebVersion "0.2.1.1-3build2") >>= debianize [] >>= ghcjs_also
   _text_icu <- hackage (Just "0.7.0.1") "text-icu" >>= flag (P.DevelDep "libicu-dev") >>= flag (P.DebVersion "0.7.0.1-6build5") >>= debianize []
-  _text_show <- hackage (Just "3.7.4") "text-show" >>= patch $(embedFile "patches/text-show.diff") >>= debianize [] -- 3.7.3 requires base-compat-0.10
+  _text_show <- hackage (Just "3.7.4") "text-show" >>= {-patch $(embedFile "patches/text-show.diff") >>=-} debianize [] -- 3.7.3 requires base-compat-0.10
   _text_stream_decode <- hackage (Just "0.1.0.5") "text-stream-decode" >>= patch $(embedFile "patches/text-stream-decode.diff") >>= debianize [] >>= inGroups ["conduit", "important"] >>= skip (Reason "depends on older text")
   _tf_random <- hackage (Just "0.5") "tf-random" >>= flag (P.DebVersion "0.5-7build2") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _th_alpha <- git "http://github.com/ddssff/th-alpha" [] >>= debianize []

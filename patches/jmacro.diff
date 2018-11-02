@@ -1,12 +1,12 @@
 diff -ru old/jmacro.cabal new/jmacro.cabal
 --- old/jmacro.cabal	2018-07-07 17:40:11.393962127 -0700
 +++ new/jmacro.cabal	2018-07-08 10:10:22.566595889 -0700
-@@ -12,7 +12,11 @@
+@@ -13,7 +13,11 @@
  Cabal-Version:       >= 1.6
  
  library
--  build-depends:     base >= 4, base < 5, containers, wl-pprint-text, text, safe >= 0.2, parsec > 3.0, template-haskell >= 2.3, mtl > 1.1 , haskell-src-exts, haskell-src-meta, bytestring >= 0.9, syb, aeson >= 0.5 , regex-posix > 0.9, vector >= 0.8, unordered-containers >= 0.2
-+  build-depends:     base >= 4, base < 5, containers, wl-pprint-text, text, safe >= 0.2, parsec > 3.0, template-haskell >= 2.3, mtl > 1.1 , haskell-src-exts, haskell-src-meta, bytestring >= 0.9, syb, aeson >= 0.5, vector >= 0.8, unordered-containers >= 0.2
+-  build-depends:     base >= 4.9, base < 5, containers, wl-pprint-text, text, safe >= 0.2, parsec > 3.0, template-haskell >= 2.3, mtl > 1.1 , haskell-src-exts, haskell-src-meta, bytestring >= 0.9, syb, aeson >= 0.5 , regex-posix > 0.9, vector >= 0.8, unordered-containers >= 0.2
++  build-depends:     base >= 4.9, base < 5, containers, wl-pprint-text, text, safe >= 0.2, parsec > 3.0, template-haskell >= 2.3, mtl > 1.1 , haskell-src-exts, haskell-src-meta, bytestring >= 0.9, syb, aeson >= 0.5, vector >= 0.8, unordered-containers >= 0.2
 +  if impl(ghcjs)
 +    build-depends: regex-base, regex-tdfa, regex-compat-tdfa
 +  else
@@ -14,7 +14,7 @@ diff -ru old/jmacro.cabal new/jmacro.cabal
  
    exposed-modules:   Language.Javascript.JMacro
                       Language.Javascript.JMacro.Util
-@@ -29,7 +33,11 @@
+@@ -30,7 +34,11 @@
    default: False
  
  executable jmacro
