@@ -102,6 +102,14 @@ buildTargets82 = do
                                                                   , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
 -}
              debianize [] >>= inGroups ["ghcjs-comp"]
+  _pandoc <- hackage (Just "2.2.1") "pandoc" >>=
+             flag (P.CabalDebian ["--executable", "pandoc"]) >>=
+             -- flag (P.CabalDebian ["--executable", "try-pandoc"]) >>=
+             flag (P.CabalDebian ["--default-package", "pandoc-data"]) >>=
+             flag (P.BuildDep "alex") >>=
+             flag (P.BuildDep "happy") >>=
+             debianize [] >>=
+             inGroups ["appraisalscribe", "important"]
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= patch $(embedFile "patches/uri-bytestring.diff") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _parsec <- hackage (Just "3.1.11") "parsec" >>= apply (substitute "parsec2" "parsec3") >>= debianize [] >>= inGroups ["platform", "ghc8-comp", "autobuilder-group"] >>= ghcjs_also
   _text <- hackage (Just "1.2.3.0") "text" >>= flag (P.CabalDebian ["--cabal-flags", "-integer-simple"]) >>= flag (P.CabalDebian ["--no-tests"]) >>= debianize [] >>= inGroups ["platform", "test8"]
@@ -130,30 +138,32 @@ buildTargets84 = do
   _haddock_library84 <-
       -- Version 1.4.4 is required by haddock-api-2.18.1, the next
       -- haddock-api requires version 1.5 and ghc-8.4.
-      hackage (Just "1.5.0.1") "haddock-library" >>=
+      hackage (Just "1.6.0") "haddock-library" >>=
       -- We need a doc package, otherwise the underlying package has
       -- a pseudo-dependency on haddock-interface-28 instead of 33.
-      -- flag P.NoDoc >>=
+      flag P.NoDoc >>=
       -- haddock-library has two "library" sections in its cabal file, which cabal
       -- debian (and haskell-devscripts) cannot handle.  Remove the second one
       -- and just use the available attoparsec library.
-      patch $(embedFile "patches/haddock-library-1.5.0.1.diff") >>=
+      patch $(embedFile "patches/haddock-library-1.6.0.diff") >>=
       flag (P.BuildDep "hspec-discover") >>=
       inGroups ["ghcjs-comp", "appraisalscribe"] >>=
       debianize [] {- >>= ghcjs_also -}
   _haddock_api8 <-
-      -- 2.18.1 requires ghc-8.2, 2.19.0.1 requires ghc-8.4.1
-      hackage (Just "2.19.0.1") "haddock-api" >>= inGroups ["ghcjs-comp"] >>=
+      -- 2.18.1 requires ghc-8.2, 2.19.0.1 requires ghc-8.4.1.  2.20.0 requires ghc-8.4.2.
+      hackage (Just "2.20.0") "haddock-api" >>= inGroups ["ghcjs-comp"] >>=
              flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>=
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>=
-{-
-             -- This breaks the build
-             apply (execCabalM $ (debInfo . rulesFragments) %=
-                                         Set.insert (Text.unlines [ "# Force the Cabal dependency to be the version provided by GHC"
-                                                                  , "DEB_SETUP_GHC_CONFIGURE_ARGS = --constraint=Cabal==$(shell dpkg -L ghc | grep 'package.conf.d/Cabal-' | sed 's/^.*Cabal-\\([^-]*\\)-.*$$/\\1/')\n"])) >>=
--}
              debianize [] >>= inGroups ["ghcjs-comp"]
+  _pandoc <- hackage (Just "2.3.1") "pandoc" >>=
+             flag (P.CabalDebian ["--executable", "pandoc"]) >>=
+             -- flag (P.CabalDebian ["--executable", "try-pandoc"]) >>=
+             flag (P.CabalDebian ["--default-package", "pandoc-data"]) >>=
+             flag (P.BuildDep "alex") >>=
+             flag (P.BuildDep "happy") >>=
+             debianize [] >>=
+             inGroups ["appraisalscribe", "important"]
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= patch $(embedFile "patches/uri-bytestring.diff") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _zlib <- hackage (Just "0.6.1.2") "zlib" >>= flag (P.DebVersion "0.6.1.2-1build1") >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform", "ghc8-comp"] >>= ghcjs_also
   -- parsec-3 is built into ghc-8.4.3, and the deb name is libghc-parsec-dev, not parsec3.

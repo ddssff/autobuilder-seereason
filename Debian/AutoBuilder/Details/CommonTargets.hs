@@ -140,14 +140,15 @@ commonTargets = do
   _cipher_rc4 <- hackage (Just "0.1.4") "cipher-rc4" >>= flag (P.DebVersion "0.1.4-7build7") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _citeproc_hs <- hackage (Just "0.3.10") "citeproc-hs" >>= debianize [] >>= skip (Reason "Non type-variable argument\nthe constraint: MonadState EvalState m\n(Use FlexibleContexts to permit this)")
   _clckwrks <-
-    createPackage (Debianize'' (Patch (DataFiles (DataFiles
-                                                  ({-Git "https://github.com/clckwrks/clckwrks" []-} Hackage "clckwrks")
-                                                  (Uri "https://cloud.github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip"
-                                                       "e211065e573ea0239d6449882c9d860d")
-                                                  "jstree")
-                                                 (Uri "https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"
-                                                      "c88c72230de1fa3c701187b8afba5e52" {-previouly: "5eecb009ae16dc54f261f31da01dbbac", then "a6d5fdbbcb076dd9385dd2135dbfb589"-})
-                                                 "json2")
+    createPackage (Debianize'' (Patch (DataFiles {-(DataFiles
+                                              (Hackage "clckwrks")
+                                              (Uri "https://cloud.github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip"
+                                                   "e211065e573ea0239d6449882c9d860d")
+                                              "jstree")-}
+                                          (Hackage "clckwrks")
+                                          (Uri "https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"
+                                                      "9a030ccadd1cf54cf45e2ec95f4d66bf" {-previouly: "5eecb009ae16dc54f261f31da01dbbac", "a6d5fdbbcb076dd9385dd2135dbfb589", then "c88c72230de1fa3c701187b8afba5e52", -})
+                                          "json2")
                                       $(embedFile "patches/clckwrks.diff"))
                                Nothing)
                   [P.BuildDep "hsx2hs"]
@@ -545,8 +546,8 @@ commonTargets = do
   -- _hse_cpp <- git "https://github.com/haskell-suite/hse-cpp" [] >>= debianize [] >>= inGroups ["happstack", "important"]
   _hsemail <- hackage (Just "2") "hsemail" >>= flag (P.DebVersion "2-1") >>= debianize [] >>= inGroups ["autobuilder-group"] -- (rel release [] [P.DebVersion "1.7.1-2build2"])
   _hslogger <-  (hackage (Just "1.2.10") "hslogger") >>= flag (P.DebVersion "1.2.10+dfsg-3build2") >>= debianize [] >>= inGroups ["important"] >>= ghcjs_also
-  _hslua <- hackage (Just "0.9.5.2") "hslua" >>= patch $(embedFile "patches/hslua.diff") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
-  _hslua_module_text <- hackage (Just "0.1.2.1") "hslua-module-text" >>= debianize [] >>= inGroups [] >>= ghcjs_also
+  _hslua <- hackage (Just "1.0.1") "hslua" >>= patch $(embedFile "patches/hslua.diff") >>= debianize [] >>= inGroups ["happstack", "important", "tmp"] >>= ghcjs_also
+  _hslua_module_text <- hackage (Just "0.2.0") "hslua-module-text" >>= debianize [] >>= inGroups [] >>= ghcjs_also
   _hsOpenSSL <-  (hackage (Just "0.11.4.14") "HsOpenSSL"
                               >>= flag (P.DevelDep "libssl-dev")
                               >>= flag (P.DevelDep "libcrypto++-dev")) >>= debianize []
@@ -565,10 +566,12 @@ commonTargets = do
              inGroups ["happstack", "important"] >>= ghcjs_also
   _hsx2hs' <- flag (P.CabalDebian ["--executable", "hsx2hs"]) _hsx2hs
   _hsx_jmacro <- git "https://github.com/Happstack/hsx-jmacro.git" [] >>= debianize [] >>= inGroups ["happstack", "important"]
+  _hsyaml <- hackage (Just "0.1.1.2") "HsYAML" >>= debianize [] >>= inGroups []
   _hsyslog <- hackage (Just "5.0.1") "hsyslog" >>= flag (P.DebVersion "5.0.1-1") >>= debianize []
   _htf <- hackage (Just "0.13.2.4") "HTF" >>= flag (P.BuildDep "cpphs") >>= debianize []
   _html <- hackage (Just "1.0.1.2") "html" >>= flag (P.DebVersion "1.0.1.2-13build1") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _html_entities <- darcs ("http://src.seereason.com/html-entities")
+  _html_parse <- hackage (Just "0.2.0.2") "html-parse" >>= debianize [] >>= ghcjs_also
   -- This is version 7.1, but version 7.6 is in bionic
   -- _html_xml_utils <- apt "stretch" "html-xml-utils"
   _http_api_data <- hackage (Just "0.3.8.1") "http-api-data" >>= debianize [] >>= ghcjs_also
@@ -787,15 +790,6 @@ commonTargets = do
   -- Failing and unused
   -- _ordered <- hackage (Just "0.1") "ordered" >>= debianize []
   _packman <- hackage (Just "0.5.0") "packman" >>= debianize [] >>= ghcjs_also
-  _pandoc <- hackage (Just "2.2.1") "pandoc" >>=
-             flag (P.CabalDebian ["--executable", "pandoc"]) >>=
-             -- flag (P.CabalDebian ["--executable", "try-pandoc"]) >>=
-             flag (P.CabalDebian ["--default-package", "pandoc-data"]) >>=
-             flag (P.BuildDep "alex") >>=
-             flag (P.BuildDep "happy") >>=
-             debianize [] >>=
-             inGroups ["appraisalscribe", "important"]
-  -- pandoc 1.19.2.4 requires pandoc-types < 1.17.1
   _pandoc_types <- hackage (Just "1.17.5.1") "pandoc-types" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
   _pango <-  (hackage (Just "0.13.1.1") "pango") >>= debianize [] >>= skip (Reason "see cairo")
   _parallel <- hackage (Just "3.2.1.1") "parallel" >>= flag (P.DebVersion "3.2.1.1-1") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
@@ -968,8 +962,8 @@ commonTargets = do
   -- _skylighting <- hackage (Just "0.1.1.5") "skylighting" >>= debianize [] >>= ghcjs_also
   _singleton_bool <- hackage Nothing "singleton-bool" >>= debianize [] >>= ghcjs_also
   _size_based <- hackage Nothing "size-based" >>= debianize []
-  (_ghc_skylighting_core, _ghcjs_skylighting_core) <- hackage (Just "0.7.1") "skylighting-core" >>= debianize [] >>= inGroups [] >>= ghcjs_also
-  (_ghc_skylighting, _ghcjs_skylighting) <- hackage (Just "0.7.1") "skylighting" >>= debianize [] >>= inGroups [] >>= ghcjs_also
+  (_ghc_skylighting_core, _ghcjs_skylighting_core) <- hackage (Just "0.7.2") "skylighting-core" >>= debianize [] >>= inGroups [] >>= ghcjs_also
+  (_ghc_skylighting, _ghcjs_skylighting) <- hackage (Just "0.7.2") "skylighting" >>= debianize [] >>= inGroups [] >>= ghcjs_also
   _ghcjs_skylighting_core' <- flag (P.CabalDebian ["--cabal-flag", "system-pcre"]) _ghcjs_skylighting_core
   _ghcjs_skylighting' <- flag (P.CabalDebian ["--cabal-flag", "system-pcre"]) _ghcjs_skylighting
   _ghc_skylighting' <- flag (P.CabalDebian ["--cabal-flags", "executable", "--executable", "skylighting" ]) _ghc_skylighting

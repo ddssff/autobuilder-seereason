@@ -30,14 +30,15 @@ buildTargets _params = do
   _clckwrks_theme_seereasonpartners <-
       git "ssh://git@github.com/seereason/seereasonpartners-clckwrks" [] >>=
       cd "clckwrks-theme-seereasonpartners" >>=
-      debianize [] >>=
-      flag (P.BuildDep "hsx2hs")
+      flag (P.BuildDep "hsx2hs") >>=
+      debianize []
   _clckwrks_theme_appraisalscribe <- git "ssh://git@github.com/seereason/clckwrks-theme-appraisalscribe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
 
-  _editor_common <- git "ssh://git@github.com/seereason/editor-common" [] >>= debianize [] >>= ghcjs_also
-  _editor_client <- git "ssh://git@github.com/seereason/editor-client" [] >>= debianize [] >>= ghcjs_only
-  _editor_server <- git "ssh://git@github.com/seereason/editor-server" [] >>= debianize []
-  _editor_taggy <- git "ssh://git@github.com/seereason/editor-taggy" [] >>= debianize [] >>= ghcjs_also
+  _editor_common <- git "ssh://git@github.com/seereason/editor-common" [Commit "f00100c09e59e754c995feefe648a837fcc22bad"] >>= debianize [] >>= ghcjs_also
+  _editor_client <- git "ssh://git@github.com/seereason/editor-client" [Commit "1437da05a7e1574529094869b7d2a3741c6dfec0"] >>= debianize [] >>= ghcjs_only
+  _editor_server <- git "ssh://git@github.com/seereason/editor-server" [Commit "d64b1e8e55bde3ee97ceaf6c4558c1b8868dc2e7"] >>= debianize []
+  _editor_taggy <- git "ssh://git@github.com/seereason/editor-taggy" [Commit "73214999dbacd5245d7eccdf0e5b9f64a644fb23"] >>= debianize [] >>= ghcjs_also
+
   let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" []
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_only
   _happstack_ghcjs_common <- happstack_ghcjs >>= cd "happstack-ghcjs-common" >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"] >>= ghcjs_also
