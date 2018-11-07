@@ -8,7 +8,7 @@ import Data.FileEmbed (embedFile)
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, git, cd, {-packageMap,-} inGroups, hackage)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
-import Debian.Repo.Fingerprint (GitSpec(Branch))
+import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
 --import System.FilePath ((</>))
 
 -- Individual packages, alphabetized
