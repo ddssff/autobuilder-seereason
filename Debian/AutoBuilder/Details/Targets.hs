@@ -21,7 +21,6 @@ import Debian.Release (ReleaseName(..))
 import Debian.Releases (BaseRelease(..), baseRelease, Distro(..), ReleaseTree(..))
 import qualified Debian.Repo.Fingerprint as P
 import Debian.AutoBuilder.Details.Common (seeReason7, seeReason8, TSt)
-import qualified Debian.AutoBuilder.Details.Trusty as Trusty
 import qualified Debian.AutoBuilder.Details.Artful as Artful
 import qualified Debian.AutoBuilder.Details.Xenial as Xenial
 import qualified Debian.AutoBuilder.Details.Private as Private
@@ -41,9 +40,6 @@ public params = do
           case rel of
             -- ExtendedRelease (Release Xenial) SeeReason8 -> Xenial.buildTargets8
             ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "bionic"))) distro | distro == seeReason8 -> Xenial.buildTargets84
-            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "xenial"))) distro | distro == seeReason8 -> Xenial.buildTargets82
-            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "trusty"))) distro | distro == seeReason8 -> Trusty.buildTargets params
-            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "trusty"))) distro | distro == seeReason7 -> Trusty.buildTargets params
             _ -> error $ "Unexpected release: " ++ show rel
   -- Dangerous when uncommented - build private targets into public, do not upload!!
   -- private params >>

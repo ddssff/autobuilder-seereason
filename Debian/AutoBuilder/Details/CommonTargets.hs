@@ -874,8 +874,8 @@ commonTargets = do
   -- No ghcjs for regex-compat, it depends on regex-posix.  Use regex-compat-tdfa for ghcjs.
   _regex_compat <- hackage (Just "0.95.1") "regex-compat" >>= flag (P.DebVersion "0.95.1-10build1") >>= debianize [] >>= inGroups ["platform", "autobuilder-group"]
   _regex_compat_tdfa <- hackage (Just "0.95.1.4") "regex-compat-tdfa" >>= flag (P.DebVersion "0.95.1.4-5build2") >>= debianize [] >>= ghcjs_also
-  -- No ghcjs for regex-pcre-builtin, it calls foreign functions
-  _regex_pcre <- hackage (Just "0.94.4") "regex-pcre" >>= flag (P.DebVersion "0.94.4-9build1") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
+  -- No ghcjs for regex-pcre, regex-pcre-builtin, they use the C library libpcre
+  _regex_pcre <- hackage (Just "0.94.4") "regex-pcre" >>= flag (P.DebVersion "0.94.4-9build1") >>= debianize [] >>= inGroups ["platform"]
   _regex_pcre_builtin <- hackage (Just "0.94.4.8.8.35") "regex-pcre-builtin" >>=
                          -- Need to email Audrey Tang <audreyt@audreyt.org> about this.
                          patch $(embedFile "patches/regex-pcre-builtin.diff") >>=
@@ -1040,7 +1040,7 @@ commonTargets = do
   _texmath <- hackage (Just "0.11") "texmath" >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
   _text_binary <- hackage (Just "0.2.1.1") "text-binary" >>= flag (P.DebVersion "0.2.1.1-3build2") >>= debianize [] >>= ghcjs_also
   _text_icu <- hackage (Just "0.7.0.1") "text-icu" >>= flag (P.DevelDep "libicu-dev") >>= flag (P.DebVersion "0.7.0.1-6build5") >>= debianize []
-  _text_show <- hackage (Just "3.7.4") "text-show" >>= {-patch $(embedFile "patches/text-show.diff") >>=-} debianize [] -- 3.7.3 requires base-compat-0.10
+  _text_show <- hackage (Just "3.7.4") "text-show" >>= patch $(embedFile "patches/text-show.diff") >>= debianize [] -- 3.7.3 requires base-compat-0.10
   _text_stream_decode <- hackage (Just "0.1.0.5") "text-stream-decode" >>= patch $(embedFile "patches/text-stream-decode.diff") >>= debianize [] >>= inGroups ["conduit", "important"] >>= skip (Reason "depends on older text")
   _tf_random <- hackage (Just "0.5") "tf-random" >>= flag (P.DebVersion "0.5-7build2") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
   _th_alpha <- git "http://github.com/ddssff/th-alpha" [] >>= debianize []

@@ -1,6 +1,6 @@
---- old/text-show.cabal	2018-07-07 09:36:14.734331011 -0700
-+++ new/text-show.cabal	2018-07-07 16:17:20.366164742 -0700
-@@ -156,7 +156,6 @@
+--- old/text-show.cabal	2018-11-02 05:26:06.638501873 -0700
++++ new/text-show.cabal	2018-11-08 10:55:45.421844996 -0800
+@@ -157,7 +157,6 @@
                       , base-compat-batteries >= 0.10   && < 0.11
                       , bifunctors            >= 5.1    && < 6
                       , bytestring            >= 0.9    && < 0.11
@@ -8,7 +8,7 @@
                       , containers            >= 0.1    && < 0.7
                       , contravariant         >= 0.5    && < 2
                       , generic-deriving      >= 1.11   && < 2
-@@ -341,7 +340,6 @@
+@@ -342,7 +341,6 @@
                       , base-compat-batteries >= 0.10   && < 0.11
                       , base-orphans          >= 0.6    && < 0.9
                       , bytestring            >= 0.9    && < 0.11
