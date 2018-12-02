@@ -5,7 +5,7 @@ module Debian.AutoBuilder.Details.Private (buildTargets) where
 --import Control.Lens (use)
 import Data.FileEmbed (embedFile)
 --import Data.Map as Map (keys)
-import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, git, cd, {-packageMap,-} inGroups, hackage)
+import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), dir, flag, patch, debianize, git, cd, {-packageMap,-} inGroups, hackage)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
@@ -15,7 +15,7 @@ import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
 
 buildTargets :: Monad m => ParamRec -> TSt m ()
 buildTargets _params = do
-  _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= debianize []
+  -- _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= debianize []
   _appraisalscribe_acid <- git "ssh://git@github.com/seereason/appraisalscribe-acid" [] >>= {-patch $(embedFile "patches/appraisalscribe-acid-locktag.diff") >>=-} flag (P.CabalDebian ["--disable-profiling"]) >>= debianize []
   -- _appraisalscribe_json <- git "ssh://git@github.com/seereason/appraisalscribe-json" [] >>= debianize []
   _appraisalscribe_io <- git "ssh://git@github.com/seereason/appraisalscribe-io" [] >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= ghcjs_also
@@ -34,12 +34,12 @@ buildTargets _params = do
       debianize []
   _clckwrks_theme_appraisalscribe <- git "ssh://git@github.com/seereason/clckwrks-theme-appraisalscribe" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
 
-  _editor_common <- git "ssh://git@github.com/seereason/editor-common" [Commit "f00100c09e59e754c995feefe648a837fcc22bad"] >>= debianize [] >>= ghcjs_also
-  _editor_client <- git "ssh://git@github.com/seereason/editor-client" [Commit "1437da05a7e1574529094869b7d2a3741c6dfec0"] >>= debianize [] >>= ghcjs_only
-  _editor_server <- git "ssh://git@github.com/seereason/editor-server" [Commit "d64b1e8e55bde3ee97ceaf6c4558c1b8868dc2e7"] >>= debianize []
-  _editor_taggy <- git "ssh://git@github.com/seereason/editor-taggy" [Commit "73214999dbacd5245d7eccdf0e5b9f64a644fb23"] >>= debianize [] >>= ghcjs_also
+  _editor_common <- git "ssh://git@github.com/seereason/editor-common" [{-Commit "f00100c09e59e754c995feefe648a837fcc22bad"-}] >>= debianize [] >>= ghcjs_also
+  _editor_client <- git "ssh://git@github.com/seereason/editor-client" [{-Commit "1437da05a7e1574529094869b7d2a3741c6dfec0"-}] >>= debianize [] >>= ghcjs_only
+  _editor_server <- git "ssh://git@github.com/seereason/editor-server" [{-Commit "d64b1e8e55bde3ee97ceaf6c4558c1b8868dc2e7"-}] >>= debianize []
+  _editor_taggy <- git "ssh://git@github.com/seereason/editor-taggy" [{-Commit "73214999dbacd5245d7eccdf0e5b9f64a644fb23"-}] >>= debianize [] >>= ghcjs_also
 
-  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" []
+  let happstack_ghcjs = {-git "ssh://git@github.com/seereason/happstack-ghcjs" []-} dir "/home/dsf/git/happstack-ghcjs"
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_only
   _happstack_ghcjs_common <- happstack_ghcjs >>= cd "happstack-ghcjs-common" >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"] >>= ghcjs_also
   _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"]

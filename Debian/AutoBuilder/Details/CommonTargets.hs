@@ -546,7 +546,7 @@ commonTargets = do
   -- _hse_cpp <- git "https://github.com/haskell-suite/hse-cpp" [] >>= debianize [] >>= inGroups ["happstack", "important"]
   _hsemail <- hackage (Just "2") "hsemail" >>= flag (P.DebVersion "2-1") >>= debianize [] >>= inGroups ["autobuilder-group"] -- (rel release [] [P.DebVersion "1.7.1-2build2"])
   _hslogger <-  (hackage (Just "1.2.10") "hslogger") >>= flag (P.DebVersion "1.2.10+dfsg-3build2") >>= debianize [] >>= inGroups ["important"] >>= ghcjs_also
-  _hslua <- hackage (Just "1.0.1") "hslua" >>= patch $(embedFile "patches/hslua.diff") >>= debianize [] >>= inGroups ["happstack", "important", "tmp"] >>= ghcjs_also
+  _hslua <- hackage (Just "1.0.1") "hslua" >>= patch $(embedFile "patches/hslua.diff") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _hslua_module_text <- hackage (Just "0.2.0") "hslua-module-text" >>= debianize [] >>= inGroups [] >>= ghcjs_also
   _hsOpenSSL <-  (hackage (Just "0.11.4.14") "HsOpenSSL"
                               >>= flag (P.DevelDep "libssl-dev")
@@ -874,7 +874,7 @@ commonTargets = do
   -- No ghcjs for regex-compat, it depends on regex-posix.  Use regex-compat-tdfa for ghcjs.
   _regex_compat <- hackage (Just "0.95.1") "regex-compat" >>= flag (P.DebVersion "0.95.1-10build1") >>= debianize [] >>= inGroups ["platform", "autobuilder-group"]
   _regex_compat_tdfa <- hackage (Just "0.95.1.4") "regex-compat-tdfa" >>= flag (P.DebVersion "0.95.1.4-5build2") >>= debianize [] >>= ghcjs_also
-  -- No ghcjs for regex-pcre, regex-pcre-builtin, they use the C library libpcre
+  -- No ghcjs for regex-pcre, regex-pcre-builtin, it calls foreign functions
   _regex_pcre <- hackage (Just "0.94.4") "regex-pcre" >>= flag (P.DebVersion "0.94.4-9build1") >>= debianize [] >>= inGroups ["platform"]
   _regex_pcre_builtin <- hackage (Just "0.94.4.8.8.35") "regex-pcre-builtin" >>=
                          -- Need to email Audrey Tang <audreyt@audreyt.org> about this.
@@ -962,8 +962,8 @@ commonTargets = do
   -- _skylighting <- hackage (Just "0.1.1.5") "skylighting" >>= debianize [] >>= ghcjs_also
   _singleton_bool <- hackage Nothing "singleton-bool" >>= debianize [] >>= ghcjs_also
   _size_based <- hackage Nothing "size-based" >>= debianize []
-  (_ghc_skylighting_core, _ghcjs_skylighting_core) <- hackage (Just "0.7.2") "skylighting-core" >>= debianize [] >>= inGroups [] >>= ghcjs_also
-  (_ghc_skylighting, _ghcjs_skylighting) <- hackage (Just "0.7.2") "skylighting" >>= debianize [] >>= inGroups [] >>= ghcjs_also
+  (_ghc_skylighting_core, _ghcjs_skylighting_core) <- hackage (Just "0.7.2") "skylighting-core" >>= patch $(embedFile "patches/skylighting-core.diff") >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
+  (_ghc_skylighting, _ghcjs_skylighting) <- hackage (Just "0.7.2") "skylighting" >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
   _ghcjs_skylighting_core' <- flag (P.CabalDebian ["--cabal-flag", "system-pcre"]) _ghcjs_skylighting_core
   _ghcjs_skylighting' <- flag (P.CabalDebian ["--cabal-flag", "system-pcre"]) _ghcjs_skylighting
   _ghc_skylighting' <- flag (P.CabalDebian ["--cabal-flags", "executable", "--executable", "skylighting" ]) _ghc_skylighting

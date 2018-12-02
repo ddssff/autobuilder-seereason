@@ -68,6 +68,7 @@ buildTargets84 = do
                     patch $(embedFile "patches/cabal-install-22.diff") >>=
                     debianize [] >>=
                     flag (P.CabalDebian ["--default-package", "cabal-install"]) >>= inGroups ["ghc8-comp"]
+  -- building with commit d1ded1f890e7ebebbbb462bb5a321983bb6be914
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.4"] >>= inGroups ["ghcjs-comp"]
   -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
   -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2

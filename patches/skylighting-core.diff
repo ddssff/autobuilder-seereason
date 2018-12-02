@@ -1,0 +1,19 @@
+--- old/skylighting-core.cabal	2018-11-05 20:03:18.415186344 -0800
++++ new/skylighting-core.cabal	2018-11-12 20:26:25.376583067 -0800
+@@ -130,10 +130,13 @@
+                        containers,
+                        ansi-terminal >= 0.7,
+                        colour >= 2.0
+-  if flag(system-pcre)
+-    build-depends:     regex-pcre
++  if impl(ghcjs)
++    build-depends:     regex-base, regex-tdfa, regex-compat-tdfa
+   else
+-    build-depends:     regex-pcre-builtin
++    if flag(system-pcre)
++      build-depends:     regex-pcre
++    else
++      build-depends:     regex-pcre-builtin
+   hs-source-dirs:      src
+   ghc-prof-options:    -fprof-auto-exported
+   default-language:    Haskell2010
