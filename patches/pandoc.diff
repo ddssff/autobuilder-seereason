@@ -1,11 +1,120 @@
---- old/pandoc.cabal	2018-07-06 07:08:40.897038164 -0700
-+++ new/pandoc.cabal	2018-07-08 09:26:12.118965771 -0700
-@@ -380,7 +380,7 @@
-                  hslua-module-text >= 0.1.2 && < 0.2,
-                  binary >= 0.5 && < 0.10,
-                  SHA >= 1.6 && < 1.7,
--                 haddock-library >= 1.1 && < 1.6,
-+                 haddock-library >= 1.1 && < 1.7,
-                  deepseq >= 1.3 && < 1.5,
-                  JuicyPixels >= 3.1.6.1 && < 3.3,
-                  Glob >= 0.7 && < 0.10,
+--- old/src/Text/Pandoc/App.hs	1969-12-31 16:00:00.000000000 -0800
++++ new/src/Text/Pandoc/App.hs	2018-12-20 13:24:32.362023614 -0800
+@@ -48,7 +48,7 @@
+ import Control.Monad
+ import Control.Monad.Except (catchError, throwError)
+ import Control.Monad.Trans
+-import Data.Aeson (defaultOptions)
++import Data.Aeson (defaultOptions, FromJSON, ToJSON)
+ import Data.Aeson.TH (deriveJSON)
+ import qualified Data.ByteString as BS
+ import qualified Data.ByteString.Lazy as B
+@@ -1645,5 +1645,12 @@
+ 
+ -- see https://github.com/jgm/pandoc/pull/4083
+ -- using generic deriving caused long compilation times
++#if __GHCJS__
++instance FromJSON LineEnding
++instance ToJSON LineEnding
++instance FromJSON Opt
++instance ToJSON Opt
++#else
+ $(deriveJSON defaultOptions ''LineEnding)
+ $(deriveJSON defaultOptions ''Opt)
++#endif
+--- old/src/Text/Pandoc/Filter.hs	1969-12-31 16:00:00.000000000 -0800
++++ new/src/Text/Pandoc/Filter.hs	2018-12-20 13:57:00.253340220 -0800
+@@ -1,3 +1,5 @@
++{-# LANGUAGE CPP               #-}
++{-# LANGUAGE DeriveGeneric     #-}
+ {-# LANGUAGE NoImplicitPrelude #-}
+ {-
+ Copyright (C) 2006-2017 John MacFarlane <jgm@berkeley.edu>
+@@ -35,9 +37,10 @@
+   ) where
+ 
+ import Prelude
+-import Data.Aeson (defaultOptions)
++import Data.Aeson (defaultOptions, FromJSON, ToJSON)
+ import Data.Aeson.TH (deriveJSON)
+ import Data.Foldable (foldrM)
++import GHC.Generics (Generic)
+ import Text.Pandoc.Class (PandocIO)
+ import Text.Pandoc.Definition (Pandoc)
+ import Text.Pandoc.Options (ReaderOptions)
+@@ -46,7 +49,7 @@
+ 
+ data Filter = LuaFilter FilePath
+             | JSONFilter FilePath
+-            deriving (Show)
++            deriving (Show, Generic)
+ 
+ applyFilters :: ReaderOptions
+              -> [Filter]
+@@ -59,4 +62,9 @@
+   applyFilter (JSONFilter f) = JSONFilter.apply ropts args f
+   applyFilter (LuaFilter f)  = LuaFilter.apply ropts args f
+ 
++#if __GHCJS__
++instance FromJSON Filter
++instance ToJSON Filter
++#else
+ $(deriveJSON defaultOptions ''Filter)
++#endif
+--- old/src/Text/Pandoc/Options.hs	1969-12-31 16:00:00.000000000 -0800
++++ new/src/Text/Pandoc/Options.hs	2018-12-20 13:17:08.240326742 -0800
+@@ -1,4 +1,4 @@
+-{-# LANGUAGE NoImplicitPrelude #-}
++{-# LANGUAGE CPP, NoImplicitPrelude #-}
+ {-# LANGUAGE DeriveDataTypeable #-}
+ {-# LANGUAGE DeriveGeneric      #-}
+ {-# LANGUAGE TemplateHaskell    #-}
+@@ -48,7 +48,7 @@
+                            , isEnabled
+                            ) where
+ import Prelude
+-import Data.Aeson (defaultOptions)
++import Data.Aeson (defaultOptions, FromJSON, ToJSON)
+ import Data.Aeson.TH (deriveJSON)
+ import Data.Data (Data)
+ import Data.Default
+@@ -59,6 +59,7 @@
+ import Text.Pandoc.Extensions
+ import Text.Pandoc.Highlighting (Style, pygments)
+ 
++
+ class HasSyntaxExtensions a where
+   getExtensions :: a -> Extensions
+ 
+@@ -237,6 +238,26 @@
+ isEnabled :: HasSyntaxExtensions a => Extension -> a -> Bool
+ isEnabled ext opts = ext `extensionEnabled` getExtensions opts
+ 
++#if __GHCJS__
++instance FromJSON ReaderOptions
++instance ToJSON ReaderOptions
++instance FromJSON HTMLMathMethod
++instance ToJSON HTMLMathMethod
++instance FromJSON CiteMethod
++instance ToJSON CiteMethod
++instance FromJSON ObfuscationMethod
++instance ToJSON ObfuscationMethod
++instance FromJSON HTMLSlideVariant
++instance ToJSON HTMLSlideVariant
++instance FromJSON TrackChanges
++instance ToJSON TrackChanges
++instance FromJSON WrapOption
++instance ToJSON WrapOption
++instance FromJSON TopLevelDivision
++instance ToJSON TopLevelDivision
++instance FromJSON ReferenceLocation
++instance ToJSON ReferenceLocation
++#else
+ $(deriveJSON defaultOptions ''ReaderOptions)
+ $(deriveJSON defaultOptions ''HTMLMathMethod)
+ $(deriveJSON defaultOptions ''CiteMethod)
+@@ -246,3 +267,4 @@
+ $(deriveJSON defaultOptions ''WrapOption)
+ $(deriveJSON defaultOptions ''TopLevelDivision)
+ $(deriveJSON defaultOptions ''ReferenceLocation)
++#endif

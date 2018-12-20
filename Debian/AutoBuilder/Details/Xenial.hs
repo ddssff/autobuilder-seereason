@@ -95,7 +95,7 @@ buildTargets84 = do
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>=
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>=
              debianize [] >>= inGroups ["ghcjs-comp"]
-  _pandoc <- hackage (Just "2.3.1") "pandoc" >>=
+  _pandoc <- hackage (Just "2.3.1") "pandoc" >>= patch $(embedFile "patches/pandoc.diff") >>=
              flag (P.CabalDebian ["--executable", "pandoc"]) >>=
              -- flag (P.CabalDebian ["--executable", "try-pandoc"]) >>=
              flag (P.CabalDebian ["--default-package", "pandoc-data"]) >>=
