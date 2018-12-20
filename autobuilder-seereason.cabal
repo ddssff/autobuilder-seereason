@@ -59,7 +59,7 @@ Library
     Debian.AutoBuilder.Details.Xenial
 
   if flag(local-libs)
-    Hs-Source-Dirs: ../autobuilder, ../debian-repo, ../cabal-debian/src, ../autobuilder/dist/build/autogen, ../cabal-debian/dist/build/autogen
+    Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen, ../debian-repo, ../cabal-debian/src, ../cabal-debian/dist/build/autogen
     Build-Depends:
       time, exceptions, pureMD5, SHA, network-uri, pretty, sr-extra,
       applicative-extras, zlib, tar, magic, syb, utf8-string, deepseq, transformers,

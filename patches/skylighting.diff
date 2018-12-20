@@ -1,10 +1,19 @@
---- old/skylighting.cabal	2018-04-20 15:47:09.367977847 -0700
-+++ new/skylighting.cabal	2018-04-28 05:28:13.119563645 -0700
-@@ -229,6 +229,7 @@
-   build-depends:       base >= 4.7 && < 5.0,
-                        mtl,
-                        text,
-+                       pretty-show,
-                        binary,
-                        bytestring,
-                        directory,
+--- old/skylighting.cabal	2018-11-05 20:03:20.059164522 -0800
++++ new/skylighting.cabal	2018-12-12 06:29:57.290533154 -0800
+@@ -191,10 +191,13 @@
+                        containers,
+                        ansi-terminal >= 0.7,
+                        colour >= 2.0
+-  if flag(system-pcre)
+-    build-depends:     regex-pcre
++  if impl(ghcjs)
++    build-depends:     regex-base, regex-tdfa, regex-compat-tdfa
+   else
+-    build-depends:     regex-pcre-builtin
++    if flag(system-pcre)
++      build-depends:     regex-pcre
++    else
++      build-depends:     regex-pcre-builtin
+   hs-source-dirs:      src
+   ghc-prof-options:    -fprof-auto-exported
+   default-language:    Haskell2010

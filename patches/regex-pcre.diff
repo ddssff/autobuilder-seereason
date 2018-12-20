@@ -1,0 +1,10 @@
+--- old/regex-pcre.cabal	2018-11-02 05:24:53.203479377 -0700
++++ new/regex-pcre.cabal	2018-12-20 12:25:02.449251566 -0800
+@@ -63,6 +63,6 @@
+   -- a plotform without a regex library but want to compile this package
+   -- anyway.  The resulting regex-posix will exist, but throw errors.
+   CC-Options:             -DHAVE_PCRE_H
+-  Extra-Libraries:        pcre
++  Extra-Libraries:        pcre3
+   --Include-Dirs:           /opt/local/include
+   --Extra-Lib-Dirs:         /opt/local/lib

@@ -86,8 +86,8 @@ buildTargets84 = do
       -- and just use the available attoparsec library.
       patch $(embedFile "patches/haddock-library-1.6.0.diff") >>=
       flag (P.BuildDep "hspec-discover") >>=
-      inGroups ["ghcjs-comp", "appraisalscribe"] >>=
-      debianize [] {- >>= ghcjs_also -}
+      inGroups ["ghcjs-comp", "appraisalscribe", "pandoc"] >>=
+      debianize [] >>= ghcjs_also
   _haddock_api8 <-
       -- 2.18.1 requires ghc-8.2, 2.19.0.1 requires ghc-8.4.1.  2.20.0 requires ghc-8.4.2.
       hackage (Just "2.20.0") "haddock-api" >>= inGroups ["ghcjs-comp"] >>=
@@ -102,7 +102,7 @@ buildTargets84 = do
              flag (P.BuildDep "alex") >>=
              flag (P.BuildDep "happy") >>=
              debianize [] >>=
-             inGroups ["appraisalscribe", "important"]
+             inGroups ["appraisalscribe", "important", "pandoc"] >>= ghcjs_also
   _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= patch $(embedFile "patches/uri-bytestring.diff") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _zlib <- hackage (Just "0.6.1.2") "zlib" >>= flag (P.DebVersion "0.6.1.2-1build1") >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform", "ghc8-comp"] >>= ghcjs_also
   -- parsec-3 is built into ghc-8.4.3, and the deb name is libghc-parsec-dev, not parsec3.

@@ -39,7 +39,7 @@ buildTargets _params = do
   _editor_server <- git "ssh://git@github.com/seereason/editor-server" [{-Commit "d64b1e8e55bde3ee97ceaf6c4558c1b8868dc2e7"-}] >>= debianize []
   _editor_taggy <- git "ssh://git@github.com/seereason/editor-taggy" [{-Commit "73214999dbacd5245d7eccdf0e5b9f64a644fb23"-}] >>= debianize [] >>= ghcjs_also
 
-  let happstack_ghcjs = {-git "ssh://git@github.com/seereason/happstack-ghcjs" []-} dir "/home/dsf/git/happstack-ghcjs"
+  let happstack_ghcjs = git "ssh://git@github.com/seereason/happstack-ghcjs" [] {-dir "/home/dsf/git/happstack-ghcjs"-}
   _happstack_ghcjs_client <- happstack_ghcjs >>= cd "happstack-ghcjs-client" >>= debianize [] >>= inGroups ["private-libs"] >>= ghcjs_only
   _happstack_ghcjs_common <- happstack_ghcjs >>= cd "happstack-ghcjs-common" >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"] >>= ghcjs_also
   _happstack_ghcjs_server <- happstack_ghcjs >>= cd "happstack-ghcjs-server" >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"]

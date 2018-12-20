@@ -17,3 +17,88 @@
    hs-source-dirs:      src
    ghc-prof-options:    -fprof-auto-exported
    default-language:    Haskell2010
+@@ -205,10 +205,13 @@
+                        directory,
+                        ansi-terminal >= 0.7,
+                        colour >= 2.0
+-  if flag(system-pcre)
+-    build-depends:     regex-pcre
++  if impl(ghcjs)
++    build-depends:     regex-base, regex-tdfa, regex-compat-tdfa
+   else
+-    build-depends:     regex-pcre-builtin
++    if flag(system-pcre)
++      build-depends:     regex-pcre
++    else
++      build-depends:     regex-pcre-builtin
+   if flag(executable)
+     buildable:         True
+   else
+--- old/src/Skylighting/Regex.hs
++++ new/src/Skylighting/Regex.hs
+@@ -1,3 +1,4 @@
++{-# LANGUAGE CPP  #-}
+ {-# LANGUAGE DeriveDataTypeable  #-}
+ {-# LANGUAGE DeriveGeneric       #-}
+ {-# LANGUAGE OverloadedStrings   #-}
+@@ -22,9 +23,14 @@ import Data.Data
+ import qualified Data.Text as Text
+ import qualified Data.Text.Encoding as TE
+ import GHC.Generics (Generic)
+-import System.IO.Unsafe (unsafePerformIO)
+ import Text.Printf
++#if __GHCJS__
++import Text.Regex.TDFA
++import Text.Regex.TDFA.ByteString
++#else
++import System.IO.Unsafe (unsafePerformIO)
+ import Text.Regex.PCRE.ByteString
++#endif
+ 
+ -- | An exception in compiling or executing a regex.
+ newtype RegexException = RegexException String
+@@ -53,6 +59,16 @@ instance FromJSON RE where
+ -- a bytestring interpreted as UTF-8.  If the regex cannot be compiled,
+ -- a 'RegexException' is thrown.
+ compileRegex :: Bool -> BS.ByteString -> Regex
++#if __GHCJS__
++compileRegex caseSensitive' regexpStr =
++  let opts = {-compAnchored + compUTF8 +-}
++               (defaultCompOpt {caseSensitive = caseSensitive'})
++  in  case {-unsafePerformIO $-} compile opts ({-execNotEmpty-} defaultExecOpt) regexpStr of
++            Left ({-off,-}msg) -> E.throw $ RegexException $
++                        "Error compiling regex /" ++ toString regexpStr ++
++                        "/ " ++ {-"at offset " ++ show off ++-} "\n" ++ msg
++            Right r -> r
++#else
+ compileRegex caseSensitive regexpStr =
+   let opts = compAnchored + compUTF8 +
+                if caseSensitive then 0 else compCaseless
+@@ -61,6 +77,7 @@ compileRegex caseSensitive regexpStr =
+                         "Error compiling regex /" ++ toString regexpStr ++
+                         "/ at offset " ++ show off ++ "\n" ++ msg
+             Right r -> r
++#endif
+ 
+ -- | Convert octal escapes to the form pcre wants.  Note:
+ -- need at least pcre 8.34 for the form \o{dddd}.
+@@ -91,11 +108,19 @@ isOctalDigit c = c >= '0' && c <= '7'
+ -- If there are errors in executing the regex, a 'RegexException' is
+ -- thrown.
+ matchRegex :: Regex -> BS.ByteString -> Maybe [BS.ByteString]
++#if __GHCJS__
++matchRegex r s = case (regexec r s) of
++                      Right (Just (_, mat, _ , capts)) ->
++                                       Just (mat : capts)
++                      Right Nothing -> Nothing
++                      Left (msg) -> E.throw $ RegexException msg
++#else
+ matchRegex r s = case unsafePerformIO (regexec r s) of
+                       Right (Just (_, mat, _ , capts)) ->
+                                        Just (mat : capts)
+                       Right Nothing -> Nothing
+                       Left (_rc, msg) -> E.throw $ RegexException msg
++#endif
+ 
+ -- functions to marshall bytestrings to text
+ 

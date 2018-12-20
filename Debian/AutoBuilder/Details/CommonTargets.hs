@@ -566,7 +566,7 @@ commonTargets = do
              inGroups ["happstack", "important"] >>= ghcjs_also
   _hsx2hs' <- flag (P.CabalDebian ["--executable", "hsx2hs"]) _hsx2hs
   _hsx_jmacro <- git "https://github.com/Happstack/hsx-jmacro.git" [] >>= debianize [] >>= inGroups ["happstack", "important"]
-  _hsyaml <- hackage (Just "0.1.1.2") "HsYAML" >>= debianize [] >>= inGroups []
+  _hsyaml <- hackage (Just "0.1.1.2") "HsYAML" >>= patch $(embedFile "patches/hsyaml.diff") >>= debianize [] >>= inGroups ["pandoc"] >>= ghcjs_also
   _hsyslog <- hackage (Just "5.0.1") "hsyslog" >>= flag (P.DebVersion "5.0.1-1") >>= debianize []
   _htf <- hackage (Just "0.13.2.4") "HTF" >>= flag (P.BuildDep "cpphs") >>= debianize []
   _html <- hackage (Just "1.0.1.2") "html" >>= flag (P.DebVersion "1.0.1.2-13build1") >>= debianize [] >>= inGroups ["platform"] >>= ghcjs_also
@@ -875,7 +875,7 @@ commonTargets = do
   _regex_compat <- hackage (Just "0.95.1") "regex-compat" >>= flag (P.DebVersion "0.95.1-10build1") >>= debianize [] >>= inGroups ["platform", "autobuilder-group"]
   _regex_compat_tdfa <- hackage (Just "0.95.1.4") "regex-compat-tdfa" >>= flag (P.DebVersion "0.95.1.4-5build2") >>= debianize [] >>= ghcjs_also
   -- No ghcjs for regex-pcre, regex-pcre-builtin, it calls foreign functions
-  _regex_pcre <- hackage (Just "0.94.4") "regex-pcre" >>= flag (P.DebVersion "0.94.4-9build1") >>= debianize [] >>= inGroups ["platform"]
+  _regex_pcre <- hackage (Just "0.94.4") "regex-pcre" >>= flag (P.DebVersion "0.94.4-9build1") >>= patch $(embedFile "patches/regex-pcre.diff") >>= debianize [] >>= inGroups ["platform", "pandoc"]
   _regex_pcre_builtin <- hackage (Just "0.94.4.8.8.35") "regex-pcre-builtin" >>=
                          -- Need to email Audrey Tang <audreyt@audreyt.org> about this.
                          patch $(embedFile "patches/regex-pcre-builtin.diff") >>=
@@ -962,10 +962,9 @@ commonTargets = do
   -- _skylighting <- hackage (Just "0.1.1.5") "skylighting" >>= debianize [] >>= ghcjs_also
   _singleton_bool <- hackage Nothing "singleton-bool" >>= debianize [] >>= ghcjs_also
   _size_based <- hackage Nothing "size-based" >>= debianize []
-  (_ghc_skylighting_core, _ghcjs_skylighting_core) <- hackage (Just "0.7.2") "skylighting-core" >>= patch $(embedFile "patches/skylighting-core.diff") >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
-  (_ghc_skylighting, _ghcjs_skylighting) <- hackage (Just "0.7.2") "skylighting" >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
-  _ghcjs_skylighting_core' <- flag (P.CabalDebian ["--cabal-flag", "system-pcre"]) _ghcjs_skylighting_core
-  _ghcjs_skylighting' <- flag (P.CabalDebian ["--cabal-flag", "system-pcre"]) _ghcjs_skylighting
+  (_ghc_skylighting_core, _ghcjs_skylighting_core) <- hackage (Just "0.7.2") "skylighting-core" >>= patch $(embedFile "patches/skylighting-core.diff") >>= debianize [] >>= inGroups ["pandoc"] >>= ghcjs_also
+  (_ghc_skylighting, _ghcjs_skylighting) <- hackage (Just "0.7.2") "skylighting" >>= patch $(embedFile "patches/skylighting.diff") >>= debianize [] >>= flag (P.DevelDep "libpcre2-dev") >>= inGroups ["pandoc"] >>= ghcjs_also
+  _ghc_skylighting_core' <- flag (P.CabalDebian ["--cabal-flags", "system-pcre", "--executable", "skylighting-extract"]) _ghc_skylighting_core
   _ghc_skylighting' <- flag (P.CabalDebian ["--cabal-flags", "executable", "--executable", "skylighting" ]) _ghc_skylighting
   -- flag (P.CabalDebian ["--cabal-flags", "executable", "--executable", "skylighting-ghcjs" ]) _ghcjs_skylighting
   -- _skylighting <- git "https://github.com/ddssff/skylighting" [] >>= patch $(embedFile "patches/skylighting.diff") >>= debianize [] >>= inGroups [] >>= ghcjs_also
