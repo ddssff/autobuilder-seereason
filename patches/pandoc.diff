@@ -118,3 +118,17 @@
  $(deriveJSON defaultOptions ''TopLevelDivision)
  $(deriveJSON defaultOptions ''ReferenceLocation)
 +#endif
+--- old/pandoc.cabal	2018-11-05 19:59:53.721914938 -0800
++++ new/pandoc.cabal	2018-12-20 17:15:39.586624806 -0800
+@@ -563,7 +563,10 @@
+   other-extensions: NoImplicitPrelude
+   hs-source-dirs:  .
+   main-is:         pandoc.hs
+-  buildable:       True
++  if impl(ghcjs)
++    buildable:       True
++  else
++    buildable:       False
+   other-modules:   Paths_pandoc
+ 
+ executable trypandoc
