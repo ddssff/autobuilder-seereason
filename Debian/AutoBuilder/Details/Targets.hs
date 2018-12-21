@@ -142,7 +142,8 @@ myExecMap =
        ("gtk2hsC2hs",  [[Rel (BinPkgName "gtk2hs-buildtools") Nothing Nothing]]),
        ("gtk2hsHookGenerator",  [[Rel (BinPkgName "gtk2hs-buildtools") Nothing Nothing]]),
        ("gtk2hsTypeGen", [[Rel (BinPkgName "gtk2hs-buildtools") Nothing Nothing]]),
-       ("mysql_config", [[Rel (BinPkgName "libmysqlclient-dev") Nothing Nothing]])
+       ("mysql_config", [[Rel (BinPkgName "libmysqlclient-dev") Nothing Nothing]]),
+       ("pcre", [[Rel (BinPkgName "libpcre3-dev") Nothing Nothing]])
       ]
 
 {-

@@ -434,7 +434,7 @@ commonTargets = do
                                    -- This is a change that only relates to the autobuilder
                                    >>= patch $(embedFile "patches/happstack-dot-com.diff")) >>= debianize [] >>= inGroups ["clckwrks", "important"]
   _happstackDotCom_doc <- darcs ("http://src.seereason.com/happstackDotCom-doc") >>= inGroups ["happstack", "important"]
-  _happstack_extra <- git "https://github.com/seereason/happstack-extra.git" [] >>= debianize [] >>= inGroups ["acid-state"]
+  _happstack_extra <- git "https://github.com/seereason/happstack-extra.git" [] >>= debianize [] >>= inGroups ["acid-state", "pandoc"]
   _happstack_fay_ajax <-  (hackage (Just "0.2.0") "happstack-fay-ajax" >>= patch $(embedFile "patches/happstack-fay-ajax.diff")) >>= debianize [] >>= skip (Reason "Waiting for newer fay")
       -- ,  (hackage "fay-hsx" >>= patch $(embedFile "patches/fay-hsx.diff")) >>= debianize []
   _happstack_fay <-  (hackage (Just "0.2.0") "happstack-fay" >>= patch $(embedFile "patches/happstack-fay.diff")) >>= debianize [] >>= skip (Reason "Waiting for newer fay")
@@ -797,13 +797,12 @@ commonTargets = do
                -- , apt (rel release "wheezy" "quantal") "haskell-parsec2" >>= patch $(embedFile "patches/parsec2.diff")
   _parse_dimacs <-  (hackage (Just "1.3") "parse-dimacs") >>= debianize []
   _parsers <- hackage (Just "0.12.8") "parsers" >>= flag (P.DebVersion "0.12.8-1") >>= debianize [] >>= ghcjs_also
-  _patches_vector <- hackage (Just "0.1.5.4") "patches-vector" >>= {-patch $(embedFile "patches/patches-vector.diff") >>=-} debianize [] >>= ghcjs_also
+  _patches_vector <- hackage Nothing "patches-vector" >>= {-patch $(embedFile "patches/patches-vector.diff") >>=-} debianize [] >>= ghcjs_also
   _pbkdf2 <-  (hackage (Just "0.3.1.5") "PBKDF2") >>= debianize [] >>= skip (Reason "[libghc-multiset-dev (<< 0.3)] -> []")
                -- , apt (rel release "wheezy" "quantal") "haskell-pcre-light"
   _pcre_light <- hackage (Just "0.4.0.4") "pcre-light" >>=
                  -- Tell it that build tool libpcre means deb libpcre3-dev, and tell
                  -- it to install libpcre3-dev.
-                 flag (P.CabalDebian ["--exec-map", "libpcre:libpcre3-dev"]) >>=
                  flag (P.DevelDep "libpcre3-dev") >>=
                  flag (P.DebVersion "0.4.0.4-3build1") >>= debianize [] >>=
                  ghcjs_also
@@ -875,7 +874,11 @@ commonTargets = do
   _regex_compat <- hackage (Just "0.95.1") "regex-compat" >>= flag (P.DebVersion "0.95.1-10build1") >>= debianize [] >>= inGroups ["platform", "autobuilder-group"]
   _regex_compat_tdfa <- hackage (Just "0.95.1.4") "regex-compat-tdfa" >>= flag (P.DebVersion "0.95.1.4-5build2") >>= debianize [] >>= ghcjs_also
   -- No ghcjs for regex-pcre, regex-pcre-builtin, it calls foreign functions
-  _regex_pcre <- hackage (Just "0.94.4") "regex-pcre" >>= flag (P.DebVersion "0.94.4-9build1") >>= patch $(embedFile "patches/regex-pcre.diff") >>= debianize [] >>= inGroups ["platform", "pandoc"]
+  _regex_pcre <- hackage (Just "0.94.4") "regex-pcre" >>=
+                 flag (P.DebVersion "0.94.4-9build1") >>=
+                 flag (P.DevelDep "libpcre3-dev") >>=
+                 debianize [] >>=
+                 inGroups ["platform", "pandoc"]
   _regex_pcre_builtin <- hackage (Just "0.94.4.8.8.35") "regex-pcre-builtin" >>=
                          -- Need to email Audrey Tang <audreyt@audreyt.org> about this.
                          patch $(embedFile "patches/regex-pcre-builtin.diff") >>=
@@ -927,7 +930,7 @@ commonTargets = do
   _servant_auth <- hackage (Just "0.3.2.0") "servant-auth" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_blaze <- hackage (Just "0.8") "servant-blaze" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_client_core <- hackage (Just "0.13.0.1") "servant-client-core" >>= {-patch $(embedFile "patches/servant-client-core.diff") >>=-} debianize [] >>= inGroups ["servant"] >>= ghcjs_also
-  _servant_client <-      hackage (Just "0.13.0.1") "servant-client" >>= {-patch $(embedFile "patches/servant-client.diff") >>=-} debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  _servant_client <-      hackage ({-Just "0.13.0.1"-} Nothing) "servant-client" >>= {-patch $(embedFile "patches/servant-client.diff") >>=-} debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_docs <-        hackage (Just "0.11.2") "servant-docs" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_foreign <-     hackage (Just "0.11.1") "servant-foreign" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_js <-          hackage Nothing "servant-js" >>= debianize [] >>= inGroups ["servant"]
