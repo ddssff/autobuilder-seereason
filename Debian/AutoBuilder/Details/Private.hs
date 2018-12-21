@@ -81,12 +81,12 @@ buildTargets _params = do
       cd "seereasonpartners-dot-com" >>=
       patch $(embedFile "patches/seereasonpartners-dot-com.diff") >>=
       debianize []
-  let stripeRepo = "https://github.com/seereason/stripe"
-  -- let stripeRepo = "https://github.com/dmjio/stripe"
-  _stripe_http_client <- hackage (Just "2.4.0") "stripe-http-client" >>= debianize []
+  -- let stripeRepo = "https://github.com/seereason/stripe"
+  let stripeRepo = "https://github.com/dmjio/stripe"
+  _stripe_http_client <- git stripeRepo [] >>= cd "stripe-http-client" {-hackage (Just "2.4.0") "stripe-http-client"-} >>= debianize []
   _stripe_core <- git stripeRepo [] >>= cd "stripe-core" >>= debianize [] >>= inGroups ["private-libs"]
-  _stripe_http_streams <- git stripeRepo [] >>= cd "stripe-http-streams" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>=  debianize [] >>= inGroups ["private-libs"]
-  _stripe_haskell <- git stripeRepo [] >>= cd "stripe-haskell" >>= flag (P.CabalDebian [{-"--no-tests"-}]) >>= debianize []
+  _stripe_http_streams <- git stripeRepo [] >>= cd "stripe-http-streams" >>= flag (P.CabalDebian ["--no-tests"]) >>=  debianize [] >>= inGroups ["private-libs"]
+  _stripe_haskell <- git stripeRepo [] >>= cd "stripe-haskell" >>= flag (P.CabalDebian ["--no-tests"]) >>= debianize []
   -- stripe_http_conduit <- debianize (darcs (privateRepo </> "stripe") `cd` "stripe-http-conduit")
   _task_manager <- git "ssh://git@github.com/seereason/task-manager.git" [] >>= debianize [] >>= inGroups ["private-libs"]
   _typegraph <- git "ssh://git@github.com/seereason/typegraph.git" [] >>= debianize [] >>= inGroups ["private-libs"] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= ghcjs_also
