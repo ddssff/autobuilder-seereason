@@ -1,0 +1,11 @@
+--- old/HaTeX.cabal	2018-11-02 05:18:56.828155464 -0700
++++ new/HaTeX.cabal	2019-01-01 16:01:29.906601345 -0800
+@@ -63,7 +63,7 @@
+                , bytestring >= 0.9.2.1 && < 0.11
+                , text >= 0.11.2.3 && < 2
+                , transformers >= 0.2.2 && < 0.6
+-               , containers >= 0.4.2.1 && < 0.6
++               , containers >= 0.4.2.1
+                , hashable >= 1.2 && < 1.3
+                , matrix
+                  -- Testing

@@ -1,8 +1,19 @@
---- old/hsx2hs.cabal	2016-10-07 13:56:58.000000000 -0700
-+++ new/hsx2hs.cabal	2017-07-17 15:58:28.801080580 -0700
-@@ -72,3 +72,5 @@
+--- old/hsx2hs.cabal	2019-01-01 14:49:27.210894200 -0800
++++ new/hsx2hs.cabal	2019-01-01 14:56:59.404910821 -0800
+@@ -42,7 +42,7 @@
+ 
+ Library
+   Build-depends:	mtl              >= 2.0  && < 2.3,
+-                        haskell-src-exts >= 1.18 && < 1.21,
++                        haskell-src-exts >= 1.18,
+                         haskell-src-meta >= 0.7  && < 0.9,
+                         template-haskell >= 2.7  && < 2.15,
+                         bytestring,
+@@ -72,5 +72,7 @@
  Executable hsx2hs
    Main-Is:                hsx2hs.hs
    Hs-Source-Dirs:         src
 +  if impl(ghcjs)
 +    Buildable:            False
+   Other-modules:          Language.Haskell.HSX.Transform
+                           Language.Haskell.HSX.QQ

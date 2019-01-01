@@ -1,6 +1,6 @@
---- old/skylighting-core.cabal	2018-11-05 20:03:18.415186344 -0800
-+++ new/skylighting-core.cabal	2018-11-12 20:26:25.376583067 -0800
-@@ -130,10 +130,13 @@
+--- old/skylighting-core.cabal	2019-01-01 21:09:25.230395127 -0800
++++ new/skylighting-core.cabal	2019-01-01 21:12:14.035833398 -0800
+@@ -129,10 +129,13 @@
                         containers,
                         ansi-terminal >= 0.7,
                         colour >= 2.0
@@ -17,17 +17,18 @@
    hs-source-dirs:      src
    ghc-prof-options:    -fprof-auto-exported
    default-language:    Haskell2010
-@@ -144,7 +144,8 @@
+@@ -140,7 +143,9 @@
  
  Flag executable
    Description:   Build skylighting CLI tools
 -  Default:       False
 +  Default:       True
 +  Manual:        True
++
  
  Flag system-pcre
    Description:   Use regex-pcre instead of regex-pcre-builtin
-@@ -205,10 +205,13 @@
+@@ -201,10 +206,13 @@
                         directory,
                         ansi-terminal >= 0.7,
                         colour >= 2.0
@@ -44,14 +45,14 @@
    if flag(executable)
      buildable:         True
    else
---- old/src/Skylighting/Regex.hs
-+++ new/src/Skylighting/Regex.hs
+--- old/src/Skylighting/Regex.hs	2018-03-03 08:47:19.000000000 -0800
++++ new/src/Skylighting/Regex.hs	2019-01-01 21:15:14.841161062 -0800
 @@ -1,3 +1,4 @@
 +{-# LANGUAGE CPP  #-}
  {-# LANGUAGE DeriveDataTypeable  #-}
  {-# LANGUAGE DeriveGeneric       #-}
  {-# LANGUAGE OverloadedStrings   #-}
-@@ -22,9 +23,14 @@ import Data.Data
+@@ -22,9 +23,14 @@
  import qualified Data.Text as Text
  import qualified Data.Text.Encoding as TE
  import GHC.Generics (Generic)
@@ -67,7 +68,7 @@
  
  -- | An exception in compiling or executing a regex.
  newtype RegexException = RegexException String
-@@ -53,6 +59,16 @@ instance FromJSON RE where
+@@ -53,6 +59,16 @@
  -- a bytestring interpreted as UTF-8.  If the regex cannot be compiled,
  -- a 'RegexException' is thrown.
  compileRegex :: Bool -> BS.ByteString -> Regex
@@ -84,7 +85,7 @@
  compileRegex caseSensitive regexpStr =
    let opts = compAnchored + compUTF8 +
                 if caseSensitive then 0 else compCaseless
-@@ -61,6 +77,7 @@ compileRegex caseSensitive regexpStr =
+@@ -61,6 +77,7 @@
                          "Error compiling regex /" ++ toString regexpStr ++
                          "/ at offset " ++ show off ++ "\n" ++ msg
              Right r -> r
@@ -92,7 +93,7 @@
  
  -- | Convert octal escapes to the form pcre wants.  Note:
  -- need at least pcre 8.34 for the form \o{dddd}.
-@@ -91,11 +108,19 @@ isOctalDigit c = c >= '0' && c <= '7'
+@@ -91,11 +108,19 @@
  -- If there are errors in executing the regex, a 'RegexException' is
  -- thrown.
  matchRegex :: Regex -> BS.ByteString -> Maybe [BS.ByteString]

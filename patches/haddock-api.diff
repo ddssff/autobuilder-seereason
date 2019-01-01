@@ -1,0 +1,30 @@
+--- old/src/Haddock/Backends/LaTeX.hs	2018-10-16 12:38:51.000000000 -0700
++++ new/src/Haddock/Backends/LaTeX.hs	2019-01-01 11:26:54.710048542 -0800
+@@ -242,11 +242,10 @@
+         sec _ = text "\\paragraph"
+ 
+ 
+--- | Given a declaration, extract out the names being declared
+-declNames :: LHsDecl DocNameI
+-          -> ( LaTeX           -- ^ to print before each name in an export list
+-             , [DocName]       -- ^ names being declared
+-             )
++-- | Given a declaration, extract out the names being declared.
++-- @LaTeX@ argument is what to print before each name in an export
++-- list, @[DocName]@ is the names being declared.
++declNames :: LHsDecl DocNameI -> ( LaTeX, [DocName] )
+ declNames (L _ decl) = case decl of
+   TyClD _ d  -> (empty, [tcdName d])
+   SigD _ (TypeSig _ lnames _ ) -> (empty, map unLoc lnames)
+@@ -374,10 +373,7 @@
+ -- arguments as needed.
+ ppTypeOrFunSig :: HsType DocNameI
+                -> DocForDecl DocName  -- ^ documentation
+-               -> ( LaTeX             -- ^ first-line (no-argument docs only)
+-                  , LaTeX             -- ^ first-line (argument docs only)
+-                  , LaTeX             -- ^ type prefix (argument docs only)
+-                  )
++               -> ( LaTeX, LaTeX, LaTeX ) -- ^ first-line (no-argument docs only), first-line (argument docs only), type prefix (argument docs only)
+                -> Bool                -- ^ unicode
+                -> LaTeX
+ ppTypeOrFunSig typ (doc, argDocs) (pref1, pref2, sep0) unicode

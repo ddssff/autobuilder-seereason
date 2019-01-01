@@ -113,7 +113,7 @@ artfulTargets = do
                              -- `patch` $(embedFile "patches/clckwrks-plugin-page.diff")
                              >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["clckwrks", "important"]
   _clckwrks <-
-    P.createPackage (Debianize'' (Patch (DataFiles (DataFiles
+    P.createPackage (Debianize'' (DataFiles (DataFiles
                                                   ({-Git "https://github.com/clckwrks/clckwrks" []-} Hackage "clckwrks")
                                                   (Uri "https://cloud.github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip"
                                                        "e211065e573ea0239d6449882c9d860d")
@@ -121,7 +121,6 @@ artfulTargets = do
                                                  (Uri "https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"
                                                       "c88c72230de1fa3c701187b8afba5e52" {-previouly: "5eecb009ae16dc54f261f31da01dbbac", then "a6d5fdbbcb076dd9385dd2135dbfb589"-})
                                                  "json2")
-                                      $(embedFile "patches/clckwrks.diff"))
                                Nothing)
                   [P.BuildDep "hsx2hs"]
                   [] >>= inGroups ["clckwrks", "important", "testtarget"]

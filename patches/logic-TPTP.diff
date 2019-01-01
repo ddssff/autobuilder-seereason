@@ -9,25 +9,3 @@
  
   build-depends:      base >=4 && < 5
                     , array
---- old/Parser.y	2012-01-20 11:54:31.000000000 -0800
-+++ new/Parser.y	2012-01-20 13:07:07.427160933 -0800
-@@ -9,7 +9,7 @@
- import Control.Monad
- import Data.List as L
- import Lexer
--import Data.Set as S
-+import qualified Data.Set as S
- import Codec.TPTP.Base
- import System.IO
- import System.IO.Unsafe
---- old/ParserC.y	2012-01-20 13:28:19.000000000 -0800
-+++ new/ParserC.y	2012-01-20 13:35:49.917165510 -0800
-@@ -7,7 +7,7 @@
- import Control.Monad
- import Data.List as L
- import Lexer
--import Data.Set as S
-+import qualified Data.Set as S
- import Codec.TPTP.Base
- import System.IO
- import System.IO.Unsafe

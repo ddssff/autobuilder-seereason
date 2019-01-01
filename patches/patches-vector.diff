@@ -1,5 +1,30 @@
---- old/patches-vector.cabal	2018-07-06 07:08:43.673067619 -0700
-+++ new/patches-vector.cabal	2018-07-07 22:29:08.847996852 -0700
+--- old/Data/Patch/Internal.hs	2016-11-28 23:49:23.000000000 -0800
++++ new/Data/Patch/Internal.hs	2019-01-02 09:45:24.688128487 -0800
+@@ -145,9 +145,8 @@
+         normalise' [] (d:_) _  = [d]
+         normalise' _ _ _ = error "Impossible!"
+ 
+-instance Eq a => Monoid (Patch a) where
+-  mempty = Patch []
+-  mappend (Patch a) (Patch b) = Patch $ merge a b (0 :: Int)
++instance Eq a => Semigroup (Patch a) where
++  Patch a <> Patch b = Patch $ merge a b (0 :: Int)
+     where
+       merge [] ys  off  = map (over index (+ off)) ys
+       merge xs []  _    = xs
+@@ -171,6 +170,10 @@
+       replace _ o n | o == n = id
+       replace i o n | otherwise = (Replace i o n :)
+ 
++instance Eq a => Monoid (Patch a) where
++  mempty = Patch []
++  mappend = (<>)
++
+ -- | Returns true if a patch can be safely applied to a document, that is,
+ --   @applicable p d@ holds when @d@ is a valid source document for the patch @p@.
+ applicable :: (Eq a) => Patch a -> Vector a -> Bool
+--- old/patches-vector.cabal	2018-11-02 05:24:23.351875654 -0700
++++ new/patches-vector.cabal	2019-01-02 09:43:28.697667020 -0800
 @@ -33,7 +33,7 @@
                       , Data.Patch.Internal
    build-depends:       base >=4.7 && <5
@@ -9,6 +34,15 @@
                       , microlens >= 0.2 && < 0.5
    default-language:    Haskell2010
  
+@@ -43,7 +43,7 @@
+   build-depends:       base >= 4.7 && < 5
+                      , QuickCheck >= 2.7 && < 2.9
+                      , patches-vector
+-                     , doctest >= 0.9 && < 0.12
++                     , doctest >= 0.9 && < 0.13
+   default-language:    Haskell2010
+ 
+ test-suite             benchmarks-patches-vector
 @@ -54,7 +54,7 @@
                       , QuickCheck >= 2.7 && < 2.9
                       , patches-vector
@@ -26,29 +60,3 @@
 +                     , vector >= 0.10 && <0.13
                       , hspec >= 2.1 && < 2.3
    default-language:    Haskell2010
-diff -ru oldData/Patch/Internal.hs new/Data/Patch/Internal.hs
---- oldData/Patch/Internal.hs	2018-07-07 23:13:54.105194148 -0700
-+++ new/Data/Patch/Internal.hs	2018-07-07 23:11:05.787183600 -0700
-@@ -145,9 +145,8 @@
-         normalise' [] (d:_) _  = [d]
-         normalise' _ _ _ = error "Impossible!"
- 
--instance Eq a => Monoid (Patch a) where
--  mempty = Patch []
--  mappend (Patch a) (Patch b) = Patch $ merge a b (0 :: Int)
-+instance Eq a => Semigroup (Patch a) where
-+  (Patch a) <> (Patch b) = Patch $ merge a b (0 :: Int)
-     where
-       merge [] ys  off  = map (over index (+ off)) ys
-       merge xs []  _    = xs
-@@ -171,6 +170,10 @@
-       replace _ o n | o == n = id
-       replace i o n | otherwise = (Replace i o n :)
- 
-+instance Eq a => Monoid (Patch a) where
-+  mempty = Patch []
-+  mappend = (<>)
-+
- -- | Returns true if a patch can be safely applied to a document, that is,
- --   @applicable p d@ holds when @d@ is a valid source document for the patch @p@.
- applicable :: (Eq a) => Patch a -> Vector a -> Bool

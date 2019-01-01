@@ -1,10 +1,12 @@
 --- old/wl-pprint-extras.cabal	2016-10-23 09:50:29.109470659 -0700
 +++ new/wl-pprint-extras.cabal	2017-01-24 09:07:17.792210323 -0800
-@@ -25,7 +25,6 @@
+@@ -24,8 +24,7 @@
+ 
    build-depends:
      base          == 4.*,
-     containers    >= 0.4     && < 0.6,
+-    containers    >= 0.4     && < 0.6,
 -    nats          >= 0.1     && < 2,
++    containers    >= 0.4,
      semigroups    >= 0.9     && < 1,
      semigroupoids >= 3       && < 6,
      utf8-string   >= 0.3.6   && < 1.1,

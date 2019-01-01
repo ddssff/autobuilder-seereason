@@ -1,6 +1,6 @@
 diff -ru old/jmacro.cabal new/jmacro.cabal
---- old/jmacro.cabal	2018-07-07 17:40:11.393962127 -0700
-+++ new/jmacro.cabal	2018-07-08 10:10:22.566595889 -0700
+--- old/jmacro.cabal	2019-01-01 10:06:06.372797325 -0800
++++ new/jmacro.cabal	2019-01-01 18:14:36.000000000 -0800
 @@ -13,7 +13,11 @@
  Cabal-Version:       >= 1.6
  
@@ -27,9 +27,54 @@ diff -ru old/jmacro.cabal new/jmacro.cabal
     main-is: Language/Javascript/JMacro/Executable.hs
     other-modules: Language.Javascript.JMacro.Util
                     Language.Javascript.JMacro.TypeCheck
+diff -ru old/Language/Javascript/JMacro/Base.hs new/Language/Javascript/JMacro/Base.hs
+--- old/Language/Javascript/JMacro/Base.hs	2018-05-10 11:17:11.000000000 -0700
++++ new/Language/Javascript/JMacro/Base.hs	2019-01-01 18:14:36.000000000 -0800
+@@ -86,7 +86,7 @@
+ 
+ takeOne :: State [Ident] Ident
+ takeOne = do
+-  (x:xs) <- get
++  ~(x:xs) <- get
+   put xs
+   return x
+ 
+@@ -399,7 +399,7 @@
+     JMGId _ -> jtoGADT $ f x
+     where
+         inScope z = IS $ do
+-            ([StrI a], b) <- splitAt 1 `fmap` get
++            ~([StrI a], b) <- splitAt 1 `fmap` get
+             put b
+             return $ withHygiene_ a f z
+ 
+@@ -428,19 +428,19 @@
+                                 ('!':'!':i') -> (DeclStat (StrI i') t:) <$> blocks xs
+                                 ('!':i') -> (DeclStat (StrI i') t:) <$> blocks xs
+                                 _ -> do
+-                                  (newI:st) <- get
++                                  ~(newI:st) <- get
+                                   put st
+                                   rest <- blocks xs
+                                   return $ [DeclStat newI t `mappend` jsReplace_ [(StrI i, newI)] (BlockStat rest)]
+                              blocks (x':xs) = (jfromGADT <$> go (jtoGADT x')) <:> blocks xs
+                              (<:>) = liftM2 (:)
+                    (JMGStat (ForInStat b (StrI i) e s)) -> do
+-                          (newI:st) <- get
++                          ~(newI:st) <- get
+                           put st
+                           rest <- jfromGADT <$> go (jtoGADT s)
+                           return $ JMGStat . ForInStat b newI e $ jsReplace_ [(StrI i, newI)] rest
+                    (JMGStat (TryStat s (StrI i) s1 s2)) -> do
+-                          (newI:st) <- get
++                          ~(newI:st) <- get
+                           put st
+                           t <- jfromGADT <$> go (jtoGADT s)
+                           c <- jfromGADT <$> go (jtoGADT s1)
+Only in ./Language/Javascript/JMacro: Conversation.hs
 diff -ru old/Language/Javascript/JMacro/QQ.hs new/Language/Javascript/JMacro/QQ.hs
---- old/Language/Javascript/JMacro/QQ.hs	2018-05-10 11:17:11.000000000 -0700
-+++ new/Language/Javascript/JMacro/QQ.hs	2018-07-08 10:10:58.311060509 -0700
+--- old/Language/Javascript/JMacro/QQ.hs	2019-01-01 10:06:06.372797325 -0800
++++ new/Language/Javascript/JMacro/QQ.hs	2019-01-01 18:14:36.000000000 -0800
 @@ -1,4 +1,4 @@
 -{-# LANGUAGE FlexibleInstances, UndecidableInstances, OverlappingInstances, TypeFamilies, TemplateHaskell, QuasiQuotes, RankNTypes, GADTs #-}
 +{-# LANGUAGE CPP, FlexibleInstances, UndecidableInstances, OverlappingInstances, TypeFamilies, TemplateHaskell, QuasiQuotes, RankNTypes, GADTs #-}

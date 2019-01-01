@@ -38,7 +38,7 @@ buildTargets = do
       patch $(embedFile "patches/haskell-devscripts.diff") >>=
       flag (P.RelaxDep "python-minimal")
   -- haskell-names-0.9.1 requires aeson<1.3
-  _haskell_names <- hackage (Just "0.9.4") "haskell-names" >>= debianize []
+  _haskell_names <- hackage (Just "0.9.6") "haskell-names" >>= debianize []
 
   _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-5build1") >>= debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
   _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-5build1") >>= debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
@@ -59,42 +59,44 @@ buildTargets84 = do
   -- These are targets likely to change when we go from 8.0 to 8.2.
   -- Some of these are needed for ghc-8.2, some are wrong.
   -- _ghc84 <- apt "experimental" "ghc" >>= patch $(embedFile "patches/ghc84.diff") >>= inGroups ["ghc8-comp"]
+  -- _ghc86 <- apt "experimental" "ghc" >>= patch $(embedFile "patches/ghc86.diff") >>= inGroups ["ghc8-comp"]
   -- Cabal 2.0.1.0 is included in ghc-8.2.2
   -- _cabal <- hackage (Just "1.24.0.0") "Cabal" >>= debianize []
-  _cabal_install <- hackage (Just "2.2.0.0") "cabal-install" >>=
-                    -- Remove the version range from the Cabal dependency so the
-                    -- debian/control file references the virtual libghc-cabal-dev
-                    -- package rather than a (non-existant) real deb.
-                    patch $(embedFile "patches/cabal-install-22.diff") >>=
-                    debianize [] >>=
-                    flag (P.CabalDebian ["--default-package", "cabal-install"]) >>= inGroups ["ghc8-comp"]
+  -- Patch removes the version range from the Cabal dependency so the
+  -- debian/control file references the virtual libghc-cabal-dev
+  -- package rather than a (non-existant) real deb.
+  _cabal_install <- hackage (Just "2.2.0.0") "cabal-install" >>= patch $(embedFile "patches/cabal-install-22.diff") >>= debianize [] >>= flag (P.CabalDebian ["--default-package", "cabal-install"]) >>= inGroups ["ghc8-comp"]
+  -- _cabal_install <- hackage (Just "2.4.1.0") "cabal-install" >>= patch $(embedFile "patches/cabal-install-24.diff") >>= debianize [] >>= flag (P.CabalDebian ["--default-package", "cabal-install"]) >>= inGroups ["ghc8-comp"]
   -- building with commit d1ded1f890e7ebebbbb462bb5a321983bb6be914
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.4"] >>= inGroups ["ghcjs-comp"]
+  -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.6"] >>= inGroups ["ghcjs-comp"]
   -- singletons 2.2 requires base-4.9, supplied with ghc-8.0
   -- singletons 2.3.1 requires base-4.10, supplied with ghc-8.2
   -- singletons 2.4.1 requires base-4.11, supplied with ghc-8.4
-  _singletons <- hackage (Just "2.4.1") "singletons" >>= debianize [] {->>= ghcjs_also-}
-  _haddock_library84 <-
+  -- singletons 2.5.1 requires base-4.12, supplied with ghc-8.6 (I assume)
+  _singletons <- hackage (Just "2.4.1") "singletons" >>= debianize [] >>= inGroups ["tmp"] {->>= ghcjs_also-}
+  -- _singletons <- hackage (Just "2.5.1") "singletons" >>= debianize []
+  _haddock_library <- hackage (Just "1.6.0") "haddock-library" >>= patch $(embedFile "patches/haddock-library-1.6.0.diff") >>= flag (P.BuildDep "hspec-discover") >>= inGroups ["ghcjs-comp", "appraisalscribe", "pandoc", "tmp"] >>= debianize [] >>= ghcjs_also
+  -- _haddock_library <- hackage (Just "1.7.0") "haddock-library" >>= flag (P.BuildDep "hspec-discover") >>= inGroups ["ghcjs-comp", "appraisalscribe", "pandoc"] >>= debianize [] >>= ghcjs_also
       -- Version 1.4.4 is required by haddock-api-2.18.1, the next
       -- haddock-api requires version 1.5 and ghc-8.4.
-      hackage (Just "1.6.0") "haddock-library" >>=
+
       -- We need a doc package, otherwise the underlying package has
       -- a pseudo-dependency on haddock-interface-28 instead of 33.
-      flag P.NoDoc >>=
+
       -- haddock-library has two "library" sections in its cabal file, which cabal
       -- debian (and haskell-devscripts) cannot handle.  Remove the second one
       -- and just use the available attoparsec library.
-      patch $(embedFile "patches/haddock-library-1.6.0.diff") >>=
-      flag (P.BuildDep "hspec-discover") >>=
-      inGroups ["ghcjs-comp", "appraisalscribe", "pandoc"] >>=
-      debianize [] >>= ghcjs_also
-  _haddock_api8 <-
       -- 2.18.1 requires ghc-8.2, 2.19.0.1 requires ghc-8.4.1.  2.20.0 requires ghc-8.4.2.
-      hackage (Just "2.20.0") "haddock-api" >>= inGroups ["ghcjs-comp"] >>=
+
+  _haddock_api8 <- hackage (Just "2.20.0") "haddock-api" >>= inGroups ["ghcjs-comp", "tmp"] >>=
+  -- _haddock_api8 <- hackage (Just "2.21.0") "haddock-api" >>= patch $(embedFile "patches/haddock-api.diff") >>= inGroups ["ghcjs-comp"] >>=
              flag (P.CabalDebian ["--default-package", "haddock-api"]) >>=
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-dev"]) >>=
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>=
              debianize [] >>= inGroups ["ghcjs-comp"]
+  -- pandoc>=2.4 requires haddock-library-1.7
+  -- _pandoc <- hackage (Just "2.5") "pandoc" >>= patch $(embedFile "patches/pandoc-2.5.diff") >>=
   _pandoc <- hackage (Just "2.3.1") "pandoc" >>= patch $(embedFile "patches/pandoc.diff") >>=
              flag (P.CabalDebian ["--executable", "pandoc"]) >>=
              -- flag (P.CabalDebian ["--executable", "try-pandoc"]) >>=
@@ -102,9 +104,9 @@ buildTargets84 = do
              flag (P.BuildDep "alex") >>=
              flag (P.BuildDep "happy") >>=
              debianize [] >>=
-             inGroups ["appraisalscribe", "important", "pandoc"] >>= ghcjs_also
-  _uri_bytestring_ghc <- hackage (Just "0.3.1.1") "uri-bytestring" >>= patch $(embedFile "patches/uri-bytestring.diff") >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
-  _zlib <- hackage (Just "0.6.1.2") "zlib" >>= flag (P.DebVersion "0.6.1.2-1build1") >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform", "ghc8-comp"] >>= ghcjs_also
+             inGroups ["appraisalscribe", "important", "pandoc", "tmp"]
+  _uri_bytestring_ghc <- hackage (Just "0.3.2.1") "uri-bytestring" >>= {-patch $(embedFile "patches/uri-bytestring.diff") >>=-} debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  _zlib <- hackage (Just "0.6.2") "zlib" >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform", "ghc8-comp"] >>= ghcjs_also
   -- parsec-3 is built into ghc-8.4.3, and the deb name is libghc-parsec-dev, not parsec3.
   -- text-1.2.3.0 is built into ghc-8.4.3
   -- nodejs-8.10 is available from ubuntu bionic

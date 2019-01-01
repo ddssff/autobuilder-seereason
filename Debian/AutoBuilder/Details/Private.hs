@@ -16,9 +16,6 @@ import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
 buildTargets :: Monad m => ParamRec -> TSt m ()
 buildTargets _params = do
   -- _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= debianize []
-  _appraisalscribe_acid <- git "ssh://git@github.com/seereason/appraisalscribe-acid" [] >>= {-patch $(embedFile "patches/appraisalscribe-acid-locktag.diff") >>=-} flag (P.CabalDebian ["--disable-profiling"]) >>= debianize []
-  -- _appraisalscribe_json <- git "ssh://git@github.com/seereason/appraisalscribe-json" [] >>= debianize []
-  _appraisalscribe_io <- git "ssh://git@github.com/seereason/appraisalscribe-io" [] >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= ghcjs_also
   _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= debianize [] >>= ghcjs_also
   -- appraisalscribe-data-tests is a huge package because it
   -- contains lots of test data, it makes more sense to just check

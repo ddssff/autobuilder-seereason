@@ -6,7 +6,7 @@ diff -ru old/HJavaScript.cabal new/HJavaScript.cabal
  Exposed-Modules:  Language.HJavaScript.Syntax
  
 -Build-Depends:    base <4.9, pretty >= 1.0
-+Build-Depends:    base <4.12, pretty >= 1.0
++Build-Depends:    base <4.13, pretty >= 1.0
  Build-Type:       Simple
  Category:         Language
 diff -ru old/src/Language/HJavaScript/Syntax.hs new/src/Language/HJavaScript/Syntax.hs

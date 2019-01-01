@@ -163,11 +163,11 @@ baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
 baseReleaseString :: BaseRelease -> String
 baseReleaseString = relName . _releaseName
 
-debianSourceLines :: String -> BaseRelease -> [DebSource]
-debianSourceLines debianMirrorHost release =
+debianSourceLines :: [String] -> String -> BaseRelease -> [DebSource]
+debianSourceLines trusted debianMirrorHost release =
     List.map parseSourceLine
-      [ "deb " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free"
-      , "deb-src " ++ debianMirrorHost ++ "/debian " ++ baseReleaseString release ++ " main contrib non-free" ]
+      [ unwords (["deb"] ++ trusted ++ [debianMirrorHost ++ "/debian", baseReleaseString release, "main", "contrib", "non-free"])
+      , unwords (["deb-src"] ++ trusted ++ [debianMirrorHost ++ "/debian", baseReleaseString release, "main", "contrib", "non-free" ]) ]
 
 ubuntuSourceLines :: String -> BaseRelease -> [DebSource]
 ubuntuSourceLines ubuntuMirrorHost release =
