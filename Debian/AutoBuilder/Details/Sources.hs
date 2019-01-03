@@ -152,9 +152,10 @@ releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
 
 baseReleaseSourceLines :: BaseRelease -> String -> String -> [DebSource]
 baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
-    case _vendorName release of
-      Vendor "debian" -> debianSourceLines debianMirrorHost release
-      Vendor "ubuntu" -> ubuntuSourceLines ubuntuMirrorHost release
+    case release of
+      BaseRelease (Vendor "debian") (ReleaseName "experimental") -> debianSourceLines ["[trusted=yes]"] debianMirrorHost release
+      BaseRelease (Vendor "debian") _ -> debianSourceLines [] debianMirrorHost release
+      BaseRelease (Vendor "ubuntu") _ -> ubuntuSourceLines ubuntuMirrorHost release
       _x -> error $ "Unknown release repository: " ++ show release
 
 -- baseReleaseString :: ReleaseTree -> String
