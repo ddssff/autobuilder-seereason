@@ -134,7 +134,8 @@ commonTargets = do
   _cgi <- (hackage (Just "3001.2.2.2") "cgi" {- `patch` $(embedFile "patches/cgi.diff") -}) >>= debianize [] >>= inGroups ["platform"] >>= skip (Reason "Depends on exceptions < 0.7")
   _charset <- hackage (Just "0.3.7.1") "charset" >>= flag (P.DebVersion "0.3.7.1-6build3") >>= debianize [] >>= ghcjs_also
   _charsetdetect_ae <- hackage (Just "1.1.0.3") "charsetdetect-ae" >>= flag (P.DebVersion "1.1.0.3-1") >>= debianize []
-  _cheapskate <- git "https://github.com/seereason/cheapskate" [] {-hackage (Just "0.1.0.3") "cheapskate"-} >>= debianize [] >>= skip (Reason "data default dependency")
+  -- _cheapskate <- git "https://github.com/seereason/cheapskate" [] {-hackage (Just "0.1.0.3") "cheapskate"-} >>= debianize [] >>= skip (Reason "data default dependency")
+  _cheapskate <- hackage (Just "0.1.1.1") "cheapskate" >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
   _chili <- git "https://github.com/seereason/chili.git" [] >>= inGroups ["appraisalscribe"] >>= debianize [] >>= ghcjs_only
   _cipher_aes128 <- hackage (Just "0.7.0.4") "cipher-aes128" >>= debianize [] >>= inGroups ["authenticate", "important"]
   _cipher_aes <- hackage (Just "0.2.11") "cipher-aes" >>= flag (P.DebVersion "0.2.11-5build7") >>= debianize []
@@ -166,8 +167,9 @@ commonTargets = do
   _clckwrks_theme_clckwrks <-  (gitrepo "clckwrks-theme-clckwrks" >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["clckwrks", "important", "acid-state"]
   _clock <- hackage (Just "0.7.2") "clock" >>= flag (P.DebVersion "0.7.2-3build1") >>= debianize [] >>= ghcjs_also
   -- _closure_compiler <- apt "sid" "closure-compiler"
-  _cmark <- hackage (Just "0.5.6") "cmark" >>= flag (P.DebVersion "0.5.6-1") >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
-  _cmark_gfm <- hackage (Just "0.1.3") "cmark-gfm" >>= debianize [] >>= inGroups ["happstack", "important"] >>= ghcjs_also
+  -- implemented in C, so no ghcjs version
+  _cmark <- hackage Nothing "cmark" >>= flag (P.DebVersion "0.5.6-1") >>= debianize [] >>= inGroups ["happstack", "important"]
+  _cmark_gfm <- hackage Nothing "cmark-gfm" >>= debianize [] >>= inGroups ["happstack", "important"]
   _cmdargs <-  (hackage (Just "0.10.20") "cmdargs") >>= debianize [] >>= ghcjs_also
   _code_page <- hackage (Just "0.1.3") "code-page" >>= flag (P.DebVersion "0.1.3-1") >>= debianize [] >>= ghcjs_also
   _colour <-  hackage (Just "2.3.4") "colour" >>= flag (P.DebVersion "2.3.4-1") >>= debianize [] >>= ghcjs_also
