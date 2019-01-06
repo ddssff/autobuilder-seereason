@@ -9,3 +9,23 @@
  
   build-depends:      base >=4 && < 5
                     , array
+--- old/Codec/TPTP/Base.hs	2018-07-21 21:01:09.000000000 +0000
++++ new/Codec/TPTP/Base.hs	2019-01-04 04:26:21.124552691 +0000
+@@ -17,6 +17,7 @@
+ 
+ import Codec.TPTP.QuickCheck
+ import Control.Applicative
++import Control.Monad.Fail (MonadFail(fail))
+ import Control.Monad.Identity
+ import Control.Monad.State
+ import Data.Data
+@@ -37,6 +38,9 @@
+ import Util
+ #endif
+ 
++instance MonadFail Identity where
++   fail = error
++
+ -- * Basic undecorated formulae and terms
+ 
+ -- | Basic (undecorated) first-order formulae
