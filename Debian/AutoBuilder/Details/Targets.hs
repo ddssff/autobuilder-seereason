@@ -20,7 +20,7 @@ import Debian.Relation.String (parseRelations)
 import Debian.Release (ReleaseName(..))
 import Debian.Releases (BaseRelease(..), baseRelease, Distro(..), ReleaseTree(..))
 import qualified Debian.Repo.Fingerprint as P
-import Debian.AutoBuilder.Details.Common (seeReason7, seeReason8, TSt)
+import Debian.AutoBuilder.Details.Common (seeReason8, seeReason86, TSt)
 import qualified Debian.AutoBuilder.Details.Artful as Artful
 import qualified Debian.AutoBuilder.Details.Xenial as Xenial
 import qualified Debian.AutoBuilder.Details.Private as Private
@@ -38,8 +38,9 @@ public params = do
   rel <- use release
   let targets =
           case rel of
-            -- ExtendedRelease (Release Xenial) SeeReason8 -> Xenial.buildTargets8
+            -- Right now the target lists are identical - I'm just building a newer ghcjs
             ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "bionic"))) distro | distro == seeReason8 -> Xenial.buildTargets84
+            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "bionic"))) distro | distro == seeReason86 -> Xenial.buildTargets86
             _ -> error $ "Unexpected release: " ++ show rel
   -- Dangerous when uncommented - build private targets into public, do not upload!!
   -- private params >>

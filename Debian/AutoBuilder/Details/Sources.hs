@@ -13,7 +13,7 @@ module Debian.AutoBuilder.Details.Sources
 import Data.List as List (map)
 import Data.Maybe
 import Data.Set as Set (fromList, member, Set, toAscList)
-import Debian.AutoBuilder.Details.Common (seeReason7, seeReason8)
+import Debian.AutoBuilder.Details.Common (seeReason8, seeReason86)
 import Debian.Release (ReleaseName(..))
 import Debian.Releases (Vendor(..), ReleaseTree(..), BaseRelease(..), allReleases, ubuntu,
                         releaseString, isPrivateRelease, baseRelease)
@@ -39,12 +39,12 @@ myUploadURI myBuildRelease =
 
 myPoolDir :: ReleaseTree -> String
 myPoolDir (PrivateRelease release) = myPoolDir release ++ "-private"
-myPoolDir (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) distro) | distro == seeReason8 = "deb8"
+myPoolDir (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "deb86"
 myPoolDir _ = "deb"
 
 -- | URI used to download packages
 myPoolURI (PrivateRelease release) = myPoolURI release
-myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) distro) | distro == seeReason8 = "http://deb8.seereason.com/"
+myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "http://deb9.seereason.com/"
 myPoolURI _ = "http://deb.seereason.com/"
 
 -- An alternate url for the same repository the upload-uri points to,
@@ -64,7 +64,7 @@ vendorString = _unVendor . _vendorName . baseRelease
 -- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
 myURIPrefix :: ReleaseTree -> String
 myURIPrefix (PrivateRelease rel) = myURIPrefix rel
-myURIPrefix (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "xenial")})) distro) | distro == seeReason8 = "ssh://upload@deb8.seereason.com/srv"
+myURIPrefix (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "ssh://upload@deb86.seereason.com/srv"
 myURIPrefix _ = "ssh://upload@deb.seereason.com/srv"
 
 ----------------------- BUILD RELEASE ----------------------------
@@ -85,10 +85,10 @@ releaseRepoName rname
 
 derivedReleases :: ReleaseTree -> BaseRelease -> [ReleaseTree]
 derivedReleases myBuildRelease baseRelease' =
-    [ExtendedRelease (Foundation baseRelease') seeReason7] ++
-    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') seeReason7)] else []) ++
     [ExtendedRelease (Foundation baseRelease') seeReason8] ++
-    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') seeReason8)] else [])
+    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') seeReason8)] else []) ++
+    [ExtendedRelease (Foundation baseRelease') seeReason86] ++
+    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') seeReason86)] else [])
 
 -- Our private releases are always based on our public releases, not
 -- directly on upstream releases.

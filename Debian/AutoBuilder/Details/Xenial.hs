@@ -7,7 +7,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures -fno-warn-name-shadowing #-}
 
-module Debian.AutoBuilder.Details.Xenial ( buildTargets84 ) where
+module Debian.AutoBuilder.Details.Xenial ( buildTargets84, buildTargets86 ) where
 
 import Data.FileEmbed (embedFile)
 import Debian.AutoBuilder.Details.Common (TSt, ghcjs_only, ghcjs_also, skip, substitute, Reason(..))
@@ -54,8 +54,18 @@ nodejs =
     flag (P.RelaxDep "libssl-dev") >>=
     inGroups ["ghcjs-comp"]
 
+buildTargets86 :: Monad m => TSt m ()
+buildTargets86 = do
+  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.6"] >>= inGroups ["ghcjs-comp"]
+  buildTargets8
+
 buildTargets84 :: Monad m => TSt m ()
 buildTargets84 = do
+  _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.4"] >>= inGroups ["ghcjs-comp"]
+  buildTargets8
+
+buildTargets8 :: Monad m => TSt m ()
+buildTargets8 = do
   -- These are targets likely to change when we go from 8.0 to 8.2.
   -- Some of these are needed for ghc-8.2, some are wrong.
   -- _ghc84 <- apt "experimental" "ghc" >>= patch $(embedFile "patches/ghc84.diff") >>= inGroups ["ghc8-comp"]

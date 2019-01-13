@@ -22,8 +22,8 @@ module Debian.AutoBuilder.Details.Common
     , qflag
     , Reason(Reason)
     , replacement
-    , seeReason7
     , seeReason8
+    , seeReason86
     , sflag
     , skip0
     , skip
@@ -45,7 +45,7 @@ import Data.Maybe (fromMaybe)
 --import Data.Set as Set (delete, insert)
 --import Debian.AutoBuilder.Types.Packages (apply, cd, debdir, {-depends,-} inGroups, packageMap, patch, uri)
 import qualified Debian.AutoBuilder.Types.Packages as P
-   (clonePackage, flags, {-groups,-} modifyPackage, Package, PackageFlag(BuildDep, CabalDebian, NoDoc, RelaxDep), packageMap)
+   (clonePackage, {-flags, groups,-} modifyPackage, {-Package,-} PackageFlag(BuildDep, CabalDebian, NoDoc{-, RelaxDep-}), packageMap)
 import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, hackage, debianize, git, {-deletePackage,-} flag, PackageId, spec)
 import qualified Debian.AutoBuilder.Types.Packages as P (TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
@@ -63,12 +63,12 @@ import Distribution.Compiler (CompilerFlavor(GHCJS))
 import System.FilePath((</>))
 
 -- | A Distro is any organization that provides packages.
--- data MyDistro = SeeReason8 | SeeReason7 deriving (Eq, Show)
+-- data MyDistro = SeeReason8 | SeeReason86 deriving (Eq, Show)
 
 type TSt m = P.TSt m
 
 seeReason8 = Distro "seereason"
-seeReason7 = Distro "seereason7"
+seeReason86 = Distro "seereason86"
 
 -- data Build = Production | Testing
 -- build = Production

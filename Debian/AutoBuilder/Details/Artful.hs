@@ -24,7 +24,7 @@ import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, D
 --import Debian.Relation (BinPkgName(..))
 import Debian.Release (ReleaseName(..))
 import Debian.Releases (baseRelease, BaseRelease(..))
-import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage {-, Git-}), GitSpec(Commit, Branch))
+import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, {-Patch,-} Debianize'', Hackage {-, Git-}), GitSpec(Commit, Branch))
 
 buildTargets :: Monad m => TSt m ()
 buildTargets = do
