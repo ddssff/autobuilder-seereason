@@ -41,6 +41,7 @@ Library
     file-embed,
     lens,
     mtl,
+    pretty-show,
     process,
     text,
     unix,
@@ -89,6 +90,7 @@ Library
       Debian.AutoBuilder.BuildTarget.Uri,
       Debian.AutoBuilder.LocalRepo,
       Debian.AutoBuilder.Main,
+      Debian.AutoBuilder.Mount,
       Debian.AutoBuilder.Params,
       Debian.AutoBuilder.Prelude,
       Debian.AutoBuilder.Target,
@@ -191,7 +193,7 @@ Executable autobuilder-seereason
   Default-Language: Haskell2010
   Hs-Source-Dirs: Tools
   Main-Is: AutoBuilder.hs
-  GHC-Options: -threaded -Wall -Wwarn -O2
+  GHC-Options: -threaded -Wall -Wwarn -O2 -Wredundant-constraints
   Build-Depends:
     autobuilder-seereason,
     base >= 4,

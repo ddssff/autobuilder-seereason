@@ -5,10 +5,10 @@ module Debian.AutoBuilder.Details.Private (buildTargets) where
 --import Control.Lens (use)
 import Data.FileEmbed (embedFile)
 --import Data.Map as Map (keys)
-import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), dir, flag, patch, debianize, git, cd, {-packageMap,-} inGroups, hackage)
+import Debian.AutoBuilder.Types.Packages as P (PackageFlag(BuildDep, CabalDebian {-, NoDoc, SetupDep-}), flag, patch, debianize, git, cd, inGroups{-, dir, -packageMap, hackage-})
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
 import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
-import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
+--import Debian.Repo.Fingerprint (GitSpec(Branch, Commit))
 --import System.FilePath ((</>))
 
 -- Individual packages, alphabetized

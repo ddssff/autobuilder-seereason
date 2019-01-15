@@ -6,10 +6,10 @@ module Debian.AutoBuilder.Details.Versions
 
 import Control.Lens ((%=))
 import Data.Set as Set (insert)
-import Debian.Debianize (CabalT, DebBase(DebBase), debInfo, missingDependencies, mapCabal, remapCabal, splitCabal, debianDefaults)
+import Debian.Debianize (CabalT, DebBase(DebBase), debInfo, missingDependencies, mapCabal, {-remapCabal,-} splitCabal, debianDefaults)
 import Debian.Relation (BinPkgName(BinPkgName))
-import Debian.Debianize.Prelude (Version, mkVersion, mkPackageName)
-import Distribution.Package (PackageName)
+import Debian.Debianize.Prelude (mkVersion, mkPackageName)
+--import Distribution.Package (PackageName)
 
 seereasonDefaults :: Monad m => CabalT m ()
 seereasonDefaults =
