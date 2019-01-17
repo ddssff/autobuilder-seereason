@@ -32,6 +32,7 @@ import Debian.Releases as Releases
 import Debian.Repo.Slice (Slice, PPASlice{-(PersonalPackageArchive, ppaUser, ppaName)-})
 import Debian.Version (parseDebianVersion')
 import qualified Debian.AutoBuilder.Details.Targets as Targets
+import Distribution.Pretty (prettyShow)
 import Prelude hiding (map)
 
 myParams :: FilePath -> ReleaseTree -> ParamRec
@@ -175,7 +176,7 @@ myOptionalIncludePackages =
             BinPkgName "ghcjs"]
        Just v ->
            [BinPkgName ("ghc-" ++ showVersion v),
-            BinPkgName ("cabal-install-" ++ showVersion (hvrCabalVersion v)),
+            BinPkgName ("cabal-install-" ++ prettyShow (hvrCabalVersion v)),
             -- Switch to ghcjs-8.0 once it is built
             BinPkgName "ghcjs-8.0.1"])
 

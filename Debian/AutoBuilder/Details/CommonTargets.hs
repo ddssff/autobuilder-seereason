@@ -10,8 +10,8 @@ import Debian.AutoBuilder.Details.Common (broken, broken2, ghcjs_also, ghcjs_onl
 import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, DebVersion, BuildDep, CabalDebian, RelaxDep, Revision,
                                                            NoDoc, UDeb, OmitLTDeps, SkipVersion), packageMap,
                                                pid, groups, PackageId, hackage, debianize, flag, apply, patch,
-                                               darcs, apt, git, hg, cd, GroupName, inGroups, createPackage)
-import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage), GitSpec(..))
+                                               darcs, apt, git, {-hg,-} cd, GroupName, inGroups, createPackage)
+import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, {-Patch,-} Debianize'', Hackage), GitSpec(..))
 
 commonTargets :: Monad m => TSt m ()
 commonTargets = do

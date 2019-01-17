@@ -29,6 +29,7 @@ flag local-libs
 Library
   Default-Language: Haskell2010
   Hs-Source-Dirs: .
+  GHC-Options: -threaded -Wall -Wwarn -O2 -Wredundant-constraints -Wno-missing-signatures
   Build-Depends:
     archive >= 1.7,
     base >= 4,
@@ -41,6 +42,7 @@ Library
     file-embed,
     lens,
     mtl,
+    pretty-show,
     process,
     text,
     unix,
@@ -108,12 +110,13 @@ Library
       Debian.Repo.Changes,
       Debian.Repo.Dependencies,
       Debian.Repo.EnvPath,
-      Debian.Repo.Internal.Apt,
       Debian.Repo.Internal.IO,
       Debian.Repo.Internal.Repos,
       Debian.Repo.Fingerprint,
       Debian.Repo.LocalRepository,
+      Debian.Repo.MonadApt,
       Debian.Repo.MonadOS,
+      Debian.Repo.Mount,
       Debian.Repo.OSImage,
       Debian.Repo.Package,
       Debian.Repo.PackageID,
@@ -191,7 +194,7 @@ Executable autobuilder-seereason
   Default-Language: Haskell2010
   Hs-Source-Dirs: Tools
   Main-Is: AutoBuilder.hs
-  GHC-Options: -threaded -Wall -Wwarn -O2
+  GHC-Options: -threaded -Wall -Wwarn -O2 -Wredundant-constraints
   Build-Depends:
     autobuilder-seereason,
     base >= 4,
