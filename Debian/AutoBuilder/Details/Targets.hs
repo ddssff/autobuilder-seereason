@@ -25,7 +25,7 @@ import qualified Debian.AutoBuilder.Details.Artful as Artful
 import qualified Debian.AutoBuilder.Details.Xenial as Xenial
 import qualified Debian.AutoBuilder.Details.Private as Private
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
-import Debian.Repo.Internal.Apt (MonadApt)
+--import Debian.Repo.MonadApt (MonadApt)
 import Debian.Repo.Slice (NamedSliceList, SourcesChangedAction)
 import Debian.Repo.State.AptImage (withAptImage)
 
