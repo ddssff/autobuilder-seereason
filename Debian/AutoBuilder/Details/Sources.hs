@@ -39,12 +39,12 @@ myUploadURI myBuildRelease =
 
 myPoolDir :: ReleaseTree -> String
 myPoolDir (PrivateRelease release) = myPoolDir release ++ "-private"
-myPoolDir (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "deb86"
+myPoolDir (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "deb"
 myPoolDir _ = "deb"
 
 -- | URI used to download packages
 myPoolURI (PrivateRelease release) = myPoolURI release
-myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "http://deb9.seereason.com/"
+myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "http://deb.seereason.com/"
 myPoolURI _ = "http://deb.seereason.com/"
 
 -- An alternate url for the same repository the upload-uri points to,
@@ -64,7 +64,7 @@ vendorString = _unVendor . _vendorName . baseRelease
 -- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
 myURIPrefix :: ReleaseTree -> String
 myURIPrefix (PrivateRelease rel) = myURIPrefix rel
-myURIPrefix (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "ssh://upload@deb86.seereason.com/srv"
+myURIPrefix (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "ssh://upload@deb.seereason.com/srv"
 myURIPrefix _ = "ssh://upload@deb.seereason.com/srv"
 
 ----------------------- BUILD RELEASE ----------------------------
