@@ -34,12 +34,14 @@ import Debian.Version (parseDebianVersion')
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Distribution.Pretty (prettyShow)
 import Prelude hiding (map)
+import Debug.Trace (trace)
 
 myParams :: FilePath -> ReleaseTree -> ParamRec
 myParams home myBuildRelease =
-    let myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
-        myBuildURIPrefix = "http://deb.seereason.com"
-        params = (defaultParams (releaseString myBuildRelease)
+    let myUploadURIPrefix = "ssh://upload@deb8.seereason.com/srv"
+        myBuildURIPrefix = "ssh://upload@deb8.seereason.com/srv"
+        params = (defaultParams
+                   (releaseString myBuildRelease)
                    myCompilerVersion
                    myUploadURIPrefix
                    myBuildURIPrefix

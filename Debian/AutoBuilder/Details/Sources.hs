@@ -45,7 +45,9 @@ myPoolDir _ = "deb"
 -- | URI used to download packages
 myPoolURI (PrivateRelease release) = myPoolURI release
 myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "http://deb.seereason.com/"
-myPoolURI _ = "http://deb.seereason.com/"
+-- No http server running on genie right now
+--myPoolURI _ = "http://deb8.seereason.com/"
+myPoolURI _ = "ssh://upload@deb8.seereason.com/srv/deb/"
 
 -- An alternate url for the same repository the upload-uri points to,
 -- used for downloading packages that have already been installed
@@ -64,8 +66,8 @@ vendorString = _unVendor . _vendorName . baseRelease
 -- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
 myURIPrefix :: ReleaseTree -> String
 myURIPrefix (PrivateRelease rel) = myURIPrefix rel
-myURIPrefix (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "ssh://upload@deb.seereason.com/srv"
-myURIPrefix _ = "ssh://upload@deb.seereason.com/srv"
+myURIPrefix (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "ssh://upload@deb86.seereason.com/srv"
+myURIPrefix _ = "ssh://upload@deb8.seereason.com/srv"
 
 ----------------------- BUILD RELEASE ----------------------------
 
