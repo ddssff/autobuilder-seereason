@@ -136,6 +136,7 @@ myIncludePackages myBuildRelease =
     , "pkg-config"              -- Some packages now depend on this package via new cabal options.
     , "debian-keyring"
     , "locales"
+    , "openssh-client"
     , "software-properties-common" -- Required to run add-apt-repository to use a PPA.
     -- , "cabal-install"
     ] ++
