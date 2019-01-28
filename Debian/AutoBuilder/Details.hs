@@ -34,7 +34,6 @@ import Debian.Version (parseDebianVersion')
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Distribution.Pretty (prettyShow)
 import Prelude hiding (map)
-import Debug.Trace (trace)
 
 myParams :: FilePath -> ReleaseTree -> ParamRec
 myParams home myBuildRelease =

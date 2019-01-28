@@ -359,7 +359,6 @@ commonTargets = do
   _generics_sop <- hackage (Just "0.4.0.1") "generics-sop" >>= debianize [] >>= ghcjs_also
   _genI <- darcs "http://hub.darcs.net/kowey/GenI" >>= patch $(embedFile "patches/GenI.diff") >>= debianize [] >>= inGroups ["GenI"] >>= skip (Reason "hub.darcs.net retrieve failed")
   _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] >>= skip (Reason "Encountered missing dependencies: 2> binary ==0.8.*")
-  _ghc_boot_th <- hackage (Just "8.6.1") "ghc-boot-th" >>= debianize []
   _ghc_exactprint <- git "https://github.com/alanz/ghc-exactprint" [] >>= debianize []
   _terminal_size <- hackage (Just "0.3.2.1") "terminal-size"  >>= flag (P.DebVersion "0.3.2.1-4build1") >>= debianize [] >>= inGroups ["ghcid"]
   _ghcid <- hackage (Just "0.6.4") "ghcid" >>= debianize [] >>= inGroups ["ghcid"]
