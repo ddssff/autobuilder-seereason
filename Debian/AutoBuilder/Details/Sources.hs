@@ -39,15 +39,15 @@ myUploadURI myBuildRelease =
 
 myPoolDir :: ReleaseTree -> String
 myPoolDir (PrivateRelease release) = myPoolDir release ++ "-private"
-myPoolDir (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "deb"
-myPoolDir _ = "deb"
+myPoolDir (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "deb86"
+myPoolDir _ = "deb86"
 
 -- | URI used to download packages
 myPoolURI (PrivateRelease release) = myPoolURI release
-myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "http://deb.seereason.com/"
+myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "ssh://upload@deb8.seereason.com/srv/deb86/"
 -- No http server running on genie right now
 --myPoolURI _ = "http://deb8.seereason.com/"
-myPoolURI _ = "ssh://upload@deb8.seereason.com/srv/deb/"
+myPoolURI _ = "ssh://upload@deb8.seereason.com/srv/deb86/"
 
 -- An alternate url for the same repository the upload-uri points to,
 -- used for downloading packages that have already been installed

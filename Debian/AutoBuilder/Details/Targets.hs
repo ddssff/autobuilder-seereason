@@ -39,7 +39,7 @@ public params = do
   let targets =
           case rel of
             -- Right now the target lists are identical - I'm just building a newer ghcjs
-            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "bionic"))) distro | distro == seeReason8 -> Xenial.buildTargets84
+            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "bionic"))) distro | distro == seeReason8 -> Xenial.buildTargets86
             ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "bionic"))) distro | distro == seeReason86 -> Xenial.buildTargets86
             _ -> error $ "Unexpected release: " ++ show rel
   -- Dangerous when uncommented - build private targets into public, do not upload!!
