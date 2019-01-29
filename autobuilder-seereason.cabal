@@ -36,7 +36,6 @@ Library
     bytestring,
     Cabal,
     containers,
-    debian >= 3.89,
     fgl,
     filepath,
     file-embed,
@@ -61,10 +60,10 @@ Library
     Debian.AutoBuilder.Details.Xenial
 
   if flag(local-libs)
-    Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen, ../debian-repo, ../cabal-debian/src, ../cabal-debian/dist/build/autogen
+    Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen, ../debian-repo, ../cabal-debian/src, ../cabal-debian/dist/build/autogen, ../debian-haskell
     Build-Depends:
       time, exceptions, pureMD5, SHA, network-uri, pretty, sr-extra,
-      applicative-extras, zlib, tar, magic, syb, utf8-string, deepseq, transformers,
+      applicative-extras, zlib, bzlib, tar, magic, syb, utf8-string, deepseq, transformers,
                   template-haskell, ListLike, old-locale, old-time, directory, hsemail, parsec,
                   memoize, regex-tdfa, data-default, newtype-generics, ansi-wl-pprint,
                   optparse-applicative, HUnit, set-extra, Diff, HaXml, regex-compat
@@ -179,13 +178,44 @@ Library
       Debian.Debianize.VersionSplits
       Paths_cabal_debian
       System.Git
+      Debian.Apt.Index
+      Debian.Apt.Methods
+      Debian.Arch
+      Debian.Changes
+      Debian.Control
+      Debian.Control.Builder
+      Debian.Control.ByteString
+      Debian.Control.Common
+      Debian.Control.Policy
+      Debian.Control.String
+      Debian.Control.Text
+      Debian.Control.TextLazy
+      Debian.GenBuildDeps
+      Debian.Loc
+      Debian.Pretty
+      Debian.Relation
+      Debian.Relation.ByteString
+      Debian.Relation.Common
+      Debian.Relation.String
+      Debian.Relation.Text
+      Debian.Release
+      Debian.Sources
+      Debian.Time
+      Debian.URI
+      Debian.UTF8
+      Debian.Version
+      Debian.Version.Common
+      Debian.Version.Internal
+      Debian.Version.String
+      Debian.Version.Text
     Other-Modules:
       Debian.Orphans
   else
     Build-Depends:
       AutoBuilder >= 6.71,
       debian-repo >= 5.73,
-      cabal-debian >= 4.24.5
+      cabal-debian >= 4.24.5,
+      debian >= 3.89
 
   if flag(showplease)
     Hs-Source-Dirs: ../showplease
@@ -203,14 +233,14 @@ Executable autobuilder-seereason
     bytestring,
     Cabal,
     containers,
-    debian,
     file-embed,
     filepath,
     process,
+    process-extras >= 0.2.0,
     text
-  Build-Depends: process-extras >= 0.2.0
   if !flag(local-libs)
-    Build-Depends: AutoBuilder, debian-repo
+    Build-Depends: AutoBuilder, debian-repo, debian
+
 
 Executable seereason-darcs-backups
   if flag(local-libs)
