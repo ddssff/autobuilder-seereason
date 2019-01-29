@@ -29,7 +29,7 @@ flag local-libs
 Library
   Default-Language: Haskell2010
   Hs-Source-Dirs: .
-  GHC-Options: -threaded -Wall -Wwarn -O2 -Wredundant-constraints -Wno-missing-signatures
+  GHC-Options: -Wall -Wwarn -Wredundant-constraints -Wno-missing-signatures
   Build-Depends:
     archive >= 1.7,
     base >= 4,
@@ -226,7 +226,7 @@ Executable autobuilder-seereason
   Default-Language: Haskell2010
   Hs-Source-Dirs: Tools
   Main-Is: AutoBuilder.hs
-  GHC-Options: -threaded -Wall -Wwarn -O2 -Wredundant-constraints
+  GHC-Options: -threaded -Wall -Wwarn -Wredundant-constraints
   Build-Depends:
     autobuilder-seereason,
     base >= 4,
@@ -248,6 +248,6 @@ Executable seereason-darcs-backups
   Default-Language: Haskell2010
   Hs-Source-Dirs: Tools
   Main-Is: Backups.hs
-  GHC-Options: -threaded -Wall -Wwarn -O2
+  GHC-Options: -threaded -Wall -Wwarn
   Build-depends: base, sr-extra, network-uri
   Build-Depends: archive >= 1.7
