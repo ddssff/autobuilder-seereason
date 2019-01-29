@@ -135,7 +135,7 @@ commonTargets = do
   _charset <- hackage (Just "0.3.7.1") "charset" >>= flag (P.DebVersion "0.3.7.1-6build3") >>= debianize [] >>= ghcjs_also
   _charsetdetect_ae <- hackage (Just "1.1.0.3") "charsetdetect-ae" >>= flag (P.DebVersion "1.1.0.3-1") >>= debianize []
   -- _cheapskate <- git "https://github.com/seereason/cheapskate" [] {-hackage (Just "0.1.0.3") "cheapskate"-} >>= debianize [] >>= skip (Reason "data default dependency")
-  _cheapskate <- hackage (Just "0.1.1.1") "cheapskate" >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
+  _cheapskate <- hackage (Just "0.1.1.1") "cheapskate" >>= debianize [] >>= ghcjs_also
   _chili <- git "https://github.com/seereason/chili.git" [] >>= inGroups ["appraisalscribe"] >>= debianize [] >>= ghcjs_only
   _cipher_aes128 <- hackage (Just "0.7.0.4") "cipher-aes128" >>= debianize [] >>= inGroups ["authenticate", "important"]
   _cipher_aes <- hackage (Just "0.2.11") "cipher-aes" >>= flag (P.DebVersion "0.2.11-5build7") >>= debianize []
@@ -453,7 +453,7 @@ commonTargets = do
   _happstack_jmacro <-  (git "https://github.com/Happstack/happstack-jmacro.git" []) >>= debianize [] >>= inGroups ["happstack", "important"]
   _happstack_lite <- git "https://github.com/Happstack/happstack-lite" [] >>= debianize [] >>= inGroups ["happstack", "important"] -- hackage 7.3.6 depends on happstack-server < 7.5
   _happstack_plugins <-  (hackage (Just "7.0.2") "happstack-plugins" >>= patch $(embedFile "patches/happstack-plugins.diff")) >>= debianize [] >>= skip (Reason "Needs plugins-auto")
-  _happstack_scaffolding <-  (git "https://github.com/seereason/happstack-scaffolding" [] >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["seereason", "important", "acid-state", "happstack", "tmp"]
+  _happstack_scaffolding <-  (git "https://github.com/seereason/happstack-scaffolding" [] >>= flag (P.BuildDep "hsx2hs")) >>= debianize [] >>= inGroups ["seereason", "important", "acid-state", "happstack"]
   _happstack_search <- git "https://github.com/seereason/happstack-search" [] >>= debianize [] >>= inGroups ["happstack", "important"]
               -- ,  (hackage (Just "7.4.6.2") "happstack-server") >>= debianize []
   _happstack_server <- hackage (Just "7.5.1.3") "happstack-server" >>=
@@ -920,7 +920,7 @@ commonTargets = do
   _scotty <- hackage (Just "0.10.2") "scotty" {- >>= patch $(embedFile "patches/scotty.diff") -} >>= debianize [] >>= skip (Reason "data-default dependency")
   _seclib <-  (darcs ("http://src.seereason.com/seclib")) >>= debianize [] >>= skip (Reason "No instance for (Applicative (Sec s))")
   _securemem <- hackage (Just "0.1.10") "securemem" >>= debianize []
-  _seereason_base <- git "https://github.com/seereason/seereason-base" [] >>= debianize [] >>= inGroups ["seereason", "important", "acid-state", "tmp"]
+  _seereason_base <- git "https://github.com/seereason/seereason-base" [] >>= debianize [] >>= inGroups ["seereason", "important", "acid-state"]
   _seereason_keyring <- darcs ("http://src.seereason.com/seereason-keyring") >>= flag (P.UDeb "seereason-keyring-udeb")
   _seereason_ports <-  (git "https://github.com/seereason/seereason-ports" []) >>= debianize []
   _semigroupoids <- hackage (Just "5.3.1") "semigroupoids" >>= apply (replacement "semigroupoids" "semigroupoid-extras") >>= debianize [] >>= inGroups ["kmett"] >>= ghcjs_also
@@ -933,20 +933,20 @@ commonTargets = do
   -- _servant_auth <- hackage (Just "0.3.2.0") "servant-auth" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   -- _servant_blaze <- hackage (Just "0.8") "servant-blaze" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_client_core <- hackage (Just "0.15") "servant-client-core" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
-  _servant_client <-      hackage ({-Just "0.13.0.1"-} Nothing) "servant-client" >>= {-patch $(embedFile "patches/servant-client.diff") >>=-} debianize [] >>= inGroups ["servant", "tmp"] >>= ghcjs_also
+  _servant_client <-      hackage ({-Just "0.13.0.1"-} Nothing) "servant-client" >>= {-patch $(embedFile "patches/servant-client.diff") >>=-} debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_docs <-        hackage (Just "0.11.3") "servant-docs" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_foreign <-     hackage (Just "0.15") "servant-foreign" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_js <-          hackage Nothing "servant-js" >>= debianize [] >>= inGroups ["servant"]
   _servant_mock <-        hackage (Just "0.9.4") "servant-mock" >>= debianize [] >>= inGroups ["servant"] >>= skip (Reason "Requires http-types<0.12")
-  _servant_pagination <-  hackage (Just "2.1.3") "servant-pagination" >>= debianize [] >>= inGroups ["servant", "tmp"]
+  _servant_pagination <-  hackage (Just "2.1.3") "servant-pagination" >>= debianize [] >>= inGroups ["servant"]
   _servant_purescript <-  hackage (Just "0.9.0.2") "servant-purescript" >>= debianize [] >>= inGroups ["servant"] >>= skip (Reason "<> not in scope")
   _servant_quickcheck <-  hackage (Just "0.0.7.3") "servant-quickcheck" >>= debianize [] >>= inGroups ["servant"] >>= skip (Reason "Requires quickcheck<2.11, hspec<2.5")
-  -- _servant_server <-      hackage (Just "0.15") "servant-server" >>= {-patch $(embedFile "patches/servant-server.diff") >>=-} debianize [] >>= inGroups ["servant", "tmp"]
-  _servant_subscriber <-  hackage (Just "0.6.0.1") "servant-subscriber" >>= debianize [] >>= inGroups ["servant", "tmp"]
+  -- _servant_server <-      hackage (Just "0.15") "servant-server" >>= {-patch $(embedFile "patches/servant-server.diff") >>=-} debianize [] >>= inGroups ["servant"]
+  _servant_subscriber <-  hackage (Just "0.6.0.1") "servant-subscriber" >>= debianize [] >>= inGroups ["servant"]
   -- _servant_swagger <-     hackage (Just "1.1.5") "servant-swagger" >>= debianize [] >>= inGroups ["servant"]
   -- _servant_swagger_ui <-  hackage (Just "0.3.0.3.13.2") "servant-swagger-ui" >>= debianize [] >>= inGroups ["servant"]
   -- _servant_swagger_ui_core <- hackage (Just "0.3.1") "servant-swagger-ui-core" >>= debianize [] >>= inGroups ["servant"]
-  _servant_tracing <-     hackage (Just "0.1.0.2") "servant-tracing" >>= debianize [] >>= inGroups ["servant"] >>= inGroups ["servant", "tmp"]
+  _servant_tracing <-     hackage (Just "0.1.0.2") "servant-tracing" >>= debianize [] >>= inGroups ["servant"] >>= inGroups ["servant"]
 
   _setenv <- hackage (Just "0.1.1.3") "setenv" >>= flag (P.DebVersion "0.1.1.3-6build1") >>= debianize [] >>= ghcjs_also
   _set_extra <- hackage (Just "1.4.1") "set-extra" >>= flag (P.DebVersion "1.4.1") >>= debianize [] >>= ghcjs_also
