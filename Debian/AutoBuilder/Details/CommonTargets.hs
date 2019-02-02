@@ -771,6 +771,7 @@ commonTargets = do
   -- that is not visible to ghcjs.  Also, many packages depend on network < 2.7.
   _network26 <- hackage (Just "2.6.3.5") "network" >>= debianize [] >>= inGroups ["platform", "ghcjs-comp"] >>= ghcjs_also
   -- _network27 <- hackage (Just "2.7.0.1") "network" >>= debianize [] >>= inGroups ["platform", "ghcjs-comp"]
+  _network_arbitrary <- hackage (Just "0.4.0.2") "network-arbitrary" >>= debianize [] >>= inGroups ["tmp"]
   _network_info <- hackage (Just "0.2.0.9") "network-info" >>= flag (P.DebVersion "0.2.0.9-1") >>= debianize [] >>= ghcjs_also
   _network_uri <- hackage (Just "2.6.1.0") "network-uri" >>= flag (P.DebVersion "2.6.1.0-3build2") >>= debianize [] >>= inGroups ["platform", "ghcjs-comp", "ghc8-comp"] >>= ghcjs_also
   _newtype_generics <- hackage (Just "0.5.3") "newtype-generics" >>= debianize [] >>= ghcjs_also

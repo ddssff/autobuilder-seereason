@@ -43,6 +43,7 @@ Library
     mtl,
     pretty-show,
     process,
+    QuickCheck,
     text,
     unix,
     process-extras >= 0.2.0,

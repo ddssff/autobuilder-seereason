@@ -15,11 +15,7 @@ import Control.Monad (when)
 import Control.Monad.State (execState {-, modify, MonadState-})
 -- import Data.Map as Map (elems, insert, map)
 import Data.Maybe
-#if MIN_VERSION_Cabal(2,0,0)
-import Distribution.Version (showVersion, Version)
-#else
-import Data.Version (showVersion, Version)
-#endif
+import Distribution.Version (Version)
 import Debian.AutoBuilder.Details.Common (TSt)
 import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
@@ -177,7 +173,7 @@ myOptionalIncludePackages =
             BinPkgName "cabal-install",
             BinPkgName "ghcjs"]
        Just v ->
-           [BinPkgName ("ghc-" ++ showVersion v),
+           [BinPkgName ("ghc-" ++ prettyShow v),
             BinPkgName ("cabal-install-" ++ prettyShow (hvrCabalVersion v)),
             -- Switch to ghcjs-8.0 once it is built
             BinPkgName "ghcjs-8.0.1"])
