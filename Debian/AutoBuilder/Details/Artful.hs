@@ -22,8 +22,7 @@ import Debian.AutoBuilder.Types.Packages as P (PackageFlag(CabalPin, DevelDep, D
 --import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 --import Debian.Debianize as D (doExecutable, execCabalM, rulesFragments, InstallFile(..), debInfo, atomSet, Atom(InstallData))
 --import Debian.Relation (BinPkgName(..))
-import Debian.Release (ReleaseName(..))
-import Debian.Releases (baseRelease, BaseRelease(..))
+import Debian.Releases (baseRelease, ReleaseTree(UbuntuRelease), UbuntuRelease(..))
 import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, {-Patch,-} Debianize'', Hackage {-, Git-}), GitSpec(Commit, Branch))
 
 buildTargets :: Monad m => TSt m ()
@@ -51,15 +50,15 @@ findGroup name =
 
 artfulTargets :: Monad m => TSt m ()
 artfulTargets = do
-  rel <- (_releaseName . baseRelease) <$> use release
+  rel <- baseRelease <$> use release
   _acid_state <- git "https://github.com/acid-state/acid-state" [{-Branch "log-inspection"-}] >>=
                  debianize [] >>= aflag (P.DebVersion "0.14.2-3build2") >>= inGroups ["happstack", "important"] >>= ghcjs_also
   _adjunctions <- hackage (Just "4.3") "adjunctions" >>= debianize [] >>= aflag (P.DebVersion "4.3-4build3") >>= ghcjs_also
   _aeson <- let version = case rel of
                             -- Idea is to stick to the version shipped with ghcjs,
                             -- but we are already ahead in the trusty repo.
-                            ReleaseName "trusty" -> {-"0.9.0.1"-} "0.11.2.0"
-                            ReleaseName "artful" -> "0.11.3.0" in
+                            UbuntuRelease Trusty -> {-"0.9.0.1"-} "0.11.2.0"
+                            UbuntuRelease Artful -> "0.11.3.0" in
             hackage (Just version) "aeson" >>= debianize [] >>= flag (P.CabalPin version) >>=
             flag (P.CabalDebian ["--missing-dependency", "libghc-fail-doc"]) >>= aflag (P.DebVersion "0.11.3.0-1build1") >>= inGroups ["important"] {->>= ghcjs_also-}
   _aeson_qq <-  hackage (Just "0.8.2") "aeson-qq" >>= debianize [] >>= inGroups [ "authenticate", "important"]
@@ -196,8 +195,8 @@ artfulTargets = do
   _groom <-  (hackage (Just "0.1.2") "groom") >>= debianize [] >>= ghcjs_also
   _haddock_library <-
       case rel of
-        ReleaseName "artful" -> hackage (Just "1.4.3") "haddock-library" >>= flag (P.DebVersion "1.4.3-1") >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
-        ReleaseName "trusty" -> hackage (Just "1.2.1") "haddock-library" >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
+        UbuntuRelease Artful -> hackage (Just "1.4.3") "haddock-library" >>= flag (P.DebVersion "1.4.3-1") >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
+        UbuntuRelease Trusty -> hackage (Just "1.2.1") "haddock-library" >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
   _happstack_authenticate_0 <-  (git "https://github.com/Happstack/happstack-authenticate-0.git" []
                              >>= flag (P.CabalDebian [ "--debian-name-base", "happstack-authenticate-0",
                                                     "--cabal-flags", "migrate",
@@ -308,7 +307,7 @@ artfulTargets = do
   _lifted_base <-  (hackage (Just "0.2.3.8") "lifted-base") >>= debianize [] >>= aflag (P.DebVersion "0.2.3.10-1") >>= ghcjs_also
   _listLike <- git "https://github.com/JohnLato/ListLike" [] >>=
                flag (P.CabalDebian ["--cabal-flags", "safe"]) >>=
-               (if rel == ReleaseName "artful" then flag (P.DebVersion "4.5.1-1build1") else return) >>=
+               (if rel == UbuntuRelease Artful then flag (P.DebVersion "4.5.1-1build1") else return) >>=
                debianize [] >>=
                inGroups ["pretty", "autobuilder-group"] >>= ghcjs_also
   _logic_classes <-  (git "https://github.com/seereason/logic-classes" []) >>= debianize [] >>= inGroups ["seereason", "important"]
@@ -331,11 +330,11 @@ artfulTargets = do
   -- _nodejs <- uri "https://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz" "5523ec4347d7fe6b0f6dda1d1c7799d5" >>=
   --            debdir (Git "https://github.com/seereason/nodejs-debian" []) >>= inGroups ["ghcjs-comp"]
   _nodejs <- case rel of
-               ReleaseName "artful" -> uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
+               UbuntuRelease Artful -> uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
                          debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~trusty1.debian.tar.xz" "a93243ac859fae3a6832522b55f698bd") >>=
                          flag (P.RelaxDep "libssl-dev") >>=
                          inGroups ["ghcjs-comp"]
-               ReleaseName "trusty" -> uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
+               UbuntuRelease Trusty -> uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5.orig.tar.gz" "a2a820b797fb69ffb259b479c7f5df32" >>=
                          debdir (Uri "https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.9.5-1nodesource1~trusty1.debian.tar.xz" "a93243ac859fae3a6832522b55f698bd") >>=
                          flag (P.RelaxDep "libssl-dev") >>=
                          inGroups ["ghcjs-comp"]

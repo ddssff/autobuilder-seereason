@@ -22,8 +22,8 @@ module Debian.AutoBuilder.Details.Common
     , qflag
     , Reason(Reason)
     , replacement
-    , seeReason8
-    , seeReason86
+    --, seeReason8
+    --, seeReason86
     , sflag
     , skip0
     , skip
@@ -49,15 +49,13 @@ import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.Packages as P (release, PackageFlag, hackage, debianize, git, {-deletePackage,-} flag, PackageId, spec)
 import qualified Debian.AutoBuilder.Types.Packages as P (TSt)
 import Debian.Repo.Fingerprint (RetrieveMethod(..))
-import Debian.Release (ReleaseName(..))
-import Debian.Releases (Distro(..))
 import System.FilePath (takeBaseName)
 
 import Control.Monad.State (get)
 import Debian.Debianize as D
     (CabalInfo, CabalM, execCabalM, debInfo, binaryDebDescription, compilerFlavor, flags, relations, conflicts, replaces)
 import Debian.Relation (BinPkgName(..), Relation(Rel), Relations)
-import Debian.Releases (baseRelease, BaseRelease(..))
+import Debian.Releases (DebianRelease(..), HasBaseRelease(baseRelease), ReleaseTree(..), UbuntuRelease(..))
 --import Debian.Repo.Fingerprint (RetrieveMethod(Uri, DataFiles, Patch, Debianize'', Hackage {-, Git-}), GitSpec({-Commit,-} Branch))
 import Distribution.Compiler (CompilerFlavor(GHCJS))
 import System.FilePath((</>))
@@ -67,8 +65,8 @@ import System.FilePath((</>))
 
 type TSt m = P.TSt m
 
-seeReason8 = Distro "seereason"
-seeReason86 = Distro "seereason86"
+--seeReason8 = Distro "seereason"
+--seeReason86 = Distro "seereason86"
 
 -- data Build = Production | Testing
 -- build = Production
@@ -179,21 +177,21 @@ deletePackage :: Monad m => PackageId -> TSt m ()
 deletePackage i = P.packageMap %= Map.delete i
 
 sflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-sflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "squeeze" -> flag; _ -> noflag) fl i
+sflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of DebianRelease Squeeze -> flag; _ -> noflag) fl i
 pflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-pflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "precise" -> flag; _ -> noflag) fl i
+pflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of UbuntuRelease Precise -> flag; _ -> noflag) fl i
 tflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-tflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "trusty" -> flag; _ -> noflag) fl i
+tflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of UbuntuRelease Trusty -> flag; _ -> noflag) fl i
 qflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-qflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "quantal" -> flag; _ -> noflag) fl i
+qflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of UbuntuRelease Quantal -> flag; _ -> noflag) fl i
 wflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-wflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "wheezy" -> flag; _ -> noflag) fl i
+wflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of DebianRelease Wheezy -> flag; _ -> noflag) fl i
 aflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId
-aflag fl i = (_releaseName . baseRelease . view release <$> get) >>= \ r -> (case r of ReleaseName "artful" -> flag; _ -> noflag) fl i
+aflag fl i = (baseRelease . view release <$> get) >>= \ r -> (case r of UbuntuRelease Artful -> flag; _ -> noflag) fl i
 wskip :: Monad m => P.PackageId -> TSt m (Maybe P.PackageId)
 wskip i = do
-  r <- (_releaseName . baseRelease . view release <$> get)
-  case r of (ReleaseName "wheezy") -> deletePackage i >> return Nothing
+  r <- (baseRelease . view release <$> get)
+  case r of (DebianRelease Wheezy) -> deletePackage i >> return Nothing
             _ -> return $ Just i
 
 noflag :: Monad m => PackageFlag -> PackageId -> TSt m PackageId

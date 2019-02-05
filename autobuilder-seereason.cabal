@@ -67,7 +67,7 @@ Library
       applicative-extras, zlib, bzlib, tar, magic, syb, utf8-string, deepseq, transformers,
                   template-haskell, ListLike, old-locale, old-time, directory, hsemail, parsec,
                   memoize, regex-tdfa, data-default, newtype-generics, ansi-wl-pprint,
-                  optparse-applicative, HUnit, set-extra, Diff, HaXml, regex-compat
+                  optparse-applicative, HUnit, set-extra, Diff, HaXml, regex-compat, th-orphans, th-lift
 
     Exposed-Modules:
       Debian.AutoBuilder.BuildEnv,
@@ -201,6 +201,7 @@ Library
       Debian.Relation.Text
       Debian.Release
       Debian.Sources
+      Debian.TH
       Debian.Time
       Debian.URI
       Debian.UTF8

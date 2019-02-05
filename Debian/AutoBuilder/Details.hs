@@ -4,7 +4,7 @@
 -- building.  If you find yourself modifying other files I would like
 -- to hear about it.
 
-{-# LANGUAGE CPP, FlexibleContexts #-}
+{-# LANGUAGE CPP, FlexibleContexts, ScopedTypeVariables, TemplateHaskell, TypeFamilies #-}
 {-# OPTIONS -Wall #-}
 module Debian.AutoBuilder.Details
     ( myParams
@@ -13,19 +13,19 @@ module Debian.AutoBuilder.Details
 import Control.Lens -- (use, view, (%=))
 import Control.Monad (when)
 import Control.Monad.State (execState {-, modify, MonadState-})
--- import Data.Map as Map (elems, insert, map)
 import Data.Maybe
 import Distribution.Version (Version)
 import Debian.AutoBuilder.Details.Common (TSt)
-import Debian.AutoBuilder.Details.Sources (myUploadURI, myBuildURI, myReleaseAliases, mySources)
+import Debian.AutoBuilder.Details.Sources (myVendorURI, {-myDownloadURI,-} myReleaseURI, myReleaseAliases, mySources)
 import qualified Debian.AutoBuilder.Types.Packages as P
 import Debian.AutoBuilder.Types.DefaultParams (defaultParams)
 import Debian.AutoBuilder.Types.ParamRec (ParamRec(..))
 import Debian.GHC (hvrCabalVersion)
 import Debian.Relation (BinPkgName(..))
 import Debian.Releases as Releases
-    (ReleaseTree(..), Vendor(..), BaseRelease(..), releaseString, parseReleaseTree, isPrivateRelease, baseRelease)
+    (baseRelease, isPrivateRelease, parseReleaseTree, releaseString, ReleaseTree(..))
 import Debian.Repo.Slice (Slice, PPASlice{-(PersonalPackageArchive, ppaUser, ppaName)-})
+import Debian.TH (here)
 import Debian.Version (parseDebianVersion')
 import qualified Debian.AutoBuilder.Details.Targets as Targets
 import Distribution.Pretty (prettyShow)
@@ -36,6 +36,7 @@ myParams home myBuildRelease =
     let myUploadURIPrefix = "ssh://upload@deb8.seereason.com/srv"
         myBuildURIPrefix = "ssh://upload@deb8.seereason.com/srv"
         params = (defaultParams
+                   myBuildRelease
                    (releaseString myBuildRelease)
                    myCompilerVersion
                    myUploadURIPrefix
@@ -47,9 +48,9 @@ myParams home myBuildRelease =
                  , autobuilderEmail = "SeeReason Autobuilder <partners@seereason.com>"
                  , releaseSuffixes = myReleaseSuffixes
                  , extraRepos = myExtraRepos
-                 , uploadURI = myUploadURI myBuildRelease
-                 , buildURI = myBuildURI myBuildRelease
-                 , sources = mySources myBuildRelease
+                 , theVendorURI = myVendorURI $here myBuildRelease
+                 , theReleaseURI = myReleaseURI $here myBuildRelease
+                 , sources = mySources ["Debian.AutoBuilder.Details.myParams myBuildRelease=" ++ show myBuildRelease]  myBuildRelease
                  , globalRelaxInfo = myGlobalRelaxInfo
                  , includePackages = myIncludePackages myBuildRelease
                  , optionalIncludePackages = myOptionalIncludePackages
@@ -141,10 +142,10 @@ myIncludePackages myBuildRelease =
     -- I have observed that this solves the "ssh died unexpectedly"
     -- errors.
     (if isPrivateRelease myBuildRelease then [BinPkgName "ssh"] else []) ++
-    case _vendorName (baseRelease myBuildRelease) of
-      Vendor "debian" -> []
-      Vendor "ubuntu" -> [BinPkgName "ubuntu-keyring"]
-      _ -> error $ "Invalid base distro: " ++ show myBuildRelease
+    case baseRelease myBuildRelease of
+      DebianRelease _ -> []
+      UbuntuRelease _ -> [BinPkgName "ubuntu-keyring"]
+      _ -> error $ "Invalid base release: " ++ show myBuildRelease
 
 -- This will not be available when a new release is created, so we
 -- have to make do until it gets built and uploaded.
@@ -187,9 +188,9 @@ myExcludePackages _ = []
 
 myComponents :: ReleaseTree -> [String]
 myComponents myBuildRelease =
-    case _vendorName (baseRelease myBuildRelease) of
-      Vendor "debian" -> ["main", "contrib", "non-free"]
-      Vendor "ubuntu" -> ["main", "restricted", "universe", "multiverse"]
+    case baseRelease myBuildRelease of
+      DebianRelease _ -> ["main", "contrib", "non-free"]
+      UbuntuRelease _ -> ["main", "restricted", "universe", "multiverse"]
       _ -> error $ "Invalid base distro: " ++ show myBuildRelease
 
 myHackageServer :: String

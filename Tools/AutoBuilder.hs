@@ -9,6 +9,7 @@ import Debian.Releases (parseReleaseTree)
 import System.Environment (getEnv, getExecutablePath, getArgs)
 import System.Exit (exitWith)
 import System.Process (rawSystem)
+import Debug.Trace
 
 main = do
   user <- getEnv "USER"

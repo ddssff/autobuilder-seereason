@@ -1,26 +1,80 @@
 -- | The sources.list and everything required to build it:
 --     1. Repo URIs
 --     2. Release names
+{-# LANGUAGE CPP, FlexibleContexts, ScopedTypeVariables, TemplateHaskell #-}
 {-# OPTIONS -Wall -fno-warn-missing-signatures #-}
 module Debian.AutoBuilder.Details.Sources
     ( mySources
-    , myUploadURI
-    , myBuildURI
+    , myUploadURI'
+    , myVendorURI
+    , myReleaseURI
+    , myDownloadURI
+    , releaseURI
     , myReleaseAliases
+    , releaseFileURI
     -- , releaseRepoName
+    , tests
     ) where
 
+import Control.Lens (over, review, view)
+import Control.Monad.Except (MonadError, throwError)
+import Data.Foldable
 import Data.List as List (map)
-import Data.Maybe
 import Data.Set as Set (fromList, member, Set, toAscList)
-import Debian.AutoBuilder.Details.Common (seeReason8, seeReason86)
-import Debian.Release (ReleaseName(..))
-import Debian.Releases (Vendor(..), ReleaseTree(..), BaseRelease(..), allReleases, ubuntu,
-                        releaseString, isPrivateRelease, baseRelease)
-import Debian.Sources (DebSource(..), parseSourceLine)
-import Debian.URI
+import Debian.Releases
+    (allReleases, baseVendor, baseVendorString, DebianRelease(Jessie, Experimental),
+     ExtendedRelease(..), isPrivateRelease, HasBaseRelease(baseReleaseString), ReleaseTree(..),
+     releaseString, UbuntuRelease(..), ReleaseURI, releaseURI)
+import Debian.Sources (DebSource(..), parseSourceLine, VendorURI, vendorURI)
+import Debian.TH (here, Loc)
+import Debian.URI (parseURIReference', URI, URIError(URIOtherError), uriPathLens)
 import Prelude hiding (map)
 import System.FilePath ((</>))
+import Test.HUnit
+
+tests :: Test
+tests =
+    TestList
+    [ let rel = (PrivateRelease (ExtendedRelease (UbuntuRelease Bionic) SeeReason84)) in
+      TestCase (assertEqual ("uriPrefix " ++ show rel)
+                  (Right "ssh://upload@deb8.seereason.com/srv/deb-private")
+                  (fmap show (uriPrefix $here rel :: Either URIError URI)))
+
+    , let rel = (PrivateRelease (ExtendedRelease (UbuntuRelease Bionic) SeeReason84)) in
+      TestCase (assertEqual ("myUploadURI' " ++ show rel)
+                  (Right "ssh://upload@deb8.seereason.com/srv/deb-private/ubuntu/dists/bionic-seereason-private")
+                  (fmap (show . view releaseURI) $ myUploadURI' $here rel))
+    , let rel = (PrivateRelease (ExtendedRelease (UbuntuRelease Bionic) SeeReason86)) in
+      TestCase (assertEqual ("myUploadURI' " ++ show rel)
+                  (Right "ssh://upload@deb8.seereason.com/srv/deb86-private/ubuntu/dists/bionic-seereason-private")
+                  (fmap (show . view releaseURI) $ myUploadURI' $here rel))
+    , let rel = (ExtendedRelease (UbuntuRelease Bionic) SeeReason84) in
+      TestCase (assertEqual ("myUploadURI' " ++ show rel)
+                  (Right "ssh://upload@deb8.seereason.com/srv/deb/ubuntu/dists/bionic-seereason")
+                  (fmap (show . view releaseURI) $ myUploadURI' $here rel))
+    , let rel = (ExtendedRelease (UbuntuRelease Bionic) SeeReason86) in
+      TestCase (assertEqual ("myUploadURI' " ++ show rel)
+                  (Right "ssh://upload@deb8.seereason.com/srv/deb86/ubuntu/dists/bionic-seereason")
+                  (fmap (show . view releaseURI) $ myUploadURI' $here rel))
+#if 0
+    , let rel = (PrivateRelease (ExtendedRelease (UbuntuRelease Bionic) SeeReason84)) in
+      TestCase (assertEqual ("myDownloadURI " ++ show rel)
+                  (Right "ssh://upload@deb8.seereason.com/srv/deb-private/ubuntu")
+                  (fmap show $ myDownloadURI rel))
+    , let rel = (PrivateRelease (ExtendedRelease (UbuntuRelease Bionic) SeeReason86)) in
+      TestCase (assertEqual ("myDownloadURI " ++ show rel)
+                  (Right "ssh://upload@deb8.seereason.com/srv/deb86-private/ubuntu")
+                  (fmap show $ myDownloadURI rel))
+    , let rel = (ExtendedRelease (UbuntuRelease Bionic) SeeReason84) in
+      TestCase (assertEqual ("myDownloadURI " ++ show rel)
+                  (Right "ssh://upload@deb8.seereason.com/srv/deb/ubuntu")
+                  (fmap show $ myDownloadURI rel))
+    , let rel = (ExtendedRelease (UbuntuRelease Bionic) SeeReason86) in
+      TestCase (assertEqual ("myDownloadURI " ++ show rel)
+                  (Right "ssh://upload@deb8.seereason.com/srv/deb86/ubuntu")
+                  (fmap show $ myDownloadURI rel))
+#endif
+    ]
 
 -- This URI is the address of the remote repository to which packages
 -- will be uploaded after a run with no failures, when the myDoUpload
@@ -30,44 +84,81 @@ import System.FilePath ((</>))
 -- it is built for use as build dependencies of other packages during
 -- the same run.
 --
-myUploadURI :: ReleaseTree -> Maybe URI
-myUploadURI myBuildRelease =
-    parseURI (if isPrivateRelease myBuildRelease then myPrivateUploadURI else myPublicUploadURI)
+myUploadURI' :: MonadError URIError m => Loc -> ReleaseTree -> m ReleaseURI
+myUploadURI' = myReleaseURI
+
+myVendorURI :: MonadError URIError m => Loc -> ReleaseTree -> m VendorURI
+myVendorURI loc r = (review vendorURI . over uriPathLens (\p -> p </> review baseVendorString (baseVendor r))) <$> uriPrefix loc r
+
+myReleaseURI :: MonadError URIError m => Loc -> ReleaseTree -> m ReleaseURI
+myReleaseURI loc r = (review releaseURI . over uriPathLens (\p -> p </> review baseVendorString (baseVendor r) </> "dists" </> releaseString r)) <$> uriPrefix loc r
+
+-- | The download uri may have scheme http in addition to those of
+-- upload uri.  But right now there's no http server running on
+-- deb8.seereason.com.
+myDownloadURI :: MonadError URIError m => Loc -> ReleaseTree -> m ReleaseURI
+myDownloadURI = myReleaseURI
+
+releaseFileURI :: MonadError URIError m => ReleaseTree -> m URI
+releaseFileURI r = do
+  uri <- myDownloadURI $here r
+  let uri' = over (releaseURI . uriPathLens) (</> "Release") uri
+  return (view releaseURI uri')
+
+#if 0
+myPoolDir :: MonadError URIError m => ReleaseTree -> m URI
+myPoolDir = parseRelativeReference' . myPoolDir'
     where
-      myPrivateUploadURI = myURIPrefix myBuildRelease </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
-      myPublicUploadURI = myURIPrefix myBuildRelease </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
+      myPoolDir' (PrivateRelease release) = myPoolDir' release ++ "-private"
+      myPoolDir' (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName _)})) distro) | distro == SeeReason86 = "deb86"
+      myPoolDir' (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName _)})) distro) | distro == SeeReason84 = "deb"
+      myPoolDir' rel@(ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName _)})) _distro) = error ("myPoolDir - unexpected distro: " ++ show rel)
+      myPoolDir' rel = error $ "unexpected: myPoolDir " ++ show rel
 
-myPoolDir :: ReleaseTree -> String
-myPoolDir (PrivateRelease release) = myPoolDir release ++ "-private"
-myPoolDir (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "deb86"
-myPoolDir _ = "deb86"
-
--- | URI used to download packages
+-- | URI used to download packages.
+myPoolURI  :: MonadError URIError m => ReleaseTree -> m URI
+myPoolURI = myUploadURI
 myPoolURI (PrivateRelease release) = myPoolURI release
-myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "ssh://upload@deb8.seereason.com/srv/deb86/"
+myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName _)})) distro) | distro == SeeReason86 = parseURI' "ssh://upload@deb8.seereason.com/srv/deb86/"
+myPoolURI (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName _)})) distro) | distro == SeeReason84 = parseURI' "ssh://upload@deb8.seereason.com/srv/deb/"
 -- No http server running on genie right now
 --myPoolURI _ = "http://deb8.seereason.com/"
-myPoolURI _ = "ssh://upload@deb8.seereason.com/srv/deb86/"
+myPoolURI rel@(ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName _)})) _distro) = error ("Debian.AutoBuilder.Details.Sources.myPoolURI - unexpected distro: " ++ show rel)
+myPoolURI rel = error ("myPoolURI - unexpected: " ++ show rel)
+#endif
 
+#if 0
 -- An alternate url for the same repository the upload-uri points to,
 -- used for downloading packages that have already been installed
 -- there.
---
-myBuildURI :: ReleaseTree -> Maybe URI
-myBuildURI myBuildRelease =
-    parseURI (if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI)
+myBuildURI :: forall m. MonadError URIError m => ReleaseTree -> m URI
+myBuildURI myBuildRelease = myUploadURI' myBuildRelease
+    appendURIs =<<
+      (sequence
+         [(if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI),
+          myPoolURI myBuildRelease,
+          parseRelativeReference' (releaseURI myBuildRelease)])
     where
-      myPrivateBuildURI = myURIPrefix myBuildRelease </> (myPoolDir myBuildRelease) </> vendorString myBuildRelease
-      myPublicBuildURI = myPoolURI myBuildRelease ++ vendorString myBuildRelease
+      myPrivateBuildURI :: m URI
+      myPrivateBuildURI = appendURIs =<< (sequence [uriPrefix myBuildRelease, myPoolDir myBuildRelease, parseRelativeReference' (vendorString myBuildRelease)])
+      myPublicBuildURI :: m URI
+      myPublicBuildURI = appendURIs =<< (sequence [myPoolURI myBuildRelease, parseRelativeReference' (vendorString myBuildRelease)])
+#endif
+{-
+    parseURI =<< (if isPrivateRelease myBuildRelease then myPrivateBuildURI else myPublicBuildURI)
+    where
+      t1 x = trace ("Debian.AutoBuilder.Details.Sources.myBuildURI " ++ show ss ++ " " ++ show myBuildRelease ++ " -> " ++ show x) x
+-}
 
-vendorString :: ReleaseTree -> String
-vendorString = _unVendor . _vendorName . baseRelease
+-- vendorString :: ReleaseTree -> String
+-- vendorString = _unVendor . _vendorName . baseRelease
 
--- myUploadURIPrefix = "ssh://upload@deb.seereason.com/srv"
-myURIPrefix :: ReleaseTree -> String
-myURIPrefix (PrivateRelease rel) = myURIPrefix rel
-myURIPrefix (ExtendedRelease (Foundation (BaseRelease {_releaseName = (ReleaseName "bionic")})) distro) | distro == seeReason86 = "ssh://upload@deb86.seereason.com/srv"
-myURIPrefix _ = "ssh://upload@deb8.seereason.com/srv"
+-- | URI of the directory containing the base vendor directories (typically debian and ubuntu.)
+uriPrefix :: MonadError URIError m => Loc -> ReleaseTree -> m URI
+uriPrefix loc (PrivateRelease rel) = over uriPathLens (++ "-private") <$> uriPrefix loc rel
+uriPrefix _ (ExtendedRelease (UbuntuRelease Bionic) distro) | distro == SeeReason86 = parseURIReference' "ssh://upload@deb8.seereason.com/srv/deb86"
+uriPrefix _ (ExtendedRelease (UbuntuRelease Bionic) distro) | distro == SeeReason84 = parseURIReference' "ssh://upload@deb8.seereason.com/srv/deb"
+uriPrefix loc r = throwError $ URIOtherError ("uriPrefix " <> show loc <>  "- no URI for release " <> show r)
 
 ----------------------- BUILD RELEASE ----------------------------
 
@@ -85,17 +176,17 @@ releaseRepoName rname
                suffixes -> error $ "Redundant suffixes in myReleaseSuffixes: " ++ show suffixes
 -}
 
-derivedReleases :: ReleaseTree -> BaseRelease -> [ReleaseTree]
+derivedReleases :: ReleaseTree -> ReleaseTree -> [ReleaseTree]
 derivedReleases myBuildRelease baseRelease' =
-    [ExtendedRelease (Foundation baseRelease') seeReason8] ++
-    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') seeReason8)] else []) ++
-    [ExtendedRelease (Foundation baseRelease') seeReason86] ++
-    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease (Foundation baseRelease') seeReason86)] else [])
+    [ExtendedRelease baseRelease' SeeReason84] ++
+    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease baseRelease' SeeReason84)] else []) ++
+    [ExtendedRelease baseRelease' SeeReason86] ++
+    (if isPrivateRelease myBuildRelease then [PrivateRelease (ExtendedRelease baseRelease' SeeReason86)] else [])
 
 -- Our private releases are always based on our public releases, not
 -- directly on upstream releases.
 --
-derivedReleaseNames :: ReleaseTree -> BaseRelease -> [String]
+derivedReleaseNames :: ReleaseTree -> ReleaseTree -> [String]
 derivedReleaseNames myBuildRelease baseRelease' = map releaseString (derivedReleases myBuildRelease baseRelease')
 
 -- There is a debian standard for constructing the version numbers of
@@ -113,7 +204,9 @@ myReleaseAliases myBuildRelease =
      ("squeeze", "bpo60+"),
      ("squeeze-seereason", "bpo60+"),
      ("squeeze-seereason-private", "bpo60+")] ++
-    concatMap (\ rel -> List.map (\ der -> (der, relName (_releaseName rel))) (derivedReleaseNames myBuildRelease rel)) allReleases
+    concatMap
+      (\ rel -> List.map (\ der -> (der, baseReleaseString rel)) (derivedReleaseNames myBuildRelease rel))
+      allReleases
 
 ----------------------- SOURCES ----------------------------
 
@@ -122,62 +215,52 @@ myReleaseAliases myBuildRelease =
 -- that we can use any base release or build release name to look up a
 -- sources.list.
 --
-mySources :: ReleaseTree -> [(String, [DebSource])]
-mySources myBuildRelease =
+mySources :: [String] -> ReleaseTree -> [(String, [DebSource])]
+mySources ss myBuildRelease =
     List.map releaseSources
-            (map Foundation (toAscList allReleases) ++
+            (toAscList allReleases <>
              concatMap (derivedReleases myBuildRelease) allReleases)
     where
       releaseSources release =
-          (releaseString release, releaseSourceLines release myDebianMirrorHost myUbuntuMirrorHost)
+          (releaseString release, releaseSourceLines (("Debian.AutoBuilder.Details.Sources.mySources myBuildRelease=" ++ show myBuildRelease ++ " release=" ++ show release) : ss) release myDebianMirrorHost myUbuntuMirrorHost)
 
 -- Build a sources.list for one of our build relases.
 --
-releaseSourceLines :: ReleaseTree -> String -> String -> [DebSource]
-releaseSourceLines release debianMirrorHost ubuntuMirrorHost =
+releaseSourceLines :: [String] -> ReleaseTree -> String -> String -> [DebSource]
+releaseSourceLines ss release debianMirrorHost ubuntuMirrorHost =
     case release of
       PrivateRelease r ->
-          releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
-           (List.map parseSourceLine
-              [ "deb [trusted=yes] " ++ uri ++ " " ++ releaseString release ++ " main"
-              , "deb-src [trusted=yes] " ++ uri ++ " " ++ releaseString release ++ " main" ])
+        releaseSourceLines (("Debian.AutoBuilder.Details.Sources.releaseSourceLines release=" ++ show release) : ss) r debianMirrorHost ubuntuMirrorHost ++
+          case myVendorURI $here release of
+            Left _ -> []
+            Right uri ->
+              List.map (parseSourceLine $here)
+                  [ "deb [trusted=yes] " ++ show (view vendorURI uri) ++ " " ++ releaseString release ++ " main"
+                  , "deb-src [trusted=yes] " ++ show (view vendorURI uri) ++ " " ++ releaseString release ++ " main" ]
       ExtendedRelease r _d ->
-          releaseSourceLines r debianMirrorHost ubuntuMirrorHost ++
-          List.map parseSourceLine
-                  [ "deb [trusted=yes] " ++ uri ++ " " ++ releaseString release ++ " main"
-                  , "deb-src [trusted=yes] " ++ uri ++ " " ++ releaseString release ++ " main" ]
-      Foundation b -> baseReleaseSourceLines b debianMirrorHost ubuntuMirrorHost ++
-                      hvrSourceLines b
+          releaseSourceLines (("Debian.AutoBuilder.Details.Sources.releaseSourceLines release=" ++ show release) : ss) r debianMirrorHost ubuntuMirrorHost ++
+          case myVendorURI $here release of
+            Left _ -> []
+            Right uri ->
+              List.map (parseSourceLine $here)
+                  [ "deb [trusted=yes] " ++ show (view vendorURI uri) ++ " " ++ releaseString release ++ " main"
+                  , "deb-src [trusted=yes] " ++ show (view vendorURI uri) ++ " " ++ releaseString release ++ " main" ]
+      b@(DebianRelease Experimental) -> debianSourceLines ["[trusted=yes]"] debianMirrorHost Experimental ++ hvrSourceLines b
+      b@(DebianRelease release') -> debianSourceLines [] debianMirrorHost release' ++ hvrSourceLines b
+      b@(UbuntuRelease release') -> ubuntuSourceLines ubuntuMirrorHost release' ++ hvrSourceLines b
 
-    where
-      uri = show (fromJust (myBuildURI release))
-
-baseReleaseSourceLines :: BaseRelease -> String -> String -> [DebSource]
-baseReleaseSourceLines release debianMirrorHost ubuntuMirrorHost =
-    case release of
-      BaseRelease (Vendor "debian") (ReleaseName "experimental") -> debianSourceLines ["[trusted=yes]"] debianMirrorHost release
-      BaseRelease (Vendor "debian") _ -> debianSourceLines [] debianMirrorHost release
-      BaseRelease (Vendor "ubuntu") _ -> ubuntuSourceLines ubuntuMirrorHost release
-      _x -> error $ "Unknown release repository: " ++ show release
-
--- baseReleaseString :: ReleaseTree -> String
--- baseReleaseString = relName . _releaseName . baseRelease
-
-baseReleaseString :: BaseRelease -> String
-baseReleaseString = relName . _releaseName
-
-debianSourceLines :: [String] -> String -> BaseRelease -> [DebSource]
+debianSourceLines :: [String] -> String -> DebianRelease -> [DebSource]
 debianSourceLines trusted debianMirrorHost release =
-    List.map parseSourceLine
+    List.map (parseSourceLine $here)
       [ unwords (["deb"] ++ trusted ++ [debianMirrorHost ++ "/debian", baseReleaseString release, "main", "contrib", "non-free"])
       , unwords (["deb-src"] ++ trusted ++ [debianMirrorHost ++ "/debian", baseReleaseString release, "main", "contrib", "non-free" ]) ]
 
-ubuntuSourceLines :: String -> BaseRelease -> [DebSource]
+ubuntuSourceLines :: String -> UbuntuRelease -> [DebSource]
 ubuntuSourceLines ubuntuMirrorHost release =
-    List.map parseSourceLine $
+    List.map (parseSourceLine $here) $
       [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse"
       , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ " main restricted universe multiverse" ] ++
-      if _releaseName release == ReleaseName "artful"
+      if baseReleaseString release == "artful"
       then []
       else [ "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
            , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-updates main restricted universe multiverse"
@@ -186,23 +269,23 @@ ubuntuSourceLines ubuntuMirrorHost release =
            , "deb " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse"
            , "deb-src " ++ ubuntuMirrorHost ++ "/ubuntu/ " ++ baseReleaseString release ++ "-security main restricted universe multiverse" ]
 
-hvrSourceLines :: BaseRelease -> [DebSource]
+hvrSourceLines :: ReleaseTree -> [DebSource]
 hvrSourceLines release | release `member` hvrReleases =
-    List.map parseSourceLine $
+    List.map (parseSourceLine $here) $
     ["deb http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString release ++ " main",
      "deb-src http://ppa.launchpad.net/hvr/ghc/ubuntu " ++ baseReleaseString release ++ " main"]
-hvrSourceLines (BaseRelease {_releaseName = ReleaseName "jessie"}) =
-    List.map parseSourceLine ["deb http://downloads.haskell.org/debian jessie main"]
+hvrSourceLines (DebianRelease Jessie) =
+    List.map (parseSourceLine $here) ["deb http://downloads.haskell.org/debian jessie main"]
 hvrSourceLines _ = []
 
-hvrReleases :: Set BaseRelease
-hvrReleases = Set.fromList [BaseRelease ubuntu (ReleaseName "precise"),
-                            BaseRelease ubuntu (ReleaseName "trusty"),
-                            BaseRelease ubuntu (ReleaseName "utopic"),
-                            BaseRelease ubuntu (ReleaseName "vivid"),
-                            BaseRelease ubuntu (ReleaseName "wily"),
-                            BaseRelease ubuntu (ReleaseName "xenial"),
-                            BaseRelease ubuntu (ReleaseName "yakkety")]
+hvrReleases :: Set ReleaseTree
+hvrReleases = Set.fromList [UbuntuRelease Precise,
+                            UbuntuRelease Trusty,
+                            UbuntuRelease Utopic,
+                            UbuntuRelease Vivid,
+                            UbuntuRelease Wily,
+                            UbuntuRelease Xenial,
+                            UbuntuRelease Yakkety]
 
 -- These host names are used to construct the sources.list lines to
 -- access the Debian and Ubuntu repositories.  The anl.gov values here
@@ -216,5 +299,5 @@ myDebianMirrorHost = "http://ftp.debian.org"
 --myUbuntuMirrorHost = "http://mirror.umd.edu" -- sources line looks like: deb http://mirror.umd.edu/ubuntu/ trusty main restricted universe multiverse
 --myUbuntuMirrorHost = "http://ubuntu.mirrors.tds.net/pub/ubuntu"
 --myUbuntuMirrorHost = "http://ubuntu.cs.utah.edu"  -- Very slow!
-myUbuntuMirrorHost = "http://archive.ubuntu.com/ubuntu"
+myUbuntuMirrorHost = "http://archive.ubuntu.com"
 --myUbuntuMirrorHost = "http://mirror.picosecond.org/ubuntu"

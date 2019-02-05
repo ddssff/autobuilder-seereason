@@ -6,28 +6,21 @@ module Debian.AutoBuilder.Details.Targets
     , private
     ) where
 
-import Control.Applicative ((<$>), (<*>))
-import Control.Lens ((%=), (%~), use, view)
-import Control.Monad.State (execState, execStateT, get, modify)
+import Control.Lens ((%=), (%~), use)
 import Data.List as List (map)
 import Data.Map as Map (insert, map)
-import Data.Monoid (mappend)
 import qualified Debian.AutoBuilder.Types.Packages as P hiding (TSt)
-import Debian.AutoBuilder.Types.Packages hiding (TSt)
+import Debian.AutoBuilder.Types.Packages (Package(Package), _flags, packageMap, release, _spec) {-hiding (TSt)-}
 import Debian.Debianize as D (CabalInfo, debInfo, execMap)
 import Debian.Relation (Relation(..), BinPkgName(..))
 import Debian.Relation.String (parseRelations)
-import Debian.Release (ReleaseName(..))
-import Debian.Releases (BaseRelease(..), baseRelease, Distro(..), ReleaseTree(..))
+import Debian.Releases (baseRelease, DebianRelease(..), ExtendedRelease(SeeReason84, SeeReason86),
+                        ReleaseTree(..), UbuntuRelease(..))
 import qualified Debian.Repo.Fingerprint as P
-import Debian.AutoBuilder.Details.Common (seeReason8, seeReason86, TSt)
-import qualified Debian.AutoBuilder.Details.Artful as Artful
+import Debian.AutoBuilder.Details.Common (TSt)
 import qualified Debian.AutoBuilder.Details.Xenial as Xenial
 import qualified Debian.AutoBuilder.Details.Private as Private
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
---import Debian.Repo.MonadApt (MonadApt)
-import Debian.Repo.Slice (NamedSliceList, SourcesChangedAction)
-import Debian.Repo.State.AptImage (withAptImage)
 
 -- |Each of theses lists can be built on their own as a group,
 -- and any sequence of groups can be built together as long as
@@ -38,9 +31,8 @@ public params = do
   rel <- use release
   let targets =
           case rel of
-            -- Right now the target lists are identical - I'm just building a newer ghcjs
-            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "bionic"))) distro | distro == seeReason8 -> Xenial.buildTargets86
-            ExtendedRelease (Foundation (BaseRelease _ (ReleaseName "bionic"))) distro | distro == seeReason86 -> Xenial.buildTargets86
+            ExtendedRelease (UbuntuRelease Bionic) distro | distro == SeeReason84 -> Xenial.buildTargets84
+            ExtendedRelease (UbuntuRelease Bionic) distro | distro == SeeReason86 -> Xenial.buildTargets86
             _ -> error $ "Unexpected release: " ++ show rel
   -- Dangerous when uncommented - build private targets into public, do not upload!!
   -- private params >>
@@ -77,7 +69,7 @@ isDebianizeSpec _ = False
 
 -- | Add MapDep and DevelDep flags Supply some special cases to map cabal library names to debian.
 applyDepMap :: Monad m => ReleaseTree -> TSt m ()
-applyDepMap release =
+applyDepMap reltree =
     packageMap %= Map.map f
     where
       f x = x {P._flags = P._flags x ++ mappings}
@@ -96,9 +88,9 @@ applyDepMap release =
                   P.MapDep "Xxf86vm" (deb "libxxf86vm-dev"),
                   P.MapDep "pthread" (deb "libc6-dev"),
                   P.MapDep "Xrandr" (rel ("libxrandr-dev" ++
-                                          case baseRelease release of
-                                            BaseRelease _ (ReleaseName "wheezy") -> " (= 2:1.3.2-2+deb7u1)"
-                                            BaseRelease _ (ReleaseName "precise") -> " (= 2:1.3.2-2ubuntu0.2)"
+                                          case baseRelease reltree of
+                                            DebianRelease Wheezy -> " (= 2:1.3.2-2+deb7u1)"
+                                            UbuntuRelease Precise -> " (= 2:1.3.2-2ubuntu0.2)"
                                             _ -> "")),
                   -- the libxrandr-dev-lts-quantal package installs
                   -- /usr/lib/x86_64-linux-gnu/libXrandr_ltsq.so.
