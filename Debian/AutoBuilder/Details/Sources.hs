@@ -21,13 +21,16 @@ import Control.Monad.Except (MonadError, throwError)
 import Data.Foldable
 import Data.List as List (map)
 import Data.Set as Set (fromList, member, Set, toAscList)
+import Debian.Except (fromIOException, HasIOException)
 import Debian.Releases
     (allReleases, baseVendor, baseVendorString, DebianRelease(Jessie, Experimental),
      ExtendedRelease(..), isPrivateRelease, HasBaseRelease(baseReleaseString), ReleaseTree(..),
      releaseString, UbuntuRelease(..), ReleaseURI, releaseURI)
-import Debian.Sources (DebSource(..), parseSourceLine, VendorURI, vendorURI)
+import Debian.Repo.DebError (DebError)
+import Debian.Sources (DebSource(..), parseSourceLine)
 import Debian.TH (here, Loc)
-import Debian.URI (parseURIReference', URI, URIError(URIOtherError), uriPathLens)
+import Debian.URI (HasURIError, parseURIReference', URI, uriPathLens)
+import Debian.VendorURI (VendorURI, vendorURI)
 import Prelude hiding (map)
 import System.FilePath ((</>))
 import Test.HUnit
@@ -38,24 +41,24 @@ tests =
     [ let rel = (PrivateRelease (ExtendedRelease (UbuntuRelease Bionic) SeeReason84)) in
       TestCase (assertEqual ("uriPrefix " ++ show rel)
                   (Right "ssh://upload@deb8.seereason.com/srv/deb-private")
-                  (fmap show (uriPrefix $here rel :: Either URIError URI)))
+                  (fmap show (uriPrefix $here rel :: Either DebError URI)))
 
     , let rel = (PrivateRelease (ExtendedRelease (UbuntuRelease Bionic) SeeReason84)) in
       TestCase (assertEqual ("myUploadURI' " ++ show rel)
                   (Right "ssh://upload@deb8.seereason.com/srv/deb-private/ubuntu/dists/bionic-seereason-private")
-                  (fmap (show . view releaseURI) $ myUploadURI' $here rel))
+                  (fmap (show . view releaseURI) $ (myUploadURI' $here rel :: Either DebError ReleaseURI)))
     , let rel = (PrivateRelease (ExtendedRelease (UbuntuRelease Bionic) SeeReason86)) in
       TestCase (assertEqual ("myUploadURI' " ++ show rel)
                   (Right "ssh://upload@deb8.seereason.com/srv/deb86-private/ubuntu/dists/bionic-seereason-private")
-                  (fmap (show . view releaseURI) $ myUploadURI' $here rel))
+                  (fmap (show . view releaseURI) $ (myUploadURI' $here rel :: Either DebError ReleaseURI)))
     , let rel = (ExtendedRelease (UbuntuRelease Bionic) SeeReason84) in
       TestCase (assertEqual ("myUploadURI' " ++ show rel)
                   (Right "ssh://upload@deb8.seereason.com/srv/deb/ubuntu/dists/bionic-seereason")
-                  (fmap (show . view releaseURI) $ myUploadURI' $here rel))
+                  (fmap (show . view releaseURI) $ (myUploadURI' $here rel :: Either DebError ReleaseURI)))
     , let rel = (ExtendedRelease (UbuntuRelease Bionic) SeeReason86) in
       TestCase (assertEqual ("myUploadURI' " ++ show rel)
                   (Right "ssh://upload@deb8.seereason.com/srv/deb86/ubuntu/dists/bionic-seereason")
-                  (fmap (show . view releaseURI) $ myUploadURI' $here rel))
+                  (fmap (show . view releaseURI) $ (myUploadURI' $here rel :: Either DebError ReleaseURI)))
 #if 0
     , let rel = (PrivateRelease (ExtendedRelease (UbuntuRelease Bionic) SeeReason84)) in
       TestCase (assertEqual ("myDownloadURI " ++ show rel)
@@ -84,22 +87,22 @@ tests =
 -- it is built for use as build dependencies of other packages during
 -- the same run.
 --
-myUploadURI' :: MonadError URIError m => Loc -> ReleaseTree -> m ReleaseURI
+myUploadURI' :: (HasIOException e, HasURIError e, MonadError e m) => Loc -> ReleaseTree -> m ReleaseURI
 myUploadURI' = myReleaseURI
 
-myVendorURI :: MonadError URIError m => Loc -> ReleaseTree -> m VendorURI
+myVendorURI :: (HasIOException e, HasURIError e, MonadError e m) => Loc -> ReleaseTree -> m VendorURI
 myVendorURI loc r = (review vendorURI . over uriPathLens (\p -> p </> review baseVendorString (baseVendor r))) <$> uriPrefix loc r
 
-myReleaseURI :: MonadError URIError m => Loc -> ReleaseTree -> m ReleaseURI
+myReleaseURI :: (HasIOException e, HasURIError e, MonadError e m) => Loc -> ReleaseTree -> m ReleaseURI
 myReleaseURI loc r = (review releaseURI . over uriPathLens (\p -> p </> review baseVendorString (baseVendor r) </> "dists" </> releaseString r)) <$> uriPrefix loc r
 
 -- | The download uri may have scheme http in addition to those of
 -- upload uri.  But right now there's no http server running on
 -- deb8.seereason.com.
-myDownloadURI :: MonadError URIError m => Loc -> ReleaseTree -> m ReleaseURI
+myDownloadURI :: (HasIOException e, HasURIError e, MonadError e m) => Loc -> ReleaseTree -> m ReleaseURI
 myDownloadURI = myReleaseURI
 
-releaseFileURI :: MonadError URIError m => ReleaseTree -> m URI
+releaseFileURI :: (HasIOException e, HasURIError e, MonadError e m) => ReleaseTree -> m URI
 releaseFileURI r = do
   uri <- myDownloadURI $here r
   let uri' = over (releaseURI . uriPathLens) (</> "Release") uri
@@ -154,11 +157,11 @@ myBuildURI myBuildRelease = myUploadURI' myBuildRelease
 -- vendorString = _unVendor . _vendorName . baseRelease
 
 -- | URI of the directory containing the base vendor directories (typically debian and ubuntu.)
-uriPrefix :: MonadError URIError m => Loc -> ReleaseTree -> m URI
+uriPrefix :: (HasURIError e, HasIOException e, MonadError e m) => Loc -> ReleaseTree -> m URI
 uriPrefix loc (PrivateRelease rel) = over uriPathLens (++ "-private") <$> uriPrefix loc rel
 uriPrefix _ (ExtendedRelease (UbuntuRelease Bionic) distro) | distro == SeeReason86 = parseURIReference' "ssh://upload@deb8.seereason.com/srv/deb86"
 uriPrefix _ (ExtendedRelease (UbuntuRelease Bionic) distro) | distro == SeeReason84 = parseURIReference' "ssh://upload@deb8.seereason.com/srv/deb"
-uriPrefix loc r = throwError $ URIOtherError ("uriPrefix " <> show loc <>  "- no URI for release " <> show r)
+uriPrefix loc r = throwError $ fromIOException loc $ userError ("uriPrefix " <> show loc <>  "- no URI for release " <> show r)
 
 ----------------------- BUILD RELEASE ----------------------------
 
@@ -232,7 +235,7 @@ releaseSourceLines ss release debianMirrorHost ubuntuMirrorHost =
       PrivateRelease r ->
         releaseSourceLines (("Debian.AutoBuilder.Details.Sources.releaseSourceLines release=" ++ show release) : ss) r debianMirrorHost ubuntuMirrorHost ++
           case myVendorURI $here release of
-            Left _ -> []
+            Left (_ :: DebError) -> []
             Right uri ->
               List.map (parseSourceLine $here)
                   [ "deb [trusted=yes] " ++ show (view vendorURI uri) ++ " " ++ releaseString release ++ " main"
@@ -240,7 +243,7 @@ releaseSourceLines ss release debianMirrorHost ubuntuMirrorHost =
       ExtendedRelease r _d ->
           releaseSourceLines (("Debian.AutoBuilder.Details.Sources.releaseSourceLines release=" ++ show release) : ss) r debianMirrorHost ubuntuMirrorHost ++
           case myVendorURI $here release of
-            Left _ -> []
+            Left (_ :: DebError) -> []
             Right uri ->
               List.map (parseSourceLine $here)
                   [ "deb [trusted=yes] " ++ show (view vendorURI uri) ++ " " ++ releaseString release ++ " main"

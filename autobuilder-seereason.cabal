@@ -66,8 +66,8 @@ Library
       time, exceptions, pureMD5, SHA, network-uri, pretty, sr-extra,
       applicative-extras, zlib, bzlib, tar, magic, syb, utf8-string, deepseq, transformers,
                   template-haskell, ListLike, old-locale, old-time, directory, hsemail, parsec,
-                  memoize, regex-tdfa, data-default, newtype-generics, ansi-wl-pprint,
-                  optparse-applicative, HUnit, set-extra, Diff, HaXml, regex-compat, th-orphans, th-lift
+                  memoize, regex-tdfa, data-default, newtype-generics, ansi-wl-pprint, optparse-applicative,
+                  HUnit, set-extra, Diff, HaXml, regex-compat, th-orphans, th-lift, taggy
 
     Exposed-Modules:
       Debian.AutoBuilder.BuildEnv,
@@ -109,6 +109,7 @@ Library
       Debian.Repo.AptImage,
       Debian.Repo.AptKey,
       Debian.Repo.Changes,
+      Debian.Repo.DebError
       Debian.Repo.Dependencies,
       Debian.Repo.EnvPath,
       Debian.Repo.IO,
@@ -147,6 +148,7 @@ Library
       Debian.Repo.State.Repository,
       Debian.Repo.State.Slice,
       Debian.Repo.Top,
+      Debian.Repo.URI,
       Debian.VersionPolicy
 
       Data.Maybe.Extended
@@ -183,6 +185,7 @@ Library
       Debian.Apt.Methods
       Debian.Arch
       Debian.Changes
+      Debian.Codename
       Debian.Control
       Debian.Control.Builder
       Debian.Control.ByteString
@@ -191,6 +194,7 @@ Library
       Debian.Control.String
       Debian.Control.Text
       Debian.Control.TextLazy
+      Debian.Except
       Debian.GenBuildDeps
       Debian.Loc
       Debian.Pretty
@@ -205,6 +209,7 @@ Library
       Debian.Time
       Debian.URI
       Debian.UTF8
+      Debian.VendorURI
       Debian.Version
       Debian.Version.Common
       Debian.Version.Internal
@@ -237,12 +242,12 @@ Executable autobuilder-seereason
     containers,
     file-embed,
     filepath,
+    mtl,
     process,
     process-extras >= 0.2.0,
     text
   if !flag(local-libs)
     Build-Depends: AutoBuilder, debian-repo, debian
-
 
 Executable seereason-darcs-backups
   if flag(local-libs)
