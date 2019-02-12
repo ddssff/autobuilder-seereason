@@ -48,8 +48,8 @@ myParams home myBuildRelease =
                  , autobuilderEmail = "SeeReason Autobuilder <partners@seereason.com>"
                  , releaseSuffixes = myReleaseSuffixes
                  , extraRepos = myExtraRepos
-                 , theVendorURI = myVendorURI $here myBuildRelease
-                 , theReleaseURI = myReleaseURI $here myBuildRelease
+                 , theVendorURI = myVendorURI [$here] myBuildRelease
+                 , theReleaseURI = myReleaseURI [$here] myBuildRelease
                  , sources = mySources ["Debian.AutoBuilder.Details.myParams myBuildRelease=" ++ show myBuildRelease]  myBuildRelease
                  , globalRelaxInfo = myGlobalRelaxInfo
                  , includePackages = myIncludePackages myBuildRelease
@@ -79,7 +79,7 @@ myExtraRepos = [{-Right (PersonalPackageArchive {ppaUser = "hvr", ppaName = "ghc
 -- suffixes we will use on our build releases.
 --
 myReleaseSuffixes :: [String]
-myReleaseSuffixes = ["-seereason", "-private", "-seereason7"]
+myReleaseSuffixes = ["-seereason", "-private", "-seereason7", "-seereason84", "-seereason86"]
 
 --
 -- End of release suffix section.

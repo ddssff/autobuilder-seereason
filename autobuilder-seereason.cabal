@@ -39,6 +39,7 @@ Library
     fgl,
     filepath,
     file-embed,
+    HUnit,
     lens,
     mtl,
     pretty-show,

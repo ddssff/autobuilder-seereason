@@ -20,7 +20,7 @@ main = do
   case user of
     -- This actually runs the autobuilder
     "root" -> do
-       (es :: [DebError]) <- M.main seereasonDefaults (myReleaseURI $here) (\h r -> myParams h (parseReleaseTree (parseCodename r)))
+       (es :: [DebError]) <- M.main seereasonDefaults (myReleaseURI [$here]) (\h r -> myParams h (parseReleaseTree (parseCodename r)))
        case es of
          [] -> exitWith ExitSuccess
          _ -> exitWith (ExitFailure (length es))
