@@ -1019,7 +1019,7 @@ commonTargets = do
   _system_filepath <-  (hackage (Just "0.4.14") "system-filepath") >>= debianize [] >>= inGroups ["ghcjs-comp"] >>= ghcjs_also
                -- , P.Package { P.spec = Debianize'' (Patch (Hackage (Just "0.4.4.1") "xml-enumerator") $(embedFile "patches/xml-enumerator.diff")) Nothing , P.flags = [] }
   _tagged <- hackage (Just "0.8.6") "tagged" >>= debianize [] >>= ghcjs_also
-  _taggy <-  (hackage (Just "0.2.1") "taggy") >>= debianize [] >>= ghcjs_also
+  _taggy <-  (hackage (Just "0.2.1") "taggy") >>= debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
   _tagshare <- hackage (Just "0.0") "tagshare" >>= flag (P.DebVersion "0.0-1") >>= debianize []
   _tagsoup <-  (hackage (Just "0.14.6") "tagsoup") >>= debianize [] >>= inGroups [] >>= ghcjs_also
   _tagstream_conduit <- hackage (Just "0.5.5.3") "tagstream-conduit" >>= flag (P.DebVersion "0.5.5.3-7build8") >>= debianize [] >>= inGroups ["conduit", "authenticate", "important"]
