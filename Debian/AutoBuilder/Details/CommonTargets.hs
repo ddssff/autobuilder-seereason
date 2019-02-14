@@ -39,7 +39,7 @@ commonTargets = do
   _applicative_extras <- hackage (Just "0.1.8") "applicative-extras" >>= flag (P.DebVersion "0.1.8-1") >>= debianize [] >>= ghcjs_also
   _archive <- git "https://github.com/seereason/archive" []
              >>= flag (P.CabalDebian ["--default-package", "archive"])
-             >>= inGroups ["important", "autobuilder-group"] >>= debianize []
+             >>= inGroups ["important", "autobuilder-group", "appraisalscribe"] >>= debianize []
   _asn1_data <- hackage (Just "0.7.2") "asn1-data" >>= debianize []
   _asn1_encoding <- hackage (Just "0.9.5") "asn1-encoding" >>= flag (P.DebVersion "0.9.5-1build7") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
   _asn1_parse <- hackage (Just "0.9.4") "asn1-parse" >>= flag (P.DebVersion "0.9.4-3build8") >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also
@@ -359,6 +359,7 @@ commonTargets = do
   _generics_sop <- hackage (Just "0.4.0.1") "generics-sop" >>= debianize [] >>= ghcjs_also
   _genI <- darcs "http://hub.darcs.net/kowey/GenI" >>= patch $(embedFile "patches/GenI.diff") >>= debianize [] >>= inGroups ["GenI"] >>= skip (Reason "hub.darcs.net retrieve failed")
   _ghc_boot <- hackage (Just "8.0.1") "ghc-boot" >>= debianize [] >>= skip (Reason "Encountered missing dependencies: 2> binary ==0.8.*")
+  _ghc_boot_th <- hackage (Just "8.6.1") "ghc-boot-th" >>= debianize []
   _ghc_exactprint <- git "https://github.com/alanz/ghc-exactprint" [] >>= debianize []
   _terminal_size <- hackage (Just "0.3.2.1") "terminal-size"  >>= flag (P.DebVersion "0.3.2.1-4build1") >>= debianize [] >>= inGroups ["ghcid"]
   _ghcid <- hackage (Just "0.6.4") "ghcid" >>= debianize [] >>= inGroups ["ghcid"]
@@ -482,7 +483,7 @@ commonTargets = do
   _sr_extra <- git ("https://github.com/seereason/sr-extra") [] >>=
                debianize [] >>= inGroups ["autobuilder-group", "important", "appraisalscribe"] >>= ghcjs_also
   _sr_order <- git "https://github.com/seereason/sr-order" [] >>= debianize [] >>= inGroups ["appraisalscribe"] >>= ghcjs_also
-  _haskell_help <- git ("https://github.com/seereason/sr-help") [] >>= debianize [] >>= inGroups ["autobuilder-group", "important"]
+  _haskell_help <- git ("https://github.com/seereason/sr-help") [] >>= debianize [] >>= inGroups ["autobuilder-group", "important", "appraisalscribe"]
   _haskell_lexer <-  (hackage (Just "1.0.1") "haskell-lexer") >>= flag (P.DebVersion "1.0.1-3build1") >>= debianize [] >>= ghcjs_also
   _haskell_list <- hackage (Just "0.6.2") "List" >>= debianize []
   -- _haskell_mode <- apt "jessie" "haskell-mode" >>= patch $(embedFile "patches/haskell-mode.diff")
@@ -724,7 +725,7 @@ commonTargets = do
   _mime_mail <- git "https://github.com/snoyberg/mime-mail.git" [] >>= cd "mime-mail" >>= flag (P.DebVersion "0.4.14-1") >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _mime_types <- hackage (Just "0.1.0.7") "mime-types" >>= flag (P.DebVersion "0.1.0.7-3build2") >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
   _mirror <-  (git "https://github.com/seereason/mirror" []
-                        >>= flag (P.CabalDebian ["--executable", "debian-mirror"])) >>= debianize [] >>= inGroups ["autobuilder-group", "important"]
+                        >>= flag (P.CabalDebian ["--executable", "debian-mirror"])) >>= debianize [] >>= inGroups ["autobuilder-group", "important", "appraisalscribe"]
   _missingH <- hackage (Just "1.4.1.0") "MissingH" >>= debianize []
   _mmap <- hackage (Just "0.5.9") "mmap" >>= flag (P.DebVersion "0.5.9-5build1") >>= debianize []
   _mmorph <- hackage Nothing "mmorph" >>= debianize [] >>= inGroups ["authenticate", "important"] >>= ghcjs_also

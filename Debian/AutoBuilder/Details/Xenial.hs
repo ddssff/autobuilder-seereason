@@ -57,14 +57,13 @@ nodejs =
 buildTargets86 :: Monad m => TSt m ()
 buildTargets86 = do
   _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.6"] >>= inGroups ["ghcjs-comp"]
-  -- _ghc_boot_th <- hackage (Just "8.6.1") "ghc-boot-th" >>= debianize []
   buildTargets8
 
 buildTargets84 :: Monad m => TSt m ()
 buildTargets84 = do
-  -- Can't build this while ghc-8.6 is in the distro
+  -- Can't currently build this because ghc-8.6 is in the build.  Something
+  -- in the dependencies prevents building ghcjs-8.4 with ghc-8.6.
   -- _ghcjs <- git "https://github.com/ddssff/ghcjs-debian" [Branch "ghc-8.4"] >>= inGroups ["ghcjs-comp"]
-  -- _ghc_boot_th <- hackage (Just "8.4.3") "ghc-boot-th" >>= debianize []
   buildTargets8
 
 buildTargets8 :: Monad m => TSt m ()
@@ -72,7 +71,7 @@ buildTargets8 = do
   -- These are targets likely to change when we go from 8.0 to 8.2.
   -- Some of these are needed for ghc-8.2, some are wrong.
   -- _ghc84 <- apt "experimental" "ghc" >>= patch $(embedFile "patches/ghc84.diff") >>= inGroups ["ghc8-comp"]
-  _ghc86 <- apt "experimental" "ghc" >>= patch $(embedFile "patches/ghc86.diff") >>= inGroups ["ghc8-comp"]
+  -- _ghc86 <- apt "experimental" "ghc" >>= patch $(embedFile "patches/ghc86.diff") >>= inGroups ["ghc8-comp"]
   -- Cabal 2.0.1.0 is included in ghc-8.2.2
   -- _cabal <- hackage (Just "1.24.0.0") "Cabal" >>= debianize []
   -- Patch removes the version range from the Cabal dependency so the
