@@ -45,6 +45,7 @@ Library
     pretty-show,
     process,
     QuickCheck,
+    sr-extra >= 1.53,
     text,
     unix,
     process-extras >= 0.2.0,

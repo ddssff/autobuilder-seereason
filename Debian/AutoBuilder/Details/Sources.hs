@@ -21,7 +21,6 @@ import Control.Monad.Except (MonadError, throwError)
 import Data.Foldable
 import Data.List as List (map)
 import Data.Set as Set (fromList, member, Set, toAscList)
-import Debian.Except (fromIOException, HasIOException)
 import Debian.Releases
     (allReleases, baseVendor, baseVendorString, DebianRelease(Jessie, Experimental),
      ExtendedRelease(..), isPrivateRelease, HasBaseRelease(baseReleaseString), ReleaseTree(..),
@@ -32,6 +31,7 @@ import Debian.TH (here, Loc)
 import Debian.URI (HasURIError, parseURIReference', URI, uriPathLens)
 import Debian.VendorURI (VendorURI, vendorURI)
 import Distribution.Pretty (prettyShow)
+import Extra.Except
 import Prelude hiding (map)
 import System.FilePath ((</>))
 import Test.HUnit
@@ -88,22 +88,22 @@ tests =
 -- it is built for use as build dependencies of other packages during
 -- the same run.
 --
-myUploadURI' :: (HasIOException e, HasURIError e, MonadError e m) => [Loc] -> ReleaseTree -> m ReleaseURI
+myUploadURI' :: (MonadError e m, HasLoc e, HasURIError e, HasIOException e) => [Loc] -> ReleaseTree -> m ReleaseURI
 myUploadURI' = myReleaseURI
 
-myVendorURI :: (HasIOException e, HasURIError e, MonadError e m) => [Loc] -> ReleaseTree -> m VendorURI
+myVendorURI :: (MonadError e m, HasLoc e, HasURIError e, HasIOException e) => [Loc] -> ReleaseTree -> m VendorURI
 myVendorURI locs r = (review vendorURI . over uriPathLens (\p -> p </> review baseVendorString (baseVendor r))) <$> uriPrefix ($here : locs) r
 
-myReleaseURI :: (HasIOException e, HasURIError e, MonadError e m) => [Loc] -> ReleaseTree -> m ReleaseURI
+myReleaseURI :: (MonadError e m, HasLoc e, HasURIError e, HasIOException e) => [Loc] -> ReleaseTree -> m ReleaseURI
 myReleaseURI locs r = (review releaseURI . over uriPathLens (\p -> p </> review baseVendorString (baseVendor r) </> "dists" </> releaseString r)) <$> uriPrefix ($here : locs) r
 
 -- | The download uri may have scheme http in addition to those of
 -- upload uri.  But right now there's no http server running on
 -- deb8.seereason.com.
-myDownloadURI :: (HasIOException e, HasURIError e, MonadError e m) => [Loc] -> ReleaseTree -> m ReleaseURI
+myDownloadURI :: (MonadError e m, HasLoc e, HasURIError e, HasIOException e) => [Loc] -> ReleaseTree -> m ReleaseURI
 myDownloadURI = myReleaseURI
 
-releaseFileURI :: (HasIOException e, HasURIError e, MonadError e m) => ReleaseTree -> m URI
+releaseFileURI :: (MonadError e m, HasLoc e, HasURIError e, HasIOException e) => ReleaseTree -> m URI
 releaseFileURI r = do
   uri <- myDownloadURI [$here] r
   let uri' = over (releaseURI . uriPathLens) (</> "Release") uri
@@ -158,11 +158,11 @@ myBuildURI myBuildRelease = myUploadURI' myBuildRelease
 -- vendorString = _unVendor . _vendorName . baseRelease
 
 -- | URI of the directory containing the base vendor directories (typically debian and ubuntu.)
-uriPrefix :: (HasURIError e, HasIOException e, MonadError e m) => [Loc] -> ReleaseTree -> m URI
+uriPrefix :: (MonadError e m, HasLoc e, HasURIError e, HasIOException e) => [Loc] -> ReleaseTree -> m URI
 uriPrefix locs (PrivateRelease rel) = over uriPathLens (++ "-private") <$> uriPrefix ($here : locs) rel
 uriPrefix _ (ExtendedRelease (UbuntuRelease Bionic) distro) | distro == SeeReason86 = parseURIReference' "ssh://upload@deb8.seereason.com/srv/deb86"
 uriPrefix _ (ExtendedRelease (UbuntuRelease Bionic) distro) | distro == SeeReason84 = parseURIReference' "ssh://upload@deb8.seereason.com/srv/deb"
-uriPrefix locs r = throwError $ fromIOException ($here : locs) $ userError ("uriPrefix " <> prettyShow ($here : locs) <>  "- no URI for release " <> show r)
+uriPrefix locs r = withError (withLoc $here) $ throwError $ fromIOException $ userError ("uriPrefix " <> prettyShow ($here : locs) <>  "- no URI for release " <> show r)
 
 ----------------------- BUILD RELEASE ----------------------------
 
