@@ -1,0 +1,11 @@
+--- a/debian/control	2019-01-20 23:33:25.000000000 -0800
++++ b/debian/control	2019-02-20 06:16:03.957213124 -0800
+@@ -3,7 +3,7 @@
+ Uploaders: Luca Bruno <lucab@debian.org>
+ Section: libs
+ Priority: optional
+-Build-Depends: debhelper (>= 12~),
++Build-Depends: debhelper,
+                dh-exec,
+                freebsd-glue [kfreebsd-any],
+                libkvm-dev [kfreebsd-any],

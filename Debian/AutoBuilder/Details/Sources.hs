@@ -162,6 +162,8 @@ uriPrefix :: (MonadError e m, HasLoc e, HasURIError e, HasIOException e) => [Loc
 uriPrefix locs (PrivateRelease rel) = over uriPathLens (++ "-private") <$> uriPrefix ($here : locs) rel
 uriPrefix _ (ExtendedRelease (UbuntuRelease Bionic) distro) | distro == SeeReason86 = parseURIReference' "ssh://upload@deb8.seereason.com/srv/deb86"
 uriPrefix _ (ExtendedRelease (UbuntuRelease Bionic) distro) | distro == SeeReason84 = parseURIReference' "ssh://upload@deb8.seereason.com/srv/deb"
+uriPrefix _ (ExtendedRelease (UbuntuRelease Disco) distro) | distro == SeeReason86 = parseURIReference' "ssh://upload@deb8.seereason.com/srv/deb86"
+uriPrefix _ (ExtendedRelease (UbuntuRelease Disco) distro) | distro == SeeReason84 = parseURIReference' "ssh://upload@deb8.seereason.com/srv/deb"
 uriPrefix locs r = withError (withLoc $here) $ throwError $ fromIOException $ userError ("uriPrefix " <> prettyShow ($here : locs) <>  "- no URI for release " <> show r)
 
 ----------------------- BUILD RELEASE ----------------------------

@@ -1,0 +1,20 @@
+--- a/debian/control	2019-02-08 05:25:55.000000000 -0800
++++ b/debian/control	2019-02-20 05:57:59.088484426 -0800
+@@ -11,7 +11,7 @@
+  bash-completion,
+  libkvm-dev [kfreebsd-any],
+  gyp (>= 0.1~svn1773),
+- openssl (>= 1.1.1~),
++ openssl,
+  zlib1g-dev,
+  libicu-dev,
+  libc-ares-dev (>= 1.14~),
+@@ -21,7 +21,7 @@
+  node-acorn,
+  ca-certificates,
+  python,
+- libssl-dev (>= 1.1.1~),
++ libssl-dev,
+  libuv1-dev (>= 1.20.0~)
+ Build-Depends-Indep: node-js-yaml,
+  node-marked

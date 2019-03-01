@@ -7,6 +7,7 @@ module Debian.AutoBuilder.Details.Targets
     ) where
 
 import Control.Lens ((%=), (%~), use)
+import Control.Monad.Except (throwError)
 import Data.List as List (map)
 import Data.Map as Map (insert, map)
 import qualified Debian.AutoBuilder.Types.Packages as P hiding (TSt)
@@ -21,6 +22,8 @@ import Debian.AutoBuilder.Details.Common (TSt)
 import qualified Debian.AutoBuilder.Details.Xenial as Xenial
 import qualified Debian.AutoBuilder.Details.Private as Private
 import Debian.AutoBuilder.Types.ParamRec (ParamRec)
+import Debian.TH (here)
+import Distribution.Pretty (prettyShow)
 
 -- |Each of theses lists can be built on their own as a group,
 -- and any sequence of groups can be built together as long as
@@ -33,7 +36,9 @@ public params = do
           case rel of
             ExtendedRelease (UbuntuRelease Bionic) distro | distro == SeeReason84 -> Xenial.buildTargets84
             ExtendedRelease (UbuntuRelease Bionic) distro | distro == SeeReason86 -> Xenial.buildTargets86
-            _ -> error $ "Unexpected release: " ++ show rel
+            ExtendedRelease (UbuntuRelease Disco) distro | distro == SeeReason84 -> Xenial.buildTargets84
+            ExtendedRelease (UbuntuRelease Disco) distro | distro == SeeReason86 -> Xenial.buildTargets86
+            _ -> error $ "Unexpected release: " ++ show rel {- ++ " (at " ++ prettyShow $here ++ ")" -}
   -- Dangerous when uncommented - build private targets into public, do not upload!!
   -- private params >>
   targets >> applyEpochMap >> applyExecMap >> use P.release >>= applyDepMap >> proc'

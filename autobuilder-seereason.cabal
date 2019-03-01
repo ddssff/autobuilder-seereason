@@ -63,9 +63,9 @@ Library
     Debian.AutoBuilder.Details.Xenial
 
   if flag(local-libs)
-    Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen, ../debian-repo, ../cabal-debian/src, ../cabal-debian/dist/build/autogen, ../debian-haskell
+    Hs-Source-Dirs: ../autobuilder, ../autobuilder/dist/build/autogen, ../debian-repo, ../cabal-debian/src, ../cabal-debian/dist/build/autogen, ../debian-haskell/src, ../sr-extra
     Build-Depends:
-      time, exceptions, pureMD5, SHA, network-uri, pretty, sr-extra,
+      time, exceptions, extra, pureMD5, regex-compat-tdfa, SHA, network-uri, pretty,
       applicative-extras, zlib, bzlib, tar, magic, syb, utf8-string, deepseq, transformers,
                   template-haskell, ListLike, old-locale, old-time, directory, hsemail, parsec,
                   memoize, regex-tdfa, data-default, newtype-generics, ansi-wl-pprint, optparse-applicative,
@@ -113,7 +113,6 @@ Library
       Debian.Repo.Changes,
       Debian.Repo.DebError
       Debian.Repo.Dependencies,
-      Debian.Repo.EnvPath,
       Debian.Repo.IO,
       Debian.Repo.Fingerprint,
       Debian.Repo.LocalRepository,
@@ -132,10 +131,8 @@ Library
       Debian.Repo.Prelude.List,
       Debian.Repo.Prelude.Lock,
       Debian.Repo.Prelude.Misc,
-      Debian.Repo.Prelude.Process,
       Debian.Repo.Prelude.SSH,
       Debian.Repo.Prelude.Time,
-      Debian.Repo.Prelude.Verbosity,
       Debian.Repo.Release,
       Debian.Repo.RemoteRepository,
       Debian.Repo.Repo,
@@ -196,7 +193,6 @@ Library
       Debian.Control.String
       Debian.Control.Text
       Debian.Control.TextLazy
-      Debian.Except
       Debian.GenBuildDeps
       Debian.Loc
       Debian.Pretty
@@ -217,6 +213,17 @@ Library
       Debian.Version.Internal
       Debian.Version.String
       Debian.Version.Text
+
+      Extra.EnvPath
+      Extra.Except
+      Extra.Files
+      Extra.List
+      Extra.Lock
+      Extra.Misc
+      Extra.Pretty
+      Extra.Process
+      Extra.TH
+      Extra.Verbosity
     Other-Modules:
       Debian.Orphans
   else

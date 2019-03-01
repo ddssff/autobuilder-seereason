@@ -25,8 +25,7 @@ buildTargets = do
                       flag (P.CabalDebian ["--default-package", "ghcjs-dom-hello"]) >>=
                       debianize [] >>=
                       inGroups ["glib"] >>=
-                      ghcjs_only >>=
-                      skip (Reason "see cairo and glib")
+                      ghcjs_only {- >>= skip (Reason "see cairo and glib") -}
   _haskell_devscripts <-
       -- Current version as of 26 Apr 2018
       -- git "http://anonscm.debian.org/cgit/pkg-haskell/haskell-devscripts.git" [Commit "6e1e94bc4efd8a0ac37f34ac84f4813bcb0105cc"] >>=
@@ -40,7 +39,7 @@ buildTargets = do
   -- haskell-names-0.9.1 requires aeson<1.3
   _haskell_names <- hackage (Just "0.9.6") "haskell-names" >>= debianize []
 
-  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-5build1") >>= debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
+  _old_locale <- hackage (Just "1.0.0.7") "old-locale" >>= flag (P.DebVersion "1.0.0.7-8") >>= debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
   _old_time <- hackage (Just "1.1.0.3") "old-time" >>= flag (P.DebVersion "1.1.0.3-5build1") >>= debianize [] >>= inGroups ["autobuilder-group"] >>= ghcjs_also
 
   _traverse_with_class <- hackage (Just "1.0.0.0") "traverse-with-class" >>= debianize [] >>= inGroups ["happstack", "important"]
