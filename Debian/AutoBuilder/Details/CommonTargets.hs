@@ -168,7 +168,7 @@ commonTargets = do
   _clock <- hackage (Just "0.7.2") "clock" >>= flag (P.DebVersion "0.7.2-3build1") >>= debianize [] >>= ghcjs_also
   -- _closure_compiler <- apt "sid" "closure-compiler"
   -- implemented in C, so no ghcjs version
-  _cmark <- hackage Nothing "cmark" >>= flag (P.DebVersion "0.5.6-1") >>= debianize [] >>= inGroups ["happstack", "important"]
+  _cmark <- hackage Nothing "cmark" >>= debianize [] >>= inGroups ["happstack", "important"]
   _cmark_gfm <- hackage Nothing "cmark-gfm" >>= debianize [] >>= inGroups ["happstack", "important"]
   _cmdargs <-  (hackage (Just "0.10.20") "cmdargs") >>= debianize [] >>= ghcjs_also
   _code_page <- hackage (Just "0.1.3") "code-page" >>= flag (P.DebVersion "0.1.3-1") >>= debianize [] >>= ghcjs_also
