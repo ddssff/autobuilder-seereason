@@ -107,7 +107,7 @@ buildTargets8 = do
              flag (P.CabalDebian ["--missing-dependency", "libghc-cabal-prof"]) >>=
              debianize [] >>= inGroups ["ghcjs-comp"]
   -- pandoc>=2.4 requires haddock-library-1.7
-  _pandoc <- hackage (Just "2.5") "pandoc" >>= patch $(embedFile "patches/pandoc-2.5.diff") >>=
+  _pandoc <- hackage (Just "2.6") "pandoc" >>= patch $(embedFile "patches/pandoc-2.5.diff") >>=
   -- _pandoc <- hackage (Just "2.3.1") "pandoc" >>= patch $(embedFile "patches/pandoc.diff") >>=
              flag (P.CabalDebian ["--executable", "pandoc"]) >>=
              -- flag (P.CabalDebian ["--executable", "try-pandoc"]) >>=

@@ -17,7 +17,7 @@ import Debian.AutoBuilder.Details.Common -- (privateRepo, named, ghcjs_flags)
 buildTargets :: Monad m => ParamRec -> TSt m ()
 buildTargets _params = do
   -- _appraisalscribe <- git "ssh://git@github.com/seereason/appraisalscribe" [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= debianize []
-  _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [{-Branch "dsf"-}] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= debianize [] >>= ghcjs_also
+  _appraisalscribe_data <- git "ssh://git@github.com/seereason/appraisalscribe-data" [{-Branch "dsf"-}] >>= {- flag (P.CabalDebian ["--disable-profiling"]) >>= -} debianize [] >>= ghcjs_also
   -- appraisalscribe-data-tests is a huge package because it
   -- contains lots of test data, it makes more sense to just check
   -- it out of git and run it rather than constantly uploading it to
@@ -44,7 +44,7 @@ buildTargets _params = do
   _happstack_ghcjs_webmodule <- happstack_ghcjs >>= cd "happstack-ghcjs-webmodule" >>= flag (P.BuildDep "haskell-editor-common-utils") >>= debianize [] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= inGroups ["private-libs"] >>= ghcjs_also
 
   _happstack_ontology <- git "ssh://git@github.com/seereason/happstack-ontology" [] >>= flag (P.BuildDep "hsx2hs") >>= debianize []
-  _image_cache <- git "https://github.com/seereason/image-cache.git" [] >>= {-patch $(embedFile "patches/image-cache-locktag.diff") >>=-} flag (P.CabalDebian ["--disable-profiling"]) >>= debianize [] >>= ghcjs_also
+  _image_cache <- git "https://github.com/seereason/image-cache.git" [] >>= {-patch $(embedFile "patches/image-cache-locktag.diff") >>=-} {- flag (P.CabalDebian ["--disable-profiling"]) >>= -} debianize [] >>= ghcjs_also
   -- The debian/Debianize.hs script has a dependency on
   -- happstack-foundation, which must be installed in the parent
   -- environment *before* we can create the debianization.  We don't
@@ -87,7 +87,10 @@ buildTargets _params = do
   _stripe_haskell <- git stripeRepo [] >>= cd "stripe-haskell" >>= flag (P.CabalDebian ["--no-tests"]) >>= debianize []
   -- stripe_http_conduit <- debianize (darcs (privateRepo </> "stripe") `cd` "stripe-http-conduit")
   _task_manager <- git "ssh://git@github.com/seereason/task-manager.git" [] >>= debianize [] >>= inGroups ["private-libs"]
-  _typegraph <- git "ssh://git@github.com/seereason/typegraph.git" [{-Branch "dsf"-}] >>= debianize [] >>= inGroups ["private-libs"] >>= flag (P.CabalDebian ["--disable-profiling"]) >>= ghcjs_also
+  -- why --disable-profiling?
+  _typegraph <- git "ssh://git@github.com/seereason/typegraph.git" [{-Branch "dsf"-}] >>= debianize [] >>= inGroups ["private-libs"] >>= {- flag (P.CabalDebian ["--disable-profiling"]) >>= -} ghcjs_also
+  _history <- git "ssh://git@github.com/seereason/history.git" [{-Branch "dsf"-}] >>= debianize [] >>= inGroups ["private-libs"] >>= {- flag (P.CabalDebian ["--disable-profiling"]) >>= -} ghcjs_also
+  _history_tests <- git "ssh://git@github.com/seereason/history-tests.git" [{-Branch "dsf"-}] >>= debianize [] >>= inGroups ["private-libs"]
   noTests
   -- noDoc
   -- noProf
