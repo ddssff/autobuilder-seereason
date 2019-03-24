@@ -115,7 +115,7 @@ buildTargets8 = do
              flag (P.BuildDep "alex") >>=
              flag (P.BuildDep "happy") >>=
              debianize [] >>=
-             inGroups ["appraisalscribe", "important", "pandoc", "tmp"]
+             inGroups ["appraisalscribe", "important", "pandoc"]
   _uri_bytestring_ghc <- hackage (Just "0.3.2.1") "uri-bytestring" >>= {-patch $(embedFile "patches/uri-bytestring.diff") >>=-} debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _zlib <- hackage (Just "0.6.2") "zlib" >>= flag (P.DevelDep "zlib1g-dev") >>= debianize [] >>= inGroups ["platform", "ghc8-comp"] >>= ghcjs_also
   -- parsec-3 is built into ghc-8.4.3, and the deb name is libghc-parsec-dev, not parsec3.
