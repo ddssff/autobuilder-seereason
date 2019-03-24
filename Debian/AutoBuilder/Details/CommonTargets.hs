@@ -750,6 +750,7 @@ commonTargets = do
   _monadRandom <- hackage (Just "0.5.1.1") "MonadRandom" >>= debianize []
   _monads_tf <- hackage (Just "0.1.0.3") "monads-tf" >>= flag (P.DebVersion "0.1.0.3-3build1") >>= debianize []
   _monad_task <- hackage (Just "0.1.0") "monad-task" >>= debianize [] >>= skip (Reason "0.1.0 requires transformers<4")
+  _monad_timing <- hackage Nothing "monad-timing" >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
   _mono_traversable <- hackage (Just "1.0.8.1") "mono-traversable" >>= debianize [] >>= ghcjs_also
   _monoid_transformer <- hackage (Just "0.0.4") "monoid-transformer" >>= debianize [] -- apt (rel release "wheezy" "quantal") "haskell-monoid-transformer"
   _mtl <- hackage (Just "2.2.1") "mtl" >>= flag (P.DebVersion "2.2.1-5build1") >>= debianize [] >>= inGroups ["platform"]
