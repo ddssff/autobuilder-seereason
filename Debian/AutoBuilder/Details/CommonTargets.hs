@@ -865,7 +865,7 @@ commonTargets = do
   _quickcheck_io <- hackage (Just "0.2.0") "quickcheck-io" >>= flag (P.DebVersion "0.2.0-1build1") >>= debianize [] >>= ghcjs_also
   -- quickCheck1 =  (hackage "QuickCheck" >>= flag (P.CabalPin "1.2.0.1") >>= flag (P.DebVersion "1.2.0.1-2") >>= flag (P.CabalDebian ["--no-tests"])) >>= debianize []
   _quickcheck_properties <- hackage Nothing "quickcheck-properties" >>= debianize [] >>= ghcjs_also
-  _quickcheck_unicode <- hackage Nothing "quickcheck-unicode" >>= debianize [] >>= ghcjs_also
+  _quickcheck_unicode <- hackage Nothing "quickcheck-unicode" >>= flag (P.DebVersion "1.0.1.0-1build2") >>= debianize [] >>= ghcjs_also
   _random <- hackage (Just "1.1") "random" >>= flag (P.DebVersion "1.1-5build1") >>= debianize [] >>= inGroups ["platform", "ghc8-comp"] >>= ghcjs_also -- 1.1.0.3 fixes the build for ghc-7.4.2 / base < 4.6
   _reducers <- hack (Just "3.12.3") "reducers"
   -- _ref_tf <- hackage (Just "0.4.0.1") "ref-tf" >>= debianize [] >>= ghcjs_also
@@ -936,13 +936,13 @@ commonTargets = do
   -- _servant_happstack <- git "https://github.com/Happstack/servant-happstack" [] >>= inGroups ["servant"] >>= debianize []
   -- _servant_auth <- hackage (Just "0.3.2.0") "servant-auth" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   -- _servant_blaze <- hackage (Just "0.8") "servant-blaze" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
-  _servant_client_core <- hackage (Just "0.15") "servant-client-core" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
-  _servant_client <-      hackage ({-Just "0.13.0.1"-} Nothing) "servant-client" >>= {-patch $(embedFile "patches/servant-client.diff") >>=-} debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  -- _servant_client_core <- hackage (Just "0.15") "servant-client-core" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
+  -- _servant_client <-      hackage ({-Just "0.13.0.1"-} Nothing) "servant-client" >>= {-patch $(embedFile "patches/servant-client.diff") >>=-} debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_docs <-        hackage (Just "0.11.3") "servant-docs" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_foreign <-     hackage (Just "0.15") "servant-foreign" >>= debianize [] >>= inGroups ["servant"] >>= ghcjs_also
   _servant_js <-          hackage Nothing "servant-js" >>= debianize [] >>= inGroups ["servant"]
   _servant_mock <-        hackage (Just "0.9.4") "servant-mock" >>= debianize [] >>= inGroups ["servant"] >>= skip (Reason "Requires http-types<0.12")
-  _servant_pagination <-  hackage (Just "2.1.3") "servant-pagination" >>= debianize [] >>= inGroups ["servant"]
+  -- _servant_pagination <-  hackage (Just "2.1.3") "servant-pagination" >>= debianize [] >>= inGroups ["servant"]
   _servant_purescript <-  hackage (Just "0.9.0.2") "servant-purescript" >>= debianize [] >>= inGroups ["servant"] >>= skip (Reason "<> not in scope")
   _servant_quickcheck <-  hackage (Just "0.0.7.3") "servant-quickcheck" >>= debianize [] >>= inGroups ["servant"] >>= skip (Reason "Requires quickcheck<2.11, hspec<2.5")
   -- _servant_server <-      hackage (Just "0.15") "servant-server" >>= {-patch $(embedFile "patches/servant-server.diff") >>=-} debianize [] >>= inGroups ["servant"]
@@ -950,7 +950,7 @@ commonTargets = do
   -- _servant_swagger <-     hackage (Just "1.1.5") "servant-swagger" >>= debianize [] >>= inGroups ["servant"]
   -- _servant_swagger_ui <-  hackage (Just "0.3.0.3.13.2") "servant-swagger-ui" >>= debianize [] >>= inGroups ["servant"]
   -- _servant_swagger_ui_core <- hackage (Just "0.3.1") "servant-swagger-ui-core" >>= debianize [] >>= inGroups ["servant"]
-  _servant_tracing <-     hackage (Just "0.1.0.2") "servant-tracing" >>= debianize [] >>= inGroups ["servant"] >>= inGroups ["servant"]
+  -- _servant_tracing <-     hackage (Just "0.1.0.2") "servant-tracing" >>= debianize [] >>= inGroups ["servant"] >>= inGroups ["servant"]
 
   _setenv <- hackage (Just "0.1.1.3") "setenv" >>= flag (P.DebVersion "0.1.1.3-6build1") >>= debianize [] >>= ghcjs_also
   _set_extra <- hackage (Just "1.4.1") "set-extra" >>= flag (P.DebVersion "1.4.1") >>= debianize [] >>= ghcjs_also
