@@ -96,6 +96,7 @@ commonTargets = do
                              >>= flag (P.Revision "")) >>= debianize [] >>= inGroups ["happstack", "important"]
   _boolean <- hackage (Just "0.2.4") "Boolean" >>= flag (P.DebVersion "0.2.4-1") >>= debianize []
   _boomerang <-  (hackage (Just "1.4.5.6") "boomerang") >>= debianize [] >>= ghcjs_also
+  _boxes <- hackage Nothing "boxes" >>= debianize [] >>= inGroups ["pretty-tree"]
   _bsb_http_chunked <- hackage (Just "0.0.0.4") "bsb-http-chunked" >>= debianize []
   -- _bugzilla <- broken <$> apt "squeeze" "bugzilla" -- requires python-central (>= 0.5)
   _byteable <- hackage (Just "0.1.1") "byteable" >>= flag (P.DebVersion "0.1.1-7build1") >>= debianize [] >>= ghcjs_also
@@ -750,7 +751,7 @@ commonTargets = do
   _monadRandom <- hackage (Just "0.5.1.1") "MonadRandom" >>= debianize []
   _monads_tf <- hackage (Just "0.1.0.3") "monads-tf" >>= flag (P.DebVersion "0.1.0.3-3build1") >>= debianize []
   _monad_task <- hackage (Just "0.1.0") "monad-task" >>= debianize [] >>= skip (Reason "0.1.0 requires transformers<4")
-  _monad_timing <- hackage Nothing "monad-timing" >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
+  _monad_timing <- git "https://github.com/seereason/monad-timing" [] >>= flag (P.DebVersion "0.1.0.1") >>= debianize [] >>= inGroups ["tmp"] >>= ghcjs_also
   _mono_traversable <- hackage (Just "1.0.8.1") "mono-traversable" >>= debianize [] >>= ghcjs_also
   _monoid_transformer <- hackage (Just "0.0.4") "monoid-transformer" >>= debianize [] -- apt (rel release "wheezy" "quantal") "haskell-monoid-transformer"
   _mtl <- hackage (Just "2.2.1") "mtl" >>= flag (P.DebVersion "2.2.1-5build1") >>= debianize [] >>= inGroups ["platform"]
@@ -830,6 +831,7 @@ commonTargets = do
   -- version (which is bundled with ghc) conflicts, in particular via th-typegraph.
   -- _pretty <- git "https://github.com/ddssff/pretty" [] >>= debianize [] >>= inGroups ["pretty"] >>= ghcjs_also
   _pretty_show <- hackage (Just "1.7") "pretty-show" >>= flag (P.BuildDep "happy") >>= debianize [] >>= ghcjs_also
+  _pretty_tree <- hackage Nothing "pretty-tree" >>= debianize [] >>= inGroups ["pretty-tree"]
   _primitive <-
       -- 0.6.1.0 depends on base<4.9, ghc-prim<0.5, transformers<0.5, so for ghc8 we probably need 0.6.2.0
       -- hackage (Just "0.6.1.0") "primitive" >>=
@@ -1091,7 +1093,7 @@ commonTargets = do
   _unicode_names <-  (git "https://github.com/seereason/unicode-names" [] >>= flag (P.DebVersion "3.2.0.0-1~hackage1")) >>= debianize []
   _unicode_properties <-  (git "https://github.com/seereason/unicode-properties" [] >>= flag (P.DebVersion "3.2.0.0-1~hackage1")) >>= debianize []
   _unicode_transforms <- hackage (Just "0.3.5") "unicode-transforms" >>= debianize [] >>= ghcjs_also
-  _unification_fd <-  (hackage (Just "0.10.0.1") "unification-fd" >>= flag (P.SkipVersion "0.8.0")) >>= debianize []
+  _unification_fd <- git "https://github.com/wrengr/unification-fd" [] >>= debianize [] >>= ghcjs_also
   _union_find <-  (hackage (Just "0.2") "union-find") >>= debianize []
                -- ,  (hackage "Elm") >>= debianize []
                -- ,  (hackage "elm-server" {- >>= patch $(embedFile "patches/elm-server.diff") -}) >>= debianize []
