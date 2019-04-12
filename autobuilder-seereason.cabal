@@ -53,7 +53,6 @@ Library
     Unixutils
   Exposed-Modules:
     Debian.AutoBuilder.Details
-    Debian.AutoBuilder.Details.Artful
     Debian.AutoBuilder.Details.Common
     Debian.AutoBuilder.Details.CommonTargets
     Debian.AutoBuilder.Details.Private

@@ -1,0 +1,11 @@
+--- old/monadplus.cabal	2019-04-11 15:27:17.805757987 -0700
++++ new/monadplus.cabal	2019-04-11 15:32:16.797547456 -0700
+@@ -25,7 +25,7 @@
+ library
+     default-language: Haskell98
+     build-depends: 
+-        base >= 4 && < 4.11
++        base >= 4 && < 4.13
+     hs-source-dirs: src
+     exposed-modules:
+         Control.Applicative.Alternative
