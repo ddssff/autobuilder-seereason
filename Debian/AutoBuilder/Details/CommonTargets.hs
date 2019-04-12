@@ -748,6 +748,7 @@ commonTargets = do
   _monad_parallel <-  (hackage (Just "0.7.2.3") "monad-parallel") >>= debianize []
   _monad_par <- hackage (Just "0.3.4.8") "monad-par" >>= flag (P.DebVersion "0.3.4.8-3build3") >>= debianize []
   _monad_par_extras <-  hackage (Just "0.3.3") "monad-par-extras" >>= flag (P.DebVersion "0.3.3-7build2") >>= debianize []
+  _monadplus <- hackage (Just "1.4.2") "monadplus" >>= patch $(embedFile "patches/monadplus.diff") >>= debianize [] >>= inGroups ["appraisalscribe"] >>= ghcjs_also
   _monadRandom <- hackage (Just "0.5.1.1") "MonadRandom" >>= debianize []
   _monads_tf <- hackage (Just "0.1.0.3") "monads-tf" >>= flag (P.DebVersion "0.1.0.3-3build1") >>= debianize []
   _monad_task <- hackage (Just "0.1.0") "monad-task" >>= debianize [] >>= skip (Reason "0.1.0 requires transformers<4")
