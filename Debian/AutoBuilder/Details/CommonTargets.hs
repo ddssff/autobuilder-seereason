@@ -431,7 +431,7 @@ commonTargets = do
                                                      "--cabal-flags", "migrate",
                                                      "--executable", "happstack-authenticate-migrate" ]) >>=
                                debianize [] >>= inGroups [ "authenticate", "happstack", "important", "acid-state"]
-  _happstack_authenticate <- git "https://github.com/Happstack/happstack-authenticate.git" [] >>= {-patch $(embedFile "patches/happstack-authenticate-locktag.diff") >>=-} debianize [] >>= inGroups [ "authenticate", "happstack", "important", "acid-state"]
+  _happstack_authenticate <- git "https://github.com/Happstack/happstack-authenticate.git" [] >>= debianize [] >>= inGroups [ "authenticate", "happstack", "important", "acid-state"]
   _clckwrks_theme_happstack <- git ("https://github.com/Happstack/happstack-clckwrks") [] >>= cd "clckwrks-theme-happstack" >>=
                                -- >>= patch $(embedFile "patches/clckwrks-theme-happstack.diff")
                                flag (P.BuildDep "hsx2hs") >>= debianize [] >>= inGroups ["clckwrks", "important", "acid-state"]
@@ -724,7 +724,7 @@ commonTargets = do
   _memotrie <- hackage (Just "0.6.9") "MemoTrie" >>= debianize [] >>= ghcjs_also
   _microlens <- hackage (Just "0.4.9.1") "microlens" >>= debianize [] >>= ghcjs_also
   _mime <- git ("https://github.com/seereason/haskell-mime") [] >>= debianize []
-  _mime_mail <- git "https://github.com/snoyberg/mime-mail.git" [] >>= cd "mime-mail" >>= flag (P.DebVersion "0.4.14-1") >>= debianize [] >>= inGroups [ "authenticate", "important"]
+  _mime_mail <- git "https://github.com/snoyberg/mime-mail.git" [] >>= cd "mime-mail" >>= debianize [] >>= inGroups [ "authenticate", "important"]
   _mime_types <- hackage (Just "0.1.0.7") "mime-types" >>= flag (P.DebVersion "0.1.0.7-3build2") >>= debianize [] >>= inGroups ["conduit", "important"] >>= ghcjs_also
   _mirror <-  (git "https://github.com/seereason/mirror" []
                         >>= flag (P.CabalDebian ["--executable", "debian-mirror"])) >>= debianize [] >>= inGroups ["autobuilder-group", "important", "appraisalscribe"]
@@ -1101,7 +1101,7 @@ commonTargets = do
   _uniplate <- hackage (Just "1.6.12") "uniplate" >>= flag (P.DebVersion "1.6.12-6build4") >>= debianize [] >>= inGroups ["appraisalscribe", "important"] >>= ghcjs_also
   _units <-  (hackage (Just "2.4") "units") >>= debianize [] >>= skip (Reason "[libghc-singletons-prof (<< 2)] -> []")
   _units_parser <-  (hackage (Just "0.1.0.0") "units-parser") >>= debianize []
-  _universe_base <- hackage Nothing "universe-base" >>= flag (P.DebVersion "1.0.2.1-3build1") >>= debianize []
+  _universe_base <- hackage Nothing "universe-base" >>= debianize []
   _universe_instances_base <- hackage Nothing "universe-instances-base" >>= debianize []
   _universe_reverse_instances <- hackage Nothing "universe-reverse-instances" >>= debianize []
   _unix_bytestring <- hackage Nothing "unix-bytestring" >>= debianize [] 
